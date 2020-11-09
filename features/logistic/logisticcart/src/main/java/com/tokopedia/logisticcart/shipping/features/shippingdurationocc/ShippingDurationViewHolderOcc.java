@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
+package com.tokopedia.logisticcart.shipping.features.shippingdurationocc;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -15,10 +15,9 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.R;
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
-import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -32,17 +31,15 @@ import java.util.ArrayList;
 
 /**
  * Created by Irfan Khoirul on 06/08/18.
- * tvDurationOrPrice means it will get duration in existing, and price when ETA is applied
- * tvPriceOrDuration means it will get price in existing, and duration when ETA is applied
  */
 
-public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
+public class ShippingDurationViewHolderOcc extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SHIPMENT_DURATION = R.layout.item_duration;
 
     private TextView tvError;
-    private TextView tvDurationOrPrice;
-    private TextView tvPriceOrDuration;
+    private TextView tvDuration;
+    private TextView tvPrice;
     private TextView tvTextDesc;
     private ImageView imgCheck;
     private RelativeLayout rlContent;
@@ -50,31 +47,29 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvOrderPrioritas;
     private Typography tvShippingInformation;
     private Label labelCodAvailable;
-    private Label labelCodAvailabelEta;
 
     private int cartPosition;
 
-    public ShippingDurationViewHolder(View itemView, int cartPosition) {
+    public ShippingDurationViewHolderOcc(View itemView, int cartPosition) {
         super(itemView);
         this.cartPosition = cartPosition;
 
         tvOrderPrioritas = itemView.findViewById(R.id.tv_order_prioritas);
         tvError = itemView.findViewById(R.id.tv_error);
-        tvDurationOrPrice = itemView.findViewById(R.id.tv_duration_or_price);
-        tvPriceOrDuration = itemView.findViewById(R.id.tv_price_or_duration);
+        tvDuration = itemView.findViewById(R.id.tv_duration_or_price);
+        tvPrice = itemView.findViewById(R.id.tv_price_or_duration);
         tvTextDesc = itemView.findViewById(R.id.tv_text_desc);
         imgCheck = itemView.findViewById(R.id.img_check);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvShippingInformation = itemView.findViewById(R.id.tv_shipping_information);
         labelCodAvailable = itemView.findViewById(R.id.lbl_cod_available);
-        labelCodAvailabelEta = itemView.findViewById(R.id.lbl_cod_available_eta);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener,
                          boolean isDisableOrderPrioritas) {
-        if (shippingDurationUiModel.isShowShippingInformation() && shippingDurationUiModel.getEtaErrorCode() == 1) {
+        if (shippingDurationUiModel.isShowShippingInformation()) {
             tvShippingInformation.setVisibility(View.VISIBLE);
         } else {
             tvShippingInformation.setVisibility(View.GONE);
@@ -88,16 +83,17 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         }
 
         if (!TextUtils.isEmpty(shippingDurationUiModel.getErrorMessage())) {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), R.color.font_disabled));
-            tvPriceOrDuration.setVisibility(View.GONE);
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
+            tvPrice.setVisibility(View.GONE);
             tvTextDesc.setVisibility(View.GONE);
             tvOrderPrioritas.setVisibility(View.GONE);
             tvError.setText(shippingDurationUiModel.getErrorMessage());
             tvError.setVisibility(View.VISIBLE);
         } else {
-            tvDurationOrPrice.setTextColor(ContextCompat.getColor(tvDurationOrPrice.getContext(), R.color.black_70));
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.black_70));
             tvError.setVisibility(View.GONE);
-            tvPriceOrDuration.setVisibility(View.VISIBLE);
+            tvPrice.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
+            tvPrice.setVisibility(View.VISIBLE);
 
             if (!shippingDurationUiModel.getServiceData().getTexts().getTextServiceDesc().isEmpty()) {
                 tvTextDesc.setText(shippingDurationUiModel.getServiceData().getTexts().getTextServiceDesc());
@@ -117,37 +113,10 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
 
         }
-
-        /*ETA*/
-        if (shippingDurationUiModel.getServiceData().getTexts().getErrorCode() == 0) {
-            String shipperNameEta = "";
-            if (shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice() == shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice()) {
-                shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" +
-                        Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + ")";;
-            } else {
-                String rangePrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMinPrice(), false)) + " - " +
-                        Utils.removeDecimalSuffix(CurrencyFormatUtil.convertPriceValueToIdrFormat(shippingDurationUiModel.getServiceData().getRangePrice().getMaxPrice(), false));
-                shipperNameEta = shippingDurationUiModel.getServiceData().getServiceName() + " " + "(" + rangePrice + ")";
-            }
-            if (!shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize().isEmpty()) {
-                tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextEtaSummarize());
-            } else {
-                tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
-            }
-            TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shipperNameEta, tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
-            labelCodAvailable.setVisibility(View.GONE);
-            labelCodAvailabelEta.setText(shippingDurationUiModel.getCodText());
-            labelCodAvailabelEta.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
-        } else {
-            TextAndContentDescriptionUtil.setTextAndContentDescription(tvDurationOrPrice, shippingDurationUiModel.getServiceData().getServiceName(), tvDurationOrPrice.getContext().getString(R.string.content_desc_tv_duration));
-            tvPriceOrDuration.setText(shippingDurationUiModel.getServiceData().getTexts().getTextRangePrice());
-            labelCodAvailabelEta.setVisibility(View.GONE);
-            labelCodAvailable.setText(shippingDurationUiModel.getCodText());
-            labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
-        }
-
+        TextAndContentDescriptionUtil.setTextAndContentDescription(tvDuration, shippingDurationUiModel.getServiceData().getServiceName(), tvDuration.getContext().getString(R.string.content_desc_tv_duration));
         imgCheck.setVisibility(shippingDurationUiModel.isSelected() ? View.VISIBLE : View.GONE);
-
+        labelCodAvailable.setText(shippingDurationUiModel.getCodText());
+        labelCodAvailable.setVisibility(shippingDurationUiModel.isCodAvailable() ? View.VISIBLE : View.GONE);
         if (shippingDurationUiModel.isShowShowCase()) setShowCase(shippingDurationAdapterListener);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,10 +148,10 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        if (!ShowCasePreference.hasShown(itemView.getContext(), ShippingDurationViewHolder.class.getName()))
+        if (!ShowCasePreference.hasShown(itemView.getContext(), ShippingDurationViewHolderOcc.class.getName()))
             showCaseDialog.show(
                     (Activity) itemView.getContext(),
-                    ShippingDurationViewHolder.class.getName(),
+                    ShippingDurationViewHolderOcc.class.getName(),
                     showCaseObjectList
             );
     }
