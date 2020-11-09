@@ -267,7 +267,7 @@ open class HomeViewModel @Inject constructor(
 
     fun getRecommendationWidget(){
         val data = _homeLiveData.value?.list?.toMutableList()
-        data?.withIndex()?.find { it.value is BestSellerDataModel }?.let {
+        data?.withIndex()?.filter { it.value is BestSellerDataModel }?.forEach {
             val bestSellerDataModel = it.value as BestSellerDataModel
             launchCatchError(coroutineContext, block = {
                 val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
