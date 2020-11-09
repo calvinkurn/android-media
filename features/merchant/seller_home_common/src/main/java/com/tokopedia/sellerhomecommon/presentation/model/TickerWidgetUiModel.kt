@@ -12,7 +12,6 @@ data class TickerWidgetUiModel(
         override val title: String = "",
         override val subtitle: String = "",
         override val tooltip: TooltipUiModel? = null,
-        override val url: String = "",
         override val appLink: String = "",
         override val dataKey: String = "",
         override val ctaText: String = "",
