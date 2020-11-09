@@ -326,6 +326,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somListOrderParam?.endDate = ""
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         filterDate = ""
+        somFilterAdapter?.updateDateFilterText(filterDate)
     }
 
     private fun checkIsSelected(): Boolean {

@@ -41,7 +41,7 @@ class SomListSortFilterTab(
         sortFilter.textView.text = context.getString(com.tokopedia.sellerorder.R.string.som_list_filter_chip)
     }
 
-    private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
+    fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         // use old filter items if any
         val filters = statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }
                 .map { statusFilter ->

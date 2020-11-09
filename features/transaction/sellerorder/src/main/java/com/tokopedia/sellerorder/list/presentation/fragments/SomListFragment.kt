@@ -1374,9 +1374,23 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somListSortFilterTab.selectTab(it)
                 refreshOrderList()
             } else {
+                if(filterIsReset(somFilterUiModelList)) {
+                    somListSortFilterTab.updateTabs(somListFilter.statusList)
+                }
                 somListSortFilterTab.updateCounterSortFilter()
                 refreshOrderList()
             }
         }
+    }
+
+    private fun filterIsReset(somFilterUiModelList: List<SomFilterUiModel>): Boolean {
+        var count = 0
+        somFilterUiModelList.forEach { somFilter ->
+            somFilter.somFilterData.forEach {
+                if(it.isSelected) count++
+            }
+        }
+        val isNotReset = (count > 0)
+        return !isNotReset
     }
 }

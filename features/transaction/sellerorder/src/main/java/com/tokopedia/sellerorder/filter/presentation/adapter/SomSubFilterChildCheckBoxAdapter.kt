@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.filter.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -21,11 +20,8 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
     fun setSubFilterList(newSubChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
                          keyFilter: String) {
         this.keyFilter = keyFilter
-        val callBack = SomSubChildFilterDiffUtil(subChildFilterList, newSubChildFilterList)
-        val diffResult = DiffUtil.calculateDiff(callBack)
-        diffResult.dispatchUpdatesTo(this)
-        this.subChildFilterList.clear()
-        this.subChildFilterList.addAll(subChildFilterList)
+        this.subChildFilterList = newSubChildFilterList.toMutableList()
+        notifyDataSetChanged()
     }
 
     fun updateCheckboxFilter(updatedState: Boolean, position: Int) {
