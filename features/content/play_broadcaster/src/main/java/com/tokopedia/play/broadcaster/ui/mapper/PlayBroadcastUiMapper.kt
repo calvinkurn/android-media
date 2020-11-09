@@ -18,6 +18,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 /**
@@ -169,7 +170,7 @@ class PlayBroadcastUiMapper : PlayBroadcastMapper {
             description = channel.basic.description,
             ingestUrl = channel.medias.firstOrNull { it.id == channel.basic.activeMediaID }?.ingestUrl.orEmpty(),
             coverUrl = channel.basic.coverUrl,
-            status = PlayChannelStatus.getByValue(channel.basic.status.id)
+            status = PlayChannelStatusType.getByValue(channel.basic.status.id)
     )
 
     override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) = productTags.map {
