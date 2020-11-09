@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
+import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
 import com.tokopedia.officialstore.R
@@ -34,6 +35,7 @@ import com.tokopedia.officialstore.category.presentation.widget.OfficialCategori
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -256,9 +258,11 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                         .addIcon(IconList.ID_CART) {}
                         .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
+            setupSearchbar(
+                    listOf(HintData(placeholder = getString(R.string.os_query_search))),
+                    ApplinkConstant.OFFICIAL_SEARCHBAR
+            )
         }
-//        mainToolbar?.searchApplink = ApplinkConstant.OFFICIAL_SEARCHBAR
-//        mainToolbar?.setQuerySearch(getString(R.string.os_query_search))
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
     }
 

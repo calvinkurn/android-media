@@ -1,11 +1,13 @@
 package com.tokopedia.homenav.mainnav.view.adapter.typefactory
 
-import com.tokopedia.homenav.base.diffutil.HomeNavTypeFactory
+import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavVisitable
 import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
 
-interface MainNavTypeFactory : HomeNavTypeFactory {
+interface MainNavTypeFactory {
 
     fun type(accountHeaderViewModel: AccountHeaderViewModel): Int
 
@@ -13,4 +15,5 @@ interface MainNavTypeFactory : HomeNavTypeFactory {
 
     fun type(transactionListItemViewModel: TransactionListItemViewModel) : Int
 
+    fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }

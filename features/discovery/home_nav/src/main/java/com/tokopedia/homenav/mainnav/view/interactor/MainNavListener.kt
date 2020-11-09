@@ -15,4 +15,5 @@ interface MainNavListener : HomeNavListener{
 
     fun onErrorProfileShopClicked(element: AccountHeaderViewModel)
 
+    fun getUserId(): String
 }

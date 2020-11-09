@@ -1,31 +1,29 @@
-package com.tokopedia.homenav.mainnav.domain.interactor
+package com.tokopedia.homenav.mainnav.domain.usecases
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
-import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetSaldoUseCase @Inject constructor(
+class GetUserInfoUseCase @Inject constructor(
         val graphqlUseCase: GraphqlRepository)
-    : UseCase<SaldoPojo>() {
+    : UseCase<UserPojo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): SaldoPojo {
-        val gqlRequest = GraphqlRequest(query, SaldoPojo::class.java, params.parameters)
+    override suspend fun executeOnBackground(): UserPojo {
+        val gqlRequest = GraphqlRequest(query, UserPojo::class.java, params.parameters)
         val gqlResponse = graphqlUseCase.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
 
-        val error = gqlResponse.getError(SaldoPojo::class.java)
+        val error = gqlResponse.getError(UserPojo::class.java)
         if (error == null || error.isEmpty()) {
-            return gqlResponse.getData(SaldoPojo::class.java)
+            return gqlResponse.getData(UserPojo::class.java)
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
@@ -35,18 +33,11 @@ class GetSaldoUseCase @Inject constructor(
         private val query = getQuery()
         private fun getQuery(): String {
 
-            return """query {
-                    balance {
-                        buyer_hold
-                        buyer_hold_fmt
-                        buyer_usable
-                        buyer_usable_fmt
-                        seller_hold
-                        seller_hold_fmt
-                        seller_usable
-                        seller_usable_fmt
-                        have_error
-                    }
+            return """query getProfile(){
+                  profile {
+                    full_name
+                    profilePicture
+                  }
             } """.trimIndent()
         }
     }

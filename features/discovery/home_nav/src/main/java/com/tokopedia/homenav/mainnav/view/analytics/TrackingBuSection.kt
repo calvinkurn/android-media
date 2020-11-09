@@ -3,7 +3,7 @@ package com.tokopedia.homenav.mainnav.view.analytics
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object MainNavAnalytics: BaseTrackerConst() {
+object TrackingBuSection: BaseTrackerConst() {
     private const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     private const val GLOBAL_MENU = "global menu"
     private const val BUSINESS_UNIT_LIST = "business_unit_list"
