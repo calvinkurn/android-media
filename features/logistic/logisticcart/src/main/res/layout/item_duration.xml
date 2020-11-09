@@ -33,7 +33,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_mvc_text"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_18"
+                android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/dp_7"
                 android:layout_toEndOf="@id/img_mvc"
                 android:lineSpacingExtra="@dimen/sp_4"
