@@ -77,6 +77,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
 
+    private var autoTick = false
     private var totalPrice = 0
     private var maximumPrice = 0
 
@@ -139,9 +140,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                         smartBillsAnalytics.impressionAllProducts(bills)
 
                         // Auto select bills based on data
+                        autoTick = true
                         bills.forEachIndexed { index, rechargeBills ->
                             if (rechargeBills.isChecked) adapter.updateListByCheck(true, index)
                         }
+                        autoTick = false
 
                         // Show coach mark
                         showOnboarding()
@@ -355,7 +358,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
-            smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
+            // Do not trigger event if bill is auto-ticked
+            if (!autoTick) smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
             totalPrice += item.amount.toInt()
         } else {
             smartBillsAnalytics.clickUntickBill(item)
