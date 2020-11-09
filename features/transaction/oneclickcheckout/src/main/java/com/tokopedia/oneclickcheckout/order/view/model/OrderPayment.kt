@@ -55,8 +55,13 @@ data class OrderPaymentCreditCard(
         val isExpired: Boolean = false,
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null,
-        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData()
-)
+        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData(),
+        val isDebit: Boolean = false
+) {
+    companion object {
+        internal const val DEBIT_GATEWAY_CODE = "debit"
+    }
+}
 
 data class OrderPaymentCreditCardsNumber(
         val availableCards: Int = 0,

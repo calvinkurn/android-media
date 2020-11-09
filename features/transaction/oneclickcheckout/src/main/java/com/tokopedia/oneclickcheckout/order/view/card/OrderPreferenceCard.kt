@@ -274,7 +274,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                 setupPaymentSelector(payment)
 
-                setupPaymentInstallment(payment.creditCard.selectedTerm)
+                setupPaymentInstallment(payment.creditCard)
             } else {
                 if (payment.errorMessage.message.isNotEmpty()) {
                     tvPaymentErrorMessage?.text = payment.errorMessage.message
@@ -305,8 +305,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
-        if (selectedTerm != null) {
+    private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
+        val selectedTerm = creditCard.selectedTerm
+        if (!creditCard.isDebit && selectedTerm != null) {
             tvInstallmentType?.visible()
             tvInstallmentDetail?.visible()
             if (selectedTerm.term > 0) {

@@ -200,6 +200,13 @@ class GetOccCartMapper @Inject constructor() {
                 creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data))
     }
 
+    private fun mapPaymentCreditCard(payment: Payment, data: GetOccCartData?): OrderPaymentCreditCard {
+        val creditCard = payment.creditCard
+        val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
+        return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
+                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data), payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE)
+    }
+
     private fun mapPaymentCreditCardNumber(numberOfCards: PaymentCreditCardsNumber): OrderPaymentCreditCardsNumber {
         return OrderPaymentCreditCardsNumber(numberOfCards.availableCards, numberOfCards.unavailableCards,
                 numberOfCards.totalCards)
