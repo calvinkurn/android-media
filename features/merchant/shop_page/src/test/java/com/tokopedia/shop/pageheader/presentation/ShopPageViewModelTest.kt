@@ -76,8 +76,14 @@ class ShopPageViewModelTest {
         TestCoroutineDispatcherProviderImpl
     }
 
-    private val shopPageViewModel by lazy {
-        ShopPageViewModel(
+    private lateinit var shopPageViewModel : ShopPageViewModel
+
+    private val SAMPLE_SHOP_ID = "123"
+
+    @Before
+    fun setup() {
+        MockKAnnotations.init(this)
+        shopPageViewModel = ShopPageViewModel(
                 gqlGetShopFavoriteStatusUseCase,
                 userSessionInterface,
                 gqlGetShopInfoForHeaderUseCase,
@@ -92,13 +98,6 @@ class ShopPageViewModelTest {
                 getShopPageP1DataUseCase,
                 testCoroutineDispatcherProvider
         )
-    }
-
-    private val SAMPLE_SHOP_ID = "123"
-
-    @Before
-    fun setup() {
-        MockKAnnotations.init(this)
     }
 
     @Test
