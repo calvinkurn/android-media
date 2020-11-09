@@ -187,10 +187,10 @@ class ShopPageFragment :
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
-    private val iconTabHome = R.drawable.ic_shop_tab_home_inactive
-    private val iconTabProduct = R.drawable.ic_shop_tab_products_inactive
-    private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
-    private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
+    private val iconTabHome = R.drawable.ic_shop_tab_home_new
+    private val iconTabProduct = R.drawable.ic_shop_tab_product_new
+    private val iconTabFeed = R.drawable.ic_shop_tab_feed_new
+    private val iconTabReview = R.drawable.ic_shop_tab_review_new
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
     private var isFirstLoading: Boolean = false
