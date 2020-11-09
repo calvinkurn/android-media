@@ -509,7 +509,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                             flightSearchViewModel.filterModel.isSeatDistancing) {
                         flightSearchViewModel.filterModel.isSeatDistancing = false
                         quickSeatDistancingFilter.unselect()
-                    } else if (flightSearchViewModel.isFilterModelInitialized()) {
+                    } else if (flightSearchViewModel.isFilterModelInitialized() &&
+                            flightSearchViewModel.filterModel.canFilterSeatDistancing) {
                         flightSearchViewModel.filterModel.isSeatDistancing = true
                         quickSeatDistancingFilter.select()
                     }
@@ -530,7 +531,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
                             flightSearchViewModel.filterModel.isFreeRapidTest) {
                         flightSearchViewModel.filterModel.isFreeRapidTest = false
                         quickFreeRapidTestFilter.unselect()
-                    } else if (flightSearchViewModel.isFilterModelInitialized()) {
+                    } else if (flightSearchViewModel.isFilterModelInitialized() &&
+                            flightSearchViewModel.filterModel.canFilterFreeRapidTest) {
                         flightSearchViewModel.filterModel.isFreeRapidTest = true
                         quickFreeRapidTestFilter.select()
                     }
