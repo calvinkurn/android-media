@@ -62,28 +62,8 @@ class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    @Named(ShopPageConstant.MODERATE_STATUS_QUERY)
-    fun moderateStatusQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.shop_moderate_request_status
-        );
-    }
-
-    @ShopPageScope
-    @Provides
     fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
         return GetBroadcasterShopConfigUseCase(graphqlUseCase)
-    }
-
-    @ShopPageScope
-    @Provides
-    @Named(ShopPageConstant.MODERATE_REQUEST_QUERY)
-    fun requestQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.mutation_moderate_shop
-        );
     }
 
     @ShopPageScope
