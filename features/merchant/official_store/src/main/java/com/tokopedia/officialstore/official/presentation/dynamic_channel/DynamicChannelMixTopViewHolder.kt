@@ -108,7 +108,7 @@ class DynamicChannelMixTopViewHolder(
     private fun setupBanner(channel: Channel) {
         channel.banner?.let{banner ->
             val ctaData = banner.cta
-            var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
+            var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Unify_N50)
             if(banner.textColor.isNotEmpty()){
                 try {
                     textColor = Color.parseColor(banner.textColor)
