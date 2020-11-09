@@ -93,7 +93,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     // Used to load the 'native-lib' library on application startup.
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        System.loadLibrary("native-lib");
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
@@ -110,9 +109,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     @Override
     public void onCreate() {
-        if (!isMainProcess()) {
-            return;
-        }
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
@@ -280,19 +276,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConstInternalPromo.PROMO_CAMPAIGN_SHAKE_LANDING, Boolean.toString(isLongShake));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         getApplicationContext().startActivity(intent);
-    }
-
-    private boolean isMainProcess() {
-        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
-
-        if (manager == null || manager.getRunningAppProcesses() == null) return false;
-
-        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == android.os.Process.myPid()) {
-                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
-            }
-        }
-        return false;
     }
 
     @Override
