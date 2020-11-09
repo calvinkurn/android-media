@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.detail.presentation.adapter.viewholder
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
@@ -21,7 +20,6 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.EXTRA_USER_MODE
-import com.tokopedia.sellerorder.common.util.SomConsts.IS_WAREHOUSE
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_EMPTY
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_AUTO_CANCELLED
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_CODE_ORDER_CANCELLED
@@ -46,7 +44,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
         if (item.dataObject is SomDetailHeader) {
             setupOrderStatus(item.dataObject.statusText, item.dataObject.statusCode)
             with(itemView) {
-                if (item.dataObject.fullFillBy == IS_WAREHOUSE) {
+                if (item.dataObject.isWarehouse) {
                     warehouseLabel?.apply {
                         show()
                         unlockFeature = true
@@ -57,7 +55,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
 
                 if(item.dataObject.statusIndicatorColor.isNotBlank()) {
-                    statusIndicator.setColorFilter(Color.parseColor(item.dataObject.statusIndicatorColor), PorterDuff.Mode.SRC_IN)
+                    somOrderDetailIndicator.background = Utils.getColoredIndicator(context, item.dataObject.statusIndicatorColor)
                 }
 
                 header_see_history?.setOnClickListener {
@@ -91,8 +89,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
                         itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
                     }
-
-
                 } else {
                     header_deadline_label?.visibility = View.GONE
                     due_label?.visibility = View.GONE

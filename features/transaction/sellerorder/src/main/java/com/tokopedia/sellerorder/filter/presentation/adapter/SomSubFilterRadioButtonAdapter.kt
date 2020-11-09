@@ -62,10 +62,12 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         fun bind(item: SomFilterChipsUiModel) {
             with(itemView) {
                 label_radio.text = item.name
+                rb_filter.setOnCheckedChangeListener(null)
                 rb_filter.isChecked = item.isSelected
+                rb_filter.skipAnimation()
                 toggleChildStatus(item)
 
-                rb_filter.setOnClickListener {
+                rb_filter.setOnCheckedChangeListener { _, _ ->
                     clickHandlerRadio(item)
                     toggleChildStatus(item)
                 }
@@ -77,9 +79,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         }
 
         private fun clickHandlerRadio(item: SomFilterChipsUiModel) {
-            listSubFilter.map {
-                if (it.idFilter == SomConsts.FILTER_STATUS_ORDER) it.isSelected = false
-            }
+            listSubFilter.filter { it.idFilter == SomConsts.FILTER_STATUS_ORDER }.filter { it.isSelected }.onEach { it.isSelected = false }
             item.isSelected = true
             notifyDataSetChanged()
             if (item.isSelected) {
@@ -91,14 +91,14 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         private fun toggleChildStatus(item: SomFilterChipsUiModel) {
             with(itemView) {
                 rvChildStatus = rvChildFilterStatus
-                if (item.childStatus.isEmpty()) {
+                somSubFilterChildCheckBoxAdapter = SomSubFilterChildCheckBoxAdapter(this@RadioButtonViewHolder)
+                rvChildFilterStatus?.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = somSubFilterChildCheckBoxAdapter
+                }
+                if(item.childStatus.isEmpty()) {
                     rvChildFilterStatus.hide()
                 } else if (item.childStatus.isNotEmpty() && rb_filter.isChecked) {
-                    somSubFilterChildCheckBoxAdapter = SomSubFilterChildCheckBoxAdapter(this@RadioButtonViewHolder)
-                    rvChildFilterStatus?.apply {
-                        layoutManager = LinearLayoutManager(context)
-                        adapter = somSubFilterChildCheckBoxAdapter
-                    }
                     val childItem = item.childStatus
                     somSubFilterChildCheckBoxAdapter?.setSubFilterList(childItem, item.key)
                     rvChildFilterStatus.show()

@@ -87,9 +87,9 @@ class SomListSortFilterTab(
     fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
         var count = 0
         somListFilterUiModel.forEach {
-            if (it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
+            if(it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
                 it.somFilterData.forEach { somFilter ->
-                    if(somFilter.isSelected) count++
+                    if (somFilter.isSelected) count++
                 }
             }
         }
@@ -116,6 +116,10 @@ class SomListSortFilterTab(
         sortFilter.postDelayed({
             updateCounter(selectedCount)
         }, SWIPE_TAB_ANIMATION_DELAY)
+    }
+
+    fun updateCounterSortFilter() {
+        updateCounter(selectedCount)
     }
 
     private fun selectParentFilter() {

@@ -64,6 +64,6 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
     }
 
     companion object {
-        const val MAX_CHIPS_FILTER = 6
+        const val MAX_CHIPS_FILTER = 5
     }
 }

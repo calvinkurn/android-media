@@ -24,8 +24,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/label_checkbox"
         android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginEnd="@dimen/dp_18"/>
+        android:layout_marginEnd="@dimen/spacing_lvl3"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/cbDivider"

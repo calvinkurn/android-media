@@ -581,6 +581,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 detailResponse.bookingInfo.onlineBooking.state,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
                 detailResponse.warehouse.fullFillBy,
+                detailResponse.flagOrderMeta.isWareHouse,
                 detailResponse.tickerInfo)
 
         listDetailData.add(SomDetailData(dataHeader, DETAIL_HEADER_TYPE))
@@ -588,7 +589,7 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     private fun renderProducts() {
         // products
-        val dataProducts = SomDetailProducts(detailResponse.listProduct)
+        val dataProducts = SomDetailProducts(detailResponse.listProduct, detailResponse.flagOrderMeta.isTopAds)
         listDetailData.add(SomDetailData(dataProducts, DETAIL_PRODUCTS_TYPE))
     }
 

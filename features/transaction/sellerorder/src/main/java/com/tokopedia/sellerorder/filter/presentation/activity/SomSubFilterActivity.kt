@@ -3,9 +3,11 @@ package com.tokopedia.sellerorder.filter.presentation.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,6 +31,8 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         const val KEY_SOM_ORDER_PARAM_CACHE = "key_som_order_param_cache"
         const val KEY_SOM_LIST_FILTER_CHIPS = "key_som_list_filter"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
+        const val ALL_FILTER = "Semua"
+        const val SIZE_ACTION_RESET = 14f
 
         @JvmStatic
         fun newInstance(context: FragmentActivity?,
@@ -73,6 +77,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         btnSaveSubFilter()
         setToolbarSubFilter()
         setToggleResetSubFilter()
+        setupToggleShadowToolbar()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -113,11 +118,26 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         }
     }
 
+    private fun setupToggleShadowToolbar() {
+        rvSomSubFilter.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                try {
+                    som_sub_filter_toolbar.isShowShadow = newState != RecyclerView.SCROLL_STATE_IDLE
+                } catch (e: IndexOutOfBoundsException) { }
+            }
+        })
+    }
+
     private fun setToolbarSubFilter() {
+        setSupportActionBar(som_sub_filter_toolbar)
+        supportActionBar?.apply {
+            title = "$ALL_FILTER $idFilter"
+            setDisplayShowHomeEnabled(true)
+        }
         som_sub_filter_toolbar.apply {
             isShowBackButton = true
             isShowShadow = false
-            title = idFilter
             setNavigationOnClickListener {
                 onBackPressed()
             }
@@ -147,6 +167,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                 btnSaveSubFilter.isEnabled = true
                 actionTextView?.show()
                 actionText = getString(R.string.reset)
+                actionTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, SIZE_ACTION_RESET)
                 actionTextView?.setOnClickListener {
                     somSubFilterList?.find { it.idFilter == idFilter }?.let {
                         when (it.idFilter) {
@@ -192,13 +213,5 @@ class SomSubFilterActivity : BaseSimpleActivity(),
             }
         }
         setToggleResetSubFilter()
-    }
-
-    interface SubFilterListener {
-        fun onSaveSubFilter(
-                somListGetOrderListParam: SomListGetOrderListParam,
-                filterDate: String,
-                idFilter: String,
-                somSubFilterList: List<SomFilterChipsUiModel>)
     }
 }

@@ -182,6 +182,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var commonToaster: Snackbar? = null
     private var textChangeJob: Job? = null
     private var menu: Menu? = null
+    private var filterDate = ""
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -389,10 +390,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
                 viewModel.getDataOrderListParams().statusList,
                 viewModel.getSomFilterUi(),
-                this.activity
+                this.activity,
+                filterDate
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
-        bottomSheetFilter.show()
+        if(!bottomSheetFilter.isVisible) {
+            bottomSheetFilter.show()
+        }
     }
 
     override fun onDescriptionViewClick(linkUrl: CharSequence) {
@@ -1430,7 +1434,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
-    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>, idFilter: String, orderStatus: String) {
+    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
+                                        idFilter: String, orderStatus: String, filterDate: String) {
+        this.filterDate = filterDate
         viewModel.updateGetOrderListParams(filterData)
         viewModel.updateSomListFilterUi(somFilterUiModelList)
         somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList)
@@ -1444,10 +1450,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
         somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
             if (it != null) {
-                it.isChecked = true
                 somListSortFilterTab.selectTab(it)
                 refreshOrderList()
             } else {
+                somListSortFilterTab.updateCounterSortFilter()
                 refreshOrderList()
             }
         }
