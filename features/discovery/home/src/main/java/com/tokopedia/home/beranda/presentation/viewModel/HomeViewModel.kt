@@ -291,9 +291,13 @@ open class HomeViewModel @Inject constructor(
                     val recomWidget = recomData.first().copy(
                             recommendationFilterChips = recomFilterList
                     )
-                    val bestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
                     homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
-                            bestSellerDataModel,
+                            dataModel.copy(
+                                    id = bestSellerDataModel.id,
+                                    pageName = bestSellerDataModel.pageName,
+                                    widgetParam = bestSellerDataModel.widgetParam
+                            ),
                             it.index,
                             this@HomeViewModel
                     ))

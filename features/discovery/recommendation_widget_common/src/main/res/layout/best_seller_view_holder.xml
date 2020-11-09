@@ -72,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/best_seller_title"
         app:layout_constraintTop_toTopOf="@+id/best_seller_title"
-        app:typographyType="heading_5" />
+        app:typographyType="heading_6" />
 
 
     <androidx.recyclerview.widget.RecyclerView
