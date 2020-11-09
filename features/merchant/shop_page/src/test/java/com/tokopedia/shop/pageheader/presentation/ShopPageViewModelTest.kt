@@ -271,15 +271,11 @@ class ShopPageViewModelTest {
     @Test
     fun `check whether required function is called when flush`() {
         every { toggleFavouriteShopUseCase.get().unsubscribe() } returns mockk(relaxed = true)
-        every { getModerateShopUseCase.get().unsubscribe() } returns mockk(relaxed = true)
-        every { requestModerateShopUseCase.get().unsubscribe() } returns mockk(relaxed = true)
         every { stickyLoginUseCase.get().cancelJobs() } returns mockk(relaxed = true)
 
         shopPageViewModel.flush()
         verify {
             toggleFavouriteShopUseCase.get().unsubscribe()
-            getModerateShopUseCase.get().unsubscribe()
-            requestModerateShopUseCase.get().unsubscribe()
             stickyLoginUseCase.get().cancelJobs()
         }
     }
