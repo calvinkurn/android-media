@@ -961,7 +961,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
-        loadInitialData()
         isOnViewCreated = true
         loadInitialDataAfterOnViewCreated(userVisibleHint)
         observeShopProductFilterParameterSharedViewModel()
