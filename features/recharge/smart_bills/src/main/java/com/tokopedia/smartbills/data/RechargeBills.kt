@@ -58,7 +58,9 @@ data class RechargeBills(
         @SerializedName("billName")
         @Expose
         val billName: String = "",
-        var selected: Boolean = false,
+        @SerializedName("isChecked")
+        @Expose
+        var isChecked: Boolean = false,
         var errorMessage: String = ""
 ): Visitable<SmartBillsAdapterFactory> {
         override fun type(typeFactory: SmartBillsAdapterFactory): Int {
