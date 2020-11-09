@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
@@ -18,13 +19,17 @@ import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
+import com.tokopedia.inbox.view.ext.getRoleName
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
 import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentContainer {
@@ -32,11 +37,15 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
     private var roleNotificationCounter: Typography? = null
     private var bottomNav: InboxBottomNavigationView? = null
     private var currentRole: ConstraintLayout? = null
+    private var fragmentContainer: FrameLayout? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -70,6 +79,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         roleNotificationCounter = findViewById(R.id.unread_counter)
         bottomNav = findViewById(R.id.inbox_bottom_nav)
         currentRole = findViewById(R.id.cl_current_role_container)
+        fragmentContainer = findViewById(R.id.fragment_contaier)
     }
 
     override fun onDestroy() {
@@ -79,6 +89,16 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun onRoleChanged(@RoleType role: Int) {
         navigator?.notifyRoleChanged(role)
+        showNotificationRoleChanged(role)
+    }
+
+    private fun showNotificationRoleChanged(@RoleType role: Int) {
+        val name = userSession.getRoleName(role)
+        val message = getString(R.string.title_change_role, name)
+        fragmentContainer?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    .show()
+        }
     }
 
     private fun setupConfig() {
