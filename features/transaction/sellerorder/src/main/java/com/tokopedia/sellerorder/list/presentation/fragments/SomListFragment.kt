@@ -170,8 +170,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var isJustRestored: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
-    private var fromWidget: Boolean = false
-    private var filterStatusId: Int = 0
     private var tabActive: String = ""
     private var somListBulkAcceptOrderBottomSheet: SomListBulkAcceptOrderBottomSheet? = null
     private var bulkAcceptOrderDialog: SomListBulkActionDialog? = null
@@ -198,8 +196,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null && arguments != null) {
-            filterStatusId = arguments?.getString(FILTER_STATUS_ID).orEmpty().toIntOrZero()
-            fromWidget = arguments?.getBoolean(FROM_WIDGET_TAG) ?: false
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
         } else if (savedInstanceState != null) {
             isJustRestored = true
