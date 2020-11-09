@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -1571,7 +1572,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
-        //TODO("Delete Failed Transcoding Channel")
+        viewModel?.deleteChannel(channelId)
     }
 
     override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, channelType: PlayWidgetChannelType, position: Int) {
@@ -1610,6 +1611,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 } else if (widget.hasFailedTranscodedChannel) {
                     //TODO("Transcode Failed")
                 }
+            }
+
+            carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {
+                if (it == CarouselPlayWidgetUiModel.Action.Delete) showWidgetDeletedToaster()
             }
         })
     }
@@ -1666,5 +1671,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             )
         }
         return playWidgetActionBottomSheet
+    }
+
+    private fun showWidgetDeletedToaster() {
+        //TODO("Use Toaster instead of Android Toast")
+        Toast.makeText(requireContext(), "Video telah dihapus", Toast.LENGTH_SHORT).show()
     }
 }
