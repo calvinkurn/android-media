@@ -315,8 +315,17 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         bottomSheetAction.setTextSize(TypedValue.COMPLEX_UNIT_SP, SIZE_ACTION_RESET)
         bottomSheetAction.setOnClickListener {
             SomAnalytics.eventClickResetButtonOnFilterPage()
-            somFilterViewModel.resetFilterSelected(orderStatus)
+            somFilterViewModel.resetFilterSelected()
+            actionResetFilter()
         }
+    }
+
+    private fun actionResetFilter() {
+        somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
+        somListOrderParam?.startDate = ""
+        somListOrderParam?.endDate = ""
+        somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
+        filterDate = ""
     }
 
     private fun checkIsSelected(): Boolean {

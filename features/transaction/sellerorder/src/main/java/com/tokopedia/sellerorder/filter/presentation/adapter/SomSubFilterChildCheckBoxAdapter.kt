@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.filter.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -11,17 +12,20 @@ import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.*
 class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: SomSubChildFilterListener)
     : RecyclerView.Adapter<SomSubFilterChildCheckBoxAdapter.SomSubFilterChildCheckViewHolder>() {
 
-    private var subChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel> = mutableListOf()
+    private var subChildFilterList = mutableListOf<SomFilterChipsUiModel.ChildStatusUiModel>()
     private var idList = mutableSetOf<Int>()
     private var keyFilter = ""
 
     fun getSubChildFilterList() = subChildFilterList
 
-    fun setSubFilterList(subChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
+    fun setSubFilterList(newSubChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
                          keyFilter: String) {
-        this.subChildFilterList = subChildFilterList.toMutableList()
         this.keyFilter = keyFilter
-        notifyDataSetChanged()
+        val callBack = SomSubChildFilterDiffUtil(subChildFilterList, newSubChildFilterList)
+        val diffResult = DiffUtil.calculateDiff(callBack)
+        diffResult.dispatchUpdatesTo(this)
+        this.subChildFilterList.clear()
+        this.subChildFilterList.addAll(subChildFilterList)
     }
 
     fun updateCheckboxFilter(updatedState: Boolean, position: Int) {

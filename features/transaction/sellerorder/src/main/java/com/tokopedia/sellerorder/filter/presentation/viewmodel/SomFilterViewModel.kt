@@ -170,7 +170,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         })
     }
 
-    fun resetFilterSelected(orderStatus: String) {
+    fun resetFilterSelected() {
         launchCatchError(block = {
             somFilterUiModel.forEach { somFilter ->
                 somFilter.somFilterData.onEach { chips ->
