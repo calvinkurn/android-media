@@ -619,33 +619,74 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         // setup state
         if (flightSearchViewModel.isFilterModelInitialized()) {
             flightSearchViewModel.filterModel.let {
+                val quickFilterAdditionalOrder =
+                        if (it.canFilterFreeRapidTest && it.canFilterSeatDistancing) {
+                            if (it.isSeatDistancing) {
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].select()
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.select()
+                            } else {
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].unselect()
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.unselect()
+                            }
+
+                            if (it.isFreeRapidTest) {
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].select()
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.select()
+                            } else {
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].unselect()
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.unselect()
+                            }
+
+                            QUICK_FILTER_ADDITIONAL_TWO_ORDER
+                        } else if (it.canFilterFreeRapidTest || it.canFilterSeatDistancing) {
+                            if (it.canFilterSeatDistancing && it.isSeatDistancing) {
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].select()
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.select()
+                            } else {
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].unselect()
+                                flight_sort_filter.chipItems[QUICK_FILTER_FIRST_ADDITIONAL_ORDER].refChipUnify.unselect()
+                            }
+
+                            if (it.canFilterFreeRapidTest && it.isFreeRapidTest) {
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].select()
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.select()
+                            } else {
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].unselect()
+                                flight_sort_filter.chipItems[QUICK_FILTER_SECOND_ADDITIONAL_ORDER].refChipUnify.unselect()
+                            }
+
+                            QUICK_FILTER_ADDITIONAL_ONE_ORDER
+                        } else {
+                            QUICK_FILTER_NO_ADDITIONAL
+                        }
+
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].refChipUnify.select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].refChipUnify.unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].refChipUnify.select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].refChipUnify.unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].refChipUnify.select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].refChipUnify.unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
                 }
                 if (it.transitTypeList.contains(TransitEnum.ONE)) {
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].select()
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].refChipUnify.select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].refChipUnify.select()
                 } else {
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].unselect()
-                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].refChipUnify.unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER + quickFilterAdditionalOrder].refChipUnify.unselect()
                 }
             }
         }
@@ -705,6 +746,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyModel, FlightSea
         private const val QUICK_FILTER_BAGGAGE_ORDER = 1
         private const val QUICK_FILTER_MEAL_ORDER = 2
         private const val QUICK_FILTER_TRANSIT_ORDER = 3
+
+        private const val QUICK_FILTER_FIRST_ADDITIONAL_ORDER = 0
+        private const val QUICK_FILTER_SECOND_ADDITIONAL_ORDER = 1
+
+        private const val QUICK_FILTER_ADDITIONAL_TWO_ORDER = 2
+        private const val QUICK_FILTER_ADDITIONAL_ONE_ORDER = 1
+        private const val QUICK_FILTER_NO_ADDITIONAL = 0
 
         private const val FLIGHT_QUICK_FILTER = "Filter"
         private const val FLIGHT_QUICK_FILTER_DIRECT = "Langsung"
