@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopNoteUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesUseCase
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.usecase.RequestParams
 
 import java.util.ArrayList
@@ -22,7 +22,7 @@ constructor(private val getShopNotesUseCase: GetShopNotesUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase) : BaseDaggerPresenter<ShopSettingNoteListPresenter.View>() {
 
     interface View : CustomerView {
-        fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteViewModel>)
+        fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteUiModel>)
         fun onErrorGetShopNotes(throwable: Throwable)
         fun onSuccessDeleteShopNote(successMessage: String)
         fun onErrorDeleteShopNote(throwable: Throwable)
@@ -41,9 +41,9 @@ constructor(private val getShopNotesUseCase: GetShopNotesUseCase,
 
             override fun onNext(shopNoteModels: ArrayList<ShopNoteModel>) {
                 view?.run{
-                    val shopNoteViewModelArrayList = ArrayList<ShopNoteViewModel>()
+                    val shopNoteViewModelArrayList = ArrayList<ShopNoteUiModel>()
                     for (shopNoteModel in shopNoteModels) {
-                        shopNoteViewModelArrayList.add(ShopNoteViewModel(shopNoteModel))
+                        shopNoteViewModelArrayList.add(ShopNoteUiModel(shopNoteModel))
                     }
                     onSuccessGetShopNotes(shopNoteViewModelArrayList)
                 }

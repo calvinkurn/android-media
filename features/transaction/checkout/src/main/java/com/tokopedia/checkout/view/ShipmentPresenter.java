@@ -1796,6 +1796,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         shippingParam.setTradeInDropOff(isTradeInDropOff);
+        shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
+        shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));
