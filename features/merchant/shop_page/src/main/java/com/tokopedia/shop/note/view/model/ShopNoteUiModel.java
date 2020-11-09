@@ -7,7 +7,7 @@ import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory;
  * Created by nathan on 2/6/18.
  */
 
-public class ShopNoteViewModel implements Visitable<ShopNoteAdapterTypeFactory> {
+public class ShopNoteUiModel implements Visitable<ShopNoteAdapterTypeFactory> {
 
     private long shopNoteId;
     private String title;
