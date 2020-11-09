@@ -8,4 +8,11 @@
     <string name="play_widget_transcode_loading_failed">Gagal disimpan</string>
 
     <string name="play_widget_transcode_delete">Hapus</string>
+    <string name="play_widget_transcode_delete_confirmation_title">Yakin ingin hapus video?</string>
+    <string name="play_widget_transcode_delete_confirmation_desc">
+        Live streaming ini tidak akan
+            jadi video di Halaman Toko
+            jika kamu ingin menghapusnya.
+    </string>
+    <string name="play_widget_transcode_delete_cancel">Kembali</string>
 </resources>

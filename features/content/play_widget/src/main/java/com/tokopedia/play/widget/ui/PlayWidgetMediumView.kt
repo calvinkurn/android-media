@@ -118,7 +118,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
-            mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item.channelType, position)
+            mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
     }
 

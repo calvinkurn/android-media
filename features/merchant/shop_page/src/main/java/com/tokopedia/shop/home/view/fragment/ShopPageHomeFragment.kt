@@ -48,7 +48,9 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -205,6 +207,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private val shopHomeAdapterTypeFactory by lazy {
         ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator)
+    }
+
+    private val widgetDeleteDialogContainer by lazy {
+        PlayWidgetDeleteDialogContainer(object : PlayWidgetDeleteDialogContainer.Listener {
+            override fun onDeleteButtonClicked(channelId: String) {
+                deleteChannel(channelId)
+            }
+        })
     }
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
@@ -1575,8 +1585,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         viewModel?.deleteChannel(channelId)
     }
 
-    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, channelType: PlayWidgetChannelType, position: Int) {
-        showPlayWidgetBottomSheet()
+    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        showPlayWidgetBottomSheet(item.channelId)
     }
 
     private fun setupPlayWidget() {
@@ -1648,33 +1658,44 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun showPlayWidgetBottomSheet() {
-        getPlayWidgetActionBottomSheet().show(childFragmentManager)
+    private fun showPlayWidgetBottomSheet(channelId: String) {
+        getPlayWidgetActionBottomSheet(channelId).show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(): PlayWidgetSellerActionBottomSheet {
+    private fun getPlayWidgetActionBottomSheet(channelId: String): PlayWidgetSellerActionBottomSheet {
         if (!::playWidgetActionBottomSheet.isInitialized) {
             playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
-            playWidgetActionBottomSheet.setActionList(
-                    listOf(
-                            PlayWidgetSellerActionBottomSheet.Action(
-                                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
-                                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                                    "Salin link"
-                            ) { /*TODO("On Share Clicked")*/ },
-                            PlayWidgetSellerActionBottomSheet.Action(
-                                    com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
-                                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                                    "Hapus video"
-                            ) { /*TODO("On Delete Clicked")*/ }
-                    )
-            )
         }
+        playWidgetActionBottomSheet.setActionList(
+                listOf(
+                        PlayWidgetSellerActionBottomSheet.Action(
+                                com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                                "Salin link"
+                        ) { /*TODO("On Share Clicked")*/ },
+                        PlayWidgetSellerActionBottomSheet.Action(
+                                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()
+                        ) {
+                            showDeleteWidgetConfirmationDialog(channelId)
+                            playWidgetActionBottomSheet.dismiss()
+                        }
+                )
+        )
         return playWidgetActionBottomSheet
+    }
+
+    private fun deleteChannel(channelId: String) {
+        viewModel?.deleteChannel(channelId)
     }
 
     private fun showWidgetDeletedToaster() {
         //TODO("Use Toaster instead of Android Toast")
         Toast.makeText(requireContext(), "Video telah dihapus", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showDeleteWidgetConfirmationDialog(channelId: String) {
+        widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
     }
 }
