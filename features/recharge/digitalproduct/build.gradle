@@ -1,7 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
@@ -28,11 +25,7 @@ android {
 
     defaultConfig {
         multiDexEnabled true
-        if (project.hasProperty("benchmark")) {
-            testInstrumentationRunner 'com.tokopedia.test.application.environment.TkpdAndroidBenchmarkTestRunner'
-        } else {
-            testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-        }
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 }
 
