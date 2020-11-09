@@ -42,9 +42,9 @@ import com.tokopedia.buyerorder.list.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.buyerorder.list.data.surveyresponse.CheckSurveyResponse;
 import com.tokopedia.buyerorder.list.data.surveyresponse.InsertSurveyResponse;
 import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleViewModel;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListViewModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleUiModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListUiModel;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
@@ -57,7 +57,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.topads.sdk.domain.model.WishlistModel;
-import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
@@ -186,7 +185,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     recomTitle = !TextUtils.isEmpty(recommendationWidget.getTitle())
                             ? recommendationWidget.getTitle()
                             : getView().getAppContext().getResources().getString(R.string.order_list_title_recommendation);
-                    visitables.add(new OrderListRecomTitleViewModel(recomTitle));
+                    visitables.add(new OrderListRecomTitleUiModel(recomTitle));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
                 getView().addData(visitables, true, false);
@@ -206,7 +205,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
         List<Visitable> recommendationList = new ArrayList<>();
         for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
-            recommendationList.add(new OrderListRecomViewModel(item, recomTitle));
+            recommendationList.add(new OrderListRecomUiModel(item, recomTitle));
         }
         return recommendationList;
     }
@@ -215,7 +214,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private List<Visitable> getOrderListVisitables(Data data) {
         List<Visitable> orderList = new ArrayList<>();
         for (Order item : data.orders()) {
-            orderList.add(new OrderListViewModel(item));
+            orderList.add(new OrderListUiModel(item));
         }
         return orderList;
     }
@@ -499,17 +498,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         String externalSource = "";
         String clickUrl = "";
         String imageUrl = "";
-        if (productModel instanceof OrderListRecomViewModel) {
-            OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
-            productId = orderListRecomViewModel.getRecommendationItem().getProductId();
-            shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
-            productName = orderListRecomViewModel.getRecommendationItem().getName();
-            productCategory = orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs();
-            productPrice = orderListRecomViewModel.getRecommendationItem().getPrice();
+        if (productModel instanceof OrderListRecomUiModel) {
+            OrderListRecomUiModel orderListRecomUiModel = (OrderListRecomUiModel) productModel;
+            productId = orderListRecomUiModel.getRecommendationItem().getProductId();
+            shopId = orderListRecomUiModel.getRecommendationItem().getShopId();
+            productName = orderListRecomUiModel.getRecommendationItem().getName();
+            productCategory = orderListRecomUiModel.getRecommendationItem().getCategoryBreadcrumbs();
+            productPrice = orderListRecomUiModel.getRecommendationItem().getPrice();
             externalSource = "recommendation_list";
-            clickUrl = orderListRecomViewModel.getRecommendationItem().getClickUrl();
-            imageUrl = orderListRecomViewModel.getRecommendationItem().getImageUrl();
-            quantity = orderListRecomViewModel.getRecommendationItem().getMinOrder();
+            clickUrl = orderListRecomUiModel.getRecommendationItem().getClickUrl();
+            imageUrl = orderListRecomUiModel.getRecommendationItem().getImageUrl();
+            quantity = orderListRecomUiModel.getRecommendationItem().getMinOrder();
         }
 
         if(!clickUrl.isEmpty()) {

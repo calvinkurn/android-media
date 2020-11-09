@@ -57,7 +57,7 @@ import com.tokopedia.buyerorder.list.view.adapter.factory.OrderListAdapterFactor
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.EmptyStateMarketPlaceFilterViewHolder;
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.OrderListRecomListViewHolder;
 import com.tokopedia.buyerorder.list.view.adapter.viewholder.OrderListViewHolder;
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomViewModel;
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListContract;
 import com.tokopedia.buyerorder.list.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.datepicker.DatePickerUnify;
@@ -67,14 +67,12 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.dialog.DialogUnify;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
@@ -697,9 +695,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel) {
-        if (productModel instanceof OrderListRecomViewModel) {
-            OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
-            orderListAnalytics.eventRecommendationAddToCart(orderListRecomViewModel, addToCartDataResponseModel);
+        if (productModel instanceof OrderListRecomUiModel) {
+            OrderListRecomUiModel orderListRecomUiModel = (OrderListRecomUiModel) productModel;
+            orderListAnalytics.eventRecommendationAddToCart(orderListRecomUiModel, addToCartDataResponseModel);
         }
     }
 
@@ -924,11 +922,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void onWishListClicked(@NotNull Object productModel, boolean isSelected, @NotNull WishListResponseListener wishListResponseListener) {
-        if (productModel instanceof OrderListRecomViewModel) {
+        if (productModel instanceof OrderListRecomUiModel) {
             if (isSelected) {
-                presenter.addWishlist(((OrderListRecomViewModel) productModel).getRecommendationItem(), wishListResponseListener);
+                presenter.addWishlist(((OrderListRecomUiModel) productModel).getRecommendationItem(), wishListResponseListener);
             } else {
-                presenter.removeWishlist(((OrderListRecomViewModel) productModel).getRecommendationItem(), wishListResponseListener);
+                presenter.removeWishlist(((OrderListRecomUiModel) productModel).getRecommendationItem(), wishListResponseListener);
             }
         }
     }

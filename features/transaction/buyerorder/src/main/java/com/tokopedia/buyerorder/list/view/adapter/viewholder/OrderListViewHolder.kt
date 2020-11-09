@@ -4,7 +4,6 @@ import androidx.lifecycle.Observer
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.net.Uri
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentActivity
 import android.text.Html
@@ -28,17 +27,15 @@ import com.tokopedia.buyerorder.list.data.ActionButton
 import com.tokopedia.buyerorder.list.data.MetaData
 import com.tokopedia.buyerorder.list.data.Order
 import com.tokopedia.buyerorder.list.data.OrderCategory
-import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListViewModel
+import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListUiModel
 import com.tokopedia.buyerorder.list.view.viewstate.*
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.utils.view.DoubleTextView
-import java.io.UnsupportedEncodingException
-import java.net.URLEncoder
 
 class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics,
-                          var menuListener: OnMenuItemListener?, var buttonListener: OnActionButtonListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {
+                          var menuListener: OnMenuItemListener?, var buttonListener: OnActionButtonListener?) : AbstractViewHolder<OrderListUiModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -74,7 +71,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     var orderCategory: String = ""
     var appLink: String = ""
 
-    override fun bind(element: OrderListViewModel) {
+    override fun bind(element: OrderListUiModel) {
         setObservers(element)
         orderCategory = element.order.category()
         appLink = element.order.appLink
@@ -97,7 +94,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
 
     }
 
-    private fun setObservers(element: OrderListViewModel) {
+    private fun setObservers(element: OrderListUiModel) {
         element.orderListLiveData.removeObservers(itemView.context as FragmentActivity)
         element.orderListLiveData.observe(itemView.context as FragmentActivity, Observer {
             when (it) {

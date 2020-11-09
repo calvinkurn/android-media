@@ -12,7 +12,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class OrderListViewModel(var order: Order) : Visitable<OrderListTypeFactory> {
+class OrderListUiModel(var order: Order) : Visitable<OrderListTypeFactory> {
 
     companion object {
         private const val WAITING_THIRD_PARTY = 103

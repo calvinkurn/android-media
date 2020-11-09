@@ -12,27 +12,27 @@ class OrderListAdapterFactory(var orderListAnalytics: OrderListAnalytics, var li
                               var cartListener: OrderListRecomListViewHolder.ActionListener,
                               var filterListener: EmptyStateMarketPlaceFilterViewHolder.ActionListener,
                               var buttonListener: OrderListViewHolder.OnActionButtonListener?) : BaseAdapterTypeFactory(), OrderListTypeFactory {
-    override fun type(viewModel: OrderListViewModel): Int {
+    override fun type(uiModel: OrderListUiModel): Int {
         return OrderListViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: OrderListRecomTitleViewModel): Int {
+    override fun type(uiModel: OrderListRecomTitleUiModel): Int {
         return OrderListRecomTitleViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyStateOrderListViewModel): Int {
+    override fun type(uiModel: EmptyStateOrderListUiModel): Int {
         return EmptyStateOrderListViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyStateMarketPlaceFilterViewModel): Int {
+    override fun type(uiModel: EmptyStateMarketPlaceFilterUiModel): Int {
         return EmptyStateMarketPlaceFilterViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyStateMarketplaceViewModel): Int {
+    override fun type(uiModel: EmptyStateMarketplaceUiModel): Int {
         return EmptyStateMarketplaceViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: OrderListRecomViewModel): Int {
+    override fun type(uiModel: OrderListRecomUiModel): Int {
         return OrderListRecomListViewHolder.LAYOUT
     }
 
