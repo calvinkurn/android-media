@@ -16,7 +16,8 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
                            val onErrorLoginToken: (e: Throwable) -> Unit,
                            val onShowPopupError: (pojo: LoginTokenPojo)  -> Unit,
                            val onGoToActivationPage: (errorMessage: MessageErrorException) -> Unit,
-                           val onGoToSecurityQuestion: () -> Unit) :
+                           val onGoToSecurityQuestion: () -> Unit,
+                           val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
@@ -61,13 +62,14 @@ class LoginTokenSubscriber(val userSession: UserSessionInterface,
     }
 
     override fun onCompleted() {
-
+        onFinished.invoke()
     }
 
     override fun onError(e: Throwable?) {
         e?.run {
             onErrorLoginToken(this)
         }
+        onFinished.invoke()
     }
 
 

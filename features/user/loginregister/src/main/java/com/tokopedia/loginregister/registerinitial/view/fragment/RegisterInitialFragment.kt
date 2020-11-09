@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
+import android.util.Patterns
 import android.view.*
 import android.widget.*
 import androidx.annotation.RequiresApi
@@ -932,7 +933,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
-        registerInitialViewModel.registerCheck(id)
+        if(Patterns.PHONE.matcher(id).matches()) {
+            registerInitialViewModel.registerCheck(removeSymbolPhone(id))
+        } else {
+            registerInitialViewModel.registerCheck(id)
+        }
     }
 
     private fun showLoadingDiscover() {
@@ -1201,6 +1206,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
     }
 
+    private fun removeSymbolPhone(phone: String): String = phone.replace(Regex(REGEX_REMOVE_SYMBOL_PHONE), "")
+
     @SuppressLint("MissingPermission", "HardwareIds", "PrivateResource")
     fun getPhoneNumber() {
         activity?.let {
@@ -1213,16 +1220,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                         for (info in subscription.activeSubscriptionInfoList) {
                             if (!info.number.isNullOrEmpty() &&
                                     PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                                    PartialRegisterInputUtils.isValidPhone(info.number))
-                                phoneNumbers.add(info.number)
+                                    PartialRegisterInputUtils.isValidPhone(info.number)) {
+                                phoneNumbers.add(removeSymbolPhone(info.number))
+                            }
                         }
                     }
                 } else {
                     val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager
                     if (!telephony.line1Number.isNullOrEmpty() &&
                             PartialRegisterInputUtils.getType(telephony.line1Number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number))
-                        phoneNumbers.add(telephony.line1Number)
+                            PartialRegisterInputUtils.isValidPhone(telephony.line1Number)) {
+                        phoneNumbers.add(removeSymbolPhone(telephony.line1Number))
+                    }
                 }
 
                 if (phoneNumbers.isNotEmpty())
@@ -1433,8 +1442,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
-
+      
         private const val TOKOPEDIA_CARE_PATH = "help"
+      
+        private const val REGEX_REMOVE_SYMBOL_PHONE = "[+| |-]"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()
