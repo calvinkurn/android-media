@@ -25,6 +25,8 @@ object DeeplinkMapperUohOrder {
 
     private const val PATH_ORDER = "order"
     const val PATH_ORDER_ID = "order_id"
+    const val PATH_PAYMENT_ID = "payment_id"
+    const val PATH_CART_STRING = "cart_string"
 
     fun getRegisteredNavigationUohOrder(context: Context, deeplink: String): String {
         var returnedDeeplink = ""
@@ -169,6 +171,24 @@ object DeeplinkMapperUohOrder {
                 Uri.parse(category)
                         .buildUpon()
                         .appendQueryParameter(PATH_ORDER_ID, orderId)
+                        .build()
+                        .toString()
+            }
+            uri.pathSegments.size == 1 && uri.pathSegments[0] == PATH_ORDER && !uri.getQueryParameter(PATH_PAYMENT_ID).isNullOrEmpty() && !uri.getQueryParameter(PATH_CART_STRING).isNullOrEmpty() -> {
+                val paymentId = uri.getQueryParameter(PATH_PAYMENT_ID)
+                val cartString = uri.getQueryParameter(PATH_CART_STRING)
+
+                var category = ""
+                if (deepLink.startsWith(MARKETPLACE_ORDER)) {
+                    category = ApplinkConstInternalOrder.MARKETPLACE_ORDER
+                } else if (deepLink.startsWith(DIGITAL_ORDER)) {
+                    category = ApplinkConstInternalOrder.DIGITAL_ORDER
+                }
+
+                Uri.parse(category)
+                        .buildUpon()
+                        .appendQueryParameter(PATH_PAYMENT_ID, paymentId)
+                        .appendQueryParameter(PATH_CART_STRING, cartString)
                         .build()
                         .toString()
             }
