@@ -28,8 +28,6 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
 
     fun setSubFilterList(newSubFilterList: List<SomFilterChipsUiModel>, idFilter: String) {
         this.idFilter = idFilter
-//        this.listSubFilter = newSubFilterList.toMutableList()
-//        notifyDataSetChanged()
         val callBack = SomSubFilterDiffUtil(listSubFilter, newSubFilterList)
         val diffResult = DiffUtil.calculateDiff(callBack)
         diffResult.dispatchUpdatesTo(this)
