@@ -166,7 +166,7 @@ public class FlightModule {
     @Provides
     @FlightScope
     FlightSearchRoomDb provideFlightSearchRoomDb(@ApplicationContext Context context) {
-        return FlightSearchRoomDb.getInstance(context);
+        return FlightSearchRoomDb.Companion.getInstance(context);
     }
 
     @Provides
