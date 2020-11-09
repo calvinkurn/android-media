@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger.data.source
 
 import android.content.Context
+import com.tokopedia.analyticsdebugger.AnalyticsSource
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
@@ -38,6 +39,7 @@ constructor(context: Context) {
             gtmLogDB.category = analyticsLogData.category
             gtmLogDB.data = analyticsLogData.data
             gtmLogDB.timestamp = Date().time
+            gtmLogDB.source = data.source
             gtmLogDao.insertAll(gtmLogDB)
             true
         }
@@ -71,9 +73,13 @@ constructor(context: Context) {
         }, Emitter.BackpressureMode.NONE)
     }
 
-    suspend fun getLogs(): List<GtmLogDB> {
+    suspend fun getLogs(@AnalyticsSource analyticsSource: String = AnalyticsSource.ALL): List<GtmLogDB> {
         return withContext(Dispatchers.IO) {
-            gtmLogDao.getAll()
+            when (analyticsSource) {
+                AnalyticsSource.ALL -> gtmLogDao.getAll()
+                else -> gtmLogDao.getAll(analyticsSource)
+            }
+
         }
     }
 

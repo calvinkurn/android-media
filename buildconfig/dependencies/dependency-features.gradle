@@ -226,7 +226,7 @@ ext {
             topchat                         : ":features:user:topchat",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
-            seamlesslogin                   : ":features:user:seamless_login",
+            seamlessLoginCommon             : ":features:user:seamless_login_common",
             managename                      : ":features:user:managename",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",

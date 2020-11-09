@@ -68,8 +68,6 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
         private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-        private val getModerateShopUseCase: Lazy<GetModerateShopUseCase>,
-        private val requestModerateShopUseCase: Lazy<RequestModerateShopUseCase>,
         private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
@@ -263,8 +261,6 @@ class ShopPageViewModel @Inject constructor(
     override fun flush() {
         super.flush()
         toggleFavouriteShopUseCase.get().unsubscribe()
-        getModerateShopUseCase.get().unsubscribe()
-        requestModerateShopUseCase.get().unsubscribe()
         stickyLoginUseCase.get().cancelJobs()
     }
 

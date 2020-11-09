@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ArmyViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationViewHolder
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -16,7 +15,7 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when (viewType) {
-            ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION -> ShippingDurationViewHolder(view, 0)
+            ShippingDurationViewHolderOcc.ITEM_VIEW_SHIPMENT_DURATION -> ShippingDurationViewHolderOcc(view, 0)
             ArmyViewHolder.LAYOUT -> ArmyViewHolder(view)
             else -> NotifierViewHolder(view)
         }
@@ -28,14 +27,14 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShippingDurationViewHolder -> holder.bindData(list[position] as ShippingDurationUiModel, shippingDurationAdapterListener, true)
+            is ShippingDurationViewHolderOcc -> holder.bindData(list[position] as ShippingDurationUiModel, shippingDurationAdapterListener, true)
             is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (list[position]) {
-            is ShippingDurationUiModel -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
+            is ShippingDurationUiModel -> ShippingDurationViewHolderOcc.ITEM_VIEW_SHIPMENT_DURATION
             is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
             else -> NotifierViewHolder.LAYOUT
         }
