@@ -152,7 +152,6 @@ import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_COUPON_STATE_CHANGED;
-import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.PAGE_CHECKOUT;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
@@ -320,6 +319,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             delayScrollToFirstShopSubscription.unsubscribe();
         }
         shipmentPresenter.detachView();
+    }
+
+    @Override
+    public void onDestroy() {
+        shipmentAdapter.clearCompositeSubscription();
+        super.onDestroy();
     }
 
     @Override
@@ -1099,6 +1104,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        hideLoading();
         if (requestCode == PaymentConstant.REQUEST_CODE) {
             onResultFromPayment(resultCode);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
@@ -2028,7 +2034,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
-                        isTradeInByDropOff());
+                        isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(), shipmentCartItemModel.getShipmentCartData().getPreOrderDuration());
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {

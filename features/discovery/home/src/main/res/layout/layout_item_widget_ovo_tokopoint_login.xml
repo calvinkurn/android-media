@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/home_header_fintech_scan"
-            android:textColor="@color/font_black_disabled_38"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_10"
             android:gravity="center"/>
 
@@ -55,7 +55,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="#1e000000" />
+        android:background="@color/Unify_N700_44" />
 
     <RelativeLayout
         android:id="@+id/container_tokocash"
@@ -87,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/sp_12"
-                android:textColor="@color/black"
+                android:textColor="@color/Unify_N700"
                 android:textStyle="bold"/>
 
             <TextView
@@ -95,7 +95,7 @@
                 android:id="@+id/tv_btn_action_tokocash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#03ac0e"
+                android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone" />
 
@@ -104,7 +104,7 @@
                 android:id="@+id/tv_balance_tokocash"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_12"/>
 
         </RelativeLayout>
@@ -123,7 +123,7 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:background="#1e000000" />
+        android:background="@color/Unify_N700_44" />
 
     <RelativeLayout
         android:id="@+id/container_tokopoint"
@@ -171,7 +171,7 @@
                 android:lines="1"
                 android:gravity="center"
                 android:textSize="@dimen/sp_12"
-                android:textColor="@color/font_black_primary_70"
+                android:textColor="@color/Unify_N700_68"
                 android:textStyle="bold"
                 android:visibility="gone"
                 tools:visibility="visible"
@@ -184,7 +184,7 @@
                 android:gravity="center_vertical"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="#03ac0e"
+                android:textColor="@color/Unify_G500"
                 android:textSize="@dimen/sp_12"
                 android:visibility="gone"
                 tools:text="Kupon Baru"
@@ -199,7 +199,7 @@
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="@color/font_black_disabled_38"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="12sp"
                 android:visibility="gone"
                 tools:text="900000000000000000 Poin"

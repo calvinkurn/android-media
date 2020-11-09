@@ -17,7 +17,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -79,6 +79,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private lateinit var listAccount: RecyclerView
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
+    private var crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
 
     lateinit var mIris: Iris
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
@@ -296,8 +297,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
             TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
             TrackApp.getInstance().gtm
                     .pushUserId(userId)
-            if (!GlobalConfig.DEBUG && Crashlytics.getInstance() != null)
-                Crashlytics.setUserIdentifier(userId)
+            if (!GlobalConfig.DEBUG && crashlytics != null)
+                crashlytics.setUserId(userId)
 
             if (userSessionInterface.isLoggedIn) {
                 val userData = UserData()
@@ -341,7 +342,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     private fun logUnknownError(throwable: Throwable) {
         try {
-            Crashlytics.logException(throwable)
+            crashlytics.recordException(throwable)
         } catch (e: IllegalStateException) {
             e.printStackTrace()
         }

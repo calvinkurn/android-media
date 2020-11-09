@@ -7,7 +7,9 @@ import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupDetailViewActivit
 import com.tokopedia.topads.dashboard.view.activity.TopAdsKeywordInsightsActivity
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.fragment.insight.*
-import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsAutoTopUpFragment
+import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
+import com.tokopedia.topads.debit.autotopup.view.fragment.TopAdsEditAutoTopUpFragment
+import com.tokopedia.topads.debit.autotopup.view.sheet.TopAdsChooseNominalBottomSheet
 
 import dagger.Component
 
@@ -22,9 +24,8 @@ import dagger.Component
 interface TopAdsDashboardComponent {
 
     fun inject(topAdsProductIklanFragment: TopAdsProductIklanFragment)
-    fun inject(topAdsAddCreditFragment: TopAdsAddCreditFragment)
     fun inject(topAdsCreditHistoryFragment: TopAdsCreditHistoryFragment)
-    fun inject(topAdsAutoTopUpFragment: TopAdsAutoTopUpFragment)
+    fun inject(topAdsEditAutoTopUpFragment: TopAdsEditAutoTopUpFragment)
     fun inject(berandaTabFragment: BerandaTabFragment)
     fun inject(topAdsDashGroupFragment: TopAdsDashGroupFragment)
     fun inject(topAdsDashWithoutGroupFragment: TopAdsDashWithoutGroupFragment)
@@ -44,4 +45,6 @@ interface TopAdsDashboardComponent {
     fun inject(topAdsDashboardActivity: TopAdsDashboardActivity)
     fun inject(topAdsGroupDetailViewActivity: TopAdsGroupDetailViewActivity)
     fun inject(topAdsOpenKeywordInsightsActivity: TopAdsKeywordInsightsActivity)
+    fun inject(topAdsAddCreditActivity: TopAdsAddCreditActivity)
+    fun inject(topAdsChooseNominalBottomSheet: TopAdsChooseNominalBottomSheet)
 }

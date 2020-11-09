@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.ImageView
-import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -50,6 +49,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -84,7 +84,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 ?: "")
     }
     private lateinit var mSwipeRefreshLayout: SwipeRefreshLayout
-    private lateinit var mProgressBar: ProgressBar
+    private lateinit var mProgressBar: LoaderUnify
     var pageEndPoint = ""
     private var componentPosition: Int? = null
     private var openScreenStatus = false
@@ -213,7 +213,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     it.data.let { listComponent ->
                         if (mSwipeRefreshLayout.isRefreshing) setAdapter()
                         discoveryAdapter.addDataList(listComponent)
-                        scrollToPinnedComponent(listComponent)
+                        if (listComponent.isNullOrEmpty()) {
+                            setPageErrorState(Fail(IllegalStateException()))
+                        } else {
+                            scrollToPinnedComponent(listComponent)
+                        }
                     }
                     mProgressBar.hide()
                     stopDiscoveryPagePerformanceMonitoring()
@@ -245,7 +249,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                     ivSearch.show()
                     setPageInfo(it.data)
                 }
-
                 is Fail -> {
                     typographyHeader.text = ""
                     ivSearch.hide()
@@ -259,12 +262,17 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun setPageErrorState(it: Fail) {
-        if (it.throwable is UnknownHostException
-                || it.throwable is SocketTimeoutException) {
-            globalError.setType(GlobalError.NO_CONNECTION)
-        } else {
-            globalError.setType(GlobalError.SERVER_ERROR)
-            Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+        when (it.throwable) {
+            is UnknownHostException, is SocketTimeoutException -> {
+                globalError.setType(GlobalError.NO_CONNECTION)
+            }
+            is IllegalStateException -> {
+                globalError.setType(GlobalError.PAGE_FULL)
+            }
+            else -> {
+                globalError.setType(GlobalError.SERVER_ERROR)
+                Timber.w("P2#DISCOVERY_PAGE_ERROR#'${discoveryViewModel.pageIdentifier}';path='${discoveryViewModel.pagePath}';type='${discoveryViewModel.pageType}';err='${Log.getStackTraceString(it.throwable)}'")
+            }
         }
         globalError.show()
         globalError.setActionClickListener {

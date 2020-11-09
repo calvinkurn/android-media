@@ -3,9 +3,9 @@ package com.tokopedia.topads.auto.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.di.ActivityContext
 import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.internal.RawQueryKeyObject
+import com.tokopedia.topads.common.di.ActivityContext
 
 import dagger.Module
 import dagger.Provides
@@ -35,7 +35,7 @@ class AutoAdsQueryModule(val context: Context) {
     @IntoMap
     @StringKey(RawQueryKeyObject.QUERY_GET_AUTO_ADS)
     fun queryGetAutoAds(@ActivityContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_autoads)
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status)
 
     @Provides
     @IntoMap

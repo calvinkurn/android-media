@@ -49,11 +49,11 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     // CustomTopChat(R.layout.coming_soon_view, ComponentNames.CustomTopchat.componentName),
     // Product Card Revamp
     ProductCardRevamp(R.layout.product_card_revamp_layout, ComponentNames.ProductCardRevamp.componentName),
-    ProductCardRevampItem(R.layout.product_item_layout, ComponentNames.ProductCardRevampItem.componentName),
+    ProductCardRevampItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardRevampItem.componentName),
 
     // Product Card Revamp Carousel
     ProductCardCarousel(R.layout.carousel_product_card_recycler_view, ComponentNames.ProductCardCarousel.componentName),
-    ProductCardCarouselItem(R.layout.product_item_horizontal_layout, ComponentNames.ProductCardCarouselItem.componentName),
+    ProductCardCarouselItem(R.layout.master_product_card_item_layout, ComponentNames.ProductCardCarouselItem.componentName),
 
     // Product Card Sprint Sale
     ProductCardSprintSale(R.layout.product_card_revamp_layout, ComponentNames.ProductCardSprintSale.componentName),

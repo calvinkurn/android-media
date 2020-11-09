@@ -24,7 +24,7 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.playWidget)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
@@ -102,6 +102,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    implementation (rootProject.ext.firebase.crashlytics) {
+        transitive = true
+    }
 
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -118,8 +121,10 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
     androidTestImplementation project(rootProject.ext.libraries.instrumentation_test)
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
 }
 
 project.ext {
@@ -130,3 +135,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'

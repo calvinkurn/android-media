@@ -3,7 +3,6 @@ package com.tokopedia.smartbills.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -27,7 +26,7 @@ class SmartBillsViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val smartBillsRepository: SmartBillsRepository,
         private val dispatcher: SmartBillsDispatchersProvider)
-    : BaseViewModel(dispatcher.Main) {
+    : BaseViewModel(dispatcher.IO) {
 
     private val mutableStatementMonths = MutableLiveData<Result<List<RechargeStatementMonths>>>()
     val statementMonths: LiveData<Result<List<RechargeStatementMonths>>>
@@ -41,9 +40,12 @@ class SmartBillsViewModel @Inject constructor(
     val multiCheckout: LiveData<Result<RechargeMultiCheckoutResponse>>
         get() = mutableMultiCheckout
 
-    fun getStatementMonths(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementMonths.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_MONTHS_QUERY,
+                    RechargeStatementMonths.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
@@ -61,9 +63,12 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun getStatementBills(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getStatementBills(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementBills.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_BILLS_QUERY,
+                    RechargeStatementBills.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()

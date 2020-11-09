@@ -2,6 +2,9 @@ package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
+import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
@@ -54,16 +57,21 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var removeWishlistUseCase: RemoveWishListUseCase
     @RelaxedMockK
     lateinit var deleteShopInfoUseCase: DeleteShopInfoCacheUseCase
-
-    @RelaxedMockK
-    lateinit var userSession: UserSessionInterface
     @RelaxedMockK
     lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
-
     @RelaxedMockK
     lateinit var getShopProductFilterUseCase: GetShopProductSortUseCase
     @RelaxedMockK
+    lateinit var getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase
+    @RelaxedMockK
+    lateinit var getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase
+    @RelaxedMockK
+    lateinit var gqlGetShopSortUseCase: GqlGetShopSortUseCase
+    @RelaxedMockK
+    lateinit var userSession: UserSessionInterface
+    @RelaxedMockK
     lateinit var shopProductSortMapper: ShopProductSortMapper
+
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var viewModelShopPageProductListResultViewModel: ShopPageProductListResultViewModel
@@ -92,7 +100,11 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopHighlightProductUseCase,
                 removeWishlistUseCase,
                 deleteShopInfoUseCase,
-                testCoroutineDispatcherProvider
+                testCoroutineDispatcherProvider,
+                getShopFilterBottomSheetDataUseCase,
+                getShopFilterProductCountUseCase,
+                gqlGetShopSortUseCase,
+                shopProductSortMapper
         )
 
         viewModelShopPageProductListResultViewModel = ShopPageProductListResultViewModel(
@@ -100,9 +112,11 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopInfoUseCase,
                 getShopEtalaseByShopUseCase,
                 getShopProductUseCase,
-                getShopProductFilterUseCase,
+                gqlGetShopSortUseCase,
                 shopProductSortMapper,
-                testCoroutineDispatcherProvider
+                testCoroutineDispatcherProvider,
+                getShopFilterBottomSheetDataUseCase,
+                getShopFilterProductCountUseCase
         )
     }
 }

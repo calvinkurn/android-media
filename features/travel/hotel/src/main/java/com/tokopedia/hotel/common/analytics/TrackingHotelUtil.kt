@@ -529,6 +529,13 @@ class TrackingHotelUtil {
         }
     }
 
+    fun clickShareUrl(context: Context, screenName: String, hotelId: String, hotelPrice: String) {
+        val map = getTrackingMapWithHeader(context, screenName) as MutableMap<String, Any>
+        val eventLabel = "$HOTEL_LABEL - $hotelId - $hotelPrice"
+        map.addGeneralEvent(CLICK_HOTEL, CLICK_SHARE_ICON, eventLabel)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
     private fun convertDate(date: String): String =
             TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD, TravelDateUtil.YYYYMMDD, date)
 

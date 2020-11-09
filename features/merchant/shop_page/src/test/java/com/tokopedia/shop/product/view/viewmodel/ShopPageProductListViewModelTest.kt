@@ -3,10 +3,12 @@ package com.tokopedia.shop.product.view.viewmodel
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
+import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopEtalaseItemDataModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop.product.view.datamodel.ShopProductFeaturedViewModel
@@ -24,53 +26,6 @@ import org.mockito.ArgumentMatchers.*
 
 @ExperimentalCoroutinesApi
 class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture() {
-
-    @Test
-    fun `check whether response get buyer shop page product tab data success is not null`() {
-        runBlocking {
-
-            coEvery { getMembershipUseCase.executeOnBackground() } returns MembershipStampProgress()
-            coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(
-                    anyString(),
-                    listOf(),
-                    ShopEtalaseItemDataModel(),
-                    anyString(),
-                    false,
-                    Pair(true, listOf())
-            )
-
-            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
-
-            verifyGetMemberShipUseCaseCalled()
-
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is Success)
-            Assert.assertNotNull(viewModelShopPageProductListViewModel.productListData.value)
-        }
-    }
-
-    @Test
-    fun `check whether response shop featured product error is null`() {
-        runBlocking {
-            coEvery { getMembershipUseCase.executeOnBackground() } throws Exception()
-            coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getBuyerShopPageProductTabData(
-                    anyString(),
-                    listOf(),
-                    ShopEtalaseItemDataModel(),
-                    anyString(),
-                    anyBoolean(),
-                    Pair(true, listOf())
-            )
-
-            verify { GetMembershipUseCaseNew.createRequestParams(anyInt()) }
-
-            verifyGetMemberShipUseCaseCalled()
-
-            Assert.assertTrue(viewModelShopPageProductListViewModel.productListData.value is  Fail)
-        }
-    }
 
     @Test
     fun `check whether response claim new membership success is not null`() {
@@ -101,7 +56,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
             viewModelShopPageProductListViewModel.getNewProductListData(
                     anyString(),
                     anyString(),
-                    anyString()
+                    ShopProductFilterParameter()
             )
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -117,7 +72,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response  get new product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString(), anyString())
+            viewModelShopPageProductListViewModel.getNewProductListData(anyString(), anyString(), ShopProductFilterParameter())
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 
@@ -131,7 +86,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         runBlocking {
 
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
-            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), anyString())
+            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), ShopProductFilterParameter())
             verifyGetShopProductUseCaseCaseCalled()
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
@@ -145,7 +100,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
     fun `check whether response get next product list data error is null`() {
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
-            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), anyString())
+            viewModelShopPageProductListViewModel.getNextProductListData(anyString(), anyString(), anyInt(), ShopProductFilterParameter())
 
             verify { GqlGetShopProductUseCase.createParams(anyString(), any()) }
 

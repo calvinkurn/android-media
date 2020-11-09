@@ -3,7 +3,7 @@ package com.tokopedia.devicefingerprint.service
 import android.content.Context
 import android.content.Intent
 import androidx.core.app.JobIntentService
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
@@ -30,7 +30,7 @@ class SubmitDeviceInfoService: JobIntentService(), CoroutineScope {
 
         private fun logExceptionToCrashlytics(t: Throwable) {
             try {
-                Crashlytics.logException(t)
+                FirebaseCrashlytics.getInstance().recordException(t)
             } catch (e: IllegalStateException) {
                 e.printStackTrace()
             }
