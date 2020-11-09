@@ -79,6 +79,7 @@ public class DigitalCartDetailHolderView extends LinearLayout {
     }
 
     public void removeAdditionalInfo() {
+        detailToggleAppCompatTextView.setText(R.string.digital_cart_detail_close_label);
         adapter.setInfos(new ArrayList<>(this.mainInfos));
         for (int i = additionalInfos.size()-1; i >= 0; i--) {
             if (additionalInfos.get(i).getTitle().contains(TITLE_PAYMENT)) {
