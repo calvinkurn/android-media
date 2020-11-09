@@ -2,10 +2,12 @@ package com.tokopedia.homenav.mainnav.di
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
-import com.tokopedia.homenav.mainnav.domain.interactor.*
-import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
+import com.tokopedia.homenav.mainnav.data.payment.PaymentTransactionData
+import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
+import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -53,7 +55,7 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun getCoroutineWalletBalanceUseCase(graphqlRepository: GraphqlRepository, userSession: UserSessionInterface, remoteConfig: RemoteConfig, localCacheHandler: LocalCacheHandler): GetCoroutineWalletBalanceUseCase {
-        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
+        val usecase = GraphqlUseCase<WalletBalanceResponse>(graphqlRepository)
         usecase.setGraphqlQuery(walletBalanceQuery)
         return GetCoroutineWalletBalanceUseCase(usecase, remoteConfig, userSession, localCacheHandler)
     }
@@ -62,7 +64,6 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideUserMembershipUseCase(graphqlRepository: GraphqlRepository) = GetUserMembershipUseCase(graphqlRepository)
-
 
     @MainNavScope
     @Provides
@@ -75,6 +76,20 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideGetUserInfoUseCase(graphqlRepository: GraphqlRepository) = GetUserInfoUseCase(graphqlRepository)
+
+    @MainNavScope
+    @Provides
+    fun provideGetPaymentOrdersNavUseCase(graphqlRepository: GraphqlRepository): GetPaymentOrdersNavUseCase {
+        val useCase = GraphqlUseCase<PaymentTransactionData>(graphqlRepository)
+        return GetPaymentOrdersNavUseCase(useCase)
+    }
+
+    @MainNavScope
+    @Provides
+    fun provideGetUohOrdersNavUseCase(graphqlRepository: GraphqlRepository): GetUohOrdersNavUseCase {
+        val useCase = GraphqlUseCase<UohData>(graphqlRepository)
+        return GetUohOrdersNavUseCase(useCase)
+    }
 
     @MainNavScope
     @Provides

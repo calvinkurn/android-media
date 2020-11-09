@@ -109,6 +109,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.shop_page_main.*
+import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
 import java.io.File
 import javax.inject.Inject
 
@@ -399,9 +400,10 @@ class ShopPageFragment :
         shopViewModel.shopImagePath.observe(owner, Observer {
             shopImageFilePath = it
             if (shopImageFilePath.isNotEmpty()) {
-                shopShareBottomSheet = ShopShareBottomSheet(context, fragmentManager, this).apply {
-                    show()
+                shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
+                    init(this@ShopPageFragment)
                 }
+                shopShareBottomSheet?.show(fragmentManager)
             }
         })
 
@@ -500,12 +502,16 @@ class ShopPageFragment :
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
-            initViews(view)
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
             startPltNetworkPerformanceMonitoring()
             getInitialData()
+            view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
+            if (!swipeToRefresh.isRefreshing) {
+                setViewState(VIEW_LOADING)
+            }
+            initViews(view)
         }
     }
 
@@ -558,8 +564,6 @@ class ShopPageFragment :
 
     private fun getInitialData() {
         isFirstLoading = true
-        if (!swipeToRefresh.isRefreshing)
-            setViewState(VIEW_LOADING)
         startMonitoringNetworkPltShopPage()
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
@@ -674,6 +678,7 @@ class ShopPageFragment :
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
         updateStickyState()
+        setShopName()
     }
 
     private fun setViewState(viewState: Int) {
@@ -855,6 +860,7 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
                 shopPageHeaderDataModel?.isOfficial ?: false,
@@ -920,6 +926,7 @@ class ShopPageFragment :
                     shopPageHeaderContentData.shopOperationalHourStatus,
                     isMyShop
             )
+            setShopName()
             view?.let { onToasterNoUploadProduct(it, getString(R.string.shop_page_product_no_upload_product), isFirstCreateShop) }
         }
     }
@@ -932,6 +939,7 @@ class ShopPageFragment :
     override fun onPause() {
         super.onPause()
         shopPageTracking?.sendAllTrackingQueue()
+        shopShareBottomSheet?.dismiss()
     }
 
     private fun setupTabs() {
@@ -1075,6 +1083,8 @@ class ShopPageFragment :
             errorButton.setOnClickListener {
                 isRefresh = true
                 getInitialData()
+                if (!swipeToRefresh.isRefreshing)
+                    setViewState(VIEW_LOADING)
             }
             swipeToRefresh.isRefreshing = false
         }
@@ -1157,6 +1167,8 @@ class ShopPageFragment :
         }
         isRefresh = true
         getInitialData()
+        if (!swipeToRefresh.isRefreshing)
+            setViewState(VIEW_LOADING)
         swipeToRefresh.isRefreshing = true
     }
 
@@ -1396,5 +1408,12 @@ class ShopPageFragment :
 
     private fun hideBottomSheetSellerMigration(){
         (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    private fun setShopName() {
+        if(isMyShop) {
+            shopPageHeaderDataModel?.shopName = shopViewModel.ownerShopName
+            shopPageFragmentHeaderViewHolder.setShopName(shopViewModel.ownerShopName)
+        }
     }
 }

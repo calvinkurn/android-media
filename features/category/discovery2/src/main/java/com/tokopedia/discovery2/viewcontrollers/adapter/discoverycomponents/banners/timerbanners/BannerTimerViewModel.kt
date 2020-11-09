@@ -15,6 +15,7 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     private val bannerTimeData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
+    private val SHOW_DAYS: Boolean = true
 
     init {
         bannerTimeData.value = components
@@ -23,6 +24,7 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
     fun getComponentData(): LiveData<ComponentsItem> = bannerTimeData
     fun getBannerUrlHeight() = Utils.extractDimension(bannerTimeData.value?.data?.get(0)?.backgroundUrlMobile)
     fun getBannerUrlWidth() = Utils.extractDimension(bannerTimeData.value?.data?.get(0)?.backgroundUrlMobile, "width")
+    private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
 
 
     fun startTimer() {
@@ -33,24 +35,28 @@ class BannerTimerViewModel(val application: Application, components: ComponentsI
         val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
 
         if (saleTimeMillis > 0) {
-            timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime)
+            timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, SHOW_DAYS){
+                mutableTimeDiffModel.value = it
+            }
             timerWithBannerCounter?.start()
         }
     }
 
     fun stopTimer() {
-        if (timerWithBannerCounter != null) {
-            timerWithBannerCounter!!.cancel()
-        }
+        timerWithBannerCounter?.cancel()
+        timerWithBannerCounter = null
     }
 
-    fun getTimerData(): LiveData<TimerDataModel> {
-        return timerWithBannerCounter?.mutableTimeDiffModel ?: MutableLiveData()
-    }
+    fun getTimerData() = mutableTimeDiffModel
 
     fun onBannerClicked(context: Context) {
         bannerTimeData.value?.data?.firstOrNull()?.let {
             navigate(context, it.applinks)
         }
+    }
+
+    override fun onStop() {
+        stopTimer()
+        super.onStop()
     }
 }

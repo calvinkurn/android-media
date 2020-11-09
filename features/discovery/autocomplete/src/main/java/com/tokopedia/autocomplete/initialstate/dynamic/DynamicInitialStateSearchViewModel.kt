@@ -5,6 +5,7 @@ import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateTypeFactory
 
 class DynamicInitialStateSearchViewModel(
+        val featureId: String = "",
         var list: List<BaseItemInitialStateSearch> = listOf()
 ): Visitable<InitialStateTypeFactory> {
 

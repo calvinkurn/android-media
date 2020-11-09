@@ -49,7 +49,7 @@ object FeaturedShopTracking : BaseTracking() {
                     BaseTrackerConst.Promotion(
                             id = channelModel.id + "_" + channelGrid.id + "_" + channelModel.trackingAttributionModel.persoType+ "_" + channelModel.trackingAttributionModel.categoryId,
                             name = PROMOTION_NAME_SHOP.format(widgetPosition, DYNAMIC_CHANNEL_SHOP, channelModel.channelHeader.name),
-                            creative = channelModel.trackingAttributionModel.categoryId + "-" + getShopType(channelGrid.shop),
+                            creative = channelGrid.shop.id + "-" + getShopType(channelGrid.shop),
                             position = position.toString()
                     )
             )

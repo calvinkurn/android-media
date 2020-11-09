@@ -10,7 +10,7 @@ import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.domain.usecases.GetCategoryGroupUseCase
-import com.tokopedia.homenav.mainnav.view.util.ClientMenuGenerator
+import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import dagger.Module
 import dagger.Provides
 

@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.autocomplete.initialstate.data.InitialStateUniverse
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.jsonToObject
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,7 +25,8 @@ internal open class InitialStatePresenterTestFixtures {
 
     protected val slotRecentViewItemList = slot<MutableList<Any>>()
     protected val slotRecentSearchItemList = slot<MutableList<Any>>()
-    protected val slotPopularSearchItemList = slot<MutableList<Any>>()
+    protected val slotPopularSearchTrackingModel = slot<DynamicInitialStateItemTrackingModel>()
+    protected val slotDynamicSectionTrackingModel = slot<DynamicInitialStateItemTrackingModel>()
 
     protected lateinit var initialStatePresenter: InitialStatePresenter
 
@@ -66,7 +68,8 @@ internal open class InitialStatePresenterTestFixtures {
         verifyOrder {
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
+            initialStateView.onDynamicSectionImpressed(capture(slotDynamicSectionTrackingModel))
             initialStateView.showInitialStateResult(capture(slotVisitableList))
         }
         confirmVerified(initialStateView)
@@ -87,17 +90,17 @@ internal open class InitialStatePresenterTestFixtures {
         verify { refreshInitialStateUseCase.execute(any(), any()) }
     }
 
-    protected fun `Then verify refreshPopularSearch view behavior`() {
+    protected fun `Then verify refreshPopularSearch view behavior`(refreshedPosition: Int) {
         verifyOrder {
             initialStateView.onRecentViewImpressed(capture(slotRecentViewItemList))
             initialStateView.onRecentSearchImpressed(capture(slotRecentSearchItemList))
-            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchItemList))
+            initialStateView.onPopularSearchImpressed(capture(slotPopularSearchTrackingModel))
 
             //This showInitialStateResult is called the first time it loads initial state data
             initialStateView.showInitialStateResult(capture(slotVisitableList))
 
             //This showInitialStateResult is called when refresh popular search is clicked
-            initialStateView.showInitialStateResult(capture(slotRefreshVisitableList))
+            initialStateView.refreshViewWithPosition(refreshedPosition)
         }
     }
 

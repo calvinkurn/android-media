@@ -58,12 +58,9 @@ import com.tokopedia.salam.umrah.checkout.presentation.adapter.viewholder.UmrahP
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.*
-import com.tokopedia.salam.umrah.common.util.CommonParam
+import com.tokopedia.salam.umrah.common.util.*
 import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormat
-import com.tokopedia.salam.umrah.common.util.UmrahDateUtil
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getTime
-import com.tokopedia.salam.umrah.common.util.UmrahHotelRating
-import com.tokopedia.salam.umrah.common.util.UmrahHotelVariant
 import com.tokopedia.salam.umrah.pdp.data.UmrahPdpAirlineModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -132,7 +129,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahCheckoutViewModel.checkoutMapped.observe(this, Observer {
+        umrahCheckoutViewModel.checkoutMapped.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderView(it.data)
@@ -156,7 +153,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
         })
 
-        umrahCheckoutViewModel.checkoutResult.observe(this, Observer {
+        umrahCheckoutViewModel.checkoutResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.checkoutGeneral.data.success == 0) {
@@ -215,14 +212,10 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
 
     private fun requestData(){
         umrahCheckoutViewModel.getDataCheckout(
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_pdp),
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_checkout_summary),
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_checkout_payment_option),
-                GraphqlHelper.loadRawString(resources,
-                        R.raw.gql_query_umrah_checkout_tnc),
+                UmrahQuery.UMRAH_PDP_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_SUMMARY_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_PAYMENT_OPTION_QUERY,
+                UmrahQuery.UMRAH_CHECKOUT_TNC_QUERY,
                 slugName,
                 variantId,
                 pilgrimCount,
@@ -308,8 +301,7 @@ class UmrahCheckoutFragment : BaseDaggerFragment(), UmrahPilgrimsEmptyViewHolder
                     )
             )
 
-            umrahCheckoutViewModel.executeCheckout(GraphqlHelper.loadRawString(resources,
-                    R.raw.gql_mutation_umrah_checkout_general), checkoutResultParams)
+            umrahCheckoutViewModel.executeCheckout(UmrahQuery.UMRAH_CHECKOUT_GENERAL_QUERY, checkoutResultParams)
         } else {
             progressDialog.dismiss()
             view?.let {

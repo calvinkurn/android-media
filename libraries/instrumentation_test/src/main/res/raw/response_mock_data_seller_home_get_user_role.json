@@ -1,0 +1,18 @@
+[
+  {
+    "data": {
+      "GoldGetUserShopInfo": {
+        "Data": {
+          "Roles": [
+            "MANAGE_SHOP",
+            "MANAGE_TX",
+            "MANAGE_INBOX",
+            "MANAGE_SHOPSTATS",
+            "MANAGE_TA",
+            "MANAGE_KS"
+          ]
+        }
+      }
+    }
+  }
+]

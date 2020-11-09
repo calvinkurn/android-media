@@ -98,6 +98,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation rootProject.ext.networkDependencies.glide
 }
 
 project.ext {

@@ -82,6 +82,7 @@ import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitori
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -155,6 +156,10 @@ public class MainParentActivity extends BaseActivity implements
     private static final String OFFICIAL_STORE_PERFORMANCE_MONITORING_RENDER_METRICS = "official_store_plt_render_page_metrics";
 
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
+
+    private static final String ROLLANCE_EXP_NAME = "Navigation Revamp";
+    private static final String ROLLANCE_VARIANT_OLD = "existing navigation";
+    private static final String ROLLANCE_VARIANT_REVAMP = "navigation revamp";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -266,17 +271,7 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    /**
-     * this is temporary fix for crash MediaPlayer,
-     *  because we already fix it 5times, and still appear on specific device
-     */
     private void routeOnboarding() {
-        if (Build.MODEL.contains("vivo Y35")
-            || Build.MODEL.contains("vivo Y51L")) {
-            if (Build.VERSION.RELEASE.contains("5.0.2")) {
-                return;
-            }
-        }
         RouteManager.route(this, ApplinkConstInternalMarketplace.ONBOARDING);
         finish();
     }
@@ -332,7 +327,9 @@ public class MainParentActivity extends BaseActivity implements
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
-        populateBottomNavigationView();
+
+        String rollenceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
+        populateBottomNavigationView(rollenceNavType);
         bottomNavigation.setMenuClickListener(this);
 
         initNewFeedClickReceiver();
@@ -398,11 +395,11 @@ public class MainParentActivity extends BaseActivity implements
                 case FEED_MENU:
                     bottomNavigation.setSelected(FEED_MENU);
                     break;
-                case ACCOUNT_MENU:
-                    bottomNavigation.setSelected(ACCOUNT_MENU);
-                    break;
                 case OS_MENU:
                     bottomNavigation.setSelected(OS_MENU);
+                    break;
+                case ACCOUNT_MENU:
+                    bottomNavigation.setSelected(ACCOUNT_MENU);
                     break;
                 case RECOMENDATION_LIST:
                 case HOME_MENU:
@@ -502,7 +499,6 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void selectFragment(Fragment fragment) {
-        if (isFirstTimeUser()) return;
         configureStatusBarBasedOnFragment(fragment);
         openFragment(fragment);
         setBadgeNotifCounter(fragment);
@@ -1168,16 +1164,17 @@ public class MainParentActivity extends BaseActivity implements
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }
 
-    public void populateBottomNavigationView(){
+    public void populateBottomNavigationView(String rollenceNavType){
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
-        menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled,  R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-
-        if (userSession.get().isLoggedIn()) {
-            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account,   R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
-        } else {
-            menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null,   null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+        if (!rollenceNavType.equals(ROLLANCE_VARIANT_REVAMP)) {
+            menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+            if (userSession.get().isLoggedIn()) {
+                menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+            } else {
+                menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
+            }
         }
         bottomNavigation.setMenu(menu);
         handleAppLinkBottomNavigation();
