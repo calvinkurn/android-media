@@ -6,7 +6,11 @@ import androidx.lifecycle.Observer
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
+import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -18,10 +22,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 import java.lang.reflect.Type
 
 @ExperimentalCoroutinesApi
@@ -52,6 +53,7 @@ class AddEditProductDescriptionViewModelTest {
         } answers {
             if (usedYoutubeVideoUrl == youtubeVideoUrlFromApp ||
                     usedYoutubeVideoUrl == youtubeVideoUrlFromWebsite ||
+                    usedYoutubeVideoUrl == youtubeVideoUrlFromWebsiteWithoutWww ||
                     usedYoutubeVideoUrl == unknownYoutubeUrl) videoUri
             else throw NullPointerException()
         }
@@ -65,6 +67,7 @@ class AddEditProductDescriptionViewModelTest {
         } answers {
             when (usedYoutubeVideoUrl) {
                 youtubeVideoUrlFromApp -> youtubeAppHost
+                youtubeVideoUrlFromWebsiteWithoutWww -> youtubeWebsiteHostWithoutWww
                 youtubeVideoUrlFromWebsite -> youtubeWebsiteHost
                 unknownYoutubeUrl -> unknownYoutubeHost
                 else -> null
@@ -91,10 +94,12 @@ class AddEditProductDescriptionViewModelTest {
 
     private val youtubeAppHost = "youtu.be"
     private val youtubeWebsiteHost = "www.youtube.com"
+    private val youtubeWebsiteHostWithoutWww = "youtube.com"
     private val unknownYoutubeHost = "google.com"
     private val videoId = "8UzbKepncNk"
     private val youtubeVideoUrlFromApp = "https://$youtubeAppHost/$videoId"
     private val youtubeVideoUrlFromWebsite = "https://$youtubeWebsiteHost/watch?v=$videoId"
+    private val youtubeVideoUrlFromWebsiteWithoutWww = "https://$youtubeWebsiteHostWithoutWww/watch?v=$videoId"
     private val unknownYoutubeUrl = "https://$unknownYoutubeHost/$videoId"
     private var usedYoutubeVideoUrl = ""
 
@@ -103,6 +108,28 @@ class AddEditProductDescriptionViewModelTest {
     private val youtubeSuccessRestResponseMap = mapOf<Type, RestResponse>(
             YoutubeVideoDetailModel::class.java to youtubeRestResponse
     )
+
+    private fun getTestProductInputModel(): ProductInputModel {
+        return ProductInputModel(
+                detailInputModel = DetailInputModel(categoryId = "56"),
+                descriptionInputModel = DescriptionInputModel("ini deskripsi"),
+                variantInputModel= VariantInputModel(
+                        products= listOf(
+                                ProductVariantInputModel(combination= listOf(0, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                                ProductVariantInputModel(combination= listOf(0, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                                ProductVariantInputModel(combination= listOf(1, 0), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false),
+                                ProductVariantInputModel(combination= listOf(1, 1), price=9999.toBigInteger(), status="ACTIVE", stock=1, isPrimary=false)),
+                        selections= listOf(
+                                SelectionInputModel(variantId="1", variantName="Warna", unitID="0", identifier="colour", options= listOf(
+                                        OptionInputModel(unitValueID="9", value="Merah"),
+                                        OptionInputModel(unitValueID="6", value="Biru Muda"))),
+                                SelectionInputModel(variantId="29", variantName="Ukuran", unitID="27", unitName="Default", identifier="size", options= listOf(
+                                        OptionInputModel(unitValueID="449", value="8"),
+                                        OptionInputModel(unitValueID="450", value="10")))),
+                        sizecharts= PictureVariantInputModel(),
+                        isRemoteDataHasVariant=true)
+        )
+    }
 
     @Test
     fun `When user insert url from youtube app and usecase is success expect youtube video data`() = runBlocking {
@@ -127,6 +154,26 @@ class AddEditProductDescriptionViewModelTest {
     @Test
     fun `When user insert url from youtube web and usecase is success expect youtube video data`() = runBlocking {
         usedYoutubeVideoUrl = youtubeVideoUrlFromWebsite
+
+        coEvery {
+            getYoutubeVideoUseCase.executeOnBackground()
+        } returns youtubeSuccessRestResponseMap
+
+        viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
+
+        coVerify {
+            getYoutubeVideoUseCase.executeOnBackground()
+        }
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        val result = viewModel.videoYoutube.value
+        assert(result != null && result == Pair(0, Success(youtubeSuccessData)))
+    }
+
+    @Test
+    fun `When user insert url from youtube web without www and usecase is success expect youtube video data`() = runBlocking {
+        usedYoutubeVideoUrl = youtubeVideoUrlFromWebsiteWithoutWww
 
         coEvery {
             getYoutubeVideoUseCase.executeOnBackground()
@@ -219,5 +266,116 @@ class AddEditProductDescriptionViewModelTest {
         )
 
         assert(viewModel.validateInputVideo(videoUrls))
+    }
+
+    @Test
+    fun `When getVariantSelectedMessage Expect return valid message`() {
+        every { resourceProvider.getVariantAddedMessage() }  returns "added message"
+        every { resourceProvider.getVariantEmptyMessage() }  returns "empty message"
+
+        viewModel.updateProductInputModel(getTestProductInputModel())
+        val aaa = viewModel.getVariantSelectedMessage()
+        var isValid = aaa == "added message"
+        assert(isValid)
+
+        viewModel.updateProductInputModel(ProductInputModel())
+        isValid = viewModel.getVariantSelectedMessage() == "empty message"
+        assert(isValid)
+
+        viewModel.updateProductInputModel(null)
+        isValid = viewModel.getVariantSelectedMessage() == "empty message"
+        assert(isValid)
+    }
+
+    @Test
+    fun `When getVariantTypeMessage Expect return variant name`() {
+        val productInput = getTestProductInputModel()
+        viewModel.updateProductInputModel(productInput)
+        var isValid = viewModel.getVariantTypeMessage(0) == productInput.variantInputModel.selections[0].variantName
+        assert(isValid)
+
+        viewModel.updateProductInputModel(productInput)
+        isValid = viewModel.getVariantTypeMessage(999).isEmpty()
+        assert(isValid)
+    }
+
+    @Test
+    fun `When getVariantCountMessage Expect return variant count message`() {
+        every { resourceProvider.getVariantCountSuffix() }  returns "suffix"
+        val productInput = getTestProductInputModel()
+
+        viewModel.updateProductInputModel(productInput)
+        var isValid = viewModel.getVariantCountMessage(0) ==
+                productInput.variantInputModel.selections[0].options.size.toString() + " suffix"
+        assert(isValid)
+
+        viewModel.updateProductInputModel(productInput)
+        isValid = viewModel.getVariantCountMessage(999).isEmpty()
+        assert(isValid)
+    }
+
+    @Test
+    fun `constant variables should valid when it's assigned`() {
+        // test add mode
+        viewModel.isAddMode = true
+        viewModel.isDraftMode = true
+        viewModel.isFirstMoved = true
+        Assert.assertFalse(viewModel.getIsAddMode())
+        Assert.assertTrue(viewModel.isFirstMoved)
+        Assert.assertTrue(viewModel.isAddMode)
+        Assert.assertTrue(viewModel.isDraftMode)
+
+        viewModel.isAddMode = true
+        viewModel.isDraftMode = false
+        viewModel.isFirstMoved = false
+        Assert.assertTrue(viewModel.getIsAddMode())
+        Assert.assertFalse(viewModel.isFirstMoved)
+        Assert.assertTrue(viewModel.isAddMode)
+        Assert.assertFalse(viewModel.isDraftMode)
+
+        viewModel.isAddMode = false
+        viewModel.isDraftMode = true
+        viewModel.isFirstMoved = true
+        Assert.assertFalse(viewModel.getIsAddMode())
+        Assert.assertTrue(viewModel.isFirstMoved)
+        Assert.assertFalse(viewModel.isAddMode)
+        Assert.assertTrue(viewModel.isDraftMode)
+
+        // test edit mode
+        viewModel.isEditMode = true
+        viewModel.isDraftMode = true
+        Assert.assertTrue(viewModel.isEditMode)
+
+        viewModel.isEditMode = true
+        viewModel.isDraftMode = false
+        Assert.assertTrue(viewModel.isEditMode)
+
+        viewModel.isEditMode = false
+        viewModel.isDraftMode = true
+        Assert.assertFalse(viewModel.isEditMode)
+
+        // test description input & category id
+        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isEmpty())
+        Assert.assertTrue(viewModel.categoryId.isEmpty())
+
+        viewModel.updateProductInputModel(getTestProductInputModel())
+        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isNotEmpty())
+        Assert.assertTrue(viewModel.categoryId.isNotEmpty())
+
+        // VideoData
+        viewModel.isFetchingVideoData[0] = false
+        viewModel.urlToFetch[0] = "url"
+        viewModel.fetchedUrl[0] = "url"
+        Assert.assertTrue(viewModel.isFetchingVideoData.isNotEmpty())
+        Assert.assertTrue(viewModel.urlToFetch.isNotEmpty())
+        Assert.assertTrue(viewModel.fetchedUrl.isNotEmpty())
+    }
+
+    @Test
+    fun `constant variables should empty when productInputModel is null`() {
+        viewModel.updateProductInputModel(null)
+        Assert.assertTrue(viewModel.categoryId.isEmpty())
+        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isEmpty())
+        Assert.assertTrue(viewModel.variantInputModel.selections.isEmpty())
     }
 }

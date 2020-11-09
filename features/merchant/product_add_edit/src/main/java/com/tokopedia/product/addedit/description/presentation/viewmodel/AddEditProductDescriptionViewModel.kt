@@ -71,7 +71,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    fun updateProductInputModel(productInputModel: ProductInputModel) {
+    fun updateProductInputModel(productInputModel: ProductInputModel?) {
         _productInputModel.value = productInputModel
     }
 
@@ -152,5 +152,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
             return "${it.options.size} ${resource.getVariantCountSuffix().orEmpty()}"
         }
         return ""
+    }
+
+    fun getIsAddMode(): Boolean {
+        return isAddMode && !isDraftMode
     }
 }

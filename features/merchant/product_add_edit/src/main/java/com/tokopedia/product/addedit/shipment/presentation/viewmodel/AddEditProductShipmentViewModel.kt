@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
@@ -30,5 +31,14 @@ class AddEditProductShipmentViewModel @Inject constructor(
         }
 
         return isValid
+    }
+
+    fun getIsAddMode(): Boolean {
+        return isAddMode && !isDraftMode
+    }
+
+    fun setShipmentInputModel(productInputModel: ProductInputModel?, isFirstMoved: Boolean) {
+        this.shipmentInputModel = productInputModel?.shipmentInputModel ?: ShipmentInputModel()
+        this.isFirstMoved = isFirstMoved
     }
 }
