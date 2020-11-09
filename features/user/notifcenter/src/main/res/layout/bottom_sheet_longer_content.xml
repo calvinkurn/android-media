@@ -40,7 +40,7 @@
                     tools:text="Gebyar Diskon Elektronik" />
 
                 <!-- Remove this later with fixed banner size -->
-                <ImageView
+                <com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
                     android:id="@+id/content_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

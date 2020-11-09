@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_notification_title"
         tools:text="@string/lorem" />
 
-    <ImageView
+    <com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
         android:id="@+id/iv_banner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
