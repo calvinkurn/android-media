@@ -64,7 +64,6 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
     lateinit var gson: Gson
 
     private var notificationManager: AddEditProductNotificationManager? = null
-    private var errorMessages: MutableList<String> = mutableListOf()
 
     companion object {
         const val JOB_ID = 13131314
@@ -117,36 +116,27 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             variantInputModel.products = uploadProductVariantImages(variantInputModel.products)
             variantInputModel.sizecharts = uploadProductSizechart(variantInputModel.sizecharts)
 
-            if (errorMessages.isEmpty()) {
-                onUploadProductImagesSuccess(uploadIdList, variantInputModel)
-            } else {
-                val message = errorMessages.joinToString("\n")
-                Timber.w("P2#PRODUCT_UPLOAD#%s", message.replace("\n", ";"))
-                setUploadProductDataError(message)
-            }
+            onUploadProductImagesSuccess(uploadIdList, variantInputModel)
         }, onError = { throwable ->
-            setUploadProductDataError(UploaderUseCase.NETWORK_ERROR)
+            setUploadProductDataError(throwable.localizedMessage.orEmpty())
             logError(TITLE_ERROR_UPLOAD_IMAGE, throwable)
         })
     }
-
-
 
     protected fun getErrorMessage(throwable: Throwable): String {
         // don't display gql error message to user
         return if (throwable.message == null || throwable.message?.contains(GQL_ERROR_SUBSTRING) == true) {
             resourceProvider.getGqlErrorMessage().orEmpty()
         } else {
-            ErrorHandler.getErrorMessage(this, throwable)
+            val errorMessage = ErrorHandler.getErrorMessage(this, throwable)
+            cleanErrorMessage(errorMessage)
         }
     }
-
 
     protected fun logError(requestParams: RequestParams, throwable: Throwable) {
         val errorMessage = String.format(
                 "\"Error upload product.\",\"userId: %s\",\"errorMessage: %s\",params: \"%s\"",
                 userSession.userId,
-                userSession.email,
                 getErrorMessage(throwable),
                 URLEncoder.encode(gson.toJson(requestParams), REQUEST_ENCODE))
         val exception = AddEditProductUploadException(errorMessage, throwable)
@@ -160,8 +150,7 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
                 "\"%s.\",\"userId: %s\",\"errorMessage: %s\"",
                 title,
                 userSession.userId,
-                userSession.email,
-                throwable.message ?: "")
+                throwable.message.orEmpty())
         val exception = AddEditProductUploadException(errorMessage, throwable)
 
         AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
@@ -233,19 +222,17 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             throw Exception(message)
         }
 
-        return when (val result = uploaderUseCase(params)) {
+        when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
-                result.uploadId
+                return result.uploadId
             }
             is UploadResult.Error -> {
                 val message = "Error upload image %s because %s".format(filePath, result.message)
                 val exception = AddEditProductUploadException(message = message)
                 AddEditProductErrorHandler.logExceptionToCrashlytics(exception)
-                errorMessages.add(result.message)
 
-                Timber.w("P2#PRODUCT_UPLOAD#%s", message)
                 onUploadProductImagesFailed(result.message)
-                ""
+                throw AddEditProductUploadException(message = result.message)
             }
         }
     }
@@ -254,6 +241,12 @@ abstract class AddEditProductBaseService : JobIntentService(), CoroutineScope {
             imageUrlOrPathList.filterNot {
                 it.startsWith(AddEditProductConstants.HTTP_PREFIX)
             }
+
+    private fun cleanErrorMessage(message: String): String {
+        // clean error message from string inside <...> and (...)
+        return message.replace("\\(.*?\\)".toRegex(), "")
+                .replace("\\<.*?\\>".toRegex(), "")
+    }
 
     private fun sendSuccessBroadcast() {
         val result = Intent(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)

@@ -94,6 +94,10 @@ object CartListPresenterAddToCartExternalTest : Spek({
                 every { addToCartExternalUseCase.createObservable(any()) } returns Observable.just(addToCartExternalModel)
             }
 
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
+            }
+
             When("process to add to cart") {
                 cartListPresenter.processAddToCartExternal(1)
             }
@@ -114,6 +118,10 @@ object CartListPresenterAddToCartExternalTest : Spek({
 
             Given("add to cart data") {
                 every { addToCartExternalUseCase.createObservable(any()) } returns Observable.error(exception)
+            }
+
+            Given("mock userId") {
+                every { userSessionInterface.userId } returns "123"
             }
 
             When("process to update cart data") {
