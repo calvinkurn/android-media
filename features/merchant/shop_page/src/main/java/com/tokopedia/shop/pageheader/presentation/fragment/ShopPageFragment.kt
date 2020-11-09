@@ -53,6 +53,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
@@ -69,6 +70,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
@@ -214,6 +216,7 @@ class ShopPageFragment :
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var abTestPlatform: AbTestPlatform? = null
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -458,6 +461,12 @@ class ShopPageFragment :
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
+        abTestPlatform?.fetchByType(null)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stopPreparePltShopPage()
@@ -586,13 +595,8 @@ class ShopPageFragment :
             initOldToolbar()
         }
         else{
-            val EXP_NAME = "Navigation Revamp"
-            val VARIANT_OLD = "existing navigation"
-            val VARIANT_REVAMP = "navigation revamp"
-            val navType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                    EXP_NAME, VARIANT_OLD
-            )
-            if (navType == VARIANT_REVAMP) {
+            val navType = abTestPlatform?.getString(AB_TEST_NAVIGATION_REVAMP_KEY, AB_TEST_NAVIGATION_REVAMP_OLD_VALUE)
+            if (navType == AB_TEST_NAVIGATION_REVAMP_NEW_VALUE) {
                 initNewToolbar()
             } else {
                 initOldToolbar()
