@@ -358,6 +358,9 @@
 
     <string name="waiting_payment_orders_product_quantity_and_price">%1$d x %2$s</string>
 
+    <string name="waiting_payment_empty_state_title">Belum ada transaksi yang sedang menunggu pembayaran</string>
+    <string name="waiting_payment_empty_state_description">Sembari menunggu, persiapkan stok produk-produk agar tokomu siap untung.</string>
+
     <string name="btn_waiting_payment_check_and_set_Stock"><![CDATA[Cek & Atur Stok]]></string>
     <string name="btn_reload">Muat Ulang</string>
 
