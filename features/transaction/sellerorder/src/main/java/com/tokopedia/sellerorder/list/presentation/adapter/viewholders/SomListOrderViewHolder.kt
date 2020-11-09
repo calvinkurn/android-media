@@ -145,13 +145,13 @@ class SomListOrderViewHolder(
                 tvSomListDeadline.apply {
                     text = deadlineText
                     background = textBackgroundDrawable
-                    val padding = getDimens(R.dimen.spacing_lvl2)
+                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, padding, padding)
                 }
                 icDeadline.apply {
                     background = iconBackgroundDrawable
                     colorFilter = LightingColorFilter(Color.BLACK, Color.WHITE)
-                    val padding = getDimens(R.dimen.spacing_lvl2)
+                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, 0, padding)
                 }
                 tvSomListResponseLabel.show()
