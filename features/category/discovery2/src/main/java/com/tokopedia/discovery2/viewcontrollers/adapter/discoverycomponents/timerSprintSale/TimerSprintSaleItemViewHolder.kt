@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -105,9 +106,5 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
 
     override fun onViewDetachedToWindow() {
         timerSprintSaleItemViewModel.stopTimer()
-    }
-
-    companion object {
-        const val TIME_DISPLAY_FORMAT = "%1$02d"
     }
 }

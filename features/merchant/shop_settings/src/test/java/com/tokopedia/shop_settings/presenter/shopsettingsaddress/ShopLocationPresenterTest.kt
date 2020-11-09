@@ -1,7 +1,7 @@
 package com.tokopedia.shop_settings.presenter.shopsettingsaddress
 
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
-import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
+import com.tokopedia.shop.settings.address.data.ShopLocationUiModel
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,7 +38,7 @@ class ShopLocationPresenterTest: ShopSettingsAddressTestFixture() {
             secondArg<Subscriber<String>>().onNext("success")
         }
 
-        shopLocationPresenter.deleteItem(ShopLocationViewModel())
+        shopLocationPresenter.deleteItem(ShopLocationUiModel())
 
         verify {
             deleteShopLocationUseCase.execute(any(), any())
