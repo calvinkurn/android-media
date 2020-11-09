@@ -27,12 +27,11 @@ class NotificationViewModel @Inject constructor(
         get() = _mutateNotificationItems
 
     fun loadNotification(
-            page: Int,
             @RoleType
             role: Int?
     ) {
         if (role == null) return
-        notifcenterDetailUseCase.getNotifications(page, filter, role,
+        notifcenterDetailUseCase.getNotifications(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
                 },

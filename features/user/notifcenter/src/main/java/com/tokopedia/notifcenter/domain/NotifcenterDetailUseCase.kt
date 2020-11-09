@@ -29,7 +29,6 @@ class NotifcenterDetailUseCase @Inject constructor(
     override val coroutineContext: CoroutineContext get() = dispatchers.ui() + SupervisorJob()
 
     fun getNotifications(
-            page: Int,
             @NotificationFilterType
             filter: Int,
             @RoleType
@@ -40,7 +39,7 @@ class NotifcenterDetailUseCase @Inject constructor(
         launchCatchError(
                 dispatchers.io(),
                 {
-                    val params = generateParam(page, filter, role)
+                    val params = generateParam(filter, role)
                     val response = gqlUseCase.apply {
                         setTypeClass(NotifcenterDetailResponse::class.java)
                         setRequestParams(params)
@@ -60,7 +59,6 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     private fun generateParam(
-            page: Int,
             @NotificationFilterType
             filter: Int,
             @RoleType
@@ -69,7 +67,6 @@ class NotifcenterDetailUseCase @Inject constructor(
         // TODO: refactor fot account switcher
 
         return mapOf(
-                PARAM_PAGE to page,
                 PARAM_TYPE_ID to role,
                 PARAM_TAG_ID to filter,
                 PARAM_TIMEZONE to timeZone,
@@ -79,7 +76,6 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_PAGE = "page"
         private const val PARAM_TYPE_ID = "type_id"
         private const val PARAM_TAG_ID = "tag_id"
         private const val PARAM_TIMEZONE = "timezone"
@@ -89,7 +85,6 @@ class NotifcenterDetailUseCase @Inject constructor(
 
     private val query = """
         query notifcenter_detail_v3(
-                $$PARAM_PAGE: Int
                 $$PARAM_TYPE_ID: Int
                 $$PARAM_TAG_ID: Int
                 $$PARAM_TIMEZONE: String
@@ -97,7 +92,6 @@ class NotifcenterDetailUseCase @Inject constructor(
                 $$PARAM_FIELDS: [String]
             ){ 
             notifcenter_detail_v3(
-                    page: $$PARAM_PAGE, 
                     type_id: $$PARAM_TYPE_ID, 
                     tag_id: $$PARAM_TAG_ID, 
                     timezone: $$PARAM_TIMEZONE, 
@@ -105,6 +99,10 @@ class NotifcenterDetailUseCase @Inject constructor(
                     fields: $$PARAM_FIELDS
                 ) { 
                 paging {
+                    has_next 
+                    has_prev 
+                }
+                new_paging {
                     has_next 
                     has_prev 
                 }
