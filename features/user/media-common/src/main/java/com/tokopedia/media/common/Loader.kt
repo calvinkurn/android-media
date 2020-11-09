@@ -3,6 +3,7 @@ package com.tokopedia.media.common
 import android.content.Context
 import com.bumptech.glide.load.model.GlideUrl
 import com.tokopedia.media.common.common.UrlBuilder.urlBuilder
+import com.tokopedia.media.common.data.AUTO_QUALITY_SETTINGS
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
@@ -19,12 +20,9 @@ object Loader {
         this.context = context
     }
 
-    fun glideUrl(
-            url: String?,
-            qualitySettings: Int = settings.qualitySettings()
-    ): GlideUrl {
+    fun glideUrl(url: String?): GlideUrl {
         val networkState = networkManagerState(context)
-        return urlBuilder(networkState, qualitySettings, url)
+        return urlBuilder(networkState, settings.qualitySettings(), url)
     }
 
 }

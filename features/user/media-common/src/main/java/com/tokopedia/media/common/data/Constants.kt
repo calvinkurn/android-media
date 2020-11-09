@@ -17,5 +17,6 @@ const val LOW_QUALITY = "2g"
 const val HIGH_QUALITY = "4g"
 
 // the key of connection type
+const val AUTO_QUALITY_SETTINGS = 0 // adaptive
 const val HIGH_QUALITY_SETTINGS = 1 // 4g / wifi
 const val LOW_QUALITY_SETTINGS = 2 // 2g / 3g
