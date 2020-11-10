@@ -498,4 +498,8 @@
         <key>android_iris_custom_user_agent_enable</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>enable_new_som</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
