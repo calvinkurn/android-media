@@ -4,6 +4,8 @@
 
     <dimen name="sp_16">16sp</dimen>
 
+    <dimen name="padding_dp_16">16dp</dimen>
+
     <dimen name="onboarding_img_width">280dp</dimen>
     <dimen name="onboarding_img_height">210dp</dimen>
     <dimen name="tp_text_size_small">14sp</dimen>

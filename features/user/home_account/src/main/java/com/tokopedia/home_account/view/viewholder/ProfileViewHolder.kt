@@ -6,15 +6,17 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.Utils
+import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.view.SpanningLinearLayoutManager
+import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
-import com.tokopedia.home_account.view.adapter.HomeAccountUserCommonAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.home_account_expandable_layout.view.*
+import kotlinx.android.synthetic.main.home_account_financial.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
 import kotlinx.android.synthetic.main.home_account_member.view.*
 
@@ -47,12 +49,11 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     }
 
     private fun setupFinancialAdapter(itemView: View, profile: ProfileDataView) {
-        itemView?.home_account_expandable_layout_title?.text = profile.financial.title
-
-        val adapter = HomeAccountUserCommonAdapter(listener, CommonViewHolder.LAYOUT_FINANCIAL)
+        itemView?.home_account_financial_layout_title?.text = profile.financial.title
+        val adapter = HomeAccountFinancialAdapter(listener)
         adapter.list = profile.financial.items
-        itemView.home_account_expandable_layout_rv?.adapter = adapter
-        itemView.home_account_expandable_layout_rv?.layoutManager = LinearLayoutManager(itemView.home_account_expandable_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
+        itemView.home_account_financial_layout_rv?.adapter = adapter
+        itemView.home_account_financial_layout_rv?.layoutManager = LinearLayoutManager(itemView.home_account_financial_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun setupMemberAdapter(itemView: View, profile: ProfileDataView) {
@@ -62,6 +63,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
         val adapter = HomeAccountMemberAdapter(listener)
         adapter.list = profile.members.items
         itemView.home_account_member_layout_rv?.adapter = adapter
+        itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
 
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
@@ -74,6 +76,12 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
 
         itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
+
+        itemView.home_account_member_layout_member_forward?.setOnClickListener {
+            listener.onSettingItemClicked(
+                    CommonDataView(applink = ApplinkConst.TOKOPOINTS)
+            )
+        }
     }
 
     companion object {

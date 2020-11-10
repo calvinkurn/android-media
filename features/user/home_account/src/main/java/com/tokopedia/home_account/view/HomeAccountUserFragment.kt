@@ -141,7 +141,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun onSuccessGetBuyerAccount(buyerAccount: UserAccountDataModel){
-        hideLoading()
         adapter?.run {
             if(adapter?.getItem(0) is ProfileDataView) {
                 adapter?.removeItemAt(0)
@@ -149,6 +148,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             addItem(0, mapper.mapToProfileDataView(buyerAccount))
             notifyItemRangeChanged(0, 4)
         }
+        hideLoading()
     }
 
     fun showLoading() {
@@ -446,8 +446,8 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         context?.run {
             val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-//                setTitle(getString(R.string.account_home_title_geolocation_alertdialog))
-                setDescription(getString(R.string.account_home_title_geolocation_alertdialog))
+                setTitle(getString(R.string.account_home_title_geolocation_alertdialog))
+                setDescription(getString(R.string.account_home_body_geolocation_alertdialog))
                 setPrimaryCTAText(getString(R.string.account_home_ok_geolocation_alertdialog))
                 setPrimaryCTAClickListener {
                     goToApplicationDetailActivity()

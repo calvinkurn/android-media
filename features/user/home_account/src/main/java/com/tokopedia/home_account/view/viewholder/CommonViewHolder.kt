@@ -26,7 +26,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
                 }
             }
             if(common.urlIcon.isNotEmpty()){
-                ImageHandler.loadImageFitCenter(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)
+                ImageHandler.loadImageFit2(account_user_item_common_icon.context, account_user_item_common_icon, common.urlIcon)
             }
 
             itemView.setOnClickListener {
@@ -36,9 +36,13 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
                 account_user_item_common_end_text?.show()
                 account_user_item_common_end_text?.text = common.endText
             }
+
+            account_user_item_common_title?.setPadding(0, 0, 0, 0)
+
             when(common.type) {
                 TYPE_WITHOUT_BODY -> {
                     account_user_item_common_body?.hide()
+                    account_user_item_common_title?.setPadding(0, 10, 0, 0)
                 }
                 TYPE_SWITCH -> {
                     itemView.isClickable = false
@@ -58,7 +62,6 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
 
     companion object {
         val LAYOUT = R.layout.home_account_item_common
-        val LAYOUT_FINANCIAL = R.layout.home_account_item_financial
 
         val TYPE_DEFAULT = 1
         val TYPE_SWITCH = 2

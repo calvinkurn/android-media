@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-
+    android:paddingTop="10dp"
+    android:paddingBottom="18dp"
+    android:paddingLeft="2dp"
+    android:paddingRight="2dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/account_user_item_common_icon"
         android:layout_width="28dp"
         android:layout_height="28dp"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@+id/account_user_item_common_body"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/account_user_item_common_title" />
@@ -23,21 +24,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="18dp"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toEndOf="@+id/account_user_item_common_icon"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_5"
+        android:textSize="@dimen/fontSize_lvl3"
+        app:lineHeight="20dp"
         app:typographyWeight="bold"
         tools:text="Rp. 100.000.000" />
 
     <com.tokopedia.unifyprinciples.Typography
+        app:lineHeight="18dp"
         android:id="@+id/account_user_item_common_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="2dp"
+        android:textSize="@dimen/fontSize_lvl2"
+        app:typographyType="body_3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_common_title"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_common_title"
-        app:typographyType="body_3"
         tools:text="Body Text" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
@@ -50,14 +56,16 @@
         app:layout_constraintTop_toTopOf="@+id/account_user_item_common_title" />
 
     <com.tokopedia.unifyprinciples.Typography
-        app:typographyType="body_3"
-        tools:text="test"
-        android:visibility="gone"
         android:id="@+id/account_user_item_common_end_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/account_user_item_common_body"
+        android:textColor="@color/Unify_N700_32"
+        android:textSize="@dimen/fontSize_lvl2"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/account_user_item_common_icon"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/account_user_item_common_title" />
+        app:layout_constraintTop_toTopOf="@+id/account_user_item_common_icon"
+        app:typographyType="body_3"
+        tools:text="Versi 3.97" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

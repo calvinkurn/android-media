@@ -24,12 +24,18 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
 
     fun bind(setting: SettingDataView) {
         with(itemView) {
-            if(setting.title.isNotEmpty())
+            if(setting.title.isNotEmpty()) {
+                home_account_expandable_layout_title?.visibility = View.VISIBLE
                 home_account_expandable_layout_title?.text = setting.title
-            else home_account_expandable_layout_title?.visibility = View.GONE
+            }
+            else {
+                home_account_expandable_layout_title?.visibility = View.GONE
+            }
             itemView.home_account_expandable_layout_container.background = ColorDrawable(Color.parseColor("#FFFFFF"))
             if(setting.showArrowDown){
                 itemView.home_account_expandable_arrow?.show()
+            }else {
+                itemView.home_account_expandable_arrow?.hide()
             }
             setupItemAdapter(itemView, setting)
         }

@@ -1,33 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:padding="@dimen/padding_dp_16"
     android:id="@+id/account_user_item_profile_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#FFFFFF"
-    android:paddingBottom="8dp"
+    android:background="@drawable/ic_account_backdrop"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/account_user_item_profile_backdrop"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:paddingBottom="50dp"
-        android:scaleType="centerCrop"
-        android:translationY="-13dp"
-        app:layout_constraintBottom_toBottomOf="@+id/home_account_profile_member_section"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/ic_account_backdrop" />
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
+<!--        android:id="@+id/account_user_item_profile_backdrop"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="0dp"-->
+<!--        android:paddingBottom="50dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:translationY="-13dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/home_account_profile_member_section"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.0"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.0"-->
+<!--        app:srcCompat="@drawable/ic_account_backdrop" />-->
 
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="46dp"
         android:id="@+id/account_user_item_profile_avatar"
         android:layout_width="64dp"
         android:layout_height="64dp"
@@ -71,7 +70,10 @@
 
     <ImageView
         android:id="@+id/account_user_item_profile_edit"
-        android:padding="12dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+
         android:layout_marginRight="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -82,10 +84,10 @@
 
     <include
         android:id="@+id/home_account_profile_financial_section"
-        layout="@layout/home_account_expandable_layout"
+        layout="@layout/home_account_financial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_email" />
@@ -95,7 +97,7 @@
         layout="@layout/home_account_member"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_account_profile_financial_section" />
