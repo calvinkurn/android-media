@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.text.Spanned
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,24 +10,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.remoteresourcerequest.view.DeferredImageView
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
+import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.adapter.TicketListAdapter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract.InboxListView
+import com.tokopedia.contactus.inboxticket2.view.customview.ChatWidgetToolTip
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomChatWidgetView
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.htmltags.HtmlUtil
 import com.tokopedia.webview.KEY_TITLE
 
 private const val RAISE_TICKET_TAG = "raiseTicket"
-class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListener {
+class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.ChatWidgetToolTipListener, View.OnClickListener {
     private var ivNoTicket: DeferredImageView? = null
     private var tvNoTicket: Typography? = null
     private var tvRaiseTicket: Typography? = null
@@ -39,6 +45,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
     private var mAdapter: TicketListAdapter? = null
     private var btnFilterTv: TextView? = null
     private var chatWidget: CustomChatWidgetView? = null
+    private var chatWidgetNotification: View? = null
 
     override fun renderTicketList(ticketItemList: MutableList<InboxTicketListResponse.Ticket.Data.TicketItem>) {
         if (mAdapter == null) {
@@ -100,6 +107,15 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
 
     override fun showChatBotWidget() {
         chatWidget?.show()
+        val welcomeMessage = (mPresenter as InboxListContract.Presenter).getWelcomeMessage()
+        chatWidget?.setToolTipDes(welcomeMessage)
+        showChatBotWidgetNotification()
+
+    }
+
+    private fun showChatBotWidgetNotification() {
+        val isShowNotifiaction = (mPresenter as InboxListContract.Presenter).getNotifiactionIndiactor()
+        chatWidgetNotification?.showWithCondition(isShowNotifiaction)
     }
 
     override fun hideChatBotWidget() {
@@ -141,6 +157,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         clearSearch = findViewById(R.id.close_search)
         btnFilterTv = findViewById(R.id.btn_filter_tv)
         chatWidget = findViewById(R.id.chat_widget)
+        chatWidgetNotification = findViewById(R.id.chat_widget_notification_indicator)
     }
 
     private fun settingOnClickListener() {
@@ -211,6 +228,12 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, View.OnClickListen
         } else if (id == R.id.tv_raise_ticket) {
             raiseTicket()
         }
+    }
+
+
+    override fun onClickToolTipButton() {
+        val applink = (mPresenter as InboxListContract.Presenter).getChatbotApplink()
+        RouteManager.route(this, applink)
     }
 
     companion object {

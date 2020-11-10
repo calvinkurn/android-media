@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.presenter
 
 import android.app.Activity.RESULT_CANCELED
 import android.content.Intent
+import android.text.Spanned
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,6 +11,7 @@ import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity
+import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
@@ -23,6 +25,7 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragme
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.htmltags.HtmlUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -52,6 +55,7 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
     private var page = 1
     var fromFilter: Boolean = false
     private var nextUrl: String? = null
+    private var topBotStatusResponse: ChipTopBotStatusResponse? = null
 
     override fun attachView(view: InboxBaseView?) {
         mView = view as InboxListView
@@ -103,9 +107,9 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
     override fun getTopBotStatus() {
         launchCatchError(
                 block = {
-                    val topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
-                    if (topBotStatusResponse?.chipTopBotStatus?.statusData?.isSuccess == 1
-                            && topBotStatusResponse.chipTopBotStatus?.statusData?.isActive == true) {
+                    topBotStatusResponse = topBotStatusUseCase.getChipTopBotStatus()
+                    if (topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.isSuccess == 1
+                            && topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.isActive == true) {
                         mView?.showChatBotWidget()
                     } else {
                         mView?.hideChatBotWidget()
@@ -116,6 +120,22 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
                     it.printStackTrace()
                 }
         )
+    }
+
+    override fun getChatbotApplink(): String {
+        val applinkPrefix = mView?.getActivity()?.getString(R.string.contactus_chat_bot_applink)
+                ?: ""
+        return String.format(applinkPrefix, topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.messageId)
+    }
+
+    override fun getWelcomeMessage(): Spanned {
+        return HtmlUtil.fromHtml(topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.welcomeMessage
+                ?: "")
+    }
+
+    override fun getNotifiactionIndiactor(): Boolean {
+        return topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.unreadNotif
+                ?: false
     }
 
     override fun detachView() {}
@@ -234,6 +254,7 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
     override fun reAttachView() {
         val requestParams = mUseCase.getRequestParams(FIRST_PAGE, status, rating)
         getTicketList(requestParams)
+        getTopBotStatus()
     }
 
     override fun clickCloseSearch() {
@@ -285,4 +306,5 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
             mView?.toggleSearch(View.VISIBLE)
         }
     }
+
 }

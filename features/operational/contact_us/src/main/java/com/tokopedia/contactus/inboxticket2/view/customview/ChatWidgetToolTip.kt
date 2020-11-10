@@ -1,6 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.customview
 
 import android.content.Context
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -35,18 +36,11 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
         setSize()
         setUpToolTipCloseButton()
         setUpToolTipButton()
-        setUpToolTipText()
     }
 
     private fun setSize() {
         width = defaultWidth
         height = WindowManager.LayoutParams.WRAP_CONTENT
-    }
-
-
-    private fun setUpToolTipText() {
-        toolTipText?.text = chatWidgetToolTipListener?.getToolTipText()
-                ?: "Masih ada pertanyaan yang belum terjawab? Lanjutkan chat dengan Tim Tokopedia Care di sini."
     }
 
     private fun setUpToolTipButton() {
@@ -61,6 +55,9 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
+    fun setToolTipDes(des: Spanned){
+        toolTipText?.text = des
+    }
 
     fun showAtTop(anchorView: View?) {
         if (anchorView == null) return
@@ -78,7 +75,6 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
     }
 
     interface ChatWidgetToolTipListener {
-        fun getToolTipText(): String
         fun onClickToolTipButton()
     }
 

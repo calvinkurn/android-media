@@ -1,9 +1,12 @@
 package com.tokopedia.contactus.inboxticket2.view.contract
 
+import android.text.Spanned
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.contactus.inboxticket2.data.model.ChipTopBotStatusResponse
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBasePresenter
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract.InboxBaseView
+import com.tokopedia.contactus.inboxticket2.view.customview.ChatWidgetToolTip
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText
 import com.tokopedia.usecase.RequestParams
 
@@ -31,5 +34,8 @@ interface InboxListContract {
         fun getSearchListener(): CustomEditText.Listener?
         fun getTicketList(requestParams: RequestParams?)
         fun getTopBotStatus()
+        fun getChatbotApplink(): String
+        fun getWelcomeMessage(): Spanned
+        fun getNotifiactionIndiactor(): Boolean
     }
 }

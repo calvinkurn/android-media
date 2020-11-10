@@ -62,7 +62,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:layout_marginTop="?attr/actionBarSize">
 
@@ -157,9 +157,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1"
             tools:visibility="visible" />
+
+        <View
+            android:id="@+id/chat_widget_notification_indicator"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:visibility="gone"
+            android:background="@drawable/rounded_chat_widget_notifiaction_red"
+            app:layout_constraintCircle="@id/chat_widget"
+            app:layout_constraintCircleRadius="@dimen/dp_45"
+            app:layout_constraintCircleAngle="45"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

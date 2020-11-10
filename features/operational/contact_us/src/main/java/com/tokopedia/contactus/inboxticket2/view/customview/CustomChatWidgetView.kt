@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.customview
 
 import android.content.Context
 import android.graphics.Color
+import android.text.Spanned
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -41,6 +42,10 @@ class CustomChatWidgetView @JvmOverloads constructor(context: Context, attrs: At
     private fun setUpChatWidgetCardView() {
         widgetCardView.setCardBackgroundColor(Color.TRANSPARENT)
         widgetCardView.cardElevation = 0F
+    }
+
+    fun setToolTipDes(des: Spanned){
+        toolTip.setToolTipDes(des)
     }
 
     interface CustomChatWidgetListener {
