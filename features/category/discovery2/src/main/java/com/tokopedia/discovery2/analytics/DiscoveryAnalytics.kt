@@ -170,6 +170,20 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
+
+    fun trackGlobalNavBarClick(buttonName : String, userID : String?) {
+        val eventCategory = "$TOP_NAV - $VALUE_DISCOVERY_PAGE"
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to CLICK_NAV_DRAWER,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to "click - $buttonName nav",
+                KEY_EVENT_LABEL to "",
+                CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
+                USER_ID to (userID ?: ""),
+                BUSINESS_UNIT to HOME_BROWSE)
+        getTracker().sendGeneralEvent(map)
+    }
+
     fun trackLihatSemuaClick(headerName: String?) {
         val map = createGeneralEvent(eventAction = CLICK_VIEW_ALL, eventLabel = headerName
                 ?: EMPTY_STRING)

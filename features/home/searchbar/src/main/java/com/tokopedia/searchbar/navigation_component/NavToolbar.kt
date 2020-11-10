@@ -218,7 +218,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     }
 
     fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
-        nav_icon_back.setOnClickListener { backButtonClickListener }
+        nav_icon_back.setOnClickListener { backButtonClickListener.invoke() }
     }
 
     fun setToolbarContentType(toolbarContentType: Int) {

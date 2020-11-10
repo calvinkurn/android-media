@@ -20,6 +20,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -161,6 +162,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             navToolbar.visibility = View.VISIBLE
             oldToolbar.visibility = View.GONE
+            navToolbar.setOnBackButtonClickListener(::handleBackPress)
         }
     }
 
@@ -210,7 +212,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         fetchDiscoveryPageData()
         setUpObserver()
     }
-
 
     private fun setAdapter() {
         recyclerView.apply {
@@ -275,10 +276,12 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         handleShare(data)
         if (showOldToolbar) {
             ivSearch.show()
-            ivSearch.setOnClickListener { handleSearchClick(data) }
+            ivSearch.setOnClickListener {
+                getDiscoveryAnalytics().trackSearchClick()
+                handleSearchClick(data)
+            }
             typographyHeader.text = data?.name ?: getString(R.string.tokopedia)
         } else {
-            navToolbar.setOnBackButtonClickListener(::handleBackPress)
             setupSearchBar(data)
         }
     }
@@ -294,8 +297,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 navToolbar.setIcon(
                         IconBuilder()
                                 .addIcon(IconList.ID_SHARE) { handleShareClick(data.share) }
-                                .addIcon(IconList.ID_CART) {}
-                                .addIcon(IconList.ID_NAV_GLOBAL) {}
+                                .addIcon(IconList.ID_CART) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }
+                                .addIcon(IconList.ID_NAV_GLOBAL) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
                 )
             }
         } else {
@@ -308,7 +311,11 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun handleShareClick(share: Share) {
-        getDiscoveryAnalytics().trackShareClick()
+        if (showOldToolbar) {
+            getDiscoveryAnalytics().trackShareClick()
+        } else {
+            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SHARE)
+        }
         Utils.shareData(activity, share.description, share.url)
     }
 
@@ -328,8 +335,8 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     private fun setCartAndNavIcon() {
         navToolbar.setIcon(
                 IconBuilder()
-                        .addIcon(IconList.ID_CART) {}
-                        .addIcon(IconList.ID_NAV_GLOBAL) {}
+                        .addIcon(IconList.ID_CART) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.CART) }
+                        .addIcon(IconList.ID_NAV_GLOBAL) { handleGlobalNavClick(Constant.TOP_NAV_BUTTON.GLOBAL_MENU) }
         )
     }
 
@@ -338,7 +345,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 hints = listOf(HintData(placeholder = data?.searchTitle
                         ?: getString(R.string.default_search_title))),
                 searchbarImpressionCallback = {
-                    getDiscoveryAnalytics().trackSearchClick()
+                    handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
                 },
                 searchbarClickCallback = {
                     handleSearchClick(data)
@@ -355,8 +362,16 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun handleBackPress() {
-        getDiscoveryAnalytics().trackBackClick()
+        if (showOldToolbar) {
+            getDiscoveryAnalytics().trackBackClick()
+        } else {
+            handleGlobalNavClick(Constant.TOP_NAV_BUTTON.BACK_BUTTON)
+        }
         activity?.onBackPressed()
+    }
+
+    private fun handleGlobalNavClick(navBarIcon: String) {
+        getDiscoveryAnalytics().trackGlobalNavBarClick(navBarIcon, getUserID())
     }
 
     private fun setPageErrorState(it: Fail) {
@@ -510,6 +525,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
 
     private fun isUserLoggedIn(): Boolean {
         return UserSession(activity).isLoggedIn
+    }
+
+    private fun getUserID(): String? {
+        return UserSession(activity).userId
     }
 
     private fun stopDiscoveryPagePerformanceMonitoring() {
