@@ -5,6 +5,7 @@ import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.view.MotionEvent
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -63,11 +64,15 @@ class SomListOrderViewHolder(
     }
 
     private fun touchCheckBox(element: SomListOrderUiModel) {
-        itemView.checkBoxSomListMultiSelect.apply {
-            isChecked = !isChecked
-            element.isChecked = isChecked
+        if (element.cancelRequest == 0) {
+            itemView.checkBoxSomListMultiSelect.apply {
+                isChecked = !isChecked
+                element.isChecked = isChecked
+            }
+            listener.onCheckChanged()
+        } else {
+            listener.onCheckBoxClickedWhenDisabled()
         }
-        listener.onCheckChanged()
     }
 
     private fun setupQuickActionButton(element: SomListOrderUiModel) {
@@ -103,7 +108,14 @@ class SomListOrderViewHolder(
     private fun setupProductList(element: SomListOrderUiModel) {
         with(itemView) {
             ivSomListProduct.loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
-            tvSomListProductName.text = element.orderProduct.firstOrNull()?.productName.orEmpty()
+            tvSomListProductName.apply {
+                text = element.orderProduct.firstOrNull()?.productName.orEmpty()
+                val layoutParams = layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.verticalBias = if (element.orderProduct.size == 1) {
+                    0.5f
+                } else 0f
+                this.layoutParams = layoutParams
+            }
             tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
                 getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
             } else ""
@@ -137,13 +149,13 @@ class SomListOrderViewHolder(
                 tvSomListDeadline.apply {
                     text = deadlineText
                     background = textBackgroundDrawable
-                    val padding = getDimens(R.dimen.spacing_lvl2)
+                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, padding, padding)
                 }
                 icDeadline.apply {
                     background = iconBackgroundDrawable
                     colorFilter = LightingColorFilter(Color.BLACK, Color.WHITE)
-                    val padding = getDimens(R.dimen.spacing_lvl2)
+                    val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, 0, padding)
                 }
                 tvSomListResponseLabel.show()

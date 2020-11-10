@@ -146,7 +146,7 @@ public class ButtonCompat extends AppCompatButton {
     private void defineType() {
         switch (mType) {
             case PRIMARY:
-                initDraw(R.color.white, R.drawable.bg_button_green);
+                initDraw(R.color.Unify_N0, R.drawable.bg_button_green);
                 super.setEnabled(true);
                 break;
             case PRIMARY_DISABLED:
@@ -157,10 +157,10 @@ public class ButtonCompat extends AppCompatButton {
                 initDraw(R.color.grey_500, R.drawable.bg_button_white_border);
                 break;
             case TRANSACTION:
-                initDraw(R.color.white, R.drawable.bg_button_orange);
+                initDraw(R.color.Unify_N0, R.drawable.bg_button_orange);
                 break;
             case WHITE_TRANSPARENT:
-                initDraw(R.color.white, R.drawable.bg_button_white_transparent);
+                initDraw(R.color.Unify_N0, R.drawable.bg_button_white_transparent);
             case GHOST:
                 initDraw(R.color.bg_button_green_border_outline, R.drawable.bg_button_green_border);
                 break;

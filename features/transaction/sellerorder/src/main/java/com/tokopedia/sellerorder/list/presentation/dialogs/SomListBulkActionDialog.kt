@@ -2,49 +2,68 @@ package com.tokopedia.sellerorder.list.presentation.dialogs
 
 import android.content.Context
 import android.view.View
-import com.bumptech.glide.Glide
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
-
+import com.tokopedia.unifyprinciples.Typography
 
 
 class SomListBulkActionDialog(private val context: Context) {
 
-    companion object {
-        private const val ILLUSTRATION_URL = "https://i.pinimg.com/originals/8f/d0/76/8fd0766a05487950538b79d29e9a66cb.gif"
-    }
-
+    private var onDismissAction: (() -> Unit)? = null
     private var dialogUnify: DialogUnify? = null
     private var childViews: View? = null
-    private var imageIllustration: ImageUnify? = null
 
     fun init() {
         childViews = View.inflate(context, com.tokopedia.sellerorder.R.layout.som_list_bulk_action_dialog, null)
-        Glide.with(context).asGif().load(ILLUSTRATION_URL).preload()
-        imageIllustration = ImageUnify(context)
         dialogUnify = DialogUnify(context, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
             dialogPrimaryCTA.gone()
             dialogSecondaryCTA.gone()
             setOverlayClose(false)
             setCancelable(false)
             dialogImageContainer.removeAllViews()
-            dialogImageContainer.addView(imageIllustration)
-            setOnShowListener {
-                imageIllustration?.let { Glide.with(context).asGif().load(ILLUSTRATION_URL).into(it) }
-            }
             setChild(childViews)
         }
     }
 
     fun setTitle(title: String) {
-        dialogUnify?.setTitle(title)
+        childViews?.findViewById<Typography>(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogTitle)?.text = title
     }
 
     fun setDescription(description: String) {
-        dialogUnify?.setDescription(description)
+        childViews?.findViewById<Typography>(com.tokopedia.sellerorder.R.id.tvSomListBulkActionDialogDescription)?.text = description
+    }
+
+    fun showOnProgress() {
+        childViews?.apply {
+            findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.gone()
+            findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.show()
+        }
+    }
+
+    fun showSuccess() {
+        childViews?.apply {
+            findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.gone()
+            findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.apply {
+                loadImageDrawable(com.tokopedia.sellerorder.R.drawable.ic_som_list_success_bulk_accept)
+                show()
+            }
+        }
+    }
+
+    fun showFailed() {
+        childViews?.apply {
+            findViewById<LoaderUnify>(com.tokopedia.sellerorder.R.id.loaderBulkAccept)?.gone()
+            findViewById<ImageUnify>(com.tokopedia.sellerorder.R.id.ivBulkAcceptDialog)?.apply {
+                loadImageDrawable(com.tokopedia.sellerorder.R.drawable.ic_som_list_failed_bulk_accept)
+                show()
+            }
+        }
     }
 
     fun setPrimaryButton(text: String, onPrimaryButtomClicked: () -> Unit = {}) {
@@ -67,12 +86,21 @@ class SomListBulkActionDialog(private val context: Context) {
         }
     }
 
+    fun setOnDismiss(action: () -> Unit) {
+        this.onDismissAction = action
+    }
+
     fun show() {
         dialogUnify?.show()
     }
 
     fun dismiss() {
         dialogUnify?.dismiss()
+    }
+
+    fun dismissAndRunAction() {
+        dialogUnify?.dismiss()
+        onDismissAction?.invoke()
     }
 
     fun hidePrimaryButton() {
