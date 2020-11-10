@@ -15,6 +15,7 @@ data class SectionWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: BaseDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,

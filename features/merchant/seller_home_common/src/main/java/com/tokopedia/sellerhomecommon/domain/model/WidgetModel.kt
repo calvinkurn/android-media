@@ -30,6 +30,9 @@ data class WidgetModel(
         @SerializedName("widgetType")
         val widgetType: String?,
         @Expose
+        @SerializedName("showEmpty")
+        val isShowEmpty: Boolean?,
+        @Expose
         @SerializedName("postFilter")
         val postFilter: List<PostFilterModel>?
 )
