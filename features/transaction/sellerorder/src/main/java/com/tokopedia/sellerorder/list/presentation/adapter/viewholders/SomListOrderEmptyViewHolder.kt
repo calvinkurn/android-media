@@ -7,7 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
-import kotlinx.android.synthetic.main.item_som_list_empty.view.*
+import kotlinx.android.synthetic.main.item_list_empty.view.*
 
 class SomListOrderEmptyViewHolder(
         itemView: View?,
@@ -15,7 +15,7 @@ class SomListOrderEmptyViewHolder(
 ) : AbstractViewHolder<SomListEmptyStateUiModel>(itemView) {
 
     companion object {
-        val LAYOUT = R.layout.item_som_list_empty
+        val LAYOUT = R.layout.item_list_empty
     }
 
     @Suppress("NAME_SHADOWING")
