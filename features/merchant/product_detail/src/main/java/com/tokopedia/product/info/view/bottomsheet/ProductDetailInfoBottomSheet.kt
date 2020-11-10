@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -37,6 +39,7 @@ import com.tokopedia.product.info.view.adapter.BsProductDetailInfoAdapter
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryImpl
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.bottom_sheet_product_detail_info.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -112,8 +115,15 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
 
         try {
-            frameDialogView.layoutParams.height = if (isFullScreen) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-            frameDialogView.requestLayout()
+            val displayMetrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+            val height = displayMetrics.heightPixels
+
+            if (isFullScreen) {
+                bs_product_info_container?.layoutParams?.height = height
+            } else {
+                bs_product_info_container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
         } catch (e: Throwable) {
         }
     }
@@ -143,8 +153,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         if (::viewModelFactory.isInitialized) {
             viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
         }
-        getDataParcel()
-        initView()
     }
 
     private fun getDataParcel() {
@@ -160,6 +168,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 viewModel?.setParams(parcelData)
             }
         }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        initView()
+        getDataParcel()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -223,13 +237,14 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     private fun initView() {
         setTitle(getString(R.string.merchant_product_detail_label_product_detail))
-        setShowListener {
-            frameDialogView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
-
         setupRecyclerView(childView)
         setChild(childView)
+
+        setShowListener {
+            bs_product_info_container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
     }
 
     private fun setupRecyclerView(childView: View) {
