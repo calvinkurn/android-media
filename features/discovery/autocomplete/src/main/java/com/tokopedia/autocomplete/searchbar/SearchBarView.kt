@@ -24,12 +24,15 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.autocomplete.R
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.android.synthetic.main.autocomplete_search_bar_view.view.*
 import rx.Observable
 import rx.Subscriber
@@ -65,6 +68,10 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     private var hint: String? = null
     private var isTyping = false
 
+    private fun getNavType(): String? {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP, ABTestRemoteConfigKey.AB_TEST_OLD_NAV)
+    }
+
     private val mOnClickListener = OnClickListener { v ->
         if (v === actionUpBtn || v === actionCancelButton) {
             KeyboardHandler.DropKeyboard(activity, searchTextView)
@@ -76,6 +83,21 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         }
     }
 
+    private val searchNavigationOnClickListener = OnClickListener { v ->
+        when {
+            v === actionCancelButton -> {
+                KeyboardHandler.DropKeyboard(activity, searchTextView)
+                activity?.finish()
+            }
+            v === autocompleteVoiceButton -> {
+                onVoiceClicked()
+            }
+            v === autocompleteClearButton -> {
+                searchTextView?.text = null
+            }
+        }
+    }
+
     private val isVoiceAvailable: Boolean
         get() {
             val pm = context.packageManager
@@ -83,9 +105,6 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
                     Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0)
             return activities.size != 0
         }
-
-    val isOfficial: Boolean
-        get() = searchParameter.getBoolean(SearchApiConst.OFFICIAL)
 
     init {
 
@@ -107,7 +126,14 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     private fun initiateView() {
         LayoutInflater.from(mContext).inflate(R.layout.autocomplete_search_bar_view, this, true)
-        setListener()
+
+        if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) {
+            configureSearchNavigationView()
+            setSearchNavigationListener()
+        } else {
+            setListener()
+        }
+
         allowVoiceSearch = true
 
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -115,6 +141,24 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         showVoiceButton(true)
 
         initSearchView()
+    }
+
+    private fun configureSearchNavigationView() {
+        actionUpBtn?.visibility = View.GONE
+        autocompleteIconSearch?.visibility = View.GONE
+        actionEmptyButton?.visibility = View.GONE
+        actionVoiceButton?.visibility = View.GONE
+
+        autocompleteVoiceButton?.visibility = View.VISIBLE
+        autocompleteClearButton?.visibility = View.VISIBLE
+        autocompleteSearchIcon?.visibility = View.VISIBLE
+        searchTextView?.setHintTextColor(ContextCompat.getColor(mContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+    }
+
+    private fun setSearchNavigationListener(){
+        autocompleteVoiceButton?.setOnClickListener(searchNavigationOnClickListener)
+        autocompleteClearButton?.setOnClickListener(searchNavigationOnClickListener)
+        actionCancelButton?.setOnClickListener(searchNavigationOnClickListener)
     }
 
     private fun setListener(){
@@ -126,9 +170,12 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
 
     private fun showVoiceButton(show: Boolean) {
         if (show && isVoiceAvailable && allowVoiceSearch) {
-            actionVoiceButton?.visibility = View.VISIBLE
+            if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteVoiceButton?.visibility = View.VISIBLE
+            else actionVoiceButton?.visibility = View.VISIBLE
         } else {
-            actionVoiceButton?.visibility = View.GONE
+            if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteVoiceButton?.visibility = View.GONE
+            else actionVoiceButton?.visibility = View.GONE
+
             if (!isVoiceAvailable) {
                 setMargin(searchTextView, convertDpToPx(8), 0, convertDpToPx(12), 0)
             }
@@ -255,15 +302,16 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         mUserQuery = text
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
-            actionEmptyButton?.visibility = View.VISIBLE
+            if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteClearButton?.visibility = View.VISIBLE
+            else actionEmptyButton?.visibility = View.VISIBLE
+
             actionCancelButton?.visibility = View.VISIBLE
             showVoiceButton(false)
-            setConstraint(searchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.actionCancelButton, ConstraintSet.LEFT, 0)
         } else {
-            actionEmptyButton?.visibility = View.GONE
+            if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteClearButton?.visibility = View.GONE
+            else actionEmptyButton?.visibility = View.GONE
             actionCancelButton?.visibility = View.GONE
             showVoiceButton(true)
-            setConstraint(searchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.actionVoiceButton, ConstraintSet.LEFT, 0)
         }
 
         if (!TextUtils.equals(newText, mOldQueryText)) {
