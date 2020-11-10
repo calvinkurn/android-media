@@ -1105,7 +1105,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        if (getView().getABTestRemoteConfig().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_NAV_REVAMP).equals(AB_TEST_OLD_NAV)) {
+        if (getView().getABTestRemoteConfig().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP)) {
             list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
         }
 

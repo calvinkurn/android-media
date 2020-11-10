@@ -150,7 +150,7 @@ public interface SearchConstant {
         String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
         String AB_TEST_NAVIGATION_REVAMP = "Navigation Revamp";
         String AB_TEST_OLD_NAV = "existing navigation";
-        String AB_TEST_NAV_REVAMP = "navigation revamp";
+        String AB_TEST_NAV_REVAMP = "Navigation Revamp";
     }
 
     interface ProductCardLabel {
