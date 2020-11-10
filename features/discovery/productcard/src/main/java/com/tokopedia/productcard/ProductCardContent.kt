@@ -81,7 +81,7 @@ private fun View.renderLabelGroupVariant(productCardModel: ProductCardModel) {
         val marginStart = 4.toPx()
         val colorSampleSize = 14.toPx()
 
-        productCardModel.labelGroupVariant.forEachIndexed { index, labelVariant ->
+        productCardModel.getRenderedLabelGroupVariantList().forEachIndexed { index, labelVariant ->
             val hasMarginStart = index > 0
 
             when {
@@ -113,6 +113,7 @@ private fun LinearLayout.addLabelVariantColor(
     val colorSampleImageView = ImageView(context)
     colorSampleImageView.setImageDrawable(gradientDrawable)
     colorSampleImageView.layoutParams = layoutParams
+    colorSampleImageView.tag = LABEL_VARIANT_TAG
 
     addView(colorSampleImageView)
 }
@@ -150,6 +151,7 @@ private fun LinearLayout.addLabelVariantSize(
     unifyLabel.setLabelType(labelVariant.type.toUnifyLabelType())
     unifyLabel.text = labelVariant.title
     unifyLabel.layoutParams = layoutParams
+    unifyLabel.tag = LABEL_VARIANT_TAG
 
     addView(unifyLabel)
 }
@@ -161,9 +163,10 @@ private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.La
     val typography = Typography(context)
     typography.weightType = Typography.BOLD
     typography.setType(Typography.SMALL)
-    typography.text = labelVariant.title
+    typography.text = "+${labelVariant.title}"
     typography.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
     typography.layoutParams = layoutParams
+    typography.tag = LABEL_VARIANT_TAG
 
     addView(typography)
 }

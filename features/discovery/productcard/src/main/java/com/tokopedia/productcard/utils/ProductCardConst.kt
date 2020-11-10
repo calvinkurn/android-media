@@ -41,3 +41,5 @@ internal const val CLOSE_BOLD_TAG = "</b>"
 internal const val TYPE_VARIANT_COLOR = "color"
 internal const val TYPE_VARIANT_SIZE = "size"
 internal const val TYPE_VARIANT_CUSTOM = "custom"
+
+internal const val LABEL_VARIANT_TAG = "label_variant_tag"
