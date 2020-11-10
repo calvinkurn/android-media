@@ -10,7 +10,7 @@
         android:id="@+id/variant_parent_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -29,7 +29,7 @@
         android:id="@+id/divider_variant"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         android:visibility="visible"/>
 
 </LinearLayout>
