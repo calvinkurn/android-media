@@ -41,8 +41,8 @@ public class DynamicBackgroundSeekBar extends View {
 
     private void init(Context context, AttributeSet attrs) {
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.DynamicBackgroundSeekBar, 0, 0);
-        foreColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_foreground_color, Color.GREEN);
-        backColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_background_color, Color.GRAY);
+        foreColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_foreground_color, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_G700));
+        backColor = typedArray.getColor(R.styleable.DynamicBackgroundSeekBar_dbsb_background_color, androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N300));
         typedArray.recycle();
 
         init();

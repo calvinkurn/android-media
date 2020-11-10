@@ -93,7 +93,7 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        ds.color = MethodChecker.getColor(context, R.color.green_500)
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }

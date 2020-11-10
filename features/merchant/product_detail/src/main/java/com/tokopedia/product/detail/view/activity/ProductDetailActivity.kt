@@ -39,6 +39,9 @@ class ProductDetailActivity : BaseSimpleActivity() {
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
         private const val PARAM_AFFILIATE_STRING = "aff"
         private const val PARAM_LAYOUT_ID = "layoutID"
+        const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY = "isVariant"
+        private const val PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE = "variant"
+        private const val PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE = "non-variant"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -77,6 +80,7 @@ class ProductDetailActivity : BaseSimpleActivity() {
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var performanceMonitoringP1: PerformanceMonitoring? = null
     private var performanceMonitoringP2Data: PerformanceMonitoring? = null
+
     //Temporary (disscussion/talk, review/ulasan)
     private var performanceMonitoringP2Other: PerformanceMonitoring? = null
     private var performanceMonitoringP2Login: PerformanceMonitoring? = null
@@ -130,7 +134,7 @@ class ProductDetailActivity : BaseSimpleActivity() {
         performanceMonitoringFull?.stopTrace()
     }
 
-    fun startMonitoringPltNetworkRequest(){
+    fun startMonitoringPltNetworkRequest() {
         pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
     }
@@ -140,7 +144,12 @@ class ProductDetailActivity : BaseSimpleActivity() {
         pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
     }
 
-    fun stopMonitoringPltRenderPage() {
+    fun stopMonitoringPltRenderPage(isVariant: Boolean) {
+        if (isVariant) {
+            pageLoadTimePerformanceMonitoring?.addAttribution(PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY, PRODUCT_PERFORMANCE_MONITORING_VARIANT_VALUE)
+        } else {
+            pageLoadTimePerformanceMonitoring?.addAttribution(PRODUCT_PERFORMANCE_MONITORING_VARIANT_KEY, PRODUCT_PERFORMANCE_MONITORING_NON_VARIANT_VALUE)
+        }
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
     }
