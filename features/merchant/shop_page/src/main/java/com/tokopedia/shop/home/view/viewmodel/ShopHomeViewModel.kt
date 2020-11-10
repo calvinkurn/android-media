@@ -453,13 +453,6 @@ class ShopHomeViewModel @Inject constructor(
         }?.name.orEmpty()
     }
 
-    fun isCampaignFollower(campaignId: String): Boolean {
-        val campaignData = (_shopHomeLayoutData.value as? Success)?.data?.listWidget?.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()?.firstOrNull {
-            it.data?.firstOrNull()?.campaignId == campaignId
-        }
-        return campaignData?.data?.firstOrNull()?.dynamicRule?.descriptionHeader?.isNotEmpty() ?: false
-    }
-
     /**
      * Play widget
      */
@@ -498,5 +491,12 @@ class ShopHomeViewModel @Inject constructor(
                     position = position
             )
         }
+    }
+
+    fun isCampaignFollower(campaignId: String): Boolean {
+        val campaignData = (_shopHomeLayoutData.value as? Success)?.data?.listWidget?.filterIsInstance<ShopHomeNewProductLaunchCampaignUiModel>()?.firstOrNull {
+            it.data?.firstOrNull()?.campaignId == campaignId
+        }
+        return campaignData?.data?.firstOrNull()?.dynamicRule?.descriptionHeader?.isNotEmpty() ?: false
     }
 }
