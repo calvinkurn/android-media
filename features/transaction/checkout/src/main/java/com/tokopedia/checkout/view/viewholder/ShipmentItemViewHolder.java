@@ -437,17 +437,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter) {
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
 
-        RecipientAddressModel currentAddress = recipientAddressModel;
-//        if (recipientAddressModel == null) {
-//            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
-//        } else {
-//            currentAddress = recipientAddressModel;
-//        }
-
         if (isTradeInDropOff) {
-            renderRobinhoodV2(shipmentCartItemModel, currentAddress, ratesDataConverter);
+            renderRobinhoodV2(shipmentCartItemModel, recipientAddressModel, ratesDataConverter);
         } else {
-            renderShippingExperience(shipmentCartItemModel, currentAddress, ratesDataConverter);
+            renderShippingExperience(shipmentCartItemModel, recipientAddressModel, ratesDataConverter);
         }
     }
 
@@ -905,14 +898,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
             if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
                 if (!hasLoadCourier) {
-                    RecipientAddressModel tmpRecipientAddressModel;
-//                    if (recipientAddressModel != null) {
-                        tmpRecipientAddressModel = recipientAddressModel;
-//                    } else {
-//                        tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-//                    }
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
-                            shipmentCartItemModel, tmpRecipientAddressModel);
+                            shipmentCartItemModel, recipientAddressModel);
 
                     boolean hasLoadCourierState = false;
                     if (saveStateType == SHIPPING_SAVE_STATE_TYPE_TRADE_IN_DROP_OFF) {

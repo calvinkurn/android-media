@@ -1482,9 +1482,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             if (recipientAddressModel != null) {
                                                 recipientAddressModel.setLatitude(latitude);
                                                 recipientAddressModel.setLongitude(longitude);
-//                                            } else {
-//                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(latitude);
-//                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(longitude);
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
@@ -1518,16 +1515,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String receiverName = "";
         String receiverPhone = "";
 
-//        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
-//            addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
-//            addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
-//            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
-//            postalCode = shipmentCartItemModel.getRecipientAddressModel().getPostalCode();
-//            districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
-//            cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
-//            provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
-//            receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
-//            receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
         if (recipientAddressModel != null) {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
@@ -1654,7 +1641,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
                                 Integer.parseInt(newRecipientAddressModel.getId()) : 0
-//                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
                         );
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
