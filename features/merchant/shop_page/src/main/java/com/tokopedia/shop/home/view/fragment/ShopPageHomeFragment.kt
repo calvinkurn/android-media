@@ -1691,8 +1691,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun showWidgetDeletedToaster() {
-        //TODO("Use Toaster instead of Android Toast")
-        Toast.makeText(requireContext(), "Video telah dihapus", Toast.LENGTH_SHORT).show()
+        activity?.run {
+            Toaster.make(
+                    findViewById(android.R.id.content),
+                    getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
+            )
+        }
     }
 
     private fun showDeleteWidgetConfirmationDialog(channelId: String) {
