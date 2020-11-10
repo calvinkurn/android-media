@@ -464,7 +464,7 @@ class ShopPageFragment :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-        abTestPlatform?.fetchByType(null)
+        abTestPlatform?.fetch(null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
