@@ -500,19 +500,13 @@ class ShopHomeViewModel @Inject constructor(
 
     fun deleteChannel(channelId: String) {
 
-        fun updateWidgetDeleted() {
+        fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
             val currentValue = _playWidgetObservable.value
-            _playWidgetObservable.value = currentValue?.copy(
-                    widgetUiModel = playWidgetTools.updateDeletedChannel(currentValue.widgetUiModel, channelId),
-                    actionEvent = Event(CarouselPlayWidgetUiModel.Action.Delete)
-            )
+            if (currentValue != null) _playWidgetObservable.value = onUpdate(currentValue)
         }
 
-        val currentValue = _playWidgetObservable.value
-        if (currentValue != null) {
-            _playWidgetObservable.value = currentValue.copy(
-                    widgetUiModel = playWidgetTools.updateDeletingChannel(currentValue.widgetUiModel, channelId)
-            )
+        updateWidget {
+            it.copy(widgetUiModel = playWidgetTools.updateDeletingChannel(it.widgetUiModel, channelId))
         }
 
         launchCatchError(block = {
@@ -521,9 +515,19 @@ class ShopHomeViewModel @Inject constructor(
                     userSessionShopId
             )
 
-            updateWidgetDeleted()
-        }, onError = {
-            updateWidgetDeleted()
+            updateWidget {
+                it.copy(
+                        widgetUiModel = playWidgetTools.updateDeletedChannel(it.widgetUiModel, channelId),
+                        actionEvent = Event(CarouselPlayWidgetUiModel.Action.Delete(channelId))
+                )
+            }
+        }, onError = { err ->
+            updateWidget {
+                it.copy(
+                        widgetUiModel = playWidgetTools.updateFailedDeletingChannel(it.widgetUiModel, channelId),
+                        actionEvent = Event(CarouselPlayWidgetUiModel.Action.DeleteFailed(channelId, err))
+                )
+            }
         })
     }
 }

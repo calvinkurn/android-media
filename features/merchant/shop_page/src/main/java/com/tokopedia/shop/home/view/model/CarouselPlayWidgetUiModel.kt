@@ -18,10 +18,11 @@ data class CarouselPlayWidgetUiModel(
         val widgetUiModel: PlayWidgetUiModel = PlayWidgetUiModel.Placeholder
 ) : BaseShopHomeWidgetUiModel {
 
-    enum class Action {
+    sealed class Action {
 
-        Refresh,
-        Delete
+        object Refresh : Action()
+        data class Delete(val channelId: String) : Action()
+        data class DeleteFailed(val channelId: String, val reason: Throwable) : Action()
     }
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {

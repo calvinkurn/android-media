@@ -1624,7 +1624,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
 
             carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {
-                if (it == CarouselPlayWidgetUiModel.Action.Delete) showWidgetDeletedToaster()
+                when (it) {
+                    is CarouselPlayWidgetUiModel.Action.Delete -> showWidgetDeletedToaster()
+                    is CarouselPlayWidgetUiModel.Action.DeleteFailed -> showWidgetDeleteFailedToaster(it.channelId, it.reason)
+                    else -> {}
+                }
             }
         })
     }
@@ -1697,6 +1701,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     getString(R.string.shop_page_play_widget_sgc_video_deleted),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL
+            )
+        }
+    }
+
+    private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
+        activity?.run {
+            Toaster.make(
+                    view = findViewById(android.R.id.content),
+                    text = reason.localizedMessage,
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
+                    clickListener = View.OnClickListener {
+                        deleteChannel(channelId)
+                    }
             )
         }
     }

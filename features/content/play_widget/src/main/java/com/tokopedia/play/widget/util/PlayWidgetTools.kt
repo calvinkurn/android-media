@@ -93,6 +93,13 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
+    fun updateFailedDeletingChannel(model: PlayWidgetUiModel, channelId: String): PlayWidgetUiModel {
+        return when (model) {
+            is PlayWidgetUiModel.Medium -> revertChannelTypeMediumWidget(model, channelId)
+            else -> model
+        }
+    }
+
     fun updateDeletedChannel(model: PlayWidgetUiModel, channelId: String): PlayWidgetUiModel {
         return when (model) {
             is PlayWidgetUiModel.Small -> deleteChannelSmallWidget(model, channelId)
@@ -150,7 +157,26 @@ class PlayWidgetTools @Inject constructor(
     private fun deletingChannelMediumWidget(model: PlayWidgetUiModel.Medium, channelId: String): PlayWidgetUiModel.Medium {
         return model.copy(
                 items = model.items.map { mediumWidget ->
-                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(channelType = PlayWidgetChannelType.Deleting)
+                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(
+                            channelType = PlayWidgetChannelType.Deleting,
+                            channelTypeTransition = mediumWidget.channelTypeTransition.changeTo(PlayWidgetChannelType.Deleting)
+                    )
+                    else mediumWidget
+                }
+        )
+    }
+
+    private fun revertChannelTypeMediumWidget(model: PlayWidgetUiModel.Medium, channelId: String): PlayWidgetUiModel.Medium {
+        return model.copy(
+                items = model.items.map { mediumWidget ->
+                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) {
+                        val prevType = mediumWidget.channelTypeTransition.prevType ?: PlayWidgetChannelType.Unknown
+
+                        mediumWidget.copy(
+                                channelType = prevType,
+                                channelTypeTransition = mediumWidget.channelTypeTransition.changeTo(prevType)
+                        )
+                    }
                     else mediumWidget
                 }
         )
