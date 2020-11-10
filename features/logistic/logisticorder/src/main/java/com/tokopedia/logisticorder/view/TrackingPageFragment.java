@@ -27,7 +27,6 @@ import com.tokopedia.logisticorder.R;
 import com.tokopedia.logisticorder.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.logisticorder.adapter.TrackingHistoryAdapter;
 import com.tokopedia.logisticorder.di.DaggerTrackingPageComponent;
-import com.tokopedia.logisticorder.di.GqlQueryModule;
 import com.tokopedia.logisticorder.di.TrackingPageComponent;
 import com.tokopedia.logisticorder.di.TrackingPageModule;
 import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
@@ -357,7 +356,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                         ((BaseMainApplication) getActivity().getApplication())
                                 .getBaseAppComponent()
                 )
-                .trackingPageModule(new TrackingPageModule(this, getContext()))
+                .trackingPageModule(new TrackingPageModule(this, getActivity().getApplicationContext()))
                 .build();
         component.inject(this);
     }
