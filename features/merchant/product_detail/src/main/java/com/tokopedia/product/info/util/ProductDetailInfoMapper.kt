@@ -4,6 +4,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoConten
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.uidata.*
+import com.tokopedia.product.info.model.specification.Row
+import com.tokopedia.product.info.model.specification.Specification
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.GUIDELINE_DETAIL_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.HEADER_DETAIL_KEY
@@ -26,6 +28,16 @@ object ProductDetailInfoMapper {
                         ProductDetailInfoContent(title = it.row.firstOrNull()?.key
                                 ?: "", subtitle = it.row.firstOrNull()?.value?.firstOrNull()
                                 ?: "", applink = "")
+                    }
+
+                    val listOfSpecification = responseData.specification.catalog.specification.toMutableList()
+
+                    // If the data and annotation is more than 8,
+                    // we need to append the annotation to the specification tab
+                    if (productInfoData.size > 8) {
+                        listOfSpecification.addAll(0, productInfoData.filter { it.isAnnotation }.map {
+                            Specification("", listOf(Row(it.title, listOf(it.subtitle))))
+                        })
                     }
 
                     val appendedData = productInfoData + productSpecificationData

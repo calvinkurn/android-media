@@ -34,7 +34,10 @@ class ProductSpecificationBottomSheet : BottomSheetUnify() {
         val productSpecificationDataModel: MutableList<ProductSpecificationDataModel> = mutableListOf()
 
         data.forEach { it ->
-            productSpecificationDataModel.add(SpecificationTitleDataModel(it.name))
+            if (it.name.isNotEmpty()) {
+                productSpecificationDataModel.add(SpecificationTitleDataModel(it.name))
+            }
+
             it.row.forEach {
                 val fusionValueText = it.value.joinToStringWithLast(separator = "\n")
                 productSpecificationDataModel.add(SpecificationBodyDataModel(it.key, fusionValueText))

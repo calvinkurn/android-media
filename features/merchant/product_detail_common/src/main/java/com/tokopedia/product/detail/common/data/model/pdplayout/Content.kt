@@ -15,5 +15,7 @@ data class Content(
 
         // For new product info only
         @SerializedName("showAtFront")
-        val showAtFront: Boolean = false
+        val showAtFront: Boolean = false,
+        @SerializedName("isAnnotation")
+        val isAnnotation: Boolean = false
 )
