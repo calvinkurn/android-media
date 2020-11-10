@@ -102,6 +102,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 renderList(it.data, false)
             }
         })
+
+        viewModel.topAdsBanner.observe(viewLifecycleOwner, Observer {
+            rvAdapter?.addTopAdsBanner(it)
+        })
     }
 
     private fun setupRecyclerView() {

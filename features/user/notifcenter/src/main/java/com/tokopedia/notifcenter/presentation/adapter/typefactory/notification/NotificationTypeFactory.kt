@@ -5,16 +5,14 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
-import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
-import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
-import com.tokopedia.notifcenter.data.uimodel.SectionTitleUiModel
+import com.tokopedia.notifcenter.data.uimodel.*
 
 interface NotificationTypeFactory : AdapterTypeFactory {
     fun type(sectionTitleUiModel: SectionTitleUiModel): Int
     fun type(bigDividerUiModel: BigDividerUiModel): Int
     fun type(notificationUiModel: NotificationUiModel): Int
     fun type(loadMoreUiModel: LoadMoreUiModel): Int
+    fun type(notificationTopAdsBannerUiModel: NotificationTopAdsBannerUiModel): Int
 
     /**
      * to support 1 uiModel has several type of view
