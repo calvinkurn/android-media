@@ -292,4 +292,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         }
     }
 
+    fun setIsDataChanged(isChanged: Boolean) {
+        productInputModel.value?.isDataChanged = isChanged
+    }
+
+    fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
+
 }

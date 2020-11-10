@@ -502,7 +502,7 @@ class AddEditProductPreviewFragment:
                         }
                     }
                     if (isEditted.any { true }) {
-                        viewModel.productInputModel.value?.isDataChanged = true
+                        viewModel.setIsDataChanged(true)
                     }
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
@@ -510,9 +510,9 @@ class AddEditProductPreviewFragment:
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                         viewModel.productInputModel.value?.let {
-                            it.isDataChanged = true
                             updateProductStatusSwitch(it)
                         }
+                        viewModel.setIsDataChanged(true)
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -636,7 +636,7 @@ class AddEditProductPreviewFragment:
                     ProductAddStepperTracking.trackBack(shopId)
                 }
 
-                if (viewModel.productInputModel.value?.isDataChanged != true) {
+                if (!viewModel.getIsDataChanged()) {
                     // finish activity if there is no data changes
                     activity?.finish()
                 } else {
