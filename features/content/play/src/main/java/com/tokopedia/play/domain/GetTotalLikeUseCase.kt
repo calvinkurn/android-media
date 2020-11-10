@@ -23,51 +23,39 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRep
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         val response = gqlResponse.getData<TotalLikeContent.Response>(TotalLikeContent.Response::class.java)
 
-        if (response != null &&
-                response.totalLikeContent.error.isEmpty()) {
-            response.totalLikeContent.data?.let {
-                return TotalLike(it.like.value, if (it.like.fmt.isEmpty()
-                        || it.like.fmt.equals("Like", false)) "0" else it.like.fmt)
-            }
-            return TotalLike(0, "0")
-        } else {
-            return TotalLike(0, "0")
+        return try {
+            val metric = response.totalLikeContent.data.first().channel.metrics
+            TotalLike(
+                    totalLike = metric.value.toInt(),
+                    totalLikeFormatted = metric.fmt
+            )
+        } catch (e: Throwable) {
+            TotalLike(0, "0")
         }
     }
 
     companion object {
 
-        private const val CONTENT_ID = "contentID"
-        private const val CONTENT_TYPE = "contentType"
-        private const val LIKE_TYPE = "likeType" // 1 live, 2 vod
-
+        private const val CHANNEL_ID = "channelId"
         private val query = getQuery()
 
-        private fun getQuery() : String {
-            val contentId = "\$contentID"
-            val contentType = "\$contentType"
-            val likeType = "\$likeType"
-
-            return """
-           query GetTotalLike($contentId: String, $contentType: Int, $likeType: Int) {
-                feedGetLikeContent(contentID: $contentId, contentType: $contentType, likeType: $likeType) {
-                    error
-                    data {
-                        like {
-                            fmt
-                            value
-                        }
+        private fun getQuery() : String =  """
+            query GetTotalLikes(${'$'}channelId: String!){
+              broadcasterReportSummariesBulk(channelIDs: [${'$'}channelId]) {
+                reportData {
+                  channel {
+                    metrics {
+                      likeChannel
                     }
+                  }
                 }
+              }
             }
-            """.trimIndent()
-        }
+            """
 
-        fun createParam(contentId: String, contentType: Int, likeType: Int): HashMap<String, Any> {
+        fun createParam(channelId: String): HashMap<String, Any> {
             return hashMapOf(
-                    CONTENT_ID to contentId,
-                    CONTENT_TYPE to contentType,
-                    LIKE_TYPE to likeType
+                    CHANNEL_ID to channelId
             )
         }
     }
