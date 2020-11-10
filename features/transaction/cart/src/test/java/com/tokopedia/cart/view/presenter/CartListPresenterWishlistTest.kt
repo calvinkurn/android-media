@@ -13,7 +13,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateIn
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.response.GetWishlistResponse
