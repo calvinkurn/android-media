@@ -104,6 +104,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                             courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
                                             courierItemData.setPromoTitle(shippingRecommendationData.getLogisticPromo().getTitle());
                                             courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
+                                            courierItemData.setShipperName(shippingRecommendationData.getLogisticPromo().getShipperName());
                                         }
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff);

@@ -38,7 +38,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.STROKE
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.unify_N75)
+                color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
                 // Border
             }
 
@@ -47,7 +47,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.FILL
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.light_N700_68)
+                color = MethodChecker.getColor(context, R.color.Unify_N700_68)
             }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -134,7 +134,7 @@ class VariantCircleColorView @JvmOverloads constructor(
         try {
             innerCirclePaint.color = Color.parseColor(hex)
         } catch (t: Throwable) {
-            innerCirclePaint.color = Color.WHITE
+            innerCirclePaint.color = androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         invalidate()
@@ -159,11 +159,11 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun setSelected() {
-        outerBorderPaint.color = MethodChecker.getColor(context, R.color.green_400)
+        outerBorderPaint.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
     }
 
     private fun setUnselected() {
-        outerBorderPaint.color = MethodChecker.getColor(context, R.color.unify_N75)
+        outerBorderPaint.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
     }
 
     private fun clearOverlay() {
@@ -171,7 +171,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun addOverlay() {
-        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.light_N700_68)
+        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.Unify_N700_68)
     }
 
     interface CircleDrawInterface {

@@ -74,8 +74,6 @@ interface ActionListener {
 
     fun onShowTickerTobacco()
 
-    fun onCartShopNameChecked(isAllChecked: Boolean)
-
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 
     fun onDisabledCartItemProductClicked(cartItemData: CartItemData)
