@@ -74,7 +74,7 @@ data class ThanksPageData(
         @SerializedName("custom_data")
         val thanksCustomization: ThanksCustomization?,
         @SerializedName("config_flag")
-        val ConfigFlag: String?
+        val configFlag: String?
 ) : Parcelable
 
 data class PaymentDetail(

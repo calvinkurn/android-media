@@ -115,7 +115,7 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
     }
 
     private fun getFeatureRecommendationData() {
-        val configFlag: ConfigFlag? = thanksPageData.ConfigFlag?.let {
+        val configFlag: ConfigFlag? = thanksPageData.configFlag?.let {
             Gson().fromJson(it, ConfigFlag::class.java)
         }
         configFlag?.apply {
