@@ -25,7 +25,7 @@ import com.tokopedia.unifyprinciples.Typography
 class DynamicChannelThematicViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view) {
+) : AbstractViewHolder<DynamicChannelDataModel>(view) {
 
     private val mainContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_thematic_main_container)
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
@@ -40,7 +40,7 @@ class DynamicChannelThematicViewHolder(
 
     private val contentList = itemView.findViewById<CarouselProductCardView>(R.id.dc_thematic_rv)
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
             dcEventHandler.mixBannerImpression(dynamicChannelData.channel)
             dcEventHandler.mixImageImpression(dynamicChannelData.channel)
