@@ -118,7 +118,7 @@ object GlideBuilder {
                     }
 
                     if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
-                    if (roundedRadius != 0f) transform(RoundedCorners(roundedRadius.toInt()))
+                    if (roundedRadius != 0f) localTransform.add(RoundedCorners(roundedRadius.toInt()))
                     if (isCircular) localTransform.add(CircleCrop())
                     if (!isAnimate) dontAnimate()
 
