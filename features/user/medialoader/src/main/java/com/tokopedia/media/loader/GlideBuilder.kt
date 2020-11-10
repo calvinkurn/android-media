@@ -45,6 +45,10 @@ object GlideBuilder {
             "ABP?2U~X5J^~"
     )
 
+    private val exceptionBlurring = listOf(
+            "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+    )
+
     private fun glideListener(
             listener: LoaderStateListener?
     ) = object : RequestListener<Bitmap> {
@@ -105,7 +109,7 @@ object GlideBuilder {
                     if (placeHolder != 0) {
                         placeholder(placeHolder)
                     } else {
-                        if (!isCircular) {
+                        if (!isCircular || !isFreeOngkir(data)) {
                             blurHashFromUrl(data) { hash ->
                                 placeholder(BitmapDrawable(context.resources, blurring(hash)))
                             }
@@ -136,6 +140,10 @@ object GlideBuilder {
                 }.into(imageView)
             }
         }
+    }
+
+    private fun isFreeOngkir(data: Any?): Boolean {
+        return if (data is GlideUrl) exceptionBlurring.contains(data.toStringUrl()) else false
     }
 
     private fun blurHashFromUrl(url: Any?, blurHash: (String?) -> Unit) {
