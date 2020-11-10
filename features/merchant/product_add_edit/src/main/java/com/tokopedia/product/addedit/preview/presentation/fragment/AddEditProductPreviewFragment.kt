@@ -501,12 +501,16 @@ class AddEditProductPreviewFragment:
                             moveToDetailFragment(newProductInputModel, true)
                         }
                     }
+                    if (isEditted.any { true }) {
+                        viewModel.productInputModel.value?.isDataChanged = true
+                    }
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
                     SaveInstanceCacheManager(requireContext(), cacheManagerId).run {
                         viewModel.productInputModel.value = get(EXTRA_PRODUCT_INPUT_MODEL, ProductInputModel::class.java)
                         viewModel.productInputModel.value?.let {
+                            it.isDataChanged = true
                             updateProductStatusSwitch(it)
                         }
                     }
@@ -625,35 +629,43 @@ class AddEditProductPreviewFragment:
     private fun setupBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.label_title_on_dialog))
-                    setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                    setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-                    if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
-                        setDescription(getString(R.string.label_description_on_dialog_edit))
-                        setSecondaryCTAClickListener {
-                            activity?.finish()
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                        }
-                    } else {
-                        setDescription(getString(R.string.label_description_on_dialog))
-                        setSecondaryCTAClickListener {
-                            saveProductToDraft()
-                            moveToManageProduct()
-                            ProductAddStepperTracking.trackDraftYes(shopId)
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                            ProductAddStepperTracking.trackDraftCancel(shopId)
-                        }
-                    }
-                }.show()
+                // send tracker
                 if (isEditing()) {
                     ProductEditStepperTracking.trackBack(shopId)
                 } else {
                     ProductAddStepperTracking.trackBack(shopId)
+                }
+
+                if (viewModel.productInputModel.value?.isDataChanged != true) {
+                    // finish activity if there is no data changes
+                    activity?.finish()
+                } else {
+                    // show dialog
+                    DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                        setTitle(getString(R.string.label_title_on_dialog))
+                        setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+                        setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+                        if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
+                            setDescription(getString(R.string.label_description_on_dialog_edit))
+                            setSecondaryCTAClickListener {
+                                activity?.finish()
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                            }
+                        } else {
+                            setDescription(getString(R.string.label_description_on_dialog))
+                            setSecondaryCTAClickListener {
+                                saveProductToDraft()
+                                moveToManageProduct()
+                                ProductAddStepperTracking.trackDraftYes(shopId)
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                                ProductAddStepperTracking.trackDraftCancel(shopId)
+                            }
+                        }
+                    }.show()
                 }
             }
         })
