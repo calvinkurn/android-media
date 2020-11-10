@@ -160,7 +160,7 @@ object GlideBuilder {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
                 width = 20,
-                height = 12
+                height = 20
         )
     }
 
