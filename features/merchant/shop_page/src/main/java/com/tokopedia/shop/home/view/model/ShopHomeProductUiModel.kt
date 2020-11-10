@@ -14,7 +14,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
  * Created by nathan on 2/6/18.
  */
 
-class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder {
+class ShopHomeProductUiModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder {
 
     var id: String? = null
     var name: String? = null
