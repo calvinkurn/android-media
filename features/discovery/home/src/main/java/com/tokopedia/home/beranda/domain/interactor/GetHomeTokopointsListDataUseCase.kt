@@ -25,7 +25,4 @@ class GetHomeTokopointsListDataUseCase @Inject constructor(
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground()
     }
-
-    companion object {
-    }
 }
