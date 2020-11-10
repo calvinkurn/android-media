@@ -65,7 +65,6 @@ class SellerActionActivity: Activity() {
                 RouteManager.route(this, ApplinkConstInternalSellerapp.SELLER_HOME)
             }
         }
-        intent?.removeExtra(SellerActionConst.Params.FEATURE_NAME)
         finish()
     }
 }

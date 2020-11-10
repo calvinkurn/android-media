@@ -10,6 +10,7 @@ import androidx.slice.Slice
 import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.ICON_IMAGE
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.seller.action.R
 import com.tokopedia.seller.action.SellerActionActivity
@@ -31,8 +32,9 @@ class SellerOrderSlice(context: Context,
         private const val TRUNCATED_PRODUCT_NAME_LENGTH = 22
         private const val MAX_ORDER_LIST_SIZE = 3
 
-        private const val DETAIL_REQUEST_CODE = 9232
-        private const val LIST_REQUEST_CODE = 9233
+        private const val LIST_REQUEST_CODE = 9232
+
+        private val DETAIL_REQUEST_CODES = arrayOf(9233, 9234, 9235)
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -40,6 +42,7 @@ class SellerOrderSlice(context: Context,
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
                     title = date.convertToOrderDateTitle(context)
+                    primaryAction = createActivityAction()
                 }
                 var numberOfOrder = 0
                 for ((orderId, status, orderStatusId, deadlineText, orderDate, buyerName, listOrderProduct) in orderList) {
@@ -48,7 +51,7 @@ class SellerOrderSlice(context: Context,
                     }
                     row {
                         val pendingIntent = SellerActionActivity.createOrderDetailIntent(context, orderId).let { intent ->
-                            PendingIntent.getActivity(context, DETAIL_REQUEST_CODE, intent, 0)
+                            PendingIntent.getActivity(context, DETAIL_REQUEST_CODES.getOrNull(numberOfOrder).orZero(), intent, 0)
                         }
                         pendingIntent?.let { intent ->
                             primaryAction = createOrderDetailPrimaryAction(

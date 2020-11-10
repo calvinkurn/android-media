@@ -4,7 +4,8 @@
     <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
 
     <application>
-        <activity android:name=".SellerActionActivity">
+        <activity android:name=".SellerActionActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
