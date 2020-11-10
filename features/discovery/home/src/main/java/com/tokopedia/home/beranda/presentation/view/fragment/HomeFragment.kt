@@ -1954,14 +1954,7 @@ open class HomeFragment : BaseDaggerFragment(),
                     }
                 }
             } else if (isNavRevamp()) {
-                navToolbar?.let {
-                    height = navToolbar?.height?:0
-                    navToolbar?.let {
-//                        if (!it.isShadowApplied()) {
-//                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
-//                        }
-                    }
-                }
+                navToolbar?.let { height = navToolbar?.height?:0 }
             }
             return height
         }
