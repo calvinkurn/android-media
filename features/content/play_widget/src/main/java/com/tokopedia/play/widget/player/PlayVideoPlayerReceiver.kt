@@ -8,4 +8,6 @@ interface PlayVideoPlayerReceiver {
     fun setPlayer(player: PlayVideoPlayer?)
 
     fun getPlayer(): PlayVideoPlayer?
+
+    fun isPlayable(): Boolean
 }

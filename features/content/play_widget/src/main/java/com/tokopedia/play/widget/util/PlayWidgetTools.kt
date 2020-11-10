@@ -8,9 +8,8 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
 import com.tokopedia.play.widget.ui.model.*
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
-import com.tokopedia.play_common.domain.UpdateChannelUseCase
-import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import dagger.Lazy
 import kotlinx.coroutines.Dispatchers
@@ -86,10 +85,18 @@ class PlayWidgetTools @Inject constructor(
         }
     }
 
+    fun updateDeletingChannel(model: PlayWidgetUiModel, channelId: String): PlayWidgetUiModel {
+        return when (model) {
+            is PlayWidgetUiModel.Small -> deletingChannelSmallWidget(model, channelId)
+            is PlayWidgetUiModel.Medium -> deletingChannelMediumWidget(model, channelId)
+            else -> model
+        }
+    }
+
     fun updateDeletedChannel(model: PlayWidgetUiModel, channelId: String): PlayWidgetUiModel {
         return when (model) {
-            is PlayWidgetUiModel.Small -> deleteChannelSmallWidgetTotalView(model, channelId)
-            is PlayWidgetUiModel.Medium -> deleteChannelMediumWidgetTotalView(model, channelId)
+            is PlayWidgetUiModel.Small -> deleteChannelSmallWidget(model, channelId)
+            is PlayWidgetUiModel.Medium -> deleteChannelMediumWidget(model, channelId)
             else -> model
         }
     }
@@ -115,7 +122,7 @@ class PlayWidgetTools @Inject constructor(
         )
     }
 
-    private fun deleteChannelSmallWidgetTotalView(model: PlayWidgetUiModel.Small, channelId: String): PlayWidgetUiModel.Small {
+    private fun deleteChannelSmallWidget(model: PlayWidgetUiModel.Small, channelId: String): PlayWidgetUiModel.Small {
         return model.copy(
                 items = model.items.filter { smallWidget ->
                     (smallWidget is PlayWidgetSmallChannelUiModel && smallWidget.channelId != channelId) || smallWidget !is PlayWidgetSmallChannelUiModel
@@ -123,10 +130,28 @@ class PlayWidgetTools @Inject constructor(
         )
     }
 
-    private fun deleteChannelMediumWidgetTotalView(model: PlayWidgetUiModel.Medium, channelId: String): PlayWidgetUiModel.Medium {
+    private fun deleteChannelMediumWidget(model: PlayWidgetUiModel.Medium, channelId: String): PlayWidgetUiModel.Medium {
         return model.copy(
                 items = model.items.filter { mediumWidget ->
                     (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId != channelId) || mediumWidget !is PlayWidgetMediumChannelUiModel
+                }
+        )
+    }
+
+    private fun deletingChannelSmallWidget(model: PlayWidgetUiModel.Small, channelId: String): PlayWidgetUiModel.Small {
+        return model.copy(
+                items = model.items.map { smallWidget ->
+                    if (smallWidget is PlayWidgetSmallChannelUiModel && smallWidget.channelId == channelId) smallWidget.copy(channelType = PlayWidgetChannelType.Deleting)
+                    else smallWidget
+                }
+        )
+    }
+
+    private fun deletingChannelMediumWidget(model: PlayWidgetUiModel.Medium, channelId: String): PlayWidgetUiModel.Medium {
+        return model.copy(
+                items = model.items.map { mediumWidget ->
+                    if (mediumWidget is PlayWidgetMediumChannelUiModel && mediumWidget.channelId == channelId) mediumWidget.copy(channelType = PlayWidgetChannelType.Deleting)
+                    else mediumWidget
                 }
         )
     }

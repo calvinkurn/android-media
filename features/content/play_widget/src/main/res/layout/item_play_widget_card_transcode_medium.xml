@@ -99,7 +99,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl3"
                 android:layout_marginTop="@dimen/play_widget_dp_14"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
-                android:text="@string/play_widget_transcode_delete"
+                android:text="@string/play_widget_delete"
                 app:unifyButtonSize="small"
                 app:unifyButtonVariant="ghost"
                 app:unifyButtonInvers="true"

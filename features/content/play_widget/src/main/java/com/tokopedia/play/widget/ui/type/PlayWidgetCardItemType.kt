@@ -10,6 +10,9 @@ enum class PlayWidgetChannelType(val value: String) {
     Upcoming("COMING_SOON"),
     Transcoding("TRANSCODING"),
     FailedTranscoding("TRANSCODING_FAILED"),
+
+    Deleting("INT_DELETING"),
+
     Unknown("");
 
     companion object {

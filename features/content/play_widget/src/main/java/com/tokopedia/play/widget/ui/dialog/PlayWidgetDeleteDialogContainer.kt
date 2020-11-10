@@ -23,16 +23,16 @@ class PlayWidgetDeleteDialogContainer(private val listener: Listener) {
                     imageType = DialogUnify.NO_IMAGE
             ).apply {
                 setTitle(
-                        context.getString(R.string.play_widget_transcode_delete_confirmation_title)
+                        context.getString(R.string.play_widget_delete_confirmation_title)
                 )
                 setDescription(
-                        context.getString(R.string.play_widget_transcode_delete_confirmation_desc)
+                        context.getString(R.string.play_widget_delete_confirmation_desc)
                 )
                 setPrimaryCTAText(
-                        context.getString(R.string.play_widget_transcode_delete)
+                        context.getString(R.string.play_widget_delete)
                 )
                 setSecondaryCTAText(
-                        context.getString(R.string.play_widget_transcode_delete_cancel)
+                        context.getString(R.string.play_widget_delete_cancel)
                 )
                 setSecondaryCTAClickListener { dialog.dismiss() }
             }

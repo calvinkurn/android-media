@@ -500,11 +500,18 @@ class ShopHomeViewModel @Inject constructor(
 
     fun deleteChannel(channelId: String) {
 
-        fun updateWidget() {
+        fun updateWidgetDeleted() {
             val currentValue = _playWidgetObservable.value
             _playWidgetObservable.value = currentValue?.copy(
                     widgetUiModel = playWidgetTools.updateDeletedChannel(currentValue.widgetUiModel, channelId),
                     actionEvent = Event(CarouselPlayWidgetUiModel.Action.Delete)
+            )
+        }
+
+        val currentValue = _playWidgetObservable.value
+        if (currentValue != null) {
+            _playWidgetObservable.value = currentValue.copy(
+                    widgetUiModel = playWidgetTools.updateDeletingChannel(currentValue.widgetUiModel, channelId)
             )
         }
 
@@ -514,9 +521,9 @@ class ShopHomeViewModel @Inject constructor(
                     userSessionShopId
             )
 
-            updateWidget()
+            updateWidgetDeleted()
         }, onError = {
-            updateWidget()
+            updateWidgetDeleted()
         })
     }
 }
