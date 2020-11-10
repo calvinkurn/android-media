@@ -30,6 +30,13 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecod
 
 object GlideBuilder {
 
+    private fun ImageView.drawableErrorResource(errorRes: Int) =
+            getDrawable(context, if (errorRes != 0) {
+                errorRes
+            } else {
+                R.drawable.ic_media_default_error
+            })
+
     private val blurHashRandom = listOf(
             "A4ADcRuO_2y?",
             "A9K{0B#R3WyY",
@@ -63,22 +70,12 @@ object GlideBuilder {
         }
     }
 
-    private fun ImageView.drawableErrorResource(errorRes: Int) = if (errorRes != 0) {
-        getDrawable(context, errorRes)
-    } else {
-        getDrawable(context, R.drawable.ic_media_default_error)
-    }
-
     @JvmOverloads
-    fun loadImage(
-            imageView: ImageView,
-            properties: Properties
-    ) {
-        val localTransform = mutableListOf<Transformation<Bitmap>>()
-        val context = imageView.context
-
+    fun loadImage(imageView: ImageView, properties: Properties) {
         with(properties) {
+            val localTransform = mutableListOf<Transformation<Bitmap>>()
             val drawableError = imageView.drawableErrorResource(error)
+            val context = imageView.context
 
             if (data == null) {
                 imageView.setImageDrawable(drawableError)
