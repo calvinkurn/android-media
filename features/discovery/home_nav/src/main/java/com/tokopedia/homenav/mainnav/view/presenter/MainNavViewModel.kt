@@ -104,7 +104,7 @@ class MainNavViewModel @Inject constructor(
     fun updateWidget(visitable: Visitable<*>, position: Int) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList[position] = visitable
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
     }
 
     fun addWidget(visitable: Visitable<*>, position: Int? = null) {
@@ -252,7 +252,7 @@ class MainNavViewModel @Inject constructor(
                 }
             }
         }) {
-
+            it.printStackTrace()
         }
     }
 
@@ -262,8 +262,9 @@ class MainNavViewModel @Inject constructor(
                 getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = shopId)
                 getShopInfoUseCase.get().executeOnBackground()
             }
-            accountData.shopName = result.shopCore.name
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            newData.shopName = result.shopCore.name
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             _shopResultListener.postValue(Fail(it))
         }
@@ -288,7 +289,7 @@ class MainNavViewModel @Inject constructor(
             }
             accountData.ovoSaldo = result.cashBalance
             accountData.ovoPoint = result.pointBalance
-            updateWidget(accountData.copy(), 0)
+            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
         }){
             //post error get ovo with new livedata
 
@@ -306,7 +307,7 @@ class MainNavViewModel @Inject constructor(
                 getSaldoUseCase.get().executeOnBackground()
             }
             accountData.saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
-            updateWidget(accountData.copy(), 0)
+            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
         }){
             val newAccountData = accountData.copy(
                     saldo = AccountHeaderViewModel.ERROR_TEXT

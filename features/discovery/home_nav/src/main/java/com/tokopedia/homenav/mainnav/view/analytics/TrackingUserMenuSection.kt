@@ -5,8 +5,9 @@ import com.tokopedia.homenav.common.TrackingConst.DEFAULT_BUSINESS_UNIT
 import com.tokopedia.homenav.common.TrackingConst.DEFAULT_CURRENT_SITE
 import com.tokopedia.homenav.common.TrackingConst.EVENT_CLICK_NAVIGATION_DRAWER
 import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.util.BaseTrackerConst
 
-object TrackingUserMenuSection {
+object TrackingUserMenuSection: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_USER_MENU = "click on user menu"
 
     fun clickOnUserMenu(userMenuName: String, userId: String) {
@@ -20,5 +21,6 @@ object TrackingUserMenuSection {
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
         trackingBuilder.appendBusinessUnit(DEFAULT_BUSINESS_UNIT)
+        getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 }

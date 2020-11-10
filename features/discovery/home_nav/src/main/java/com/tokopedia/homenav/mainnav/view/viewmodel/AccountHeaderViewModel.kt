@@ -4,7 +4,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class AccountHeaderViewModel(
-        val id: Int = 0,
+        val id: Int = 999,
         val loginState: Int = 0,
         var userName: String = "",
         val userImage: String = "",
@@ -40,5 +40,22 @@ data class AccountHeaderViewModel(
         const val KEY_USER_NAME = "user_name"
         const val KEY_PROFILE_PICTURE = "profile_picture"
         const val ERROR_TEXT = "Gagal memuat, klik untuk coba lagi"
+    }
+
+    fun copy(): AccountHeaderViewModel {
+        return AccountHeaderViewModel(
+                id,
+                loginState,
+                userName,
+                userImage,
+                badge,
+                ovoSaldo,
+                ovoPoint,
+                saldo,
+                shopName,
+                shopId,
+                shopNotifCount,
+                shopApplink
+        )
     }
 }

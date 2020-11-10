@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.interactor
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.homenav.mainnav.MainNavConst
@@ -11,11 +12,15 @@ import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
 import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
+import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
+import com.tokopedia.homenav.mainnav.data.pojo.membership.TierPojo
+import com.tokopedia.homenav.mainnav.data.pojo.membership.TokopointStatusPojo
+import com.tokopedia.homenav.mainnav.data.pojo.membership.TokopointsPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.homenav.rule.CoroutinesTestRule
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert
@@ -30,13 +35,6 @@ class TestMainNavViewModel {
 
     @get:Rule
     val rule = CoroutinesTestRule()
-
-    private val getUserInfoUseCase = mockk<GetUserInfoUseCase>(relaxed = true)
-    private val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>(relaxed = true)
-    private val getUserMembershipUseCase = mockk<GetUserMembershipUseCase>(relaxed = true)
-    private val getShopInfoUseCase = mockk<GetShopInfoUseCase>(relaxed = true)
-    private val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>(relaxed = true)
-    private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     @ApplicationContext
     lateinit var context: Context
@@ -191,309 +189,240 @@ class TestMainNavViewModel {
         Assert.assertFalse(menuList.isEmpty());
         Assert.assertNotNull(transactionDataModel)
     }
-//    @Test
-//    fun `test login state non login`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//            val loginState = AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN
-//
-//            viewModel.getProfileSection(loginState,shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).loginState == (AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN))
-//        }
-//    }
-//
-//    @Test
-//    fun `test login state login as`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//            val loginState = AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS
-//
-//            viewModel.getProfileSection(loginState,shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).loginState == (AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS))
-//        }
-//    }
-//
-//    @Test
-//    fun `test login state login`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//            val loginState = AccountHeaderViewModel.LOGIN_STATE_LOGIN
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(loginState,shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).loginState == (AccountHeaderViewModel.LOGIN_STATE_LOGIN))
-//        }
-//    }
-//
-//    @Test
-//    fun `Success getUserNameAndPictureData`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getUserInfoUseCase.executeOnBackground()
-//            } returns UserPojo(ProfilePojo(name = "Joko", profilePicture = "Tingkir"))
-//
-//
-//            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).userName.isNotEmpty()
-//                    && (dataList.first() as AccountHeaderViewModel).userImage.isNotEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Error getUserNameAndPictureData missing name`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getUserInfoUseCase.executeOnBackground()
-//            } returns UserPojo(ProfilePojo(name = "", profilePicture = "Tingkir"))
-//
-//
-//            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).userName.isEmpty()
-//                    && (dataList.first() as AccountHeaderViewModel).userImage.isNotEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Error getUserNameAndPictureData missing profile picture`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getUserInfoUseCase.executeOnBackground()
-//            } returns UserPojo(ProfilePojo(name = "Joko", profilePicture = ""))
-//
-//
-//            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).userName.isNotEmpty()
-//                    && (dataList.first() as AccountHeaderViewModel).userImage.isEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Error getUserNameAndPictureData missing all`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getUserInfoUseCase.executeOnBackground()
-//            } returns UserPojo(ProfilePojo(name = "", profilePicture = ""))
-//
-//
-//            viewModel.getUserNameAndPictureData(AccountHeaderViewModel.LOGIN_STATE_LOGIN, shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).userName.isEmpty()
-//                    && (dataList.first() as AccountHeaderViewModel).userImage.isEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Success getUserMembershipBadge`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getUserMembershipUseCase.executeOnBackground()
-//            } returns MembershipPojo(TokopointsPojo(TokopointStatusPojo(TierPojo(eggImageURL = "telur"))))
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getUserBadgeImage()
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).badge.isNotEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Error getUserMembershipBadge empty`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getUserMembershipUseCase.executeOnBackground()
-//            } returns MembershipPojo(TokopointsPojo(TokopointStatusPojo(TierPojo(eggImageURL = ""))))
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getUserBadgeImage()
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).badge.isEmpty())
-//        }
-//    }
-//
+
+    @Test
+    fun `Success getUserNameAndPictureData`(){
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        coEvery {
+            getMainNavDataUseCase.executeOnBackground()
+        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "Joko", userImage = "Tingkir")))
+        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isNotEmpty()
+                && accountHeaderViewModel.userImage.isNotEmpty())
+    }
+
+    @Test
+    fun `Error getUserNameAndPictureData missing name`(){
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        coEvery {
+            getMainNavDataUseCase.executeOnBackground()
+        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "", userImage = "Tingkir")))
+        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isEmpty()
+                && accountHeaderViewModel.userImage.isNotEmpty())
+    }
+
+    @Test
+    fun `Error getUserNameAndPictureData missing profile picture`(){
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        coEvery {
+            getMainNavDataUseCase.executeOnBackground()
+        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "Joko", userImage = "")))
+        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isNotEmpty()
+                && accountHeaderViewModel.userImage.isEmpty())
+    }
+
+    @Test
+    fun `Error getUserNameAndPictureData missing all`(){
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        coEvery {
+            getMainNavDataUseCase.executeOnBackground()
+        } returns MainNavigationDataModel(listOf(AccountHeaderViewModel(userName = "", userImage = "")))
+        viewModel = createViewModel(getMainNavDataUseCase = getMainNavDataUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.userName.isEmpty()
+                && accountHeaderViewModel.userImage.isEmpty())
+    }
+
+    @Test
+    fun `Success getUserMembershipBadge`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getUserMembershipUseCase = mockk<GetUserMembershipUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getUserMembershipUseCase.executeOnBackground()
+        } returns MembershipPojo(TokopointsPojo(TokopointStatusPojo(TierPojo(eggImageURL = "telur"))))
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.badge.isNotEmpty())
+    }
+
+    @Test
+    fun `Error getUserMembershipBadge empty`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getUserMembershipUseCase = mockk<GetUserMembershipUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getUserMembershipUseCase.executeOnBackground()
+        } returns MembershipPojo(TokopointsPojo(TokopointStatusPojo(TierPojo(eggImageURL = ""))))
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getUserMembershipUseCase = getUserMembershipUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.badge.isEmpty())
+    }
+
 //    @Test
 //    fun `Success getShopName`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
+//        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+//        val getShopInfoUseCase = mockk<GetShopInfoUseCase>()
+//        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+//        getUserInfoUseCase.getBasicData()
+//        getMainNavDataUseCase.getBasicData()
+//        coEvery {
+//            getShopInfoUseCase.executeOnBackground()
+//        } returns ShopInfoPojo(ShopInfoPojo.ShopCore(name = "toko telor"))
+//        viewModel = createViewModel(
+//                getMainNavDataUseCase = getMainNavDataUseCase,
+//                getShopInfoUseCase = getShopInfoUseCase)
 //
-//            coEvery {
-//                getShopInfoUseCase.executeOnBackground()
-//            } returns ShopInfoPojo(ShopInfoPojo.ShopCore(name = "toko telor"))
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getShopData(shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).shopName.isNotEmpty())
-//        }
+//        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+//        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+//        Assert.assertTrue(dataList.isNotEmpty())
+//        Assert.assertNotNull(accountHeaderViewModel)
+//        Assert.assertTrue(accountHeaderViewModel.shopName.isNotEmpty())
 //    }
-//
-//    @Test
-//    fun `Error getShopName empty name`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getShopInfoUseCase.executeOnBackground()
-//            } returns ShopInfoPojo(ShopInfoPojo.ShopCore(name = ""))
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getShopData(shopId)
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).shopName.isEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Success getOvoSaldo`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getWalletBalanceUseCase.executeOnBackground()
-//            } returns WalletBalanceModel(cashBalance = "Rp 1234", pointBalance = "Rp 2345")
-//
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getOvoData()
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).ovoSaldo.isNotEmpty() &&
-//                    (dataList.first() as AccountHeaderViewModel).ovoPoint.isNotEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Success getOvoSaldo empty saldo`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getWalletBalanceUseCase.executeOnBackground()
-//            } returns WalletBalanceModel(cashBalance = "Rp 0", pointBalance = "Rp 2345")
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getOvoData()
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).ovoSaldo.equals("Rp 0") &&
-//                    (dataList.first() as AccountHeaderViewModel).ovoPoint.isNotEmpty())
-//        }
-//    }
-//
-//    @Test
-//    fun `Success getOvoSaldo empty point`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getWalletBalanceUseCase.executeOnBackground()
-//            } returns WalletBalanceModel(cashBalance = "Rp 1234", pointBalance = "Rp 0")
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getOvoData()
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).ovoSaldo.isNotEmpty() &&
-//                    (dataList.first() as AccountHeaderViewModel).ovoPoint.equals("Rp 0"))
-//        }
-//    }
-//
-//    @Test
-//    fun `Success getOvoSaldo both empty`(){
-//        rule.testDispatcher.runBlockingTest {
-//            rule.testDispatcher.pauseDispatcher()
-//
-//            coEvery {
-//                getWalletBalanceUseCase.executeOnBackground()
-//            } returns WalletBalanceModel(cashBalance = "Rp 0", pointBalance = "Rp 0")
-//            getUserInfoUseCase.getBasicData()
-//
-//            viewModel.getProfileSection(defaultLoginState, shopId)
-//            viewModel.getOvoData()
-//
-//            rule.testDispatcher.resumeDispatcher()
-//            val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
-//
-//            Assert.assertTrue(dataList.isNotEmpty())
-//            Assert.assertTrue((dataList.first() as AccountHeaderViewModel).ovoPoint.equals("Rp 0")&&
-//                    (dataList.first() as AccountHeaderViewModel).ovoPoint.equals("Rp 0"))
-//        }
-//    }
+
+    @Test
+    fun `Error getShopName empty name`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getShopInfoUseCase = mockk<GetShopInfoUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getShopInfoUseCase.executeOnBackground()
+        } returns ShopInfoPojo(ShopInfoPojo.ShopCore(name = ""))
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getShopInfoUseCase = getShopInfoUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.shopName.isEmpty())
+    }
+
+    @Test
+    fun `Success getOvoSaldo`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getWalletBalanceUseCase.executeOnBackground()
+        } returns WalletBalanceModel(cashBalance = "Rp 1234", pointBalance = "Rp 2345")
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.ovoSaldo.isNotEmpty())
+    }
+
+    @Test
+    fun `Success getOvoSaldo empty saldo`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getWalletBalanceUseCase.executeOnBackground()
+        } returns WalletBalanceModel(cashBalance = "", pointBalance = "Rp 2345")
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.ovoPoint.isNotEmpty()
+                && accountHeaderViewModel.ovoSaldo.isEmpty())
+    }
+
+    @Test
+    fun `Success getOvoSaldo empty point`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getWalletBalanceUseCase.executeOnBackground()
+        } returns WalletBalanceModel(cashBalance = "Rp 1234", pointBalance = "")
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.ovoPoint.isEmpty()
+                && accountHeaderViewModel.ovoSaldo.isNotEmpty())
+    }
+
+    @Test
+    fun `Success getOvoSaldo both empty`(){
+        val getUserInfoUseCase = mockk<GetUserInfoUseCase>()
+        val getWalletBalanceUseCase = mockk<GetCoroutineWalletBalanceUseCase>()
+        val getMainNavDataUseCase = mockk<GetMainNavDataUseCase>()
+        getUserInfoUseCase.getBasicData()
+        getMainNavDataUseCase.getBasicData()
+        coEvery {
+            getWalletBalanceUseCase.executeOnBackground()
+        } returns WalletBalanceModel(cashBalance = "", pointBalance = "")
+        viewModel = createViewModel(
+                getMainNavDataUseCase = getMainNavDataUseCase,
+                getWalletBalanceUseCase = getWalletBalanceUseCase)
+
+        val dataList = viewModel.mainNavLiveData.value?.dataList ?: mutableListOf()
+        val accountHeaderViewModel = dataList.find { it is AccountHeaderViewModel} as AccountHeaderViewModel
+        Assert.assertTrue(dataList.isNotEmpty())
+        Assert.assertNotNull(accountHeaderViewModel)
+        Assert.assertTrue(accountHeaderViewModel.ovoPoint.isEmpty()
+                && accountHeaderViewModel.ovoSaldo.isEmpty())
+    }
 }
