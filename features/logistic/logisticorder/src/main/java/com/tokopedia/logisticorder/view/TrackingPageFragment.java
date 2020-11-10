@@ -356,7 +356,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                         ((BaseMainApplication) getActivity().getApplication())
                                 .getBaseAppComponent()
                 )
-                .trackingPageModule(new TrackingPageModule(this, getActivity().getApplicationContext()))
+                .trackingPageModule(new TrackingPageModule(this, getContext()))
                 .build();
         component.inject(this);
     }

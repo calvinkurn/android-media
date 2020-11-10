@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
@@ -83,7 +84,7 @@ public class TrackingPageModule {
 
     @Provides
     @TrackingPageScope
-    OkHttpClient provideOkHttpClient(@TrackingPageContext Context context,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      UserSession userSession,
                                      OkHttpRetryPolicy okHttpRetryPolicy) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
