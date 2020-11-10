@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view
 
+import android.widget.ImageView
 import com.tokopedia.cart.domain.model.cartlist.ActionData
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -27,7 +28,7 @@ interface ActionListener {
 
     fun onShowAllItem(appLink: String)
 
-    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData)
+    fun onAddDisabledItemToWishlist(data: DisabledCartItemHolderData, imageView: ImageView)
 
     fun onAddLastSeenToWishlist(productId: String)
 
@@ -63,8 +64,6 @@ interface ActionListener {
 
     fun onSimilarProductUrlClicked(similarProductUrl: String)
 
-    fun onSelectAllClicked()
-
     fun onDeleteAllDisabledProduct();
 
     fun onDeleteDisabledItem(data: DisabledCartItemHolderData)
@@ -74,8 +73,6 @@ interface ActionListener {
     fun onTobaccoLiteUrlClicked(url: String, data: DisabledCartItemHolderData, actionData: ActionData)
 
     fun onShowTickerTobacco()
-
-    fun onCartShopNameChecked(isAllChecked: Boolean)
 
     fun onAccordionClicked(data: DisabledAccordionHolderData, buttonWording: String)
 

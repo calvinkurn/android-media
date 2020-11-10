@@ -160,8 +160,11 @@ class TrackingRepository(
                 }
             } else {
                 lastSuccessSent = false
-                Timber.e("P1#IRIS#failedSendData %s", requestBody.toString())
+                Timber.e("P1#IRIS#failedSendData;data='${request.take(ERROR_MAX_LENGTH).trim()}'")
                 break
+            }
+            if (lastSuccessSent){
+                Timber.i("P1#IRIS#successSendData;data='${request.take(ERROR_MAX_LENGTH).trim()}'")
             }
             counterLoop++
         }

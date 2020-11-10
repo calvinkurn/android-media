@@ -8,9 +8,11 @@ import com.tokopedia.buyerorder.detail.domain.ErrorResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
+import com.tokopedia.buyerorder.list.di.OrderListModuleScope;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,5 +50,10 @@ public class OrderListDetailModule {
         interceptorList.add(new TkpdOldAuthInterceptor(context,
                 (NetworkRouter) context, new UserSession(context)));
         return new SendEventNotificationUseCase(interceptorList,context);
+    }
+
+    @Provides
+    UserSessionInterface providesUserSessionInterface(@ApplicationContext Context context){
+        return new UserSession(context);
     }
 }

@@ -148,7 +148,7 @@ public class FloatingButton extends BaseCustomView {
         shapeDrawable5.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.shadow_5));
 
         ShapeDrawable background = new ShapeDrawable();
-        background.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.white));
+        background.getPaint().setColor(ContextCompat.getColor(getContext(), R.color.Unify_N0));
 
         return new LayerDrawable(new Drawable[]{shapeDrawable1, shapeDrawable2,
                 shapeDrawable3, shapeDrawable4, shapeDrawable5, background});

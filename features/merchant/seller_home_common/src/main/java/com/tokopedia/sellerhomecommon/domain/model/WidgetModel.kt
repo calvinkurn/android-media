@@ -27,9 +27,6 @@ data class WidgetModel(
         @SerializedName("title")
         val title: String?,
         @Expose
-        @SerializedName("url")
-        val url: String?,
-        @Expose
         @SerializedName("widgetType")
         val widgetType: String?
 )
