@@ -4,15 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
-import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import com.bumptech.glide.load.Key
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
-import com.tokopedia.media.loader.utils.mediaSignature
 import com.tokopedia.media.loader.GlideBuilder.loadImage as glideLoadImage
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())

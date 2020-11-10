@@ -80,23 +80,24 @@ object GlideBuilder {
         with(properties) {
             val drawableError = imageView.drawableErrorResource(error)
 
-            if (source == null) {
+            if (data == null) {
                 imageView.setImageDrawable(drawableError)
             } else {
+                data?.let {
+                    if (it is String) {
+                        if (it.isEmpty()) {
+                            imageView.loadImage(R.drawable.ic_media_default_error)
+                            return
+                        }
 
-                if (source is String) {
-                    if (source.isEmpty()) {
-                        imageView.loadImage(R.drawable.ic_media_default_error)
-                        return
-                    }
-
-                    Loader.glideUrl(source).also {
-                        data = it
-                        signature = signature.mediaSignature(it)
+                        Loader.glideUrl(it).also { glideUrl ->
+                            data = glideUrl
+                            signature = signature.mediaSignature(glideUrl)
+                        }
                     }
                 }
 
-                GlideApp.with(context).asBitmap().load(source).apply {
+                GlideApp.with(context).asBitmap().load(data).apply {
                     when (imageView.scaleType) {
                         ImageView.ScaleType.FIT_CENTER -> fitCenter()
                         ImageView.ScaleType.CENTER_CROP -> centerCrop()
@@ -117,17 +118,17 @@ object GlideBuilder {
                     }
 
                     if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
-                    if (mediaDecodeFormat != null) format(mapToDecodeFormat(mediaDecodeFormat))
                     if (roundedRadius != 0f) transform(RoundedCorners(roundedRadius.toInt()))
-                    if (transformation != null) localTransform.add(transformation)
-                    if (resize != null) override(resize.width, resize.height)
                     if (properties.signature != null) signature(signature)
                     if (isCircular) localTransform.add(CircleCrop())
                     if (!isAnimate) dontAnimate()
 
+                    overrideSize?.let { override(it.width, it.height) }
+                    decodeFormat?.let { format(mapToDecodeFormat(it)) }
                     cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
                     drawableError?.let { drawable -> error(drawable) }
                     transforms?.let { localTransform.addAll(it) }
+                    transform?.let { localTransform.add(it) }
 
                     if (localTransform.isNotEmpty()) {
                         transform(MultiTransformation(localTransform))
