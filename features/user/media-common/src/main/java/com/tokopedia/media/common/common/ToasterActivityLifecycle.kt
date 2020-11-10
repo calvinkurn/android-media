@@ -10,9 +10,10 @@ import android.view.ViewGroup
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.IMAGE_QUALITY_SETTING
 import com.tokopedia.media.common.R
+import com.tokopedia.media.common.data.LOW_QUALITY
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.unifycomponents.Toaster
-import java.lang.Exception
+import com.tokopedia.media.common.util.NetworkManager.state as networkManagerState
 
 class ToasterActivityLifecycle(
         private val context: Context
@@ -22,8 +23,10 @@ class ToasterActivityLifecycle(
 
     override fun onActivityStarted(activity: Activity) {
         if (!WHITELIST.singleOrNull {
-            it == activity.javaClass.canonicalName
-        }.isNullOrEmpty() && !preferences.toasterVisibility()) {
+                    it == activity.javaClass.canonicalName
+                }.isNullOrEmpty()
+                && !preferences.toasterVisibility()
+                && networkManagerState(context) == LOW_QUALITY) {
             try {
                 showToaster(activity)
             } catch (ignored: Exception) {}
@@ -50,23 +53,22 @@ class ToasterActivityLifecycle(
                     preferences.setToasterVisibilityFlag(true)
 
                     // show toaster
-                    Toaster.make(
+                    Toaster.build(
                             view = it,
                             text = getString(R.string.media_toaster_title),
                             actionText = getString(R.string.media_toaster_cta),
-                            duration = Toaster.LENGTH_LONG,
                             type = Toaster.TYPE_NORMAL,
                             clickListener = View.OnClickListener {
                                 startActivity(RouteManager.getIntent(this, IMAGE_QUALITY_SETTING))
                             }
-                    )
+                    ).setDuration(4000)
                 }
             }
-        }, DELAY_SHOW_TOAST)
+        }, DELAY_PRE_SHOW_TOAST)
     }
 
     companion object {
-        private const val DELAY_SHOW_TOAST = 2500L
+        private const val DELAY_PRE_SHOW_TOAST = 2500L
 
         private val WHITELIST = arrayOf(
                 "com.tokopedia.product.detail.view.activity.ProductDetailActivity",
