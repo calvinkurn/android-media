@@ -21,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -594,9 +593,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showEmptyPreferenceCard() {
-        imageEmptyProfile?.let {
-            ImageHandler.LoadImage(it, EMPTY_PROFILE_IMAGE)
-        }
+        imageEmptyProfile?.setImageUrl(EMPTY_PROFILE_IMAGE)
         emptyPreferenceCard?.visible()
         preferenceCard?.gone()
         orderTotalPaymentCard.setPaymentVisible(false)
