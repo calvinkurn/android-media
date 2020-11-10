@@ -30,27 +30,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tickerType="announcement" />
 
-    <com.tokopedia.unifycomponents.SearchBarUnify
+    <com.tokopedia.design.text.SearchInputView
         android:id="@+id/searchBarSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="14dp"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:background="@drawable/bg_corner"
+        android:clickable="true"
+        android:focusable="true"
+        android:textColorHint="@android:color/darker_gray"
+        android:textSize="@dimen/fontSize_lvl2"
         app:layout_constraintTop_toBottomOf="@id/tickerSomList"
-        app:search_bar_clearable="true"
-        app:search_bar_enable="true"
-        app:search_bar_placeholder="@string/hint_search_product"
-        app:search_bar_show_icon="false" />
+        app:siv_search_hint="@string/hint_search_product"
+        app:siv_search_icon="@drawable/unify_search_ic" />
 
     <com.tokopedia.sortfilter.SortFilter
         android:id="@+id/sortFilterSomList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/som_list_sort_filter_horizontal_padding"
-        android:layout_marginTop="@dimen/som_list_sort_filter_margin_top"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/layout_lvl0"
-        android:paddingBottom="@dimen/spacing_lvl4"
+        android:paddingBottom="14dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/searchBarSomList"
         app:layout_scrollFlags="scroll|snap"

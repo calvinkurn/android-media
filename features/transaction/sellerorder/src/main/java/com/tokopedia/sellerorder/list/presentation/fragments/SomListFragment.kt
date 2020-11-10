@@ -67,6 +67,7 @@ import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.go
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToSomOrderDetail
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.list.presentation.viewmodels.SomListViewModel
+import com.tokopedia.sellerorder.list.presentation.widget.DottedNotification
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.activity.WaitingPaymentOrderActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -163,6 +164,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var isWaitingPaymentOrderPageOpened: Boolean = false
     private var isRefreshingSelectedOrder: Boolean = false
     private var shouldShowCoachMark: Boolean = false
     private var shouldScrollToTop: Boolean = false
@@ -250,19 +252,27 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         menu.clear()
         inflater.inflate(R.menu.menu_som_list, menu)
         this.menu = menu
-        if (viewModel.waitingPaymentCounterResult.value is Success) {
-            showWaitingPaymentOrderListMenu()
-        } else {
-            showWaitingPaymentOrderListMenuShimmer()
-        }
         view?.postDelayed({ reshowCoachMark() }, 500L)
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        val waitingPaymentCounterResult = viewModel.waitingPaymentCounterResult.value
+        if (waitingPaymentCounterResult is Success) {
+            if (!isWaitingPaymentOrderPageOpened && waitingPaymentCounterResult.data.amount > 0) {
+                showDottedWaitingPaymentOrderListMenu()
+            } else {
+                showWaitingPaymentOrderListMenu()
+            }
+            isWaitingPaymentOrderPageOpened = !isWaitingPaymentOrderPageOpened
+        } else {
+            showWaitingPaymentOrderListMenuShimmer()
+        }
+        super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if ((item.itemId == R.id.som_list_action_waiting_payment_order ||
-                        item.itemId == R.id.som_list_action_dotted_waiting_payment_order) &&
-                viewModel.waitingPaymentCounterResult.value !is Fail) {
-            showWaitingPaymentOrderListMenu()
+        if ((item.itemId == R.id.som_list_action_waiting_payment_order) && viewModel.waitingPaymentCounterResult.value !is Fail) {
+            activity?.invalidateOptionsMenu()
             goToWaitingPaymentOrderListPage()
             val waitingPaymentOrderCounterResult = viewModel.waitingPaymentCounterResult.value
             if (waitingPaymentOrderCounterResult is Success) {
@@ -272,6 +282,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         userSession.userId,
                         userSession.shopId)
             }
+            isWaitingPaymentOrderPageOpened = true
             return true
         }
 
@@ -671,15 +682,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun observeWaitingPaymentCounter() {
         viewModel.waitingPaymentCounterResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> {
-                    if (result.data.amount > 0) showDottedWaitingPaymentOrderListMenu()
-                    else showWaitingPaymentOrderListMenu()
-                }
                 is Fail -> {
-                    showWaitingPaymentOrderListMenu()
                     showToasterError(view)
                 }
             }
+            activity?.invalidateOptionsMenu()
         })
     }
 
@@ -1113,20 +1120,27 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showWaitingPaymentOrderListMenuShimmer() {
         menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = true
-        menu?.findItem(R.id.som_list_action_dotted_waiting_payment_order)?.isVisible = false
         menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
     }
 
     private fun showWaitingPaymentOrderListMenu() {
-        menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-        menu?.findItem(R.id.som_list_action_dotted_waiting_payment_order)?.isVisible = false
-        menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = true
+        context?.let {
+            menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
+            menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
+                icon = DottedNotification(it, R.drawable.ic_som_list_waiting_payment_button_icon, false)
+                isVisible = true
+            }
+        }
     }
 
     private fun showDottedWaitingPaymentOrderListMenu() {
-        menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
-        menu?.findItem(R.id.som_list_action_dotted_waiting_payment_order)?.isVisible = true
-        menu?.findItem(R.id.som_list_action_waiting_payment_order)?.isVisible = false
+        context?.let {
+            menu?.findItem(R.id.som_list_action_waiting_payment_order_shimmer)?.isVisible = false
+            menu?.findItem(R.id.som_list_action_waiting_payment_order)?.apply {
+                icon = DottedNotification(it, R.drawable.ic_som_list_waiting_payment_button_icon, true)
+                isVisible = true
+            }
+        }
     }
 
     private fun onUserNotAllowedToViewSOM() {
@@ -1178,7 +1192,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         if (isLoadingInitialData && data.isEmpty()) {
             showEmptyState()
             multiEditViews.gone()
-        } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchBarTextField.text.toString()) {
+        } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText.orEmpty()) {
             if (isLoadingInitialData) {
                 // when using diffutil and there is no changes, onBind is not called, onBind needed
                 // to trigger show coachmark
@@ -1445,7 +1459,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somListSortFilterTab.selectTab(it)
                 refreshOrderList()
             } else {
-                if(isReset) {
+                if (isReset) {
                     somListSortFilterTab.updateTabs(somListFilter.statusList)
                 }
                 somListSortFilterTab.updateCounterSortFilter()

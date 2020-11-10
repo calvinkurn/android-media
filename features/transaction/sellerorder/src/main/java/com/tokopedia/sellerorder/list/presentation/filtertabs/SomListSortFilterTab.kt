@@ -30,7 +30,7 @@ class SomListSortFilterTab(
         selectParentFilter()
     }
 
-    private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
+    fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         // use old filter items if any
         val filters = statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }
                 .map { statusFilter ->
