@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
  * Created by fwidjaja on 06/05/20.
  */
 
-class UohTestDispatcherProvider: BuyerDispatcherProvider {
+class BuyerTestDispatcherProvider: BuyerDispatcherProvider {
 
     override fun io(): CoroutineDispatcher {
         return Dispatchers.Unconfined

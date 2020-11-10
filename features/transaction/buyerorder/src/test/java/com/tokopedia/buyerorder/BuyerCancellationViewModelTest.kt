@@ -3,11 +3,13 @@ package com.tokopedia.buyerorder
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.JsonArray
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
-import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.buyerorder.detail.data.getcancellationreason.BuyerGetCancellationReasonData
+import com.tokopedia.buyerorder.detail.data.instantcancellation.BuyerInstantCancelData
+import com.tokopedia.buyerorder.detail.domain.BuyerGetCancellationReasonUseCase
+import com.tokopedia.buyerorder.detail.domain.BuyerInstantCancelUseCase
+import com.tokopedia.buyerorder.detail.domain.BuyerRequestCancelUseCase
+import com.tokopedia.buyerorder.detail.view.viewmodel.BuyerCancellationViewModel
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
-import com.tokopedia.buyerorder.unifiedhistory.list.domain.*
-import com.tokopedia.buyerorder.unifiedhistory.list.view.viewmodel.UohListViewModel
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -21,17 +23,16 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /**
- * Created by fwidjaja on 2020-05-07.
+ * Created by fwidjaja on 10/11/20.
  */
 
 @RunWith(JUnit4::class)
-class UohListViewModelTest {
-
+class BuyerCancellationViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
     private val dispatcher = BuyerTestDispatcherProvider()
-    private lateinit var uohListViewModel: UohListViewModel
+    private lateinit var buyerCancellationViewModel: BuyerCancellationViewModel
     private var listOrderHistory = listOf<UohListOrder.Data.UohOrders.Order>()
     private var listRecommendation = listOf<RecommendationWidget>()
     private var finishOrderResult = UohFinishOrder.Data.FinishOrderBuyer()
@@ -39,38 +40,26 @@ class UohListViewModelTest {
     private var flightResendEmailResult = listOf<FlightResendEmail.Data>()
     private var trainResendEmailResult = listOf<TrainResendEmail.Data>()
     private var rechargeSetFailResult = listOf<RechargeSetFailData.Data>()
-    private var listMsg = arrayListOf<String>()
+    private var listReason = arrayListOf<String>()
 
     @RelaxedMockK
-    lateinit var uohListUseCase: UohListUseCase
+    lateinit var getCancellationUseCase: BuyerGetCancellationReasonUseCase
 
     @RelaxedMockK
-    lateinit var getRecommendationUseCase: GetRecommendationUseCase
+    lateinit var buyerInstantCancelUseCase: BuyerInstantCancelUseCase
 
     @RelaxedMockK
-    lateinit var uohFinishOrderUseCase: UohFinishOrderUseCase
-
-    @RelaxedMockK
-    lateinit var atcMultiProductsUseCase: AddToCartMultiUseCase
-
-    @RelaxedMockK
-    lateinit var lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase
-
-    @RelaxedMockK
-    lateinit var flightResendEmailUseCase: FlightResendEmailUseCase
-
-    @RelaxedMockK
-    lateinit var trainResendEmailUseCase: TrainResendEmailUseCase
-
-    @RelaxedMockK
-    lateinit var rechargeSetFailUseCase: RechargeSetFailUseCase
+    lateinit var buyerRequestCancelUseCase: BuyerRequestCancelUseCase
 
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        uohListViewModel = UohListViewModel(dispatcher, uohListUseCase,
-                getRecommendationUseCase, uohFinishOrderUseCase, atcMultiProductsUseCase,
-                lsPrintFinishOrderUseCase, flightResendEmailUseCase, trainResendEmailUseCase, rechargeSetFailUseCase)
+        buyerCancellationViewModel = BuyerCancellationViewModel(dispatcher, getCancellationUseCase,
+                buyerInstantCancelUseCase, buyerRequestCancelUseCase)
+
+        listReason.add("test1")
+        listReason.add("test2")
+        listReason.add("test3")
 
         val order1 = UohListOrder.Data.UohOrders.Order(orderUUID = "abc", verticalID = "",
                 verticalCategory = "", userID = "", status = "", verticalStatus = "", searchableText = "",
@@ -99,58 +88,58 @@ class UohListViewModelTest {
         listMsg.add("Test")
     }
 
-    // order_history_list
+    // get cancel reason data
     @Test
-    fun getOrderHistoryData_shouldReturnSuccess() {
+    fun getCancelReasonData_shouldReturnSuccess() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            getCancellationUseCase.execute(any(), any())
+        } returns Success(BuyerGetCancellationReasonData.Data())
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders[0].orderUUID.equals("abc", true))
+        assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
+        assert((buyerCancellationViewModel.cancelReasonResult.value as Success<BuyerGetCancellationReasonData.Data>).data.getCancellationReason.reasons == listReason)
     }
 
     @Test
-    fun getOrderHistoryData_shouldReturnFail() {
+    fun getCancelReasonData_shouldReturnFail() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
+            getCancellationUseCase.execute(any(), any())
         } returns Fail(Throwable())
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        buyerCancellationViewModel.getCancelReasons("", "", "", "")
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Fail)
+        assert(buyerCancellationViewModel.cancelReasonResult.value is Fail)
     }
 
     @Test
-    fun getOrderHistoryData_shouldNotReturnEmpty() {
+    fun getCancelReasonData_shouldNotReturnEmpty() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            getCancellationUseCase.execute(any(), any())
+        } returns Success(BuyerGetCancellationReasonData.Data())
 
         //when
-        uohListViewModel.loadOrderList("", UohListParam())
+        buyerCancellationViewModel.getCancelReasons("", "", "")
 
         //then
-        assert(uohListViewModel.orderHistoryListResult.value is Success)
-        assert((uohListViewModel.orderHistoryListResult.value as Success<UohListOrder.Data.UohOrders>).data.orders.size > 0)
+        assert(buyerCancellationViewModel.cancelReasonResult.value is Success)
+        assert((buyerCancellationViewModel.cancelReasonResult.value as Success<BuyerGetCancellationReasonData.Data>).data.getCancellationReason.reasons.isNotEmpty())
     }
 
-    // recommendation
+    // instant cancel
     @Test
-    fun getRecommendation_shouldReturnSuccess() {
+    fun getInstantCancel_shouldReturnSuccess() {
         //given
         coEvery {
-            uohListUseCase.execute(any(), any())
-        } returns Success(UohListOrder.Data.UohOrders(listOrderHistory))
+            buyerInstantCancelUseCase.execute(any(), any())
+        } returns Success(BuyerInstantCancelData.Data)
 
         //when
         uohListViewModel.loadOrderList("", UohListParam())
