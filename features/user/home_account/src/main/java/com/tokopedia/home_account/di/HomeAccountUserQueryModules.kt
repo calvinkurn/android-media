@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-10-09.
@@ -38,5 +39,12 @@ class HomeAccountUserQueryModules {
     @StringKey(AccountConstants.Query.QUERY_USER_REWARDSHORCUT)
     fun provideRawQueryShortcut(@HomeAccountUserContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_account_shortcut)
+
+    @HomeAccountUserScope
+    @Provides
+    @Named("recommendationQuery")
+    fun provideRecommendationRawQuery(@HomeAccountUserContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
+    }
 
 }

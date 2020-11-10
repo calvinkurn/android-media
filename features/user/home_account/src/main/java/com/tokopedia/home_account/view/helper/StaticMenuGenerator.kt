@@ -54,4 +54,11 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(title = context?.getString(R.string.menu_account_title_review), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_rating, id = AccountConstants.SettingCode.SETTING_APP_REVIEW_ID))
                 , showArrowDown = true)
     }
+
+    fun generateDeveloperOptionsSettingMenu(): SettingDataView {
+        return  SettingDataView(context.getString(R.string.menu_account_section_title_developer), mutableListOf(
+                CommonDataView(title = context.getString(R.string.menu_account_title_dev_options), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_toped, id = AccountConstants.SettingCode.SETTING_DEV_OPTIONS),
+                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_toped, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM))
+                , showArrowDown = true)
+    }
 }

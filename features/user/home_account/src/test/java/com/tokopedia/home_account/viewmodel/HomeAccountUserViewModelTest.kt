@@ -3,15 +3,18 @@ package com.tokopedia.home_account.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.home_account.PermissionChecker
-import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.ShortcutResponse
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
 import com.tokopedia.home_account.domain.usecase.HomeAccountUserUsecase
 import com.tokopedia.home_account.domain.usecase.HomeAccountWalletBalanceUseCase
+import com.tokopedia.home_account.domain.usecase.SafeSettingProfileUseCase
+import com.tokopedia.home_account.getOrAwaitValue
 import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.view.HomeAccountUserViewModel
 import com.tokopedia.navigation_common.model.*
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,14 +24,12 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertFalse
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
 
 /**
  * Created by Yoris Prayogo on 14/07/20.
@@ -43,6 +44,8 @@ class HomeAccountUserViewModelTest {
     val homeAccountUserUsecase = mockk<HomeAccountUserUsecase>(relaxed = true)
     val homeAccountShortcutUseCase = mockk<HomeAccountShortcutUseCase>(relaxed = true)
     val homeAccountWalletBalanceUseCase = mockk<HomeAccountWalletBalanceUseCase>(relaxed = true)
+    private val homeAccountSafeSettingProfileUseCase = mockk<SafeSettingProfileUseCase>(relaxed = true)
+    private val homeAccountRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
     val walletPref = mockk<WalletPref>(relaxed = true)
@@ -64,6 +67,8 @@ class HomeAccountUserViewModelTest {
                 homeAccountUserUsecase,
                 homeAccountShortcutUseCase,
                 homeAccountWalletBalanceUseCase,
+                homeAccountSafeSettingProfileUseCase,
+                homeAccountRecommendationUseCase,
                 walletPref,
                 permissionChecker,
                 dispatcher
@@ -140,6 +145,76 @@ class HomeAccountUserViewModelTest {
         assertFalse(viewModel.settingData.value?.items?.isEmpty() == true)
         assertFalse(viewModel.settingApplication.value?.items?.isEmpty() == true)
         assertFalse(viewModel.aboutTokopedia.value?.items?.isEmpty() == true)
+    }
+
+    @Test
+    fun `Successfully get recommendation first page`() {
+        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
+        every {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        } returns expectedResult
+
+        viewModel.getFirstRecommendation()
+
+        verify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+
+        val result = viewModel.firstRecommendationData.getOrAwaitValue()
+        Assertions.assertThat(result).isEqualTo(Success(expectedResult))
+    }
+
+    @Test
+    fun `Successfully get recommendation load more`() {
+        val testPage = 2
+        val expectedResult = mockk<RecommendationWidget>(relaxed = true)
+        every {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        } returns expectedResult
+
+        viewModel.getRecommendation(testPage)
+
+        verify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+
+        val result = viewModel.getRecommendationData.getOrAwaitValue()
+        Assertions.assertThat(result).isEqualTo(Success(expectedResult.recommendationItemList))
+    }
+
+    @Test
+    fun `Failed to get first recommendation`() {
+        val expectedResult = mockk<Throwable>(relaxed = true)
+        every {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        } throws expectedResult
+
+        viewModel.getFirstRecommendation()
+
+        verify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+
+        val result = viewModel.firstRecommendationData.getOrAwaitValue()
+        Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
+    }
+
+    @Test
+    fun `Failed to get more recommendation`() {
+        val testPage = 2
+        val expectedResult = mockk<Throwable>(relaxed = true)
+        every {
+            homeAccountRecommendationUseCase.createObservable(any()).toBlocking().single()[0]
+        } throws expectedResult
+
+        viewModel.getRecommendation(testPage)
+
+        verify {
+            homeAccountRecommendationUseCase.createObservable(any())
+        }
+
+        val result = viewModel.getRecommendationData.getOrAwaitValue()
+        Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
     }
 
 }
