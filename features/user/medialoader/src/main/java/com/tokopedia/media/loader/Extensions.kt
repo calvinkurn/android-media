@@ -57,5 +57,5 @@ fun ImageView?.clearImage() {
 @PublishedApi
 internal fun ImageView.call(url: Any?, properties: Properties) {
     val imageView = this
-    glideLoadImage(imageView, properties)
+    glideLoadImage(imageView, properties.apply { data = url })
 }
