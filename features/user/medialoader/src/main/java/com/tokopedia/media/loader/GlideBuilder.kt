@@ -38,11 +38,6 @@ object GlideBuilder {
             "ABP?2U~X5J^~"
     )
 
-    private fun glideAsBitmap(
-            context: Context,
-            source: Any?
-    ) = GlideApp.with(context).asBitmap().load(source)
-
     private fun glideListener(
             listener: LoaderStateListener?
     ) = object : RequestListener<Bitmap> {
@@ -101,7 +96,7 @@ object GlideBuilder {
                     }
                 }
 
-                glideAsBitmap(context, data).apply {
+                GlideApp.with(context).asBitmap().load(source).apply {
                     when (imageView.scaleType) {
                         ImageView.ScaleType.FIT_CENTER -> fitCenter()
                         ImageView.ScaleType.CENTER_CROP -> centerCrop()
@@ -165,7 +160,9 @@ object GlideBuilder {
     }
 
     private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
-        return glideAsBitmap(context, resource)
+        return GlideApp.with(context)
+                .asBitmap()
+                .load(resource)
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
