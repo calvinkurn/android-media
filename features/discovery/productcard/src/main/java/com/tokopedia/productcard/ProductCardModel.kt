@@ -150,12 +150,25 @@ data class ProductCardModel (
     }
 
     fun getRenderedLabelGroupVariantList(): List<LabelGroupVariant> {
+        val (colorVariant, sizeVariant, customVariant) = getSplittedLabelGroupVariant()
+
+        if (colorVariant.size < 2 && sizeVariant.size < 2) return listOf()
+
+        val colorVariantTaken = if (colorVariant.size >= 2) 5 else 0
+        val sizeVariantTaken = if (colorVariantTaken > 0) 0 else 5
+
+        return colorVariant.take(colorVariantTaken) + sizeVariant.take(sizeVariantTaken) + customVariant
+    }
+
+    private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
         val sizeVariantLimit = 16
         var sizeVariantCount = 0
+
         val colorVariant = mutableListOf<LabelGroupVariant>()
         val sizeVariant = mutableListOf<LabelGroupVariant>()
         val customVariant = mutableListOf<LabelGroupVariant>()
-        for (element in labelGroupVariant) {
+
+        labelGroupVariant.forEach { element ->
             when {
                 element.isColor() -> {
                     colorVariant.add(element)
@@ -172,11 +185,6 @@ data class ProductCardModel (
             }
         }
 
-        if (colorVariant.size < 2 && sizeVariant.size < 2) return listOf()
-
-        val colorVariantTaken = if (colorVariant.size >= 2) 5 else 0
-        val sizeVariantTaken = if (colorVariantTaken > 0) 0 else 5
-
-        return colorVariant.take(colorVariantTaken) + sizeVariant.take(sizeVariantTaken) + customVariant
+        return Triple(colorVariant, sizeVariant, customVariant)
     }
 }
