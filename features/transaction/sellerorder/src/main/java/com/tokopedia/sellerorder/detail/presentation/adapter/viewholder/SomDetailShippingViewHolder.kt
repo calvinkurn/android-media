@@ -135,7 +135,12 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                 // dropshipper
                 if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
                     rl_drop_shipper.visibility = View.VISIBLE
-                    tv_som_dropshipper_name.text = item.dataObject.dropshipperName
+                    val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
+                        item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
+                    } else {
+                        item.dataObject.dropshipperPhone
+                    }
+                    tv_som_dropshipper_name.text = StringBuilder("${item.dataObject.dropshipperName} (${numberPhoneDropShipper})")
                 } else {
                     rl_drop_shipper.visibility = View.GONE
                 }
