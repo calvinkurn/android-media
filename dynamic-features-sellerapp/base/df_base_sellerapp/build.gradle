@@ -63,7 +63,6 @@ dependencies {
     implementation project(rootProject.ext.features.layanan)
 
     //Content
-//    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.playBroadcaster)
 
     //Discovery

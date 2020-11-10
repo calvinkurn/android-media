@@ -206,7 +206,6 @@
     <string name="payment_label_button_add_card">Tambah Kartu</string>
     <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
 
-
     <!--Dynamic feature for affiliate-->
     <string name="title_affiliate_df">Affiliate</string>
     <string name="title_af_affiliate">Affiliate</string>
@@ -233,7 +232,6 @@
     <string name="title_som_scan_barcode">Scan Resi</string>
     <string name="title_som_booking_code">Detail Kode Booking</string>
     <string name="title_som_waiting_payment">Menunggu Pembayaran</string>
-
 
     <!-- Dynamic feature for Umrah-->
     <string name="df_title_salam_umrah">Umrah</string>
@@ -271,7 +269,6 @@
     <string name="ent_event_checkout_title_page">Ringkasan Pemesanan</string>
     <string name="ent_pdp_title_form">Data Pemesan</string>
     <string name="ent_redeem_title">Redeem Your Ticket</string>
-
 
     <!--Play-->
     <string name="title_play_df">Play</string>
@@ -324,4 +321,7 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
+
+    <!--Dynamic feature for profile-->
+    <string name="title_profile_df">Profile</string>
 </resources>
