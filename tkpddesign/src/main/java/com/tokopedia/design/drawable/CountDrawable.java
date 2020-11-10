@@ -29,7 +29,7 @@ public class CountDrawable extends Drawable {
 
     private void createTextPaint(Context context) {
         textPaint = new Paint();
-        textPaint.setColor(Color.WHITE);
+        textPaint.setColor(androidx.core.content.ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_N0));
         textPaint.setTypeface(Typeface.DEFAULT);
         textPaint.setTextSize(context.getResources().getDimension(R.dimen.sp_8));
         textPaint.setAntiAlias(true);

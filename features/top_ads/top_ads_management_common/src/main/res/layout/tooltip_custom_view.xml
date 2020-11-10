@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="#FFFCF5"
+    android:backgroundTint="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:textAllCaps="false"
         app:typographyType="heading_6"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G400"
         android:layout_marginLeft="@dimen/dp_8"
         app:layout_constraintLeft_toRightOf="@+id/tooltip_icon"
         app:layout_constraintTop_toTopOf="parent"/>
