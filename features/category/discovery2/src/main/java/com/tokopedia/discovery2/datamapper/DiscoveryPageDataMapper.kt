@@ -234,7 +234,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
     discoveryPageData[pageName]?.let {
-        return it.componentMap[componentId]?:it.component
+        return it.componentMap[componentId]
     }
     return null
 }
