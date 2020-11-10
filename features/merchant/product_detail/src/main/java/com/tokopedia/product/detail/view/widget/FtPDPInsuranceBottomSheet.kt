@@ -16,10 +16,18 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.webview.TkpdWebView
 
-class FtPDPInsuranceBottomSheet : BottomSheetUnify(){
+class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val KEY_SPONSOR_URL = "sponsorUrl"
+
+        fun getFtPDPInsuranceBottomSheet(sponsorUrl: String) = FtPDPInsuranceBottomSheet().apply {
+
+            val bundleData = Bundle().apply {
+                putString(KEY_SPONSOR_URL, sponsorUrl)
+            }
+            arguments = bundleData
+        }
     }
 
     //private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
@@ -84,6 +92,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify(){
             behavior.isHideable = true
             behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
+        isCancelable = true
         return bottomSheetDialog
     }
 
