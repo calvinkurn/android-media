@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-<<<<<<< HEAD
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource
@@ -22,9 +22,6 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.transform.CenterCrop
 import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
-=======
-import com.tokopedia.kotlin.extensions.view.show
->>>>>>> dac633e63076d6aa413a465bcfe31558c7e2db29
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label

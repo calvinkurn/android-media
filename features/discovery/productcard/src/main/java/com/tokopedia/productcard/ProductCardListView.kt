@@ -124,20 +124,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
-
     override fun recycle() {
         imageProduct?.glideClear()
         imageFreeOngkirPromo?.glideClear()
     }
 
-<<<<<<< HEAD
-=======
     override fun getThreeDotsButton(): View? = imageThreeDots
 
-
-
-
->>>>>>> dac633e63076d6aa413a465bcfe31558c7e2db29
     /**
      * Special cases for specific pages
      * */
