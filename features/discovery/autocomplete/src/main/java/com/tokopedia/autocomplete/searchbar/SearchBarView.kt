@@ -73,19 +73,23 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private val mOnClickListener = OnClickListener { v ->
-        if (v === actionUpBtn || v === actionCancelButton) {
-            KeyboardHandler.DropKeyboard(activity, searchTextView)
-            activity?.finish()
-        } else if (v === actionVoiceButton) {
-            onVoiceClicked()
-        } else if (v === actionEmptyButton) {
-            searchTextView?.text = null
+        when {
+            v === actionUpBtn -> {
+                KeyboardHandler.DropKeyboard(activity, searchTextView)
+                activity?.finish()
+            }
+            v === actionVoiceButton -> {
+                onVoiceClicked()
+            }
+            v === actionEmptyButton -> {
+                searchTextView?.text = null
+            }
         }
     }
 
     private val searchNavigationOnClickListener = OnClickListener { v ->
         when {
-            v === actionCancelButton -> {
+            v === autocompleteActionUpButton -> {
                 KeyboardHandler.DropKeyboard(activity, searchTextView)
                 activity?.finish()
             }
@@ -128,7 +132,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         LayoutInflater.from(mContext).inflate(R.layout.autocomplete_search_bar_view, this, true)
 
         if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) {
-            configureSearchNavigationView()
+            configureSearchNavigationLayout()
             setSearchNavigationListener()
         } else {
             setListener()
@@ -143,12 +147,20 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         initSearchView()
     }
 
-    private fun configureSearchNavigationView() {
+    private fun configureSearchNavigationLayout() {
+        configureOldNavButton()
+        configureSearchNavigationView()
+    }
+
+    private fun configureOldNavButton() {
         actionUpBtn?.visibility = View.GONE
         autocompleteIconSearch?.visibility = View.GONE
         actionEmptyButton?.visibility = View.GONE
         actionVoiceButton?.visibility = View.GONE
+    }
 
+    private fun configureSearchNavigationView() {
+        autocompleteActionUpButton?.visibility = View.VISIBLE
         autocompleteVoiceButton?.visibility = View.VISIBLE
         autocompleteClearButton?.visibility = View.VISIBLE
         autocompleteSearchIcon?.visibility = View.VISIBLE
@@ -156,16 +168,15 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun setSearchNavigationListener(){
+        autocompleteActionUpButton?.setOnClickListener(searchNavigationOnClickListener)
         autocompleteVoiceButton?.setOnClickListener(searchNavigationOnClickListener)
         autocompleteClearButton?.setOnClickListener(searchNavigationOnClickListener)
-        actionCancelButton?.setOnClickListener(searchNavigationOnClickListener)
     }
 
     private fun setListener(){
         actionUpBtn?.setOnClickListener(mOnClickListener)
         actionVoiceButton?.setOnClickListener(mOnClickListener)
         actionEmptyButton?.setOnClickListener(mOnClickListener)
-        actionCancelButton?.setOnClickListener(mOnClickListener)
     }
 
     private fun showVoiceButton(show: Boolean) {
@@ -305,12 +316,11 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteClearButton?.visibility = View.VISIBLE
             else actionEmptyButton?.visibility = View.VISIBLE
 
-            actionCancelButton?.visibility = View.VISIBLE
             showVoiceButton(false)
         } else {
             if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteClearButton?.visibility = View.GONE
             else actionEmptyButton?.visibility = View.GONE
-            actionCancelButton?.visibility = View.GONE
+
             showVoiceButton(true)
         }
 
