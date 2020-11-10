@@ -10,6 +10,7 @@ import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.PersistentButton
+import java.lang.Exception
 
 /**
  * @author lalit.singh
@@ -48,10 +49,10 @@ class PersistentNotification internal constructor(
         // close button of persistent notification
         remoteView.setOnClickPendingIntent(R.id.image_icon5, getPersistentClosePendingIntent())
 
-        remoteView.setImageViewResource(R.id.image_icon5, if (isDarkMode()) {
-            R.drawable.cm_ic_btn_close_white
-        } else {
+        remoteView.setImageViewResource(R.id.image_icon5, if (isNightMode()) {
             R.drawable.cm_ic_btn_close_black
+        } else {
+            R.drawable.cm_ic_btn_close_white
         })
 
         // list of persistent button
@@ -76,13 +77,17 @@ class PersistentNotification internal constructor(
         return remoteView
     }
 
-    private fun isDarkMode(): Boolean {
-        return when (context.resources.configuration.uiMode and
-                Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> false
-            else -> false
+    private fun isNightMode(): Boolean {
+        return try {
+            when (context.resources.configuration.uiMode and
+                    Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_YES -> true
+                Configuration.UI_MODE_NIGHT_NO -> false
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> false
+                else -> false
+            }
+        } catch (ignored: Exception) {
+            false
         }
     }
 
