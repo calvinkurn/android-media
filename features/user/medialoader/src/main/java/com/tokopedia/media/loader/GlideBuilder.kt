@@ -30,13 +30,6 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecod
 
 object GlideBuilder {
 
-    private fun ImageView.resourceError(errorRes: Int) =
-            getDrawable(context, if (errorRes != 0) {
-                errorRes
-            } else {
-                R.drawable.ic_media_default_error
-            })
-
     private val blurHashRandom = listOf(
             "A4ADcRuO_2y?",
             "A9K{0B#R3WyY",
@@ -48,6 +41,13 @@ object GlideBuilder {
     private val exceptionBlurring = listOf(
             "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
     )
+
+    private fun ImageView.resourceError(errorRes: Int) =
+            getDrawable(context, if (errorRes != 0) {
+                errorRes
+            } else {
+                R.drawable.ic_media_default_error
+            })
 
     private fun glideListener(
             listener: LoaderStateListener?
@@ -75,30 +75,29 @@ object GlideBuilder {
     }
 
     @JvmOverloads
-    fun loadImage(imageView: ImageView, properties: Properties) {
+    fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
         with(properties) {
             val localTransform = mutableListOf<Transformation<Bitmap>>()
             val drawableError = imageView.resourceError(error)
             val context = imageView.context
+            var source = data
 
-            if (data == null) {
+            if (source == null) {
                 imageView.setImageDrawable(drawableError)
             } else {
-                data?.let {
-                    if (it is String) {
-                        if (it.isEmpty()) {
-                            imageView.loadImage(R.drawable.ic_media_default_error)
-                            return
-                        }
+                if (source is String) {
+                    if (source.isEmpty()) {
+                        imageView.loadImage(R.drawable.ic_media_default_error)
+                        return
+                    }
 
-                        Loader.glideUrl(it).also { glideUrl ->
-                            data = glideUrl
-                            signature = signature.mediaSignature(glideUrl)
-                        }
+                    Loader.glideUrl(source).also { glideUrl ->
+                        source = glideUrl
+                        signatureKey = signatureKey.mediaSignature(glideUrl)
                     }
                 }
 
-                GlideApp.with(context).asBitmap().load(data).apply {
+                GlideApp.with(context).asBitmap().load(source).apply {
                     when (imageView.scaleType) {
                         ImageView.ScaleType.FIT_CENTER -> fitCenter()
                         ImageView.ScaleType.CENTER_CROP -> centerCrop()
@@ -109,8 +108,8 @@ object GlideBuilder {
                     if (placeHolder != 0) {
                         placeholder(placeHolder)
                     } else {
-                        if (!isCircular || !isFreeOngkir(data)) {
-                            blurHashFromUrl(data) { hash ->
+                        if (!isCircular || !isFreeOngkirIcon(source)) {
+                            blurHash(source) { hash ->
                                 placeholder(BitmapDrawable(context.resources, blurring(hash)))
                             }
                         } else {
@@ -120,16 +119,16 @@ object GlideBuilder {
 
                     if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
                     if (roundedRadius != 0f) transform(RoundedCorners(roundedRadius.toInt()))
-                    if (properties.signature != null) signature(signature)
                     if (isCircular) localTransform.add(CircleCrop())
                     if (!isAnimate) dontAnimate()
 
+                    cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
                     overrideSize?.let { override(it.width, it.height) }
                     decodeFormat?.let { format(mapToDecodeFormat(it)) }
-                    cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
-                    drawableError?.let { drawable -> error(drawable) }
                     transforms?.let { localTransform.addAll(it) }
                     transform?.let { localTransform.add(it) }
+                    signatureKey?.let { signature(it) }
+                    drawableError?.let { error(it) }
 
                     if (localTransform.isNotEmpty()) {
                         transform(MultiTransformation(localTransform))
@@ -142,14 +141,14 @@ object GlideBuilder {
         }
     }
 
-    private fun isFreeOngkir(data: Any?): Boolean {
-        return if (data is GlideUrl) exceptionBlurring.contains(data.toStringUrl()) else false
+    private fun isFreeOngkirIcon(source: Any?): Boolean {
+        return if (source is GlideUrl) exceptionBlurring.contains(source.toStringUrl()) else false
     }
 
-    private fun blurHashFromUrl(url: Any?, blurHash: (String?) -> Unit) {
+    private fun blurHash(url: Any?, blurHash: (String?) -> Unit) {
         if (url is GlideUrl) {
             val hash = url.toStringUrl().toUri()?.getQueryParameter(BLUR_HASH_QUERY)
-            if (hash != null && hash.isNotEmpty()) {
+            if (!hash.isNullOrEmpty()) {
                 blurHash(hash)
             } else {
                 blurHash(blurHashRandom.random())
