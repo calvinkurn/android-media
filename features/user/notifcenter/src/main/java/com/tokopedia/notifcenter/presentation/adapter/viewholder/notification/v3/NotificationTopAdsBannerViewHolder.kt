@@ -2,8 +2,12 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
+import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.widget.TopAdsImageView
 
 class NotificationTopAdsBannerViewHolder constructor(
@@ -14,10 +18,44 @@ class NotificationTopAdsBannerViewHolder constructor(
 
     override fun bind(element: NotificationTopAdsBannerUiModel) {
         bindAd(element)
+        bindClick()
+        bindImpression(element)
+    }
+
+    private fun bindClick() {
+        adView?.setTopAdsImageViewClick(object : TopAdsImageViewClickListener {
+            override fun onTopAdsImageViewClicked(applink: String?) {
+                if (applink == null) return
+                RouteManager.route(adView.context, applink)
+            }
+        })
+    }
+
+    private fun bindImpression(element: NotificationTopAdsBannerUiModel) {
+        adView?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
+                if (!element.impressHolder.isInvoke) {
+                    hitTopAdsImpression(viewUrl)
+                    element.impressHolder.invoke()
+                }
+            }
+        })
     }
 
     private fun bindAd(element: NotificationTopAdsBannerUiModel) {
         adView?.loadImage(element.ad)
+    }
+
+    private fun hitTopAdsImpression(viewUrl: String) {
+        itemView.context.let {
+            TopAdsUrlHitter(it).hitImpressionUrl(
+                    this::class.java.simpleName,
+                    viewUrl,
+                    "",
+                    "",
+                    ""
+            )
+        }
     }
 
     companion object {
