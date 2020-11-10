@@ -12,9 +12,10 @@ import kotlinx.android.synthetic.main.shc_item_post_filter.view.*
  * Created By @ilhamsuaib on 06/11/20
  */
 
-class PostFilterAdapter(private val onItemClick: (PostFilterUiModel) -> Unit) : RecyclerView.Adapter<PostFilterAdapter.PostFilterViewHolder>() {
-
-    private var filterItems = emptyList<PostFilterUiModel>()
+class PostFilterAdapter(
+        private val filterItems: List<PostFilterUiModel>,
+        private val listener: Listener
+) : RecyclerView.Adapter<PostFilterAdapter.PostFilterViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostFilterViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,39 +24,30 @@ class PostFilterAdapter(private val onItemClick: (PostFilterUiModel) -> Unit) : 
     }
 
     override fun onBindViewHolder(holder: PostFilterViewHolder, position: Int) {
-        holder.bind(filterItems[position]) {
-            it.isSelected = true
-
-            filterItems.forEach { filterItem ->
-                if (it != filterItem) {
-                    it.isSelected = false
-                }
-            }
-
-            notifyDataSetChanged()
-            onItemClick(it)
-        }
+        holder.bind(filterItems[position], listener)
     }
 
     override fun getItemCount(): Int = filterItems.size
 
-    fun setItems(items: List<PostFilterUiModel>) {
-        this.filterItems = items
-    }
+    fun getItems() = filterItems
 
     class PostFilterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: PostFilterUiModel, onItemClick: (PostFilterUiModel) -> Unit) = with(itemView) {
+        fun bind(item: PostFilterUiModel, listener: Listener) = with(itemView) {
 
             tvShcPostFilterName.text = item.name
             radShcPostFilter.isChecked = item.isSelected
 
             radShcPostFilter.setOnClickListener {
-                onItemClick(item)
+                listener.onItemClick(item)
             }
             setOnClickListener {
-                onItemClick(item)
+                listener.onItemClick(item)
             }
         }
+    }
+
+    interface Listener {
+        fun onItemClick(item: PostFilterUiModel)
     }
 }

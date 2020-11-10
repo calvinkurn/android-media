@@ -6,22 +6,20 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.PostFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.PostFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.shc_bottom_sheet_content.view.*
 
 /**
  * Created By @ilhamsuaib on 06/11/20
  */
 
-class PostFilterBottomSheet : BottomSheetUnify() {
+class PostFilterBottomSheet : BottomSheetUnify(), PostFilterAdapter.Listener {
 
     companion object {
-        private const val TAG = "PostFilterBottomSheet"
+        const val TAG = "PostFilterBottomSheet"
         fun newInstance(): PostFilterBottomSheet {
             return PostFilterBottomSheet().apply {
                 showCloseIcon = false
@@ -39,26 +37,37 @@ class PostFilterBottomSheet : BottomSheetUnify() {
         setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
+    override fun onItemClick(item: PostFilterUiModel) {
+        postFilterAdapter?.getItems()?.forEach {
+            it.isSelected = it == item
+        }
+        postFilterAdapter?.notifyDataSetChanged()
+    }
+
     fun init(
             context: Context,
             postFilters: List<PostFilterUiModel>,
             onItemClick: (PostFilterUiModel) -> Unit
     ): PostFilterBottomSheet {
         if (postFilterAdapter == null) {
-            postFilterAdapter = PostFilterAdapter(onItemClick)
+            postFilterAdapter = PostFilterAdapter(postFilters, this)
         }
-        postFilterAdapter?.setItems(postFilters)
 
         setTitle(context.getString(R.string.shc_select_category))
         val inflater = LayoutInflater.from(context)
-        val child = inflater.inflate(R.layout.shc_bottom_sheet_content, LinearLayout(context), false)
+        val child = inflater.inflate(R.layout.shc_post_filter_bottom_sheet, LinearLayout(context), false)
         with(child) {
-            rvBottomSheetContent.layoutManager = LinearLayoutManager(context)
-            rvBottomSheetContent.adapter = postFilterAdapter
+            rvShcPostFilter.layoutManager = LinearLayoutManager(context)
+            rvShcPostFilter.adapter = postFilterAdapter
+            btnShcPostFilterApply.setOnClickListener {
+                val selected = postFilters.find { it.isSelected }
+                selected?.let {
+                    onItemClick(it)
+                }
+                dismiss()
+            }
         }
         setChild(child)
-        child.measure(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-        customPeekHeight = child.measuredHeight
         setShowListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }

@@ -12,10 +12,7 @@ import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
 import com.tokopedia.charts.model.*
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.getResColor
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.MultiLineMetricsAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
@@ -75,6 +72,9 @@ class MultiLineGraphViewHolder(
         }
 
         setOnMetricStateChanged(metric)
+        element?.let {
+            listener.sendMultiLineGraphMetricClick(it, metric)
+        }
     }
 
     private fun setupTooltip(element: MultiLineGraphWidgetUiModel) = with(itemView) {
@@ -198,6 +198,10 @@ class MultiLineGraphViewHolder(
 
             setupCta(element)
             setupTooltip(element)
+
+            addOnImpressionListener(element.impressHolder) {
+                listener.sendMultiLineGraphImpressionEvent(element)
+            }
         }
     }
 
@@ -216,15 +220,20 @@ class MultiLineGraphViewHolder(
         if (isCtaVisible) {
             tvShcMultiLineCta.text = element.ctaText
             tvShcMultiLineCta.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element)
             }
             imgShcMultiLineCta.setOnClickListener {
-                openAppLink(element.appLink)
+                openAppLink(element)
             }
         }
     }
 
-    private fun openAppLink(appLink: String): Boolean = RouteManager.route(itemView.context, appLink)
+    private fun openAppLink(element: MultiLineGraphWidgetUiModel) {
+        val isRouted = RouteManager.route(itemView.context, element.appLink)
+        if (isRouted) {
+            listener.sendMultiLineGraphCtaClick(element)
+        }
+    }
 
     private fun showLegendView() {
         with(itemView) {
@@ -519,6 +528,10 @@ class MultiLineGraphViewHolder(
     }
 
     interface Listener : BaseViewHolderListener {
+        fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {}
 
+        fun sendMultiLineGraphMetricClick(element: MultiLineGraphWidgetUiModel, metric: MultiLineMetricUiModel) {}
+
+        fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {}
     }
 }

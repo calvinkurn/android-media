@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
@@ -53,17 +54,22 @@ class AnnouncementViewHolder(
             tvShcAnnouncementSubTitle.text = element.data?.subtitle
             icuShcAnnouncement.setImage(IconUnify.CHEVRON_RIGHT)
 
-            ImageHandler.loadImageRounded2(context, imgShcAnnouncement, element.data?.imgUrl.orEmpty())
+            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcAnnouncement, element.data?.imgUrl.orEmpty())
 
-            val appLink = element.data?.appLink.orEmpty()
             setOnClickListener {
-                setOnCtaClick(appLink)
+                setOnCtaClick(element)
+            }
+
+            addOnImpressionListener(element.impressHolder) {
+                listener.sendAnnouncementImpressionEvent(element)
             }
         }
     }
 
-    private fun setOnCtaClick(appLink: String) {
-        RouteManager.route(itemView.context, appLink)
+    private fun setOnCtaClick(element: AnnouncementWidgetUiModel) {
+        if (RouteManager.route(itemView.context, element.data?.appLink.orEmpty())) {
+            listener.sendAnnouncementClickEvent(element)
+        }
     }
 
     private fun showLoadingState() {
@@ -73,5 +79,9 @@ class AnnouncementViewHolder(
         }
     }
 
-    interface Listener : BaseViewHolderListener
+    interface Listener : BaseViewHolderListener {
+        fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {}
+
+        fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {}
+    }
 }

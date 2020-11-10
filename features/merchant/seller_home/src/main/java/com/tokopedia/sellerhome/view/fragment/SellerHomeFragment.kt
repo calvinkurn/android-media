@@ -342,7 +342,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun getPostData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.setLoading()
-        val dataKeys = Utils.getWidgetDataKeys<PostListWidgetUiModel>(widgets)
+        val dataKeys: List<Pair<String, String>> = widgets.filterIsInstance<PostListWidgetUiModel>().map {
+            val postFilter = it.postFilter.find { filter -> filter.isSelected }?.value.orEmpty()
+            return@map Pair(it.dataKey, postFilter)
+        }
         performanceMonitoringSellerHomePostList = PerformanceMonitoring.start(SELLER_HOME_POST_LIST_TRACE)
         sellerHomeViewModel.getPostWidgetData(dataKeys)
     }
@@ -388,7 +391,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringAnnouncement = PerformanceMonitoring.start(SELLER_HOME_ANNOUNCEMENT_TRACE)
         sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
     }
-
 
 
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
@@ -460,6 +462,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickPostSeeMoreEvent(dataKey)
     }
 
+    override fun sendPostListFilterClick(element: PostListWidgetUiModel) {
+        SellerHomeTracking.sendPostListFilterClick(element, userSession.userId)
+    }
+
     override fun sendProgressImpressionEvent(dataKey: String, stateColor: String, valueScore: Int) {
         SellerHomeTracking.sendImpressionProgressBarEvent(dataKey, stateColor, valueScore)
     }
@@ -483,11 +489,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendBarChartImpressionEvent(model, position)
     }
 
-    override fun showPostFilter(postFilters: List<PostFilterUiModel>) {
+    override fun sendMultiLineGraphImpressionEvent(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphImpressionEvent(element, userSession.userId)
+    }
+
+    override fun sendMultiLineGraphMetricClick(element: MultiLineGraphWidgetUiModel, metric: MultiLineMetricUiModel) {
+        SellerHomeTracking.sendMultiLineGraphMetricClick(element, metric, userSession.userId)
+    }
+
+    override fun sendMultiLineGraphCtaClick(element: MultiLineGraphWidgetUiModel) {
+        SellerHomeTracking.sendMultiLineGraphCtaClick(element, userSession.userId)
+    }
+
+    override fun sendAnnouncementImpressionEvent(element: AnnouncementWidgetUiModel) {
+        SellerHomeTracking.sendAnnouncementImpressionEvent(element, userSession.userId)
+    }
+
+    override fun sendAnnouncementClickEvent(element: AnnouncementWidgetUiModel) {
+        SellerHomeTracking.sendAnnouncementClickEvent(element, userSession.userId)
+    }
+
+    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
         if (!isAdded || context == null) return
-        val postFilterBottomSheet = PostFilterBottomSheet.newInstance()
-        postFilterBottomSheet.init(requireContext(), postFilters) {
-            postFilterBottomSheet.dismiss()
+
+        val postFilterBottomSheet = (childFragmentManager.findFragmentByTag(PostFilterBottomSheet.TAG) as? PostFilterBottomSheet)
+                ?: PostFilterBottomSheet.newInstance()
+        postFilterBottomSheet.init(requireContext(), element.postFilter) {
+            element.data = null
+            notifyWidgetChanged(adapterPosition)
+            getPostData(listOf(element))
         }.show(childFragmentManager)
     }
 
