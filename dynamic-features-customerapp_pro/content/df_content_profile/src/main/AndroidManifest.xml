@@ -3,7 +3,7 @@
     package="com.tokopedia.df.content.profile">
 
     <dist:module
-        dist:title="@string/title_profile_df">
+        dist:title="@string/title_profile">
         <dist:delivery>
             <dist:on-demand/>
         </dist:delivery>
