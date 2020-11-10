@@ -8,7 +8,7 @@ data class DiscoveryResponse(
         var components: MutableList<ComponentsItem>,
 
         @SerializedName("component")
-        val component: ComponentsItem? = null,
+        var component: ComponentsItem? = null,
 
         @SerializedName("page_info")
         var pageInfo: PageInfo,

@@ -61,6 +61,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             dataItem.applinks = it.appUrl
             dataItem.typeProductCard = ComponentNames.ProductCardRevampItem.componentName
             dataItems.add(dataItem)
+            componentsItem.id = it.productId.toString()
             componentsItem.data = dataItems
             components.add(componentsItem)
         }

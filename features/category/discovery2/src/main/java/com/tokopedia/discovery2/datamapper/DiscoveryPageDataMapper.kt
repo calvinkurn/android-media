@@ -16,6 +16,9 @@ const val DYNAMIC_COMPONENT_IDENTIFIER = "dynamic_"
 
 fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryParameterMap: Map<String, String?>): DiscoveryPageData {
     val pageInfo = discoveryResponse.pageInfo
+    discoveryResponse.component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
+        discoveryResponse.componentMap[id] = this
+    }
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap)
     if (!discoveryResponse.components.isNullOrEmpty()) {
@@ -26,9 +29,14 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
             pageInfo.path?.let { path ->
                 it.pagePath = path
             }
-            discoveryResponse.componentMap[it.id] = it
+
             it.renderByDefault
         })
+        //TODO Sandeep optimize this looping
+        discoveryResponse.component?.setComponentsItem(discoveryPageData.components)
+        discoveryResponse.components.forEach {
+            discoveryResponse.componentMap[it.id] = it
+        }
     }
     return discoveryPageData
 }
@@ -226,7 +234,7 @@ class DiscoveryPageDataMapper(private val pageInfo: PageInfo, private val queryP
 
 fun getComponent(componentId: String, pageName: String): ComponentsItem? {
     discoveryPageData[pageName]?.let {
-        return it.componentMap[componentId]
+        return it.componentMap[componentId]?:it.component
     }
     return null
 }
