@@ -53,7 +53,7 @@ class AnnouncementViewHolder(
             tvShcAnnouncementSubTitle.text = element.data?.subtitle
             icuShcAnnouncement.setImage(IconUnify.CHEVRON_RIGHT)
 
-            ImageHandler.loadImageRounded(context, imgShcAnnouncement, element.data?.imgUrl, 0f)
+            ImageHandler.loadImageRounded2(context, imgShcAnnouncement, element.data?.imgUrl.orEmpty())
 
             val appLink = element.data?.appLink.orEmpty()
             setOnClickListener {
