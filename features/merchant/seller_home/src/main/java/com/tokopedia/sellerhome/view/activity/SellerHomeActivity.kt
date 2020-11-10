@@ -43,8 +43,6 @@ import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
-import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
-import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.navigator.SellerHomeNavigator
 import com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.BottomMenu
@@ -364,14 +362,14 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBottomC
         homeViewModel.getShopInfo()
     }
 
-    private fun showNotificationBadge(notifCenter: NotificationCenterUnreadUiModel) {
+    private fun showNotificationBadge(notifUnreadInt: Int) {
         val homeFragment = navigator?.getHomeFragment()
-        homeFragment?.setNotifCenterCounter(notifCenter.notifUnreadInt)
+        homeFragment?.setNotifCenterCounter(notifUnreadInt)
     }
 
-    private fun showChatNotificationCounter(chat: NotificationChatUiModel) {
-        val badgeVisibility = if (chat.unreadsSeller <= 0) View.INVISIBLE else View.VISIBLE
-        sahBottomNav.setBadge(chat.unreadsSeller, FragmentType.CHAT, badgeVisibility)
+    private fun showChatNotificationCounter(unreadsSeller: Int) {
+        val badgeVisibility = if (unreadsSeller <= 0) View.INVISIBLE else View.VISIBLE
+        sahBottomNav.setBadge(unreadsSeller, FragmentType.CHAT, badgeVisibility)
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {

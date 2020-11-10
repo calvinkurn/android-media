@@ -152,9 +152,6 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                 setFragment()
             }
         })
-        viewModel.imeiResponseLiveData.observe(this, Observer {
-            (currentFragment as TradeInInitialPriceFragment).setWrongImei(it)
-        })
 
         viewModel.tradeInHomeStateLiveData.observe(this, Observer {
             when(it) {

@@ -85,6 +85,10 @@ class GlobalSearchView : BaseCustomView {
         searchViewListener?.onQueryTextChangeListener(searchKeyword)
     }
 
+    fun setPlaceholder(placeholder: String) {
+        searchBarView?.searchBarPlaceholder = placeholder
+    }
+
     private fun initCompositeSubscriber() {
         compositeSubscription = getNewCompositeSubIfUnsubscribed(compositeSubscription)
         compositeSubscription?.add(Observable.unsafeCreate(Observable.OnSubscribe<String> { subscriber ->
