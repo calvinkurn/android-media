@@ -30,6 +30,7 @@ import com.tokopedia.autocomplete.R
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey
 import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -160,11 +161,25 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private fun configureSearchNavigationView() {
+        configureSearchNavigationButtonVisibility()
+        configureSearchNavigationSearchTextView()
+    }
+
+    private fun configureSearchNavigationButtonVisibility() {
         autocompleteActionUpButton?.visibility = View.VISIBLE
         autocompleteVoiceButton?.visibility = View.VISIBLE
         autocompleteClearButton?.visibility = View.VISIBLE
         autocompleteSearchIcon?.visibility = View.VISIBLE
+    }
+
+    private fun configureSearchNavigationSearchTextView() {
         searchTextView?.setHintTextColor(ContextCompat.getColor(mContext, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
+        searchTextView?.setPadding(
+                28.dpToPx(mContext.resources.displayMetrics),
+                12.dpToPx(mContext.resources.displayMetrics),
+                32.dpToPx(mContext.resources.displayMetrics),
+                12.dpToPx(mContext.resources.displayMetrics)
+        )
     }
 
     private fun setSearchNavigationListener(){
