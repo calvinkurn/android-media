@@ -442,7 +442,6 @@ class ShopPageFragment :
     private fun stopShopPageHeaderMonitoringPltRenderPage() {
         (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-                Log.i("PLT_SHOP", "ShopPageFragment stopShopPageHeaderMonitoringPltRenderPage")
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
@@ -451,7 +450,6 @@ class ShopPageFragment :
     private fun startShopPageHeaderMonitoringPltRenderPage() {
         (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-                Log.i("PLT_SHOP", "ShopPageFragment startShopPageHeaderMonitoringPltRenderPage")
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
         }
@@ -529,7 +527,6 @@ class ShopPageFragment :
     private fun startPltNetworkPerformanceMonitoring() {
         (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-                Log.i("PLT_SHOP", "ShopPageFragment startPltNetworkPerformanceMonitoring")
                 shopPageActivity.stopMonitoringPltPreparePage(it)
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }

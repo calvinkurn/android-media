@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +64,7 @@ import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterShared
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
@@ -886,7 +886,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun initPltMonitoring() {
         if (!isShowNewShopHomeTab() && userVisibleHint) {
-            Log.i("PLT_SHOP", "ShopPageProductListFragment initPltMonitoring")
             (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
         }
     }
@@ -895,7 +894,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
-                    Log.i("PLT_SHOP", "ShopPageProductListFragment startMonitoringPltNetworkRequest")
                     shopPageActivity.stopMonitoringPltPreparePage(it)
                     shopPageActivity.startMonitoringPltNetworkRequest(it)
                 }
@@ -907,7 +905,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
-                    Log.i("PLT_SHOP", "ShopPageProductListFragment startMonitoringPltRenderPage")
+                    shopPageActivity.startMonitoringPltRenderPage(it)
+                }
+            }
+        }
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
                     shopPageActivity.startMonitoringPltRenderPage(it)
                 }
             }
@@ -918,7 +922,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
-                    Log.i("PLT_SHOP", "ShopPageProductListFragment stopMonitoringPltRenderPage")
                     shopPageActivity.stopMonitoringPltRenderPage(it)
                 }
             }
@@ -1320,6 +1323,13 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun stopPerformanceMonitoring() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopMonitoringPltRenderPage(it)
+                }
+            }
+        }
         if (!isShowNewShopHomeTab()) {
             (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
         }
