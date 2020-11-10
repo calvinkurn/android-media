@@ -5,9 +5,9 @@ package com.tokopedia.sellerhomecommon.presentation.model
  */
 
 data class AnnouncementDataUiModel(
-        override val dataKey: String,
-        override var error: String,
-        override var isFromCache: Boolean,
+        override val dataKey: String = "",
+        override var error: String = "",
+        override var isFromCache: Boolean = false,
         val subtitle: String = "",
         val title: String = "",
         val appLink: String = "",
