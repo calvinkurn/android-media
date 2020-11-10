@@ -82,6 +82,7 @@ data class HeaderDataModel(
         if (homeHeaderWalletActionData != other.homeHeaderWalletActionData) return false
         if (tokoPointDrawerData != other.tokoPointDrawerData) return false
         if (tokopointsDrawerHomeData != other.tokopointsDrawerHomeData) return false
+        if (tokopointsDrawerBBOHomeData != other.tokopointsDrawerBBOHomeData) return false
         if (cashBackData != other.cashBackData) return false
         if (isPendingTokocashChecked != other.isPendingTokocashChecked) return false
         if (isWalletDataError != other.isWalletDataError) return false
@@ -95,6 +96,7 @@ data class HeaderDataModel(
         var result = homeHeaderWalletActionData?.hashCode() ?: 0
         result = HASH_CODE * result + (tokoPointDrawerData?.hashCode() ?: 0)
         result = HASH_CODE * result + (tokopointsDrawerHomeData?.hashCode() ?: 0)
+        result = HASH_CODE * result + (tokopointsDrawerBBOHomeData?.hashCode() ?: 0)
         result = HASH_CODE * result + (cashBackData?.hashCode() ?: 0)
         result = HASH_CODE * result + isPendingTokocashChecked.hashCode()
         result = HASH_CODE * result + isWalletDataError.hashCode()

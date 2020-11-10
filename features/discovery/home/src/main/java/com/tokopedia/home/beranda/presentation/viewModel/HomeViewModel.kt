@@ -51,7 +51,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -119,7 +118,7 @@ open class HomeViewModel @Inject constructor(
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
 
-    var navRollanceType: String = ""
+    private var navRollanceType: String = ""
     var currentTopAdsBannerToken: String = ""
     private val homeFlowData: Flow<HomeDataModel?> = homeUseCase.get().getHomeData().flowOn(homeDispatcher.get().io())
 
@@ -241,9 +240,6 @@ open class HomeViewModel @Inject constructor(
     private var homeToken = ""
 
     init {
-        navRollanceType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                HomeRollanceConst.Navigation.EXP_NAME, HomeRollanceConst.Navigation.VARIANT_OLD
-        )
         _isViewModelInitialized.value = Event(true)
         initFlow()
     }
@@ -1274,8 +1270,8 @@ open class HomeViewModel @Inject constructor(
 
     private fun getTokopoint(){
         if(getTokopointJob?.isActive == true) return
-//        getTokopointJob = if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
-        getTokopointJob = launchCatchError(coroutineContext, block = {
+        getTokopointJob = if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
+            launchCatchError(coroutineContext, block = {
                 val data = getHomeTokopointsListDataUseCase.get().executeOnBackground()
                 updateHeaderViewModel(
                         tokopointsDrawer = data.tokopointsDrawerList.drawerList.elementAtOrNull(0),
@@ -1288,25 +1284,21 @@ open class HomeViewModel @Inject constructor(
                         isTokoPointDataError = true
                 )
             }
-//        } else {
-//            launchCatchError(coroutineContext, block = {
-//                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
-//                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
-//                updateHeaderViewModel(
-//                        tokopointsDrawer = data.tokopointsDrawer,
-//                        isTokoPointDataError = false
-//                )
-//            }) {
-//                updateHeaderViewModel(
-//                        tokopointsDrawer = null,
-//                        isTokoPointDataError = true
-//                )
-//            }
-//        }
-    }
-
-    private fun getTokopointListData(){
-
+        } else {
+            launchCatchError(coroutineContext, block = {
+                getHomeTokopointsDataUseCase.get().setParams("2.0.0")
+                val data = getHomeTokopointsDataUseCase.get().executeOnBackground()
+                updateHeaderViewModel(
+                        tokopointsDrawer = data.tokopointsDrawer,
+                        isTokoPointDataError = false
+                )
+            }) {
+                updateHeaderViewModel(
+                        tokopointsDrawer = null,
+                        isTokoPointDataError = true
+                )
+            }
+        }
     }
 
     fun injectCouponTimeBased() {
@@ -1497,5 +1489,9 @@ open class HomeViewModel @Inject constructor(
         launch(coroutineContext) {
             refreshHomeData()
         }
+    }
+
+    fun setRollanceNavigationType(type: String) {
+        navRollanceType = type
     }
 }

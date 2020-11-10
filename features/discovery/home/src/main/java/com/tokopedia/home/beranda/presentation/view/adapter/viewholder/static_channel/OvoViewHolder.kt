@@ -102,10 +102,10 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         renderOvoLayout(element)
         renderTokoPoint(element)
         containerOvo.weightSum = 7f
-//        if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
+        if (navRollanceType.equals(HomeRollanceConst.Navigation.VARIANT_REVAMP)) {
             renderBebasOngkirSection(element)
             containerOvo.weightSum = 0f
-//        }
+        }
     }
 
     private fun goToScanner() {
