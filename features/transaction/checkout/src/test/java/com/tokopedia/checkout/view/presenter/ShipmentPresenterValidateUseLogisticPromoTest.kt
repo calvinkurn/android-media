@@ -11,26 +11,29 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
-import io.mockk.verifyOrder
+import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-class ShipmentPresenterEditAddressPinpointTest {
+class ShipmentPresenterValidateUseLogisticPromoTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -80,7 +83,7 @@ class ShipmentPresenterEditAddressPinpointTest {
     @MockK
     private lateinit var codAnalytics: CodAnalytics
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var checkoutAnalytics: CheckoutAnalyticsCourierSelection
 
     @MockK
@@ -119,117 +122,82 @@ class ShipmentPresenterEditAddressPinpointTest {
     }
 
     @Test
-    fun pinpointSuccess_ShouldRenderEditAddressSuccess() {
+    fun validateUseSuccess_ShouldUpdateTickerAndButtonPromo() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
-            {
-                "data": {
-                    "is_success": 1
-                }
-            }
-        """.trimIndent())
+        val promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", messageUiModel = MessageUiModel(state = "green"))
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
+        presenter.doValidateuseLogisticPromo(0, "", ValidateUsePromoRequest())
 
         // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.renderEditAddressSuccess(latitude, longitude)
+        verifySequence {
+            view.updateTickerAnnouncementMessage()
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout("-1")
+            view.updateButtonPromoCheckout(promoUiModel)
         }
     }
 
     @Test
-    fun pinpointFailed_ShouldNavigateToSetPinpointWithErrorMessage() {
+    fun validateUseRedState_ShouldShowErrorAndResetCourier() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-        val locationPass = LocationPass()
-
         val errorMessage = "error"
+        val cartString = "cart123"
+        val promoUiModel = PromoUiModel(
+                voucherOrderUiModels = listOf(
+                        PromoCheckoutVoucherOrdersItemUiModel(type = "logistic", uniqueId = cartString, messageUiModel = MessageUiModel(state = "red", text = errorMessage))
+                )
+        )
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.just(
+                ValidateUsePromoRevampUiModel(
+                        status = "OK",
+                        promoUiModel = promoUiModel
+                )
+        )
 
-        every { editAddressUseCase.createObservable(any()) } returns Observable.just("""
-            {
-                "data": {
-                    "is_success": 0
-                },
-                "message_error": ["$errorMessage"]
-            }
-        """.trimIndent())
+        val shipmentCartItemModel = ShipmentCartItemModel().apply {
+            this.cartString = cartString
+        }
+        presenter.shipmentCartItemModelList = listOf(shipmentCartItemModel)
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), locationPass)
+        val cartPosition = 0
+        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.navigateToSetPinpoint(errorMessage, locationPass)
+        verifySequence {
+            view.updateTickerAnnouncementMessage()
+            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout("-1")
+            view.showToastError(errorMessage)
+            view.resetCourier(shipmentCartItemModel)
+            view.updateButtonPromoCheckout(promoUiModel)
         }
     }
 
     @Test
-    fun pinpointError_ShouldShowToastError() {
+    fun validateUseError_ShouldShowErrorAndResetCourier() {
         // Given
-        presenter.recipientAddressModel = RecipientAddressModel().apply {
-            id = "1"
-            addressName = "address 1"
-            street = "street 1"
-            postalCode = "12345"
-            destinationDistrictId = "1"
-            cityId = "1"
-            provinceId = "1"
-            recipientName = "user 1"
-            recipientPhoneNumber = "1234567890"
-        }
-
-        val latitude = "123"
-        val longitude = "456"
-
-        every { editAddressUseCase.createObservable(any()) } returns Observable.error(Throwable())
+        val errorMessage = "error"
+        every { validateUsePromoRevampUseCase.createObservable(any()) } returns Observable.error(Throwable(errorMessage))
 
         // When
-        presenter.editAddressPinpoint(latitude, longitude, ShipmentCartItemModel(), LocationPass())
+        val cartPosition = 0
+        presenter.doValidateuseLogisticPromo(cartPosition, "", ValidateUsePromoRequest())
 
         // Then
-        verifyOrder {
-            view.showLoading()
-            view.setHasRunningApiCall(true)
-            view.setHasRunningApiCall(false)
-            view.hideLoading()
-            view.showToastError(any())
+        verifySequence {
+            checkoutAnalytics.eventClickLanjutkanTerapkanPromoError(errorMessage)
+            view.showToastError(errorMessage)
+            view.resetCourier(cartPosition)
         }
     }
 }
