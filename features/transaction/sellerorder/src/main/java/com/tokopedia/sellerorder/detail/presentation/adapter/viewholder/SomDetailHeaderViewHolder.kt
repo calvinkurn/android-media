@@ -7,6 +7,8 @@ import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -30,6 +32,7 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.detail.data.model.SomDetailData
 import com.tokopedia.sellerorder.detail.data.model.SomDetailHeader
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
+import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailLabelInfoAdapter
 import com.tokopedia.unifycomponents.UrlSpanNoUnderline
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -39,6 +42,9 @@ import kotlinx.android.synthetic.main.detail_header_item.view.*
  * Created by fwidjaja on 2019-10-03.
  */
 class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+
+    private val somDetailLabelInfoAdapter = SomDetailLabelInfoAdapter()
+    private val viewPool = RecyclerView.RecycledViewPool()
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailHeader) {
@@ -92,6 +98,18 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 } else {
                     header_deadline_label?.visibility = View.GONE
                     due_label?.visibility = View.GONE
+                }
+
+                if (item.dataObject.listLabelOrder.isNotEmpty()) {
+                    itemView.rv_detail_order_label?.visibility = View.VISIBLE
+                    itemView.rv_detail_order_label?.apply {
+                        layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
+                        adapter = somDetailLabelInfoAdapter
+                        setRecycledViewPool(viewPool)
+                    }
+                    somDetailLabelInfoAdapter.listLabelInfo = item.dataObject.listLabelOrder.toMutableList()
+                } else {
+                    itemView.rv_detail_order_label?.visibility = View.GONE
                 }
 
                 header_invoice?.text = item.dataObject.invoice
