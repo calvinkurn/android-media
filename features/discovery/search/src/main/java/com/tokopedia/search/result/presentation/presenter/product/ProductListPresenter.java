@@ -5,7 +5,6 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -22,8 +21,8 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;

@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.debugger.data.source
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.tokopedia.analyticsdebugger.AnalyticsSource
 
 import com.tokopedia.analyticsdebugger.database.GtmLogDB
 
@@ -29,5 +30,8 @@ interface GtmLogDao {
 
     @Query("SELECT * FROM gtm_log")
     fun getAll(): List<GtmLogDB>
+
+    @Query("SELECT * FROM gtm_log WHERE source IS :analyticsSource")
+    fun getAll(@AnalyticsSource analyticsSource:String): List<GtmLogDB>
 
 }

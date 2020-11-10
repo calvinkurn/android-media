@@ -15,7 +15,7 @@
         android:id="@+id/iv_check"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/selected_image_overlay"
+        android:background="@color/Unify_N700_68"
         android:visibility="gone"
         tools:visibility="visible"/>
 
