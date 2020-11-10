@@ -21,11 +21,13 @@ object AddEditProductUploadErrorHandler {
     private const val ERROR_UPLOADER_TIMEOUT = "timeout"
     private const val ERROR_UPLOADER_NETWORK_ERROR = "networkError"
 
+    private const val MULTIPLE_DATA_SEPARATOR = "; "
+
     fun getErrorName(e: Throwable?): String {
         return if (e is ResponseV4ErrorException) {
             e.errorList.firstOrNull() ?: ERROR_UNKNOWN
         } else if (e is MessageErrorException) {
-            e.localizedMessage
+            e.localizedMessage.orEmpty().replace("\n", MULTIPLE_DATA_SEPARATOR)
         } else if (e is UnknownHostException || e is SocketTimeoutException || e is ConnectException) {
             ERROR_NO_INTERNET
         } else if (e is RuntimeException && e.getLocalizedMessage() != null &&

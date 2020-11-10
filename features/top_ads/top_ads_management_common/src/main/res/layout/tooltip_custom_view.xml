@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:backgroundTint="#FFFCF5">
+    android:backgroundTint="@color/Unify_N0">
 
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -21,9 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:textAllCaps="false"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/Unify_G400"
         app:layout_constraintBottom_toBottomOf="@id/tooltip_icon"
-        app:layout_constraintStart_toEndOf="@+id/tooltip_icon"
+        app:layout_constraintStart_toEndOf="@id/tooltip_icon"
         app:layout_constraintTop_toTopOf="@id/tooltip_icon"
         app:typographyType="heading_6" />
 

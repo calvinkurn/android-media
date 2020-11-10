@@ -22,6 +22,7 @@ object TravelBannerGQLQuery {
               title
               webURL
               appURL
+              label
             }
           }
         }

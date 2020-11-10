@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.edit.di
 import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.data.Interactor
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
@@ -56,7 +56,7 @@ open class PreferenceEditModule(private val activity: Activity) {
     @PreferenceEditScope
     @Provides
     internal fun providesGraphqlRepository(): GraphqlRepository {
-        return Interactor.getInstance().graphqlRepository
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @PreferenceEditScope

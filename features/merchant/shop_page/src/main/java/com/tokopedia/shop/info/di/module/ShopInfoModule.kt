@@ -14,7 +14,7 @@ import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.info.data.GQLQueryStringConst
 import com.tokopedia.shop.info.di.scope.ShopInfoScope
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -33,8 +33,8 @@ class ShopInfoModule {
 
     @ShopInfoScope
     @Provides
-    fun provideShopNoteViewModel(): ShopNoteViewModel {
-        return ShopNoteViewModel()
+    fun provideShopNoteViewModel(): ShopNoteUiModel {
+        return ShopNoteUiModel()
     }
 
     @ShopInfoScope
