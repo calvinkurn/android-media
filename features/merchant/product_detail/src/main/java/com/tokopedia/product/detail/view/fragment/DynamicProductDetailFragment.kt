@@ -664,6 +664,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onAffiliateClick()
                 DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
+            ProductDetailConstant.PRODUCT_PROTECTION -> {
+                openInsuranceBottomSheet(viewModel.getPurchaseProtectionUrl())
+            }
         }
     }
 
@@ -2035,6 +2038,16 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
         }
+    }
+
+    private fun openInsuranceBottomSheet(url: String?) {
+        val pdpInsuranceBottomSheet = FtPDPInsuranceBottomSheet()
+        val bundleData = Bundle()
+
+        bundleData.putString(FtPDPInsuranceBottomSheet.KEY_SPONSOR_URL, url)
+        pdpInsuranceBottomSheet.arguments = bundleData
+        pdpInsuranceBottomSheet.show(childFragmentManager, "FT_TAG")
+
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {

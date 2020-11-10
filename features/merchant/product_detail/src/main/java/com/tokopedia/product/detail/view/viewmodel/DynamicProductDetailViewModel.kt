@@ -250,6 +250,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
+    fun getPurchaseProtectionUrl(): String {
+        return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL?: ""
+    }
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
         this.talkLastAction = talkLastAction
     }

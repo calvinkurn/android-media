@@ -16,5 +16,21 @@ data class PPItemDetailPage(
         var titlePDP: String? = "",
 
         @SerializedName("subTitlePDP")
-        var subTitlePDP: String? = ""
+        var subTitlePDP: String? = "",
+
+        @SerializedName("iconURL")
+        var iconURL: String? =  "",
+
+        @SerializedName("partnerText")
+        var partnerText: String? = "",
+
+        @SerializedName("partnerLogo")
+        var partnerLogo: String? = "",
+
+        @SerializedName("linkURL")
+        var linkURL: String? = "",
+
+        @SerializedName("isAppLink")
+        var isAppLink: Boolean = false
+
 )
