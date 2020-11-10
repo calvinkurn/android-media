@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Yaah, Fitur [Fitur] hanya dapat diakses Power Merchant aktif"
-        android:textColor="@color/black"
+        android:textColor="@color/Unify_N700"
         app:fontSize="subHeadline"
         android:textStyle="bold"
         android:gravity="center"
