@@ -123,6 +123,35 @@
             app:typographyType="small"
             tools:text="4" />
 
+        <ImageView
+            android:id="@+id/scheduleImg"
+            android:layout_width="@dimen/dp_10"
+            android:layout_height="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_11"
+            android:layout_marginLeft="@dimen/dp_11"
+            android:layout_marginTop="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/key_count"
+            app:layout_constraintTop_toBottomOf="@id/group_title"
+            app:srcCompat="@drawable/topads_ic_calendar"
+            tools:layout_height="@dimen/dp_16"
+            tools:layout_width="@dimen/dp_16"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/scheduleDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:includeFontPadding="false"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/scheduleImg"
+            app:layout_constraintTop_toTopOf="@id/scheduleImg"
+            app:typographyType="small"
+            tools:text="Berakhir 10 Jan, 2020"
+            tools:visibility="visible" />
+
         <androidx.cardview.widget.CardView
             android:id="@+id/card"
             android:layout_width="match_parent"
@@ -202,8 +231,7 @@
                     android:text="@string/topads_common_pendapatan"
                     app:layout_constraintEnd_toStartOf="@id/produk_terjual"
                     app:layout_constraintStart_toEndOf="@id/pengeluaran"
-                    app:layout_constraintTop_toBottomOf="@id/klik_count"
-                    tools:visibility="gone" />
+                    app:layout_constraintTop_toBottomOf="@id/klik_count" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/pendapatan_count"
@@ -212,8 +240,7 @@
                     app:layout_constraintEnd_toStartOf="@id/produk_terjual_count"
                     app:layout_constraintStart_toEndOf="@id/pengeluaran_count"
                     app:layout_constraintTop_toBottomOf="@id/pendapatan"
-                    tools:text="Rp 0"
-                    tools:visibility="gone" />
+                    tools:text="Rp 0" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/persentase_klik"
@@ -237,16 +264,16 @@
                     android:id="@+id/produk_terjual"
                     style="@style/CardView.Text"
                     android:text="@string/topads_common_produk_terjual"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/pendapatan"
-                    app:layout_constraintStart_toStartOf="@id/klik"
                     app:layout_constraintTop_toBottomOf="@id/klik_count"
                     app:layout_constraintTop_toTopOf="@id/pengeluaran" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/produk_terjual_count"
                     style="@style/CardView.CountView"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/pendapatan_count"
-                    app:layout_constraintStart_toStartOf="@id/klik"
                     app:layout_constraintTop_toTopOf="@id/pengeluaran_count"
                     tools:text="0" />
 

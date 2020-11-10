@@ -17,7 +17,7 @@ class NegKeywordEmptyViewHolder(val view: View,private val addKeywords: (() -> U
         var LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: NegKeywordEmptyViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: NegKeywordEmptyViewModel, selectMode: Boolean, fromSearch: Boolean , fromHeadline:Boolean) {
         item.let {
             view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_keyword))
 
@@ -26,7 +26,8 @@ class NegKeywordEmptyViewHolder(val view: View,private val addKeywords: (() -> U
                 view.text_title.text = view.context.getString(R.string.topads_dash_empty_neg_keyword_title)
                 view.text_desc.text = view.context.getString(R.string.topads_dash_empty_neg_keyword_desc)
                 view.btn_submit.text = view.context.getString(R.string.topads_dash_add_negative_keyword)
-
+                if(fromHeadline)
+                    view.btn_submit.isEnabled = false
             } else {
                 view.text_title.text = view.context.getString(R.string.topads_empty_on_neg_keywords_title)
                 view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)

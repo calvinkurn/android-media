@@ -35,6 +35,7 @@ import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
 import javax.inject.Inject
@@ -45,7 +46,9 @@ import javax.inject.Inject
 
 private const val CLICK_BUAT_IKLAN = "click - tambah iklan"
 
-class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>, TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight, TopAdsProductIklanFragment.AdInfo {
+class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComponent>,
+        TopAdsProductIklanFragment.AppBarAction, BerandaTabFragment.GoToInsight,
+        TopAdsProductIklanFragment.AdInfo, TopAdsHeadlineBaseFragment.AppBarActionHeadline {
 
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 2
@@ -167,6 +170,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         val list: MutableList<FragmentTabItem> = mutableListOf()
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
+        list.add(FragmentTabItem(resources.getString(R.string.topads_dash_headline_title), TopAdsHeadlineBaseFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_recommend), TopAdsRecommendationFragment.createInstance()))
         val pagerAdapter = TopAdsDashboardBasePagerAdapter(supportFragmentManager, 0)
         pagerAdapter.setList(list)
@@ -249,6 +253,13 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         }
+    }
 
+    override fun setAppBarStateHeadline(state: TopAdsProductIklanFragment.State?) {
+        if (state == TopAdsProductIklanFragment.State.COLLAPSED) {
+            app_bar_layout.setExpanded(false)
+        } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
+            app_bar_layout.setExpanded(true)
+        }
     }
 }
