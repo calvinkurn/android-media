@@ -3,14 +3,10 @@ package com.tokopedia.media.loader
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.util.Log
 import android.widget.ImageView
-import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.graphics.BitmapCompat
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -19,18 +15,17 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
-import com.tokopedia.media.loader.data.Resize
+import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
-import com.tokopedia.media.loader.module.GlideRequest
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
 import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
+import com.tokopedia.media.loader.utils.mediaSignature
 import com.tokopedia.media.loader.utils.toUri
-import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDiskCacheStrategy
-import com.tokopedia.media.loader.wrapper.MediaDecodeFormat
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
 
 object GlideBuilder {
@@ -42,6 +37,11 @@ object GlideBuilder {
             "A2N+X[~qv]IU",
             "ABP?2U~X5J^~"
     )
+
+    private fun glideAsBitmap(
+            context: Context,
+            source: Any?
+    ) = GlideApp.with(context).asBitmap().load(source)
 
     private fun glideListener(
             listener: LoaderStateListener?
@@ -68,77 +68,80 @@ object GlideBuilder {
         }
     }
 
+    private fun ImageView.drawableErrorResource(errorRes: Int) = if (errorRes != 0) {
+        getDrawable(context, errorRes)
+    } else {
+        getDrawable(context, R.drawable.ic_media_default_error)
+    }
+
     @JvmOverloads
     fun loadImage(
             imageView: ImageView,
-            thumbnailUrl: String,
-            url: Any?,
-            radius: Float = 0f,
-            signatureKey: Key?,
-            cacheStrategy: MediaCacheStrategy?,
-            @DrawableRes placeHolder: Int = 0,
-            @DrawableRes resOnError: Int,
-            isAnimate: Boolean = false,
-            isCircular: Boolean = false,
-            overrideSize: Resize? = null,
-            decodeFormat: MediaDecodeFormat? = null,
-            stateListener: LoaderStateListener? = null,
-            transform: Transformation<Bitmap>? = null,
-            transforms: List<Transformation<Bitmap>>? = null
+            properties: Properties
     ) {
         val localTransform = mutableListOf<Transformation<Bitmap>>()
         val context = imageView.context
 
-        val drawableError = if (resOnError != 0) {
-            getDrawable(imageView.context, resOnError)
-        } else {
-            getDrawable(imageView.context, R.drawable.ic_media_default_error)
-        }
+        with(properties) {
+            val drawableError = imageView.drawableErrorResource(error)
 
-        if (url == null) {
-            imageView.setImageDrawable(drawableError)
-        } else {
-            GlideApp.with(context).asBitmap().load(url).apply {
+            if (source == null) {
+                imageView.setImageDrawable(drawableError)
+            } else {
 
-                when (imageView.scaleType) {
-                    ImageView.ScaleType.FIT_CENTER -> fitCenter()
-                    ImageView.ScaleType.CENTER_CROP -> centerCrop()
-                    ImageView.ScaleType.CENTER_INSIDE -> centerInside()
-                    else -> {}
-                }
+                if (source is String) {
+                    if (source.isEmpty()) {
+                        imageView.loadImage(R.drawable.ic_media_default_error)
+                        return
+                    }
 
-                if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
-                if (overrideSize != null) override(overrideSize.width, overrideSize.height)
-                if (decodeFormat != null) format(mapToDecodeFormat(decodeFormat))
-                if (radius != 0f) transform(RoundedCorners(radius.toInt()))
-                if (transform != null) localTransform.add(transform)
-                if (signatureKey != null) signature(signatureKey)
-                if (isCircular) localTransform.add(CircleCrop())
-                if (!isAnimate) dontAnimate()
-
-                drawableError?.let { drawable -> error(drawable) }
-                cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
-                transforms?.let { localTransform.addAll(it) }
-
-                if (localTransform.isNotEmpty()) {
-                    transform(MultiTransformation(localTransform))
-                }
-
-                if (placeHolder != 0) {
-                    placeholder(placeHolder)
-                } else {
-                    if (!isCircular) {
-                        blurHashFromUrl(url) { hash ->
-                            placeholder(BitmapDrawable(context.resources, blurring(hash)))
-                        }
-                    } else {
-                        placeholder(R.drawable.ic_media_default_placeholder)
+                    Loader.glideUrl(source).also {
+                        data = it
+                        signature = signature.mediaSignature(it)
                     }
                 }
 
-                listener(glideListener(stateListener))
+                glideAsBitmap(context, data).apply {
+                    when (imageView.scaleType) {
+                        ImageView.ScaleType.FIT_CENTER -> fitCenter()
+                        ImageView.ScaleType.CENTER_CROP -> centerCrop()
+                        ImageView.ScaleType.CENTER_INSIDE -> centerInside()
+                        else -> {}
+                    }
 
-            }.into(imageView)
+                    if (placeHolder != 0) {
+                        placeholder(placeHolder)
+                    } else {
+                        if (!isCircular) {
+                            blurHashFromUrl(data) { hash ->
+                                placeholder(BitmapDrawable(context.resources, blurring(hash)))
+                            }
+                        } else {
+                            placeholder(R.drawable.ic_media_default_placeholder)
+                        }
+                    }
+
+                    if (thumbnailUrl.isNotEmpty()) thumbnail(thumbnailLoader(context, thumbnailUrl))
+                    if (mediaDecodeFormat != null) format(mapToDecodeFormat(mediaDecodeFormat))
+                    if (roundedRadius != 0f) transform(RoundedCorners(roundedRadius.toInt()))
+                    if (transformation != null) localTransform.add(transformation)
+                    if (resize != null) override(resize.width, resize.height)
+                    if (properties.signature != null) signature(signature)
+                    if (isCircular) localTransform.add(CircleCrop())
+                    if (!isAnimate) dontAnimate()
+
+                    cacheStrategy?.let { diskCacheStrategy(mapToDiskCacheStrategy(it)) }
+                    drawableError?.let { drawable -> error(drawable) }
+                    transforms?.let { localTransform.addAll(it) }
+
+                    if (localTransform.isNotEmpty()) {
+                        transform(MultiTransformation(localTransform))
+                    }
+
+                    listener(glideListener(loaderListener))
+
+                }.into(imageView)
+            }
         }
     }
 
@@ -156,25 +159,22 @@ object GlideBuilder {
     private fun blurring(blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = 80,
-                height = 80,
-                useCache = true
+                width = 20,
+                height = 12
         )
     }
 
     private fun thumbnailLoader(context: Context, resource: Any?): RequestBuilder<Bitmap> {
-        return GlideApp.with(context)
-                .asBitmap()
-                .load(resource)
+        return glideAsBitmap(context, resource)
                 .fitCenter()
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
     }
 
-    fun loadGifImage(imageView: ImageView, url: String) {
+    fun loadGifImage(imageView: ImageView, data: String) {
         with(imageView) {
             GlideApp.with(context)
                     .asGif()
-                    .load(url)
+                    .load(data)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .transform(RoundedCorners(10))
                     .into(this)

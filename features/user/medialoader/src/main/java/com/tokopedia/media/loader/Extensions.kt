@@ -57,44 +57,5 @@ fun ImageView?.clearImage() {
 @PublishedApi
 internal fun ImageView.call(url: Any?, properties: Properties) {
     val imageView = this
-
-    with(properties) {
-        if (url is String) {
-            if (url.toEmptyStringIfNull().isEmpty()) {
-                // if there's no url found, then show the placeholder
-                imageView.setImageDrawable(getDrawable(
-                        imageView.context,
-                        R.drawable.ic_media_default_placeholder
-                ))
-                return
-            }
-
-            val glideUrl = Loader.glideUrl(url)
-            glideBuilder(imageView, glideUrl, this, signature.mediaSignature(glideUrl))
-        } else {
-            glideBuilder(imageView, url, this, null)
-        }
-    }
-}
-
-internal fun glideBuilder(imageView: ImageView, url: Any?, properties: Properties, signature: Key?) {
-    with(properties) {
-        glideLoadImage(
-                signatureKey = signature,
-                stateListener = loaderListener,
-                cacheStrategy = cacheStrategy,
-                thumbnailUrl = thumbnailUrl,
-                overrideSize = overrideSize,
-                decodeFormat = decodeFormat,
-                placeHolder = placeHolder,
-                isCircular = isCircular,
-                transforms = transforms,
-                radius = roundedRadius,
-                isAnimate = isAnimate,
-                transform = transform,
-                imageView = imageView,
-                resOnError = error,
-                url = url
-        )
-    }
+    glideLoadImage(imageView, properties)
 }

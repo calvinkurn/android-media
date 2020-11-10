@@ -25,6 +25,11 @@ open class Properties(
         var transforms: List<Transformation<Bitmap>>? = null
 ) {
 
+    val source = data
+    val resize = overrideSize
+    val mediaDecodeFormat = decodeFormat
+    val transformation = transform
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         return other is Properties &&
