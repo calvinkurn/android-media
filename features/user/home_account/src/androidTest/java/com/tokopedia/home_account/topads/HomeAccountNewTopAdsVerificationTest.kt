@@ -91,9 +91,9 @@ class HomeAccountNewTopAdsVerificationTest {
 
         recyclerView?.let {
             val itemCount = it.adapter?.itemCount ?: 0
-            for (i in 0..itemCount) {
-                performOnClickForEachRecommendation(it, i)
+            for (i in 0 until itemCount) {
                 scrollHomeAccountRecyclerViewToPosition(it, i)
+                performOnClickForEachRecommendation(it, i)
             }
         }
     }
