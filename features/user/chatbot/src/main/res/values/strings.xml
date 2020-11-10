@@ -28,5 +28,7 @@
     <string name="cb_bot_reply_text">Ketik pesan singkat dan jelas</string>
     <string name="cb_bot_three_dots">\u2026</string>
     <string name="cb_bot_toolbar_title">Tanya</string>
+    <string name="cb_dot">●</string>
+    <string name="chatbot_csat_button_text">Kirim</string>
 
 </resources>

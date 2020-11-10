@@ -25,6 +25,7 @@ include "features:content:kol_common"
 include "features:content:profile"
 include "features:content:play"
 include "features:content:play_common"
+include "features:content:play_widget"
 include "features:content:interest_pick"
 include "features:content:interest_pick_common"
 
@@ -111,11 +112,10 @@ include "features:logistic:logisticcart"
 include "features:logistic:manageaddress"
 include "features:logistic:editshipping"
 
-include "features:merchant:inbox_reputation"
 include "features:merchant:gold_merchant_common"
 include "features:merchant:power_merchant_subscribe"
 include "features:merchant:reputation_common"
-include "features:merchant:reputation"
+include "features:merchant:review_product"
 include "features:merchant:product_add_edit"
 include "features:merchant:product_detail"
 include "features:merchant:product_detail_common"
@@ -214,7 +214,6 @@ include "features:user:profilecommon"
 include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
-include "features:user:seamless_login"
 include "features:user:additional_check"
 
 include "features:user:stickylogin"
@@ -223,7 +222,7 @@ include "features:user:orderhistory"
 include "features:user:updateinactivephone"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
-include "features:user:seamless_login"
+include "features:user:seamless_login_common"
 
 include "features:user:vote"
 
@@ -235,4 +234,4 @@ include "tkpdseller"
 include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'
-include "customerapp"
+include 'customerapp'

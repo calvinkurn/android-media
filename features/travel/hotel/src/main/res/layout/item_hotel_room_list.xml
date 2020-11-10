@@ -129,7 +129,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:layout_height="100dp"
-                    tools:minWidth="@dimen/dp_100" />
+                    tools:minWidth="@dimen/hotel_100dp" />
 
                 <LinearLayout
                     android:id="@+id/room_info_layout"

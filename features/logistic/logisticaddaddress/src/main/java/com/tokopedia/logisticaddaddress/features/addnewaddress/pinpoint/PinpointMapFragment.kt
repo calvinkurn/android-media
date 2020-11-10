@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -42,6 +43,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -89,6 +91,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     private var isFullFlow: Boolean = true
     private var isLogisticLabel: Boolean = true
     private var isCircuitBreaker: Boolean = false
+    private var isGpsEnable: Boolean = true
 
     private var composite = CompositeSubscription()
 
@@ -319,21 +322,30 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        getLastLocationClient()
         if (AddNewAddressUtils.isGpsEnabled(context)) {
             ic_current_location.setImageResource(R.drawable.ic_gps_enable)
         } else {
+            isGpsEnable = false
             ic_current_location.setImageResource(R.drawable.ic_gps_disable)
         }
+        getLastLocationClient()
     }
 
     private fun getLastLocationClient() {
-        fusedLocationClient?.lastLocation
-                ?.addOnSuccessListener {
-                    if (it != null) {
-                        showAutoComplete(it.latitude, it.longitude)
+        if (!isGpsEnable && RequestPermissionUtil.checkHasPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            SimpleIdlingResource.increment()
+            Handler().postDelayed({
+                SimpleIdlingResource.decrement()
+                showAutoCompleteBottomSheet("")
+            }, 200)
+        } else {
+            fusedLocationClient?.lastLocation
+                    ?.addOnSuccessListener {
+                        if (it != null) {
+                            showAutoComplete(it.latitude, it.longitude)
+                        }
                     }
-                }
+        }
     }
 
     private fun doUseCurrentLocation(isFullFlow: Boolean) {

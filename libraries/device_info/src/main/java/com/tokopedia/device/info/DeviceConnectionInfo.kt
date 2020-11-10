@@ -64,11 +64,7 @@ object DeviceConnectionInfo {
             return ""
         }
 
-        if (ssid[0] == '"' && ssid[ssid.length - 1] == '"') {
-            ssid = ssid.substring(1, ssid.length - 1)
-        }
-
-        return ssid
+        return ssid.replace("\"", "")
     }
 
     @JvmStatic

@@ -13,6 +13,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -41,7 +42,7 @@ public interface ProductListSectionContract {
 
         String getQueryKey();
 
-        void setEmptyProduct(GlobalNavViewModel globalNavViewModel);
+        void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel);
 
         void setBannedProductsErrorMessage(List<Visitable> bannedProductsErrorMessageAsList);
 
@@ -66,6 +67,8 @@ public interface ProductListSectionContract {
         void sendTrackingGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel);
 
         void sendImpressionGlobalNav(GlobalNavViewModel globalNavViewModel);
+
+        boolean isAnySortActive();
 
         void clearLastProductItemPositionFromCache();
 
@@ -105,10 +108,6 @@ public interface ProductListSectionContract {
 
         void reloadData();
 
-        void sendImpressionInspirationCarouselList(final InspirationCarouselViewModel inspirationCarouselViewModel);
-
-        void sendImpressionInspirationCarouselInfo(final InspirationCarouselViewModel inspirationCarouselViewModel);
-
         RemoteConfig getABTestRemoteConfig();
 
         void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist);
@@ -147,7 +146,7 @@ public interface ProductListSectionContract {
 
         void sendProductImpressionTrackingEvent(ProductItemViewModel item);
 
-        void trackBroadMatchImpression(String alternativeKeyword, List<Object> impressionObjectDataLayer);
+        void trackBroadMatchImpression(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onQuickFilterSelected(Option option);
 
@@ -157,7 +156,7 @@ public interface ProductListSectionContract {
 
         void setQuickFilter(List<SortFilterItem> items);
 
-        void showOnBoarding();
+        void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding);
 
         boolean isQuickFilterSelected(Option option);
 
@@ -174,6 +173,22 @@ public interface ProductListSectionContract {
         void trackEventClickBroadMatchItem(BroadMatchItemViewModel broadMatchItemViewModel);
 
         void redirectionStartActivity(String applink, String url);
+
+        void trackEventLongPress(String productID);
+
+        void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel);
+
+        void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer);
+
+        void showAddToCartSuccessMessage();
+
+        void showAddToCartFailedMessage(String errorMessage);
+
+        void routeToShopPage(String shopId);
+
+        void trackEventGoToShopPage(Object dataLayer);
+
+        void addLocalSearchRecommendation(List<Visitable> visitableList);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -224,5 +239,11 @@ public interface ProductListSectionContract {
         void onBroadMatchItemImpressed(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
 
         void onBroadMatchItemClick(@NotNull BroadMatchItemViewModel broadMatchItemViewModel);
+
+        void onThreeDotsClick(ProductItemViewModel item, int adapterPosition);
+
+        void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
+
+        void handleVisitShopAction();
     }
 }

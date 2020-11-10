@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.view.adapter
 
-import android.os.Bundle
 import android.os.Handler
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +9,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomePlayCarouselViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.shop.common.util.ShopProductViewGridType
+import com.tokopedia.shop.home.WidgetName
+import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -19,15 +23,10 @@ import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolde
 import com.tokopedia.shop.product.view.widget.OnStickySingleHeaderListener
 import com.tokopedia.shop.product.view.widget.StickySingleHeaderView
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemBigGridViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemListViewHolder
-import com.tokopedia.shop.common.util.ShopProductViewGridType
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
-
 class ShopHomeAdapter(
         private val shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory),
@@ -53,14 +52,14 @@ class ShopHomeAdapter(
 
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
-        if(holder is ShopHomePlayCarouselViewHolder) {
-            holder.onResume()
+        if (holder is ShopHomeSliderBannerViewHolder) {
+            holder.resumeTimer()
         }
     }
 
     override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-        if(holder is ShopHomePlayCarouselViewHolder) {
-            holder.onPause()
+        if (holder is ShopHomeSliderBannerViewHolder) {
+            holder.pauseTimer()
         }
         super.onViewDetachedFromWindow(holder)
     }
@@ -91,18 +90,6 @@ class ShopHomeAdapter(
             notifyInsertedItemRange(lastIndex, productList.size)
     }
 
-    fun updatePlayWidget(playCarouselUiModel: ShopHomePlayCarouselUiModel){
-        visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel }.let { index ->
-            if(playCarouselUiModel.playBannerCarouselDataModel.channelList.isEmpty()){
-                visitables.removeAt(index)
-                notifyItemRemoved(index)
-            } else if(index != -1){
-                visitables[index] = playCarouselUiModel
-                notifyItemChanged(index)
-            }
-        }
-    }
-
     fun setEtalaseTitleData() {
         val etalaseTitleUiModel = ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, "")
         visitables.add(etalaseTitleUiModel)
@@ -126,6 +113,18 @@ class ShopHomeAdapter(
                     it.data?.firstOrNull()?.youTubeVideoDetail = data
                     notifyChangedItem(visitables.indexOf(it))
                 }
+    }
+
+    fun setHomeMerchantVoucherData(shopHomeVoucherUiModel: ShopHomeVoucherUiModel) {
+        visitables.indexOfFirst { it is ShopHomeVoucherUiModel }.let { index ->
+            if(shopHomeVoucherUiModel.data.isNullOrEmpty() && !shopHomeVoucherUiModel.isError){
+                visitables.removeAt(index)
+                notifyItemRemoved(index)
+            } else if(index != -1){
+                visitables[index] = shopHomeVoucherUiModel
+                notifyItemChanged(index)
+            }
+        }
     }
 
     override fun hideLoading() {
@@ -224,6 +223,24 @@ class ShopHomeAdapter(
 
     override fun isShowLoadingMore(): Boolean {
         return visitables.filterIsInstance<ShopHomeProductViewModel>().isNotEmpty()
+    }
+
+    fun pauseSliderBannerAutoScroll() {
+        val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
+            it.name == WidgetName.SLIDER_BANNER
+        }
+        listSliderBannerViewModel.forEach {
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.pauseTimer()
+        }
+    }
+
+    fun resumeSliderBannerAutoScroll() {
+        val listSliderBannerViewModel = visitables.filterIsInstance<ShopHomeDisplayWidgetUiModel>().filter {
+            it.name == WidgetName.SLIDER_BANNER
+        }
+        listSliderBannerViewModel.forEach {
+            (recyclerView?.findViewHolderForAdapterPosition(visitables.indexOf(it)) as? ShopHomeSliderBannerViewHolder)?.resumeTimer()
+        }
     }
 
     fun refreshSticky() {
@@ -338,34 +355,6 @@ class ShopHomeAdapter(
         }
     }
 
-    fun pausePlayCarousel(){
-        val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return
-        notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ShopHomePlayCarouselViewHolder.ON_PAUSE, true)
-        })
-    }
-
-    fun resumePlayCarousel(){
-        val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return
-        notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ShopHomePlayCarouselViewHolder.ON_RESUME, true)
-        })
-    }
-
-    fun onDestroy(){
-        val indexPlay = getPositionPlayCarousel()
-        if(indexPlay == -1) return
-        notifyItemChanged(indexPlay, Bundle().apply {
-            putBoolean(ShopHomePlayCarouselViewHolder.ON_DESTROY, true)
-        })
-    }
-
-    private fun getPositionPlayCarousel(): Int{
-        return visitables.indexOfFirst { it is ShopHomePlayCarouselUiModel}
-    }
-
     fun updateRemindMeStatusCampaignNplWidgetData(
             campaignId: String,
             isRemindMe: Boolean? = null,
@@ -438,7 +427,6 @@ class ShopHomeAdapter(
         }
     }
 
-
     fun updateShopPageProductChangeGridSection(gridType: ShopProductViewGridType) {
         visitables.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()?.apply {
             this.gridType = gridType
@@ -446,4 +434,34 @@ class ShopHomeAdapter(
         }
     }
 
+    /**
+     * Play Widget
+     */
+    fun updatePlayWidget(widgetUiModel: PlayWidgetUiModel?) {
+        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+            if (position == -1) return@let
+            if (widgetUiModel == null || widgetUiModel is PlayWidgetUiModel.Placeholder) {
+                visitables.removeAt(position)
+                notifyItemRemoved(position)
+            } else {
+                visitables[position] = (visitables[position] as CarouselPlayWidgetUiModel).copy(widgetUiModel = widgetUiModel)
+                notifyChangedItem(position)
+            }
+        }
+    }
+
+    fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {
+        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+            if (position == -1) return@let
+            if (reminderUiModel.position == -1) return@let
+            notifyItemChanged(position, reminderUiModel)
+        }
+    }
+
+    fun updatePlayWidgetTotalView(totalViewUiModel: PlayWidgetTotalViewUiModel) {
+        visitables.indexOfFirst { it is CarouselPlayWidgetUiModel }.let { position ->
+            if (position == -1) return@let
+            notifyItemChanged(position, totalViewUiModel)
+        }
+    }
 }

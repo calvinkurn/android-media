@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
+import com.tokopedia.changephonenumber.view.uimodel.WarningUIModel;
 
 /**
  * Created by milhamj on 18/12/17.
@@ -16,7 +16,7 @@ public interface ChangePhoneNumberWarningFragmentListener {
 
         void dismissLoading();
 
-        void onGetWarningSuccess(WarningViewModel warningViewModel);
+        void onGetWarningSuccess(WarningUIModel warningUIModel);
 
         void onGetWarningError(String message);
 

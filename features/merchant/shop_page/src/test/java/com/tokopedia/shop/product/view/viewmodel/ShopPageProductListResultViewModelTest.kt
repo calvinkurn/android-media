@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -44,7 +45,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         runBlocking {
             coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
             viewModelShopPageProductListResultViewModel.getShopProduct(
-                    anyString(), anyInt(), anyInt(), anyInt(), anyString(), anyString(), anyBoolean(), anyInt()
+                    anyString(), anyInt(), anyInt(), anyString(), anyString(), anyBoolean(), anyInt(), ShopProductFilterParameter()
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.productData.value is Success)
@@ -61,11 +62,11 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
                     anyString(),
                     anyInt(),
                     anyInt(),
-                    anyInt(),
                     anyString(),
                     anyString(),
                     anyBoolean(),
-                    anyInt()
+                    anyInt(),
+                    ShopProductFilterParameter()
             )
             verifyGetShopProductUseCaseCalled()
             assertTrue(viewModelShopPageProductListResultViewModel.productData.value is Fail)

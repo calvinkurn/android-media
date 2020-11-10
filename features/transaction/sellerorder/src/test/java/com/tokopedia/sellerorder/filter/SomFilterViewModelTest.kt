@@ -57,7 +57,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                 getSomOrderFilterUseCase.execute()
             } returns baseSomFilterList
 
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate, isResetFilter)
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
@@ -72,7 +72,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             val exception = NullPointerException()
             coEvery { getSomOrderFilterUseCase.execute() } coAnswers { throw exception }
 
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate, isResetFilter)
 
             val expectedFail = Fail(exception)
             somFilterViewModel.filterResult.verifyErrorEquals(expectedFail)
@@ -132,7 +132,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when reset all of som filter should return success`() {
         runBlocking {
-            somFilterViewModel.resetFilterSelected(mockIdFilter)
+            somFilterViewModel.resetFilterSelected()
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
             val somFilterDataList = somFilterSuccess.filterIsInstance<SomFilterUiModel>()
             val filterDate = somFilterSuccess.filterIsInstance<SomFilterDateUiModel>().firstOrNull()

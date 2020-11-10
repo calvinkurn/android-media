@@ -11,16 +11,16 @@ import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.*
 class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: SomSubChildFilterListener)
     : RecyclerView.Adapter<SomSubFilterChildCheckBoxAdapter.SomSubFilterChildCheckViewHolder>() {
 
-    private var subChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel> = mutableListOf()
+    private var subChildFilterList = mutableListOf<SomFilterChipsUiModel.ChildStatusUiModel>()
     private var idList = mutableSetOf<Int>()
     private var keyFilter = ""
 
     fun getSubChildFilterList() = subChildFilterList
 
-    fun setSubFilterList(subChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
+    fun setSubFilterList(newSubChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
                          keyFilter: String) {
-        this.subChildFilterList = subChildFilterList.toMutableList()
         this.keyFilter = keyFilter
+        this.subChildFilterList = newSubChildFilterList.toMutableList()
         notifyDataSetChanged()
     }
 

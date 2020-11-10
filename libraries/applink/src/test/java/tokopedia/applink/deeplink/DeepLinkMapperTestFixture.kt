@@ -14,7 +14,7 @@ import org.junit.Before
 
 open class DeepLinkMapperTestFixture {
 
-    private lateinit var context: Context
+    protected lateinit var context: Context
 
     @Before
     open fun setup() {

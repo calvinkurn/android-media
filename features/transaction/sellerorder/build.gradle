@@ -64,7 +64,7 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
 

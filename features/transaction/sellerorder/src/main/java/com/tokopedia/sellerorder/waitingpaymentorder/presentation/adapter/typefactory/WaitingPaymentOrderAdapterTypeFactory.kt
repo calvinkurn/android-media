@@ -17,7 +17,6 @@ import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingP
  */
 
 class WaitingPaymentOrderAdapterTypeFactory(
-        private val loadUnloadMoreProductClickListener: WaitingPaymentOrdersViewHolder.LoadUnloadMoreProductClickListener,
         private val itemClickListener: BaseListAdapter.OnAdapterInteractionListener<Visitable<WaitingPaymentOrderAdapterTypeFactory>>
 ) : BaseAdapterTypeFactory() {
 
@@ -43,7 +42,7 @@ class WaitingPaymentOrderAdapterTypeFactory(
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            WaitingPaymentOrdersViewHolder.LAYOUT -> WaitingPaymentOrdersViewHolder(parent, loadUnloadMoreProductClickListener)
+            WaitingPaymentOrdersViewHolder.LAYOUT -> WaitingPaymentOrdersViewHolder(parent)
             WaitingPaymentTickerViewHolder.LAYOUT -> WaitingPaymentTickerViewHolder(parent, itemClickListener)
             WaitingPaymentOrdersErrorViewHolder.LAYOUT -> WaitingPaymentOrdersErrorViewHolder(parent)
             WaitingPaymentOrderLoadingViewHolder.LAYOUT -> WaitingPaymentOrderLoadingViewHolder(parent)

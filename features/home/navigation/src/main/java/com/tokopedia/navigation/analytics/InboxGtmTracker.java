@@ -108,4 +108,21 @@ public class InboxGtmTracker {
             tracker.sendEnhanceEcommerceEvent(map);
         }
     }
+
+    public void sendNewPageInboxTalkTracking(Context context, String userId, String unreadCount) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "clickPDP",
+                    "eventCategory", "inbox page",
+                    "eventAction", "click - Diskusi",
+                    "eventLabel", "unread message:" + unreadCount + ";",
+                    "screenName", "/inbox - talk",
+                    "currentSite", "tokopediamarketplace",
+                    "userId", userId,
+                    "businessUnit", "physical goods"
+            );
+            tracker.sendGeneralEvent(map);
+        }
+    }
 }

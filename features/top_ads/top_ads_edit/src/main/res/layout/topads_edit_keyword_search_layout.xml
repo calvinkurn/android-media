@@ -131,18 +131,12 @@
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/topads_edit_layout_keyword_list_item" />
 
-    <com.tokopedia.design.component.RoundFloatingButton
+    <com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
         android:id="@+id/tip_btn"
-        style="@style/TextView.Micro.Green"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8"
-        android:backgroundTint="#FFFCF5"
-        android:text="@string/topads_common_tip_memilih_kata_kunci"
-        android:textAllCaps="false"
-        android:visibility="visible"
-        app:buttonCompatSize="medium"
-        app:buttonDrawableLeftCompat="@drawable/topads_ic_tips"
+        app:fbType="group"
         app:layout_constraintBottom_toTopOf="@+id/view2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -157,16 +151,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_next"
-        style="@style/Button.Submit.Green"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginBottom="8dp"
         android:text="@string/lanjutkan"
-        app:buttonCompatType="primary"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="main"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/selected_info" />

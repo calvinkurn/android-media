@@ -3,8 +3,7 @@ package com.tokopedia.logisticaddaddress.features.addaddress;
 import android.content.Context;
 
 import com.tokopedia.logisticdata.data.entity.address.Destination;
-
-import rx.subscriptions.CompositeSubscription;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 
 /**
  * Created by fajarnuha on 03/12/18.
@@ -39,6 +38,8 @@ public interface AddAddressContract {
 
         void stopPerformaceMonitoring();
 
+        void goToGeolocationActivity(LocationPass locationPass);
+
     }
 
     interface Presenter {
@@ -51,5 +52,6 @@ public interface AddAddressContract {
 
         void requestReverseGeoCode(Context context, Destination destination);
 
+        void editAddressPinPoint(Destination address, String locationText);
     }
 }
