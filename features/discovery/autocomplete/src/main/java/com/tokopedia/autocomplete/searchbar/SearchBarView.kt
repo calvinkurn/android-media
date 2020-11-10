@@ -74,17 +74,13 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
     }
 
     private val mOnClickListener = OnClickListener { v ->
-        when {
-            v === actionUpBtn -> {
-                KeyboardHandler.DropKeyboard(activity, searchTextView)
-                activity?.finish()
-            }
-            v === actionVoiceButton -> {
-                onVoiceClicked()
-            }
-            v === actionEmptyButton -> {
-                searchTextView?.text = null
-            }
+        if (v === actionUpBtn || v === actionCancelButton) {
+            KeyboardHandler.DropKeyboard(activity, searchTextView)
+            activity?.finish()
+        } else if (v === actionVoiceButton) {
+            onVoiceClicked()
+        } else if (v === actionEmptyButton) {
+            searchTextView?.text = null
         }
     }
 
@@ -192,6 +188,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         actionUpBtn?.setOnClickListener(mOnClickListener)
         actionVoiceButton?.setOnClickListener(mOnClickListener)
         actionEmptyButton?.setOnClickListener(mOnClickListener)
+        actionCancelButton?.setOnClickListener(mOnClickListener)
     }
 
     private fun showVoiceButton(show: Boolean) {
@@ -329,12 +326,18 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
         val hasText = !TextUtils.isEmpty(text)
         if (hasText) {
             if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteClearButton?.visibility = View.VISIBLE
-            else actionEmptyButton?.visibility = View.VISIBLE
+            else {
+                actionEmptyButton?.visibility = View.VISIBLE
+                actionCancelButton?.visibility = View.VISIBLE
+            }
 
             showVoiceButton(false)
         } else {
             if (getNavType() == ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP) autocompleteClearButton?.visibility = View.GONE
-            else actionEmptyButton?.visibility = View.GONE
+            else {
+                actionEmptyButton?.visibility = View.GONE
+                actionCancelButton?.visibility = View.GONE
+            }
 
             showVoiceButton(true)
         }
