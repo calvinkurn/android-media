@@ -3,7 +3,9 @@ package com.tokopedia.talk.feature.reply.presentation.adapter.viewholder
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyProductHeaderModel
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyProductHeaderListener
 import com.tokopedia.talk_old.R
@@ -17,6 +19,14 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
 
     override fun bind(element: TalkReplyProductHeaderModel) {
         with(element) {
+            itemView.apply {
+                setOnClickListener {
+                    talkReplyProductHeaderListener.onProductCardClicked(productName, adapterPosition)
+                }
+                addOnImpressionListener(ImpressHolder()) {
+                    talkReplyProductHeaderListener.onProductCardImpressed(productName, adapterPosition)
+                }
+            }
             setImage(thumbnail)
             setProductName(productName)
         }
@@ -26,9 +36,6 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
         itemView.replyProductHeaderImage.apply {
             if(imageUrl.isNotBlank()) {
                 loadImage(imageUrl)
-                setOnClickListener {
-                    talkReplyProductHeaderListener.onProductClicked()
-                }
                 return
             }
             setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
@@ -41,9 +48,6 @@ class TalkReplyProductHeaderViewHolder(view: View, private val talkReplyProductH
             if(productName.isNotBlank()) {
                 text = productName
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
-                setOnClickListener {
-                    talkReplyProductHeaderListener.onProductClicked()
-                }
                 return
             }
             text = getString(R.string.reply_product_deleted)

@@ -15,39 +15,39 @@ private const val KEY_DIMENSION_40 = "dimension40"
 
 object ProductTrackingConstant {
 
-        object Category {
-                const val PDP = "product detail page"
-        }
+    object Category {
+        const val PDP = "product detail page"
+    }
 
-        object Tracking {
+    object Tracking {
 
-                const val ID = "id"
-                const val NAME = "name"
-                const val DEFAULT_VALUE = "none / other"
-                const val KEY_PRODUCT_ID = "productId"
-                const val KEY_LAYOUT = "layout"
-                const val KEY_COMPONENT = "component"
+        const val ID = "id"
+        const val NAME = "name"
+        const val DEFAULT_VALUE = "none / other"
+        const val KEY_PRODUCT_ID = "productId"
+        const val KEY_LAYOUT = "layout"
+        const val KEY_COMPONENT = "component"
 
-                const val KEY_DIMENSION_81 = "dimension81"
-                const val KEY_DIMENSION_83 = "dimension83"
-                const val KEY_DIMENSION_54 = "dimension54"
-                const val KEY_DIMENSION_55 = "dimension55"
-                const val KEY_DIMENSION_38 = "dimension38"
-                const val KEY_DIMENSION_98 = "dimension98"
-        }
+        const val KEY_DIMENSION_81 = "dimension81"
+        const val KEY_DIMENSION_83 = "dimension83"
+        const val KEY_DIMENSION_54 = "dimension54"
+        const val KEY_DIMENSION_55 = "dimension55"
+        const val KEY_DIMENSION_38 = "dimension38"
+        const val KEY_DIMENSION_98 = "dimension98"
+    }
 
 
-        object Label {
-                const val PDP = "pdp"
-        }
+    object Label {
+        const val PDP = "pdp"
+    }
 
-        object MerchantVoucher {
-                const val ACTION = "promo banner"
-        }
+    object MerchantVoucher {
+        const val ACTION = "promo banner"
+    }
 
-        object Message {
-                const val LABEL = "Message Shop"
-        }
+    object Message {
+        const val LABEL = "Message Shop"
+    }
 }
 
 @ErrorHandler(GTMErrorHandlerImpl::class)

@@ -6,11 +6,11 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analyticconstant.DataLayer;
-import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.kotlin.model.ImpressHolder;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.utils.SearchKotlinExtKt;
+import com.tokopedia.utils.text.currency.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +63,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private boolean isShopOfficialStore = false;
     private boolean isShopPowerMerchant = false;
     private String productUrl = "";
+    private String pageTitle;
 
     public boolean isTopAds() {
         return isTopAds;
@@ -377,7 +378,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     public String getCategoryString() {
-        return StringUtils.isBlank(categoryName) ? categoryBreadcrumb : categoryName;
+        return StringUtils.INSTANCE.isBlank(categoryName) ? categoryBreadcrumb : categoryName;
     }
 
     public void setMinOrder(int minOrder) {
@@ -412,6 +413,14 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
         return this.productUrl;
     }
 
+    public String getPageTitle() {
+        return pageTitle;
+    }
+
+    public void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
+    }
+
     public ProductItemViewModel() {
     }
 
@@ -436,7 +445,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "dimension83", isFreeOngkirActive() ? "bebas ongkir" : "none / other",
                 "dimension87", "search result",
                 "dimension88", "search - product",
-                "dimension90", searchRef,
+                "dimension90", TextUtils.isEmpty(getPageTitle()) ? searchRef : getPageTitle(),
                 "dimension96", getBoosterList(),
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", getSourceEngine()
@@ -454,7 +463,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     }
 
     public boolean willShowRatingAndReview() {
-        return (getRating() > 0 || StringUtils.isNotBlank(getRatingString()))
+        return (getRating() > 0 || StringUtils.INSTANCE.isNotBlank(getRatingString()))
                 && getCountReview() > 0;
     }
 

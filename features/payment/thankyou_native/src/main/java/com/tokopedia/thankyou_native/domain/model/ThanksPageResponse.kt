@@ -169,7 +169,11 @@ data class ShopOrder(
         @SerializedName("coupon")
         val coupon: String,
         @SerializedName("revenue")
-        val revenue: Float
+        val revenue: Float,
+        @SerializedName("logistic_duration")
+        val logisticDuration: String?,
+        @SerializedName("logistic_eta")
+        val logisticETA: String?
 
 
 ) : Parcelable

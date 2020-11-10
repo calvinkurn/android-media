@@ -61,6 +61,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
     private static final String ARGUMENT_CART_STRING = "ARGUMENT_CART_STRING";
     private static final String ARGUMENT_DISABLE_ORDER_PRIORITAS = "ARGUMENT_DISABLE_ORDER_PRIORITAS";
     private static final String ARGUMENT_IS_TRADE_IN_DROP_OFF = "ARGUMENT_IS_TRADE_IN_DROP_OFF";
+    private static final String ARGUMENT_IS_FULFILLMENT = "ARGUMENT_IS_FULFILLMENT";
+    private static final String ARGUMENT_PO_TIME = "ARGUMENT_PO_TIME";
 
     private static final String CHOOSE_COURIER_TRACE = "mp_choose_courier";
 
@@ -96,7 +98,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
                                                           boolean isLeasing, String pslCode,
                                                           ArrayList<Product> products, String cartString,
                                                           boolean isDisableOrderPrioritas,
-                                                          boolean isTradeInDropOff) {
+                                                          boolean isTradeInDropOff, boolean isFulFillment,
+                                                          int preOrderTime) {
         ShippingDurationBottomsheet shippingDurationBottomsheet = new ShippingDurationBottomsheet();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData);
@@ -111,6 +114,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putString(ARGUMENT_CART_STRING, cartString);
         bundle.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas);
         bundle.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff);
+        bundle.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment);
+        bundle.putInt(ARGUMENT_PO_TIME, preOrderTime);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -206,10 +211,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
             isDisableOrderPrioritas = getArguments().getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS);
             boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
+            boolean isFulfillment = getArguments().getBoolean(ARGUMENT_IS_FULFILLMENT);
+            int preOrderTime = getArguments().getInt(ARGUMENT_PO_TIME);
             if (shipmentDetailData != null) {
                 // Called from checkout
                 presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress);
+                        shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime);
             } else if (shippingParam != null) {
                 // Called from express checkout
                 presenter.loadCourierRecommendation(shippingParam, selectedServiceId, shopShipments);
@@ -275,11 +282,14 @@ public class ShippingDurationBottomsheet extends BottomSheets
                             ArrayList<Product> products = getArguments().getParcelableArrayList(ARGUMENT_PRODUCTS);
                             String cartString = getArguments().getString(ARGUMENT_CART_STRING);
                             boolean isTradeInDropOff = getArguments().getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF);
+                            boolean isFulfillment = getArguments().getBoolean(ARGUMENT_IS_FULFILLMENT);
+                            int preOrderTime = getArguments().getInt(ARGUMENT_PO_TIME);
                             if (shipmentDetailData != null) {
                                 presenter.loadCourierRecommendation(
                                         shipmentDetailData, selectedServiceId, shopShipments,
                                         codHistory, mIsCorner, isLeasing, pslCode,
-                                        products, cartString, isTradeInDropOff, recipientAddressModel
+                                        products, cartString, isTradeInDropOff, recipientAddressModel,
+                                        isFulfillment, preOrderTime
                                 );
                             }
                         }
@@ -291,7 +301,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel) {
         shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas);
-        shippingDurationAdapter.initiateShowcase();
+        if (promoViewModel.getEtaData().getTextEta().isEmpty() && promoViewModel.getEtaData().getErrorCode() == 1) shippingDurationAdapter.initiateShowcase();
         updateHeight();
         boolean hasCourierPromo = checkHasCourierPromo(shippingDurationUiModelList);
         if (hasCourierPromo) {
@@ -413,6 +423,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         courierData.setBenefitAmount(data.getBenefitAmount());
         courierData.setPromoTitle(data.getTitle());
         courierData.setHideShipperName(data.getHideShipperName());
+        courierData.setShipperName(data.getShipperName());
 
         try {
             shippingDurationBottomsheetListener.onLogisticPromoChosen(
