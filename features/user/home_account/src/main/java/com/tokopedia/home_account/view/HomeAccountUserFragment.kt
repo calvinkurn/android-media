@@ -21,9 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.coachmark.CoachMark
-import com.tokopedia.coachmark.CoachMarkContentPosition
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.AccountConstants
@@ -72,7 +71,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     var adapter: HomeAccountUserAdapter? = null
 
-    val coachMarkItem = ArrayList<CoachMarkItem>()
+    val coachMarkItem = ArrayList<CoachMark2Item>()
 
     var appBarCollapseListener: onAppBarCollapseListener? = null
 
@@ -515,40 +514,42 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             when (position) {
                 0 -> {
                     coachMarkItem.add(
-                            CoachMarkItem(
+                            CoachMark2Item(
                                     itemView.findViewById(R.id.account_user_item_profile_edit),
                                     "Ubah data diri",
                                     "Kamu bisa ubah nama, foto profil, kontak, dan biodata di sini.",
-                                    CoachMarkContentPosition.BOTTOM
+                                    CoachMark2.POSITION_BOTTOM
                             )
                     )
 
                     coachMarkItem.add(
-                            CoachMarkItem(
+                            CoachMark2Item(
                                     itemView.findViewById(R.id.home_account_profile_financial_section),
                                     "Cek jumlah dana dan investasimu",
                                     "Punya dana dan investasi di Tokopedia? Mulai dari Saldo Tokopedia sampai emas, bisa cek di sini.",
-                                    CoachMarkContentPosition.BOTTOM
+                                    CoachMark2.POSITION_BOTTOM
                             )
                     )
 
                     coachMarkItem.add(
-                            CoachMarkItem(
+                            CoachMark2Item(
                                     itemView.findViewById(R.id.home_account_profile_member_section),
                                     "Lihat keuntunganmu di sini",
                                     "Cek keuntunganmu di TokoMember, Membership, dan daftar kupon, atau selesaikan tantangan untuk dapatkan keuntungan baru.",
-                                    CoachMarkContentPosition.TOP
+                                    CoachMark2.POSITION_TOP
                             )
                     )
                 }
             }
 
             if (position == 0) {
-                val coachMark = CoachMark()
-                coachMark.onFinishListener = {
-                    accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                context?.run {
+                    val coachMark = CoachMark2(this)
+                    coachMark.onFinishListener = {
+                        accountPref.saveSettingValue(AccountConstants.KEY.KEY_SHOW_COACHMARK, false)
+                    }
+                    coachMark.showCoachMark(coachMarkItem)
                 }
-                coachMark.show(activity, "homeAccountUserFragmentCoachmark", coachMarkItem)
             }
         }
     }
