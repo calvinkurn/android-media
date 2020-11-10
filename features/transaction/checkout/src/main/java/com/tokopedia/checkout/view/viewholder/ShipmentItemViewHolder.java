@@ -437,12 +437,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private void renderShipping(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter) {
         boolean isTradeInDropOff = mActionListener.isTradeInByDropOff();
 
-        RecipientAddressModel currentAddress;
-        if (recipientAddressModel == null) {
-            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
-        } else {
-            currentAddress = recipientAddressModel;
-        }
+        RecipientAddressModel currentAddress = recipientAddressModel;
+//        if (recipientAddressModel == null) {
+//            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
+//        } else {
+//            currentAddress = recipientAddressModel;
+//        }
 
         if (isTradeInDropOff) {
             renderRobinhoodV2(shipmentCartItemModel, currentAddress, ratesDataConverter);
@@ -906,11 +906,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
                 if (!hasLoadCourier) {
                     RecipientAddressModel tmpRecipientAddressModel;
-                    if (recipientAddressModel != null) {
+//                    if (recipientAddressModel != null) {
                         tmpRecipientAddressModel = recipientAddressModel;
-                    } else {
-                        tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                    }
+//                    } else {
+//                        tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+//                    }
                     ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
                             shipmentCartItemModel, tmpRecipientAddressModel);
 

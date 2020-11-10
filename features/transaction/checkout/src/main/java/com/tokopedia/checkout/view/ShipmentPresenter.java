@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -115,8 +117,6 @@ import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -1462,18 +1462,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (getView() != null) {
                                         getView().setHasRunningApiCall(false);
                                         getView().hideLoading();
-                                        JSONObject response = null;
+                                        JsonObject response = null;
                                         String messageError = null;
                                         boolean statusSuccess;
                                         try {
-                                            response = new JSONObject(stringResponse);
-                                            int statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
-                                                    .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS);
+                                            response = new JsonParser().parse(stringResponse).getAsJsonObject();
+                                            int statusCode = response.getAsJsonObject().getAsJsonObject(EditAddressUseCase.RESPONSE_DATA)
+                                                    .get(EditAddressUseCase.RESPONSE_IS_SUCCESS).getAsInt();
                                             statusSuccess = statusCode == 1;
                                             if (!statusSuccess) {
-                                                messageError = response.getJSONArray("message_error").getString(0);
+                                                messageError = response.getAsJsonArray("message_error").get(0).getAsString();
                                             }
-                                        } catch (JSONException e) {
+                                        } catch (Exception e) {
                                             Timber.d(e);
                                             statusSuccess = false;
                                         }
@@ -1482,9 +1482,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             if (recipientAddressModel != null) {
                                                 recipientAddressModel.setLatitude(latitude);
                                                 recipientAddressModel.setLongitude(longitude);
-                                            } else {
-                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(latitude);
-                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(longitude);
+//                                            } else {
+//                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(latitude);
+//                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(longitude);
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
@@ -1518,17 +1518,17 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String receiverName = "";
         String receiverPhone = "";
 
-        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
-            addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
-            addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
-            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
-            postalCode = shipmentCartItemModel.getRecipientAddressModel().getPostalCode();
-            districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
-            cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
-            provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
-            receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
-            receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
-        } else if (recipientAddressModel != null) {
+//        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
+//            addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
+//            addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
+//            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
+//            postalCode = shipmentCartItemModel.getRecipientAddressModel().getPostalCode();
+//            districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
+//            cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
+//            provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
+//            receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
+//            receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
+        if (recipientAddressModel != null) {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
             addressStreet = recipientAddressModel.getStreet();
@@ -1653,8 +1653,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         );
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                Integer.parseInt(newRecipientAddressModel.getId()) :
-                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
+                                Integer.parseInt(newRecipientAddressModel.getId()) : 0
+//                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
                         );
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);

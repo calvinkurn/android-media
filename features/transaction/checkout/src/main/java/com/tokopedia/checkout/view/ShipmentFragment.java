@@ -771,7 +771,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION);
-        ;
         if (shipmentAddressFormData.getKeroDiscomToken() != null &&
                 shipmentAddressFormData.getKeroUnixTime() != 0) {
             Token token = new Token();
@@ -944,11 +943,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shippingCourierBottomsheet = null;
             shippingDurationBottomsheet = null;
             RecipientAddressModel recipientAddressModel;
-            if (shipmentPresenter.getRecipientAddressModel() != null) {
+//            if (shipmentPresenter.getRecipientAddressModel() != null) {
                 recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
-            } else {
-                recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-            }
+//            } else {
+//                recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+//            }
             onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel, position);
         }
     }
@@ -1300,9 +1299,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                      RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData;
         ShipmentDetailData oldShipmentDetailData = null;
-        if (recipientAddressModel == null) {
-            recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-        }
+//        if (recipientAddressModel == null) {
+//            recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+//        }
         if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
                 shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             oldShipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
@@ -1985,15 +1984,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentAdapter.getAddressShipmentData() != null) {
             locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
             locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
-        } else {
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
-            if (shipmentCartItemModel != null) {
-                RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                if (updatedRecipientAddressModel != null) {
-                    locationPass.setCityName(updatedRecipientAddressModel.getCityName());
-                    locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
-                }
-            }
+//        } else {
+//            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+//            if (shipmentCartItemModel != null) {
+//                RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+//                if (updatedRecipientAddressModel != null) {
+//                    locationPass.setCityName(updatedRecipientAddressModel.getCityName());
+//                    locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
+//                }
+//            }
         }
 
         navigateToPinpointActivity(locationPass);

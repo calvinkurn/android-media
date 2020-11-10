@@ -1142,30 +1142,30 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    private void updateFirstInvoiceItemMargin(int iteration, ShipmentCartItemModel shipmentCartItemModel, boolean hasExtraMarginTop) {
-        if (shipmentCartItemModel.getRecipientAddressModel() != null && shipmentCartItemModelList != null &&
-                shipmentCartItemModelList.get(0) != null &&
-                shipmentCartItemModel.getShopId() == shipmentCartItemModelList.get(0).getShopId()) {
-            shipmentCartItemModel.setStateHasExtraMarginTop(hasExtraMarginTop);
-
-            notifyItemChanged(iteration);
-        }
-    }
-
-    public void cancelAutoApplyCoupon(String variant) {
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            Object shipmentData = shipmentDataList.get(i);
-            if (shipmentData instanceof PromoStackingData) {
-                ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
-                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                } else {
-                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-                }
-                notifyItemChanged(i);
-            }
-        }
-    }
+//    private void updateFirstInvoiceItemMargin(int iteration, ShipmentCartItemModel shipmentCartItemModel, boolean hasExtraMarginTop) {
+//        if (shipmentCartItemModel.getRecipientAddressModel() != null && shipmentCartItemModelList != null &&
+//                shipmentCartItemModelList.get(0) != null &&
+//                shipmentCartItemModel.getShopId() == shipmentCartItemModelList.get(0).getShopId()) {
+//            shipmentCartItemModel.setStateHasExtraMarginTop(hasExtraMarginTop);
+//
+//            notifyItemChanged(iteration);
+//        }
+//    }
+//
+//    public void cancelAutoApplyCoupon(String variant) {
+//        for (int i = 0; i < shipmentDataList.size(); i++) {
+//            Object shipmentData = shipmentDataList.get(i);
+//            if (shipmentData instanceof PromoStackingData) {
+//                ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
+//                if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
+//                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
+//                } else {
+//                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
+//                }
+//                notifyItemChanged(i);
+//            }
+//        }
+//    }
 
     public void updateShipmentDestinationPinpoint(String latitude, String longitude) {
         if (latitude != null && longitude != null) {

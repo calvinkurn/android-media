@@ -23,7 +23,7 @@ data class CartShipmentAddressFormData(
         var isShowOnboarding: Boolean = false,
         var isDropshipperDisable: Boolean = false,
         var isOrderPrioritasDisable: Boolean = false,
-        var groupAddress: List<GroupAddress> = ArrayList(),
+        var groupAddress: List<GroupAddress>? = null,
         var keroToken: String? = null,
         var keroDiscomToken: String? = null,
         var keroUnixTime: Int = 0,
@@ -47,7 +47,8 @@ data class CartShipmentAddressFormData(
 
     val isAvailablePurchaseProtection: Boolean
         get() {
-            for (address in groupAddress) {
+            val addresses = groupAddress ?: return false
+            for (address in addresses) {
                 for (groupShop in address.groupShop) {
                     for (product in groupShop.products) {
                         if (product.purchaseProtectionPlanData != null &&
@@ -68,7 +69,7 @@ data class CartShipmentAddressFormData(
         isShowOnboarding = parcel.readByte() != 0.toByte()
         isDropshipperDisable = parcel.readByte() != 0.toByte()
         isOrderPrioritasDisable = parcel.readByte() != 0.toByte()
-        groupAddress = parcel.createTypedArrayList(GroupAddress.CREATOR) ?: ArrayList()
+        groupAddress = parcel.createTypedArrayList(GroupAddress.CREATOR)
         keroToken = parcel.readString()
         keroDiscomToken = parcel.readString()
         keroUnixTime = parcel.readInt()

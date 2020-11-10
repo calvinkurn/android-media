@@ -3,7 +3,8 @@ package com.tokopedia.checkout.domain.mapper
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
-import org.junit.Assert
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -33,7 +34,7 @@ class ShipmentMapperTest {
         val (_, _, _, _, _, _, _, groupAddress) = shipmentMapper!!.convertToShipmentAddressFormData(response)
 
         // verify
-        Assert.assertNotNull(groupAddress[0].groupShop[0].products[0].purchaseProtectionPlanData)
+        assertNotNull(groupAddress!![0].groupShop[0].products[0].purchaseProtectionPlanData)
     }
 
     @Test
@@ -46,7 +47,7 @@ class ShipmentMapperTest {
         val (_, _, _, _, _, _, _, groupAddress) = shipmentMapper!!.convertToShipmentAddressFormData(response)
 
         // verify
-        Assert.assertNull(groupAddress[0].groupShop[0].products[0].purchaseProtectionPlanData)
+        assertNull(groupAddress!![0].groupShop[0].products[0].purchaseProtectionPlanData)
     }
 
     companion object {
