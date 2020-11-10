@@ -19,12 +19,14 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
  * A class for holder view Recommendation Carousel
  */
 class RecommendationCarouselViewHolder(val view: View, val listener: RecommendationListener) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
-    companion object{
-        private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
-    }
+
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: CarouselProductCardView by lazy { view.findViewById<CarouselProductCardView>(R.id.list) }
+
+    companion object {
+        private const val className = "com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder"
+    }
 
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
