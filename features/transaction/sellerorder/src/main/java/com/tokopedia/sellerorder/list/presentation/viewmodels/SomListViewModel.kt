@@ -125,7 +125,7 @@ class SomListViewModel @Inject constructor(
         endDate = Utils.getFormattedDate(0, DATE_FORMAT)
     }
 
-    private var somFilterUiModel: List<SomFilterUiModel> = mutableListOf()
+    private var somFilterUiModel = mutableListOf<SomFilterUiModel>()
 
     var isMultiSelectEnabled: Boolean = false
 
@@ -264,6 +264,7 @@ class SomListViewModel @Inject constructor(
     fun getSomFilterUi() = somFilterUiModel
 
     fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
-        this.somFilterUiModel = somFilterUiModelList
+        this.somFilterUiModel.clear()
+        this.somFilterUiModel.addAll(somFilterUiModelList)
     }
 }

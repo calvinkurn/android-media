@@ -20,7 +20,8 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
     fun setSubFilterList(newSubChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
                          keyFilter: String) {
         this.keyFilter = keyFilter
-        this.subChildFilterList = newSubChildFilterList.toMutableList()
+        this.subChildFilterList.clear()
+        this.subChildFilterList.addAll(newSubChildFilterList.toMutableList())
         notifyDataSetChanged()
     }
 

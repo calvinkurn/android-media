@@ -348,13 +348,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onParentSortFilterClicked() {
+        val somFilterList = viewModel.getSomFilterUi().toMutableList()
         val bottomSheetFilter = SomFilterBottomSheet.createInstance(
                 somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
                 viewModel.getDataOrderListParams().statusList,
-                viewModel.getSomFilterUi(),
+                somFilterList,
                 this.activity,
-                filterDate,
-                isResetFilter
+                filterDate
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
         if(!bottomSheetFilter.isVisible) {
@@ -1358,25 +1358,27 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
     override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
-                                        idFilter: String, orderStatus: String, filterDate: String, isReset: Boolean) {
+                                        idFilter: String, orderStatus: String, filterDate: String) {
         this.filterDate = filterDate
-        this.isResetFilter = isReset
+        val somFilterUiModelListCopy = somFilterUiModelList.toMutableList()
         viewModel.updateGetOrderListParams(filterData)
-        viewModel.updateSomListFilterUi(somFilterUiModelList)
-        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelList, filterDate)
-        val selectedStatusFilterKey = somFilterUiModelList.find {
+        viewModel.updateSomListFilterUi(somFilterUiModelListCopy)
+        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelListCopy, filterDate)
+        val selectedStatusFilterKey = somFilterUiModelListCopy.find {
             it.nameFilter == SomConsts.FILTER_STATUS_ORDER
         }?.somFilterData?.find {
             it.isSelected
         }?.key
         tabActive = selectedStatusFilterKey.orEmpty()
         val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
-                somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
+                somFilterUiModelListCopy, idFilter, somListSortFilterTab.getSomListFilterUiModel())
         somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
             if (it != null) {
                 somListSortFilterTab.selectTab(it)
             } else {
+                somListSortFilterTab.selectTabReset()
                 somListSortFilterTab.show(somListFilter)
+                somListSortFilterTab.updateCounterSortFilter()
             }
             refreshOrderList()
         }

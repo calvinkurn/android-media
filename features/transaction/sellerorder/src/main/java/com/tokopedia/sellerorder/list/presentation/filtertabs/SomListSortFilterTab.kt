@@ -37,6 +37,10 @@ class SomListSortFilterTab(
         selectParentFilter()
     }
 
+    fun selectTabReset() {
+        selectedTab = null
+    }
+
     private fun changeTabSortFilterText() {
         sortFilter.textView.text = context.getString(com.tokopedia.sellerorder.R.string.som_list_filter_chip)
     }

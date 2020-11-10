@@ -36,14 +36,15 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private val _somFilterOrderListParam = MutableLiveData<Result<SomListGetOrderListParam>>()
     val somFilterOrderListParam: LiveData<Result<SomListGetOrderListParam>> = _somFilterOrderListParam
 
-    private var somFilterUiModel: List<SomFilterUiModel> = mutableListOf()
+    private var somFilterUiModel = mutableListOf<SomFilterUiModel>()
     private var somListGetOrderListParam: SomListGetOrderListParam = SomListGetOrderListParam()
     private var somFilterDate: SomFilterDateUiModel? = null
 
     fun getSomFilterUiModel() = somFilterUiModel
 
     fun setSomFilterUiModel(somFilterUiModel: List<SomFilterUiModel>) {
-        this.somFilterUiModel = somFilterUiModel
+        this.somFilterUiModel.clear()
+        this.somFilterUiModel.addAll(somFilterUiModel)
     }
 
     fun getSomListGetOrderListParam() = somListGetOrderListParam
@@ -52,7 +53,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
         this.somListGetOrderListParam = somListGetOrderListParam
     }
 
-    fun getSomFilterData(orderStatus: String, date: String, isReset: Boolean) {
+    fun getSomFilterData(orderStatus: String, date: String) {
         launchCatchError(block = {
             val result = getSomOrderFilterUseCase.execute()
             val somFilterResult = result.filterIsInstance<SomFilterUiModel>()
@@ -64,16 +65,17 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }
 
             if (somFilterUiModel.isNullOrEmpty()) {
-                somFilterUiModel = somFilterResult
+                somFilterUiModel.clear()
+                somFilterUiModel.addAll(somFilterResult)
             }
+
             somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData =
                     somFilterResult.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.onEach { chips ->
-                        if (!isReset) {
-                            if (chips.name == orderStatus) {
-                                chips.isSelected = true
-                            }
+                        if (chips.name == orderStatus) {
+                            chips.isSelected = true
                         }
                     } ?: listOf()
+
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterVisitable.addAll(somFilterUiModel)
             somFilterDate?.let { somFilterVisitable.add(it) }
@@ -181,7 +183,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }
             somListGetOrderListParam = SomListGetOrderListParam()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
-            somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE)
+            somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE, date = "")
             somFilterVisitable.addAll(somFilterUiModel)
             somFilterDate?.let { somFilterVisitable.add(it) }
             _updateFilterSelected.postValue(Success(somFilterVisitable))

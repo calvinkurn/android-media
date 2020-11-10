@@ -17,7 +17,6 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
         notifyDataSetChanged()
     }
 
-
     fun setEmptyState(emptyData: EmptyModel) {
         visitables.clear()
         visitables.add(emptyData)
