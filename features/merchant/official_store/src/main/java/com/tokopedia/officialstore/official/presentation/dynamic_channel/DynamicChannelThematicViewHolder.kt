@@ -42,11 +42,11 @@ class DynamicChannelThematicViewHolder(
 
     override fun bind(element: DynamicChannelViewModel?) {
         element?.run {
-            dcEventHandler.mixBannerImpression(dynamicChannelData)
-            dcEventHandler.mixImageImpression(dynamicChannelData)
-            setupHeader(dynamicChannelData.header)
-            setupBanner(dynamicChannelData.banner, dynamicChannelData)
-            setupContent(dynamicChannelData)
+            dcEventHandler.mixBannerImpression(dynamicChannelData.channel)
+            dcEventHandler.mixImageImpression(dynamicChannelData.channel)
+            setupHeader(dynamicChannelData.channel.header)
+            setupBanner(dynamicChannelData.channel.banner, dynamicChannelData.channel)
+            setupContent(dynamicChannelData.channel)
         }
     }
 
@@ -159,7 +159,7 @@ class DynamicChannelThematicViewHolder(
                 slashedPrice = it?.slashedPrice ?: "",
                 discountPercentage = it?.discount ?: ""
             )
-        } ?: listOf()
+        }
     }
 
     companion object {

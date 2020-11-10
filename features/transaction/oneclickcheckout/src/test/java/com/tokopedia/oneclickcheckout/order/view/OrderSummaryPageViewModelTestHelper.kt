@@ -69,7 +69,7 @@ class OrderSummaryPageViewModelTestHelper {
     val logisticPromo = LogisticPromoUiModel("bbo", "bbo", "bbo", firstCourierSecondDuration.productData.shipperName,
             secondDuration.serviceData.serviceId, firstCourierSecondDuration.productData.shipperId, firstCourierSecondDuration.productData.shipperProductId,
             "", "", "", false, "",
-            500, 2000, 1500, false, false)
+            500, 2000, 1500, false, false, CodDataPromo(), EstimatedTimeArrivalPromo())
 
     val shippingRecommendationData = ShippingRecommendationData().apply {
         shippingDurationViewModels = listOf(firstDuration, secondDuration)
