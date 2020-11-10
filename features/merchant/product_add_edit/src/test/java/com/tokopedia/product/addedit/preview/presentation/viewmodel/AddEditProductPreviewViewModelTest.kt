@@ -198,6 +198,19 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(3, viewModel.getStatusStockViewVariant())
     }
 
+    @Test
+    fun `When productInputModel data changed Expect `() {
+        viewModel.productInputModel.value = ProductInputModel()
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.setIsDataChanged(true)
+        assertTrue(viewModel.getIsDataChanged())
+
+        viewModel.setIsDataChanged(false)
+        assertFalse(viewModel.getIsDataChanged())
+
+    }
+
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
         coEvery { getProductDraftUseCase.executeOnBackground() } returns draft
     }
