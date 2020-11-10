@@ -1,23 +1,32 @@
 package com.tokopedia.officialstore.official.data.mapper
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
+import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Grid
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
-class OfficialHomeMapper {
+class OfficialHomeMapper (
+        private val context: Context,
+        private val dispatchers: OfficialStoreDispatcherProvider
+){
     private val listOfficialStore = mutableListOf<Visitable<*>>()
     companion object {
         private const val BANNER_POSITION = 0
@@ -67,8 +76,8 @@ class OfficialHomeMapper {
         }
     }
 
-    fun mappingDynamicChannel(dynamicChannel: DynamicChannel, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
-        if (dynamicChannel.channels.isNotEmpty()) {
+    fun mappingDynamicChannel(officialStoreChannels: List<OfficialStoreChannel>, adapter: OfficialHomeAdapter?, remoteConfig: RemoteConfig?) {
+        if (officialStoreChannels.isNotEmpty()) {
 
             val availableScreens: Set<String>
             var availableLegoBannerScreens = setOf<String>()
@@ -96,12 +105,12 @@ class OfficialHomeMapper {
 
             val views = mutableListOf<Visitable<*>>()
 
-            dynamicChannel.channels.forEachIndexed { position, channel ->
-                if (availableScreens.contains(channel.layout)) {
-                    views.add(DynamicChannelViewModel(channel))
-                } else if (availableLegoBannerScreens.contains(channel.layout)) {
+            officialStoreChannels.forEachIndexed { position, officialStore ->
+                if (availableScreens.contains(officialStore.channel.layout)) {
+                    views.add(DynamicChannelViewModel(officialStore))
+                } else if (availableLegoBannerScreens.contains(officialStore.channel.layout)) {
                     views.add(DynamicLegoBannerDataModel(
-                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(channel, position)
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(officialStore.channel, position)
                     ))
                 }
             }
@@ -163,5 +172,36 @@ class OfficialHomeMapper {
         listOfficialStore.clear()
         listOfficialStore.add(BANNER_POSITION, OfficialLoadingViewModel())
         adapter?.submitList(listOfficialStore.toMutableList())
+    }
+
+    fun mappingProductCards(grids: List<Grid>): List<ProductCardModel> {
+        return grids.map {grid ->
+            ProductCardModel(
+                    slashedPrice = grid.slashedPrice,
+                    productName = grid.name,
+                    formattedPrice = grid.price,
+                    productImageUrl = grid.imageUrl,
+                    discountPercentage = grid.discount,
+                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive
+                            ?: false, grid.freeOngkir?.imageUrl ?: ""),
+                    labelGroupList = grid.labelGroup.map { label ->
+                        ProductCardModel.LabelGroup(
+                                position = label.position,
+                                title = label.title,
+                                type = label.type
+                        )
+                    },
+                    hasThreeDots = false
+            )
+
+        }
+    }
+
+    suspend fun getMaxHeightProductCards(productCardModels: List<ProductCardModel>): Int{
+        return productCardModels.getMaxHeightForGridView(
+                context = context,
+                coroutineDispatcher = dispatchers.io(),
+                productImageWidth = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
+        )
     }
 }

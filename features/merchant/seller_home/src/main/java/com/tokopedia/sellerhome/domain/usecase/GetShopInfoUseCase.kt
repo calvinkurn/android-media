@@ -44,15 +44,8 @@ class GetShopInfoUseCase(
         const val QUERY = "query getShopInfoMoengage(\$userID: Int!) {\n" +
                 "  shopInfoMoengage(userID: \$userID) {\n" +
                 "    info {\n" +
-                "      date_shop_created\n" +
-                "      shop_id\n" +
-                "      shop_location\n" +
                 "      shop_name\n" +
-                "      shop_score\n" +
-                "      total_active_product\n" +
                 "      shop_avatar\n" +
-                "      shop_cover\n" +
-                "      shop_domain\n" +
                 "    }\n" +
                 "  }\n" +
                 "}"
