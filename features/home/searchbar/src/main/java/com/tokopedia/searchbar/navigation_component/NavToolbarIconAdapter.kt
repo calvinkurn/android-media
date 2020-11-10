@@ -13,10 +13,13 @@ import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar.Companion.TYPE_LOTTIE
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
-internal class NavToolbarIconAdapter(private var iconConfig: IconConfig): RecyclerView.Adapter<IconHolder>() {
+internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
+                                     private val userSessionInterface: UserSessionInterface)
+    : RecyclerView.Adapter<IconHolder>() {
     companion object {
         const val STATE_THEME_DARK = 0
         const val STATE_THEME_LIGHT = 1
@@ -32,15 +35,21 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig): Recycl
         when(viewType) {
             VIEW_TYPE_IMAGE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-                return ImageIconHolder(view)
+                return ImageIconHolder(view) {
+                    userSessionInterface.isLoggedIn
+                }
             }
             VIEW_TYPE_LOTTIE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon_lottie, parent, false)
-                return LottieIconHolder(view)
+                return LottieIconHolder(view) {
+                    userSessionInterface.isLoggedIn
+                }
             }
         }
         val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-        return ImageIconHolder(view)
+        return ImageIconHolder(view) {
+            userSessionInterface.isLoggedIn
+        }
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -100,7 +109,7 @@ internal abstract class IconHolder(view: View): RecyclerView.ViewHolder(view) {
     abstract fun bind(iconToolbar: IconToolbar, themeState: Int)
 }
 
-internal class ImageIconHolder(view: View): IconHolder(view) {
+internal class ImageIconHolder(view: View, val isUserLoggedIn:() -> Boolean): IconHolder(view) {
     val iconImage = view.nav_icon_image
     val iconBadge = view.nav_icon_badge
     val context = itemView.context
@@ -130,8 +139,13 @@ internal class ImageIconHolder(view: View): IconHolder(view) {
 
         iconImage.setOnClickListener {
             iconToolbar.onIconClicked.invoke()
-            if (iconToolbar.applink.isNotEmpty() && !iconToolbar.disableRouteManager) {
-                RouteManager.route(context, iconToolbar.applink)
+            val isLoggedIn = isUserLoggedIn.invoke()
+            if (!iconToolbar.disableRouteManager && isLoggedIn) {
+                if (iconToolbar.applink.isNotEmpty() && isLoggedIn) {
+                    RouteManager.route(context, iconToolbar.applink)
+                } else if (iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
+                    RouteManager.route(context, iconToolbar.applink)
+                }
             }
         }
 
@@ -147,7 +161,7 @@ internal class ImageIconHolder(view: View): IconHolder(view) {
             context.getString(R.string.tag_counter_id) + id
 }
 
-internal class LottieIconHolder(view: View): IconHolder(view) {
+internal class LottieIconHolder(view: View, val isUserLoggedIn:() -> Boolean): IconHolder(view) {
     val iconImage = view.nav_icon_lottieav
     val iconBadge = view.nav_icon_badge_lottieav
     val context = itemView.context
@@ -160,8 +174,13 @@ internal class LottieIconHolder(view: View): IconHolder(view) {
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
             iconToolbar.onIconClicked.invoke()
-            if (iconToolbar.applink.isNotEmpty() && !iconToolbar.disableRouteManager) {
-                RouteManager.route(context, iconToolbar.applink)
+            val isLoggedIn = isUserLoggedIn.invoke()
+            if (!iconToolbar.disableRouteManager && isLoggedIn) {
+                if (iconToolbar.applink.isNotEmpty() && isLoggedIn) {
+                    RouteManager.route(context, iconToolbar.applink)
+                } else if (iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
+                    RouteManager.route(context, iconToolbar.applink)
+                }
             }
         }
 

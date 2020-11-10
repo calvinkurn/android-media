@@ -30,6 +30,8 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.T
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
@@ -73,6 +75,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
     //helper variable
     private var shadowApplied: Boolean = false
+    private var userSessionInterface: UserSessionInterface? = null
 
     //controller variable
     internal var statusBarUtil: StatusBarUtil? = null
@@ -103,6 +106,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
             }
         }
         navToolbar?.background = ColorDrawable(toolbarFillColor)
+        userSessionInterface = UserSession(context)
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
@@ -115,7 +119,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * IconList.kt
      */
     fun setIcon(iconBuilder: IconBuilder) {
-        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build())
+        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), userSessionInterface?:UserSession(context))
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)

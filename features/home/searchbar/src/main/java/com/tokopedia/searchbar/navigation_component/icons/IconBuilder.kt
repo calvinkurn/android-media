@@ -27,7 +27,7 @@ class IconBuilder {
 
 internal data class IconConfig(val iconList: MutableList<IconToolbar>)
 
-internal data class IconToolbar(val id: Int, val imageRes: Int? = null, val applink: String, var badgeCounter: Int = 0, var disableRouteManager: Boolean = false, val iconType: Int = TYPE_IMAGE, val onIconClicked: ()->Unit) {
+internal data class IconToolbar(val id: Int, val imageRes: Int? = null, val applink: String, var nonLoginApplink: String = "", var badgeCounter: Int = 0, var disableRouteManager: Boolean = false, val iconType: Int = TYPE_IMAGE, val onIconClicked: ()->Unit) {
     companion object {
         val TYPE_IMAGE = 0
         val TYPE_LOTTIE = 1
