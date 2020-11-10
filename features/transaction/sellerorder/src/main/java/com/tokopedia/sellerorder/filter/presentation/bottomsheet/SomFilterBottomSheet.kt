@@ -302,7 +302,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     private fun showHideBottomSheetReset() {
-        if (checkIsSelected()) {
+        if (checkIsSelected() || filterDate.isNotBlank()) {
             bottomSheetAction.show()
         } else {
             bottomSheetAction.hide()
