@@ -1,6 +1,5 @@
 package com.tokopedia.analytics.performance;
 
-
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
