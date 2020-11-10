@@ -195,6 +195,7 @@ class SomGetOrderDetailUseCase @Inject constructor(
                     is_free_shipping_campaign
                     is_topads
                     is_tokocabang
+                    is_shipping_printed
                 }
                 label_info{
                   flag_name

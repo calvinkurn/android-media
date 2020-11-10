@@ -392,7 +392,11 @@ data class SomDetailOrder(
 
                     @SerializedName("is_tokocabang")
                     @Expose
-                    val isWareHouse: Boolean = false
+                    val isWareHouse: Boolean = false,
+
+                    @SerializedName("is_shipping_printed")
+                    @Expose
+                    val isShippingPrinted: Boolean = false
             )
 
             data class LogisticInfo(

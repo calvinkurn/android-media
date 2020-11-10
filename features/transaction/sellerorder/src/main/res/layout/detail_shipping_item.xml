@@ -46,6 +46,7 @@
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toEndOf="@id/kurir_label"
         app:layout_constraintTop_toBottomOf="@+id/shipping_title"
+        app:layout_constraintBottom_toBottomOf="@+id/kurir_label"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="GO-JEK Same Day" />
@@ -239,19 +240,32 @@
         app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
         app:srcCompat="@drawable/ic_copy_black" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/shippingPrintedLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl7"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintTop_toBottomOf="@+id/rl_no_resi"
+        app:layout_constraintStart_toEndOf="@id/shipping_address_copy"
+        app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
+        app:labelTitle="@string/sudah_dicetak"
+        app:labelType="general_light_grey" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginStart="@dimen/spacing_lvl7"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
         android:textColor="@color/Neutral_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
         app:layout_constraintStart_toEndOf="@id/shipping_address_copy"
-        app:layout_constraintTop_toBottomOf="@id/rl_no_resi"
+        app:layout_constraintTop_toBottomOf="@id/shippingPrintedLabel"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="AS Misbeh (0812345678)" />
@@ -260,8 +274,7 @@
         android:id="@+id/tv_receiver_street"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
         android:lineSpacingMultiplier="1"
         android:scrollHorizontally="false"
@@ -298,8 +311,7 @@
         android:id="@+id/tv_receiver_province"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
         android:lineSpacingMultiplier="1"
         android:scrollHorizontally="false"

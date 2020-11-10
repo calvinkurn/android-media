@@ -69,7 +69,7 @@
     <string name="som_deadline">Batas Respons</string>
     <string name="som_deadline_done">Selesai Otomatis</string>
     <string name="lihat_caps">LIHAT</string>
-    <string name="see_detail_">Lihat Detail</string>
+    <string name="see_detail">Lihat Detail</string>
     <string name="detail_product">Detail Produk</string>
     <string name="see_invoice">Lihat Invoice</string>
     <string name="lihat">Lihat</string>
@@ -78,6 +78,7 @@
     <string name="awb_label">awb</string>
     <string name="resi_tersalin">Nomor resi sudah tersalin</string>
     <string name="invoice_label">invoice</string>
+    <string name="sudah_dicetak">Sudah dicetak</string>
     <string name="invoice_tersalin">Invoice sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kode_booking">Kode Booking</string>
