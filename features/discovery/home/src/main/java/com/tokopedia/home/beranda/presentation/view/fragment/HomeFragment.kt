@@ -34,6 +34,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -46,6 +47,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -122,12 +124,14 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.promogamification.common.floating.view.fragment.FloatingEggButtonFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -145,8 +149,6 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.Toaster.make
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.permission.PermissionCheckerHelper
-import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
@@ -157,6 +159,7 @@ import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.*
+import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -214,6 +217,11 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val CLICK_TIME_INTERVAL: Long = 500
         private const val DEFAULT_INTERVAL_HINT: Long = 1000 * 10
 
+        private const val EXP_TOP_NAV = "Navigation Revamp"
+        private const val VARIANT_OLD = "Existing Navigation"
+        private const val VARIANT_REVAMP = "Navigation Revamp"
+        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
             val fragment = HomeFragment()
@@ -261,13 +269,15 @@ open class HomeFragment : BaseDaggerFragment(),
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var remoteConfigInstance: RemoteConfigInstance
     private var homeRecyclerView: NestedRecyclerView? = null
-    private var homeMainToolbar: NavToolbar? = null
+    private var oldToolbar: HomeMainToolbar? = null
+    private var navToolbar: NavToolbar? = null
     private var homeSnackbar: Snackbar? = null
     private var component: BerandaComponent? = null
     private var adapter: HomeRecycleAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var messageSnackbar: SnackbarRetry? = null
     private var activityStateListener: ActivityStateListener? = null
+    private var mainParentStatusBarListener: MainParentStatusBarListener? = null
     private var homePerformanceMonitoringListener: HomePerformanceMonitoringListener? = null
     private var showRecomendation = false
     private var mShowTokopointNative = false
@@ -293,13 +303,27 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshHandler = Handler()
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
+    private val gson = Gson()
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
+
+    private fun isNavRevamp(): Boolean = getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+    private fun isNavOld(): Boolean = getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
+
+    private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
+        if (isNavRevamp()) {
+            ifNavRevamp.invoke()
+        } else if (isNavOld()) {
+            ifNavOld.invoke()
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         createDaggerComponent()
+        mainParentStatusBarListener = context as MainParentStatusBarListener
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context)
+        requestStatusBarDark()
     }
 
     private fun createDaggerComponent(){
@@ -315,6 +339,16 @@ open class HomeFragment : BaseDaggerFragment(),
         else{
             initHomePageFlows()
         }
+    }
+
+    private fun requestStatusBarDark() {
+        isLightThemeStatusBar = false
+        mainParentStatusBarListener?.requestStatusBarDark()
+    }
+
+    private fun requestStatusBarLight() {
+        isLightThemeStatusBar = true
+        mainParentStatusBarListener?.requestStatusBarLight()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -439,25 +473,53 @@ open class HomeFragment : BaseDaggerFragment(),
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             viewLifecycleOwner.lifecycle.addObserver(fragmentFramePerformanceIndexMonitoring)
         }
+        oldToolbar = view.findViewById(R.id.toolbar)
+        navToolbar = view.findViewById(R.id.navToolbar)
 
-        homeMainToolbar = view.findViewById(R.id.toolbar)
-
-        homeMainToolbar?.let {
-            viewLifecycleOwner.lifecycle.addObserver(it)
-            it.setIcon(
-                    IconBuilder()
-                            .addIcon(IconList.ID_MESSAGE) {}
-                            .addIcon(IconList.ID_NOTIFICATION) {}
-                            .addIcon(IconList.ID_CART) {}
-                            .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
-        }
-        activity?.let {
-            homeMainToolbar?.setupToolbarWithStatusBar(it)
-        }
         statusBarBackground = view.findViewById(R.id.status_bar_bg)
         homeRecyclerView = view.findViewById(R.id.home_fragment_recycler_view)
         homeRecyclerView?.setHasFixedSize(true)
+        navAbTestCondition(
+                ifNavOld = {
+                    oldToolbar?.setAfterInflationCallable(afterInflationCallable)
+                    oldToolbar?.visibility = View.VISIBLE
+                    navToolbar?.visibility = View.GONE
+                },
+                ifNavRevamp = {
+                    oldToolbar?.visibility = View.GONE
+                    navToolbar?.visibility = View.VISIBLE
+                    activity?.let { navToolbar?.setupToolbarWithStatusBar(it) }
+                    navToolbar?.let {
+                        viewLifecycleOwner.lifecycle.addObserver(it)
+                        homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
+                                navToolbar = it,
+                                startTransitionPixel = startToTransitionOffset,
+                                toolbarTransitionRangePixel = searchBarTransitionRange,
+                                navScrollCallback = object: NavRecyclerViewScrollListener.NavScrollCallback {
+                                    override fun onAlphaChanged(offsetAlpha: Float) {
+
+                                    }
+
+                                    override fun onSwitchToDarkToolbar() {
+
+                                    }
+
+                                    override fun onSwitchToLightToolbar() {
+
+                                    }
+                                }
+                        ))
+                        it.setIcon(
+                                IconBuilder()
+                                        .addIcon(IconList.ID_MESSAGE) {}
+                                        .addIcon(IconList.ID_NOTIFICATION) {}
+                                        .addIcon(IconList.ID_CART) {}
+                                        .addIcon(IconList.ID_NAV_GLOBAL) {}
+                        )
+                    }
+                }
+        )
+
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         floatingTextButton = view.findViewById(R.id.recom_action_button)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -473,6 +535,13 @@ open class HomeFragment : BaseDaggerFragment(),
         return view
     }
 
+    private val afterInflationCallable: Callable<Any?>
+        private get() = Callable<Any?> {
+            calculateSearchbarView(0)
+            observeSearchHint()
+            null
+        }
+
     private fun setupHomeRecyclerView() {
         homeRecyclerView?.setItemViewCacheSize(20)
         if (homeRecyclerView?.itemDecorationCount == 0) {
@@ -482,28 +551,14 @@ open class HomeFragment : BaseDaggerFragment(),
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 evaluateHomeComponentOnScroll(recyclerView)
+                //calculate transparency of homeMainToolbar based on rv offset
+                navAbTestCondition(
+                        ifNavOld = {
+                            calculateSearchbarView(recyclerView.computeVerticalScrollOffset())
+                        }
+                )
             }
         })
-        homeMainToolbar?.let {
-            homeRecyclerView?.addOnScrollListener(NavRecyclerViewScrollListener(
-                    navToolbar = it,
-                    startTransitionPixel = 200,
-                    toolbarTransitionRangePixel = 50,
-                    navScrollCallback = object: NavRecyclerViewScrollListener.NavScrollCallback {
-                        override fun onAlphaChanged(offsetAlpha: Float) {
-                            setStatusBarAlpha(offsetAlpha)
-                        }
-
-                        override fun onSwitchToDarkToolbar() {
-
-                        }
-
-                        override fun onSwitchToLightToolbar() {
-
-                        }
-                    }
-            ))
-        }
     }
 
     private fun setupStatusBar() {
@@ -537,15 +592,28 @@ open class HomeFragment : BaseDaggerFragment(),
             refreshLayout.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(1)) {
-            if (homeMainToolbar != null) {
-                homeMainToolbar?.showShadow()
-            }
+            navAbTestCondition(
+                    ifNavOld = {
+                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                            oldToolbar?.showShadow()
+                        }
+            },
+                    ifNavRevamp = {
+                        navToolbar?.let { it.showShadow() }
+            })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
-            if (homeMainToolbar != null) {
-                homeMainToolbar?.hideShadow()
-            }
+            navAbTestCondition(
+                    ifNavOld = {
+                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                            oldToolbar?.hideShadow()
+                        }
+                    },
+                    ifNavRevamp = {
+                        navToolbar?.let { it.hideShadow() }
+                    }
+            )
             showFeedSectionViewHolderShadow(true)
             homeRecyclerView?.setNestedCanScroll(true)
         }
@@ -618,6 +686,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
+        getAbTestPlatform().fetch(null)
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
@@ -627,16 +696,32 @@ open class HomeFragment : BaseDaggerFragment(),
         if (activityStateListener != null) {
             activityStateListener!!.onResume()
         }
+        adjustStatusBarColor()
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             setAutoRefreshOnHome(autoRefreshFlag)
         }
         shouldPausePlay = true
+        navAbTestCondition(
+                ifNavOld = { oldToolbar?.startHintAnimation() }
+        )
     }
 
     private fun conditionalViewModelRefresh(){
         if(!fragmentCreatedForFirstTime) {
             getHomeViewModel().refresh(isFirstInstall())
         }
+    }
+
+    private fun adjustStatusBarColor() {
+        navAbTestCondition(
+                ifNavOld = {
+                    if (homeRecyclerView != null) {
+                        calculateSearchbarView(homeRecyclerView!!.computeVerticalScrollOffset())
+                    } else {
+                        calculateSearchbarView(0)
+                    }
+                }
+        )
     }
 
     private fun createAndCallSendScreen() {
@@ -660,6 +745,9 @@ open class HomeFragment : BaseDaggerFragment(),
         if (isEnableToAutoRefresh(autoRefreshFlag)) {
             stopAutoRefreshJob(autoRefreshHandler, autoRefreshRunnable)
         }
+        navAbTestCondition (
+                ifNavOld = { oldToolbar?.stopHintAnimation() }
+        )
     }
 
     override fun onDestroyView() {
@@ -682,7 +770,19 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun initRefreshLayout() {
         refreshLayout.post {
-            homeMainToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+            /*
+             * set notification gimmick
+             */
+            navAbTestCondition(
+                    ifNavOld = {
+                        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                            oldToolbar?.setNotificationNumber(0)
+                        }
+                    },
+                    ifNavRevamp = {
+                        navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, 0)
+                    }
+            )
         }
         refreshLayout.setOnRefreshListener(this)
     }
@@ -787,7 +887,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun observeSearchHint() {
-        if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers() && homeMainToolbar != null) {
+        if (view != null && ::viewModel.isInitialized && !getHomeViewModel().searchHint.hasObservers()) {
             getHomeViewModel().searchHint.observe(viewLifecycleOwner, Observer { data: SearchPlaceholder -> setHint(data) })
         }
     }
@@ -935,6 +1035,35 @@ open class HomeFragment : BaseDaggerFragment(),
         if (floatingEggButtonFragment != null) {
             updateEggBottomMargin(floatingEggButtonFragment)
             floatingEggButtonFragment.loadEggData()
+        }
+    }
+
+    private fun calculateSearchbarView(offset: Int) {
+        val endTransitionOffset = startToTransitionOffset + searchBarTransitionRange
+        val maxTransitionOffset = endTransitionOffset - startToTransitionOffset
+        //mapping alpha to be rendered per pixel for x height
+        var offsetAlpha = 255f / maxTransitionOffset * (offset - startToTransitionOffset)
+        //2.5 is maximum
+        if (offsetAlpha < 0) {
+            offsetAlpha = 0f
+        }
+        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+            if (offsetAlpha >= 150) {
+                oldToolbar?.switchToDarkToolbar()
+                if (isLightThemeStatusBar) requestStatusBarDark()
+            } else {
+                oldToolbar?.switchToLightToolbar()
+                if (!isLightThemeStatusBar) requestStatusBarLight()
+            }
+        }
+        if (offsetAlpha >= 255) {
+            offsetAlpha = 255f
+        }
+        if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+            if (offsetAlpha >= 0 && offsetAlpha <= 255) {
+                oldToolbar?.setBackgroundAlpha(offsetAlpha)
+                setStatusBarAlpha(offsetAlpha)
+            }
         }
     }
 
@@ -1354,7 +1483,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun promptGeolocationPermission() {
         permissionCheckerHelper.get().checkPermission(this,
                 PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION,
-                object : PermissionCheckListener {
+                object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
                         HomePageTracking.eventClickNotAllowGeolocation()
                         getHomeViewModel().onCloseGeolocation()
@@ -1450,16 +1579,28 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun setHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
-//            homeMainToolbar?.setupSearchbar(
-//                    listOf(HintData(placeholder = "Devara Fikry Akmal", keyword = "Devara Fikry Akmal")),
-//                    durationAutoTransition = 500,
-//                    shouldShowTransition = true
-//            )
-//            homeMainToolbar?.setSearchBarHint(
-//                    placeholderToHint(data),
-//                    isFirstInstall(),
-//                    shouldShowTransition(),
-//                    durationAutoTransition)
+            navAbTestCondition(
+                    ifNavOld = {
+                        oldToolbar?.setHint(
+                                HintData(data.placeholder ?: "", data.keyword ?: ""),
+                                placeholderToHint(data),
+                                isFirstInstall(),
+                                shouldShowTransition(),
+                                durationAutoTransition)
+                    },
+                    ifNavRevamp = {
+                        navToolbar?.setupSearchbar(
+                                hints = listOf(HintData(data.placeholder ?: "", data.keyword ?: "")),
+                                applink = if (data.keyword?.isEmpty() != false) {
+                                    ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                                } else PARAM_APPLINK_AUTOCOMPLETE,
+                                searchbarClickCallback = {},
+                                searchbarImpressionCallback = {},
+                                durationAutoTransition = durationAutoTransition,
+                                shouldShowTransition = shouldShowTransition()
+                        )
+                    }
+            )
         }
     }
 
@@ -1691,10 +1832,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun isLightThemeStatusBar(): Boolean {
-        homeMainToolbar?.let {
-            return it.toolbarThemeType != NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
-        }
-        return false
+        return isLightThemeStatusBar
     }
 
     override fun sendIrisTrackerHashMap(tracker: HashMap<String, Any>) {
@@ -1788,21 +1926,35 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        homeMainToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
-        homeMainToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+        navAbTestCondition(
+                ifNavOld = {
+                    if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
+                        oldToolbar?.setNotificationNumber(notificationCount)
+                        oldToolbar?.setInboxNumber(inboxCount)
+                    }
+                },
+                ifNavRevamp = {
+                    navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+                    navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+                }
+        )
     }
     
 
     override val homeMainToolbarHeight: Int
         get() {
             var height = 0
-            if (homeMainToolbar != null) {
-                height = homeMainToolbar?.height?:0
-                homeMainToolbar?.let {
-//                    if (!it.isShadowApplied()) {
-//                        height += resources.getDimensionPixelSize(R.dimen.dp_8)
-//                    }
+            if (isNavOld()) {
+                if (oldToolbar != null) {
+                    height = oldToolbar?.height?:0
+                    oldToolbar?.let {
+                        if (!it.isShadowApplied()) {
+                            height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                        }
+                    }
                 }
+            } else if (isNavRevamp()) {
+                navToolbar?.let { height = navToolbar?.height?:0 }
             }
             return height
         }

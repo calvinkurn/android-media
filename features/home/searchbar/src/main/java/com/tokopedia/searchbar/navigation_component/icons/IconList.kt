@@ -22,7 +22,8 @@ object IconList {
             return IconToolbar(
                     id = ID_MESSAGE,
                     applink = ApplinkConst.INBOX,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN
             ) {
                 onClick.invoke()
             }
@@ -34,7 +35,8 @@ object IconList {
             return IconToolbar(
                     id = ID_NOTIFICATION,
                     applink = ApplinkConst.NOTIFICATION,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN
             ) {
                 onClick.invoke()
             }
@@ -46,7 +48,8 @@ object IconList {
             return IconToolbar(
                     id = ID_CART,
                     applink = ApplinkConst.CART,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN
             ) {
                 onClick.invoke()
             }
@@ -70,7 +73,8 @@ object IconList {
             return IconToolbar(
                     id = ID_WISHLIST,
                     applink = ApplinkConst.NEW_WISHLIST,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN
             ) {
                 onClick.invoke()
             }
@@ -97,7 +101,8 @@ object IconList {
                     imageRes = R.raw.toolbar_lottie_wishlist,
                     applink = "",
                     iconType = IconToolbar.TYPE_LOTTIE,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN
             ) {
                 onClick.invoke()
             }

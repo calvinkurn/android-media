@@ -30,9 +30,11 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.T
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.toolbar
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
 import java.lang.ref.WeakReference
 
 class NavToolbar: Toolbar, LifecycleObserver {
@@ -73,6 +75,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
 
     //helper variable
     private var shadowApplied: Boolean = false
+    private var userSessionInterface: UserSessionInterface? = null
 
     //controller variable
     internal var statusBarUtil: StatusBarUtil? = null
@@ -102,7 +105,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 ta.recycle()
             }
         }
-        toolbar?.background = ColorDrawable(toolbarFillColor)
+        navToolbar?.background = ColorDrawable(toolbarFillColor)
+        userSessionInterface = UserSession(context)
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
@@ -115,7 +119,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * IconList.kt
      */
     fun setIcon(iconBuilder: IconBuilder) {
-        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build())
+        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), userSessionInterface?:UserSession(context))
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -142,8 +146,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if(shadowApplied){
             shadowApplied = false
             val pB = 0
-            toolbar?.background = ColorDrawable(getLightIconColor())
-            toolbar?.updatePadding(bottom = pB)
+            navToolbar?.background = ColorDrawable(getLightIconColor())
+            navToolbar?.updatePadding(bottom = pB)
         }
     }
 
@@ -154,8 +158,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if(!shadowApplied && toolbarAlwaysShowShadow){
             shadowApplied = true
             val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
-            toolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-            toolbar?.updatePadding(bottom = pB)
+            navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+            navToolbar?.updatePadding(bottom = pB)
         }
     }
 
@@ -282,7 +286,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
-        toolbar?.let {
+        navToolbar?.let {
             val drawable = it.background
             drawable.alpha = alpha.toInt()
             it.background = drawable
@@ -294,7 +298,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             pT = ViewHelper.getStatusBarHeight(context)
         }
-        toolbar?.updatePadding(top = pT)
+        navToolbar?.updatePadding(top = pT)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
