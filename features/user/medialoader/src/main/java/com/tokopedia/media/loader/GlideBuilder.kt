@@ -30,7 +30,7 @@ import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecod
 
 object GlideBuilder {
 
-    private fun ImageView.drawableErrorResource(errorRes: Int) =
+    private fun ImageView.resourceError(errorRes: Int) =
             getDrawable(context, if (errorRes != 0) {
                 errorRes
             } else {
@@ -74,7 +74,7 @@ object GlideBuilder {
     fun loadImage(imageView: ImageView, properties: Properties) {
         with(properties) {
             val localTransform = mutableListOf<Transformation<Bitmap>>()
-            val drawableError = imageView.drawableErrorResource(error)
+            val drawableError = imageView.resourceError(error)
             val context = imageView.context
 
             if (data == null) {
