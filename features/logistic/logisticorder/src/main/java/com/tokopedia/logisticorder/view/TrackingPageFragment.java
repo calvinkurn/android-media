@@ -358,7 +358,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
                                 .getBaseAppComponent()
                 )
                 .trackingPageModule(new TrackingPageModule(this, getContext()))
-                .gqlQueryModule(new GqlQueryModule(getActivity()))
                 .build();
         component.inject(this);
     }

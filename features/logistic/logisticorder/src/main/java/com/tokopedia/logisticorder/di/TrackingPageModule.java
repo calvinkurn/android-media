@@ -56,8 +56,8 @@ public class TrackingPageModule {
     }
 
     @Provides
-    @TrackingPageScope
-    Context provideContext() {
+    @TrackingPageContext
+    Context provideTrackingPageContext() {
         return context;
     }
 
@@ -76,14 +76,14 @@ public class TrackingPageModule {
 
     @Provides
     @TrackingPageScope
-    UserSession provideUserSession(Context context) {
+    UserSession provideUserSession(@TrackingPageContext Context context) {
         return new UserSession(context);
 
     }
 
     @Provides
     @TrackingPageScope
-    OkHttpClient provideOkHttpClient(Context context,
+    OkHttpClient provideOkHttpClient(@TrackingPageContext Context context,
                                      UserSession userSession,
                                      OkHttpRetryPolicy okHttpRetryPolicy) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
