@@ -33,5 +33,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(GroupDetailViewModel::class)
     internal abstract fun topadsGroupDetailViewModel(viewModel: GroupDetailViewModel): ViewModel
-
 }

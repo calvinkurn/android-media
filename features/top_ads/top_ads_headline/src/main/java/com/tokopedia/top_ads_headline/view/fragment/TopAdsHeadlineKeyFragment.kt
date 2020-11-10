@@ -35,6 +35,8 @@ import javax.inject.Inject
  * Created by Pika on 5/11/20.
  */
 
+private const val KEY_LIMIT = 50
+const val SEARCH_NOT_AVAILABLE = "-1"
 class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
 
     @Inject
@@ -86,19 +88,31 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 editText.textFiedlLabelText.text = getString(R.string.topads_headline_enter_keyword_hint)
                 if (s?.trim()?.isNotEmpty() == true) {
+                    val errMax = checkMaxSelectedValue()
                     val error = Utils.validateKeyword(context, s)
-                    if (error == null) {
+                    if (error == null && errMax == null) {
                         addBtn?.isEnabled = true
                         editText?.setError(false)
                         editText?.setMessage("")
                     } else {
                         addBtn.isEnabled = false
                         editText?.setError(true)
-                        editText?.setMessage(error.toString())
+                        if (error != null)
+                            editText?.setMessage(error.toString())
+                        else
+                            editText?.setMessage(errMax.toString())
                     }
                 }
             }
         })
+    }
+
+    private fun checkMaxSelectedValue(): String? {
+        val count = keywordSelectedAdapter.itemCount
+        return if (count >= KEY_LIMIT) {
+            getString(R.string.error_max_selected_keyword)
+        } else
+            null
     }
 
     private fun setToolTip() {
@@ -179,7 +193,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 selectedTitle.visibility = View.VISIBLE
                 val item = KeywordDataItem()
                 item.keyword = editText.textFieldInput.text.toString()
-                item.totalSearch = "-1"
+                item.totalSearch = SEARCH_NOT_AVAILABLE
                 item.fromSearch = true
                 item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)

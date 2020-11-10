@@ -37,10 +37,7 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
         holder.view.checkBox.isChecked = true
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordBid.textFieldInput.setText(items[holder.adapterPosition].bidSuggest.toString())
-        if (items[holder.adapterPosition].totalSearch == "-1")
-            holder.view.keywordDesc.visibility = View.GONE
-        else
-            holder.view.keywordDesc.visibility = View.VISIBLE
+        holder.view.keywordDesc.visibility = View.GONE
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
             items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
