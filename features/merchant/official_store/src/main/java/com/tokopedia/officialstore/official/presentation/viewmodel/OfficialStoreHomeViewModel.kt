@@ -8,8 +8,8 @@ import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -62,7 +62,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
         get() = _officialStoreFeaturedShopResult
 
-    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
+    val officialStoreDynamicChannelResult: LiveData<Result<List<OfficialStoreChannel>>>
         get() = _officialStoreDynamicChannelResult
 
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
@@ -80,7 +80,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
     private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val productRecommendation: LiveData<Result<RecommendationWidget>>
