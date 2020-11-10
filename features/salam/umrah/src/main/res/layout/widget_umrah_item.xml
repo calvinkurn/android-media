@@ -41,8 +41,8 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:visibility="gone"
             android:id="@+id/iv_umrah_verified_blue"
-            android:layout_width="@dimen/spacing_lvl4"
-            android:layout_height="@dimen/spacing_lvl4"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_pdp_item_desc"
             app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item"

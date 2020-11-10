@@ -8,7 +8,7 @@
     android:id="@+id/base_item_filter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/spacing_lvl4"
+    android:padding="@dimen/unify_space_12"
     android:gravity="center"
     android:background="@drawable/umrah_bg_search_filter_chip"
     tools:targetApi="m"

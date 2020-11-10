@@ -37,7 +37,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_widget_umrah_pdp_item_desc_loader"
         android:layout_width="@dimen/unify_space_96"
-        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/spacing_lvl1"
         app:corners="4"
         app:layout_constraintBottom_toBottomOf="parent"

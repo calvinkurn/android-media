@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingBottom="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12"
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -17,11 +17,11 @@
         android:layout_width="@dimen/spacing_lvl8"
         android:layout_height="@dimen/spacing_lvl8"
         android:padding="@dimen/spacing_lvl3"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:layout_marginTop="@dimen/dimen_dp_80"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/unify_space_12"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
         />
@@ -34,9 +34,9 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_umrah_image_loading"
         android:ellipsize="end"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/unify_space_12"
         android:layout_marginLeft="@dimen/dimen_dp_72"
-        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/unify_space_12"
         android:layout_marginStart="@dimen/dimen_dp_72"
         app:use_gradient="true"
         android:background="@drawable/umrah_bg_homepage_gray_rounded"
