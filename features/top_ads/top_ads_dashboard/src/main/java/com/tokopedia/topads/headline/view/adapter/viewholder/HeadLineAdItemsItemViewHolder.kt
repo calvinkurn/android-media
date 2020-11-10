@@ -80,17 +80,15 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
                     view.pengeluaran_count.text = statsData[index].statTotalSpent
                     view.produk_terjual_count.text = statsData[index].statTotalConversion
                     view.pendapatan_count.text = statsData[index].groupTotalIncome
+                    view.total_item.visibility = View.GONE
+                    view.img_total.visibility = View.GONE
                     if (it.data.groupEndDate != TIDAK_DIBATASI) {
                         view.scheduleImg.visibility = View.VISIBLE
                         view.scheduleDate.visibility = View.VISIBLE
-                        view.total_item.visibility = View.GONE
-                        view.img_total.visibility = View.GONE
                         view.scheduleDate.text = String.format(view.context.getString(R.string.topads_headline_group_schedule), it.data.groupEndDate)
                     } else {
                         view.scheduleImg.visibility = View.GONE
                         view.scheduleDate.visibility = View.GONE
-                        view.total_item.visibility = View.VISIBLE
-                        view.img_total.visibility = View.VISIBLE
                     }
                 }
             }

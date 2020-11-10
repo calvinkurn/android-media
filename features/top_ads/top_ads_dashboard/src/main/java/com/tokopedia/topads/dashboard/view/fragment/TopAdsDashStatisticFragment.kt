@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import com.db.williamchart.model.TooltipModel
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
@@ -40,6 +39,9 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
         private val TOOLTIP_RES_LAYOUT = R.layout.topads_graph_tooltip
     }
 
+    private data class StatsData(val data: Float, val dataStr: String, val date: String)
+
+
     fun showLineGraph(dataStatistic: DataStatistic?) {
         if (dataStatistic == null) {
             return
@@ -52,20 +54,26 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
         }
     }
 
-    private fun getLineChartData(): LineChartData {
-        val chartEntry: List<LineChartEntry> = cells.map {
+    private fun getCellData(): List<StatsData> {
+        return cells.map {
             when {
-                getIndex() == 0 -> LineChartEntry(it.impressionSum.toFloat(), it.impressionSum.toString(), getDate(it))
-                getIndex() == 1 -> LineChartEntry(it.clickSum.toFloat(), it.clickSumFmt, getDate(it))
-                getIndex() == 2 -> LineChartEntry(it.costSum, it.costSumFmt, getDate(it))
-                getIndex() == 3 -> LineChartEntry(it.grossProfit, it.grossProfitFmt, getDate(it))
-                getIndex() == 4 -> LineChartEntry(it.ctrPercentage, it.ctrPercentageFmt, getDate(it))
-                getIndex() == 5 -> LineChartEntry(it.conversionSum.toFloat(), it.conversionSumFmt, getDate(it))
-                getIndex() == 6 -> LineChartEntry(it.costAvg, it.costAvgFmt, getDate(it))
-                else -> LineChartEntry(it.soldSum, it.soldSumFmt, getDate(it))
+                getIndex() == 0 -> StatsData(it.impressionSum.toFloat(), it.impressionSum.toString(),getDate(it))
+                getIndex() == 1 -> StatsData(it.clickSum.toFloat(), it.clickSumFmt,getDate(it))
+                getIndex() == 2 -> StatsData(it.costSum, it.costSumFmt,getDate(it))
+                getIndex() == 3 -> StatsData(it.grossProfit, it.grossProfitFmt,getDate(it))
+                getIndex() == 4 -> StatsData(it.ctrPercentage, it.ctrPercentageFmt,getDate(it))
+                getIndex() == 5 -> StatsData(it.conversionSum.toFloat(), it.conversionSumFmt,getDate(it))
+                getIndex() == 6 -> StatsData(it.costAvg, it.costAvgFmt,getDate(it))
+                else -> StatsData(it.soldSum, it.soldSumFmt,getDate(it))
             }
         }
+    }
 
+    private fun getLineChartData(): LineChartData {
+
+        val chartEntry:List<LineChartEntry> = getCellData().map {
+            LineChartEntry(it.data,it.dataStr,it.date)
+        }
 
         val yAxisLabel = getYAxisLabel()
 
@@ -79,20 +87,10 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
     }
 
     private fun getYAxisLabel(): List<AxisLabel> {
-        return cells.map {
-            when {
-                getIndex() == 0 -> AxisLabel(it.impressionSum.toFloat(), it.impressionSum.toString())
-                getIndex() == 1 -> AxisLabel(it.clickSum.toFloat(), it.clickSumFmt)
-                getIndex() == 2 -> AxisLabel(it.costSum, it.costSumFmt)
-                getIndex() == 3 -> AxisLabel(it.grossProfit, it.grossProfitFmt)
-                getIndex() == 4 -> AxisLabel(it.ctrPercentage, it.ctrPercentageFmt)
-                getIndex() == 5 -> AxisLabel(it.conversionSum.toFloat(), it.conversionSumFmt)
-                getIndex() == 6 -> AxisLabel(it.costAvg, it.costAvgFmt)
-                else -> AxisLabel(it.soldSum, it.soldSumFmt)
-            }
+        return getCellData().map {
+            AxisLabel(it.data,it.dataStr)
         }
-    }
-
+        }
 
     private fun getLineChartConfig(): LineChartConfigModel {
         val lineChartData = getLineChartData()
@@ -131,4 +129,5 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
     }
 
     protected abstract fun getIndex(): Int
+
 }
