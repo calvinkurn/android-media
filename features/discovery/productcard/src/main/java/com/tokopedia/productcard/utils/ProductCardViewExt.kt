@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.utils
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Rect
@@ -20,6 +21,7 @@ import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.transform.CenterCrop
+import com.tokopedia.media.loader.transform.TopRightCrop
 import com.tokopedia.media.loader.utils.MediaException
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.productcard.ProductCardModel
@@ -161,13 +163,11 @@ internal fun ImageView.loadIcon(url: String?) {
 
 internal fun ImageView.loadImageTopRightCrop(url: String?) {
     if (url != null && url.isNotEmpty()) {
-        Glide.with(context)
-                .load(url)
-                .transform(TopRightCrop())
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
-                .into(this)
+        loadImage(url) {
+            cacheStrategy = MediaCacheStrategy.RESOURCE
+            error = R.drawable.placeholder_grey
+            transform = TopRightCrop()
+        }
     }
 }
 
