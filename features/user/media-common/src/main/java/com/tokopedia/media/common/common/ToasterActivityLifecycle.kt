@@ -61,7 +61,7 @@ class ToasterActivityLifecycle(
                             clickListener = View.OnClickListener {
                                 startActivity(RouteManager.getIntent(this, IMAGE_QUALITY_SETTING))
                             }
-                    ).setDuration(4000)
+                    ).setDuration(4000).show()
                 }
             }
         }, DELAY_PRE_SHOW_TOAST)
