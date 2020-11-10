@@ -7,14 +7,14 @@
       android:pathData="M7,7L25,25"
       android:strokeLineJoin="round"
       android:strokeWidth="2"
-      android:fillColor="@color/Unify_N700_96"
-      android:strokeColor="@color/Unify_N700_96"
+      android:fillColor="#F531353B"
+      android:strokeColor="#F531353B"
       android:strokeLineCap="round"/>
   <path
       android:pathData="M7,25L25,7"
       android:strokeLineJoin="round"
       android:strokeWidth="2"
-      android:fillColor="@color/Unify_N700_96"
-      android:strokeColor="@color/Unify_N700_96"
+      android:fillColor="#F531353B"
+      android:strokeColor="#F531353B"
       android:strokeLineCap="round"/>
 </vector>
