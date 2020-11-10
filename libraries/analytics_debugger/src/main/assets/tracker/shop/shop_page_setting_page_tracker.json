@@ -1,0 +1,76 @@
+{
+  "readme": "Shop page tracker",
+  "mode": "exact",
+  "query": [
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click back",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click shop dashboard",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click change shop profile",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click change shop note",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click set open shop time",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click see product",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    },
+    {
+      "pageType": "/shoppage",
+      "eventCategory": "setting page - seller",
+      "shopId": "{{.+}}",
+      "shopType": "{{.+}}",
+      "event": "clickShopPage",
+      "eventAction": "click add and edit etalase",
+      "sessionIris": "{{.+}}",
+      "eventLabel":""
+    }
+  ]
+}

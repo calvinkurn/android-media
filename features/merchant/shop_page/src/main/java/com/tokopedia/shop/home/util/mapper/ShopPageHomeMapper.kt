@@ -3,12 +3,11 @@ package com.tokopedia.shop.home.util.mapper
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherAmountTypeDef
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef
+import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
-import com.tokopedia.shop.home.WidgetName
 import com.tokopedia.shop.home.WidgetName.PRODUCT
-import com.tokopedia.shop.home.WidgetType
 import com.tokopedia.shop.home.WidgetType.CAMPAIGN
 import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.WidgetType.DYNAMIC
@@ -19,6 +18,7 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
+import java.util.*
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
@@ -182,12 +182,10 @@ object ShopPageHomeMapper {
             VOUCHER.toLowerCase() -> {
                 mapToVoucherUiModel(widgetResponse)
             }
-            DYNAMIC.toLowerCase()-> {
-                mapToPlayWidgetUiModel(widgetResponse, isMyOwnProduct)
-            }
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
+            DYNAMIC.toLowerCase(Locale.getDefault()) -> if (isMyOwnProduct) null else mapCarouselPlayWidget(widgetResponse)
             else -> {
                 null
             }
@@ -276,13 +274,12 @@ object ShopPageHomeMapper {
                 widgetResponse.layoutOrder,
                 widgetResponse.name,
                 widgetResponse.type,
-                mapToHeaderModel(widgetResponse.header),
-                mapToListVoucher(widgetResponse.data)
+                mapToHeaderModel(widgetResponse.header)
         )
     }
 
-    private fun mapToListVoucher(
-            data: List<ShopLayoutWidget.Widget.Data>
+    fun mapToListVoucher(
+            data: List<MerchantVoucherModel>
     ): List<MerchantVoucherViewModel>? {
         return mutableListOf<MerchantVoucherViewModel>().apply {
             data.onEach {
@@ -291,18 +288,18 @@ object ShopPageHomeMapper {
         }
     }
 
-    private fun mapToVoucherItem(data: ShopLayoutWidget.Widget.Data): MerchantVoucherViewModel {
+    private fun mapToVoucherItem(data: MerchantVoucherModel): MerchantVoucherViewModel {
         return MerchantVoucherViewModel().apply {
-            voucherId = data.voucherID
-            voucherName = data.name
-            voucherCode = data.voucherCode
-            merchantVoucherType = data.voucherType.voucherType.takeIf { it != -1 }
+            voucherId = data.voucherId
+            voucherName = data.voucherName
+            voucherCode = data.voucherCode ?: ""
+            merchantVoucherType = data.merchantVoucherType?.type.takeIf { it != -1 }
                     ?: MerchantVoucherTypeDef.TYPE_FREE_ONGKIR
-            merchantVoucherAmountType = data.amount.amountType.takeIf { it != -1 }
+            merchantVoucherAmountType = data.merchantVoucherAmount?.type.takeIf { it != -1 }
                     ?: MerchantVoucherAmountTypeDef.TYPE_FIXED
-            merchantVoucherAmount = data.amount.amount.toFloat()
+            merchantVoucherAmount = data.merchantVoucherAmount?.amount
             minimumSpend = data.minimumSpend
-            ownerId = data.owner.ownerId
+            ownerId = data.merchantVoucherOwner.ownerId
             validThru = data.validThru.toLong()
             tnc = data.tnc
         }
@@ -349,17 +346,6 @@ object ShopPageHomeMapper {
                 widgetModel.type,
                 mapToHeaderModel(widgetModel.header),
                 mapToWidgetProductListItemViewModel(widgetModel.data, isMyOwnProduct)
-        )
-    }
-
-    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget, isMyOwnProduct: Boolean): ShopHomePlayCarouselUiModel? {
-        if(isMyOwnProduct) return null
-        return ShopHomePlayCarouselUiModel(
-                widgetId = widgetModel.widgetID,
-                layoutOrder = widgetModel.layoutOrder,
-                name = widgetModel.name,
-                type = widgetModel.type,
-                header = mapToHeaderModel(widgetModel.header)
         )
     }
 
@@ -417,4 +403,15 @@ object ShopPageHomeMapper {
                 model.isAvailable
         )
     }
+
+    /*
+     * Play widget
+     */
+    private fun mapCarouselPlayWidget(model: ShopLayoutWidget.Widget) = CarouselPlayWidgetUiModel(
+            widgetId = model.widgetID,
+            layoutOrder = model.layoutOrder,
+            name = model.name,
+            type = model.type,
+            header = mapToHeaderModel(model.header)
+    )
 }

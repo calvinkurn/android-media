@@ -21,7 +21,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
-import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.intl.R;
@@ -54,7 +53,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         super.onCreate(savedInstanceState);
         TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
 
-        sendCampaignTrack(uriData);
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
 
         checkUrlMapToApplink();
         isAllowFetchDepartmentView = true;
@@ -68,7 +67,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private void sendCampaignTrack(Uri uriData) {
         String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(this, Uri.parse(applink));
-        presenter.sendAuthenticatedEvent(uriData, campaign, getScreenName());
+        presenter.sendAuthenticatedEvent(uriData, getScreenName());
     }
 
     private void checkUrlMapToApplink() {

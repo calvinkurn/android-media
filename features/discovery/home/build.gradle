@@ -60,7 +60,6 @@ dependencies {
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.medialoader)
-    implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.features.reputationCommon)
@@ -71,6 +70,8 @@ dependencies {
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
+    implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.playWidget)
 
     // Library
     implementation project(rootProject.ext.libraries.analytics)
@@ -111,11 +112,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBMP
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
