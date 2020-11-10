@@ -40,7 +40,7 @@ class ProductCardsUseCase @Inject constructor(private val productCardsRepository
 
             it.showVerticalLoader = productListData.isNotEmpty()
             if (productListData.isEmpty()) return false else it.pageLoadedCounter = 2
-            it.setComponentsItem(productListData)
+            it.setComponentsItem(productListData, component.tabName)
             it.noOfPagesLoaded = 1
             return true
         }
