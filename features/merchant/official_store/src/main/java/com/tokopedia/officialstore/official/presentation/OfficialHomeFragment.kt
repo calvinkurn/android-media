@@ -90,7 +90,8 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private val officialHomeMapper = OfficialHomeMapper()
+    @Inject
+    lateinit var officialHomeMapper: OfficialHomeMapper
     
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
