@@ -37,6 +37,7 @@ query rechargeStatementBills($month: Int!, $year: Int!){
         value: Value
       }
       billName: BillName
+      isChecked: IsChecked
     }
   }
 }

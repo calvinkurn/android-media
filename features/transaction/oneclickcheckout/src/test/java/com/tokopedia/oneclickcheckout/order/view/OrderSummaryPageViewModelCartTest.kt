@@ -34,7 +34,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Atc Occ External Success`() {
         // Given
-        every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(data = DataModel(success = 1)))
+        every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(status = "OK", data = DataModel(success = 1)))
 
         // When
         orderSummaryPageViewModel.atcOcc("1")
@@ -46,6 +46,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Atc Occ External Error`() {
         // Given
+        every { userSessionInterface.userId } returns "123"
         val errorMessage = "error"
         every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.just(AddToCartDataModel(errorMessage = arrayListOf(errorMessage), data = DataModel(success = 0)))
 
@@ -59,6 +60,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     @Test
     fun `Atc Occ External Failed`() {
         // Given
+        every { userSessionInterface.userId } returns "123"
         val response = Throwable()
         every { addToCartOccExternalUseCase.createObservable(any()) } returns Observable.error(response)
 

@@ -32,6 +32,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SOURCE
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_TYPE
 import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTracking
 import com.tokopedia.talk.feature.reply.analytics.TalkReplyTrackingConstants
@@ -78,13 +79,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val MINIMUM_TEXT_LENGTH = 5
 
         @JvmStatic
-        fun createNewInstance(questionId: String, shopId: String, source: String): TalkReplyFragment =
+        fun createNewInstance(questionId: String, shopId: String, source: String, inboxType: String): TalkReplyFragment =
                 TalkReplyFragment().apply {
-                    arguments = Bundle()
-                    arguments?.apply {
+                    arguments = Bundle().apply {
                         putString(QUESTION_ID, questionId)
                         putString(PARAM_SHOP_ID, shopId)
                         putString(PARAM_SOURCE, source)
+                        putString(PARAM_TYPE, inboxType)
                     }
                 }
     }
@@ -101,6 +102,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var attachedProductAdapter: TalkReplyAttachedProductAdapter? = null
     private var talkPerformanceMonitoringListener: TalkPerformanceMonitoringListener? = null
     private var toaster: Snackbar? = null
+    private var inboxType = ""
 
     override fun getScreenName(): String {
         return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
@@ -292,8 +294,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         viewModel.reportTalk(questionId)
     }
 
-    override fun onProductClicked() {
+    override fun onProductCardClicked(productName: String, position: Int) {
+        TalkReplyTracking.eventClickCard(inboxType, viewModel.userId, productName, productId, position)
         goToPdp(productId)
+    }
+
+    override fun onProductCardImpressed(productName: String, position: Int) {
+        TalkReplyTracking.eventImpressCard(inboxType, viewModel.userId, productName, productId, position)
     }
 
     private fun goToReportActivity(commentId: String) {
@@ -758,6 +765,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             questionId = it.getString(QUESTION_ID, "")
             shopId = it.getString(PARAM_SHOP_ID, "")
             source = it.getString(PARAM_SOURCE, "")
+            inboxType = it.getString(PARAM_TYPE, "")
         }
     }
 

@@ -23,6 +23,7 @@ import java.net.MalformedURLException
 import java.net.URLDecoder
 import java.net.UnknownHostException
 import java.util.*
+import kotlin.ClassCastException
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -115,7 +116,17 @@ object CMNotificationUtils {
     }
 
     private fun mapTokenWithAppVersionRequired(appVersionName: String, cacheHandler: CMNotificationCacheHandler): Boolean {
-        val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        val oldAppVersionName = try {
+            cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        } catch (e: ClassCastException) {
+            try {
+                cacheHandler.remove(CMConstant.APP_VERSION_CACHE_KEY)
+                ""
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
+        }
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
         return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
     }
