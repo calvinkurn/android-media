@@ -149,6 +149,6 @@
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"
         android:padding="@dimen/dp_4"
-        app:srcCompat="@drawable/cm_ic_btn_close" />
+        app:srcCompat="@drawable/cm_ic_btn_close_black" />
 
 </LinearLayout>
