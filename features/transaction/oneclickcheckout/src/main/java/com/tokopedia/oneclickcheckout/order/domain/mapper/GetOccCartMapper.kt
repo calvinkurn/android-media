@@ -175,7 +175,7 @@ class GetOccCartMapper @Inject constructor() {
     private fun mapPayment(payment: Payment): OrderProfilePayment {
         return OrderProfilePayment(payment.enable, payment.active, payment.gatewayCode, payment.gatewayName, payment.image,
                 payment.description, payment.url, payment.minimumAmount, payment.maximumAmount, payment.fee,
-                payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment.creditCard, null),
+                payment.walletAmount, payment.metadata, payment.mdr, mapPaymentCreditCard(payment, null),
                 mapPaymentErrorMessage(payment.errorMessage), payment.tickerMessage
         )
     }
@@ -184,7 +184,7 @@ class GetOccCartMapper @Inject constructor() {
         val payment = data.profileResponse.payment
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.image, payment.description, payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
-                payment.metadata, mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
+                payment.metadata, mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign)
     }
 
@@ -192,12 +192,6 @@ class GetOccCartMapper @Inject constructor() {
         return OrderPaymentErrorMessage(errorMessage.message,
                 OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
         )
-    }
-
-    private fun mapPaymentCreditCard(creditCard: PaymentCreditCard, data: GetOccCartData?): OrderPaymentCreditCard {
-        val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
-        return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
-                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data))
     }
 
     private fun mapPaymentCreditCard(payment: Payment, data: GetOccCartData?): OrderPaymentCreditCard {
