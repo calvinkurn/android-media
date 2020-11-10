@@ -7,16 +7,17 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.GyroRecommendationAnalytics
-import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
-import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapter
 import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
-import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommedationFactory
+import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import com.tokopedia.webview.KEY_NEED_LOGIN
 
@@ -34,26 +35,34 @@ class GyroView @JvmOverloads constructor(
 
 
     val adapter: GyroAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        GyroAdapter(arrayListOf(), GyroRecommedationFactory(this))
+        GyroAdapter(arrayListOf(), GyroRecommendationFactory(this))
     }
 
     init {
         LayoutInflater.from(context).inflate(layout, this, true)
     }
 
-    fun addData(featureEngineData: FeatureEngineData, thanksPageData: ThanksPageData,
+    fun addData(gyroRecommendation: GyroRecommendation, thanksPageData: ThanksPageData,
                 analytics: GyroRecommendationAnalytics) {
         this.analytics = analytics
         this.thanksPageData = thanksPageData
-        findViewById<TextView>(R.id.tvFeatureTitle).text = if (featureEngineData.title.isNotEmpty())
-            featureEngineData.title else context.getString(R.string.thank_special_feature_for_you)
-        findViewById<TextView>(R.id.tvFeatureDescription).text = if (featureEngineData.description.isNotEmpty())
-            featureEngineData.description else context.getString(R.string.thank_lets_try_feature)
+        if(!gyroRecommendation.gyroVisitable.isNullOrEmpty()){
+            findViewById<TextView>(R.id.tvFeatureTitle).text = if (gyroRecommendation.title.isNotEmpty())
+                gyroRecommendation.title else context.getString(R.string.thank_special_feature_for_you)
+            findViewById<TextView>(R.id.tvFeatureDescription).text = if (gyroRecommendation.description.isNotEmpty())
+                gyroRecommendation.description else context.getString(R.string.thank_lets_try_feature)
+            addTORecyclerView(gyroRecommendation.gyroVisitable)
+        } else{
+            gone()
+        }
+    }
+
+    private fun addTORecyclerView(featureEngineItem: ArrayList<Visitable<*>>) {
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.adapter = adapter
         recyclerView.post {
-            adapter.addItems(FeatureRecommendationMapper.getFeatureList(featureEngineData.featureEngineItem))
+            adapter.addItems(featureEngineItem)
             adapter.notifyDataSetChanged()
         }
     }

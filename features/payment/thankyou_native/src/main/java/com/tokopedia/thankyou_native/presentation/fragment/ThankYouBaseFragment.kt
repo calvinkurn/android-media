@@ -23,9 +23,9 @@ import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
 import com.tokopedia.thankyou_native.di.component.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.model.ConfigFlag
-import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.helper.DialogHelper
 import com.tokopedia.thankyou_native.presentation.helper.OnDialogRedirectListener
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
@@ -182,23 +182,20 @@ abstract class ThankYouBaseFragment : BaseDaggerFragment(), OnDialogRedirectList
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
         })
-        thanksPageDataViewModel.featureEngineDataLiveData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> {
-                    if (it.data.success && !it.data.engineData.featureEngineItem.isNullOrEmpty()) {
-                        addDataToGyroRecommendationView(it.data.engineData)
-                    }
-                }
-                is Fail -> onThankYouPageDataLoadingFail(it.throwable)
-            }
+        thanksPageDataViewModel.gyroRecommendationLiveData.observe(viewLifecycleOwner, Observer {
+            addDataToGyroRecommendationView(it)
         })
     }
 
-    private fun addDataToGyroRecommendationView(engineData: FeatureEngineData) {
+    private fun addDataToGyroRecommendationView(gyroRecommendation: GyroRecommendation) {
         if (::thanksPageData.isInitialized) {
-            getFeatureListingContainer()?.visible()
-            getFeatureListingContainer()?.addData(engineData, thanksPageData,
-                    gyroRecommendationAnalytics.get())
+            if(!gyroRecommendation.gyroVisitable.isNullOrEmpty()) {
+                getFeatureListingContainer()?.visible()
+                getFeatureListingContainer()?.addData(gyroRecommendation, thanksPageData,
+                        gyroRecommendationAnalytics.get())
+            }else{
+                getFeatureListingContainer()?.gone()
+            }
         }
     }
 

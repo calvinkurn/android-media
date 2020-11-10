@@ -2,7 +2,9 @@ package com.tokopedia.thankyou_native.data.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.FeatureEngineItem
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import org.json.JSONObject
 
@@ -10,7 +12,21 @@ object FeatureRecommendationMapper {
 
     private val gson = Gson()
 
-    fun getFeatureList(featureEngineItems: ArrayList<FeatureEngineItem>): ArrayList<Visitable<*>> {
+    fun getFeatureList(engineData: FeatureEngineData?): GyroRecommendation? {
+        if (engineData == null)
+            return null
+
+        if (engineData.featureEngineItem.isNullOrEmpty())
+            return null
+
+        return GyroRecommendation(
+                engineData.title,
+                engineData.description,
+                getGyroRecommendationItemList(engineData.featureEngineItem)
+        )
+    }
+
+    private fun getGyroRecommendationItemList(featureEngineItems: ArrayList<FeatureEngineItem>): ArrayList<Visitable<*>> {
         return arrayListOf<Visitable<*>>().apply {
             featureEngineItems.forEach { featureEngineItem ->
                 try {

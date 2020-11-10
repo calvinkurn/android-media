@@ -16,7 +16,7 @@ data class ValidateEngineResponse(
         @SerializedName("message")
         val message: String,
         @SerializedName("data")
-        val engineData : FeatureEngineData
+        val engineData : FeatureEngineData?
 )
 
 data class FeatureEngineData (
@@ -25,7 +25,7 @@ data class FeatureEngineData (
         @SerializedName("description")
         val description : String,
         @SerializedName("items")
-        val featureEngineItem : ArrayList<FeatureEngineItem>
+        val featureEngineItem : ArrayList<FeatureEngineItem>?
 )
 
 data class FeatureEngineItem (

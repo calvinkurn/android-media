@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.thankyou_native.*
-import com.tokopedia.thankyou_native.di.scope.ThankYouPageScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -27,9 +26,5 @@ class GqlQueryModule {
     @Named(GQL_THANKS_MONTHLY_NEW_BUYER)
     fun provideMonthlyNewBuyerQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_monthly_new_buyer)
-    @Provides
-    @Named(GQL_FEATURE_ENGINE_REQUEST)
-    fun provideFeatureEngineQuery(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_validate_engine)
 
 }

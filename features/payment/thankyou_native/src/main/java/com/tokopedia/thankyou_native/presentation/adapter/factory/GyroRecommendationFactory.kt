@@ -8,11 +8,11 @@ import com.tokopedia.thankyou_native.presentation.adapter.GyroAdapterListener
 import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendationListItem
 import com.tokopedia.thankyou_native.presentation.adapter.viewholder.feature.GyroListItemViewHolder
 
-class GyroRecommedationFactory(val listener: GyroAdapterListener) : BaseAdapterTypeFactory() {
+class GyroRecommendationFactory(val listener: GyroAdapterListener) : BaseAdapterTypeFactory() {
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            GyroListItemViewHolder.LAYOUT_ID -> return GyroListItemViewHolder(parent!!, listener)
+            GyroListItemViewHolder.LAYOUT_ID -> return GyroListItemViewHolder(parent, listener)
         }
         return super.createViewHolder(parent, type)
     }

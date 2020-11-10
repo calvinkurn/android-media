@@ -2,7 +2,14 @@ package com.tokopedia.thankyou_native.presentation.adapter.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommedationFactory
+import com.tokopedia.thankyou_native.presentation.adapter.factory.GyroRecommendationFactory
+
+
+data class GyroRecommendation(
+        var title : String,
+        var description: String,
+        var gyroVisitable : ArrayList<Visitable<*>>
+)
 
 
 open class GyroModel {
@@ -16,14 +23,14 @@ data class GyroRecommendationListItem(
         @SerializedName("url_android")
         val urlApp : String?,
         @SerializedName("image")
-        val image : String,
+        val image : String?,
         @SerializedName("title")
-        val title : String,
+        val title : String?,
         @SerializedName("desc")
-        val description : String
-) : Visitable<GyroRecommedationFactory>, GyroModel() {
+        val description : String?
+) : Visitable<GyroRecommendationFactory>, GyroModel() {
 
-    override fun type(typeFactory: GyroRecommedationFactory): Int {
+    override fun type(typeFactory: GyroRecommendationFactory): Int {
         return typeFactory.type(this)
     }
 }
