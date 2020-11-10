@@ -561,10 +561,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             onDismissBottomSheet()
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
-            val intent = mGoogleSignInClient.signInIntent
-            startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
+            openGoogleLoginIntent()
         }
+    }
 
+    override fun openGoogleLoginIntent(){
+        val intent = mGoogleSignInClient.signInIntent
+        startActivityForResult(intent, REQUEST_LOGIN_GOOGLE)
     }
 
     private fun onLoginFacebookClick() {

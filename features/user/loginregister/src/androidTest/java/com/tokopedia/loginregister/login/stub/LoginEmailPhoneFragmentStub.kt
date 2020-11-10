@@ -37,6 +37,10 @@ class LoginEmailPhoneFragmentStub : LoginEmailPhoneFragment(){
         // do nothing
     }
 
+    override fun openGoogleLoginIntent() {
+        //do nothing
+    }
+
     override fun initInjector() {
         DaggerMockLoginComponent.builder()
                 .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build())

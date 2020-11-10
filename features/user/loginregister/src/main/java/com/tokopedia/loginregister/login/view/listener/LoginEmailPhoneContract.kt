@@ -131,6 +131,8 @@ interface LoginEmailPhoneContract {
         fun goToTokopediaCareWebview()
 
         fun goToRegisterInitial(source: String)
+
+        fun openGoogleLoginIntent()
     }
 
     interface Presenter : CustomerPresenter<View> {

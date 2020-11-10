@@ -8,6 +8,7 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -98,7 +99,10 @@ class LoginActivityInstrumentedTest {
         onLoginViaPhone()
         onRegisterFooterSpannableClick()
         onSocmedBtnClick()
-
+        clickGoogleLogin()
+        Thread.sleep(1000)
+        onSocmedBtnClick()
+        clickFacebookLogin()
         assertThat(
             getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
             hasAllSuccess()
@@ -116,33 +120,35 @@ class LoginActivityInstrumentedTest {
         idlingResource = LoginIdlingResource.getIdlingResource()
         IdlingRegistry.getInstance().register(idlingResource)
         setupGraphqlMockResponse(LoginMockResponse())
-
-//        with(mActivityTestRule) {
-//            finishActivity()
-//            launchActivity(null)
-//        }
     }
 
     /* Show socmed container if socmed button clicked */
     fun onSocmedBtnClick() {
-        Thread.sleep(1000)
         onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
         onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
     }
 
-    /* Show socmed container if socmed button clicked */
-//    @Test
-//    fun onSocmedBtnClose() {
-//        onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
-//        onView(withId(R.id.socmed_container)).check(matches(isDisplayed()))
-//    }
+    fun clickGoogleLogin(){
+        onView(withText("Google"))
+                .inRoot(isDialog()) // <---
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+    }
+
+    fun clickFacebookLogin(){
+        onView(withText("Facebook"))
+                .inRoot(isDialog()) // <---
+                .check(matches(isDisplayed()))
+                .perform(click())
+
+    }
 
     /* click login email */
     fun onLoginViaEmail() {
         Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
         onView(withId(R.id.register_btn)).perform(click())
-//        Thread.sleep(1000)
     }
 
     fun clickUbahButton(){
@@ -155,12 +161,6 @@ class LoginActivityInstrumentedTest {
         Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
         onView(withId(R.id.register_btn)).perform(click())
-//        intending(hasComponent(VerificationActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, Intent().apply {
-//            Bundle().apply {
-//                putString(ApplinkConstInternalGlobal.PARAM_UUID, "1234")
-//                putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "1234")
-//            }
-//        }))
     }
 
     /* goto forgot password if clicked */
@@ -169,11 +169,8 @@ class LoginActivityInstrumentedTest {
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
         onView(withId(R.id.register_btn)).perform(click())
         onView(allOf(withId(R.id.forgot_pass), withContentDescription(R.string.content_desc_forgot_pass))).perform(click())
-//        intending(hasComponent(ForgotPasswordActivity::class.java.name))
     }
 
-    /* Go to register initial if clicked */
-//    @Test
     fun onRegisterFooterSpannableClick(){
         onView(allOf(withId(R.id.register_button), withContentDescription(R.string.content_desc_register_button_phone))).perform(click())
     }
