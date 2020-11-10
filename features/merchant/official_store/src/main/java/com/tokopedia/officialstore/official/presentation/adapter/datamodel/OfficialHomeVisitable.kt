@@ -1,4 +1,4 @@
-package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
+package com.tokopedia.officialstore.official.presentation.adapter.datamodel
 
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
