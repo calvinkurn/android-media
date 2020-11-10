@@ -128,6 +128,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        RemoteConfigInstance.getInstance().getABTestPlatform().fetch(null);
         startPerformanceMonitoring();
 
         super.onCreate(savedInstanceState);
