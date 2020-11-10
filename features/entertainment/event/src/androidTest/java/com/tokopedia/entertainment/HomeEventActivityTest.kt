@@ -9,6 +9,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
@@ -33,6 +34,7 @@ class HomeEventActivityTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     @get:Rule
     var activityRule =  ActivityTestRule(HomeEventActivity::class.java, false, false)
@@ -41,6 +43,11 @@ class HomeEventActivityTest {
     fun setup() {
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY, false)
+            applyEditor()
+        }
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
@@ -324,6 +331,9 @@ class HomeEventActivityTest {
         private const val ENTERTAINMENT_EVENT_HOME_VALIDATOR_QUERY = "tracker/event/homeeventcheck.json"
         private const val KEY_EVENT_CHILD = "event_home"
         private const val PATH_RESPONSE_HOME = "event_home.json"
+
+        private const val PREFERENCES_NAME = "event_home_preferences"
+        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
     }
 
 }

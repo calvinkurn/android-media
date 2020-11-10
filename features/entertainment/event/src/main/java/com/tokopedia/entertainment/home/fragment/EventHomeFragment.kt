@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -30,6 +31,7 @@ import com.tokopedia.entertainment.home.viewmodel.FragmentView
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModel
 import com.tokopedia.entertainment.home.viewmodel.HomeEventViewModelFactory
 import com.tokopedia.entertainment.home.widget.MenuSheet
+import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_home_fragment.*
@@ -53,6 +55,9 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         const val REQUEST_LOGIN_POST_LIKES = 215
         private const val COACH_MARK_TAG = "event_home"
         const val ENT_HOME_PAGE_PERFORMANCE = "et_event_homepage"
+
+        private const val PREFERENCES_NAME = "event_home_preferences"
+        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
     }
 
     @Inject
@@ -62,6 +67,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     lateinit var viewModel: HomeEventViewModel
     lateinit var homeAdapter: HomeEventAdapter
     lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var localCacheHandler: LocalCacheHandler
 
     @Inject
     lateinit var analytics: EventHomePageTracking
@@ -87,6 +93,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(HomeEventViewModel::class.java)
         }
+        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
     override fun onResume() {
@@ -173,10 +180,14 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     private fun startShowCase() {
         val coachMark = CoachMarkBuilder().build()
-        if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
+        if (localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)) {
             var coachItems = ArrayList<CoachMarkItem>()
             coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
             coachMark.show(activity, COACH_MARK_TAG, coachItems)
+            localCacheHandler.apply {
+                putBoolean(SHOW_COACH_MARK_KEY, false)
+                applyEditor()
+            }
         }
     }
 
