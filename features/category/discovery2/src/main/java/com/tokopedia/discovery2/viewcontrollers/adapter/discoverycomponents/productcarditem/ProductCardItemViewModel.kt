@@ -127,7 +127,6 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         }
     }
 
-
     fun getInterestedCount(dataItem: DataItem): String {
         val notifyMeCount = dataItem.notifyMeCount
         val interestThreshold = dataItem.thresholdInterest
@@ -214,7 +213,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     fun notifyMeVisibility(): Boolean? {
-        return components.properties?.buttonNotification
+        return components.data?.firstOrNull()?.notifyMe !== null
     }
 
     fun subscribeUser() {
