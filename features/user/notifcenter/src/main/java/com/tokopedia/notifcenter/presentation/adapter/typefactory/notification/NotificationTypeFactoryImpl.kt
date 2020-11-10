@@ -39,6 +39,10 @@ class NotificationTypeFactoryImpl constructor(
         return NotificationTopAdsBannerViewHolder.LAYOUT
     }
 
+    override fun type(recommendationUiModel: RecommendationUiModel): Int {
+        return RecommendationViewHolder.LAYOUT
+    }
+
     @LayoutRes
     override fun getItemViewType(
             visitables: List<Visitable<*>>,
@@ -82,6 +86,7 @@ class NotificationTypeFactoryImpl constructor(
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
+            RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view)
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
                     view, loadMoreListener
             )

@@ -9,12 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -31,6 +32,7 @@ import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
+import com.tokopedia.notifcenter.presentation.adapter.decoration.RecommendationItemDecoration
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
@@ -49,7 +51,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private var rv: VerticalRecyclerView? = null
+    private var rv: RecyclerView? = null
     private var rvAdapter: NotificationAdapter? = null
     private var filter: NotificationFilterView? = null
     private var containerListener: InboxFragmentContainer? = null
@@ -75,7 +77,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.loadNotification(containerListener?.role)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(
                 R.layout.fragment_notifcenter_notification, container, false
         )?.also {
@@ -106,12 +112,19 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.topAdsBanner.observe(viewLifecycleOwner, Observer {
             rvAdapter?.addTopAdsBanner(it)
         })
+
+        viewModel.recommendations.observe(viewLifecycleOwner, Observer {
+            rvAdapter?.addRecomProducts(it)
+        })
     }
 
     private fun setupRecyclerView() {
-        val itemDecoration = NotificationItemDecoration(context)
-        rv?.clearItemDecoration()
-        rv?.addItemDecoration(itemDecoration)
+        rv?.layoutManager = StaggeredGridLayoutManager(
+                2, StaggeredGridLayoutManager.VERTICAL
+        )
+        rv?.setHasFixedSize(true)
+        rv?.addItemDecoration(NotificationItemDecoration(context))
+        rv?.addItemDecoration(RecommendationItemDecoration())
     }
 
     private fun setupFilter() {

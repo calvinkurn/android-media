@@ -13,6 +13,7 @@ interface NotificationTypeFactory : AdapterTypeFactory {
     fun type(notificationUiModel: NotificationUiModel): Int
     fun type(loadMoreUiModel: LoadMoreUiModel): Int
     fun type(notificationTopAdsBannerUiModel: NotificationTopAdsBannerUiModel): Int
+    fun type(recommendationUiModel: RecommendationUiModel): Int
 
     /**
      * to support 1 uiModel has several type of view

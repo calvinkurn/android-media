@@ -4,6 +4,7 @@ import android.os.Parcelable
 import android.view.ViewGroup
 import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -15,6 +16,7 @@ import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory
@@ -38,6 +40,12 @@ class NotificationAdapter constructor(
     override fun getItemViewType(position: Int): Int {
         val default = super.getItemViewType(position)
         return typeFactory.getItemViewType(visitables, position, default)
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
+        val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
+        layout.isFullSpan = getItemViewType(position) != RecommendationViewHolder.LAYOUT
+        super.onBindViewHolder(holder, position)
     }
 
     override fun saveProductCarouselState(position: Int, state: Parcelable?) {
@@ -90,6 +98,13 @@ class NotificationAdapter constructor(
     fun addTopAdsBanner(banner: NotificationTopAdsBannerUiModel) {
         if (visitables.add(banner)) {
             notifyItemInserted(visitables.size - 1)
+        }
+    }
+
+    fun addRecomProducts(recommendations: List<Visitable<*>>) {
+        val currentItemSize = visitables.size
+        if (visitables.addAll(recommendations)) {
+            notifyItemRangeInserted(currentItemSize, recommendations.size)
         }
     }
 
