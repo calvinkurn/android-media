@@ -53,6 +53,7 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
+import com.tokopedia.buyerorder.detail.view.customview.DetailItemButtonView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
@@ -215,18 +216,25 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setDetail(Detail detail) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(detail.label());
-        doubleTextView.setBottomText(detail.value());
         if (VOUCHER_CODE.equalsIgnoreCase(detail.label())) {
-            doubleTextView.setOnClickListener(view -> {
-                Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
-                Utils.vibrate(getContext());
-                Toaster.INSTANCE.showNormal(view, getString(R.string.title_voucher_code_copied), Toaster.INSTANCE.getToasterLength());
-
+            DetailItemButtonView itemView = new DetailItemButtonView(getActivity());
+            itemView.setTitle(detail.label());
+            itemView.setDescription(detail.value());
+            itemView.setListener(new DetailItemButtonView.Listener() {
+                @Override
+                public void onButtonClick() {
+                    Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                    Utils.vibrate(getContext());
+                    Toaster.INSTANCE.showNormal(itemView, getString(R.string.title_voucher_code_copied), Toaster.INSTANCE.getToasterLength());
+                }
             });
+            detailContent.addView(itemView);
+        } else {
+            DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+            doubleTextView.setTopText(detail.label());
+            doubleTextView.setBottomText(detail.value());
+            detailContent.addView(doubleTextView);
         }
-        detailContent.addView(doubleTextView);
     }
 
     @Override
