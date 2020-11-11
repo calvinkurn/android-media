@@ -247,7 +247,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 getFilterResultCountData(shopId, searchKeyword, etalaseId, tempShopProductFilterParameter)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
-        }) {}
+        }) {
+            shopProductFilterCountLiveData.postValue(Fail(it))
+        }
     }
 
     private suspend fun getFilterResultCountData(

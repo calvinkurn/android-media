@@ -22,7 +22,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -74,7 +73,7 @@ abstract class ShopPageProductListViewModelTestFixture {
 
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
-    protected lateinit var viewModelShopPageProductListResultViewModel: ShopPageProductListResultViewModel
+    protected lateinit var shopPageProductListResultViewModel: ShopPageProductListResultViewModel
     private val testCoroutineDispatcherProvider by lazy {
         TestCoroutineDispatcherProviderImpl
     }
@@ -107,7 +106,7 @@ abstract class ShopPageProductListViewModelTestFixture {
                 shopProductSortMapper
         )
 
-        viewModelShopPageProductListResultViewModel = ShopPageProductListResultViewModel(
+        shopPageProductListResultViewModel = ShopPageProductListResultViewModel(
                 userSessionInterface,
                 getShopInfoUseCase,
                 getShopEtalaseByShopUseCase,
