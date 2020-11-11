@@ -112,8 +112,12 @@ object PlayWidgetUiMock {
             activeReminder = cardItemTypeRandom.nextBoolean(),
             partner = PlayWidgetPartnerUiModel("123", "Google"),
             video = getVideoUiModel(channelType),
-            hasAction = false,
-            channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType)
+            hasAction = true,
+            channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),
+            share = PlayWidgetShareUiModel(
+                    "TEST CHANNEL covert vod transcoding \nYuk, nonton siaran dari testtokoucup di Tokopedia PLAY! Bakal seru banget lho!\n https://tokopedia.link/hwql0mV2Wab",
+                    isShow = true
+            )
     )
 
     private fun getVideoUiModel(channelType: PlayWidgetChannelType) = PlayWidgetVideoUiModel(

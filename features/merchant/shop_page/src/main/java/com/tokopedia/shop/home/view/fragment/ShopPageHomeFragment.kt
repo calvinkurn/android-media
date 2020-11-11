@@ -1,13 +1,15 @@
 package com.tokopedia.shop.home.view.fragment
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -56,7 +58,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
 import com.tokopedia.play.widget.ui.model.ext.hasFailedTranscodedChannel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
-import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.R
@@ -1586,7 +1587,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, position: Int) {
-        showPlayWidgetBottomSheet(item.channelId)
+        showPlayWidgetBottomSheet(item)
     }
 
     private fun setupPlayWidget() {
@@ -1662,31 +1663,36 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun showPlayWidgetBottomSheet(channelId: String) {
-        getPlayWidgetActionBottomSheet(channelId).show(childFragmentManager)
+    private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel) {
+        getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(channelId: String): PlayWidgetSellerActionBottomSheet {
+    private fun getPlayWidgetActionBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel): PlayWidgetSellerActionBottomSheet {
         if (!::playWidgetActionBottomSheet.isInitialized) {
             playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
         }
-        playWidgetActionBottomSheet.setActionList(
-                listOf(
-                        PlayWidgetSellerActionBottomSheet.Action(
-                                com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
-                                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                                "Salin link"
-                        ) { /*TODO("On Share Clicked")*/ },
-                        PlayWidgetSellerActionBottomSheet.Action(
-                                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
-                                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()
-                        ) {
-                            showDeleteWidgetConfirmationDialog(channelId)
-                            playWidgetActionBottomSheet.dismiss()
-                        }
-                )
+
+        val bottomSheetActionList = mutableListOf<PlayWidgetSellerActionBottomSheet.Action>()
+        if (channelUiModel.share.isShow) {
+            bottomSheetActionList.add(
+                PlayWidgetSellerActionBottomSheet.Action(
+                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                        getString(R.string.shop_page_play_widget_sgc_copy_link)
+                ) { copyToClipboard(channelUiModel.share.fullShareContent) }
+            )
+        }
+        bottomSheetActionList.add(
+                PlayWidgetSellerActionBottomSheet.Action(
+                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()) {
+                    showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
+                    playWidgetActionBottomSheet.dismiss()
+                }
         )
+
+        playWidgetActionBottomSheet.setActionList(bottomSheetActionList)
         return playWidgetActionBottomSheet
     }
 
@@ -1722,5 +1728,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun showDeleteWidgetConfirmationDialog(channelId: String) {
         widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
+    }
+
+    private fun copyToClipboard(shareContents: String) {
+        (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
+                .setPrimaryClip(ClipData.newPlainText("play-widget", shareContents))
     }
 }
