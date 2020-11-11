@@ -159,10 +159,6 @@ class ShopPageFragment :
         private const val START_PAGE = 1
         private const val DEFAULT_SORT_ID = 0
 
-        private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
-        private const val KEY_RESULT_SAVE_VIDEO = "play_broadcaster_save_video"
-        private const val KEY_RESULT_DELETE_VIDEO = "play_broadcaster_delete_video"
-
         @JvmStatic
         fun createInstance() = ShopPageFragment()
     }
@@ -1109,8 +1105,6 @@ class ShopPageFragment :
                 refreshData()
                 goToCart()
             }
-        } else if (requestCode == REQUEST_CODE_START_LIVE_STREAMING) {
-            if (data != null) handleResultVideoFromLiveStreaming(resultCode, data)
         }
     }
 
@@ -1388,23 +1382,6 @@ class ShopPageFragment :
      * Play Widget "Start Live Streaming"
      */
     override fun onStartLiveStreamingClicked() {
-        startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER),
-                REQUEST_CODE_START_LIVE_STREAMING
-        )
-    }
-
-    private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
-        if (resultCode == Activity.RESULT_OK) {
-            if (data.hasExtra(KEY_RESULT_SAVE_VIDEO)) {
-                Toaster.make(requireView(),
-                        text = getString(R.string.shop_page_play_widget_sgc_save_video),
-                        duration =  Toaster.LENGTH_LONG)
-            } else if (data.hasExtra(KEY_RESULT_DELETE_VIDEO)) {
-                Toaster.make(requireView(),
-                        text = getString(R.string.shop_page_play_widget_sgc_video_deleted),
-                        duration =  Toaster.LENGTH_LONG)
-            }
-        }
+        RouteManager.route(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
     }
 }
