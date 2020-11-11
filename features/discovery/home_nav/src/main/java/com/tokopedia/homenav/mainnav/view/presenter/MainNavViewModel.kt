@@ -148,7 +148,7 @@ class MainNavViewModel @Inject constructor(
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
                 getMainNavContent()
-                getUserSection()
+                onlyForLoggedInUser { getUserSection() }
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
@@ -157,7 +157,7 @@ class MainNavViewModel @Inject constructor(
 
             val p2DataJob = launchCatchError(context = coroutineContext, block = {
                 getOngoingTransaction()
-                getTransactionMenu()
+                onlyForLoggedInUser { getTransactionMenu() }
                 getUserMenu()
             }) {
                 Timber.d("P2 error")
@@ -211,8 +211,8 @@ class MainNavViewModel @Inject constructor(
                     it.getMenu(menuId = ID_RECENT_VIEW, sectionId = MainNavConst.Section.USER_MENU),
                     it.getMenu(menuId = ID_SUBSCRIPTION, sectionId = MainNavConst.Section.USER_MENU)
             )
-            val hasShop = userSession.get().hasShop()
-            if (!hasShop) firstSectionList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
+            val showOpenShopTicker = userSession.get().isLoggedIn && !userSession.get().hasShop()
+            if (showOpenShopTicker) firstSectionList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
             firstSectionList.add(SeparatorViewModel())
 
             val complainNotification = if (resolutionNotification.unreadCount != 0)
@@ -360,4 +360,7 @@ class MainNavViewModel @Inject constructor(
         })
     }
 
+    private suspend fun onlyForLoggedInUser(function: suspend ()-> Unit) {
+        if (userSession.get().isLoggedIn) function.invoke()
+    }
 }
