@@ -29,15 +29,11 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse, queryPa
             pageInfo.path?.let { path ->
                 it.pagePath = path
             }
-
+            discoveryResponse.componentMap[it.id] = it
             it.renderByDefault
         })
-        //TODO Sandeep optimize this looping
-        discoveryResponse.component?.setComponentsItem(discoveryPageData.components)
-        discoveryResponse.components.forEach {
-            discoveryResponse.componentMap[it.id] = it
-        }
     }
+    discoveryResponse.component?.setComponentsItem(discoveryResponse.components)
     return discoveryPageData
 }
 

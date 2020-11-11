@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -15,14 +16,18 @@ class CategoryChipFilterRepository @Inject constructor() : BaseRepository(), Chi
     @Inject
     lateinit var getRecommendationFilterChips: GetRecommendationFilterChips
 
-    override suspend fun getChipFilterData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, position : Int, componentName : String?): ArrayList<ComponentsItem> {
-        getRecommendationFilterChips.setParams(pageName = "quick_filter", xSource = "discopage")
-        return mapChipsToComponents(getRecommendationFilterChips.executeOnBackground(), componentName, position)
+    override suspend fun getChipFilterData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, position: Int, componentName: String?): List<ComponentsItem> {
+        return getComponent(componentId, pageEndPoint)!!.getComponentsItem() ?: run {
+            getRecommendationFilterChips.setParams(pageName = "quick_filter", xSource = "discopage")
+            return mapChipsToComponents(getRecommendationFilterChips.executeOnBackground(), componentName, position).also {
+                getComponent(componentId, pageEndPoint)!!.setComponentsItem(it)
+            }
+        }
     }
 
     private fun mapChipsToComponents(recommendationFilters: List<RecommendationFilterChipsEntity.RecommendationFilterChip>, componentName: String?, position: Int): ArrayList<ComponentsItem> {
         val filters = arrayListOf<DataItem>()
-        for(item in recommendationFilters){
+        for (item in recommendationFilters) {
             filters.add(DataItem(title = item.name, name = ComponentNames.ChipsFilterItem.componentName, id = item.value))
         }
         return DiscoveryDataMapper.mapListToComponentList(filters, ComponentNames.ChipsFilterItem.componentName, componentName, position)

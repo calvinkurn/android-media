@@ -33,8 +33,7 @@ class ChipsFilterViewModel(val application: Application, val components: Compone
 
     private fun getChipFilters() {
         launchCatchError(block = {
-            components.setComponentsItem(chipFilterUseCase.getChipFilterData(components.id, components.pageEndPoint, position, components.name))
-            listData.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
+            listData.value = chipFilterUseCase.getChipFilterData(components.id, components.pageEndPoint, position, components.name) as ArrayList<ComponentsItem>
         }, onError = {
             it.printStackTrace()
         })
