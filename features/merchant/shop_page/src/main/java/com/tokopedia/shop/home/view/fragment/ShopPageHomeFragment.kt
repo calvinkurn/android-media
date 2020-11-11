@@ -1633,11 +1633,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             val widget = carouselPlayWidgetUiModel?.widgetUiModel
 
             if (widget is PlayWidgetUiModel.Medium) {
-                if (widget.hasSuccessfulTranscodedChannel) {
-                    //TODO("Transcode Successful")
-                } else if (widget.hasFailedTranscodedChannel) {
-                    //TODO("Transcode Failed")
-                }
+                if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
+                else if (widget.hasFailedTranscodedChannel) {}
             }
 
             carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {
@@ -1747,6 +1744,17 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             Toaster.build(
                     view = findViewById(android.R.id.content),
                     text = getString(R.string.shop_page_play_widget_sgc_save_video),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
+    private fun showWidgetTranscodeSuccessToaster() {
+        activity?.run {
+            Toaster.build(
+                    view = findViewById(android.R.id.content),
+                    text = getString(R.string.shop_page_play_widget_sgc_video_saved_success),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_NORMAL
             ).show()
