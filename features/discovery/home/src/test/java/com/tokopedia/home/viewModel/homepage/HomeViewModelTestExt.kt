@@ -1,6 +1,9 @@
 package com.tokopedia.home.viewModel.homepage
 
+import android.app.Activity
+import android.app.Application
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.model.PlayData
@@ -19,6 +22,7 @@ import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -43,6 +47,7 @@ fun createHomeViewModel(
         getKeywordSearchUseCase: GetKeywordSearchUseCase = mockk(relaxed = true),
         getRecommendationTabUseCase: GetRecommendationTabUseCase = mockk(relaxed = true),
         getHomeTokopointsDataUseCase: GetHomeTokopointsDataUseCase = mockk(relaxed = true),
+        getHomeTokopointsListDataUseCase: GetHomeTokopointsListDataUseCase = mockk(relaxed = true),
         getCoroutinePendingCashbackUseCase: GetCoroutinePendingCashbackUseCase = mockk(relaxed = true),
         getPlayLiveDynamicUseCase: GetPlayLiveDynamicUseCase = mockk(relaxed = true),
         getCoroutineWalletBalanceUseCase: GetCoroutineWalletBalanceUseCase = mockk(relaxed = true),
@@ -61,14 +66,14 @@ fun createHomeViewModel(
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
         dispatchers: TestDispatcherProvider = TestDispatcherProvider()
 ): HomeViewModel{
-
-
+    val context: Activity = mockk(relaxed = true)
     return HomeViewModel(
             dismissHomeReviewUseCase = Lazy{dismissHomeReviewUseCase},
             getBusinessUnitDataUseCase = Lazy{getBusinessUnitDataUseCase},
             getBusinessWidgetTab = Lazy{getBusinessWidgetTab},
             getHomeReviewSuggestedUseCase = Lazy{getHomeReviewSuggestedUseCase},
             getHomeTokopointsDataUseCase = Lazy{getHomeTokopointsDataUseCase},
+            getHomeTokopointsListDataUseCase = Lazy{getHomeTokopointsListDataUseCase},
             getKeywordSearchUseCase = Lazy{getKeywordSearchUseCase},
             getPendingCashbackUseCase = Lazy{getCoroutinePendingCashbackUseCase},
             getPlayCardHomeUseCase = Lazy{getPlayLiveDynamicUseCase},
