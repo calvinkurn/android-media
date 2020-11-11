@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
@@ -55,11 +56,15 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
         val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(if (element.dataContent.lastOrNull()?.subtitle?.isNotBlank() == true) element.dataContent.last().subtitle else "")
 
         if (descFormatted.isNotEmpty()) {
+            (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
+
             product_detail_info_description.text = if (descFormatted.length > DESCRIPTION_LIMIT) {
                 val subDescr = descFormatted.toString().substring(0, DESCRIPTION_LIMIT)
                 MethodChecker.fromHtml(subDescr.replace("(\r\n|\n)".toRegex(), "") + "....")
             } else descFormatted
+            product_detail_info_description?.show()
         } else {
+            (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_16)
             product_detail_info_description?.hide()
         }
     }

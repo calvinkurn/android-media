@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.tokopedia.applink.ApplinkConst
@@ -22,6 +23,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -120,8 +122,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
             val height = displayMetrics.heightPixels
 
             if (isFullScreen) {
-                bs_product_info_container?.layoutParams?.height = height
+                bs_product_info_container?.setPadding(0, 0, 0, 20.dpToPx(displayMetrics))
+                bs_product_info_container?.layoutParams?.height = height - bottomSheetHeader.height - (bottomSheetHeader.layoutParams as ViewGroup.MarginLayoutParams).bottomMargin - bottomSheetWrapper.paddingTop
             } else {
+                bs_product_info_container?.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
                 bs_product_info_container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
         } catch (e: Throwable) {
@@ -240,9 +244,10 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         val childView = View.inflate(requireContext(), R.layout.bottom_sheet_product_detail_info, null)
         setupRecyclerView(childView)
         setChild(childView)
+        clearContentPadding = true
 
         setShowListener {
-            bs_product_info_container?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
         }
 
     }

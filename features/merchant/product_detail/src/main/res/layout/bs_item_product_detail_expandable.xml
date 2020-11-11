@@ -15,6 +15,8 @@
         android:id="@+id/product_detail_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:autoLink="all"
         android:longClickable="true"
@@ -26,6 +28,8 @@
         android:id="@+id/horizontal_scroll_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_12"
         android:scrollbars="none"
         android:visibility="gone">

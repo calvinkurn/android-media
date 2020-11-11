@@ -253,10 +253,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         TopAdsDetailSheet.newInstance()
     }
 
-    private val productDetailInfoSheet by lazy {
-        ProductDetailInfoBottomSheet()
-    }
-
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -399,6 +395,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>) {
         activity?.let {
+            val productDetailSheet = ProductDetailInfoBottomSheet()
             val cacheManager = SaveInstanceCacheManager(it, true)
             val parcelData = DynamicProductDetailMapper.generateProductInfoParcel(
                     viewModel.getDynamicProductInfoP1,
@@ -407,11 +404,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             )
             cacheManager.put(ProductDetailInfoBottomSheet::class.java.simpleName, parcelData)
 
-            productDetailInfoSheet.arguments = Bundle().apply {
+            productDetailSheet.arguments = Bundle().apply {
                 putString(ProductDetailInfoBottomSheet.PRODUCT_DETAIL_INFO_PARCEL_KEY, cacheManager.id)
             }
             shouldRefreshProductInfoBottomSheet = false
-            productDetailInfoSheet.show(it.supportFragmentManager, productDaggerComponent, this)
+            productDetailSheet.show(it.supportFragmentManager, productDaggerComponent, this)
         }
     }
 
