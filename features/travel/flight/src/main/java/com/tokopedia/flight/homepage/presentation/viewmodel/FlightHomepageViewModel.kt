@@ -48,6 +48,10 @@ class FlightHomepageViewModel @Inject constructor(
     val bannerList: LiveData<Result<TravelCollectiveBannerModel>>
         get() = mutableBannerList
 
+    private val mutableVideoBanner = MutableLiveData<Result<TravelCollectiveBannerModel>>()
+    val videoBanner: LiveData<Result<TravelCollectiveBannerModel>>
+        get() = mutableVideoBanner
+
     private val mutableDashboardData = MutableLiveData<FlightHomepageModel>()
     val homepageData: LiveData<FlightHomepageModel>
         get() = mutableDashboardData
@@ -65,9 +69,9 @@ class FlightHomepageViewModel @Inject constructor(
         mutableAutoSearch.value = false
     }
 
-    fun fetchBannerData(query: String, isFromCloud: Boolean) {
+    fun fetchBannerData(isFromCloud: Boolean) {
         launch(dispatcherProvider.ui()) {
-            val bannerList = getTravelCollectiveBannerUseCase.execute(query, TravelType.FLIGHT, isFromCloud)
+            val bannerList = getTravelCollectiveBannerUseCase.execute(TravelType.FLIGHT, isFromCloud)
             mutableBannerList.postValue(bannerList)
         }
     }
@@ -76,6 +80,13 @@ class FlightHomepageViewModel @Inject constructor(
         launch(dispatcherProvider.ui()) {
             val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.FLIGHT, TravelTickerFlightPage.HOME)
             mutableTickerData.postValue(tickerData)
+        }
+    }
+
+    fun fetchVideoBannerData() {
+        launch(dispatcherProvider.ui()) {
+            val bannerList = getTravelCollectiveBannerUseCase.execute(TravelType.FLIGHT_VIDEO_BANNER, true)
+            mutableVideoBanner.postValue(bannerList)
         }
     }
 

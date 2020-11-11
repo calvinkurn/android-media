@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -191,6 +192,9 @@ class SetVoucherPeriodFragment : Fragment() {
 
     private fun setupView() {
         startDateTextField?.textFieldInput?.run{
+            // Fix blank color when dark mode activated.
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+
             setOnClickListener {
                 VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.PERIOD,
@@ -203,6 +207,9 @@ class SetVoucherPeriodFragment : Fragment() {
             isClickable = true
         }
         endDateTextField?.textFieldInput?.run {
+            // Fix blank color when dark mode activated.
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
+
             setOnClickListener {
                 VoucherCreationTracking.sendCreateVoucherClickTracking(
                         step = VoucherCreationStep.PERIOD,
