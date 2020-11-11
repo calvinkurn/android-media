@@ -130,7 +130,7 @@ class GraphqlCloudDataStore @Inject constructor(
                             else{
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            Timber.d("Android Query Hash - Query Hash error " + CacheHelper.getQueryName(requests.get(0).query) + " KEY: " + requests.get(0).md5)
+                            Timber.w("P2#GQL_HASHING_ERROR#queryName='%s';KEY='%s'", CacheHelper.getQueryName(requests.get(0).query), requests.get(0).md5);
                             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
@@ -155,7 +155,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
-                                Timber.d("Android Query Hash - Query Hash saved " + CacheHelper.getQueryName(request.query) + " KEY: " + request.md5 + " QueryHash:" + qhValues.get(index))
+                                Timber.w("P2#GQL_HASHING_SUCCESS#queryName='%s';KEY='%s';QueryHash='%s'", CacheHelper.getQueryName(request.query), request.md5, qhValues.get(index));
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
                                 return@forEachIndexed  //Do nothing
