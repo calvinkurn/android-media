@@ -666,6 +666,10 @@ open class HomeFragment : BaseDaggerFragment(),
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
+        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
+        getHomeViewModel().setRollanceNavigationType(RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                HomeRollanceConst.Navigation.EXP_NAME, HomeRollanceConst.Navigation.VARIANT_OLD
+        ))
     }
 
     private fun scrollToRecommendList() {
