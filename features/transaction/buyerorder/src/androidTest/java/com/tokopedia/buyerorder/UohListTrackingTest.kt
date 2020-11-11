@@ -13,18 +13,24 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.analyticsdebugger.validator.Utils.getJsonDataFromAsset
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
+import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.InstrumentationMockHelper
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
+import org.junit.Assert.assertThat
 
 /**
  * Created by fwidjaja on 06/11/20.
  */
 class UohListTrackingTest {
+
+    companion object {
+        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/uoh_list.json"
+        const val KEY_UOH_ORDERS = "GetOrderHistory"
+    }
+
     @get:Rule
     var activityRule = ActivityTestRule<UohListActivity>(UohListActivity::class.java, false, false)
 
@@ -33,12 +39,10 @@ class UohListTrackingTest {
 
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
+        gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
-            addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_uoh_orders_with_selesai_buttons), MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(KEY_UOH_ORDERS, InstrumentationMockHelper.getRawString(context, R.raw.response_mock_uoh_orders), MockModelConfig.FIND_BY_CONTAINS)
         }
-        // do this need to logged in?
-        // InstrumentationAuthHelper.loginToAnUser(targetContext.applicationContext as Application, idlingResource)
         IdlingRegistry.getInstance().register(UohIdlingResource.countingIdlingResource)
     }
 
@@ -53,17 +57,7 @@ class UohListTrackingTest {
         runBot { launchFrom(activityRule) }
         waitForData()
 
-        val query = getJsonDataFromAsset(context, "tracker/transaction/uoh_list.json")
-                ?: throw AssertionError("Validator Query not found")
-        submit { hasPassedAnalytics(gtmLogDBSource, query) }
-    }
-
-    /*private fun performUserJourney() {
-        *//*onView(withId(recyclerViewId)).check(matches(isDisplayed()))
-
-        activityRule.activity.finish()*//*
-
-        val uohRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.rv_order_list)
+        val uohRecyclerView = activityRule.activity.findViewById<RecyclerView>(com.tokopedia.buyerorder.R.id.rv_order_list)
         val itemCount = uohRecyclerView.adapter?.itemCount?:0
 
         for (i in 0 until itemCount) {
@@ -71,7 +65,13 @@ class UohListTrackingTest {
             // checkProduct(uohRecyclerView, i)
         }
         waitForData()
-    }*/
+
+        /*val query = getJsonDataFromAsset(context, "tracker/transaction/uoh_list.json")
+                ?: throw AssertionError("Validator Query not found")
+        submit { hasPassedAnalytics(gtmLogDBSource, query) }*/
+
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+    }
 
     private fun scrollUohRecyclerViewToPosition(uohRecyclerView: RecyclerView, position: Int) {
         val layoutManager = uohRecyclerView.layoutManager as GridLayoutManager
@@ -84,10 +84,5 @@ class UohListTrackingTest {
 
     private fun waitForData() {
         Thread.sleep(5000)
-    }
-
-    companion object {
-        const val IDLING_RESOURCE = "uoh_fake_login"
-        const val KEY_UOH_ORDERS = "GetOrderHistory"
     }
 }
