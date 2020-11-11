@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
 import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
@@ -43,11 +44,9 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
 
         //status
         itemView.order_product_status.text = productModel.navProductModel.statusText
-        if (productModel.navProductModel.statusTextColor.isNotEmpty()) {
-            itemView.order_product_status.setTextColor(
-                    Color.parseColor(productModel.navProductModel.statusTextColor)
-            )
-        }
+        itemView.order_product_status.setTextColor(
+                ContextCompat.getColor(context, R.color.Unify_Y400)
+        )
 
         //more than 1 product
         if (productModel.navProductModel.additionalProductCount != 0) {

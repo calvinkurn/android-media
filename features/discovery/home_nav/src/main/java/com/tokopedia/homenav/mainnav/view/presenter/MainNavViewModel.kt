@@ -55,6 +55,7 @@ class MainNavViewModel @Inject constructor(
 
     companion object {
         private const val INDEX_MODEL_ACCOUNT = 0
+        private const val ON_GOING_TRANSACTION_TO_SHOW = 6
     }
 
     val mainNavLiveData: LiveData<MainNavigationDataModel>
@@ -185,8 +186,10 @@ class MainNavViewModel @Inject constructor(
             val orderList = async { getUohOrdersNavUseCase.get().executeOnBackground() }.await()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
+                val othersTransactionCount = paymentList.size - 6
+                val paymentListToShow = paymentList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemViewModel(
-                        NavOrderListModel(orderList, paymentList))
+                        NavOrderListModel(orderList, paymentListToShow), othersTransactionCount)
 
                 val firstTransactionMenu = _mainNavListVisitable.find {
                     it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER

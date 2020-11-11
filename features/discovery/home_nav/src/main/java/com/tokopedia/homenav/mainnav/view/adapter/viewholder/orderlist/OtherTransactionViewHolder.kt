@@ -1,0 +1,29 @@
+package com.tokopedia.homenav.mainnav.view.adapter.viewholder.orderlist
+
+import android.view.View
+import androidx.annotation.LayoutRes
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
+import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
+import kotlinx.android.synthetic.main.holder_other_transaction_product.view.*
+
+class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherTransactionModel>(itemView) {
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.holder_other_transaction_product
+    }
+
+    override fun bind(otherTransactionModel: OtherTransactionModel) {
+        val context = itemView.context
+        itemView.transaction_others_count.text = String.format(
+                context.getString(R.string.transaction_others_count, otherTransactionModel.othersTransactionCount.toString())
+        )
+
+        itemView.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.OMS_ORDER_DETAIL)
+        }
+    }
+}
