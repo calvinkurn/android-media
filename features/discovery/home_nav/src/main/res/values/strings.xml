@@ -34,10 +34,10 @@
 
     <string name="transaction_item_default_status">Menunggu pembayaran</string>
     <string name="transaction_item_total_product">%s\nBarang</string>
+    <string name="transaction_others_count">%s Transaksi\nLainnya</string>
 
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
-    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. <a href="/">Buka Toko Gratis</a></string>
-
+    <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>
 
     <string name="category_back_menu">Kembali</string>
 </resources>

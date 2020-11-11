@@ -56,13 +56,13 @@ object TrackingTransactionSection: BaseTrackerConst() {
         getTracker().sendGeneralEvent(trackingBuilder.build())
     }
 
-    fun clickOnOrderStatus(userId: String, orderStatusNumber: String) {
+    fun clickOnOrderStatus(userId: String, orderLabel: String) {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
                 event = EVENT_CLICK_NAVIGATION_DRAWER,
                 eventCategory = CATEGORY_GLOBAL_MENU,
                 eventAction = ACTION_CLICK_ON_ORDER_STATUS,
-                eventLabel = orderStatusNumber
+                eventLabel = orderLabel
         )
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
