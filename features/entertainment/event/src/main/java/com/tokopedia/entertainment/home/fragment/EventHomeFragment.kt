@@ -180,7 +180,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun startShowCase() {
-        val coachMarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+        val coachMarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
         if (coachMarkShown) return
 
         var coachItems = ArrayList<CoachMarkItem>()
@@ -188,7 +188,7 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         val coachMark = CoachMarkBuilder().build()
         coachMark.show(activity, COACH_MARK_TAG, coachItems)
         localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
+            putBoolean(SHOW_COACH_MARK_KEY, true)
             applyEditor()
         }
     }

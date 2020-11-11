@@ -326,7 +326,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     override fun getLocalCache(): Boolean {
-        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
     override fun showCoachMark(view: View, height: Int) {
@@ -340,7 +340,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 getCoachMarkItems(view)
         )
         localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
+            putBoolean(SHOW_COACH_MARK_KEY, true)
             applyEditor()
         }
     }

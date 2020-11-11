@@ -61,7 +61,7 @@ class HomeEventActivityTest {
         val intent = Intent(targetContext, HomeEventActivity::class.java)
 
         LocalCacheHandler(context, EventHomeFragment.PREFERENCES_NAME).also {
-            it.putBoolean(EventHomeFragment.SHOW_COACH_MARK_KEY, false)
+            it.putBoolean(EventHomeFragment.SHOW_COACH_MARK_KEY, true)
             it.applyEditor()
         }
 

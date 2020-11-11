@@ -73,7 +73,7 @@ class PDPTicketEventActivityTest {
         }
 
         LocalCacheHandler(context, EventPDPTicketFragment.PREFERENCES_NAME).also {
-            it.putBoolean(EventPDPTicketFragment.SHOW_COACH_MARK_KEY, false)
+            it.putBoolean(EventPDPTicketFragment.SHOW_COACH_MARK_KEY, true)
             it.applyEditor()
         }
 
