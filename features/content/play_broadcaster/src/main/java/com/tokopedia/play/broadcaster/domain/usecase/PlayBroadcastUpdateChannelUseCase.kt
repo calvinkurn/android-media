@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 06/11/20.
  */
-class UpdateChannelUseCase @Inject constructor(private val updateChannelUseCase: UpdateChannelUseCase) {
+class PlayBroadcastUpdateChannelUseCase @Inject constructor(private val updateChannelUseCase: UpdateChannelUseCase) {
 
     private var mQueryParams = QueryParams()
 
