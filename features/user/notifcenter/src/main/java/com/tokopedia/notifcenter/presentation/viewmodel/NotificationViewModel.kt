@@ -39,8 +39,8 @@ class NotificationViewModel @Inject constructor(
     val topAdsBanner: LiveData<NotificationTopAdsBannerUiModel>
         get() = _topAdsBanner
 
-    private val _recommendations = MutableLiveData<List<Visitable<*>>>()
-    val recommendations: LiveData<List<Visitable<*>>>
+    private val _recommendations = MutableLiveData<List<RecommendationUiModel>>()
+    val recommendations: LiveData<List<RecommendationUiModel>>
         get() = _recommendations
 
     /**
@@ -120,11 +120,44 @@ class NotificationViewModel @Inject constructor(
                 })
     }
 
+    fun loadMoreRecom(page: Int) {
+        val params = getRecommendationUseCase.getRecomParams(
+                page,
+                RECOM_WIDGET,
+                RECOM_SOURCE_INBOX_PAGE,
+                emptyList()
+        )
+        getRecommendationUseCase.execute(
+                params,
+                object : Subscriber<List<RecommendationWidget>>() {
+                    override fun onStart() {
+//                        inboxView?.showLoadMoreLoading()
+                    }
+
+                    override fun onCompleted() {
+//                        inboxView?.hideLoadMoreLoading()
+                    }
+
+                    override fun onError(e: Throwable) {
+//                        inboxView?.hideLoadMoreLoading()
+                    }
+
+                    override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
+                        val recommendationWidget = recommendationWidgets
+                                .getOrNull(0) ?: return
+//                        visitables.add(RecomTitle(recommendationWidget?.title))
+                        _recommendations.value = getRecommendationVisitables(recommendationWidget)
+//                        inboxView?.hideLoadMoreLoading()
+//                        inboxView?.onRenderRecomInbox(visitables)
+                    }
+                })
+    }
+
     private fun getRecommendationVisitables(
             recommendationWidget: RecommendationWidget
-    ): List<Visitable<*>> {
+    ): List<RecommendationUiModel> {
         return recommendationWidget.recommendationItemList.map {
-            RecommendationUiModel(it)
+            RecommendationUiModel(it, recommendationWidget.hasNext)
         }
     }
 

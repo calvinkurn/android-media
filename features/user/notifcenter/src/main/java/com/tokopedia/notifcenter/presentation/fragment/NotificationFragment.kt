@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -27,12 +28,14 @@ import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
 import com.tokopedia.notifcenter.presentation.adapter.decoration.RecommendationItemDecoration
+import com.tokopedia.notifcenter.presentation.adapter.listener.NotificationEndlessRecyclerViewScrollListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
@@ -46,13 +49,16 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFactory>(),
-        InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener {
+        InboxFragment, NotificationItemListener, LoadMoreViewHolder.Listener,
+        NotificationEndlessRecyclerViewScrollListener.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private var rv: RecyclerView? = null
     private var rvAdapter: NotificationAdapter? = null
+    private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+    private var rvScrollListener: NotificationEndlessRecyclerViewScrollListener? = null
     private var filter: NotificationFilterView? = null
     private var containerListener: InboxFragmentContainer? = null
 
@@ -97,6 +103,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         return rvAdapter as NotificationAdapter
     }
 
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        rvScrollListener = NotificationEndlessRecyclerViewScrollListener(rvLm, this)
+        return rvScrollListener!!
+    }
+
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
         filter = view.findViewById(R.id.sv_filter)
@@ -114,14 +125,26 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         })
 
         viewModel.recommendations.observe(viewLifecycleOwner, Observer {
-            rvAdapter?.addRecomProducts(it)
+            renderRecomList(it)
         })
     }
 
+    private fun renderRecomList(recoms: List<RecommendationUiModel>) {
+        hideLoading()
+        rvAdapter?.addRecomProducts(recoms)
+        updateScrollListenerState(recoms)
+    }
+
+    private fun updateScrollListenerState(recoms: List<RecommendationUiModel>) {
+        val recom = recoms.getOrNull(0) ?: return
+        updateScrollListenerState(recom.hasNext)
+        if (recom.hasNext) {
+            showLoading()
+        }
+    }
+
     private fun setupRecyclerView() {
-        rv?.layoutManager = StaggeredGridLayoutManager(
-                2, StaggeredGridLayoutManager.VERTICAL
-        )
+        rv?.layoutManager = rvLm
         rv?.setHasFixedSize(true)
         rv?.addItemDecoration(NotificationItemDecoration(context))
         rv?.addItemDecoration(RecommendationItemDecoration())
@@ -134,6 +157,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 loadInitialData()
             }
         }
+    }
+
+    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+        viewModel.loadMoreRecom(page)
     }
 
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
@@ -275,6 +302,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     companion object {
+
         private const val REQUEST_CHECKOUT = 0
 
     }

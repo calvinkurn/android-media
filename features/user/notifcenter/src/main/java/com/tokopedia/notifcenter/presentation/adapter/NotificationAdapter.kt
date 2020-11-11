@@ -44,7 +44,8 @@ class NotificationAdapter constructor(
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         val layout = holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams
-        layout.isFullSpan = getItemViewType(position) != RecommendationViewHolder.LAYOUT
+//        Log.d("LAYOUT_TYPE", "${visitables[position].javaClass.name} is ${getItemViewType(position) != RecommendationViewHolder.LAYOUT}")
+        layout.isFullSpan = holder !is RecommendationViewHolder
         super.onBindViewHolder(holder, position)
     }
 
