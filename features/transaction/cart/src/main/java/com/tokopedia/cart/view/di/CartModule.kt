@@ -148,15 +148,13 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named("GetCartListSimplifiedUseCase")
     fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, IOSchedulers)
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, DefaultSchedulers)
 
     @Provides
     @CartScope
-    @Named("SetCartlistCheckboxStateUseCase")
     fun provideSetCartlistCheckboxStateUseCase(): SetCartlistCheckboxStateUseCase =
-            SetCartlistCheckboxStateUseCase(GraphqlUseCase(), IOSchedulers)
+            SetCartlistCheckboxStateUseCase(GraphqlUseCase(), DefaultSchedulers)
 
     @Provides
     @CartScope
