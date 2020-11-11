@@ -366,8 +366,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             invoiceCopy.setOnClickListener(view -> {
                 ClipboardManager clipboard = (ClipboardManager) view.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(getString(R.string.invoice_label), invoice.invoiceRefNum());
-                clipboard.setPrimaryClip(clip);
-                Toaster.INSTANCE.make(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+                if (clipboard != null) { clipboard.setPrimaryClip(clip); }
+                Toaster.build(view, getString(R.string.invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
             });
             if (!presenter.isValidUrl(invoice.invoiceUrl())) {
                 lihat.setVisibility(View.GONE);
@@ -416,8 +416,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                         try {
                             myClip = ClipData.newPlainText("text", detail.value());
                             myClipboard.setPrimaryClip(myClip);
-                            Toaster.INSTANCE.make(getView(), getContext().getResources().getString(R.string.awb_number_copied),
-                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{});
+                            Toaster.build(Objects.requireNonNull(getView()), Objects.requireNonNull(getContext()).getResources().getString(R.string.awb_number_copied),
+                                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -591,20 +591,20 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void showSucessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message,
-                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
+    public void showSuccessMessage(String message) {
+        Toaster.build(Objects.requireNonNull(getView()), message,
+                Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{}).show();
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        Toaster.build(Objects.requireNonNull(getView()), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+                getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
     }
 
     @Override
     public void showErrorMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {});
+        Toaster.build(Objects.requireNonNull(getView()), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {}).show();
     }
 
     @Override
@@ -971,7 +971,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (result == 1) {
                     // show toaster
                     if (getView() != null && resultMsg != null) {
-                        Toaster.make(getView(), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { });
+                        Toaster.build(Objects.requireNonNull(getView()), resultMsg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
                     }
                 } else if (result == 3) {
                     String popupTitle = data.getStringExtra(RESULT_POPUP_TITLE_INSTANT_CANCEL);

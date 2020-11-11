@@ -61,6 +61,7 @@ import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.utils.view.DoubleTextView;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -220,9 +221,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setBottomText(detail.value());
         if (VOUCHER_CODE.equalsIgnoreCase(detail.label())) {
             doubleTextView.setOnClickListener(view -> {
-                Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                Utils.copyTextToClipBoard("voucher code", detail.value(), Objects.requireNonNull(getContext()));
                 Utils.vibrate(getContext());
-                Toaster.INSTANCE.showNormal(view, getString(R.string.title_voucher_code_copied), Toaster.INSTANCE.getToasterLength());
+                Toaster.build(view, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
 
             });
         }
@@ -333,7 +334,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void showSucessMessage(String message) {
+    public void showSuccessMessage(String message) {
         Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
     }
 

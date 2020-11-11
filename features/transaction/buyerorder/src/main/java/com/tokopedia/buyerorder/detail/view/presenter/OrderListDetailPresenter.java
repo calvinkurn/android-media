@@ -612,11 +612,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                                     DataResponseCommon dataResponse = restResponse.getData();
                                                     CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                                                     if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                                                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
                                                     else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
                                                         getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                                                     else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                                                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
                                                     getView().hideProgressBar();
                                                     getView().finishOrderDetail();
                                                 }
@@ -670,11 +670,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DataResponseCommon dataResponse = restResponse.getData();
                     CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                     if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
                     else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
                         getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                     else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
                     getView().hideProgressBar();
                     getView().finishOrderDetail();
                 }
