@@ -62,6 +62,8 @@ import com.tokopedia.vouchercreation.voucherlist.model.ui.*
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.HeaderChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.BaseHeaderChipUiModel.ResetChip
 import com.tokopedia.vouchercreation.voucherlist.model.ui.MoreMenuUiModel.*
+import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity.Companion.SUCCESS_VOUCHER_ID_KEY
+import com.tokopedia.vouchercreation.voucherlist.view.activity.VoucherListActivity.Companion.UPDATE_VOUCHER_KEY
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.VoucherListAdapter
 import com.tokopedia.vouchercreation.voucherlist.view.adapter.factory.VoucherListAdapterFactoryImpl
 import com.tokopedia.vouchercreation.voucherlist.view.viewholder.VoucherViewHolder
@@ -92,14 +94,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
 
-        private const val COPY_PROMO_CODE_LABEL = "list_promo_code"
-
         const val IS_SUCCESS_VOUCHER = "is_success"
         const val IS_UPDATE_VOUCHER = "is_update"
         const val VOUCHER_ID_KEY = "voucher_id"
-
-        private const val DOWNLOAD_REQUEST_CODE = 223
-        private const val SHARE_REQUEST_CODE = 224
 
         private const val ERROR_GET_VOUCHER = "Error get voucher list"
         private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
@@ -290,7 +287,9 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                         isActive = isActiveVoucher,
                         userId = userSession.userId
                 )
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.CREATE_VOUCHER).apply {
+                    putExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, true)
+                }
                 startActivityForResult(intent, CreateMerchantVoucherStepsActivity.REQUEST_CODE)
             }
         }
@@ -501,10 +500,14 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
                     }
                 }
                 Activity.RESULT_OK -> {
-                    if (successVoucherId != 0 && isNeedToShowSuccessDialog) {
-                        showSuccessCreateBottomSheet(successVoucherId)
-                    } else if (isNeedToShowSuccessUpdateDialog) {
-                        showSuccessUpdateToaster()
+                    data?.getIntExtra(SUCCESS_VOUCHER_ID_KEY, 0)?.let { voucherId ->
+                        data.getBooleanExtra(UPDATE_VOUCHER_KEY, false).let { isNeedToShowUpdateDialog ->
+                            if (voucherId != 0) {
+                                showSuccessCreateBottomSheet(voucherId)
+                            } else if (isNeedToShowUpdateDialog) {
+                                showSuccessUpdateToaster()
+                            }
+                        }
                     }
                 }
             }

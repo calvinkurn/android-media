@@ -83,6 +83,8 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
         const val ERROR_INITIATE = "error_initiate"
         const val REQUEST_CODE = 7137
+
+        const val FROM_VOUCHER_LIST = "from_voucher_list"
     }
 
     @Inject

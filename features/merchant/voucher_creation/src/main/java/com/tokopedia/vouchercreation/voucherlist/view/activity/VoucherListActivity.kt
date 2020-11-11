@@ -52,7 +52,6 @@ class VoucherListActivity : BaseActivity(),
     private var isActiveVoucher = true
 
     private val successVoucherId by lazy { intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY) }
-    private val isUpdateVoucherSuccess by lazy { intent?.extras?.getBoolean(UPDATE_VOUCHER_KEY) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         voucherListPerformanceMonitoring.initMvcPerformanceMonitoring()
@@ -85,6 +84,7 @@ class VoucherListActivity : BaseActivity(),
         super.onNewIntent(intent)
 
         var isActive = true
+        val isUpdateVoucherSuccess = intent?.getBooleanExtra(UPDATE_VOUCHER_KEY, false)
         val voucherId = intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY)
         intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
             isActive = it
@@ -100,7 +100,7 @@ class VoucherListActivity : BaseActivity(),
             }
         }
 
-        showFragment(getFragment(isActive, voucherId))
+        showFragment(getFragment(isActive, isUpdateVoucherSuccess, voucherId))
     }
 
     override fun onBackPressed() {
@@ -146,26 +146,26 @@ class VoucherListActivity : BaseActivity(),
     }
 
     private fun getFragment(isActiveVoucher: Boolean,
+                            isUpdateVoucherSuccess: Boolean? = null,
                             voucherId: Int? = successVoucherId): VoucherListFragment {
         return VoucherListFragment.newInstance(isActiveVoucher).apply {
             setFragmentListener(this@VoucherListActivity)
+            val bundle = Bundle()
             val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && voucherId != 0
             if (willShowSuccessCreationDialog) {
-                val bundle = Bundle().apply bun@{
-                    isUpdateVoucherSuccess?.let { isUpdate ->
-                        if (isUpdate) {
-                            putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
-                            return@bun
-                        }
-                    }
-                    voucherId?.run {
-                        putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)
-                        putInt(VoucherListFragment.VOUCHER_ID_KEY, this)
-                    }
+                with(bundle) {
+                    putBoolean(VoucherListFragment.IS_SUCCESS_VOUCHER, true)
+                    voucherId?.let { putInt(VoucherListFragment.VOUCHER_ID_KEY, it) }
                 }
                 isSuccessDialogAlreadyShowed = true
-                arguments = bundle
+            } else {
+                isUpdateVoucherSuccess?.let { isUpdate ->
+                    if (isUpdate) {
+                        bundle.putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
+                    }
+                }
             }
+            arguments = bundle
         }
     }
 }

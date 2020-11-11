@@ -200,6 +200,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
         activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.IS_DUPLICATE, false) ?: false
     }
 
+    private val isFromVoucherList by lazy {
+        activity?.intent?.getBooleanExtra(CreateMerchantVoucherStepsActivity.FROM_VOUCHER_LIST, false) ?: false
+    }
+
     private val impressHolder = ImpressHolder()
 
     private var isWaitingForResult = false
@@ -405,10 +409,14 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
                                 activity?.run {
-                                    setResult(Activity.RESULT_OK, intent)
+                                    if (isFromVoucherList) {
+                                        setResult(Activity.RESULT_OK, intent)
+                                    }
                                     finish()
                                 }
-                                startActivity(intent)
+                                if (!isFromVoucherList) {
+                                    startActivity(intent)
+                                }
 
                                 // Disable showing create voucher dialog upon accessing mvc after first time success
                                 sharedPref?.run {
@@ -442,10 +450,14 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                                 }
                                 activity?.run {
-                                    setResult(Activity.RESULT_OK, intent)
+                                    if (isFromVoucherList) {
+                                        setResult(Activity.RESULT_OK, intent)
+                                    }
                                     finish()
                                 }
-                                startActivity(intent)
+                                if (!isFromVoucherList) {
+                                    startActivity(intent)
+                                }
                             }
                         }
                         is Fail -> {
