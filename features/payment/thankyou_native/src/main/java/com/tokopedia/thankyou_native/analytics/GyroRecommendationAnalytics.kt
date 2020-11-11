@@ -1,5 +1,6 @@
 package com.tokopedia.thankyou_native.analytics
 
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.CLICK_GYRO_RECOM
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT
 import com.tokopedia.thankyou_native.analytics.GyroTrackingKeys.KEY_EVENT_ACTION
@@ -27,6 +28,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GyroRecommendationAnalytics @Inject constructor(
@@ -43,13 +46,34 @@ class GyroRecommendationAnalytics @Inject constructor(
 
     fun onGyroRecommendationListView(gyroRecommendationListItem: GyroRecommendationListItem,
                                      thanksPageData: ThanksPageData, position: Int) {
-        val data = getParentTrackingNode(PROMO_VIEW, VIEW_GYRO_RECOM,
-                thanksPageData, gyroRecommendationListItem)
-        data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(PROMO_VIEW, gyroRecommendationListItem, position)
-        analyticTracker.sendEnhanceEcommerceEvent(data)
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                val data = getParentTrackingNode(PROMO_VIEW, VIEW_GYRO_RECOM,
+                        thanksPageData, gyroRecommendationListItem)
+                data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(PROMO_VIEW,
+                        gyroRecommendationListItem, position)
+                analyticTracker.sendEnhanceEcommerceEvent(data)
+            }
+        }, onError = {})
     }
 
-    private fun getEnhancedECommerceNode(key: String, item: GyroRecommendationListItem, position: Int): Map<String, Any> {
+
+    fun onGyroRecommendationListClick(gyroRecommendationListItem: GyroRecommendationListItem,
+                                      thanksPageData: ThanksPageData, position: Int) {
+        CoroutineScope(mainDispatcher).launchCatchError(block = {
+            withContext(bgDispatcher) {
+                val data = getParentTrackingNode(PROMO_CLICK, CLICK_GYRO_RECOM,
+                        thanksPageData, gyroRecommendationListItem)
+                data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(PROMO_CLICK,
+                        gyroRecommendationListItem, position)
+                analyticTracker.sendEnhanceEcommerceEvent(data)
+            }
+        }, onError = {})
+    }
+
+
+    private fun getEnhancedECommerceNode(key: String, item: GyroRecommendationListItem,
+                                         position: Int): Map<String, Any> {
         val promotionsMap = mapOf(PROMO_KEY_ID to "${item.id}",
                 PROMO_KEY_NAME to item.title,
                 PROMO_KEY_CREATIVE to item.title,
@@ -61,16 +85,8 @@ class GyroRecommendationAnalytics @Inject constructor(
     }
 
 
-    fun onGyroRecommendationListClick(gyroRecommendationListItem: GyroRecommendationListItem,
-                                      thanksPageData: ThanksPageData, position: Int) {
-        val data = getParentTrackingNode(PROMO_CLICK, CLICK_GYRO_RECOM,
-                thanksPageData, gyroRecommendationListItem)
-        data[ParentTrackingKey.KEY_ECOMMERCE] = getEnhancedECommerceNode(PROMO_CLICK, gyroRecommendationListItem, position)
-        analyticTracker.sendEnhanceEcommerceEvent(data)
-    }
 
-
-    private fun getParentTrackingNode(eventName: String, eventAction : String,
+    private fun getParentTrackingNode(eventName: String, eventAction: String,
                                       thanksPageData: ThanksPageData,
                                       gyroRecommendationListItem: GyroRecommendationListItem): MutableMap<String, Any> {
         return mutableMapOf(
@@ -86,7 +102,7 @@ class GyroRecommendationAnalytics @Inject constructor(
 }
 
 
-object GyroTrackingKeys{
+object GyroTrackingKeys {
     val KEY_EVENT = "event"
     val KEY_EVENT_CATEGORY = "eventCategory"
     val KEY_EVENT_ACTION = "eventAction"
@@ -101,9 +117,9 @@ object GyroTrackingKeys{
     val VIEW_GYRO_RECOM = "view gyro recommendation"
     val CLICK_GYRO_RECOM = "click gyro recommendation"
 
-    val PROMO_KEY_ID ="id"
-    val PROMO_KEY_PROMOTIONS ="promotions"
-    val PROMO_KEY_NAME ="name"
+    val PROMO_KEY_ID = "id"
+    val PROMO_KEY_PROMOTIONS = "promotions"
+    val PROMO_KEY_NAME = "name"
     val PROMO_KEY_CREATIVE = "creative"
     val PROMO_KEY_CREATIVE_URL = "creative_url"
     val PROMO_KEY_POSITION = "position"
