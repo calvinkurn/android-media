@@ -608,10 +608,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     if (it.data.isDataError()) {
-                        it.data.getAtcErrorMessage()?.let { errorMsg -> showToasterAtc(errorMsg, Toaster.TYPE_NORMAL) }
+                        it.data.getAtcErrorMessage()?.let { errorMsg -> showToaster(errorMsg, Toaster.TYPE_ERROR) }
                     } else {
                         val successMsg = StringUtils.convertListToStringDelimiter(it.data.data.message, ",")
-                        showToaster(successMsg, Toaster.TYPE_ERROR)
+                        showToasterAtc(successMsg, Toaster.TYPE_NORMAL)
                     }
                 }
                 is Fail -> {
