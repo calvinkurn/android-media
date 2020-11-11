@@ -9,6 +9,7 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -79,6 +80,16 @@ private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
         labelPrice?.initLabelGroup(null)
     else
         labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+
+    constraintLayoutProductCardContent?.let { constraintLayout ->
+        val constraintSet = ConstraintSet().also { it.clone(constraintLayout) }
+
+        val connectedId = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
+
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, connectedId, ConstraintSet.BOTTOM, 0)
+
+        constraintSet.applyTo(constraintLayout)
+    }
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
@@ -109,29 +120,15 @@ private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
 private fun View.renderRating(productCardModel: ProductCardModel) {
     when {
         !productCardModel.willShowRatingAndReviewCount() -> hideRating()
-        productCardModel.ratingString.isNotEmpty() -> renderRatingFloat(productCardModel)
         productCardModel.ratingCount > 0 -> renderRatingStars(productCardModel)
     }
 }
 
 private fun View.hideRating() {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-    linearLayoutImageRating?.gone()
-}
-
-private fun View.renderRatingFloat(productCardModel: ProductCardModel) {
-    imageRatingString?.visible()
-    textViewRatingString?.visible()
-    textViewRatingString?.text = productCardModel.ratingString
-
     linearLayoutImageRating?.gone()
 }
 
 private fun View.renderRatingStars(productCardModel: ProductCardModel) {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-
     linearLayoutImageRating?.visible()
     setImageRating(productCardModel.ratingCount)
 }
