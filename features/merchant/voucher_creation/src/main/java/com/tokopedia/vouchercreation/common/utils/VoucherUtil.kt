@@ -78,7 +78,7 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     linkerShareData?.url?.let {
-                        shareVoucher(context, socmedType, voucher, shopName, it)
+                        shareVoucherByType(context, socmedType, voucher, shopName, it)
                     }
                 }
 
@@ -93,11 +93,11 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
     )
 }
 
-private fun shareVoucher(context: Context,
-                         @SocmedType socmedType: Int,
-                         voucher: VoucherUiModel,
-                         shopName: String,
-                         shareUrl: String) {
+private fun shareVoucherByType(context: Context,
+                               @SocmedType socmedType: Int,
+                               voucher: VoucherUiModel,
+                               shopName: String,
+                               shareUrl: String) {
     val shareMessage =
             if (voucher.isPublic) {
                 StringBuilder().apply {
