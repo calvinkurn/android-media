@@ -3,8 +3,6 @@ package com.tokopedia.buyerorder
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.idling.CountingIdlingResource
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.util.setupGraphqlMockResponse

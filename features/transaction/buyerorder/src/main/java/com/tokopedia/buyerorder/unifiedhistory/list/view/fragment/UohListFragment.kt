@@ -416,6 +416,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun observingOrderHistory() {
+        println("++ observingOrderHistory")
         if (orderIdNeedUpdated.isEmpty()) uohItemAdapter.showLoader()
         uohListViewModel.orderHistoryListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {

@@ -123,6 +123,7 @@ object UohAnalytics {
         event[USER_ID] = userId
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
+        println("++ track viewOrderListPage - isLoggedInStatus = $isLoggedInStatus, userId = $userId, event = $event")
     }
 
     fun submitSearch(keyword: String, userId: String) {
@@ -233,6 +234,7 @@ object UohAnalytics {
             putParcelableArrayList(ITEMS, arrayListBundleItems)
         }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, bundle)
+        println("++ track viewOrderCard - verticalLabel = $verticalLabel, userId = $userId, arrayImpressions.size = ${arrayImpressions.size}, bundle = $bundle")
     }
 
     fun clickOrderCard(verticalLabel: String, userId: String, arrayListProducts: ArrayList<ECommerceClick.Products>) {
