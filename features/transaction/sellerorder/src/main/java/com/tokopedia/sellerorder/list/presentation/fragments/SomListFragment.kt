@@ -1465,4 +1465,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             refreshOrderList()
         }
     }
+
+    override fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper) {
+        somListSortFilterTab.updateSomListFilterUi(filterCancelWrapper.somFilterUiModelList)
+        val orderListParam = viewModel.getDataOrderListParams()
+        orderListParam.statusList = filterCancelWrapper.orderStatusIdList
+        viewModel.updateGetOrderListParams(orderListParam)
+        this.filterDate = filterCancelWrapper.filterDate
+    }
 }
