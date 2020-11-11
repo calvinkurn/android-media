@@ -126,6 +126,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val KEY_SHOP_NAME = "SHOP_NAME"
         const val KEY_SHOP_ATTRIBUTION = "SHOP_ATTRIBUTION"
         const val KEY_SHOP_REF = "SHOP_REF"
+        private const val KEY_IS_NEWLY_BROADCAST_CHANNEL_TYPE = "IS_NEWLY_BROADCAST_CHANNEL_SAVED"
         const val SPAN_COUNT = 2
         const val SAVED_SHOP_SORT_ID = "saved_shop_sort_id"
         const val SAVED_SHOP_SORT_NAME = "saved_shop_sort_name"
@@ -146,7 +147,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isGoldMerchant: Boolean,
                 shopName: String,
                 shopAttribution: String,
-                shopRef: String
+                shopRef: String,
+                isNewlyBroadcastChannelSaved: Boolean? = null
         ): Fragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
@@ -155,6 +157,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundle.putString(KEY_SHOP_NAME, shopName)
             bundle.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
             bundle.putString(KEY_SHOP_REF, shopRef)
+            isNewlyBroadcastChannelSaved?.let {
+                bundle.putBoolean(KEY_IS_NEWLY_BROADCAST_CHANNEL_TYPE, it)
+            }
 
             return ShopPageHomeFragment().apply {
                 arguments = bundle
@@ -1609,6 +1614,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun observePlayWidget() {
+        handleBroadcastExtra()
+
         viewModel?.playWidgetObservable?.observe(viewLifecycleOwner, Observer { carouselPlayWidgetUiModel ->
             shopPlayWidgetAnalytic.widgetId = carouselPlayWidgetUiModel?.widgetId.orEmpty()
             shopHomeAdapter.updatePlayWidget(carouselPlayWidgetUiModel?.widgetUiModel)
@@ -1696,31 +1703,52 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun showWidgetDeletedToaster() {
         activity?.run {
-            Toaster.make(
+            Toaster.build(
                     findViewById(android.R.id.content),
                     getString(R.string.shop_page_play_widget_sgc_video_deleted),
                     Toaster.LENGTH_SHORT,
                     Toaster.TYPE_NORMAL
-            )
+            ).show()
         }
     }
 
     private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
         activity?.run {
-            Toaster.make(
+            Toaster.build(
                     view = findViewById(android.R.id.content),
-                    text = reason.localizedMessage,
+                    text = reason.localizedMessage.orEmpty(),
                     duration = Toaster.LENGTH_LONG,
                     type = Toaster.TYPE_ERROR,
                     actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
                     clickListener = View.OnClickListener {
                         deleteChannel(channelId)
                     }
-            )
+            ).show()
+        }
+    }
+
+    private fun showWidgetTranscodingToaster() {
+        activity?.run {
+            Toaster.build(
+                    view = findViewById(android.R.id.content),
+                    text = getString(R.string.shop_page_play_widget_sgc_saving_video),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_NORMAL
+            ).show()
         }
     }
 
     private fun showDeleteWidgetConfirmationDialog(channelId: String) {
         widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
+    }
+
+    private fun handleBroadcastExtra() {
+        val args = arguments ?: return
+        val isChannelSaved: Boolean = if (args.containsKey(KEY_IS_NEWLY_BROADCAST_CHANNEL_TYPE)) {
+            args.getBoolean(KEY_IS_NEWLY_BROADCAST_CHANNEL_TYPE)
+        } else return
+
+        if (isChannelSaved) showWidgetTranscodingToaster()
+        else showWidgetDeletedToaster()
     }
 }

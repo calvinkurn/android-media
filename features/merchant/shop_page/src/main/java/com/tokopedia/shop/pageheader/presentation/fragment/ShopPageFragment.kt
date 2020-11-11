@@ -122,6 +122,7 @@ class ShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
+        const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
         const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
@@ -1016,13 +1017,18 @@ class ShopPageFragment :
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
             if (isShowNewHomeTab()) {
+                val isNewlyBroadcastChannelSaved: Boolean? = if (activity?.intent?.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED) == true) {
+                            activity?.intent?.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
+                        } else null
+
                 ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
                         shopPageHeaderDataModel?.isGoldMerchant ?: false,
                         shopPageHeaderDataModel?.shopName.orEmpty(),
                         shopAttribution ?: "",
-                        shopRef
+                        shopRef,
+                        isNewlyBroadcastChannelSaved
                 )
             } else {
                 HomeProductFragment.createInstance(
