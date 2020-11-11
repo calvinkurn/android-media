@@ -4,6 +4,20 @@ package com.tokopedia.flight.orderdetail.data
  * @author by furqan on 14/10/2020
  */
 object FlightOrderDetailGqlConst {
+    val QUERY_GET_ORDER_E_TICKET = """
+        query FlightGetETicket(${'$'}data: FlightETicketArgs!!) {
+            flightGetETicket(input:${'$'}data) {
+                data
+            }
+        }
+    """.trimIndent()
+    val QUERY_GET_ORDER_INVOICE = """
+        query FlightGetInvoice(${'$'}data: FlightInvoiceArgs!) {
+            flightInvoice(input:${'$'}data) {
+                data
+            }
+        }
+    """.trimIndent()
     val QUERY_ORDER_DETAIL = """
         query GetOrderDetail(${'$'}data:GetOrderDetailArgs!) {
           flightGetOrderDetail(input:${'$'}data) {
