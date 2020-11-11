@@ -37,6 +37,7 @@ public class ChatBotMessageViewHolder extends MessageViewHolder {
     @Override
     protected void setChatLeft(View chatBalloon) {
         super.setChatLeft(chatBalloon);
+        message.setLinkTextColor(MethodChecker.getColor(chatBalloon.getContext(), R.color.read_more_color));
         message.post(() -> {
             if (message.getLineCount() > MESSAGE_LINE_COUNT) {
                 message.setMaxLines(MESSAGE_LINE_COUNT);
