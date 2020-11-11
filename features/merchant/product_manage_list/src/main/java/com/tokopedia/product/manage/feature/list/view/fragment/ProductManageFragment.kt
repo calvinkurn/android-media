@@ -138,6 +138,8 @@ import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
+private const val DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
+
 open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductManageAdapterFactoryImpl>(),
     ProductViewHolder.ProductViewHolderView,
     ProductMenuViewHolder.ProductMenuListener,
@@ -1935,7 +1937,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToCreateTopAds() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        val intent = RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_CREATE_ADS).apply {
+            putExtra(DIRECTED_FROM_MANAGE_OR_PDP,true)
+        }
+        startActivity(intent)
     }
 
     private fun updateVariantStock(data: EditVariantResult) {

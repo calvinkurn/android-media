@@ -148,6 +148,7 @@ import javax.inject.Inject
  * Bottom separator : ProductVariantViewHolder, ProductNotifyMeViewHolder
  * Top separator : All of the view holder except above
  */
+private const val DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener, PartialButtonActionListener {
 
@@ -2208,7 +2209,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (secondAppLink.isEmpty()) {
                 showTopAdsBottomSheet()
             } else {
-                RouteManager.route(context, secondAppLink)
+                val intent = RouteManager.getIntent(context,secondAppLink).apply {
+                    putExtra(DIRECTED_FROM_MANAGE_OR_PDP
+                            ,true)
+                }
+                startActivity(intent)
             }
         } else {
             if (secondAppLink.isEmpty()) {
