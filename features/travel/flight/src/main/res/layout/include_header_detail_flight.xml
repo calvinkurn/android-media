@@ -5,7 +5,7 @@
     android:id="@+id/layout_header_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     tools:showIn="@layout/item_flight_detail">
 
     <RelativeLayout
@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:textSize="14sp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="heading_5"
                 tools:text="Cathay Pacific" />
 
@@ -49,7 +49,7 @@
                 android:layout_below="@+id/airline_name"
                 android:layout_alignStart="@+id/airline_name"
                 android:layout_alignLeft="@+id/airline_name"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3"
                 tools:text="CP - 321" />
 
@@ -60,7 +60,7 @@
                 android:layout_below="@+id/airline_code"
                 android:layout_alignStart="@+id/airline_name"
                 android:layout_alignLeft="@+id/airline_name"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
                 app:typographyType="body_3"
                 tools:text="Dioperasikan oleh Garuda Indonesia"
@@ -115,7 +115,7 @@
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
             android:text="@string/flight_label_booking_code_pnr"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -124,7 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_5"
             android:layout_marginRight="@dimen/dp_5"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="323088926194" />
@@ -141,5 +141,5 @@
         android:layout_height="1dp"
         android:layout_below="@+id/container_pnr"
         android:layout_marginTop="@dimen/margin_8"
-        android:background="@color/flight_search_list_background" />
+        android:background="@color/Unify_N75" />
 </RelativeLayout>

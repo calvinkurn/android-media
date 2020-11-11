@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/dp_14"
                 android:paddingLeft="@dimen/dp_14"
@@ -68,7 +68,7 @@
                         android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
                         android:nextFocusForward="@+id/et_last_name"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70" />
+                        android:textColor="@color/Unify_N700_68" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -88,7 +88,7 @@
                         android:hint="@string/flight_booking_passenger_last_name_secondary_hint"
                         android:imeOptions="actionDone"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70" />
+                        android:textColor="@color/Unify_N700_68" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -126,7 +126,7 @@
                         android:paddingEnd="@dimen/dp_10"
                         android:paddingRight="@dimen/dp_10"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70"
+                        android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -146,7 +146,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
@@ -197,7 +197,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/flight_passenger_passport_number_secondary_hint"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70" />
+                        android:textColor="@color/Unify_N700_68" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
 
@@ -225,7 +225,7 @@
                         android:paddingEnd="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70"
+                        android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -265,7 +265,7 @@
                         android:paddingEnd="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70"
+                        android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -296,7 +296,7 @@
                         android:paddingEnd="10dp"
                         android:paddingRight="10dp"
                         android:singleLine="true"
-                        android:textColor="@color/font_black_primary_70"
+                        android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
                 </com.tokopedia.design.text.TkpdHintTextInputLayout>
             </LinearLayout>
@@ -307,7 +307,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_16"
                 android:paddingLeft="@dimen/padding_16"
@@ -338,7 +338,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_20"
                 android:layout_marginBottom="@dimen/dp_20"
-                android:background="@color/white"
+                android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_16"
                 android:paddingLeft="@dimen/padding_16"

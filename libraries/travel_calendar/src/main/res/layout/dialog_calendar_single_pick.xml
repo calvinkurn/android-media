@@ -22,7 +22,7 @@
         android:layout_alignBottom="@+id/btn_close"
         android:gravity="center_vertical"
         android:layout_toRightOf="@+id/btn_close"
-        android:textColor="@color/grey_750"
+        android:textColor="@color/Unify_N600"
         android:textSize="@dimen/sp_18"
         android:maxLines="1"
         android:ellipsize="end"

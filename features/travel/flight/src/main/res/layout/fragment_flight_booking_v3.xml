@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     android:focusable="true">
 
@@ -56,7 +56,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_20"
                 android:text="@string/flight_booking_contact_information"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rv_flight_booking_route_summary"
                 app:typographyType="heading_3" />
@@ -68,7 +68,7 @@
                 android:layout_marginLeft="@dimen/dp_4"
                 android:layout_marginTop="@dimen/dp_2"
                 android:text="@string/flight_booking_contact_sublabel"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_traveller_info_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_traveller_info_title"
                 app:layout_constraintTop_toTopOf="@id/tv_traveller_info_title"
@@ -90,7 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/widget_traveller_info" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -103,7 +103,7 @@
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/flight_booking_passenger_data_label"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/seperator_1"
                 app:typographyType="heading_3" />
@@ -117,7 +117,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:text="@string/flight_booking_passenger_data_same_as_contact"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/switch_traveller_as_passenger"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,7 +154,7 @@
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
-                android:background="#f3f4f5"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/rv_insurance_list" />
 
             <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -169,7 +169,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/flight_promo_ticker_view" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -190,7 +190,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="@id/tv_total_payment"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_total_payment"
@@ -210,7 +210,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_4"
                     android:text="@string/flight_label_see_detail"
-                    android:textColor="@color/Green_G500"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="body_3"
                     app:typographyWeight="bold" />
 
@@ -231,7 +231,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_margin="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/layout_see_detail_price" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -251,7 +251,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"
-                android:background="#f3f4f5"
+                android:background="@color/Unify_N50"
                 app:layout_constraintTop_toBottomOf="@+id/rv_flight_price_detail" />
 
             <androidx.appcompat.widget.AppCompatButton
