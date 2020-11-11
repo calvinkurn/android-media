@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem
-import com.tokopedia.category.navbottomsheet.view.CategorySelectListener
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import kotlinx.android.synthetic.main.item_cat_level_one.view.*
 
@@ -98,5 +97,10 @@ class CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categorie
         return if (message.length > 18) {
             message.substring(0, 17).plus("...")
         } else message
+    }
+
+
+    interface CategorySelectListener {
+        fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?)
     }
 }
