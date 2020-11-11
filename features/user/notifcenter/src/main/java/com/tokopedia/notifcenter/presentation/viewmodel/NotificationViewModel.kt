@@ -120,6 +120,9 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
+    /**
+     * TODO: combine with [loadMoreRecom]
+     */
     private fun getFirstRecommendationData() {
         launchCatchError(dispatcher.io(),
                 {
