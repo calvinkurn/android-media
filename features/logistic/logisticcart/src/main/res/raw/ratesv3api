@@ -1,5 +1,5 @@
-query RatesV3($param: OngkirRatesV3Input!) {
-  ratesV3(input: $param) {
+query RatesV3Api($param: OngkirRatesV3Input!) {
+  ratesV3Api(input: $param) {
     ratesv3 {
       id
       rates_id
