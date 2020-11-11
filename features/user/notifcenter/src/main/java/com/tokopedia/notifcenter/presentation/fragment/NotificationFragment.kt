@@ -202,7 +202,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onPageClickedAgain() {
-        rv?.smoothScrollToPosition(0)
+        rv?.scrollToPosition(0)
     }
 
     override fun initInjector() {
