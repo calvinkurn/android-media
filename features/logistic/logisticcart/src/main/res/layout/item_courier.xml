@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_toEndOf="@+id/tv_price_or_duration"
+        android:layout_toEndOf="@+id/tv_courier"
         android:background="@drawable/bg_promo_potency"
         android:paddingLeft="@dimen/dp_8"
         android:paddingTop="@dimen/dp_2"

@@ -332,8 +332,6 @@ public interface ShipmentContract {
 
         ValidateUsePromoRequest getLastValidateUseRequest();
 
-        int getPerOrderDuration();
-
         String generateRatesMvcParam();
     }
 

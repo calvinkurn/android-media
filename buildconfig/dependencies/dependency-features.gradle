@@ -38,7 +38,7 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
-
+            playWidget                      : ":features:content:play_widget",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
             digitalEmoney                   : ":features:recharge:digital_emoney",
@@ -226,7 +226,7 @@ ext {
             topchat                         : ":features:user:topchat",
             orderhistory                    : ":features:user:orderhistory",
             updateinactivephone             : ":features:user:updateinactivephone",
-            seamlesslogin                   : ":features:user:seamless_login",
+            seamlessLoginCommon             : ":features:user:seamless_login_common",
             managename                      : ":features:user:managename",
             stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",

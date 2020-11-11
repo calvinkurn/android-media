@@ -179,8 +179,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private CheckoutData checkoutData;
     private boolean couponStateChanged;
-    private boolean isFulfillment;
-    private int preOrderDuration;
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
@@ -659,9 +657,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (shipmentButtonPaymentModel != null) {
             shipmentButtonPaymentModel.setAbTestButton(abTestButton);
         }
-
-        preOrderDuration = cartShipmentAddressFormData.getPreOrderDay();
-        isFulfillment = cartShipmentAddressFormData.isFulfillment();
     }
 
     private Map<String, String> getGeneratedAuthParamNetwork(TKPDMapParam<String, String> originParams) {
@@ -1748,8 +1743,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
-        boolean isFulfillmentData = isFulfillment;
-        int preOrder = preOrderDuration;
 
         String mvc = generateRatesMvcParam();
 
@@ -2020,11 +2013,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
-    }
-
-    @Override
-    public int getPerOrderDuration() {
-        return preOrderDuration;
     }
 
     @Override

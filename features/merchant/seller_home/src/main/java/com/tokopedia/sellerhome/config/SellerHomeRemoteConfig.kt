@@ -16,4 +16,7 @@ class SellerHomeRemoteConfig @Inject constructor(
         return remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR, false)
     }
 
+    fun isSellerHomeDashboardCachingEnabled(): Boolean {
+        return remoteConfig.getBoolean(RemoteConfigKey.SELLER_HOME_DASHBOARD_ENABLE_CACHE, false)
+    }
 }

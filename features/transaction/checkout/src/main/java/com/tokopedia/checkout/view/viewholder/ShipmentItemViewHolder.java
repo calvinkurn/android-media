@@ -743,12 +743,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                         labelFreeShippingEtaText.setVisibility(View.GONE);
                     }
                 }
-
             } else {
                 // Is normal shipping
                 layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
                 layoutStateHasSelectedNormalShipping.setVisibility(View.VISIBLE);
-
                 TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingDuration, selectedCourierItemData.getEstimatedTimeDelivery(), labelSelectedShippingDuration.getContext().getString(R.string.content_desc_label_selected_shipping_duration));
                 labelSelectedShippingDuration.setOnClickListener(
                         getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -767,7 +765,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     labelSelectedShippingPriceorDuration.setText(selectedCourierItemData.getEtaText());
                 } else if (selectedCourierItemData.getEtaErrorCode() == 0 && selectedCourierItemData.getEtaText().isEmpty()) {
                     TextAndContentDescriptionUtil.setTextAndContentDescription(labelSelectedShippingCourier, courierName, labelSelectedShippingCourier.getContext().getString(R.string.content_desc_label_selected_shipping_courier));
-                    labelSelectedShippingCourier.setText(courierName);
                     labelSelectedShippingPriceorDuration.setText(R.string.estimasi_tidak_tersedia);
                 }
                 else {
