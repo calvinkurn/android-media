@@ -704,7 +704,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (isdownloadable(uri)) {
             getView().askPermission();
         } else {
-            if (getView() != null && getView().getActivity() != null && getView().getActivity().getApplicationContext() != null && getView().getActivity() != null) {
+            if (getView() != null && getView().getActivity() != null) {
                 RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }
