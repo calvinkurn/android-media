@@ -10,15 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.searchbar.R
+import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar.Companion.TYPE_LOTTIE
+import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon.view.*
 import kotlinx.android.synthetic.main.toolbar_viewholder_icon_lottie.view.*
 
 internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
-                                     private val userSessionInterface: UserSessionInterface)
+                                     private val topNavComponentListener: TopNavComponentListener)
     : RecyclerView.Adapter<IconHolder>() {
     companion object {
         const val STATE_THEME_DARK = 0
@@ -35,21 +37,15 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         when(viewType) {
             VIEW_TYPE_IMAGE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-                return ImageIconHolder(view) {
-                    userSessionInterface.isLoggedIn
-                }
+                return ImageIconHolder(view, topNavComponentListener)
             }
             VIEW_TYPE_LOTTIE -> {
                 val view = inflater.inflate(R.layout.toolbar_viewholder_icon_lottie, parent, false)
-                return LottieIconHolder(view) {
-                    userSessionInterface.isLoggedIn
-                }
+                return LottieIconHolder(view, topNavComponentListener)
             }
         }
         val view = inflater.inflate(R.layout.toolbar_viewholder_icon, parent, false)
-        return ImageIconHolder(view) {
-            userSessionInterface.isLoggedIn
-        }
+        return ImageIconHolder(view, topNavComponentListener)
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -109,7 +105,7 @@ internal abstract class IconHolder(view: View): RecyclerView.ViewHolder(view) {
     abstract fun bind(iconToolbar: IconToolbar, themeState: Int)
 }
 
-internal class ImageIconHolder(view: View, val isUserLoggedIn:() -> Boolean): IconHolder(view) {
+internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavComponentListener): IconHolder(view) {
     val iconImage = view.nav_icon_image
     val iconBadge = view.nav_icon_badge
     val context = itemView.context
@@ -138,8 +134,13 @@ internal class ImageIconHolder(view: View, val isUserLoggedIn:() -> Boolean): Ic
         }
 
         iconImage.setOnClickListener {
+            NavToolbarTracking.clickNavToolbarComponent(
+                    pageName = topNavComponentListener.getPageName(),
+                    componentName = iconToolbar.name,
+                    userId = topNavComponentListener.getUserId()
+            )
             iconToolbar.onIconClicked.invoke()
-            val isLoggedIn = isUserLoggedIn.invoke()
+            val isLoggedIn = topNavComponentListener.isLoggedIn()
             if (!iconToolbar.disableRouteManager && isLoggedIn) {
                 if (iconToolbar.applink.isNotEmpty() && isLoggedIn) {
                     RouteManager.route(context, iconToolbar.applink)
@@ -161,7 +162,7 @@ internal class ImageIconHolder(view: View, val isUserLoggedIn:() -> Boolean): Ic
             context.getString(R.string.tag_counter_id) + id
 }
 
-internal class LottieIconHolder(view: View, val isUserLoggedIn:() -> Boolean): IconHolder(view) {
+internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavComponentListener): IconHolder(view) {
     val iconImage = view.nav_icon_lottieav
     val iconBadge = view.nav_icon_badge_lottieav
     val context = itemView.context
@@ -173,8 +174,13 @@ internal class LottieIconHolder(view: View, val isUserLoggedIn:() -> Boolean): I
         iconImage.progress = 0f
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
+            NavToolbarTracking.clickNavToolbarComponent(
+                    pageName = topNavComponentListener.getPageName(),
+                    componentName = iconToolbar.name,
+                    userId = topNavComponentListener.getUserId()
+            )
             iconToolbar.onIconClicked.invoke()
-            val isLoggedIn = isUserLoggedIn.invoke()
+            val isLoggedIn = topNavComponentListener.isLoggedIn()
             if (!iconToolbar.disableRouteManager && isLoggedIn) {
                 if (iconToolbar.applink.isNotEmpty() && isLoggedIn) {
                     RouteManager.route(context, iconToolbar.applink)
