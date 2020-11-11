@@ -64,7 +64,9 @@
         app:contentInsetStart="0dp"
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
-        app:toolbarAlwaysShowShadow="true"/>
+        app:toolbarAlwaysShowShadow="true"
+        app:toolbarPageName="@string/nav_toolbar_page_name"
+        />
 
     <com.tokopedia.searchbar.HomeMainToolbar
         android:id="@+id/toolbar"

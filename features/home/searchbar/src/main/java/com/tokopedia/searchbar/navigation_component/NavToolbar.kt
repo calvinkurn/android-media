@@ -29,6 +29,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -37,7 +38,7 @@ import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
 import java.lang.ref.WeakReference
 
-class NavToolbar: Toolbar, LifecycleObserver {
+class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
         object Theme {
             const val TOOLBAR_DARK_TYPE = 0
@@ -62,6 +63,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private set
 
     //attribution variable
+    private val DEFAULT_PAGE_NAME = "Unknown page"
     private var backType = BACK_TYPE_NONE
     private var initialTheme = TOOLBAR_DARK_TYPE
     private var toolbarFillColor = getLightIconColor()
@@ -72,6 +74,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private var toolbarDefaultHint = ""
     private var toolbarCustomReference: Int? = null
     private var toolbarCustomViewContent: View? = null
+    private var toolbarPageName: String = DEFAULT_PAGE_NAME
 
     //helper variable
     private var shadowApplied: Boolean = false
@@ -99,6 +102,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
                 toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
                 toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
+                toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName)?:DEFAULT_PAGE_NAME
             } catch (e: IllegalArgumentException) {
 
             } finally {
@@ -119,7 +123,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * IconList.kt
      */
     fun setIcon(iconBuilder: IconBuilder) {
-        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), userSessionInterface?:UserSession(context))
+        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), this)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -437,4 +441,10 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if (showSearchbar) layout_search.visibility = View.VISIBLE
         if (showCustomContent) layout_custom_view.visibility = View.VISIBLE
     }
+
+    override fun getUserId(): String = userSessionInterface?.userId?:""
+
+    override fun isLoggedIn(): Boolean = userSessionInterface?.isLoggedIn?:false
+
+    override fun getPageName(): String = toolbarPageName
 }
