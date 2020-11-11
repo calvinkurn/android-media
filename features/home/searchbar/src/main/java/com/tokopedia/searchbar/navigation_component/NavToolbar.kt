@@ -289,6 +289,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarCustomReference = null
     }
 
+    fun setToolbarPageName(pageName: String) {
+        toolbarPageName = pageName
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
         navToolbar?.let {
             val drawable = it.background

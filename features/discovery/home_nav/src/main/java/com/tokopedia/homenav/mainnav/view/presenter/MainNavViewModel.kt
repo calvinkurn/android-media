@@ -192,10 +192,10 @@ class MainNavViewModel @Inject constructor(
             val orderList = async { getUohOrdersNavUseCase.get().executeOnBackground() }.await()
 
             if (paymentList.isNotEmpty() || orderList.isNotEmpty()) {
-                val othersTransactionCount = paymentList.size - 6
-                val paymentListToShow = paymentList.take(ON_GOING_TRANSACTION_TO_SHOW)
+                val othersTransactionCount = orderList.size - 6
+                val orderListToShow = orderList.take(ON_GOING_TRANSACTION_TO_SHOW)
                 val transactionListItemViewModel = TransactionListItemViewModel(
-                        NavOrderListModel(orderList, paymentListToShow), othersTransactionCount)
+                        NavOrderListModel(orderListToShow, paymentList), othersTransactionCount)
 
                 val firstTransactionMenu = _mainNavListVisitable.find {
                     it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
@@ -331,16 +331,14 @@ class MainNavViewModel @Inject constructor(
     private fun getNotification() {
         launchCatchError(coroutineContext, block = {
             val result = getNavNotification.get().executeOnBackground()
-            if (result.unreadCountComplain != 0) {
-                val complainNotification = result.unreadCountComplain
-                val inboxTicketNotification = result.unreadCountInboxTicket
-                navNotification = NavNotificationModel(
-                        unreadCountComplain = complainNotification,
-                        unreadCountInboxTicket = inboxTicketNotification
-                )
-                _mainNavListVisitable.findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
-                _mainNavListVisitable.findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
-            }
+            val complainNotification = result.unreadCountComplain
+            val inboxTicketNotification = result.unreadCountInboxTicket
+            navNotification = NavNotificationModel(
+                    unreadCountComplain = complainNotification,
+                    unreadCountInboxTicket = inboxTicketNotification
+            )
+            if (complainNotification.isMoreThanZero()) _mainNavListVisitable.findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
+            if (inboxTicketNotification.isMoreThanZero()) _mainNavListVisitable.findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
         }) {
             it.printStackTrace()
         }
