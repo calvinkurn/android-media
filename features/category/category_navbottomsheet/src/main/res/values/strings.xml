@@ -1,3 +1,5 @@
 <resources>
     <string name="category_try_again">try again</string>
+    <string name="content_desc_category_imageview">image kategori</string>
+    <string name="content_desc_category_name">text nama kategori</string>
 </resources>
