@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -16,23 +15,21 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
+import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyStatusView
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
-import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.OrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
-import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
 import kotlinx.android.synthetic.main.include_flight_order_detail_header.*
-import kotlinx.android.synthetic.main.include_flight_order_detail_journey.*
 import javax.inject.Inject
 
 /**
  * @author by furqan on 19/10/2020
  */
-class FlightOrderDetailFragment : BaseDaggerFragment() {
+class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourneyStatusView.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -78,6 +75,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         })
     }
 
+    override fun onPnrCopyClicked(pnr: String, isReturn: Boolean) {
+        copyToClipboard(if (isReturn) CLIP_LABEL_RETURN_BOOKING_CODE else CLIP_LABEL_DEPARTURE_BOOKING_CODE, pnr)
+    }
+
     private fun showLoading() {
         containerContentOrderDetail.visibility = View.GONE
         containerLoaderOrderDetail.visibility = View.VISIBLE
@@ -94,23 +95,26 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         renderInvoiceId(flightOrderDetailViewModel.invoiceId)
         renderTransactionDate(data.createTime)
         renderPaymentView(data.payment.gatewayName, data.payment.totalAmountStr)
-        renderTicketView(data.journeys)
+
+        flightOrderDetailJourneyStatus.listener = this
+        flightOrderDetailJourneyStatus.setData("", data.journeys)
+        flightOrderDetailJourneyStatus.buildView()
     }
 
     private fun renderOrderStatus(statusInt: Int, statusString: String) {
         context?.let {
             when (OrderDetailStatusMapper.getStatusOrder(statusInt)) {
                 OrderDetailStatusMapper.SUCCESS -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, R.color.Unify_G200)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, R.color.Unify_G500))
+                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_G200)
+                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 }
                 OrderDetailStatusMapper.IN_PROGRESS, OrderDetailStatusMapper.WAITING_FOR_PAYMENT -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, R.color.Unify_Y200)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, R.color.Unify_Y500))
+                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_Y200)
+                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
                 }
                 OrderDetailStatusMapper.FAILED, OrderDetailStatusMapper.REFUNDED -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, R.color.Unify_R100)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, R.color.Unify_R400))
+                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_R100)
+                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R400))
                 }
             }
             tgFlightOrderStatus.text = statusString
@@ -141,127 +145,6 @@ class FlightOrderDetailFragment : BaseDaggerFragment() {
         ivFlightOrderLabelDetailPayment.setOnClickListener {
             openDetailPaymentBottomSheet()
         }
-    }
-
-    private fun renderTicketView(journeys: List<OrderDetailJourneyModel>) {
-        if (journeys.isNotEmpty()) {
-            val onwardJourney = journeys[0]
-            val airlineLogo = flightOrderDetailViewModel.getAirlineLogo(onwardJourney)
-            if (airlineLogo != null) {
-                ivFlightOrderDepartureAirlineLogo.loadImage(airlineLogo)
-            } else {
-                ivFlightOrderDepartureAirlineLogo.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.flight_ic_multi_airlines))
-            }
-
-            tgFlightOrderDepartureAirlineName.text = flightOrderDetailViewModel.getAirlineName(onwardJourney)
-
-            if (flightOrderDetailViewModel.getRefundableInfo(onwardJourney)) {
-                tgFlightOrderDepartureTicketRefundableStatus.visibility = View.VISIBLE
-            } else {
-                tgFlightOrderDepartureTicketRefundableStatus.visibility = View.GONE
-            }
-
-            tgFlightOrderDepartureJourneyTrip.text = getString(R.string.flight_order_detail_trip_city,
-                    onwardJourney.departureCityName, onwardJourney.departureId,
-                    onwardJourney.arrivalCityName, onwardJourney.arrivalId)
-
-            if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].departureTerminal.isNotEmpty()) {
-                tgFlightOrderDepartureAirport.text = getString(R.string.flight_order_detail_airport_with_terminal,
-                        onwardJourney.departureAirportName, onwardJourney.routes[0].departureTerminal)
-            } else {
-                tgFlightOrderDepartureAirport.text = onwardJourney.departureAirportName
-            }
-
-            val departureDateAndTimePair = flightOrderDetailViewModel.getDepartureDateAndTime(onwardJourney)
-            if (onwardJourney.totalTransit > 0) {
-                tgFlightOrderDepartureDetail.text = getString(R.string.flight_order_detail_airport_journey_with_transit,
-                        departureDateAndTimePair.first, departureDateAndTimePair.second, onwardJourney.totalTransit)
-            } else {
-                tgFlightOrderDepartureDetail.text = getString(R.string.flight_order_detail_airport_journey_without_transit,
-                        departureDateAndTimePair.first, departureDateAndTimePair.second)
-            }
-
-            if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].pnr.isNotEmpty()) {
-                tgFlightOrderDepartureBookingCode.visibility = View.VISIBLE
-                tgFlightOrderDepartureBookingCodeLabel.visibility = View.VISIBLE
-                ivFlightOrderDepartureBookingCodeCopy.visibility = View.VISIBLE
-
-                tgFlightOrderDepartureBookingCode.text = onwardJourney.routes[0].pnr
-                ivFlightOrderDepartureBookingCodeCopy.setOnClickListener {
-                    copyToClipboard(CLIP_LABEL_DEPARTURE_BOOKING_CODE, onwardJourney.routes[0].pnr)
-                }
-            } else {
-                tgFlightOrderDepartureBookingCode.visibility = View.GONE
-                tgFlightOrderDepartureBookingCodeLabel.visibility = View.GONE
-                ivFlightOrderDepartureBookingCodeCopy.visibility = View.GONE
-            }
-
-            if (journeys.size > 1) {
-                renderReturnTicketView(journeys[1])
-            } else {
-                hideReturnTicketView()
-            }
-        }
-    }
-
-    private fun renderReturnTicketView(returnJourney: OrderDetailJourneyModel) {
-        titleFlightOrderReturnTicket.visibility = View.VISIBLE
-        containerFlightOrderReturnTicket.visibility = View.VISIBLE
-
-        val airlineLogo = flightOrderDetailViewModel.getAirlineLogo(returnJourney)
-        if (airlineLogo != null) {
-            ivFlightOrderReturnAirlineLogo.loadImage(airlineLogo)
-        } else {
-            ivFlightOrderReturnAirlineLogo.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.flight_ic_multi_airlines))
-        }
-
-        tgFlightOrderReturnAirlineName.text = flightOrderDetailViewModel.getAirlineName(returnJourney)
-
-        if (flightOrderDetailViewModel.getRefundableInfo(returnJourney)) {
-            tgFlightOrderReturnTicketRefundableStatus.visibility = View.VISIBLE
-        } else {
-            tgFlightOrderReturnTicketRefundableStatus.visibility = View.GONE
-        }
-
-        tgFlightOrderReturnJourneyTrip.text = getString(R.string.flight_order_detail_trip_city,
-                returnJourney.departureCityName, returnJourney.departureId,
-                returnJourney.arrivalCityName, returnJourney.arrivalId)
-
-        if (returnJourney.routes.isNotEmpty() && returnJourney.routes[0].departureTerminal.isNotEmpty()) {
-            tgFlightOrderReturnAirport.text = getString(R.string.flight_order_detail_airport_with_terminal,
-                    returnJourney.departureAirportName, returnJourney.routes[0].departureTerminal)
-        } else {
-            tgFlightOrderReturnAirport.text = returnJourney.departureAirportName
-        }
-
-        val departureDateAndTimePair = flightOrderDetailViewModel.getDepartureDateAndTime(returnJourney)
-        if (returnJourney.totalTransit > 0) {
-            tgFlightOrderReturnDetail.text = getString(R.string.flight_order_detail_airport_journey_with_transit,
-                    departureDateAndTimePair.first, departureDateAndTimePair.second, returnJourney.totalTransit)
-        } else {
-            tgFlightOrderReturnDetail.text = getString(R.string.flight_order_detail_airport_journey_without_transit,
-                    departureDateAndTimePair.first, departureDateAndTimePair.second)
-        }
-
-        if (returnJourney.routes.isNotEmpty() && returnJourney.routes[0].pnr.isNotEmpty()) {
-            tgFlightOrderReturnBookingCode.visibility = View.VISIBLE
-            tgFlightOrderReturnBookingCodeLabel.visibility = View.VISIBLE
-            ivFlightOrderReturnBookingCodeCopy.visibility = View.VISIBLE
-
-            tgFlightOrderReturnBookingCode.text = returnJourney.routes[0].pnr
-            ivFlightOrderReturnBookingCodeCopy.setOnClickListener {
-                copyToClipboard(CLIP_LABEL_RETURN_BOOKING_CODE, returnJourney.routes[0].pnr)
-            }
-        } else {
-            tgFlightOrderReturnBookingCode.visibility = View.GONE
-            tgFlightOrderReturnBookingCodeLabel.visibility = View.GONE
-            ivFlightOrderReturnBookingCodeCopy.visibility = View.GONE
-        }
-    }
-
-    private fun hideReturnTicketView() {
-        titleFlightOrderReturnTicket.visibility = View.GONE
-        containerFlightOrderReturnTicket.visibility = View.GONE
     }
 
     private fun copyToClipboard(label: String, textToCopy: String) {

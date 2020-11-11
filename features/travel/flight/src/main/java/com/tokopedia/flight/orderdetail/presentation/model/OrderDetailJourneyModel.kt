@@ -25,5 +25,9 @@ data class OrderDetailJourneyModel(
         val durationMinute: Int,
         val fare: OrderDetailFareModel,
         val routes: List<OrderDetailRouteModel>,
-        val webCheckIn: OrderDetailWebCheckInModel
+        val webCheckIn: OrderDetailWebCheckInModel,
+        var airlineLogo: String? = null,
+        var airlineName: String = "",
+        var refundableInfo: Boolean = false,
+        var departureDateAndTime: Pair<String, String> = Pair("", "")
 ) : Parcelable

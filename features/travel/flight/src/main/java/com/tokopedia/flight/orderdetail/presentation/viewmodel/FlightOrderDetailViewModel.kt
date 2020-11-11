@@ -30,6 +30,14 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
     fun fetchOrderDetailData() {
         launchCatchError(dispatcherProvider.ui(), block = {
             val orderDetailData = orderDetailUseCase.execute(invoiceId)
+            orderDetailData.let {
+                it.journeys.map { journey ->
+                    journey.airlineLogo = getAirlineLogo(journey)
+                    journey.airlineName = getAirlineName(journey)
+                    journey.refundableInfo = getRefundableInfo(journey)
+                    journey.departureDateAndTime = getDepartureDateAndTime(journey)
+                }
+            }
             mutableOrderDetailData.postValue(Success(orderDetailData))
         }) {
             it.printStackTrace()
@@ -37,7 +45,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         }
     }
 
-    fun getAirlineLogo(journey: OrderDetailJourneyModel): String? {
+    private fun getAirlineLogo(journey: OrderDetailJourneyModel): String? {
         var logoUrl = ""
         var isMultiAirline = false
 
@@ -52,7 +60,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         return if (!isMultiAirline && logoUrl.isNotEmpty()) logoUrl else null
     }
 
-    fun getAirlineName(journey: OrderDetailJourneyModel): String {
+    private fun getAirlineName(journey: OrderDetailJourneyModel): String {
         val airlineName = arrayListOf<String>()
 
         for (item in journey.routes) {
@@ -64,7 +72,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         return airlineName.joinToString(" + ")
     }
 
-    fun getRefundableInfo(journey: OrderDetailJourneyModel): Boolean {
+    private fun getRefundableInfo(journey: OrderDetailJourneyModel): Boolean {
         var isRefundable = false
 
         for (item in journey.routes) {
@@ -77,7 +85,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         return isRefundable
     }
 
-    fun getDepartureDateAndTime(journey: OrderDetailJourneyModel): Pair<String, String> {
+    private fun getDepartureDateAndTime(journey: OrderDetailJourneyModel): Pair<String, String> {
 
         val time = "${TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TravelDateUtil.HH_MM, journey.departureTime)} - ${TravelDateUtil.formatDate(

@@ -374,4 +374,7 @@ di tempatmu.</string>
     <string name="flight_order_detail_airport_journey_with_transit">%1$s \u2022 %2$s \u2022 %3$d</string>
     <string name="flight_order_detail_airport_journey_without_transit">%1$s \u2022 %2$s</string>
 
+    <string name="flight_order_detail_passenger_detail_title">Detail penumpang</string>
+    <string name="flight_order_detail_passenger_detail_number">%1$d.</string>
+
 </resources>

@@ -30,8 +30,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
-            <include
-                layout="@layout/include_flight_order_detail_journey"
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyStatusView
+                android:id="@+id/flightOrderDetailJourneyStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
