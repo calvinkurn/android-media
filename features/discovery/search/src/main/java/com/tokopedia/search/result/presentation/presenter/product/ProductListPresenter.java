@@ -21,6 +21,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
@@ -28,8 +29,8 @@ import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
-import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.ShopRatingABTestStrategy;
+import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper;
 import com.tokopedia.search.result.presentation.model.BadgeItemViewModel;
 import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
@@ -50,8 +51,8 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
-import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
+import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SchedulersProvider;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
@@ -97,8 +98,9 @@ import rx.Subscription;
 import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_OLD_NAV;
@@ -106,7 +108,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemo
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_C;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
@@ -119,9 +120,6 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.Inspiratio
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.THREE_DOTS_ONBOARDING_SHOWN;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
-import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
 
 final class ProductListPresenter
@@ -181,6 +179,7 @@ final class ProductListPresenter
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
     private int firstProductPosition = 0;
     private boolean hasFullThreeDotsOptions = false;
+    private boolean isABTestNavigationRevamp = false;
 
     @Inject
     ProductListPresenter(
@@ -226,6 +225,7 @@ final class ProductListPresenter
         useRatingString = getIsUseRatingString();
         shopRatingABTestStrategy = getShopRatingABTestStrategy();
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
+        isABTestNavigationRevamp = getView().getABTestRemoteConfig().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP);
     }
 
     private boolean getIsUseRatingString() {
@@ -1105,7 +1105,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        if (getView().getABTestRemoteConfig().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP)) {
+        if (isABTestNavigationRevamp) {
             list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
         }
 

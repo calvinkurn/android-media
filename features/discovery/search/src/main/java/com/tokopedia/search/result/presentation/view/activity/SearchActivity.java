@@ -125,6 +125,7 @@ public class SearchActivity extends BaseActivity
 
     private PageLoadTimePerformanceInterface pageLoadTimePerformanceMonitoring;
     private SearchParameter searchParameter;
+    private final boolean isABTestNavigationRevamp = RemoteConfigInstance.getInstance().getABTestPlatform().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,7 +254,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void initToolbar() {
-        if (getNavType().equals(AB_TEST_NAV_REVAMP)) {
+        if (isABTestNavigationRevamp) {
             configureSearchNavigationToolbar();
         }
         else {
@@ -263,20 +264,20 @@ public class SearchActivity extends BaseActivity
         configureToolbarVisibility();
     }
 
-    private String getNavType() {
-        return RemoteConfigInstance.getInstance().getABTestPlatform().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV);
-    }
-
     private void configureSearchNavigationToolbar() {
         hideToolbar();
         setSearchNavigationToolbarIcon();
     }
 
     private void hideToolbar() {
+        if (toolbar == null) return;
+
         toolbar.setVisibility(View.GONE);
     }
 
     private void setSearchNavigationToolbarIcon(){
+        if (searchNavigationToolbar == null) return;
+
         searchNavigationToolbar.setIcon(
                 new IconBuilder()
                         .addIcon(IconList.ID_CART, false, () -> Unit.INSTANCE)
@@ -485,7 +486,7 @@ public class SearchActivity extends BaseActivity
     }
 
     protected void setToolbarTitle(String query) {
-        if (getNavType().equals(AB_TEST_NAV_REVAMP)) {
+        if (isABTestNavigationRevamp) {
             configureSearchNavigationSearchBar();
         }
         else {
@@ -613,7 +614,7 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
 
-        if (getNavType().equals(AB_TEST_NAV_REVAMP)) return;
+        if (isABTestNavigationRevamp) return;
 
         showButtonCart();
     }
@@ -684,7 +685,7 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
-        if (getNavType().equals(AB_TEST_NAV_REVAMP)) return;
+        if (isABTestNavigationRevamp) return;
 
         if(buttonChangeGrid != null) {
             buttonChangeGrid.setImageResource(iconResId);
