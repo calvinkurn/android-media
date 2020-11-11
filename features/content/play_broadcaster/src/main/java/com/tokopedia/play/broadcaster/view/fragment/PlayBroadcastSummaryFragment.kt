@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -31,6 +32,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
@@ -39,11 +41,12 @@ import javax.inject.Inject
  */
 class PlayBroadcastSummaryFragment @Inject constructor(
         private val viewModelFactory: ViewModelFactory,
-        private val analytic: PlayBroadcastAnalytic) : PlayBaseBroadcastFragment() {
+        private val analytic: PlayBroadcastAnalytic,
+        private val userSession: UserSessionInterface
+) : PlayBaseBroadcastFragment() {
 
     companion object {
-        private const val KEY_RESULT_SAVE_VIDEO = "play_broadcaster_save_video"
-        private const val KEY_RESULT_DELETE_VIDEO = "play_broadcaster_delete_video"
+        private const val NEWLY_BROADCAST_CHANNEL_SAVED = "EXTRA_NEWLY_BROADCAST_SAVED"
     }
 
     private lateinit var viewModel: PlayBroadcastSummaryViewModel
@@ -204,10 +207,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Loading -> btnSaveVideo.isLoading = true
                 is NetworkResult.Success -> {
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(KEY_RESULT_SAVE_VIDEO, "ok")
-                    })
-                    activity?.finish()
+                    openShopPageWithBroadcastStatus(true)
                 }
                 is NetworkResult.Fail -> {
                     btnSaveVideo.isLoading = false
@@ -227,10 +227,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
             when (it) {
                 is NetworkResult.Loading -> btnDeleteVideo.isLoading = true
                 is NetworkResult.Success -> {
-                    activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                        putExtra(KEY_RESULT_DELETE_VIDEO, "ok")
-                    })
-                    activity?.finish()
+                    openShopPageWithBroadcastStatus(false)
                 }
                 is NetworkResult.Fail -> {
                     btnDeleteVideo.isLoading = false
@@ -243,5 +240,13 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                 }
             }
         })
+    }
+
+    private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
+        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
+        intent.putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        startActivity(intent)
+        activity?.finish()
     }
 }
