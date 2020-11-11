@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
@@ -41,6 +42,10 @@ class NotificationTypeFactoryImpl constructor(
 
     override fun type(recommendationUiModel: RecommendationUiModel): Int {
         return RecommendationViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingMoreModel): Int {
+        return NotificationLoadMoreViewHolder.LAYOUT
     }
 
     @LayoutRes
@@ -87,6 +92,7 @@ class NotificationTypeFactoryImpl constructor(
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view)
+            NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
                     view, loadMoreListener
             )
