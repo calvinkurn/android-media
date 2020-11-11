@@ -35,6 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLAC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
@@ -75,8 +76,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS_SINGLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_EVENTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
@@ -248,7 +249,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                     PARAM_DEALS -> {
                         status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS_SINGLE
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
                     }
                     PARAM_PESAWAT -> {
                         status = SEMUA_TRANSAKSI
@@ -269,6 +270,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_HOTEL -> {
                         status = SEMUA_TRANSAKSI
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
+                    }
+                    PARAM_TRAVEL_ENTERTAINMENT -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
                     }
                 }
                 paramUohOrder.status = status
@@ -619,7 +624,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 || filterStatus.equals(PARAM_GIFTCARDS, true)
                 || filterStatus.equals(PARAM_INSURANCE, true)
                 || filterStatus.equals(PARAM_MODALTOKO, true)
-                || filterStatus.equals(PARAM_HOTEL, true)) {
+                || filterStatus.equals(PARAM_HOTEL, true)
+                || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -646,7 +652,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterStatus.equals(PARAM_GIFTCARDS, true) ||
                 filterStatus.equals(PARAM_INSURANCE, true) ||
                 filterStatus.equals(PARAM_MODALTOKO, true) ||
-                filterStatus.equals(PARAM_HOTEL, true)) {
+                filterStatus.equals(PARAM_HOTEL, true) ||
+                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -756,33 +763,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_CATEGORIES
 
-        if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+        if ((filterStatus.equals(PARAM_MARKETPLACE, true)
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
+                        && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DIGITAL
 
-        } else if (filterStatus.equals(PARAM_EVENTS, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+        } else if ((filterStatus.equals(PARAM_EVENTS, true)
+                        || filterStatus.equals(PARAM_DEALS, true)
+                        || filterStatus.equals(PARAM_PESAWAT, true)
+                        || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
+                        && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 
-        } else if (filterStatus.equals(PARAM_DEALS, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
-
-        } else if (filterStatus.equals(PARAM_PESAWAT, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
-
-        } else if (filterStatus.equals(PARAM_GIFTCARDS, true) && !isReset) {
+        } else if ((filterStatus.equals(PARAM_GIFTCARDS, true)
+                        || filterStatus.equals(PARAM_INSURANCE, true)
+                        || filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_INSURANCE, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_MODALTOKO, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_HOTEL, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
 
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
