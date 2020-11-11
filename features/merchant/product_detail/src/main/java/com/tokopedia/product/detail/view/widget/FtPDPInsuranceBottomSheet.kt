@@ -21,7 +21,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
     companion object {
         const val KEY_SPONSOR_URL = "sponsorUrl"
 
-        fun getFtPDPInsuranceBottomSheet(sponsorUrl: String) = FtPDPInsuranceBottomSheet().apply {
+        fun newInstance(sponsorUrl: String) = FtPDPInsuranceBottomSheet().apply {
 
             val bundleData = Bundle().apply {
                 putString(KEY_SPONSOR_URL, sponsorUrl)
@@ -30,10 +30,6 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
         }
     }
 
-    //private var bottomSheetBehavior: BottomSheetBehavior<View>? = null
-
-    private var url: String = ""
-    private lateinit var childView: View
     private val childLayoutRes = R.layout.widget_bottomsheet_protection_info
     private lateinit var webView: TkpdWebView
     private lateinit var progressBar: LoaderUnify
@@ -44,24 +40,25 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
         arguments?.let {
             if (it.containsKey(KEY_SPONSOR_URL)) {
                 setDefaultParams()
-                url = it.getString(KEY_SPONSOR_URL) ?: ""
-                childView = LayoutInflater.from(context).inflate(childLayoutRes,
+                val url = it.getString(KEY_SPONSOR_URL) ?: ""
+                val childView = LayoutInflater.from(context).inflate(childLayoutRes,
                         null, false)
                 setChild(childView)
+                initViews(childView)
+                configWebView(url)
             } else {
                 dismiss()
             }
-            initViews()
         }
     }
 
-    private fun initViews() {
+    private fun initViews(childView: View) {
         webView = childView.findViewById<TkpdWebView>(R.id.swd_tnc_webview)
         progressBar = childView.findViewById<LoaderUnify>(R.id.progressBar)
-        configWebView()
+
     }
 
-    private fun configWebView() {
+    private fun configWebView(url: String) {
         webView.run {
             webChromeClient = MyChromeClient()
             webViewClient = MyWebViewClient()
@@ -76,6 +73,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
     private fun setDefaultParams() {
         isDragable = true
+        isHideable = true
         showCloseIcon = false
         showKnob = true
         showHeader = false
@@ -89,10 +87,11 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
             val behavior = BottomSheetBehavior.from(bottomSheet)
             //behavior.skipCollapsed = true
-            behavior.isHideable = true
+            //behavior.isHideable = true
+            behavior.isFitToContents = false
             behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
-        isCancelable = true
+        //isCancelable = true
         return bottomSheetDialog
     }
 

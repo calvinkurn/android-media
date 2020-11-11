@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -2043,7 +2042,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun openFtInsuranceBottomSheet(url: String) {
-        val pdpInsuranceBottomSheet = FtPDPInsuranceBottomSheet.getFtPDPInsuranceBottomSheet(url)
+        val pdpInsuranceBottomSheet = FtPDPInsuranceBottomSheet.newInstance(url)
         pdpInsuranceBottomSheet.show(childFragmentManager, "FT_TAG")
     }
 

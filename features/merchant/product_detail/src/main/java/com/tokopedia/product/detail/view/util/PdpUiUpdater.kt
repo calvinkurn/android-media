@@ -294,6 +294,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     private fun updatePurchaseProtectionData(ppItemData: PPItemDetailPage) {
         productProtectionMap?.run {
             if (ppItemData.title?.isNotEmpty() == true) {
+                title = ppItemData.title ?: ""
+            } else if (ppItemData.titlePDP?.isNotEmpty() == true) {
                 title = ppItemData.titlePDP ?: ""
             }
             val contentList = ArrayList<Content>()
