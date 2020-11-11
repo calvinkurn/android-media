@@ -18,7 +18,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:padding="16dp">
 
             <com.tokopedia.design.component.TextViewCompat
@@ -30,7 +30,7 @@
                 android:gravity="center"
                 android:text="@string/use_promo_code_or_coupon"
                 android:textStyle="bold"
-                android:textColor="@color/tkpd_main_green"
+                android:textColor="@color/Unify_G400"
                 app:drawableLeftCompat="@drawable/ic_coupon_green_promo_checkout"
                 tools:text="Gunakan Kode Promo atau Kupon" />
 

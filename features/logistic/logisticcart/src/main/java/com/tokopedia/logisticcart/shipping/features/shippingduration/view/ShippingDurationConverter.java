@@ -77,6 +77,7 @@ public class ShippingDurationConverter {
             ShippingDurationUiModel shippingDurationUiModel = new ShippingDurationUiModel();
             shippingDurationUiModel.setServiceData(serviceData);
             shippingDurationUiModel.setShowShippingInformation(isCourierInstantOrSameday(serviceData.getServiceId()));
+            shippingDurationUiModel.setEtaErrorCode(serviceData.getTexts().getErrorCode());
             List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
                             serviceData.getProducts(), ratesId, blackboxInfo);
@@ -141,7 +142,8 @@ public class ShippingDurationConverter {
                 promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
                 promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
                 promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
-                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
+                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName(),
+                promo.getCod(), promo.getEta());
     }
 
     private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {

@@ -6,10 +6,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -47,9 +48,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
     var currentSlug: String = ""
         private set
 
-    val userId: String
-        get() = userSessionInterface.userId
-
 
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
         get() = _officialStoreBannersResult
@@ -62,7 +60,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
         get() = _officialStoreFeaturedShopResult
 
-    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
+    val officialStoreDynamicChannelResult: LiveData<Result<List<OfficialStoreChannel>>>
         get() = _officialStoreDynamicChannelResult
 
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
@@ -80,7 +78,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
     private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val productRecommendation: LiveData<Result<RecommendationWidget>>
@@ -181,18 +179,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductRecommendation(categoryId: String, pageNumber: Int, pageName: String): Result<RecommendationWidget> {
-        return withContext(dispatchers.io()) {
-            try {
-                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-                Success(dataProductResponse.first().get(0))
-            } catch (t: Throwable) {
-                Fail(t)
-            }
-        }
-    }
-
     fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         if (model.isTopAds) {
             launchCatchError(block = {
@@ -233,13 +219,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(true, null)
             }
         })
-    }
-
-    private fun Result<Any>.handleResult(callback: (Boolean, Throwable?) -> Unit) {
-        when (this) {
-            is Success -> callback.invoke(true, null)
-            is Fail -> callback.invoke(false, throwable)
-        }
     }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn

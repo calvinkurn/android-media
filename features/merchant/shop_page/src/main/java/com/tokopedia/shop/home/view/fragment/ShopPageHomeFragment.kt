@@ -151,7 +151,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private var threeDotsClickShopProductViewModel: ShopHomeProductViewModel? = null
+    private var threeDotsClickShopProductViewModel: ShopHomeProductUiModel? = null
     private var threeDotsClickShopCarouselProductUiModel: ShopHomeCarousellProductUiModel? = null
     @Inject
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
@@ -606,7 +606,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessAddToCart(
             dataModelAtc: DataModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
     ) {
@@ -618,7 +618,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun trackClickAddToCart(
             dataModelAtc: DataModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
     ) {
@@ -666,7 +666,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun updateProductListData(
             hasNextPage: Boolean,
-            productList: List<ShopHomeProductViewModel>,
+            productList: List<ShopHomeProductUiModel>,
             totalProductData: Int,
             isInitialData: Boolean
     ) {
@@ -936,7 +936,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProduct(
@@ -965,7 +965,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onAllProductItemImpression(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onAllProductItemImpression(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.impressionProduct(
@@ -993,7 +993,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductViewModel) {
+    override fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductUiModel) {
         threeDotsClickShopCarouselProductUiModel = null
         threeDotsClickShopProductViewModel = shopHomeProductViewModel
         showProductCardOptions(
@@ -1006,7 +1006,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProduct(
                     isOwner,
@@ -1038,7 +1038,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopPageHomeTracking.impressionProduct(
                 isOwner,
@@ -1066,7 +1066,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onThreeDotsCarouselProductItemClicked(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         threeDotsClickShopCarouselProductUiModel = shopHomeCarousellProductUiModel
         threeDotsClickShopProductViewModel = shopHomeProductViewModel
@@ -1082,7 +1082,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
             showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
@@ -1093,7 +1093,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun trackClickWishlist(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel,
+            shopHomeProductViewModel: ShopHomeProductUiModel,
             isWishlist: Boolean
     ) {
         val customDimensionShopPageProduct = CustomDimensionShopPageProduct.create(
@@ -1138,7 +1138,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessAddWishlist(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
             showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
@@ -1155,7 +1155,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         if (isLogin) {
             shopHomeProductViewModel?.let { product ->
@@ -1341,7 +1341,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
             shopPageHomeTracking.clickCampaignNplProduct(
@@ -1366,7 +1366,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
             shopPageHomeTracking.impressionCampaignNplProduct(

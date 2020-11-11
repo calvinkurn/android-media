@@ -82,13 +82,13 @@ abstract class AddEditProductNotificationManager(
         val notification = notificationBuilder
                 .setContentTitle(text)
                 .setContentText(errorMessage)
-                .setStyle(NotificationCompat.BigTextStyle().bigText(errorMessage)
-                        .setBigContentTitle(text))
+                .setStyle(NotificationCompat.BigTextStyle().bigText(errorMessage))
                 .setProgress(0, 0, false)
-                .setOngoing(false)
                 .setContentIntent(getFailedIntent(errorMessage))
+                .setOngoing(false)
                 .setShowWhen(true)
                 .build()
+
         notificationManager.notify(TAG, id, notification)
     }
 
