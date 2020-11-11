@@ -3,7 +3,9 @@ package com.tokopedia.statistic.view.adapter.viewholder
 import android.app.Activity
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
@@ -14,7 +16,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.common.utils.StatisticUtils
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
@@ -134,14 +135,14 @@ class MonthPickerViewHolder(
             }
 
             dismissDateFilterBottomSheet()
-            if (StatisticUtils.isActivityResumed(activity)) {
+            if (isActivityResumed()) {
                 show(fm, Const.BottomSheet.TAG_MONTH_PICKER)
             }
         }
     }
 
     private fun showDateFilterBottomSheet() {
-        if (StatisticUtils.isActivityResumed(activity)) {
+        if (isActivityResumed()) {
             dateFilterBottomSheet?.show(fm, DateFilterBottomSheet.TAG)
         }
     }
@@ -154,5 +155,10 @@ class MonthPickerViewHolder(
         itemView.edtStcPerMonth.label = itemView.context.getString(R.string.stc_month)
         val selectedMonthFmt = DateTimeUtil.format(element.startDate?.time ?: return, "MMMM yyyy")
         itemView.edtStcPerMonth.valueStr = selectedMonthFmt
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 }
