@@ -184,7 +184,6 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
 
     private fun isActivityResumed(): Boolean {
         val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
-        println("state : $state")
         return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 }
