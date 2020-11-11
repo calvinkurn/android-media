@@ -44,6 +44,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_STATUS
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
@@ -392,7 +393,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onParentSortFilterClicked() {
-        val somFilterList = viewModel.getSomFilterUi().toMutableList()
+        val somFilterList = somListSortFilterTab.getSomFilterUi()
         val bottomSheetFilter = SomFilterBottomSheet.createInstance(
                 somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
                 viewModel.getDataOrderListParams().statusList,
@@ -401,7 +402,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 filterDate
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
-        if (!bottomSheetFilter.isVisible) {
+        if (!bottomSheetFilter.isAdded) {
             bottomSheetFilter.show()
         }
     }
@@ -1440,29 +1441,36 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
     override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
-                                        idFilter: String, orderStatus: String, filterDate: String) {
+                                        idFilter: String, filterDate: String) {
         this.filterDate = filterDate
-        val somFilterUiModelListCopy = somFilterUiModelList.toMutableList()
         viewModel.updateGetOrderListParams(filterData)
-        viewModel.updateSomListFilterUi(somFilterUiModelListCopy)
-        somListSortFilterTab.updateCounterSortFilter(somFilterUiModelListCopy, filterDate)
-        val selectedStatusFilterKey = somFilterUiModelListCopy.find {
+        somListSortFilterTab.updateSomListFilterUi(somFilterUiModelList)
+        somListSortFilterTab.updateCounterSortFilter(filterDate)
+        val selectedStatusFilterKey = somFilterUiModelList.find {
             it.nameFilter == SomConsts.FILTER_STATUS_ORDER
         }?.somFilterData?.find {
             it.isSelected
         }?.key
         tabActive = selectedStatusFilterKey.orEmpty()
         val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
-                somFilterUiModelListCopy, idFilter, somListSortFilterTab.getSomListFilterUiModel())
+                somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
         somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
             if (it != null) {
                 somListSortFilterTab.selectTab(it)
             } else {
                 somListSortFilterTab.selectTabReset()
                 somListSortFilterTab.show(somListFilter)
-                somListSortFilterTab.updateCounterSortFilter()
+                somListSortFilterTab.updateCounterFilter()
             }
             refreshOrderList()
         }
+    }
+
+    override fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper) {
+        somListSortFilterTab.updateSomListFilterUi(filterCancelWrapper.somFilterUiModelList)
+        val orderListParam = viewModel.getDataOrderListParams()
+        orderListParam.statusList = filterCancelWrapper.orderStatusIdList
+        viewModel.updateGetOrderListParams(orderListParam)
+        this.filterDate = filterCancelWrapper.filterDate
     }
 }

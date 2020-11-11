@@ -125,8 +125,6 @@ class SomListViewModel @Inject constructor(
         endDate = Utils.getFormattedDate(0, DATE_FORMAT)
     }
 
-    private var somFilterUiModel = mutableListOf<SomFilterUiModel>()
-
     var isMultiSelectEnabled: Boolean = false
 
     fun bulkAcceptOrder(orderIds: List<String>) {
@@ -259,12 +257,5 @@ class SomListViewModel @Inject constructor(
 
     fun updateGetOrderListParams(getOrderListParams: SomListGetOrderListParam) {
         this.getOrderListParams = getOrderListParams
-    }
-
-    fun getSomFilterUi() = somFilterUiModel
-
-    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
-        this.somFilterUiModel.clear()
-        this.somFilterUiModel.addAll(somFilterUiModelList)
     }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
@@ -23,6 +24,9 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.common.util.Utils.copy
+import com.tokopedia.sellerorder.common.util.Utils.copyInt
+import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
 import com.tokopedia.sellerorder.filter.di.SomFilterComponent
 import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity
@@ -30,6 +34,7 @@ import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivi
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
@@ -58,22 +63,25 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     private var somFilterAdapter: SomFilterAdapter? = null
     private var orderStatus: String = ""
     private var filterDate: String = ""
-    private var isReset: Boolean = false
+    private var isApplyFilter: Boolean = false
+    private var statusList = listOf<Int>()
 
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
+    private var somFilterUiModelListCopy = listOf<SomFilterUiModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInject()
-        orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
-        filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
-        isReset = arguments?.getBoolean(KEY_IS_RESET, false) ?: false
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
                 ?: arrayListOf()
-        somListOrderParam?.statusList = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
-                ?: listOf()
-        somFilterViewModel.setSomFilterUiModel(somFilterUiModelList.toMutableList())
+        orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
+        filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
+        somFilterUiModelListCopy = somFilterUiModelList.copyListParcelable()
+        val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
+        statusList = statusListFilter?.copyInt() ?: listOf()
+        somListOrderParam?.statusList = statusListFilter ?: listOf()
+        somFilterViewModel.setSomFilterUiModel(somFilterUiModelList)
         somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
                 ?: SomListGetOrderListParam())
     }
@@ -91,6 +99,14 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         observeSomFilter()
         bottomSheetReset()
         adjustBottomSheetPadding()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        if(!isApplyFilter) {
+            val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate)
+            somFilterFinishListener?.onClickOverlayBottomSheet(cancelWrapper)
+        }
     }
 
     private fun setChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -173,6 +189,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         }
         filterDate = date
         somFilterAdapter?.updateDateFilterText(date)
+        showHideBottomSheetReset()
     }
 
     override fun getComponent(): SomFilterComponent? {
@@ -198,6 +215,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     fun show() {
+        isApplyFilter = false
         mActivity?.supportFragmentManager?.let {
             show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
         }
@@ -230,14 +248,14 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun clickShowOrder() {
         btnShowOrder?.setOnClickListener {
+            isApplyFilter = true
             SomAnalytics.eventClickTerapkanOnFilterPage(getFilterTextReset())
             somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
-            val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel().toMutableList()
+            val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel()
             somListOrderParam?.let {
-                somFilterFinishListener?.onClickShowOrderFilter(it,
-                       copySomFilterUiModel, FILTER_STATUS_ORDER, orderStatus, filterDate)
+                somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate)
             }
-            dismiss()
+            dismissAllowingStateLoss()
         }
     }
 
@@ -260,7 +278,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         val somFilterDateBottomSheet = SomFilterDateBottomSheet.newInstance()
         somFilterDateBottomSheet.setCalendarListener(this)
         somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
-        if(!somFilterDateBottomSheet.isVisible) {
+        if(!somFilterDateBottomSheet.isAdded) {
             somFilterDateBottomSheet.show()
         }
     }
@@ -285,7 +303,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                 is Success -> {
                     showHideBottomSheetReset()
                     somFilterAdapter?.updateData(it.data)
-                    isReset = filterIsReset(it.data.filterIsInstance<SomFilterUiModel>())
                 }
                 is Fail -> { }
             }
@@ -321,17 +338,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         }
     }
 
-    private fun filterIsReset(somFilterUiModelList: List<SomFilterUiModel>): Boolean {
-        var count = 0
-        somFilterUiModelList.forEach { somFilter ->
-            somFilter.somFilterData.forEach {
-                if(it.isSelected) count++
-            }
-        }
-        val isNotReset = (count > 0)
-        return !isNotReset
-    }
-
     private fun actionResetFilter() {
         somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
         somListOrderParam?.startDate = ""
@@ -365,7 +371,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
-        const val KEY_IS_RESET = "key_reset_som_filter"
         const val SIZE_ACTION_RESET = 14f
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
@@ -391,8 +396,9 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         fun onClickShowOrderFilter(filterData: SomListGetOrderListParam,
                                    somFilterUiModelList: List<SomFilterUiModel>,
                                    idFilter: String,
-                                   orderStatus: String,
                                    filterDate: String
         )
+
+        fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper)
     }
 }

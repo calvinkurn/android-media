@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.filter.presentation.adapter
 
+import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter

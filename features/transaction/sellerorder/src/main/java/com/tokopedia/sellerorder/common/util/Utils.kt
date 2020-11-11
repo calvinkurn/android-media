@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
 import android.graphics.drawable.Drawable
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -16,6 +18,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNC
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ERROR
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_INFO
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_WARNING
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.SimpleDateFormat
@@ -117,6 +120,38 @@ object Utils {
 
     fun getNowDaysTimestamp(): Date  {
         return Calendar.getInstance(getLocale()).time
+    }
+
+    fun List<SomFilterUiModel>.copy(): List<SomFilterUiModel> {
+        return this.map { SomFilterUiModel(nameFilter = it.nameFilter,
+                                            canSelectMany = it.canSelectMany,
+                                            isDividerVisible = it.isDividerVisible,
+                                            somFilterData = it.somFilterData.onEach { somFilter -> somFilter.copy() }
+                                            )
+        }
+    }
+
+    fun List<SomFilterUiModel>.copyListParcelable(): List<SomFilterUiModel> {
+        return this.mapNotNull { it.copyParcelable() }
+    }
+
+    fun <T: Parcelable> T.copyParcelable(): T? {
+        var parcel: Parcel? = null
+
+        return try {
+            parcel = Parcel.obtain()
+            parcel.writeParcelable(this, 0)
+            parcel.setDataPosition(0)
+            parcel.readParcelable(this::class.java.classLoader)
+        } catch(throwable: Throwable) {
+            null
+        } finally {
+            parcel?.recycle()
+        }
+    }
+
+    fun List<Int>.copyInt(): List<Int> {
+        return this.map { it }
     }
 
     fun getFormattedDate(daysBefore: Long, format: String) = format(getNPastDaysTimestamp(daysBefore), format)
