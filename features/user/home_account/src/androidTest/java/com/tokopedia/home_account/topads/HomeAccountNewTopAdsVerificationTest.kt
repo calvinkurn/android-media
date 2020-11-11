@@ -70,7 +70,8 @@ class HomeAccountNewTopAdsVerificationTest {
     }
 
     private fun waitForData() {
-        Thread.sleep(5000)
+        //tempoary changed to 1 minute to test is long load time is the problem
+        Thread.sleep(60000)
     }
 
     private fun login() {
