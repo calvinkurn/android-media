@@ -51,6 +51,11 @@ class NotificationViewModel @Inject constructor(
         return filter != NotificationFilterType.NONE
     }
 
+    fun cancelAllUseCase() {
+        notifcenterDetailUseCase.cancelRunningOperation()
+        coroutineContext.cancelChildren()
+    }
+
     /**
      * Load notification on first page
      */
@@ -198,11 +203,6 @@ class NotificationViewModel @Inject constructor(
                 }
         )
 
-    }
-
-    private fun cancelAllUseCase() {
-        notifcenterDetailUseCase.cancelRunningOperation()
-        coroutineContext.cancelChildren()
     }
 
     companion object {
