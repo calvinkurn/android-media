@@ -4,9 +4,9 @@ import android.os.Bundle
 import com.tokopedia.officialstore.DynamicChannelIdentifiers
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialHomeVisitable
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialHomeVisitable
 
-class DynamicChannelViewModel(
+class DynamicChannelDataModel(
         val dynamicChannelData: OfficialStoreChannel
 ) : OfficialHomeVisitable {
 
@@ -20,7 +20,7 @@ class DynamicChannelViewModel(
 
     override fun visitableId(): String? = dynamicChannelData.channel.id
 
-    override fun equalsWith(b: Any?): Boolean = b is DynamicChannelViewModel && b.dynamicChannelData == dynamicChannelData
+    override fun equalsWith(b: Any?): Boolean = b is DynamicChannelDataModel && b.dynamicChannelData == dynamicChannelData
 
     override fun getChangePayloadFrom(b: Any?): Bundle? = null
 
