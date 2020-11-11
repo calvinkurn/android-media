@@ -130,7 +130,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                         else {
                             header.put(QUERY_HASHING_HEADER, "");
                         }
-                        Timber.w("P1#GQL_HASHING#error;queryName='%s';key='%s';queryHash='%s'", CacheHelper.getQueryName(requests.get(0).getQuery()), requests.get(0).getMd5(), queryHashValues.toString());
+                        Timber.w("P1#GQL_HASHING#error;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(requests.get(0).getQuery()), requests.get(0).getMd5(), queryHashValues.toString());
                         mApi.getResponse(requests, header, FingerprintManager.getQueryDigest(requests));
                     }
                     if (httpResponse.code() != Const.GQL_RESPONSE_HTTP_OK && httpResponse.body() != null) {
@@ -163,7 +163,7 @@ public class GraphqlCloudDataStore implements GraphqlDataStore {
                             GraphqlRequest request = requests.get(i);
                             if(executeQueryHashFlow){
                                 mCacheManager.saveQueryHash(request.getMd5(), qhValues[i]);
-                                Timber.w("P1#GQL_HASHING#success;queryName='%s';key='%s';queryHash='%s'", CacheHelper.getQueryName(request.getQuery()), request.getMd5(), qhValues[i]);
+                                Timber.w("P1#GQL_HASHING#success;name='%s';key='%s';hash='%s'", CacheHelper.getQueryName(request.getQuery()), request.getMd5(), qhValues[i]);
                             }
                             if (request == null || request.isNoCache() || (executeCacheFlow && caches.get(request.getMd5()) == null)) {
                                 continue;
