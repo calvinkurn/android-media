@@ -399,10 +399,10 @@ internal class SearchProductBroadMatchTest: ProductListPresenterTestFixtures() {
         val expectedTopSeparatorPosition = 4
         val expectedBottomSeparatorPosition = 10
         val expectedSuggestionViewModelPosition = expectedTopSeparatorPosition + 1
-        `Test broad match with position`(
-                searchProductModelPage1, searchProductModelPage2,
-                expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
-        { expectedSuggestionViewModelPosition }
+            `Test broad match with position`(
+                    searchProductModelPage1, searchProductModelPage2,
+                    expectedTopSeparatorPosition, expectedBottomSeparatorPosition)
+            { expectedSuggestionViewModelPosition }
     }
 
     @Test
