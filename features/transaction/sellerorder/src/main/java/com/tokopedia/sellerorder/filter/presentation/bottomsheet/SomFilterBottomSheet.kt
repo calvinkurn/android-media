@@ -98,7 +98,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         observeSomFilter()
         bottomSheetReset()
         adjustBottomSheetPadding()
-        showHideBottomSheetReset()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -291,6 +290,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                         somFilterAdapter?.setEmptyState(EmptyModel())
                     } else {
                         somFilterAdapter?.updateData(it.data)
+                        showHideBottomSheetReset()
                     }
                 }
                 is Fail -> { }
@@ -300,6 +300,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             when (it) {
                 is Success -> {
                     somFilterAdapter?.updateData(it.data)
+                    showHideBottomSheetReset()
                 }
                 is Fail -> { }
             }
@@ -341,6 +342,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somListOrderParam?.endDate = ""
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         filterDate = ""
+        showHideBottomSheetReset()
     }
 
     private fun checkIsSelected(): Boolean {
