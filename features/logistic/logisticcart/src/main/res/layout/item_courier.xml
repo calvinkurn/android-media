@@ -105,7 +105,7 @@
         android:id="@+id/tv_mvc_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_price"
+        android:layout_below="@+id/tv_price_or_duration"
         android:layout_marginTop="@dimen/dp_4"
         android:text="@string/label_shipping_information"
         app:typographyType="small"
@@ -118,7 +118,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_mvc_error"
-        android:layout_below="@+id/tv_price_or_duration"
         android:text="@string/jaminan_tepat_waktu"
         android:layout_marginTop="@dimen/dp_4"
         app:labelType="general_light_green" />
