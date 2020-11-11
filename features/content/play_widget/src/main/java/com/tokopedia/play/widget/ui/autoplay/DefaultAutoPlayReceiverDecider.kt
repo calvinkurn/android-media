@@ -13,7 +13,10 @@ class DefaultAutoPlayReceiverDecider : AutoPlayReceiverDecider {
             maxAutoPlay: Int
     ): List<PlayVideoPlayerReceiver> {
         val isEndOfList = visibleCards.find { it.position == itemCount - 1 } != null
-        val playerReceivers = visibleCards.map { it.card }.filterIsInstance<PlayVideoPlayerReceiver>()
+        val playerReceivers: List<PlayVideoPlayerReceiver> = visibleCards.mapNotNull {
+            if (it.card is PlayVideoPlayerReceiver && it.card.isPlayable()) it.card
+            else null
+        }
 
         return if (!isEndOfList) playerReceivers.take(maxAutoPlay) else playerReceivers.takeLast(maxAutoPlay)
     }

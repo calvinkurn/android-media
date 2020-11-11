@@ -1396,7 +1396,7 @@ class ShopPageFragment :
                         duration =  Toaster.LENGTH_LONG)
             } else if (data.hasExtra(KEY_RESULT_DELETE_VIDEO)) {
                 Toaster.make(requireView(),
-                        text = getString(R.string.shop_page_play_widget_sgc_delete_video),
+                        text = getString(R.string.shop_page_play_widget_sgc_video_deleted),
                         duration =  Toaster.LENGTH_LONG)
             }
         }

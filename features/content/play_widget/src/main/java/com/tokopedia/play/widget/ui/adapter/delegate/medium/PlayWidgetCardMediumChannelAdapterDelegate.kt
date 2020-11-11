@@ -19,7 +19,13 @@ class PlayWidgetCardMediumChannelAdapterDelegate(
 ) : BaseAdapterDelegate<PlayWidgetMediumChannelUiModel, PlayWidgetMediumItemUiModel, PlayWidgetCardMediumChannelViewHolder>(
         PlayWidgetCardMediumChannelViewHolder.layoutRes
 ) {
-    private val allowedTypes = listOf(PlayWidgetChannelType.Live, PlayWidgetChannelType.Vod, PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Unknown)
+    private val allowedTypes = listOf(
+            PlayWidgetChannelType.Live,
+            PlayWidgetChannelType.Vod,
+            PlayWidgetChannelType.Upcoming,
+            PlayWidgetChannelType.Unknown,
+            PlayWidgetChannelType.Deleting
+    )
 
     override fun onBindViewHolder(item: PlayWidgetMediumChannelUiModel, holder: PlayWidgetCardMediumChannelViewHolder) {
         holder.bind(item)

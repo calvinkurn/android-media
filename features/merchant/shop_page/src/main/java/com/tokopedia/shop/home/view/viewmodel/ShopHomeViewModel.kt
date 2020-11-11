@@ -32,6 +32,7 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.Event
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -470,7 +471,10 @@ class ShopHomeViewModel @Inject constructor(
                     dispatcherProvider.io()
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(widgetResponse = response, prevModel = _playWidgetObservable.value?.widgetUiModel)
-            _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(widgetUiModel = widgetUiModel)
+            _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(
+                    actionEvent = Event(CarouselPlayWidgetUiModel.Action.Refresh),
+                    widgetUiModel = widgetUiModel
+            )
         }) {
             _playWidgetObservable.value = null
         }
@@ -492,5 +496,38 @@ class ShopHomeViewModel @Inject constructor(
                     position = position
             )
         }
+    }
+
+    fun deleteChannel(channelId: String) {
+
+        fun updateWidget(onUpdate: (oldVal: CarouselPlayWidgetUiModel) -> CarouselPlayWidgetUiModel) {
+            val currentValue = _playWidgetObservable.value
+            if (currentValue != null) _playWidgetObservable.value = onUpdate(currentValue)
+        }
+
+        updateWidget {
+            it.copy(widgetUiModel = playWidgetTools.updateDeletingChannel(it.widgetUiModel, channelId))
+        }
+
+        launchCatchError(block = {
+            playWidgetTools.deleteChannel(
+                    channelId,
+                    userSessionShopId
+            )
+
+            updateWidget {
+                it.copy(
+                        widgetUiModel = playWidgetTools.updateDeletedChannel(it.widgetUiModel, channelId),
+                        actionEvent = Event(CarouselPlayWidgetUiModel.Action.Delete(channelId))
+                )
+            }
+        }, onError = { err ->
+            updateWidget {
+                it.copy(
+                        widgetUiModel = playWidgetTools.updateFailedDeletingChannel(it.widgetUiModel, channelId),
+                        actionEvent = Event(CarouselPlayWidgetUiModel.Action.DeleteFailed(channelId, err))
+                )
+            }
+        })
     }
 }

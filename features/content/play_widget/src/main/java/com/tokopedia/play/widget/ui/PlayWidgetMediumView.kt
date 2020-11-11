@@ -24,6 +24,7 @@ import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMedi
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumOverlayViewHolder
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumTranscodeViewHolder
+import com.tokopedia.play.widget.ui.itemdecoration.PlayWidgetCardMediumItemDecoration
 import com.tokopedia.play.widget.ui.listener.PlayWidgetInternalListener
 import com.tokopedia.play.widget.ui.listener.PlayWidgetMediumListener
 import com.tokopedia.play.widget.ui.model.*
@@ -118,7 +119,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
-            mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item.channelType, position)
+            mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
     }
 
@@ -179,6 +180,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
      * Setup view
      */
     private fun setupView(view: View) {
+        recyclerViewItem.addItemDecoration(PlayWidgetCardMediumItemDecoration(context))
         recyclerViewItem.layoutManager = layoutManager
         recyclerViewItem.adapter = adapter
 

@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -47,7 +48,9 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
@@ -204,6 +207,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private val shopHomeAdapterTypeFactory by lazy {
         ShopHomeAdapterTypeFactory(this, this, this, this, this, this, this, playWidgetCoordinator)
+    }
+
+    private val widgetDeleteDialogContainer by lazy {
+        PlayWidgetDeleteDialogContainer(object : PlayWidgetDeleteDialogContainer.Listener {
+            override fun onDeleteButtonClicked(channelId: String) {
+                deleteChannel(channelId)
+            }
+        })
     }
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
@@ -1571,11 +1582,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onDeleteFailedTranscodingChannel(view: PlayWidgetMediumView, channelId: String) {
-        //TODO("Delete Failed Transcoding Channel")
+        viewModel?.deleteChannel(channelId)
     }
 
-    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, channelType: PlayWidgetChannelType, position: Int) {
-        showPlayWidgetBottomSheet()
+    override fun onMenuActionButtonClicked(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, position: Int) {
+        showPlayWidgetBottomSheet(item.channelId)
     }
 
     private fun setupPlayWidget() {
@@ -1611,6 +1622,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     //TODO("Transcode Failed")
                 }
             }
+
+            carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {
+                when (it) {
+                    is CarouselPlayWidgetUiModel.Action.Delete -> showWidgetDeletedToaster()
+                    is CarouselPlayWidgetUiModel.Action.DeleteFailed -> showWidgetDeleteFailedToaster(it.channelId, it.reason)
+                    else -> {}
+                }
+            }
         })
     }
 
@@ -1643,28 +1662,65 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun showPlayWidgetBottomSheet() {
-        getPlayWidgetActionBottomSheet().show(childFragmentManager)
+    private fun showPlayWidgetBottomSheet(channelId: String) {
+        getPlayWidgetActionBottomSheet(channelId).show(childFragmentManager)
     }
 
-    private fun getPlayWidgetActionBottomSheet(): PlayWidgetSellerActionBottomSheet {
+    private fun getPlayWidgetActionBottomSheet(channelId: String): PlayWidgetSellerActionBottomSheet {
         if (!::playWidgetActionBottomSheet.isInitialized) {
             playWidgetActionBottomSheet = PlayWidgetSellerActionBottomSheet()
-            playWidgetActionBottomSheet.setActionList(
-                    listOf(
-                            PlayWidgetSellerActionBottomSheet.Action(
-                                    com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
-                                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                                    "Salin link"
-                            ) { /*TODO("On Share Clicked")*/ },
-                            PlayWidgetSellerActionBottomSheet.Action(
-                                    com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
-                                    MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
-                                    "Hapus video"
-                            ) { /*TODO("On Delete Clicked")*/ }
-                    )
+        }
+        playWidgetActionBottomSheet.setActionList(
+                listOf(
+                        PlayWidgetSellerActionBottomSheet.Action(
+                                com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
+                                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                                "Salin link"
+                        ) { /*TODO("On Share Clicked")*/ },
+                        PlayWidgetSellerActionBottomSheet.Action(
+                                com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
+                                MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
+                                context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()
+                        ) {
+                            showDeleteWidgetConfirmationDialog(channelId)
+                            playWidgetActionBottomSheet.dismiss()
+                        }
+                )
+        )
+        return playWidgetActionBottomSheet
+    }
+
+    private fun deleteChannel(channelId: String) {
+        viewModel?.deleteChannel(channelId)
+    }
+
+    private fun showWidgetDeletedToaster() {
+        activity?.run {
+            Toaster.make(
+                    findViewById(android.R.id.content),
+                    getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_NORMAL
             )
         }
-        return playWidgetActionBottomSheet
+    }
+
+    private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
+        activity?.run {
+            Toaster.make(
+                    view = findViewById(android.R.id.content),
+                    text = reason.localizedMessage,
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    actionText = getString(R.string.shop_page_play_widget_sgc_try_again),
+                    clickListener = View.OnClickListener {
+                        deleteChannel(channelId)
+                    }
+            )
+        }
+    }
+
+    private fun showDeleteWidgetConfirmationDialog(channelId: String) {
+        widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
     }
 }

@@ -1,26 +1,18 @@
 package com.tokopedia.play.widget.di
 
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetMediumUiMapper
-import com.tokopedia.play.widget.ui.mapper.PlayWidgetSmallUiMapper
-import com.tokopedia.play.widget.ui.type.PlayWidgetSize
-import dagger.Binds
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play.widget.domain.PlayWidgetUpdateChannelUseCase
 import dagger.Module
-import dagger.multibindings.IntoMap
+import dagger.Provides
 
 /**
- * Created by jegul on 08/10/20
+ * Created by jegul on 09/11/20
  */
-@Module
-abstract class PlayWidgetModule {
+@Module(includes = [PlayWidgetMapperModule::class])
+class PlayWidgetModule {
 
-    @Binds
-    @IntoMap
-    @PlayWidgetSizeKey(PlayWidgetSize.Small)
-    abstract fun getPlayWidgetSmallMapper(mapper: PlayWidgetSmallUiMapper): PlayWidgetMapper
-
-    @Binds
-    @IntoMap
-    @PlayWidgetSizeKey(PlayWidgetSize.Medium)
-    abstract fun getPlayWidgetMediumMapper(mapper: PlayWidgetMediumUiMapper): PlayWidgetMapper
+    @Provides
+    fun providePlayWidgetUpdateChannelUseCase(graphqlRepository: GraphqlRepository): PlayWidgetUpdateChannelUseCase {
+        return PlayWidgetUpdateChannelUseCase(graphqlRepository)
+    }
 }

@@ -9,3 +9,5 @@ data class PlayWidgetChannelTypeTransition(
         val prevType: PlayWidgetChannelType?,
         val currentType: PlayWidgetChannelType
 )
+
+fun PlayWidgetChannelTypeTransition.changeTo(newType: PlayWidgetChannelType) = PlayWidgetChannelTypeTransition(currentType, newType)

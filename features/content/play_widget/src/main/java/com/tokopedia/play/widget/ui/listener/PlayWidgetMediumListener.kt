@@ -1,6 +1,7 @@
 package com.tokopedia.play.widget.ui.listener
 
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
+import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 
 
@@ -18,7 +19,7 @@ interface PlayWidgetMediumListener : PlayWidgetRouterListener {
 
     fun onMenuActionButtonClicked(
             view: PlayWidgetMediumView,
-            channelType: PlayWidgetChannelType,
+            item: PlayWidgetMediumChannelUiModel,
             position: Int
     ) {}
 
