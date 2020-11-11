@@ -218,6 +218,12 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         if (filterModel.isReturn) {
             sqlStringBuilder.append("FlightJourneyTable.isBestPairing = $isBestPairing AND ")
         }
+        if (filterModel.canFilterFreeRapidTest && filterModel.isFreeRapidTest) {
+            sqlStringBuilder.append("FlightJourneyTable.hasFreeRapidTest = 1 AND ")
+        }
+        if (filterModel.canFilterSeatDistancing && filterModel.isSeatDistancing) {
+            sqlStringBuilder.append("FlightJourneyTable.isSeatDistancing = 1 AND ")
+        }
         sqlStringBuilder.append("FlightJourneyTable.isReturn = $isReturnInt")
 
         sqlStringBuilder.append(getOrderBy(flightSortOption))

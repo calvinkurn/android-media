@@ -43,16 +43,16 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
                                 isLoading = false
+                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                             }
                             OccButtonState.DISABLE -> {
-                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
                                 isLoading = false
+                                setText(com.tokopedia.purchase_platform.common.R.string.label_choose_payment)
                             }
                             else -> {
                                 layoutParams?.height = Utils.convertDpToPixel(48f, context)
@@ -64,18 +64,18 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         layoutParams?.width = Utils.convertDpToPixel(140f, context)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                setText(R.string.pay)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
                                 isEnabled = true
                                 isLoading = false
+                                setText(R.string.pay)
                             }
                             OccButtonState.DISABLE -> {
-                                setText(R.string.pay)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
                                 isEnabled = false
                                 isLoading = false
+                                setText(R.string.pay)
                             }
                             else -> {
                                 layoutParams?.height = Utils.convertDpToPixel(48f, context)
@@ -89,16 +89,16 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
-                                setText(R.string.continue_pay)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
                                 isLoading = false
+                                setText(R.string.continue_pay)
                             }
                             OccButtonState.DISABLE -> {
-                                setText(R.string.continue_pay)
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
                                 isLoading = false
+                                setText(R.string.continue_pay)
                             }
                             else -> {
                                 layoutParams?.height = Utils.convertDpToPixel(48f, context)
