@@ -85,6 +85,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.seamlesslogin)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.searchbar)
 
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.mockk
