@@ -21,7 +21,6 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
@@ -179,7 +178,6 @@ final class ProductListPresenter
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
     private int firstProductPosition = 0;
     private boolean hasFullThreeDotsOptions = false;
-    private boolean isABTestNavigationRevamp = false;
 
     @Inject
     ProductListPresenter(
@@ -225,7 +223,18 @@ final class ProductListPresenter
         useRatingString = getIsUseRatingString();
         shopRatingABTestStrategy = getShopRatingABTestStrategy();
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
-        isABTestNavigationRevamp = getView().getABTestRemoteConfig().getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV).equals(AB_TEST_NAV_REVAMP);
+    }
+
+    private boolean isABTestNavigationRevamp() {
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV)
+                    .equals(AB_TEST_NAV_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean getIsUseRatingString() {
@@ -1105,7 +1114,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        if (isABTestNavigationRevamp) {
+        if (isABTestNavigationRevamp()) {
             list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
         }
 
