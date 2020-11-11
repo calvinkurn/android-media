@@ -72,6 +72,12 @@ class SellerHomeViewModelTest {
     lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
 
     @RelaxedMockK
+    lateinit var getMultiLineGraphUseCase: GetMultiLineGraphUseCase
+
+    @RelaxedMockK
+    lateinit var getAnnouncementDataUseCase: GetAnnouncementDataUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -100,6 +106,8 @@ class SellerHomeViewModelTest {
                 dagger.Lazy { getTableDataUseCase },
                 dagger.Lazy { getPieChartDataUseCase },
                 dagger.Lazy { getBarChartDataUseCase },
+                dagger.Lazy { getMultiLineGraphUseCase },
+                dagger.Lazy { getAnnouncementDataUseCase },
                 remoteConfig,
                 testDispatcher
         )
@@ -412,7 +420,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns success result`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -436,7 +444,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns failed result`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
