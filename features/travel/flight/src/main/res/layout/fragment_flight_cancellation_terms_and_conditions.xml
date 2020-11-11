@@ -16,7 +16,7 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="@dimen/layout_lvl0"
             android:layout_weight="1">
 
             <com.tokopedia.design.component.TextViewCompat
@@ -24,7 +24,7 @@
                 style="@style/TextView.Small"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp_16"
+                android:layout_margin="@dimen/layout_lvl2"
                 android:textColor="@color/Unify_N700_44" />
 
         </androidx.core.widget.NestedScrollView>
@@ -47,15 +47,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/flight_dp_10"
+            android:layout_marginTop="@dimen/layout_lvl2"
             android:gravity="top"
             android:orientation="horizontal">
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/checkbox"
-                android:layout_width="@dimen/dp_36"
-                android:layout_height="@dimen/dp_36"
+                android:layout_width="@dimen/flight_dp_36"
+                android:layout_height="@dimen/flight_dp_36"
                 android:theme="@style/checkBoxStyle" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -63,7 +63,7 @@
                 style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/flight_dp_10"
                 android:textColor="@color/Unify_N700_44"
                 tools:text="@string/flight_cancellation_review_description" />
 
@@ -74,7 +74,7 @@
             style="@style/Button.Submit.Orange"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_16"
+            android:layout_margin="@dimen/layout_lvl2"
             android:enabled="false"
             android:text="@string/flight_cancellation_review_button" />
 

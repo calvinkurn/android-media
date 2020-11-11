@@ -3,17 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_8"
-    android:paddingLeft="@dimen/dp_20"
-    android:paddingRight="@dimen/dp_20"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:paddingLeft="@dimen/flight_dp_20"
+    android:paddingRight="@dimen/flight_dp_20"
+    android:paddingTop="@dimen/spacing_lvl3">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txt_passenger_cancellation_status"
         style="@style/CardSuccessStatusStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         tools:visibility="visible"/>
 
@@ -22,7 +22,7 @@
         style="@style/CardSuccessStatusStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
         android:layout_below="@+id/txt_passenger_cancellation_status"
         android:visibility="gone"
         tools:visibility="visible"/>
@@ -38,16 +38,16 @@
             android:id="@+id/passenger_number"
             style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
-            android:layout_marginEnd="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_5"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
             tools:text="1. " />
 
         <TextView
             android:id="@+id/passenger_name"
             style="@style/TextView.Small.Bold"
-            android:layout_width="0dp"
-            android:layout_marginEnd="@dimen/dp_3"
-            android:layout_marginRight="@dimen/dp_3"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_marginEnd="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
             android:layout_weight="1"
             tools:text="Nyonya Hetty Koes Endang" />
 
@@ -65,6 +65,6 @@
         android:layout_alignLeft="@+id/passenger_container"
         android:layout_alignStart="@+id/passenger_container"
         android:layout_below="@+id/passenger_container"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/flight_dp_10"
         android:visibility="gone" />
 </RelativeLayout>

@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:background="@color/Unify_N0"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/spacing_lvl4">
 
             <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextView.Micro"
@@ -33,15 +33,15 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
                 android:background="@drawable/bg_line_separator" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/ticker_refund_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:autoLink="web"
                 android:visibility="gone"
                 app:closeButtonVisibility="gone"
@@ -53,20 +53,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="@dimen/dp_2"
-                android:paddingBottom="@dimen/dp_2"
+                android:paddingTop="@dimen/spacing_lvl1"
+                android:paddingBottom="@dimen/spacing_lvl1"
                 android:weightSum="2">
 
                 <TextView
                     style="@style/TextView.Small.BlackSecondary"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_weight="1"
                     android:text="@string/flight_label_cancellation_date" />
 
                 <TextView
                     android:id="@+id/cancellation_date"
                     style="@style/TextView.Small.Bold"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_weight="1"
                     tools:text="1 Sep 2017, 05:00 WIB" />
             </LinearLayout>
@@ -91,24 +91,24 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/flight_dp_20"
             android:background="@color/Unify_N0"
             android:orientation="vertical"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_10">
+            android:paddingTop="@dimen/flight_dp_10"
+            android:paddingBottom="@dimen/flight_dp_10">
 
             <LinearLayout
                 android:id="@+id/layout_expendable_passenger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_20"
-                android:paddingRight="@dimen/dp_20">
+                android:paddingLeft="@dimen/flight_dp_20"
+                android:paddingRight="@dimen/flight_dp_20">
 
                 <TextView
                     android:id="@+id/title_expendable_passenger"
                     style="@style/style_expandable_flight_detail_order_title"
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/flight_cancellation_cancelled_passegner_detail" />
@@ -116,7 +116,7 @@
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_expendable_passenger"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_20"
+                    android:layout_height="@dimen/flight_dp_20"
                     android:layout_gravity="center_vertical"
                     app:srcCompat="@drawable/ic_arrow_up" />
 
@@ -135,20 +135,20 @@
             android:id="@+id/container_bottom_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_20"
+            android:layout_marginTop="@dimen/flight_dp_20"
+            android:layout_marginBottom="@dimen/flight_dp_20"
             android:background="@color/Unify_N0"
             android:orientation="vertical"
-            android:padding="@dimen/dp_16">
+            android:padding="@dimen/spacing_lvl4">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingBottom="@dimen/dp_16"
+                android:paddingTop="@dimen/spacing_lvl3"
+                android:paddingBottom="@dimen/spacing_lvl4"
                 android:text="@string/flight_cancellation_detail_refund_information_label"
                 android:textColor="@color/Unify_N700_68"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/fontSize_lvl6"
                 app:typographyType="body_1"
                 app:typographyWeight="bold" />
 
@@ -187,7 +187,7 @@
                 android:id="@+id/rv_bottom_bottom_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>
@@ -196,7 +196,7 @@
                 android:id="@+id/rv_bottom_notes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>

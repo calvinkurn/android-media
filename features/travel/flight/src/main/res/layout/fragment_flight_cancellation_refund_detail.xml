@@ -29,7 +29,7 @@
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_16" />
+                android:padding="@dimen/layout_lvl2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -68,7 +68,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Title.Bold"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Total Refund" />
@@ -76,7 +76,7 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_total_refund"
                         style="@style/TextView.Title.OrangeRed.Bold"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"

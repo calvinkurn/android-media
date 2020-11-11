@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_2"
+    android:paddingTop="@dimen/spacing_lvl1"
     tools:ignore="MissingDefaultResource">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -19,7 +19,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12">
+        android:layout_marginTop="@dimen/unify_space_12">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -42,7 +42,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4">
+        android:layout_marginTop="@dimen/spacing_lvl2">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
@@ -67,7 +67,7 @@
         android:id="@+id/ticker_booking_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         app:closeButtonVisibility="gone"
         app:tickerShapeType="loose"
         />
@@ -76,7 +76,7 @@
         android:id="@+id/button_continue_pay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/flight_booking_action_proceed_checkout"
         app:unifyButtonType="transaction" />
 
@@ -84,9 +84,9 @@
         android:id="@+id/button_find_new_ticket"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/flight_booking_action_find_another_ticket"
         app:unifyButtonType="alternate"
         app:unifyButtonVariant="ghost"
-        android:layout_marginBottom="@dimen/dp_16"/>
+        android:layout_marginBottom="@dimen/spacing_lvl4"/>
 </LinearLayout>
