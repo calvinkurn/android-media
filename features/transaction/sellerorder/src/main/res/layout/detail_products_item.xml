@@ -14,8 +14,8 @@
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        tools:text="@string/see_detail"
-        android:text="@string/see_detail"
+        tools:text="@string/detail_product"
+        android:text="@string/detail_product"
         android:textColor="@color/Neutral_N700_96"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"/>

@@ -48,7 +48,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     warehouseLabel?.apply {
                         show()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, R.color.Unify_N700))
+                        setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
                     }
                 } else {
                     warehouseLabel.hide()

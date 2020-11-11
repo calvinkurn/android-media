@@ -20,113 +20,130 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
     override fun bind(item: SomDetailData, position: Int) {
         if (item.dataObject is SomDetailShipping) {
-            if(item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
-                itemView.tv_shipping_name.apply {
-                    setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+            with(itemView) {
+                if (item.dataObject.isShippingPrinted) {
+                    shippingPrintedLabel?.apply {
+                        show()
+                        unlockFeature = true
+                        setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+                    }
+                } else {
+                    shippingPrintedLabel.hide()
+                }
+
+                if (item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
+                    tv_shipping_name.apply {
+                        setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                        setOnClickListener {
+                            actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                        }
+                        text = StringBuilder("${item.dataObject.shippingName} >")
+                    }
+                } else {
+                    tv_shipping_name.text = item.dataObject.shippingName
+                    tv_shipping_name.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700))
+                }
+                val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
+                    item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
+                } else {
+                    item.dataObject.receiverPhone
+                }
+                tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} ($numberPhone)")
+                tv_receiver_street.text = item.dataObject.receiverStreet
+                tv_receiver_district.text = item.dataObject.receiverDistrict
+                tv_receiver_province.text = item.dataObject.receiverProvince
+
+                shipping_address_copy.apply {
                     setOnClickListener {
-                        actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
+                        actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
+                                "\n" + item.dataObject.receiverPhone +
+                                "\n" + item.dataObject.receiverStreet +
+                                "\n" + item.dataObject.receiverDistrict +
+                                "\n" + item.dataObject.receiverProvince))
                     }
-                    text = StringBuilder("${item.dataObject.shippingName} >")
-                }
-            } else {
-                itemView.tv_shipping_name.text = item.dataObject.shippingName
-                itemView.tv_shipping_name.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700))
-            }
-            val numberPhone = if(item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
-                item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
-            } else {
-                item.dataObject.receiverPhone
-            }
-            itemView.tv_receiver_name.text = StringBuilder("${item.dataObject.receiverName} ($numberPhone)")
-            itemView.tv_receiver_street.text = item.dataObject.receiverStreet
-            itemView.tv_receiver_district.text = item.dataObject.receiverDistrict
-            itemView.tv_receiver_province.text = item.dataObject.receiverProvince
-
-            itemView.shipping_address_copy.apply {
-                setOnClickListener {
-                    actionListener?.onCopiedAddress(itemView.context.getString(R.string.alamat_pengiriman), (item.dataObject.receiverName +
-                            "\n" + item.dataObject.receiverPhone +
-                            "\n" + item.dataObject.receiverStreet +
-                            "\n" + item.dataObject.receiverDistrict +
-                            "\n" + item.dataObject.receiverProvince))
-                }
-            }
-
-            if (item.dataObject.awb.isNotEmpty()) {
-                itemView.rl_no_resi?.visibility = View.VISIBLE
-                itemView.no_resi_value?.text = item.dataObject.awb
-                if (item.dataObject.awbTextColor.isNotEmpty()) {
-                    itemView.no_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
-                }
-                itemView.no_resi_copy?.setOnClickListener {
-                    actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
-                }
-            } else {
-                itemView.rl_no_resi?.visibility = View.GONE
-            }
-
-            // booking online - driver
-            if (item.dataObject.driverName.isEmpty()) itemView.card_driver.visibility = View.GONE
-            else {
-                if (item.dataObject.driverName.isNotEmpty()) {
-                    itemView.tv_driver_name.text = item.dataObject.driverName
                 }
 
-                if (item.dataObject.driverPhoto.isNotEmpty()) {
-                    itemView.iv_driver.loadImageCircle(item.dataObject.driverPhoto)
-                } else {
-                    itemView.iv_driver.setImageResource(R.drawable.ic_driver_default)
-                }
-
-                if (item.dataObject.driverPhone.isNotEmpty()) {
-                    itemView.tv_driver_phone.text = item.dataObject.driverPhone
-                    itemView.driver_call_btn.setOnClickListener {
-                        actionListener?.onDialPhone(item.dataObject.driverPhone)
+                if (item.dataObject.awb.isNotEmpty()) {
+                    rl_no_resi?.visibility = View.VISIBLE
+                    no_resi_value?.text = item.dataObject.awb
+                    if (item.dataObject.awbTextColor.isNotEmpty()) {
+                        itemView.no_resi_value?.setTextColor(Color.parseColor(item.dataObject.awbTextColor))
+                    }
+                    no_resi_copy?.setOnClickListener {
+                        actionListener?.onTextCopied(itemView.context.getString(R.string.awb_label), item.dataObject.awb)
                     }
                 } else {
-                    itemView.tv_driver_phone.visibility = View.GONE
-                    itemView.driver_call_btn.visibility = View.GONE
+                    rl_no_resi?.visibility = View.GONE
                 }
 
-                if (item.dataObject.driverLicense.isNotEmpty()) {
-                    itemView.tv_driver_license.text = item.dataObject.driverLicense
-                } else {
-                    itemView.tv_driver_license.visibility = View.GONE
-                }
-            }
+                // booking online - driver
+                if (item.dataObject.driverName.isEmpty()) itemView.card_driver.visibility = View.GONE
+                else {
+                    if (item.dataObject.driverName.isNotEmpty()) {
+                        tv_driver_name.text = item.dataObject.driverName
+                    }
 
-            // booking online - booking code
-            if (item.dataObject.onlineBookingState == 0) {
-                itemView.rl_booking_code.visibility = View.GONE
-            } else {
-                if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
-                    itemView.rl_booking_code.visibility = View.GONE
-                } else {
-                    itemView.rl_booking_code.visibility = View.VISIBLE
-
-                    if (item.dataObject.onlineBookingCode.isEmpty()) {
-                        itemView.rl_booking_code?.hide()
+                    if (item.dataObject.driverPhoto.isNotEmpty()) {
+                        iv_driver.loadImageCircle(item.dataObject.driverPhoto)
                     } else {
-                        itemView.booking_code_value?.show()
+                        iv_driver.setImageResource(R.drawable.ic_driver_default)
+                    }
 
-                        itemView.booking_code_value.apply {
-                            text = StringBuilder("${item.dataObject.onlineBookingCode} >")
-                            setOnClickListener {
-                                actionListener?.onShowBookingCode(
-                                        item.dataObject.onlineBookingCode,
-                                        item.dataObject.onlineBookingType)
+                    if (item.dataObject.driverPhone.isNotEmpty()) {
+                        tv_driver_phone.text = item.dataObject.driverPhone
+                        driver_call_btn.setOnClickListener {
+                            actionListener?.onDialPhone(item.dataObject.driverPhone)
+                        }
+                    } else {
+                        tv_driver_phone.visibility = View.GONE
+                        driver_call_btn.visibility = View.GONE
+                    }
+
+                    if (item.dataObject.driverLicense.isNotEmpty()) {
+                        tv_driver_license.text = item.dataObject.driverLicense
+                    } else {
+                        tv_driver_license.visibility = View.GONE
+                    }
+                }
+
+                // booking online - booking code
+                if (item.dataObject.onlineBookingState == 0) {
+                    rl_booking_code.visibility = View.GONE
+                } else {
+                    if (item.dataObject.onlineBookingCode.isEmpty() && item.dataObject.onlineBookingMsg.isEmpty()) {
+                        rl_booking_code.visibility = View.GONE
+                    } else {
+                        rl_booking_code.visibility = View.VISIBLE
+
+                        if (item.dataObject.onlineBookingCode.isEmpty()) {
+                            rl_booking_code?.hide()
+                        } else {
+                            booking_code_value?.show()
+
+                            booking_code_value.apply {
+                                text = StringBuilder("${item.dataObject.onlineBookingCode} >")
+                                setOnClickListener {
+                                    actionListener?.onShowBookingCode(
+                                            item.dataObject.onlineBookingCode,
+                                            item.dataObject.onlineBookingType)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            // dropshipper
-            if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
-                itemView.rl_drop_shipper.visibility = View.VISIBLE
-                itemView.tv_som_dropshipper_name.text = item.dataObject.dropshipperName
-            } else {
-                itemView.rl_drop_shipper.visibility = View.GONE
+                // dropshipper
+                if (item.dataObject.dropshipperName.isNotEmpty() && item.dataObject.dropshipperPhone.isNotEmpty()) {
+                    rl_drop_shipper.visibility = View.VISIBLE
+                    val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
+                        item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
+                    } else {
+                        item.dataObject.dropshipperPhone
+                    }
+                    tv_som_dropshipper_name.text = StringBuilder("${item.dataObject.dropshipperName} (${numberPhoneDropShipper})")
+                } else {
+                    rl_drop_shipper.visibility = View.GONE
+                }
             }
         }
 

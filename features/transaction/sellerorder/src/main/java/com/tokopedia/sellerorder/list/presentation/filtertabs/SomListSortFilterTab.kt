@@ -23,11 +23,16 @@ class SomListSortFilterTab(
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
     private var somListFilterUiModel: SomListFilterUiModel? = null
+    private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
     private var selectedCount: Int = 0
 
     init {
         sortFilter.chipItems = arrayListOf()
         selectParentFilter()
+    }
+
+    fun selectTabReset() {
+        selectedTab = null
     }
 
     fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
@@ -68,22 +73,22 @@ class SomListSortFilterTab(
         }
         sortFilterItem.type = ChipsUnify.TYPE_SELECTED
         listener.onTabClicked(status, true)
-        updateCounter(selectedCount)
     }
 
     private fun updateCounter(count: Int) {
         sortFilter.indicatorCounter = count + if (selectedTab != null) 1 else 0
     }
 
-    fun updateCounterSortFilter(somListFilterUiModel: List<SomFilterUiModel>) {
+    fun updateCounterSortFilter(filterDate: String = "") {
         var count = 0
-        somListFilterUiModel.forEach {
+        somFilterUiModelList.forEach {
             if(it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
                 it.somFilterData.forEach { somFilter ->
                     if (somFilter.isSelected) count++
                 }
             }
         }
+        if(filterDate.isNotBlank()) count += 1
         selectedCount = count
     }
 
@@ -108,7 +113,7 @@ class SomListSortFilterTab(
         }, SWIPE_TAB_ANIMATION_DELAY)
     }
 
-    fun updateCounterSortFilter() {
+    fun updateCounterFilter() {
         updateCounter(selectedCount)
     }
 
@@ -136,6 +141,13 @@ class SomListSortFilterTab(
     fun getSelectedTab() = selectedTab
 
     fun getSomListFilterUiModel() = somListFilterUiModel
+
+    fun getSomFilterUi() = somFilterUiModelList
+
+    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
+        this.somFilterUiModelList.clear()
+        this.somFilterUiModelList.addAll(somFilterUiModelList)
+    }
 
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()

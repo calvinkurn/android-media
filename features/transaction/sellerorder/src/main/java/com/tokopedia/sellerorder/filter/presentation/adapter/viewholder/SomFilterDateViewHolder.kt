@@ -20,6 +20,8 @@ class SomFilterDateViewHolder(view: View, private val somFilterListener: SomFilt
             tvTitleFilterDate?.text = element?.nameFilter
             if (element?.date?.isNotBlank() == true) {
                 selectDateFilter.setDateLabel(element.date)
+            } else {
+                selectDateFilter.setDateLabelEmpty(context.resources.getString(R.string.select_date))
             }
             selectDateFilter.setOnClickListener {
                 somFilterListener.onDateClicked(adapterPosition)
