@@ -12,7 +12,6 @@ import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewMode
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -257,5 +256,9 @@ class SomListViewModel @Inject constructor(
 
     fun updateGetOrderListParams(getOrderListParams: SomListGetOrderListParam) {
         this.getOrderListParams = getOrderListParams
+    }
+
+    fun setOrderTypeFilter(orderTypes: List<Int>) {
+        this.getOrderListParams.orderTypeList = orderTypes
     }
 }

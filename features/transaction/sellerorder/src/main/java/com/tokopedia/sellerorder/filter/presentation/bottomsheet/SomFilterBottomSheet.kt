@@ -76,6 +76,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                 ?: arrayListOf()
         orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
         filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
+        somFilterViewModel.setIsRequestCancelFilterApplied(arguments?.getBoolean(KEY_IS_REQUEST_CANCEL_FILTER_APPLIED, false) ?: false)
         somFilterUiModelListCopy = somFilterUiModelList.copyListParcelable()
         val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
         statusList = statusListFilter?.copyInt() ?: listOf()
@@ -252,7 +253,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
             val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel()
             somListOrderParam?.let {
-                somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate)
+                somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate, somFilterViewModel.isRequestCancelFilterApplied())
             }
             dismissAllowingStateLoss()
         }
@@ -370,6 +371,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_FILTER_DATE = "key_filter_date"
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
+        const val KEY_IS_REQUEST_CANCEL_FILTER_APPLIED = "key_is_request_cancel_filter_applied"
         const val SIZE_ACTION_RESET = 14f
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
@@ -378,7 +380,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
                            mActivity: FragmentActivity?,
-                           filterDate: String
+                           filterDate: String,
+                           isRequestCancelFilterApplied: Boolean
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet(mActivity)
             val args = Bundle()
@@ -386,6 +389,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))
             args.putParcelableArrayList(KEY_SOM_FILTER_LIST, ArrayList(somFilterUiModelList))
             args.putString(KEY_FILTER_DATE, filterDate)
+            args.putBoolean(KEY_IS_REQUEST_CANCEL_FILTER_APPLIED, isRequestCancelFilterApplied)
             fragment.arguments = args
             return fragment
         }
@@ -395,7 +399,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         fun onClickShowOrderFilter(filterData: SomListGetOrderListParam,
                                    somFilterUiModelList: List<SomFilterUiModel>,
                                    idFilter: String,
-                                   filterDate: String
+                                   filterDate: String,
+                                   isRequestCancelFilterApplied: Boolean
         )
 
         fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper)

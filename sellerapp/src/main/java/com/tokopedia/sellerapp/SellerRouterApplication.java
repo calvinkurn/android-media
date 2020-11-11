@@ -408,10 +408,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage) {
+    public Fragment getSomListFragment(String tabPage, int orderType) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
+        bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
         if (getBooleanRemoteConfig(RemoteConfigKey.ENABLE_NEW_SOM, false)) {
             return SomListFragment.newInstance(bundle);
         } else {

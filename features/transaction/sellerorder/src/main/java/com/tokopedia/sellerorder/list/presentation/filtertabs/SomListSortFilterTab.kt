@@ -132,6 +132,11 @@ class SomListSortFilterTab(
         }
     }
 
+    fun addCounter(n: Int) {
+        selectedCount += n
+        updateCounter(selectedCount)
+    }
+
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()

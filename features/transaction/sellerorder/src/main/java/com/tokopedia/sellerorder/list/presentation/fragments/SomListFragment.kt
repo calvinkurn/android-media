@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -38,6 +39,7 @@ import com.tokopedia.sellerorder.common.presenter.bottomsheet.SomOrderRequestCan
 import com.tokopedia.sellerorder.common.presenter.model.PopUp
 import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
@@ -112,6 +114,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     putBoolean(FROM_WIDGET_TAG, bundle.getBoolean(FROM_WIDGET_TAG))
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
+                    putInt(FILTER_ORDER_TYPE, bundle.getInt(FILTER_ORDER_TYPE))
                 }
             }
         }
@@ -170,6 +173,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var shouldShowCoachMark: Boolean = false
     private var shouldScrollToTop: Boolean = false
     private var firstNewOrderViewPosition: Int = 0
+    private var filterOrderType: Int = 0
     private var isJustRestored: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
@@ -201,6 +205,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         super.onCreate(savedInstanceState)
         if (savedInstanceState == null && arguments != null) {
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
+            filterOrderType = arguments?.getInt(FILTER_ORDER_TYPE, 0).orZero()
         } else if (savedInstanceState != null) {
             isJustRestored = true
             tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
@@ -216,6 +221,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+        setInitialOrderListParams()
         observeUserRoles()
         observeTopAdsCategory()
         observeTickers()
@@ -228,24 +234,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         observeEditAwb()
         observeBulkAcceptOrder()
         observeBulkAcceptOrderStatus()
-    }
-
-    private fun Throwable.showErrorToaster() {
-        if (globalErrorSomList.isVisible) {
-            if (this is UnknownHostException || this is SocketTimeoutException) {
-                showNoInternetConnectionToaster()
-            } else {
-                showServerErrorToaster()
-            }
-        }
-    }
-
-    private fun showNoInternetConnectionToaster() {
-        showToasterError(view, getString(R.string.som_error_message_no_internet_connection))
-    }
-
-    private fun showServerErrorToaster() {
-        showToasterError(view, getString(R.string.som_error_message_server_fault))
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -399,7 +387,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 viewModel.getDataOrderListParams().statusList,
                 somFilterList,
                 this.activity,
-                filterDate
+                filterDate,
+                filterOrderType != 0
         )
         bottomSheetFilter.setSomFilterFinishListener(this)
         if (!bottomSheetFilter.isAdded) {
@@ -1437,12 +1426,42 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
+    private fun setInitialOrderListParams() {
+        val orderTypes = if (filterOrderType == 0) {
+            emptyList()
+        } else {
+            somListSortFilterTab.addCounter(1)
+            listOf(filterOrderType)
+        }
+        viewModel.setOrderTypeFilter(orderTypes)
+    }
+
+    private fun Throwable.showErrorToaster() {
+        if (globalErrorSomList.isVisible) {
+            if (this is UnknownHostException || this is SocketTimeoutException) {
+                showNoInternetConnectionToaster()
+            } else {
+                showServerErrorToaster()
+            }
+        }
+    }
+
+    private fun showNoInternetConnectionToaster() {
+        showToasterError(view, getString(R.string.som_error_message_no_internet_connection))
+    }
+
+    private fun showServerErrorToaster() {
+        showToasterError(view, getString(R.string.som_error_message_server_fault))
+    }
+
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER
     private fun isUserRoleFetched(): Boolean = viewModel.userRoleResult.value is Success
 
-    override fun onClickShowOrderFilter(filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
-                                        idFilter: String, filterDate: String) {
+    override fun onClickShowOrderFilter(
+            filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
+            idFilter: String, filterDate: String, isRequestCancelFilterApplied: Boolean) {
         this.filterDate = filterDate
+        this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
         viewModel.updateGetOrderListParams(filterData)
         somListSortFilterTab.updateSomListFilterUi(somFilterUiModelList)
         somListSortFilterTab.updateCounterSortFilter(filterDate)
