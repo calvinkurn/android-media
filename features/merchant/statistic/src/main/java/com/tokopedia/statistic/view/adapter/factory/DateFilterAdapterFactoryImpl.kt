@@ -1,20 +1,19 @@
 package com.tokopedia.statistic.view.adapter.factory
 
-import android.app.Activity
 import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.statistic.view.adapter.viewholder.*
+import com.tokopedia.statistic.view.model.DateFilterItem
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * Created By @ilhamsuaib on 15/06/20
  */
 
 class DateFilterAdapterFactoryImpl(
-        private val activity: Activity?,
         private val listener: Listener,
         private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateFilterAdapterFactory {
@@ -34,7 +33,7 @@ class DateFilterAdapterFactoryImpl(
             DateFilterClickViewHolder.RES_LAYOUT -> DateFilterClickViewHolder(parent, listener::onItemDateRangeClick)
             DateFilterApplyViewHolder.RES_LAYOUT -> DateFilterApplyViewHolder(parent, listener::onApplyDateFilter)
             DateFilterPickViewHolder.RES_LAYOUT -> DateFilterPickViewHolder(parent, fm, listener::onItemDateRangeClick)
-            MonthPickerViewHolder.RES_LAYOUT -> MonthPickerViewHolder(parent, activity, fm, listener::onItemDateRangeClick)
+            MonthPickerViewHolder.RES_LAYOUT -> MonthPickerViewHolder(parent, listener)
             DateFilterDividerViewHolder.RES_LAYOUT -> DateFilterDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -45,5 +44,11 @@ class DateFilterAdapterFactoryImpl(
         fun onItemDateRangeClick(model: DateFilterItem)
 
         fun onApplyDateFilter()
+
+        fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String)
+
+        fun showDateFilterBottomSheet()
+
+        fun dismissDateFilterBottomSheet()
     }
 }

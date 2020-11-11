@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
@@ -37,7 +39,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
     private var fm: FragmentManager? = null
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
     private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(activity, this, fm
+        DateFilterAdapter(this, fm
                 ?: return@lazy null)
     }
     private val items: MutableList<DateFilterItem> by lazy {
@@ -82,6 +84,22 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         val selectedItem = items.firstOrNull { it.isSelected } ?: return
         applyChangesCallback?.invoke(selectedItem)
         dismissAllowingStateLoss()
+    }
+
+    override fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String) {
+        if (isActivityResumed()) {
+            fm?.let {
+                bottomSheet.show(it, tag)
+            }
+        }
+    }
+
+    override fun dismissDateFilterBottomSheet() {
+        dismiss()
+    }
+
+    override fun showDateFilterBottomSheet() {
+        show()
     }
 
     fun setFragmentManager(fm: FragmentManager): DateFilterBottomSheet {
@@ -162,5 +180,11 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
                 dismiss()
             }
         }
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        println("state : $state")
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 }
