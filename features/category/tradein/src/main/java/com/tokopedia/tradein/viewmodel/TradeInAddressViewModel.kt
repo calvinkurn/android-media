@@ -3,7 +3,9 @@ package com.tokopedia.tradein.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.tradein.mapper.TradeInMapper
 import com.tokopedia.tradein.model.AddressResult
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse
 import com.tokopedia.tradein.usecase.GetAddressUseCase
@@ -21,6 +23,7 @@ class TradeInAddressViewModel @Inject constructor(
     private val addressLiveData = MutableLiveData<AddressResult>()
     private var token: Token? = null
     private val isEligible : MutableLiveData<Boolean?> = MutableLiveData()
+    var recipientAddressModel = RecipientAddressModel()
 
     fun getAddressLiveData(): LiveData<AddressResult> = addressLiveData
     fun getTradeInEligibleLiveData(): LiveData<Boolean?> = isEligible
@@ -28,6 +31,7 @@ class TradeInAddressViewModel @Inject constructor(
     fun getAddress(origin: String, weight: Int, shopId : Int) {
         launchCatchError(block = {
             val address = getAddressUseCase.getAddress()
+            recipientAddressModel = TradeInMapper.mapKeroAddressToRecipientAddress(address.defaultAddress)
             addressLiveData.value = address
             token = address.token
             progBarVisibility.value = false

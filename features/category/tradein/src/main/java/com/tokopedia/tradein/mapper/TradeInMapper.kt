@@ -42,5 +42,29 @@ class TradeInMapper {
                         provinceId, "", receiverName, 1)
             }
         }
+
+        fun mapKeroAddressToRecipientAddress(address: Data?) : RecipientAddressModel{
+            return RecipientAddressModel().apply {
+                address?.let {
+                    addressName = it.addrName
+                    id = it.addrId.toString()
+                    street = it.address1
+                    cityId = it.city.toString()
+                    cityName = it.cityName
+                    countryName = it.country
+                    destinationDistrictId = it.district.toString()
+                    destinationDistrictName = it.districtName
+                    isSelected = it.isActive
+                    latitude = it.latitude
+                    longitude = it.longitude
+                    recipientPhoneNumber = it.phone
+                    postalCode = it.postalCode
+                    provinceId = it.province.toString()
+                    provinceName = it.provinceName
+                    recipientName = it.receiverName
+                    addressStatus = it.status
+                }
+            }
+        }
     }
 }

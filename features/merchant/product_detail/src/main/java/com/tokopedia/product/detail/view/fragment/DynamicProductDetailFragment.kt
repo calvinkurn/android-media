@@ -1583,9 +1583,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun goToTradein() {
-        if (tradeinDialog?.isAdded == false) {
-            tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
-        }
+        onAccept()
     }
 
     override fun onVariantGuideLineClicked(url: String) {

@@ -144,6 +144,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         change_address.setOnClickListener {
             tradeInAnalytics.clickChangeAddress()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION)
+            intent.putExtra(CheckoutConstant.EXTRA_CURRENT_ADDRESS, tradeInAddressViewModel.recipientAddressModel)
             intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST)
             startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
         }
@@ -162,6 +163,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
         if (data?.hasExtra(EXTRA_ADDRESS_NEW) == true) {
             val address = data.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_NEW)
             if (address != null) {
+                tradeInAddressViewModel.recipientAddressModel = TradeInMapper.mapKeroAddressToRecipientAddress(TradeInMapper.mapSavedAddressToKeroAddress(address))
                 tradeInAddressViewModel.setAddress(
                         address = TradeInMapper.mapSavedAddressToKeroAddress(address),
                         origin = tradeinHomeViewModel.tradeInParams.origin ?: "",
@@ -180,6 +182,7 @@ class TradeInAddressFragment : BaseViewModelFragment<TradeInAddressViewModel>() 
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         )
                         if (addressModel != null) {
+                            tradeInAddressViewModel.recipientAddressModel = addressModel
                             tradeInAddressViewModel.setAddress(
                                     address = TradeInMapper.mapAddressToKeroAddress(addressModel),
                                     origin = tradeinHomeViewModel.tradeInParams.origin ?: "",
