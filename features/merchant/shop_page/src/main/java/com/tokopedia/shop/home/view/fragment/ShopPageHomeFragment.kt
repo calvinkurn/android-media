@@ -475,9 +475,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeAdapter.setHomeMerchantVoucherData(it.data)
                 }
                 is Fail -> {
-                    shopPageHomeLayoutUiModel?.listWidget?.indexOfFirst { uiModel -> uiModel is ShopHomeVoucherUiModel }?.let { index ->
-                        val data = shopPageHomeLayoutUiModel?.listWidget?.get(index) as ShopHomeVoucherUiModel
-                        shopHomeAdapter.setHomeMerchantVoucherData(data.copy(isError = true))
+                    shopPageHomeLayoutUiModel?.listWidget?.filterIsInstance(
+                            ShopHomeVoucherUiModel::class.java
+                    )?.firstOrNull()?.let { uiModel ->
+                        shopHomeAdapter.setHomeMerchantVoucherData(uiModel.copy(isError = true))
                     }
                 }
             }
