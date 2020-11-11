@@ -5,10 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import com.google.gson.Gson
-import com.tokopedia.notifications.common.CMConstant
-import com.tokopedia.notifications.common.IrisAnalyticsEvents
-import com.tokopedia.notifications.common.PayloadConverter
-import com.tokopedia.notifications.common.launchCatchError
+import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.data.converters.JsonBundleConverter.jsonToBundle
 import com.tokopedia.notifications.database.pushRuleEngine.PushRepository
 import com.tokopedia.notifications.factory.CMNotificationFactory
@@ -26,8 +23,10 @@ class PushController(val context: Context) : CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO
 
+    private val cmRemoteConfigUtils by lazy { CMRemoteConfigUtils(context) }
+
     private val isOfflinePushEnabled
-        get() = (context.applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
+        get() = cmRemoteConfigUtils.getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_OFFLINE_PUSH_ENABLE, false)
 
     fun handleNotificationBundle(bundle: Bundle, isAmplification: Boolean = false) {
         try {

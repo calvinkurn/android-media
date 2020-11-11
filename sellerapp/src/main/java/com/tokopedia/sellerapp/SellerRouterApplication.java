@@ -44,7 +44,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -77,6 +76,8 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -104,8 +105,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter,
-        CMRouter {
+        LoginRouter {
 
     protected RemoteConfig remoteConfig;
     private TopAdsComponent topAdsComponent;
@@ -114,6 +114,8 @@ public abstract class SellerRouterApplication extends MainApplication
     private TetraDebugger tetraDebugger;
     protected CacheManager cacheManager;
 
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -121,8 +123,24 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
-        initTetraDebugger();
+        performLibraryInitialisation();
+    }
+
+    private void performLibraryInitialisation(){
+        WeaveInterface initWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return initLibraries();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+    }
+
+    private boolean initLibraries(){
         initCMPushNotification();
+        initTetraDebugger();
+        return true;
     }
 
     private void initResourceDownloadManager() {
@@ -458,10 +476,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public void setOnboardingStatus(boolean status) {
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
-    }
-    @Override
-    public long getLongRemoteConfig(@NotNull String key, long defaultValue) {
-        return remoteConfig.getLong(key, defaultValue);
     }
 
 }
