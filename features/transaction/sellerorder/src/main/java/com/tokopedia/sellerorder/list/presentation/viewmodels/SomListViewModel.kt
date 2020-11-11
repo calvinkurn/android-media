@@ -246,6 +246,10 @@ class SomListViewModel @Inject constructor(
         getOrderListParams.search = keyword
     }
 
+    fun resetGetOrderListParam() {
+        this.getOrderListParams = SomListGetOrderListParam()
+    }
+
     fun resetNextOrderId() {
         getOrderListParams.nextOrderId = 0
     }

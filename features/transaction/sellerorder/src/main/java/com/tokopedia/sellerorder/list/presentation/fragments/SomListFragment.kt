@@ -1144,6 +1144,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun showGlobalError(throwable: Throwable) {
+        dismissCoachMark()
         somListLoading.gone()
         rvSomList.gone()
         multiEditViews.gone()
@@ -1176,6 +1177,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
+        dismissCoachMark()
         hideLoading()
         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
         // show only if current order list is based on current search keyword
@@ -1185,7 +1187,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText.orEmpty()) {
             if (isLoadingInitialData) {
                 // when using diffutil and there is no changes, onBind is not called, onBind needed
-                // to trigger show coachmark
+                // to trigger show coachmark so force adapter to rebind data
                 if (shouldShowCoachMark) {
                     adapter.setElements(data)
                 } else {
@@ -1362,10 +1364,23 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     shouldShowCoachMark = true
                     coachMarkIndexToShow = 0
                     coachMark?.isDismissed = true
-                    (rvSomList.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(firstNewOrderViewPosition, 0)
-                    rvSomList.postDelayed({
-                        adapter.notifyItemChanged(firstNewOrderViewPosition)
-                    }, 250L)
+                    if (tabActive.isNotBlank() || tabActive != SomConsts.STATUS_ALL_ORDER) {
+                        viewModel.resetGetOrderListParam()
+                        viewModel.filterResult.value?.let {
+                            if (it is Success) {
+                                it.data.statusList.find { it.key == SomConsts.STATUS_ALL_ORDER }?.let {
+                                    somListSortFilterTab.selectTab(it)
+                                    it.isChecked = true
+                                    onTabClicked(it, true)
+                                }
+                            }
+                        }
+                    } else {
+                        (rvSomList.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(firstNewOrderViewPosition, 0)
+                        rvSomList.postDelayed({
+                            adapter.notifyItemChanged(firstNewOrderViewPosition)
+                        }, 250L)
+                    }
                 } else {
                     rvSomList.removeOnScrollListener(recyclerViewScrollListener)
                     // if user press "Lanjut" after waiting payment coachmark, auto select new order filter, if user press "Balik"
