@@ -37,7 +37,7 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
     private var fm: FragmentManager? = null
     private var applyChangesCallback: ((DateFilterItem) -> Unit)? = null
     private val mAdapter: DateFilterAdapter? by lazy {
-        DateFilterAdapter(this, fm
+        DateFilterAdapter(activity, this, fm
                 ?: return@lazy null)
     }
     private val items: MutableList<DateFilterItem> by lazy {

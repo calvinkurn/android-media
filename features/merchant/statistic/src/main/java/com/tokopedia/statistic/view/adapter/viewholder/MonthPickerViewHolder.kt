@@ -1,5 +1,6 @@
 package com.tokopedia.statistic.view.adapter.viewholder
 
+import android.app.Activity
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.FragmentManager
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
+import com.tokopedia.statistic.common.utils.StatisticUtils
 import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
 import com.tokopedia.statistic.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit
 
 class MonthPickerViewHolder(
         itemView: View?,
+        private val activity: Activity?,
         private val fm: FragmentManager,
         private val onSelected: (DateFilterItem) -> Unit
 ) : AbstractViewHolder<DateFilterItem.MonthPickerItem>(itemView) {
@@ -131,12 +134,16 @@ class MonthPickerViewHolder(
             }
 
             dismissDateFilterBottomSheet()
-            show(fm, Const.BottomSheet.TAG_MONTH_PICKER)
+            if (StatisticUtils.isActivityResumed(activity)) {
+                show(fm, Const.BottomSheet.TAG_MONTH_PICKER)
+            }
         }
     }
 
     private fun showDateFilterBottomSheet() {
-        dateFilterBottomSheet?.show(fm, DateFilterBottomSheet.TAG)
+        if (StatisticUtils.isActivityResumed(activity)) {
+            dateFilterBottomSheet?.show(fm, DateFilterBottomSheet.TAG)
+        }
     }
 
     private fun dismissDateFilterBottomSheet() {
