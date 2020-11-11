@@ -40,7 +40,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
         private val dispatcher: SellerHomeCoroutineDispatcher
-) : CustomBaseViewModel(dispatcher.io()) {
+) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"

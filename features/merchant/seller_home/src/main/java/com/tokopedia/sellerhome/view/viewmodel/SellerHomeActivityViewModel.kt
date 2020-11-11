@@ -19,8 +19,8 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getNotificationUseCase: GetNotificationUseCase,
         private val getSopInfoUseCase: GetShopInfoUseCase,
-        private val dispatcher: SellerHomeCoroutineDispatcher
-) : CustomBaseViewModel(dispatcher.main()) {
+        dispatcher: SellerHomeCoroutineDispatcher
+) : CustomBaseViewModel(dispatcher) {
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
     val notifications: LiveData<Result<NotificationUiModel>>

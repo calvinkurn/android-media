@@ -1,4 +1,4 @@
-package com.tokopedia.officialstore.official.presentation.adapter.viewmodel
+package com.tokopedia.officialstore.official.presentation.adapter.datamodel
 
 import android.os.Bundle
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeTypeFactory
@@ -6,7 +6,7 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
 
-data class ProductRecommendationViewModel(
+data class ProductRecommendationDataModel(
         val productItem: RecommendationItem,
         val listener: RecommendationListener
 ) : OfficialHomeVisitable {
@@ -17,7 +17,7 @@ data class ProductRecommendationViewModel(
 
     override fun visitableId(): String? = productItem.productId.toString()
 
-    override fun equalsWith(b: Any?): Boolean = b is ProductRecommendationViewModel &&
+    override fun equalsWith(b: Any?): Boolean = b is ProductRecommendationDataModel &&
             b.productItem == productItem
 
 }
