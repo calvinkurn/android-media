@@ -219,7 +219,7 @@ object DynamicProductDetailMapper {
 
     private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
         if (data == null) return listOf()
-        return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront, isAnnotation = it.isAnnotation) }
+        return data.content.map { ProductDetailInfoContent(icon = it.icon, title = it.title, subtitle = it.subtitle, applink = it.applink, showAtFront = it.showAtFront) }
     }
 
     private fun mapToCustomInfoUiModel(componentData: ComponentData?, componentName: String, componentType: String): ProductCustomInfoDataModel? {

@@ -4,8 +4,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoConten
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.uidata.*
-import com.tokopedia.product.info.model.specification.Row
-import com.tokopedia.product.info.model.specification.Specification
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.GUIDELINE_DETAIL_KEY
 import com.tokopedia.product.info.util.ProductDetailInfoConstant.HEADER_DETAIL_KEY
@@ -23,26 +21,15 @@ object ProductDetailInfoMapper {
         responseData.bottomsheetData.forEachIndexed { index, it ->
             when (it.componentName) {
                 HEADER_DETAIL_KEY -> {
-                    val productInfoDataWithoutDescription = parcelData.data.filter { it.title.toLowerCase() != DESCRIPTION_DETAIL_KEY }
-                    val productInfoDataWithMaximumList = parcelData.data.filter { it.title.toLowerCase() != DESCRIPTION_DETAIL_KEY }.take(MAXIMUM_LIST_SHOWING)
-                    val productSpecificationData = responseData.specification.catalog.specification.take(MAXIMUM_LIST_SHOWING - productInfoDataWithMaximumList.count()).map {
+                    val productInfoData = parcelData.data.filter { it.title.toLowerCase() != DESCRIPTION_DETAIL_KEY }.take(MAXIMUM_LIST_SHOWING)
+                    val productSpecificationData = responseData.specification.catalog.specification.take(MAXIMUM_LIST_SHOWING - productInfoData.count()).map {
                         ProductDetailInfoContent(title = it.row.firstOrNull()?.key
                                 ?: "", subtitle = it.row.firstOrNull()?.value?.firstOrNull()
                                 ?: "", applink = "")
                     }
 
-                    val listOfSpecificationWithAnnotation = responseData.specification.catalog.specification.toMutableList()
-
-                    // If the data and annotation is more than 8,
-                    // we need to append the annotation to the specification tab
-                    if (productInfoDataWithoutDescription.count() > 8) {
-                        listOfSpecificationWithAnnotation.addAll(0, productInfoDataWithoutDescription.filter { it.isAnnotation }.map {
-                            Specification("", listOf(Row(it.title, listOf(it.subtitle))))
-                        })
-                    }
-
-                    val appendedData = productInfoDataWithMaximumList + productSpecificationData
-                    listOfComponent.add(ProductDetailInfoHeaderDataModel(index, parcelData.productImageUrl, parcelData.productTitle, appendedData, listOfSpecificationWithAnnotation))
+                    val appendedData = productInfoData + productSpecificationData
+                    listOfComponent.add(ProductDetailInfoHeaderDataModel(index, parcelData.productImageUrl, parcelData.productTitle, appendedData, responseData.specification.catalog.specification))
                 }
                 DESCRIPTION_DETAIL_KEY -> {
                     val descriptionValue = parcelData.data.firstOrNull { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }?.subtitle

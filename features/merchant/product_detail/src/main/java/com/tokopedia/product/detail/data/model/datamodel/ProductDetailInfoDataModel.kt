@@ -39,6 +39,5 @@ data class ProductDetailInfoContent(
         val title: String = "",
         var subtitle: String = "",
         val applink: String = "",
-        val showAtFront: Boolean = false,
-        val isAnnotation: Boolean = false
+        val showAtFront: Boolean = false
 ) : Parcelable

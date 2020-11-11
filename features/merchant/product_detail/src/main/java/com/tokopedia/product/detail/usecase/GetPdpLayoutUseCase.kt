@@ -191,7 +191,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         subtitle
                         applink
                         showAtFront
-                        isAnnotation
                       }
                     }
                     ... on pdpDataSocialProof {
