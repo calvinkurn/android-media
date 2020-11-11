@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -163,7 +164,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private var threeDotsClickShopProductViewModel: ShopHomeProductViewModel? = null
+    private var threeDotsClickShopProductViewModel: ShopHomeProductUiModel? = null
     private var threeDotsClickShopCarouselProductUiModel: ShopHomeCarousellProductUiModel? = null
     @Inject
     lateinit var shopPageHomeTracking: ShopPageHomeTracking
@@ -266,6 +267,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
+        stopPerformanceMonitor()
+    }
+
+    private fun invalidateMonitoringPlt() {
+        (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -333,6 +339,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pauseSliderBannerAutoScroll()
+        invalidateMonitoringPlt()
     }
 
     override fun onDestroyView() {
@@ -389,12 +396,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    stopMonitoringPltRenderPage()
                     viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
-                    stopPerformanceMonitor()
                     val throwable = it.throwable
                     ShopUtil.logTimberWarning(
                             "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
@@ -402,9 +407,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
                                     ";error_trace='${Log.getStackTraceString(throwable)}'"
                     )
-                    stopMonitoringPltRenderPage()
                 }
             }
+            getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    stopMonitoringPltRenderPage()
+                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
         })
 
         viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
@@ -416,7 +426,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
             }
-            stopPerformanceMonitor()
         })
 
         viewModel?.newProductListData?.observe(viewLifecycleOwner, Observer {
@@ -619,7 +628,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessAddToCart(
             dataModelAtc: DataModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
     ) {
@@ -631,7 +640,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun trackClickAddToCart(
             dataModelAtc: DataModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            shopHomeProductViewModel: ShopHomeProductUiModel?,
             parentPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
     ) {
@@ -679,7 +688,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun updateProductListData(
             hasNextPage: Boolean,
-            productList: List<ShopHomeProductViewModel>,
+            productList: List<ShopHomeProductUiModel>,
             totalProductData: Int,
             isInitialData: Boolean
     ) {
@@ -949,7 +958,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProduct(
@@ -978,7 +987,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onAllProductItemImpression(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onAllProductItemImpression(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.impressionProduct(
@@ -1006,7 +1015,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    override fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductViewModel) {
+    override fun onThreeDotsAllProductClicked(shopHomeProductViewModel: ShopHomeProductUiModel) {
         threeDotsClickShopCarouselProductUiModel = null
         threeDotsClickShopProductViewModel = shopHomeProductViewModel
         showProductCardOptions(
@@ -1019,7 +1028,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductUiModel?) {
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProduct(
                     isOwner,
@@ -1051,7 +1060,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopPageHomeTracking.impressionProduct(
                 isOwner,
@@ -1079,7 +1088,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onThreeDotsCarouselProductItemClicked(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         threeDotsClickShopCarouselProductUiModel = shopHomeCarousellProductUiModel
         threeDotsClickShopProductViewModel = shopHomeProductViewModel
@@ -1095,7 +1104,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessRemoveWishList(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
             showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
@@ -1106,7 +1115,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun trackClickWishlist(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel,
+            shopHomeProductViewModel: ShopHomeProductUiModel,
             isWishlist: Boolean
     ) {
         val customDimensionShopPageProduct = CustomDimensionShopPageProduct.create(
@@ -1151,7 +1160,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessAddWishlist(
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeProductViewModel?.let {
             showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
@@ -1168,7 +1177,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         if (isLogin) {
             shopHomeProductViewModel?.let { product ->
@@ -1354,7 +1363,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
             shopPageHomeTracking.clickCampaignNplProduct(
@@ -1379,7 +1388,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             parentPosition: Int,
             itemPosition: Int,
             shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel?
+            shopHomeProductViewModel: ShopHomeProductUiModel?
     ) {
         shopHomeNewProductLaunchCampaignUiModel.data?.firstOrNull()?.let{
             shopPageHomeTracking.impressionCampaignNplProduct(

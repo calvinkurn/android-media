@@ -77,7 +77,7 @@ data class ShopInvoice(
         val itemDiscountStr: String?,
         val productProtectionStr: String?,
         val shippingPriceStr: String?,
-        val shippingTypeStr: String?,
+        val shippingInfo: String?,
         val discountOnShippingStr: String?,
         val shippingInsurancePriceStr: String?,
         val shippingAddress: String?
