@@ -89,6 +89,7 @@
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="rincian_pembayaran">Rincian Pembayaran</string>
+    <string name="metode_pembayaran">Metode Pembayaran</string>
     <string name="product_price_label">Total Harga</string>
     <string name="shipping_price_label">Total Ongkos Kirim</string>
     <string name="insurance_price_label">Biaya Asuransi</string>

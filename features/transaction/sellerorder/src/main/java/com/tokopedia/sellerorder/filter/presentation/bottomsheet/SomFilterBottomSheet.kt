@@ -188,6 +188,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         }
         filterDate = date
         somFilterAdapter?.updateDateFilterText(date)
+        showHideBottomSheetReset()
     }
 
     override fun getComponent(): SomFilterComponent? {
@@ -342,7 +343,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somListOrderParam?.endDate = ""
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         filterDate = ""
-        showHideBottomSheetReset()
     }
 
     private fun checkIsSelected(): Boolean {
