@@ -48,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/shipping_title"
         app:layout_constraintBottom_toBottomOf="@+id/kurir_label"
         app:typographyType="body_3"
-        app:typographyWeight="bold"
+        app:typographyWeight="reguler"
         tools:text="GO-JEK Same Day" />
 
     <RelativeLayout
@@ -77,11 +77,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl5"
             android:layout_toEndOf="@id/booking_code_title"
-            app:typographyType="body_3"
-            app:typographyWeight="reguler"
             android:inputType="none"
             android:textColor="@color/Unify_G500"
             android:textIsSelectable="true"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
             tools:text="ABCDEFHIJK >" />
 
     </RelativeLayout>

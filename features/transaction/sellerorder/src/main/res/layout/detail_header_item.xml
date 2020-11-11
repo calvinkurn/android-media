@@ -42,9 +42,9 @@
         android:id="@+id/header_see_history"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/see_detail"
-        app:typographyType="body_3"
+        app:typographyType="heading_6"
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -89,7 +89,7 @@
         android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_divider_1"
-        app:typographyType="body_3"
+        app:typographyType="heading_6"
         app:typographyWeight="reguler"
         tools:text="INV/20161025/XVI/X/55069657" />
 
@@ -106,13 +106,13 @@
         android:id="@+id/header_see_invoice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:text="@string/see_invoice"
-        app:typographyType="body_3"
         android:textColor="@color/Unify_G500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/header_invoice"
+        app:typographyType="heading_6"
         tools:text="@string/see_invoice" />
 
     <com.tokopedia.unifyprinciples.Typography

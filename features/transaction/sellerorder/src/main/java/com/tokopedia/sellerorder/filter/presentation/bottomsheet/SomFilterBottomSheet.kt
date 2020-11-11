@@ -24,7 +24,6 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
-import com.tokopedia.sellerorder.common.util.Utils.copy
 import com.tokopedia.sellerorder.common.util.Utils.copyInt
 import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
@@ -291,8 +290,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                     if (it.data.isEmpty()) {
                         somFilterAdapter?.setEmptyState(EmptyModel())
                     } else {
-                        showHideBottomSheetReset()
                         somFilterAdapter?.updateData(it.data)
+                        showHideBottomSheetReset()
                     }
                 }
                 is Fail -> { }
@@ -301,8 +300,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         observe(somFilterViewModel.updateFilterSelected) {
             when (it) {
                 is Success -> {
-                    showHideBottomSheetReset()
                     somFilterAdapter?.updateData(it.data)
+                    showHideBottomSheetReset()
                 }
                 is Fail -> { }
             }
