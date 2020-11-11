@@ -266,7 +266,7 @@ public class SearchActivity extends BaseActivity
 
     private void configureSearchNavigationToolbar() {
         hideToolbar();
-        setSearchNavigationToolbarIcon();
+        setSearchNavigationToolbar();
     }
 
     private void hideToolbar() {
@@ -275,9 +275,10 @@ public class SearchActivity extends BaseActivity
         toolbar.setVisibility(View.GONE);
     }
 
-    private void setSearchNavigationToolbarIcon(){
+    private void setSearchNavigationToolbar(){
         if (searchNavigationToolbar == null) return;
 
+        searchNavigationToolbar.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE);
         searchNavigationToolbar.setIcon(
                 new IconBuilder()
                         .addIcon(IconList.ID_CART, false, () -> Unit.INSTANCE)
