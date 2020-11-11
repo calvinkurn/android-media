@@ -13,7 +13,7 @@
       android:gravity="center"
       android:clickable="true"
       android:focusable="true"
-      android:background="@color/sticky_login_background"
+      android:background="@color/Unify_G100"
       android:orientation="horizontal">
         
         <ImageView

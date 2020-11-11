@@ -656,7 +656,7 @@
       "eventAction": "error state on report page",
       "event": "viewSellerBroadcastIris",
       "eventCategory": "seller broadcast",
-      "eventLabel": "{{\\d+ - \\d+ - .+ - .+}}",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
       "sessionIris": "{{.*}}",
       "currentSite": "{{.*}}",
       "shopId": "{{.*}}",

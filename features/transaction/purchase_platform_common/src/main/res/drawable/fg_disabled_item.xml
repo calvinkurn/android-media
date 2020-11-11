@@ -2,6 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
-    <solid android:color="@color/disabled_washout_foreground" />
+    <solid android:color="@color/Unify_N0_44" />
 
 </shape>
