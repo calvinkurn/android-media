@@ -172,4 +172,8 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
+
+    const val EXP_TOP_NAV = "Navigation Revamp"
+    const val VARIANT_OLD = "Existing Navigation"
+    const val VARIANT_REVAMP = "Navigation Revamp"
 }
