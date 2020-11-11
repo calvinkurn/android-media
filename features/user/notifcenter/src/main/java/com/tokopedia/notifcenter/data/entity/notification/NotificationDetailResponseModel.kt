@@ -6,5 +6,4 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 class NotificationDetailResponseModel constructor(
         val items: List<Visitable<NotificationTypeFactory>>,
         val hasNext: Boolean
-) {
-}
+)

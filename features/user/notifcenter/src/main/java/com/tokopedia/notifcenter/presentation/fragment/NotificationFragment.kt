@@ -25,6 +25,7 @@ import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.common.NotificationFilterType
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -72,6 +73,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun getScreenName(): String = "Notification"
     override fun getAdapterTypeFactory() = NotificationTypeFactoryImpl(this)
     override fun onItemClicked(t: Visitable<*>?) {}
+    override fun isAutoLoadEnabled(): Boolean = true
 
     override fun onAttachActivity(context: Context?) {
         if (context is InboxFragmentContainer) {
@@ -81,6 +83,14 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun loadData(page: Int) {
         viewModel.loadNotification(containerListener?.role)
+    }
+
+    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+        if (!viewModel.hasFilter()) {
+            viewModel.loadMoreRecom(page)
+        } else {
+            viewModel.loadMoreEarlier(containerListener?.role)
+        }
     }
 
     override fun onCreateView(
@@ -116,7 +126,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
-                renderList(it.data.items, false)
+                renderNotifications(it.data)
             }
         })
 
@@ -127,6 +137,18 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.recommendations.observe(viewLifecycleOwner, Observer {
             renderRecomList(it)
         })
+    }
+
+    private fun renderNotifications(data: NotificationDetailResponseModel) {
+        val hasNext = isInfiniteNotificationScroll(data)
+        renderList(data.items, hasNext)
+        if (hasNext) {
+            showLoading()
+        }
+    }
+
+    private fun isInfiniteNotificationScroll(data: NotificationDetailResponseModel): Boolean {
+        return data.hasNext && viewModel.hasFilter()
     }
 
     private fun renderRecomList(recoms: List<RecommendationUiModel>) {
@@ -159,10 +181,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
-    override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        viewModel.loadMoreRecom(page)
-    }
-
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
@@ -176,7 +194,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         )
     }
 
-    override fun loadMoreEarlier(lastKnownPosition: Int, element: LoadMoreUiModel) {
+    override fun loadMoreEarlier(
+            lastKnownPosition: Int,
+            element: LoadMoreUiModel
+    ) {
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
                 {

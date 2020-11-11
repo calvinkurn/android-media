@@ -15,11 +15,16 @@ class NotifcenterDetailMapper @Inject constructor() {
 
     fun mapFirstPage(
             response: NotifcenterDetailResponse,
-            needSectionTitle: Boolean = true
+            needSectionTitle: Boolean = true,
+            needLoadMoreButton: Boolean = true
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
-        items.addAll(mapNewSection(response, needSectionTitle).items)
-        items.addAll(mapEarlierSection(response, needSectionTitle, items.isNotEmpty()).items)
+        val newSections = mapNewSection(response, needSectionTitle, needLoadMoreButton).items
+        val earlierSections = mapEarlierSection(
+                response, needSectionTitle, needLoadMoreButton, items.isNotEmpty()
+        ).items
+        items.addAll(newSections)
+        items.addAll(earlierSections)
         return NotificationDetailResponseModel(
                 items = items,
                 hasNext = response.notifcenterDetail.paging.hasNext
@@ -28,7 +33,8 @@ class NotifcenterDetailMapper @Inject constructor() {
 
     fun mapNewSection(
             response: NotifcenterDetailResponse,
-            needSectionTitle: Boolean = true
+            needSectionTitle: Boolean = true,
+            needLoadMoreButton: Boolean = true
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
@@ -39,7 +45,9 @@ class NotifcenterDetailMapper @Inject constructor() {
             }
             items.addAll(notifcenterDetail.newList)
             if (notifcenterDetail.newPaging.hasNext) {
-                items.add(LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.NEW))
+                if (needLoadMoreButton) {
+                    items.add(LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.NEW))
+                }
                 notifcenterDetail.newPaging.lastNotifId = notifcenterDetail.newList.last().notifId
             }
         }
@@ -52,6 +60,7 @@ class NotifcenterDetailMapper @Inject constructor() {
     fun mapEarlierSection(
             response: NotifcenterDetailResponse,
             needSectionTitle: Boolean = true,
+            needLoadMoreButton: Boolean = true,
             needDivider: Boolean = false
     ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
@@ -66,7 +75,9 @@ class NotifcenterDetailMapper @Inject constructor() {
             }
             items.addAll(notifcenterDetail.list)
             if (notifcenterDetail.paging.hasNext) {
-                items.add(LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.EARLIER))
+                if (needLoadMoreButton) {
+                    items.add(LoadMoreUiModel(LoadMoreUiModel.LoadMoreType.EARLIER))
+                }
                 notifcenterDetail.paging.lastNotifId = notifcenterDetail.list.last().notifId
             }
         }

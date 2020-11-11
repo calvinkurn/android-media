@@ -11,6 +11,7 @@ import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -36,9 +37,13 @@ class NotifcenterDetailUseCase @Inject constructor(
         val params = generateParam(
                 filter, role, "", arrayOf("new")
         )
+        val needSectionTitle = !hasFilter(filter)
+        val needLoadMoreButton = needSectionTitle
         getNotifications(
                 params, onSuccess, onError,
-                { response -> mapper.mapFirstPage(response, true) },
+                { response ->
+                    mapper.mapFirstPage(response, needSectionTitle, needLoadMoreButton)
+                },
                 { response ->
                     updateNewPaging(response)
                     updateEarlierPaging(response)
@@ -54,13 +59,15 @@ class NotifcenterDetailUseCase @Inject constructor(
             onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        // TODO: confirm with BE if it need fields parameter
         val params = generateParam(
                 filter, role, pagingNew.lastNotifId, arrayOf("new")
         )
+        val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
                 params, onSuccess, onError,
-                { response -> mapper.mapNewSection(response, false) },
+                { response ->
+                    mapper.mapNewSection(response, false, needLoadMoreButton)
+                },
                 { response ->
                     updateNewPaging(response)
                 }
@@ -78,13 +85,20 @@ class NotifcenterDetailUseCase @Inject constructor(
         val params = generateParam(
                 filter, role, pagingEarlier.lastNotifId, emptyArray()
         )
+        val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
                 params, onSuccess, onError,
-                { response -> mapper.mapEarlierSection(response, false) },
+                { response ->
+                    mapper.mapEarlierSection(response, false, needLoadMoreButton)
+                },
                 { response ->
                     updateEarlierPaging(response)
                 }
         )
+    }
+
+    private fun hasFilter(@NotificationFilterType filter: Int): Boolean {
+        return filter != NotificationFilterType.NONE
     }
 
     private fun getNotifications(
@@ -140,6 +154,10 @@ class NotifcenterDetailUseCase @Inject constructor(
                 PARAM_LAST_NOTIF_ID to lastNotifId,
                 PARAM_FIELDS to fields
         )
+    }
+
+    fun cancelRunningOperation() {
+        coroutineContext.cancelChildren()
     }
 
     companion object {

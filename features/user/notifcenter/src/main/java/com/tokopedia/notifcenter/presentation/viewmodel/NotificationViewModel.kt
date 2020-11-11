@@ -17,7 +17,8 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import rx.Subscriber
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class NotificationViewModel @Inject constructor(
@@ -29,6 +30,10 @@ class NotificationViewModel @Inject constructor(
 
     @NotificationFilterType
     var filter = NotificationFilterType.NONE
+        set(value) {
+            field = value
+            cancelAllUseCase()
+        }
 
     private val _mutateNotificationItems = MutableLiveData<Result<NotificationDetailResponseModel>>()
     val notificationItems: LiveData<Result<NotificationDetailResponseModel>>
@@ -42,6 +47,10 @@ class NotificationViewModel @Inject constructor(
     val recommendations: LiveData<List<RecommendationUiModel>>
         get() = _recommendations
 
+    fun hasFilter(): Boolean {
+        return filter != NotificationFilterType.NONE
+    }
+
     /**
      * Load notification on first page
      */
@@ -53,24 +62,32 @@ class NotificationViewModel @Inject constructor(
         notifcenterDetailUseCase.getFirstPageNotification(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
-                    loadTopAdsBannerData()
+                    if (!hasFilter()) {
+                        loadTopAdsBannerData()
+                    }
                 },
                 {
                     _mutateNotificationItems.value = Fail(it)
-                    loadTopAdsBannerData()
+                    if (!hasFilter()) {
+                        loadTopAdsBannerData()
+                    }
                 }
         )
     }
 
     fun loadMoreEarlier(
             @RoleType
-            role: Int?,
-            onSuccess: (NotificationDetailResponseModel) -> Unit,
-            onError: (Throwable) -> Unit
+            role: Int?
     ) {
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
-                filter, role, onSuccess, onError
+                filter, role,
+                {
+                    _mutateNotificationItems.value = Success(it)
+                },
+                {
+                    _mutateNotificationItems.value = Fail(it)
+                }
         )
     }
 
@@ -86,70 +103,66 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    fun getFirstRecommendationData() {
-        val params = getRecommendationUseCase.getRecomParams(
-                0,
-                RECOM_WIDGET,
-                RECOM_SOURCE_INBOX_PAGE,
-                emptyList()
+    fun loadMoreEarlier(
+            @RoleType
+            role: Int?,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
+            onError: (Throwable) -> Unit
+    ) {
+        if (role == null) return
+        notifcenterDetailUseCase.getMoreEarlierNotifications(
+                filter, role, onSuccess, onError
         )
-        getRecommendationUseCase.execute(
-                params,
-                object : Subscriber<List<RecommendationWidget>>() {
-                    override fun onStart() {
-//                        inboxView?.showLoadMoreLoading()
-                    }
+    }
 
-                    override fun onCompleted() {
-//                        inboxView?.hideLoadMoreLoading()
-                    }
-
-                    override fun onError(e: Throwable) {
-//                        inboxView?.hideLoadMoreLoading()
-                    }
-
-                    override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
-                        val recommendationWidget = recommendationWidgets
-                                .getOrNull(0) ?: return
+    private fun getFirstRecommendationData() {
+        launchCatchError(dispatcher.io(),
+                {
+                    val params = getRecommendationUseCase.getRecomParams(
+                            0,
+                            RECOM_WIDGET,
+                            RECOM_SOURCE_INBOX_PAGE,
+                            emptyList()
+                    )
+                    val recommendationWidget = getRecommendationUseCase.createObservable(params)
+                            .toBlocking()
+                            .single()[0]
 //                        visitables.add(RecomTitle(recommendationWidget?.title))
+                    withContext(dispatcher.ui()) {
                         _recommendations.value = getRecommendationVisitables(recommendationWidget)
+                    }
 //                        inboxView?.hideLoadMoreLoading()
 //                        inboxView?.onRenderRecomInbox(visitables)
-                    }
-                })
+                },
+                {
+
+                }
+        )
     }
 
     fun loadMoreRecom(page: Int) {
-        val params = getRecommendationUseCase.getRecomParams(
-                page,
-                RECOM_WIDGET,
-                RECOM_SOURCE_INBOX_PAGE,
-                emptyList()
-        )
-        getRecommendationUseCase.execute(
-                params,
-                object : Subscriber<List<RecommendationWidget>>() {
-                    override fun onStart() {
-//                        inboxView?.showLoadMoreLoading()
-                    }
-
-                    override fun onCompleted() {
-//                        inboxView?.hideLoadMoreLoading()
-                    }
-
-                    override fun onError(e: Throwable) {
-//                        inboxView?.hideLoadMoreLoading()
-                    }
-
-                    override fun onNext(recommendationWidgets: List<RecommendationWidget>) {
-                        val recommendationWidget = recommendationWidgets
-                                .getOrNull(0) ?: return
+        launchCatchError(dispatcher.io(),
+                {
+                    val params = getRecommendationUseCase.getRecomParams(
+                            page,
+                            RECOM_WIDGET,
+                            RECOM_SOURCE_INBOX_PAGE,
+                            emptyList()
+                    )
+                    val recommendationWidget = getRecommendationUseCase.createObservable(params)
+                            .toBlocking()
+                            .single()[0]
 //                        visitables.add(RecomTitle(recommendationWidget?.title))
+                    withContext(dispatcher.ui()) {
                         _recommendations.value = getRecommendationVisitables(recommendationWidget)
+                    }
 //                        inboxView?.hideLoadMoreLoading()
 //                        inboxView?.onRenderRecomInbox(visitables)
-                    }
-                })
+                },
+                {
+
+                }
+        )
     }
 
     private fun getRecommendationVisitables(
@@ -185,6 +198,11 @@ class NotificationViewModel @Inject constructor(
                 }
         )
 
+    }
+
+    private fun cancelAllUseCase() {
+        notifcenterDetailUseCase.cancelRunningOperation()
+        coroutineContext.cancelChildren()
     }
 
     companion object {
