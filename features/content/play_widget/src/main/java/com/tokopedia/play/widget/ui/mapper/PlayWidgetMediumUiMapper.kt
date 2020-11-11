@@ -1,5 +1,6 @@
 package com.tokopedia.play.widget.ui.mapper
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
 import com.tokopedia.play.widget.data.PlayWidgetItemShare
@@ -7,6 +8,7 @@ import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
@@ -15,7 +17,8 @@ import javax.inject.Inject
  */
 class PlayWidgetMediumUiMapper @Inject constructor(
         private val configMapper: PlayWidgetConfigMapper,
-        private val videoMapper: PlayWidgetVideoMapper
+        private val videoMapper: PlayWidgetVideoMapper,
+        private val userSession: UserSessionInterface
 ) : PlayWidgetMapper {
 
     override fun mapWidget(data: PlayWidget, prevModel: PlayWidgetUiModel?): PlayWidgetUiModel {
@@ -87,7 +90,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 activeReminder = item.config.isReminderSet,
                 partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
                 video = videoMapper.mapWidgetItemVideo(item.video),
-                hasAction = channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live,
+                hasAction = shouldHaveActionMenu(channelType, item.partner.id),
                 channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
                 share = mapWidgetShare(item.share)
         )
@@ -104,5 +107,11 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 fullShareContent = fullShareContent,
                 isShow = item.isShowButton && item.redirectUrl.isNotBlank()
         )
+    }
+
+    private fun shouldHaveActionMenu(channelType: PlayWidgetChannelType, partnerId: String): Boolean {
+        return (channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live) &&
+                GlobalConfig.isSellerApp() &&
+                userSession.shopId == partnerId
     }
 }
