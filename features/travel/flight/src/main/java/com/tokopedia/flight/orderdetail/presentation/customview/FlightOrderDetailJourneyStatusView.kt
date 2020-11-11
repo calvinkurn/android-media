@@ -18,24 +18,51 @@ class FlightOrderDetailJourneyStatusView @JvmOverloads constructor(context: Cont
 
     var listener: Listener? = null
 
-    private var tickerText: String = ""
+    private var hasETicket: Boolean = false
     private var journeys: List<OrderDetailJourneyModel> = arrayListOf()
 
     init {
         View.inflate(context, R.layout.view_flight_order_detail_journey, this)
     }
 
-    fun setData(tickerText: String,
+    fun setData(hasETicket: Boolean,
                 journeyList: List<OrderDetailJourneyModel>) {
-        this.tickerText = tickerText
+        this.hasETicket = hasETicket
         this.journeys = journeyList
     }
 
     fun buildView() {
+        renderTicketTicker()
+        renderEticketButton()
         renderTicketView()
     }
 
-    fun renderTicketView() {
+    private fun renderTicketTicker() {
+        if (hasETicket) {
+            tickerFlightOrderJourneyETicket.visibility = View.VISIBLE
+        } else {
+            tickerFlightOrderJourneyETicket.visibility = View.GONE
+        }
+    }
+
+    private fun renderEticketButton() {
+        if (hasETicket) {
+            btnFlightOrderDetailSendEticket.isEnabled = true
+            btnFlightOrderDetailViewEticket.isEnabled = true
+
+            btnFlightOrderDetailSendEticket.setOnClickListener {
+                listener?.onSendETicketClicked()
+            }
+            btnFlightOrderDetailViewEticket.setOnClickListener {
+                listener?.onViewETicketClicked()
+            }
+        } else {
+            btnFlightOrderDetailSendEticket.isEnabled = false
+            btnFlightOrderDetailViewEticket.isEnabled = false
+        }
+    }
+
+    private fun renderTicketView() {
         if (journeys.isNotEmpty()) {
             val onwardJourney = journeys[0]
             if (onwardJourney.airlineLogo != null) {
@@ -156,6 +183,8 @@ class FlightOrderDetailJourneyStatusView @JvmOverloads constructor(context: Cont
 
     interface Listener {
         fun onPnrCopyClicked(pnr: String, isReturn: Boolean)
+        fun onSendETicketClicked()
+        fun onViewETicketClicked()
     }
 
 }

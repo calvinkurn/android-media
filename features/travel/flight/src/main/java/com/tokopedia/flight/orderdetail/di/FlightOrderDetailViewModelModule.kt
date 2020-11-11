@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
+import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightResendETicketViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -25,4 +26,11 @@ abstract class FlightOrderDetailViewModelModule {
     @IntoMap
     @ViewModelKey(FlightOrderDetailViewModel::class)
     abstract fun flightOrderDetailViewModel(viewModel: FlightOrderDetailViewModel): ViewModel
+
+    @FlightOrderDetailScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlightResendETicketViewModel::class)
+    abstract fun flightOrderDetailViewModel(viewModel: FlightResendETicketViewModel): ViewModel
+
 }

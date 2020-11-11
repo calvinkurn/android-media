@@ -13,3 +13,15 @@ class FlightOrderDetailETicketEntity(@SerializedName("data")
                    @Expose
                    val flightGetEticket: FlightOrderDetailETicketEntity = FlightOrderDetailETicketEntity())
 }
+
+class FlightOrderDetailResendETicketEntity(@SerializedName("meta")
+                                           @Expose
+                                           val meta: Meta = Meta()) {
+    class Meta(@SerializedName("status")
+               @Expose
+               val status: String = "")
+
+    class Response(@SerializedName("flightResendEmail")
+                   @Expose
+                   val flightResendEmail: FlightOrderDetailResendETicketEntity = FlightOrderDetailResendETicketEntity())
+}
