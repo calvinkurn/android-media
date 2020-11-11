@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.adapter.PostFilterAdapter
 import com.tokopedia.sellerhomecommon.presentation.model.PostFilterUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import kotlinx.android.synthetic.main.shc_post_filter_bottom_sheet.view.*
 
 /**
  * Created By @ilhamsuaib on 06/11/20
