@@ -53,15 +53,16 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         const val REQUEST_LOGIN_FAVORITE = 213
         const val REQUEST_LOGIN_TRANSACTION = 214
         const val REQUEST_LOGIN_POST_LIKES = 215
-        private const val COACH_MARK_TAG = "event_home"
+        const val COACH_MARK_TAG = "event_home"
         const val ENT_HOME_PAGE_PERFORMANCE = "et_event_homepage"
 
-        private const val PREFERENCES_NAME = "event_home_preferences"
-        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
+        const val PREFERENCES_NAME = "event_home_preferences"
+        const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
     }
 
     @Inject
     lateinit var factory: HomeEventViewModelFactory
+
     @Inject
     lateinit var userSession: UserSessionInterface
     lateinit var viewModel: HomeEventViewModel
@@ -179,15 +180,16 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
     }
 
     private fun startShowCase() {
+        val coachMarkShown = localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+        if (coachMarkShown) return
+
+        var coachItems = ArrayList<CoachMarkItem>()
+        coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
         val coachMark = CoachMarkBuilder().build()
-        if (localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)) {
-            var coachItems = ArrayList<CoachMarkItem>()
-            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.ent_home_page_coach_mark_title_1), getString(R.string.ent_home_page_coach_mark_desc_1)))
-            coachMark.show(activity, COACH_MARK_TAG, coachItems)
-            localCacheHandler.apply {
-                putBoolean(SHOW_COACH_MARK_KEY, false)
-                applyEditor()
-            }
+        coachMark.show(activity, COACH_MARK_TAG, coachItems)
+        localCacheHandler.apply {
+            putBoolean(SHOW_COACH_MARK_KEY, false)
+            applyEditor()
         }
     }
 

@@ -91,7 +91,7 @@ class CategoryEventActivityTest {
     }
 
     companion object {
-        private const val KEY_EVENT_CHILD = "event_search"
+        private const val KEY_EVENT_CHILD = "searchEventCategory"
 
         private const val PATH_RESPONSE_CATEGORY = "event_category.json"
 

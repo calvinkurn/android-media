@@ -371,8 +371,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         const val DATE_MULTIPLICATION = 1000
         const val DATE_TICKET = "EEE, dd MMM yyyy"
 
-        private const val PREFERENCES_NAME = "event_ticket_preferences"
-        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
+        const val PREFERENCES_NAME = "event_ticket_preferences"
+        const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
         private const val COACH_MARK_START_DELAY = 1000L
     }
 

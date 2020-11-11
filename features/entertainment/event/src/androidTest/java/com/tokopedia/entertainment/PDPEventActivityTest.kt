@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -17,6 +18,7 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,6 +34,7 @@ class PDPEventActivityTest {
 
     @Before
     fun setup() {
+        Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse{
@@ -78,10 +81,15 @@ class PDPEventActivityTest {
         onView(getElementFromMatchAtPosition(withText("23"), 0)).perform(click())
     }
 
+    @After
+    fun cleanUp() {
+        Intents.release()
+    }
+
     companion object {
-        private const val KEY_QUERY_PDP_V3 = "event_product_detail_v3"
+        private const val KEY_QUERY_PDP_V3 = "EventProductDetail"
         private const val KEY_TRAVEL_HOLIDAY = "TravelGetHoliday"
-        private const val KEY_QUERY_CONTENT = "event_content_by_id"
+        private const val KEY_QUERY_CONTENT = "EventContentById"
 
         private const val ENTERTAINMENT_EVENT_PDP_VALIDATOR_QUERY = "tracker/event/pdpeventcheck.json"
 

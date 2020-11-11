@@ -6,7 +6,9 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -21,6 +23,8 @@ import com.tokopedia.entertainment.data.MockMetaData
 import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import org.hamcrest.core.AllOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -38,6 +42,7 @@ class CheckoutEventActivityTest {
 
     @Before
     fun setup() {
+        Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse {
@@ -68,7 +73,7 @@ class CheckoutEventActivityTest {
     @Test
     fun validateCheckoutEvent() {
         Thread.sleep(5000)
-        onView(withId(R.id.tg_event_checkout_widget_pessanger_name)).perform(click())
+        onView(AllOf.allOf(withId(R.id.tg_event_checkout_widget_pessanger_name), isDisplayed())).perform(click())
         Thread.sleep(3000)
         onView(withId(R.id.recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition<EventPDPTextFieldViewHolder>(0, typeText("Firmanda Mulyawan Nugroho")))
         Thread.sleep(3000)
@@ -95,9 +100,15 @@ class CheckoutEventActivityTest {
         ViewMatchers.assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ENTERTAINMENT_EVENT_CHECKOUT_VALIDATOR_QUERY), hasAllSuccess())
     }
 
+    @After
+    fun cleanUp() {
+        Intents.release()
+    }
+
+
     companion object {
-        private const val KEY_QUERY_PDP_V3 = "event_product_detail_v3"
-        private const val KEY_CONTENT = "event_content_by_id"
+        private const val KEY_QUERY_PDP_V3 = "EventProductDetail"
+        private const val KEY_CONTENT = "EventContentById"
 
         private const val PATH_RESPONSE_CHECKOUT = "event_checkout.json"
         private const val PATH_RESPONSE_CHECKOUT_CONTENT = "event_checkout_content.json"

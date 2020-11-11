@@ -5,6 +5,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
@@ -14,12 +15,17 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
+import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import org.hamcrest.core.AllOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +34,6 @@ class PDPTicketEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
-    private lateinit var localCacheHandler: LocalCacheHandler
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
@@ -36,13 +41,9 @@ class PDPTicketEventActivityTest {
 
     @Before
     fun setup(){
+        Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
-            applyEditor()
-        }
         setupGraphqlMockResponse{
             setupGraphqlMockResponse{
                 addMockResponse(
@@ -70,6 +71,12 @@ class PDPTicketEventActivityTest {
             putExtra(EventPDPTicketActivity.END_DATE, "")
 
         }
+
+        LocalCacheHandler(context, EventPDPTicketFragment.PREFERENCES_NAME).also {
+            it.putBoolean(EventPDPTicketFragment.SHOW_COACH_MARK_KEY, false)
+            it.applyEditor()
+        }
+
         activityRule.launchActivity(intent)
     }
 
@@ -77,6 +84,7 @@ class PDPTicketEventActivityTest {
     @Test
     fun validatePDPTicketEvent() {
         Thread.sleep(5000)
+
         click_package()
         click_quantity()
         click_beli()
@@ -91,7 +99,7 @@ class PDPTicketEventActivityTest {
     }
 
     fun click_quantity() {
-        val pilihInteraction = onView(withId(R.id.txtPilih_ticket))
+        val pilihInteraction = onView(AllOf.allOf(withId(R.id.txtPilih_ticket), isDisplayed()))
         pilihInteraction.perform(click())
 
         val addQuantiryinteraction = onView(withId(R.id.quantity_editor_add))
@@ -106,14 +114,17 @@ class PDPTicketEventActivityTest {
         Thread.sleep(3000)
     }
 
+    @After
+    fun cleanUp() {
+        Intents.release()
+    }
+
     companion object {
         private const val ENTERTAINMENT_EVENT_PDP_TICKET_VALIDATOR_QUERY = "tracker/event/pdpticketeventcheck.json"
-        private const val PREFERENCES_NAME = "event_ticket_preferences"
-        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
 
-        private const val KEY_QUERY_PDP_V3 = "event_product_detail_v3"
+        private const val KEY_QUERY_PDP_V3 = "EventProductDetail"
         private const val KEY_TRAVEL_HOLIDAY = "TravelGetHoliday"
-        private const val KEY_QUERY_CONTENT = "event_content_by_id"
+        private const val KEY_QUERY_CONTENT = "EventContentById"
 
         private const val PATH_RESPONSE_PDP = "event_pdp_ticket.json"
         private const val PATH_RESPONSE_PDP_CONTENT = "event_pdp_content.json"

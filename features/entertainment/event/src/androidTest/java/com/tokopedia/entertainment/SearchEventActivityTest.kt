@@ -6,6 +6,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -20,6 +21,7 @@ import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListV
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -34,6 +36,7 @@ class SearchEventActivityTest {
 
     @Before
     fun setup(){
+        Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
         setupGraphqlMockResponse{
@@ -79,10 +82,15 @@ class SearchEventActivityTest {
         onView(ViewMatchers.isRoot()).perform(ViewActions.pressBack())
     }
 
+    @After
+    fun cleanUp() {
+        Intents.release()
+    }
+
     companion object {
         private const val ENTERTAINMENT_EVENT_SEARCH_VALIDATOR_QUERY = "tracker/event/searchpageevent.json"
 
-        private const val KEY_EVENT_CHILD = "event_location_search"
+        private const val KEY_EVENT_CHILD = "EventCategories"
 
         private const val PATH_RESPONSE_SEARCH = "event_search.json"
     }

@@ -1,11 +1,15 @@
 package com.tokopedia.entertainment
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.pressBack
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.intent.Intents
+import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -20,34 +24,33 @@ import com.tokopedia.entertainment.home.adapter.viewholder.CategoryEventViewHold
 import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import com.tokopedia.entertainment.home.fragment.EventHomeFragment
 import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
+import org.hamcrest.core.IsNot
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+
 
 class HomeEventActivityTest {
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
     private val gtmLogDBSource = GtmLogDBSource(context)
     private val graphqlCacheManager = GraphqlCacheManager()
-    private lateinit var localCacheHandler: LocalCacheHandler
 
     @get:Rule
-    var activityRule =  ActivityTestRule(HomeEventActivity::class.java, false, false)
+    var activityRule = ActivityTestRule(HomeEventActivity::class.java, false, false)
 
     @Before
     fun setup() {
+        Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
-        localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
-            applyEditor()
-        }
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
@@ -56,7 +59,15 @@ class HomeEventActivityTest {
         }
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, HomeEventActivity::class.java)
+
+        LocalCacheHandler(context, EventHomeFragment.PREFERENCES_NAME).also {
+            it.putBoolean(EventHomeFragment.SHOW_COACH_MARK_KEY, false)
+            it.applyEditor()
+        }
+
         activityRule.launchActivity(intent)
+
+        Intents.intending(IsNot.not(IntentMatchers.isInternal())).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
     }
 
     @Test
@@ -64,6 +75,7 @@ class HomeEventActivityTest {
         Thread.sleep(5000)
 
         impression_banner()
+
         click_banner()
 
         click_category_icon()
@@ -106,6 +118,8 @@ class HomeEventActivityTest {
     }
 
     fun click_banner() {
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+
         val viewInteraction = onView(withId(R.id.banner_recyclerview)).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<BannerViewPagerAdapter.BannerViewHolder>(0, click()))
     }
@@ -151,7 +165,7 @@ class HomeEventActivityTest {
         onView(isRoot()).perform(pressBack())
     }
 
-    fun click_see_all_taman_bermain_lokal(){
+    fun click_see_all_taman_bermain_lokal() {
         Thread.sleep(1000)
         val viewInteraction = onView(AllOf.allOf(
                 AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),
@@ -200,14 +214,14 @@ class HomeEventActivityTest {
         onView(isRoot()).perform(pressBack())
     }
 
-    fun click_see_all_taman_bermain_mancanegara(){
-            Thread.sleep(1000)
-            val viewInteraction = onView(AllOf.allOf(
-                    AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),
-                            isDisplayed()))).check(matches(isDisplayed()))
-            viewInteraction.perform(click())
-            Thread.sleep(3000)
-            onView(isRoot()).perform(pressBack())
+    fun click_see_all_taman_bermain_mancanegara() {
+        Thread.sleep(1000)
+        val viewInteraction = onView(AllOf.allOf(
+                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),
+                        isDisplayed()))).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
+        Thread.sleep(3000)
+        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_aktivitas() {
@@ -229,10 +243,10 @@ class HomeEventActivityTest {
         onView(isRoot()).perform(pressBack())
     }
 
-    fun click_see_all_aktivitas(){
+    fun click_see_all_aktivitas() {
         Thread.sleep(1000)
         val viewInteraction = onView(AllOf.allOf(
-                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Aktivitas")),
+                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)), hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Aktivitas")),
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
@@ -258,10 +272,10 @@ class HomeEventActivityTest {
         onView(isRoot()).perform(pressBack())
     }
 
-    fun click_see_all_festival(){
+    fun click_see_all_festival() {
         Thread.sleep(1000)
         val viewInteraction = onView(AllOf.allOf(
-                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Festival")),
+                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)), hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Festival")),
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
@@ -288,10 +302,10 @@ class HomeEventActivityTest {
         onView(isRoot()).perform(pressBack())
     }
 
-    fun click_see_all_event(){
+    fun click_see_all_event() {
         Thread.sleep(1000)
         val viewInteraction = onView(AllOf.allOf(
-                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Events")),
+                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)), hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Events")),
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
@@ -317,23 +331,25 @@ class HomeEventActivityTest {
         onView(isRoot()).perform(pressBack())
     }
 
-    fun click_see_all_aktivitas_anak(){
+    fun click_see_all_aktivitas_anak() {
         Thread.sleep(1000)
         val viewInteraction = onView(AllOf.allOf(
-                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)),hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Aktivitas Anak")),
+                AllOf.allOf(withId(R.id.btn_see_all), isDescendantOfA(withId(R.id.ent_grid_layout)), hasSibling(withId(R.id.ent_title_card)), hasSibling(withText("Aktivitas Anak")),
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
         onView(isRoot()).perform(pressBack())
     }
 
+    @After
+    fun cleanUp() {
+        Intents.release()
+    }
+
     companion object {
         private const val ENTERTAINMENT_EVENT_HOME_VALIDATOR_QUERY = "tracker/event/homeeventcheck.json"
-        private const val KEY_EVENT_CHILD = "event_home"
+        private const val KEY_EVENT_CHILD = "searchEventCategory"
         private const val PATH_RESPONSE_HOME = "event_home.json"
-
-        private const val PREFERENCES_NAME = "event_home_preferences"
-        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_home"
     }
 
 }
