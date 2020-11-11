@@ -420,7 +420,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
         shareVoucherBottomSheet
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId)
+                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId, userSession.shopId)
                     }
                 }
                 .show(childFragmentManager)

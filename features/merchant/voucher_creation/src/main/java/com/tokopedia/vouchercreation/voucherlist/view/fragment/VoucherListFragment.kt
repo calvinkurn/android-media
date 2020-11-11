@@ -598,7 +598,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         ShareVoucherBottomSheet.createInstance()
                 .setOnItemClickListener { socmedType ->
                     context?.run {
-                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId)
+                        shopBasicData?.shareVoucher(this, socmedType, voucher, userSession.userId, userSession.shopId)
                     }
                 }
                 .show(childFragmentManager)

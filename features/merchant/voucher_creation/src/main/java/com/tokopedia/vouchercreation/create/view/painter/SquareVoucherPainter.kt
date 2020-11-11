@@ -289,7 +289,7 @@ class SquareVoucherPainter(private val context: Context,
                 visibility = View.VISIBLE
                 typeface = Typeface.DEFAULT_BOLD
                 text = value
-                textSize = context.resources.getDimensionPixelSize(type.dimenRes).toFloat()
+                textSize = type.textSize
 
                 var textColor = Color.BLACK
                 if (type == PostImageTextType.SCALE) {

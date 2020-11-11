@@ -65,13 +65,14 @@ fun FragmentManager.dismissBottomSheetWithTags(vararg tags: String) {
 fun ShopBasicDataResult.shareVoucher(context: Context,
                                      @SocmedType socmedType: Int,
                                      voucher: VoucherUiModel,
-                                     userId: String) {
+                                     userId: String,
+                                     shopId: String) {
     val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
     val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
         type = LinkerData.MERCHANT_VOUCHER
         uri = shareUrl
         id = voucher.id.toString()
-        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, voucher.shopId.toString()).orEmpty()
+        deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId.toString()).orEmpty()
     })
     LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
