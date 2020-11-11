@@ -122,6 +122,11 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -231,6 +236,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
+    private var navToolbar: NavToolbar? = null
 
     private val BUNDLE = "bundle"
 
@@ -262,7 +268,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
         initBtnAction()
-        initToolbar()
+        navAbTestCondition({ initNavToolbar() }, { initToolbar() })
         initStickyLogin(view)
         renderInitialAffiliate()
     }
@@ -332,15 +338,23 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun reloadCartCounter() {
         activity?.run {
             if (isAdded) {
-                menu?.let {
-                    if (it.size() > 2) {
-                        val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
-                        setBadgeMenuCart(menuCart)
+                navAbTestCondition ({ setNavToolBarCartCounter() }, {
+                    menu?.let {
+                        if (it.size() > 2) {
+                            val menuCart = it.findItem(R.id.action_cart)
+                            menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
+                            setBadgeMenuCart(menuCart)
+                        }
                     }
-                }
+                })
             }
         }
+    }
+
+    private fun setNavToolBarCartCounter(){
+        val localCacheHandler = LocalCacheHandler(context, "CART")
+        val cartCount = localCacheHandler.getInt("CACHE_TOTAL_CART", 0)
+        navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -1413,7 +1427,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
             renderVariant(viewModel.variantData)
-            et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
+            val hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
+            navAbTestCondition({ setNavToolbarSearchHint(hint) }, { et_search.setHint(hint) })
             pdpUiUpdater?.updateDataP1(context, productInfo)
             actionButtonView.setButtonP1(productInfo.data.preOrder, productInfo.basic.isLeasing)
 
@@ -2110,6 +2125,25 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
         }
         et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
+    }
+
+    private fun initNavToolbar() {
+        search_pdp_toolbar?.hide()
+        navToolbar = view?.findViewById(R.id.pdp_navtoolbar)
+        navToolbar?.apply {
+            setIcon(
+                    IconBuilder()
+                            .addIcon(IconList.ID_MESSAGE) {}
+                            .addIcon(IconList.ID_CART) {}
+                            .addIcon(IconList.ID_NAV_GLOBAL) {}
+            )
+            setupSearchbar(listOf(HintData(getString(R.string.pdp_search_hint))))
+            show()
+        }
+    }
+
+    private fun setNavToolbarSearchHint(hint: String) {
+        navToolbar?.setupSearchbar(listOf(HintData(hint)))
     }
 
     private fun initStickyLogin(view: View) {

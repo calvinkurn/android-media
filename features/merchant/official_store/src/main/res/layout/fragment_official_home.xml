@@ -36,7 +36,7 @@
         android:id="@+id/coordinator_layout_fragment_os"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/white"/>
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarLayout"
@@ -44,14 +44,14 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:animateLayoutChanges="true"
-            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"/>
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 app:layout_scrollFlags="scroll|enterAlways|exitUntilCollapsed"
                 android:id="@+id/collapsing_toolbar"
                 android:minHeight="@dimen/dp_40"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"/>
 
     <com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
         android:id="@+id/tablayout"

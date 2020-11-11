@@ -56,6 +56,24 @@
 
     </androidx.appcompat.widget.Toolbar>
 
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/pdp_navtoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:toolbarBackButton="back"
+        app:toolbarInitialTheme="light"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarAlwaysShowShadow="false"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/toolbar_barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="pdp_navtoolbar, search_pdp_toolbar"
+        app:barrierDirection="bottom"/>
+
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipeRefreshPdp"
         android:layout_width="match_parent"
@@ -66,7 +84,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@+id/search_pdp_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_barrier">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_pdp"
