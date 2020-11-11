@@ -110,4 +110,8 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(),
         pageLoadTimePerformanceInterface.stopMonitoring()
     }
 
+    override fun invalidateMonitoringPlt() {
+        performanceMonitoringShop?.invalidate()
+    }
+
 }

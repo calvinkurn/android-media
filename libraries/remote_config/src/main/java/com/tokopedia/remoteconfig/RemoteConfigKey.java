@@ -46,6 +46,8 @@ public class RemoteConfigKey {
     public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
     public static final String CUSTOMER_HOTEL_BOOK_FOR_TODAY = "android_customer_hotel_enable_booking_for_today";
     public static final String ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW = "android_customer_flight_booking_new_flow";
+    public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST = "app_flag_flight_rapid_test";
+    public static final String ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING = "app_flag_flight_seat_distancing";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
 
@@ -225,6 +227,8 @@ public class RemoteConfigKey {
     public static final String ENABLE_PUSH_NOTIFICATION_CHAT_SELLER = "android_sellerapp_enable_push_notif_reply_chat";
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
+
+    public static final String CUSTOMER_APP_UPDATE = "android_customer_app_update";
 
     public static final String ENABLE_OLD_SHOP_SETTINGS = "app_enable_old_shop_settings";
 

@@ -71,7 +71,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
 
             override fun onCloseIconClicked() {
-                onBackPressed()
+                activity?.onBackPressed()
             }
         })
     }

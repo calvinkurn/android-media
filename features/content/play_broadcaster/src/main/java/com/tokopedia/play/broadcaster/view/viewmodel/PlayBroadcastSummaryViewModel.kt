@@ -9,7 +9,9 @@ import com.tokopedia.play.broadcaster.domain.usecase.UpdateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetLiveStatisticsUseCase
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
 import com.tokopedia.play.broadcaster.ui.model.TrafficMetricUiModel
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
@@ -60,13 +62,18 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
 
     }
 
-    // TODO: ask PO last status this use case
     fun saveVideo() {
         _observableSaveVideo.value = NetworkResult.Loading
         scope.launchCatchError(block = {
-            withContext(dispatcher.io) {
-                delay(2000)
-            }
+            updateChannelUseCase.apply {
+                setQueryParams(
+                        UpdateChannelUseCase.createUpdateStatusRequest(
+                                channelId = channelId,
+                                authorId = userSession.shopId,
+                                status = PlayChannelStatusType.Transcoding
+                        )
+                )
+            }.executeOnBackground()
             _observableSaveVideo.value = NetworkResult.Success(true)
         }) {
             _observableSaveVideo.value = NetworkResult.Fail(it) { saveVideo() }
@@ -76,21 +83,17 @@ class PlayBroadcastSummaryViewModel @Inject constructor(
     fun deleteVideo() {
         _observableDeleteVideo.value = NetworkResult.Loading
         scope.launchCatchError(block = {
-            // TODO: testing only
             withContext(dispatcher.io) {
-                delay(2000)
+                updateChannelUseCase.apply {
+                    setQueryParams(
+                            UpdateChannelUseCase.createUpdateStatusRequest(
+                                    channelId = channelId,
+                                    authorId = userSession.shopId,
+                                    status = PlayChannelStatusType.Deleted
+                            )
+                    )
+                }.executeOnBackground()
             }
-//            withContext(dispatcher.io) {
-//                updateChannelUseCase.apply {
-//                    setQueryParams(
-//                            UpdateChannelUseCase.createUpdateStatusRequest(
-//                                    channelId = channelId,
-//                                    authorId = userSession.shopId,
-//                                    status = PlayChannelStatus.Deleted
-//                            )
-//                    )
-//                }.executeOnBackground()
-//            }
             _observableDeleteVideo.value = NetworkResult.Success(true)
         }) {
             _observableDeleteVideo.value = NetworkResult.Fail(it) { deleteVideo() }

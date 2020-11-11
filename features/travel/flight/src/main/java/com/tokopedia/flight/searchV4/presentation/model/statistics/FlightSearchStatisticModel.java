@@ -21,12 +21,15 @@ public class FlightSearchStatisticModel {
     private boolean isHaveSpecialPrice;
     private boolean isHaveBaggage;
     private boolean isHaveInFlightMeal;
+    private boolean isHasFreeRapidTest;
+    private boolean isSeatDistancing;
 
     public FlightSearchStatisticModel(int minPrice, int maxPrice, int minDuration, int maxDuration,
                                       List<TransitStat> transitTypeStatList, List<AirlineStat> airlineStatList,
                                       List<DepartureStat> departureTimeStatList, List<DepartureStat> arrivalTimeStatList,
                                       List<RefundableStat> refundableTypeStatList, boolean isHaveSpecialPrice,
-                                      boolean isHaveBaggage, boolean isHaveInFlightMeal) {
+                                      boolean isHaveBaggage, boolean isHaveInFlightMeal, boolean isHasFreeRapidTest,
+                                      boolean isSeatDistancing) {
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.minDuration = minDuration;
@@ -39,6 +42,8 @@ public class FlightSearchStatisticModel {
         this.isHaveSpecialPrice = isHaveSpecialPrice;
         this.isHaveBaggage = isHaveBaggage;
         this.isHaveInFlightMeal = isHaveInFlightMeal;
+        this.isHasFreeRapidTest = isHasFreeRapidTest;
+        this.isSeatDistancing = isSeatDistancing;
     }
 
     public int getMinPrice() {
@@ -100,5 +105,13 @@ public class FlightSearchStatisticModel {
 
     public boolean isHaveInFlightMeal() {
         return isHaveInFlightMeal;
+    }
+
+    public boolean isHasFreeRapidTest() {
+        return isHasFreeRapidTest;
+    }
+
+    public boolean isSeatDistancing() {
+        return isSeatDistancing;
     }
 }

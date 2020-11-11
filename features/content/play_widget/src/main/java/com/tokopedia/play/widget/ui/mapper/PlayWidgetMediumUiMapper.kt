@@ -2,6 +2,7 @@ package com.tokopedia.play.widget.ui.mapper
 
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetItem
+import com.tokopedia.play.widget.data.PlayWidgetItemShare
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.model.*
@@ -87,7 +88,21 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 partner = PlayWidgetPartnerUiModel(item.partner.id, item.partner.name),
                 video = videoMapper.mapWidgetItemVideo(item.video),
                 hasAction = channelType == PlayWidgetChannelType.Vod || channelType == PlayWidgetChannelType.Live,
-                channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType)
+                channelTypeTransition = PlayWidgetChannelTypeTransition(prevType = prevItem?.channelType, currentType = channelType),
+                share = mapWidgetShare(item.share)
+        )
+    }
+
+    private fun mapWidgetShare(item: PlayWidgetItemShare): PlayWidgetShareUiModel {
+        val fullShareContent = try {
+            item.text.replace("${'$'}{url}", item.redirectUrl)
+        } catch (e: Throwable) {
+            "${item.text}/n${item.redirectUrl}"
+        }
+
+        return PlayWidgetShareUiModel(
+                fullShareContent = fullShareContent,
+                isShow = item.isShowButton && item.redirectUrl.isNotBlank()
         )
     }
 }

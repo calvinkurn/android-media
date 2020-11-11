@@ -1035,8 +1035,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setContactUs(final ContactUs contactUs, String helpLink) {
         _helplink = helpLink;
         String text = getResources().getString(R.string.contact_us_text);
+        String clickableLink = getResources().getString(R.string.contact_us_clickable_text);
         SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf("disini");
+        int startIndexOfLink = text.indexOf(clickableLink);
         spannableString.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View view) {
@@ -1050,7 +1051,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 ds.setUnderlineText(false);
                 ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
             }
-        }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
         helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
