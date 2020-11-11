@@ -1,6 +1,7 @@
 package com.tokopedia.vouchercreation.common.utils
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import java.io.File
 import java.io.FileOutputStream
@@ -15,12 +16,13 @@ fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
 }
 
 fun Bitmap.getSavedImageDirFile(context: Context, filename: String, isSharing: Boolean = true): File {
-    val basePath = File(context.filesDir, FILE_DIR).also {
+    val contextWrapper = ContextWrapper(context)
+    val fileDir = contextWrapper.getDir(FILE_DIR, Context.MODE_PRIVATE)
+    val filePath = File(fileDir, "${filename}.jpg").also {
         if (isSharing) {
             it.checkVoucherDirectory()
         }
     }
-    val filePath = File(basePath, "${filename}.jpg")
     val fos = FileOutputStream(filePath)
 
     try {
