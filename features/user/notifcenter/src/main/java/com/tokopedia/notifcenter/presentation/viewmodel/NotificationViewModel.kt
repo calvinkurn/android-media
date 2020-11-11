@@ -2,15 +2,14 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.common.NotificationFilterType
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -31,8 +30,8 @@ class NotificationViewModel @Inject constructor(
     @NotificationFilterType
     var filter = NotificationFilterType.NONE
 
-    private val _mutateNotificationItems = MutableLiveData<Result<List<Visitable<NotificationTypeFactory>>>>()
-    val notificationItems: LiveData<Result<List<Visitable<NotificationTypeFactory>>>>
+    private val _mutateNotificationItems = MutableLiveData<Result<NotificationDetailResponseModel>>()
+    val notificationItems: LiveData<Result<NotificationDetailResponseModel>>
         get() = _mutateNotificationItems
 
     private val _topAdsBanner = MutableLiveData<NotificationTopAdsBannerUiModel>()
@@ -66,7 +65,7 @@ class NotificationViewModel @Inject constructor(
     fun loadMoreEarlier(
             @RoleType
             role: Int?,
-            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         if (role == null) return
@@ -78,7 +77,7 @@ class NotificationViewModel @Inject constructor(
     fun loadMoreNew(
             @RoleType
             role: Int?,
-            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         if (role == null) return

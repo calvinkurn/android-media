@@ -3,6 +3,7 @@ package com.tokopedia.notifcenter.data.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetail
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -15,17 +16,20 @@ class NotifcenterDetailMapper @Inject constructor() {
     fun mapFirstPage(
             response: NotifcenterDetailResponse,
             needSectionTitle: Boolean = true
-    ): List<Visitable<NotificationTypeFactory>> {
+    ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
-        items.addAll(mapNewSection(response, needSectionTitle))
-        items.addAll(mapEarlierSection(response, needSectionTitle, items.isNotEmpty()))
-        return items
+        items.addAll(mapNewSection(response, needSectionTitle).items)
+        items.addAll(mapEarlierSection(response, needSectionTitle, items.isNotEmpty()).items)
+        return NotificationDetailResponseModel(
+                items = items,
+                hasNext = response.notifcenterDetail.paging.hasNext
+        )
     }
 
     fun mapNewSection(
             response: NotifcenterDetailResponse,
             needSectionTitle: Boolean = true
-    ): List<Visitable<NotificationTypeFactory>> {
+    ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
         if (notifcenterDetail.newList.isNotEmpty()) {
@@ -39,14 +43,17 @@ class NotifcenterDetailMapper @Inject constructor() {
                 notifcenterDetail.newPaging.lastNotifId = notifcenterDetail.newList.last().notifId
             }
         }
-        return items
+        return NotificationDetailResponseModel(
+                items = items,
+                hasNext = response.notifcenterDetail.newPaging.hasNext
+        )
     }
 
     fun mapEarlierSection(
             response: NotifcenterDetailResponse,
             needSectionTitle: Boolean = true,
             needDivider: Boolean = false
-    ): List<Visitable<NotificationTypeFactory>> {
+    ): NotificationDetailResponseModel {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val notifcenterDetail = response.notifcenterDetail
         if (notifcenterDetail.list.isNotEmpty()) {
@@ -63,7 +70,10 @@ class NotifcenterDetailMapper @Inject constructor() {
                 notifcenterDetail.paging.lastNotifId = notifcenterDetail.list.last().notifId
             }
         }
-        return items
+        return NotificationDetailResponseModel(
+                items = items,
+                hasNext = response.notifcenterDetail.paging.hasNext
+        )
     }
 
 

@@ -116,7 +116,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
             if (it is Success) {
-                renderList(it.data, false)
+                renderList(it.data.items, false)
             }
         })
 
@@ -167,7 +167,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
                 {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it.items)
                 },
                 {
                     rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
@@ -180,7 +180,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
                 {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it.items)
                 },
                 {
                     rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)

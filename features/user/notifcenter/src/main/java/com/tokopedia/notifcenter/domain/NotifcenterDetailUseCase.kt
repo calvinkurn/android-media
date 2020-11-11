@@ -1,14 +1,13 @@
 package com.tokopedia.notifcenter.domain
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.Paging
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
-import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.MainScope
@@ -31,7 +30,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             filter: Int,
             @RoleType
             role: Int,
-            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
@@ -52,7 +51,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             filter: Int,
             @RoleType
             role: Int,
-            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         // TODO: confirm with BE if it need fields parameter
@@ -73,7 +72,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             filter: Int,
             @RoleType
             role: Int,
-            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
@@ -90,11 +89,9 @@ class NotifcenterDetailUseCase @Inject constructor(
 
     private fun getNotifications(
             params: Map<String, Any?>,
-            onSuccess: (List<Visitable<NotificationTypeFactory>>) -> Unit,
+            onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit,
-            mapping: (
-                    response: NotifcenterDetailResponse
-            ) -> List<Visitable<NotificationTypeFactory>>,
+            mapping: (response: NotifcenterDetailResponse) -> NotificationDetailResponseModel,
             onResponseReady: (response: NotifcenterDetailResponse) -> Unit
     ) {
         launchCatchError(
