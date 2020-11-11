@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_VALUE
 import com.tokopedia.topads.common.data.model.DataSuggestions
@@ -41,7 +42,7 @@ class BidInfoUseCase @Inject constructor(graphqlRepository: GraphqlRepository, v
 
     fun setParams(suggestion: List<DataSuggestions>, requestType: String, sourceValue:String = SOURCE_VALUE) {
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_Id] = userSession.shopId.toInt()
+        queryMap[ParamObject.SHOP_Id] = userSession.shopId.toIntOrZero()
         queryMap[ParamObject.SOURCE] = sourceValue
         queryMap[ParamObject.SUGGESTION] = suggestion
         queryMap[ParamObject.REQUEST_TYPE] = requestType
@@ -61,7 +62,6 @@ class BidInfoUseCase @Inject constructor(graphqlRepository: GraphqlRepository, v
         setCacheStrategy(cacheStrategy)
         execute({
             onSuccess(it)
-
         }, onError)
     }
 }

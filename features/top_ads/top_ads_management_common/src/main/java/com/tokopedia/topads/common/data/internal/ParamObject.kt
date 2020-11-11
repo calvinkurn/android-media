@@ -60,4 +60,6 @@ object ParamObject {
     const val ACTION = "action"
     const val HEADLINE = "headline"
     const val SOURCE_CREATE_HEADLINE = "sellerapp_create_headline_group"
+    const val TYPE_HEADLINE_KEYWORD = "headline/keyword"
+    const val INPUT = "input"
 }

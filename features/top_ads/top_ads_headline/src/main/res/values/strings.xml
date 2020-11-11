@@ -2,6 +2,7 @@
     <string name="app_name">top_ads_headline</string>
     <string name="topads_headline_ad_detail_fragment_label">Isi Detail Iklan</string>
     <string name="topads_headline_ad_content_fragment_label">Isi Konten Iklan</string>
+    <string name="topads_headline_ad_schedule_and_budget_fragment_label">Atur Jadwal &amp; Anggaran</string>
     <string name="topads_headline_ad_detail_name_header">Nama Iklan Headline</string>
     <string name="topads_headline_ad_detail_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
     <string name="topads_headline_ad_detail_name_hint">Masukkan nama iklan</string>
@@ -33,6 +34,14 @@
     <string name="topads_headline_promotional_message_length_error">Minimum 20 karakter. Lengkapi pesan promosi agar iklanmu lebih menarik.</string>
     <string name="topads_headline_promotional_message_empty_error">Pesan promosimu masih kosong</string>
     <string name="topads_headline_promotional_message_success">Sedikit lagi! Lengkapi pesan agar promosimu lebih menarik</string>
+    <string name="topads_headline_promotional_dummy_message">Ada promo menarik untuk produk ori buatan Indonesia.</string>
+    <string name="topads_headline_promotional_ticker_message">Minimum 2 produk per kategori</string>
+
+    <!--cpmModel constants-->
+    <string name="topads_headline_check_now">Cek Sekarang</string>
+    <string name="topads_headline_promoted_by">Dipromosikan oleh</string>
+
+
 
     <!--tips for choosing product-->
     <string name="topads_headline_tips_choosing_product">Tips memilih produk</string>
@@ -67,5 +76,32 @@
     <string name="topads_headline_keyword_bottomsheet_desc7">Biaya ini hanya dikenakan setiap kali iklan headline diklik calon pembeli</string>
     <string name="topads_headline_keyword_bottomsheet_title1">Tips memilih kata kunci</string>
     <string name="topads_headline_keyword_bottomsheet_title2">Tips mengatur biaya kata kunci</string>
+
+    <!--ad schedule and budget-->
+    <string name="topads_headline_schedule_advertising_cost_header">Biaya Iklan</string>
+    <string name="topads_headline_schedule_advertising_cost_text">Biaya ini akan dikenakan bila iklanmu tampil di halaman kategori, feed, dan toko favorit.</string>
+    <string name="topads_headline_schedule_tooltip_text">Tips atur jadwal dan anggaran</string>
+    <string name="topads_headline_schedule_header">Tetapkan jadwal iklan</string>
+    <string name="topads_headline_schedule_warning_text">Tanpa jadwal, iklan akan ditampilkan terus menerus tanpa batasan waktu.</string>
+    <string name="topads_headline_schedule_start_date">Mulai</string>
+    <string name="topads_headline_schedule_end_date">Selesai</string>
+    <string name="topads_headline_schedule_add_appearance_message">Iklan akan tampil selama 30 hari</string>
+    <string name="topads_headline_schedule_budget_cost_message">Iklan akan tampil seharian sampai biaya iklan yang dikeluarkan mencapai Rp%d per harinya.</string>
+    <string name="topads_headline_hari">/hari</string>
+    <string name="topads_headline_start_date_header">Pilih tanggal dan jam mulai</string>
+    <string name="topads_headline_end_date_header">Pilih tanggal dan jam selesai</string>
+    <string name="topads_headline_end_date_info">Iklan akan tampil selama 30 hari</string>
+    <string name="topads_headline_advertise_btn">Iklankan</string>
+    <string name="topads_headline_preview_btn">Preview</string>
+    <string name="topads_headline_budget_warning_text">Tanpa anggaran iklan, iklan akan tampil sesuai sisa kredit TopAds-mu.</string>
+    <string name="topads_headline_preview_bottomsheet_header">Preview %s</string>
+
+    <!--tips for setting a schedule and budget-->
+    <string name="topads_headline_tips_schedule_header">Tips mengatur jadwal iklan</string>
+    <string name="topads_headline_tips_schedule_row1">Atur jadwal iklan sesuai dengan batas waktu promosi kamu.</string>
+    <string name="topads_headline_tips_budget_header">Tips mengatur anggaran </string>
+    <string name="topads_headline_tips_budget_row1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
+    <string name="topads_headline_tips_budget_row2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
+    <string name="topads_headline_tips_budget_row3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
 
 </resources>

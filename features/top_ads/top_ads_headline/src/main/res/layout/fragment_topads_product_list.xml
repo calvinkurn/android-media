@@ -54,7 +54,7 @@
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintBottom_toTopOf="@id/selectProductCheckBox"
+        app:layout_constraintBottom_toTopOf="@id/ticker"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchInputView"
@@ -64,17 +64,31 @@
         tools:orientation="horizontal"
         tools:scrollbars="horizontal" />
 
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:visibility="gone"
+        app:closeButtonVisibility="gone"
+        app:descriptionText="@string/topads_headline_promotional_ticker_message"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/quickFilterRecyclerView"
+        app:tickerShapeType="loose"
+        app:tickerType="warning"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/selectProductCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_10"
         android:checked="false"
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quickFilterRecyclerView"
+        app:layout_constraintTop_toBottomOf="@id/ticker"
         tools:text="Pilih semua rekomendasi" />
 
     <androidx.recyclerview.widget.RecyclerView

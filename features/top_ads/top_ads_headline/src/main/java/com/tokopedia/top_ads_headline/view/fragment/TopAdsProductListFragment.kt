@@ -15,10 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.TopAdsCategoryDataModel
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
@@ -44,6 +41,7 @@ import javax.inject.Inject
 
 private const val ROW = 50
 private const val MAX_PRODUCT_SELECTION = 10
+private const val MIN_PRODUCT_SELECTION = 2
 
 class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.ProductListAdapterListener {
 
@@ -197,6 +195,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             }
             setSelectProductText()
             productsListAdapter.notifyDataSetChanged()
+            isProductSelectedListEdited = true
+            ticker.showWithCondition(selectedTopAdsProduct.size < MIN_PRODUCT_SELECTION)
         }
     }
 
@@ -281,6 +281,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun onChipFilterClick(topAdsCategoryDataModel: TopAdsCategoryDataModel) {
         selectedCategoryDataModel = topAdsCategoryDataModel
         setProductSelectCbText()
+        ticker.hide()
         fetchTopAdsProducts()
     }
 
@@ -302,9 +303,10 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun onError(t: Throwable) {
         view?.let {
-            Toaster.build(it, t.localizedMessage?:"", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, t.localizedMessage
+                    ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 refreshProduct()
-            })
+            }).show()
         }
     }
 
@@ -320,7 +322,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     override fun onProductOverSelect() {
         view?.let {
-            Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -329,6 +331,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         isProductSelectedListEdited = true
         selectProductCheckBox.setIndeterminate(true)
         setSelectProductText()
-        btnNext.isEnabled = count > 0
+        ticker.showWithCondition(count < MIN_PRODUCT_SELECTION)
+        btnNext.isEnabled = count >= MIN_PRODUCT_SELECTION
     }
 }

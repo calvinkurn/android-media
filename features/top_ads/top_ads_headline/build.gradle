@@ -43,7 +43,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.topAdsSdk)
-
+    implementation rootProject.ext.unifyDependencies.datepicker
 }
 
 project.ext {

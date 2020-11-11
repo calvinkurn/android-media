@@ -17,6 +17,7 @@ import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeySelectedAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.KeywordDataItem
@@ -37,6 +38,7 @@ import javax.inject.Inject
 
 private const val KEY_LIMIT = 50
 const val SEARCH_NOT_AVAILABLE = "-1"
+
 class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
 
     @Inject
@@ -108,6 +110,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 }
             }
         })
+        btnNext.setOnClickListener {
+            gotoNextPage()
+        }
     }
 
     private fun checkMaxSelectedValue(): String? {
@@ -129,6 +134,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         tipBtn.setOnClickListener {
             val tipsList: ArrayList<TipsUiModel> = ArrayList()
             tipsList.apply {
+                add(TipsUiHeaderModel(R.string.topads_headline_keyword_bottomsheet_title1))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc1, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc2, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc3, R.drawable.topads_create_ic_checklist))
@@ -138,7 +144,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc6, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7, R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, getString(R.string.topads_headline_keyword_bottomsheet_title1), tipsList) }
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.showCloseIcon = false
             tipsListSheet?.show(childFragmentManager, "")
         }
@@ -163,7 +169,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onError)
         keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onError)
         getLatestBid()
-        viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(""), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
+        viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
     }
 
     private fun onError(enable: Boolean) {
@@ -171,16 +177,16 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun getLatestBid() {
-        val dummyId: MutableList<Int> = mutableListOf()
-        val suggestions = java.util.ArrayList<DataSuggestions>()
-        suggestions.add(DataSuggestions("group", dummyId))
-        viewModel.getBidInfo(suggestions, this::onSuccessSuggestion, this::onEmptySuggestion)
+        val selectedProductIds: MutableList<Int>? = stepperModel?.selectedProductIds
+                ?: mutableListOf()
+        val suggestions = DataSuggestions(ParamObject.TYPE_HEADLINE_KEYWORD, ids = selectedProductIds)
+        viewModel.getBidInfo(listOf(suggestions), this::onSuccessSuggestion, this::onEmptySuggestion)
     }
 
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
-        keywordListAdapter.setMax(data.firstOrNull()?.maxBid?:0)
+        keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
 
     }
 
@@ -233,7 +239,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun setCount() {
-        selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count),keywordSelectedAdapter.itemCount)
+        selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count), keywordSelectedAdapter.itemCount)
         selectedTitle.visibility = if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
         selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), keywordSelectedAdapter.itemCount + keywordListAdapter.getSelectItems().size)
     }

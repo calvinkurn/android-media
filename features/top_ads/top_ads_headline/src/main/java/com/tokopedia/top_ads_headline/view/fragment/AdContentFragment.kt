@@ -8,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
@@ -90,31 +92,39 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         if (selectedTopAdsProducts.isNotEmpty()) {
             onProductsSelectionChange()
         }
-        promotionalMessageInputText.addOnFocusChangeListener = { _, hasFocus ->
-            if (hasFocus) {
-                openPromotionalMessageBottomSheet()
-            }
-        }
+        promotionalMessageInputText.textFieldInput.setText(getString(R.string.topads_headline_promotional_dummy_message))
+        promotionalMessageInputText.textFieldInput.isFocusable = false
         promotionalMessageInputText.textFieldInput.setOnClickListener {
             openPromotionalMessageBottomSheet()
         }
         btnSubmit.setOnClickListener {
-            if (selectedTopAdsProducts.isEmpty()) {
-                Toaster.build(it, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-            } else {
-                gotoNextPage()
-            }
+            onClickSubmit()
         }
         viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", 3, 0, this::onSuccess, this::onError)
     }
 
+    private fun onClickSubmit() {
+        when {
+            selectedTopAdsProducts.isEmpty() -> {
+                productPickerErrorText.show()
+            }
+            promotionalMessageInputText.textFieldInput.text.toString().isBlank() -> {
+                view?.let { it1 -> Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+            }
+            else -> {
+                gotoNextPage()
+            }
+        }
+    }
+
     private fun onSuccess(cpmModel: CpmModel) {
+        stepperModel?.cpmModel = cpmModel
         topAdsBannerView.displayAds(cpmModel)
     }
 
     private fun onError(message: String) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
@@ -126,6 +136,10 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     private fun onPromotionalBottomSheetDismiss(promotionalMessage: String) {
         promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
+        stepperModel?.let {
+            it.cpmModel.data[0].cpm.cpmShop.slogan = promotionalMessage
+            onSuccess(it.cpmModel)
+        }
     }
 
     private fun setUpSelectedText() {
@@ -138,6 +152,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             selectedTopAdsProducts = data?.getParcelableArrayListExtra<ResponseProductList.Result.TopadsGetListProduct.Data>(SELECTED_PRODUCT_LIST) as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>
             if (data.getBooleanExtra(IS_EDITED, false)) {
                 onProductsSelectionChange()
+            }
+            if (selectedTopAdsProducts.isNotEmpty()) {
+                productPickerErrorText.hide()
             }
         }
     }

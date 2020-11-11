@@ -49,6 +49,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpTextField() {
+        promotionalMessageInputText.textFieldInput.setText(getString(R.string.topads_headline_promotional_dummy_message))
         promotionalMessageInputText.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }

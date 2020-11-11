@@ -5,11 +5,9 @@ import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_CREATE_HEADLINE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
-import com.tokopedia.topads.common.data.response.ResponseBidInfo
 import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.SuggestionKeywordUseCase
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -33,7 +31,7 @@ class TopAdsHeadlineKeyViewModel @Inject constructor(
         })
     }
 
-    fun getBidInfo(suggestion: ArrayList<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit), onEmpty: (() -> Unit)) {
+    fun getBidInfo(suggestion: List<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit), onEmpty: (() -> Unit)) {
         bidInfoUseCase.setParams(suggestion, ParamObject.HEADLINE, SOURCE_CREATE_HEADLINE)
         bidInfoUseCase.executeQuerySafeMode({
             if (it.topadsBidInfo.data.isEmpty())

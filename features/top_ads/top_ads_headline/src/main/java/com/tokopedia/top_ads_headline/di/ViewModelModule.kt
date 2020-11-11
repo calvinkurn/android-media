@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
-import com.tokopedia.top_ads_headline.view.viewmodel.AdDetailsViewModel
-import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsHeadlineKeyViewModel
-import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsProductListViewModel
+import com.tokopedia.top_ads_headline.view.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -34,11 +31,14 @@ abstract class ViewModelModule {
     @ViewModelKey(TopAdsProductListViewModel::class)
     internal abstract fun provideTopAdsProductListViewModel(viewModel: TopAdsProductListViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ViewModelKey(TopAdsHeadlineKeyViewModel::class)
     internal abstract fun provideTopAdsHeadlineKeyViewModel(viewModel: TopAdsHeadlineKeyViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(AdScheduleAndBudgetViewModel::class)
+    internal abstract fun provideAdScheduleAndBudgetViewModel(viewModel: AdScheduleAndBudgetViewModel): ViewModel
 
 }

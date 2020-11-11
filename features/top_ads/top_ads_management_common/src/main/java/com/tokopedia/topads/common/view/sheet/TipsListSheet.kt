@@ -26,6 +26,7 @@ class TipsListSheet : BottomSheetUnify() {
         fun newInstance(context: Context, title: String = "", tipsList: ArrayList<TipsUiModel>): TipsListSheet {
             return TipsListSheet().apply {
                 this.tipsList = tipsList
+                this.showHeader = title.isNotBlank()
                 tipsTitle = title
                 val childView = LayoutInflater.from(context).inflate(R.layout.topads_common_tips_sheet_layout, null)
                 setChild(childView)
@@ -45,11 +46,8 @@ class TipsListSheet : BottomSheetUnify() {
             adapter = tipsAdapter
             tipsAdapter.setTipsItems(tipsList)
         }
-        if (tipsTitle.isNotEmpty()) {
-            showCloseIcon = false
+        if (tipsTitle.isNotBlank()) {
             setTitle(tipsTitle)
-        } else {
-            showCloseIcon = true
         }
     }
 }
