@@ -5,16 +5,16 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.adapter.viewholder.*
 import com.tokopedia.statistic.view.model.DateFilterItem
-import com.tokopedia.unifycomponents.BottomSheetUnify
 
 /**
  * Created By @ilhamsuaib on 15/06/20
  */
 
 class DateFilterAdapterFactoryImpl(
-        private val listener: Listener,
+        private val listener: DateFilterListener,
         private val fm: FragmentManager
 ) : BaseAdapterTypeFactory(), DateFilterAdapterFactory {
 
@@ -37,18 +37,5 @@ class DateFilterAdapterFactoryImpl(
             DateFilterDividerViewHolder.RES_LAYOUT -> DateFilterDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
-    }
-
-    interface Listener {
-
-        fun onItemDateRangeClick(model: DateFilterItem)
-
-        fun onApplyDateFilter()
-
-        fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String)
-
-        fun showDateFilterBottomSheet()
-
-        fun dismissDateFilterBottomSheet()
     }
 }

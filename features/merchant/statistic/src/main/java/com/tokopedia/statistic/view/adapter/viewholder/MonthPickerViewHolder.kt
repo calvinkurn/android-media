@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactoryImpl
+import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
 import java.util.*
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit
 
 class MonthPickerViewHolder(
         itemView: View?,
-        private val listener: DateFilterAdapterFactoryImpl.Listener
+        private val listener: DateFilterListener
 ) : AbstractViewHolder<DateFilterItem.MonthPickerItem>(itemView) {
 
     companion object {

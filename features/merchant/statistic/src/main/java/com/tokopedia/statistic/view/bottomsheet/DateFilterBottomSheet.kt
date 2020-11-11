@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.view.adapter.DateFilterAdapter
-import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactoryImpl
+import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_select_date_range.view.*
@@ -22,7 +22,7 @@ import java.util.*
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.Listener {
+class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
 
     companion object {
         const val TAG = "DateFilterBottomSheet"
