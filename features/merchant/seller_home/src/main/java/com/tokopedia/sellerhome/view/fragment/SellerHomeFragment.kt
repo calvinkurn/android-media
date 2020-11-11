@@ -611,6 +611,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             diffUtilResult.dispatchUpdatesTo(adapter)
             adapter.data.clear()
             adapter.data.addAll(newWidgets)
+            adapter.data.add(WhiteSpaceUiModel())
         }
 
         requestVisibleWidgetsData()
