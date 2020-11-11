@@ -65,7 +65,7 @@
         app:toolbarContentType="typeSearchbar"
         app:toolbarBackButton="none"
         app:toolbarAlwaysShowShadow="true"
-        app:toolbarPageName="@string/nav_toolbar_page_name"
+        app:toolbarPageName="/"
         />
 
     <com.tokopedia.searchbar.HomeMainToolbar
