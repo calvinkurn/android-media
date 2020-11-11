@@ -29,7 +29,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_N700_96"
             tools:text="Bonusin apa aja yak bang" />
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -67,7 +67,7 @@
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
             app:layout_constraintTop_toTopOf="parent"
@@ -83,7 +83,7 @@
             app:layout_constraintBottom_toTopOf="@id/divider_product"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:textColor="@color/Unify_N700"
+            android:textColor="@color/Unify_N700_96"
             tools:text="1 x Rp 2.913.000"
             android:layout_marginStart="@dimen/dp_8" />
 
