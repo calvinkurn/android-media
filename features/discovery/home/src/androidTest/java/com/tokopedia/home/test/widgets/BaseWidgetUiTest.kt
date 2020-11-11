@@ -55,6 +55,7 @@ abstract class BaseWidgetUiTest{
     open val instrumentationContext = InstrumentationRegistry.getInstrumentation().context
     open val homeDataMapper = HomeDataMapper(instrumentationContext, homeVisitableFactory, mockk(relaxed = true),
             HomeDynamicChannelDataMapper(instrumentationContext, homeDynamicChannelVisitableFactory, TrackingQueue(instrumentationContext)))
+    open val playWidgetTools = mockk<Lazy<PlayWidgetTools>> (relaxed = true)
 
     open fun reInitViewModel() = HomeViewModel(
             dismissHomeReviewUseCase = dismissHomeReviewUseCase,
