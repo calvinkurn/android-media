@@ -115,10 +115,12 @@ class GraphqlCloudDataStore @Inject constructor(
 
                     launch(Dispatchers.IO) {
                         if (result.code() == Const.GQL_QUERY_HASHING_ERROR) {
+                            val queryHashValues = StringBuilder()
                             //Reset request bodies
                             if (requests.size > 0) {
                                 for (graphqlRequest in requests) {
                                     graphqlRequest.query = graphqlRequest.queryCopy
+                                    queryHashValues.append(cacheManager.getQueryHashValue(graphqlRequest.md5)).append(",")
                                     cacheManager.deleteQueryHashValue(graphqlRequest.md5)
                                 }
                             }
@@ -130,7 +132,7 @@ class GraphqlCloudDataStore @Inject constructor(
                             else{
                                 header[QUERY_HASHING_HEADER] = ""
                             }
-                            Timber.w("P1#GQL_HASHING#error;queryName='%s';KEY='%s'", CacheHelper.getQueryName(requests.get(0).query), requests.get(0).md5);
+                            Timber.w("P1#GQL_HASHING#error;queryName='%s';key='%s';queryHash='%s'", CacheHelper.getQueryName(requests[0].query), requests[0].md5, queryHashValues.toString());
                             api.getResponseSuspend(requests.toMutableList(), header, FingerprintManager.getQueryDigest(requests))
                         }
                         if (result.code() != Const.GQL_RESPONSE_HTTP_OK) {
@@ -155,7 +157,7 @@ class GraphqlCloudDataStore @Inject constructor(
                         requests.forEachIndexed { index, request ->
                             if (executeQueryHashFlow) {
                                 cacheManager.saveQueryHash(request.md5, qhValues.get(index))
-                                Timber.w("P1#GQL_HASHING#success;queryName='%s';KEY='%s';QueryHash='%s'", CacheHelper.getQueryName(request.query), request.md5, qhValues.get(index));
+                                Timber.w("P1#GQL_HASHING#success;queryName='%s';key='%s';queryHash='%s'", CacheHelper.getQueryName(request.query), request.md5, qhValues[index]);
                             }
                             if (request.isNoCache || (executeCacheFlow && caches[request.md5] == null)) {
                                 return@forEachIndexed  //Do nothing
