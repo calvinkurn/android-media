@@ -329,6 +329,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             else {
                 actionEmptyButton?.visibility = View.VISIBLE
                 actionCancelButton?.visibility = View.VISIBLE
+                setConstraint(searchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.actionCancelButton, ConstraintSet.LEFT, 0)
             }
 
             showVoiceButton(false)
@@ -337,6 +338,7 @@ class SearchBarView constructor(private val mContext: Context, attrs: AttributeS
             else {
                 actionEmptyButton?.visibility = View.GONE
                 actionCancelButton?.visibility = View.GONE
+                setConstraint(searchTopBar, R.id.searchTextView, ConstraintSet.RIGHT, R.id.actionVoiceButton, ConstraintSet.LEFT, 0)
             }
 
             showVoiceButton(true)
