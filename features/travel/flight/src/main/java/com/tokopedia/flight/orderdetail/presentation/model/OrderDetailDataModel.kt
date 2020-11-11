@@ -32,6 +32,7 @@ data class OrderDetailDataModel(
         val mandatoryDob: Boolean,
         val classText: String,
         val contactUsURL: String,
+        val hasETicket: Boolean,
         val payment: OrderDetailPaymentModel,
         val journeys: List<OrderDetailJourneyModel>,
         val passengers: List<OrderDetailPassengerModel>,

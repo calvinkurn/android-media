@@ -33,6 +33,7 @@ object FlightOrderDetailGqlConst {
                 mandatoryDOB
                 classText
                 contactUsURL
+                hasEticket
                 payment {
                   id
                   status

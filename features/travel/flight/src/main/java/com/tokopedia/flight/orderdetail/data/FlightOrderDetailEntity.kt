@@ -119,6 +119,9 @@ class OrderDetailFlight(
         @SerializedName("classText")
         @Expose
         val classText: String = "",
+        @SerializedName("hasEticket")
+        @Expose
+        val hasETicket: Boolean = false,
         @SerializedName("contactUsURL")
         @Expose
         val contactUsURL: String = "",

@@ -67,6 +67,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                         mandatoryDob = it.flight.mandatoryDob,
                         classText = it.flight.classText,
                         contactUsURL = it.flight.contactUsURL,
+                        hasETicket = it.flight.hasETicket,
                         payment = it.flight.payment.let { payment ->
                             OrderDetailPaymentModel(
                                     id = payment.id,
