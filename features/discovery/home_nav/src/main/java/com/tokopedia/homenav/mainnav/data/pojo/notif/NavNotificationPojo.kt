@@ -1,5 +1,5 @@
 package com.tokopedia.homenav.mainnav.data.pojo.notif
 
-data class NotificationResolutionPojo(
+data class NavNotificationPojo(
     val notifications: Notifications
 )

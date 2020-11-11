@@ -23,5 +23,6 @@
         <attr name="toolbarTitle" format="string"/>
         <attr name="toolbarDefaultHint" format="string"/>
         <attr name="toolbarCustomContent" format="reference"/>
+        <attr name="toolbarPageName" format="string"/>
     </declare-styleable>
 </resources>

@@ -18,7 +18,7 @@ class HomeNavTickerViewHolder(itemView: View
     override fun bind(element: HomeNavTickerViewModel) {
         val context = itemView.context
         itemView.nav_ticker?.tickerTitle = element.title
-        itemView.nav_ticker?.setTextDescription(element.description)
+        itemView.nav_ticker?.setHtmlDescription(element.description)
         itemView.nav_ticker?.tickerType = element.tickerType
         if (element.applink.isNotEmpty()) {
             itemView.nav_ticker.setOnClickListener { RouteManager.route(
