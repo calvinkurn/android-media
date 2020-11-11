@@ -316,9 +316,9 @@ class VoucherPreviewPainter(private val context: Context,
                 layoutParams = wrapContentLayoutParams
             }
         } else {
-            val valuePair = getScaledValuePair(context, value)
-            val valueTextView = getTextView(valuePair.first, VoucherImageTextType.VALUE)
-            val scaleTextView = getTextView(valuePair.second, VoucherImageTextType.SCALE)
+            val (nominal, currencyScale) = getScaledValuePair(context, value)
+            val valueTextView = getTextView(nominal, VoucherImageTextType.VALUE)
+            val scaleTextView = getTextView(currencyScale, VoucherImageTextType.SCALE)
             val asterixTextView = getTextView(ASTERISK, VoucherImageTextType.ASTERISK)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL

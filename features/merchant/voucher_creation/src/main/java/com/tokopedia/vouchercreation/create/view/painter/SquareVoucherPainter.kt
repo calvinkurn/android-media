@@ -270,9 +270,9 @@ class SquareVoucherPainter(private val context: Context,
                 layoutParams = wrapContentLayoutParams
             }
         } else {
-            val valuePair = getScaledValuePair(context, value)
-            val valueTextView = getTextView(valuePair.first, PostImageTextType.VALUE)
-            val scaleTextView = getTextView(valuePair.second, PostImageTextType.SCALE)
+            val (nominal, currencyScale) = getScaledValuePair(context, value)
+            val valueTextView = getTextView(nominal, PostImageTextType.VALUE)
+            val scaleTextView = getTextView(currencyScale, PostImageTextType.SCALE)
             val asterixTextView = getTextView(ASTERISK, PostImageTextType.ASTERISK)
             LinearLayout(context).apply {
                 orientation = LinearLayout.HORIZONTAL
