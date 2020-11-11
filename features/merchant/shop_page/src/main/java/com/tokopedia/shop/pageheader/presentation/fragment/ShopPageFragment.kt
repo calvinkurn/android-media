@@ -48,12 +48,12 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
@@ -70,8 +70,8 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.*
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -110,8 +110,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.shop_page_main.*
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.shop_page_fragment_content_layout.*
+import kotlinx.android.synthetic.main.shop_page_main.*
 import java.io.File
 import javax.inject.Inject
 
@@ -190,10 +191,26 @@ class ShopPageFragment :
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
-    private val iconTabHome = R.drawable.ic_shop_tab_home_new
-    private val iconTabProduct = R.drawable.ic_shop_tab_product_new
-    private val iconTabFeed = R.drawable.ic_shop_tab_feed_new
-    private val iconTabReview = R.drawable.ic_shop_tab_review_new
+    private val iconTabHome: Int
+        get() = R.drawable.ic_shop_tab_home_new.takeIf {
+            isUsingNewNavigation(abTestPlatform)
+        } ?: R.drawable.ic_shop_tab_home_inactive
+    private val iconTabProduct: Int
+        get() = R.drawable.ic_shop_tab_product_new.takeIf {
+            isUsingNewNavigation(abTestPlatform)
+        } ?: R.drawable.ic_shop_tab_products_inactive
+    private val iconTabFeed: Int
+        get() = R.drawable.ic_shop_tab_feed_new.takeIf {
+            isUsingNewNavigation(abTestPlatform)
+        } ?: R.drawable.ic_shop_tab_feed_inactive
+    private val iconTabReview: Int
+        get() = R.drawable.ic_shop_tab_review_new.takeIf {
+            isUsingNewNavigation(abTestPlatform)
+        } ?: R.drawable.ic_shop_tab_review_inactive
+    private val iconChatFloatingButton: Int
+        get() = R.drawable.ic_chat_floating_button.takeIf {
+            isUsingNewNavigation(abTestPlatform)
+        } ?: R.drawable.ic_chat_floating_button_old
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
     private var isFirstLoading: Boolean = false
@@ -594,8 +611,7 @@ class ShopPageFragment :
             initOldToolbar()
         }
         else{
-            val navType = abTestPlatform?.getString(AB_TEST_NAVIGATION_REVAMP_KEY, AB_TEST_NAVIGATION_REVAMP_OLD_VALUE)
-            if (navType == AB_TEST_NAVIGATION_REVAMP_NEW_VALUE) {
+            if (isUsingNewNavigation(abTestPlatform)) {
                 initNewToolbar()
             } else {
                 initOldToolbar()
@@ -611,7 +627,7 @@ class ShopPageFragment :
             iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
             if(isCartShownInNewNavToolbar())
                 iconBuilder.addIcon(IconList.ID_CART) {}
-            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) { clickShopShare() }
+            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
             setIcon(iconBuilder)
             if(shopViewModel.isUserSessionActive)
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
@@ -863,6 +879,12 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        new_navigation_toolbar?.run{
+            setupSearchbar(listOf(HintData(placeholder = getString(
+                    R.string.shop_product_search_hint_2,
+                    shopPageHeaderDataModel?.shopName.orEmpty()
+            ))))
+        }
         setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
@@ -911,6 +933,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.shopSnippetUrl = shopPageHeaderContentData.shopInfo.shopSnippetUrl
             shopPageHeaderDataModel.shopCoreUrl = shopPageHeaderContentData.shopInfo.shopCore.url
             if (!isMyShop) {
+                button_chat.setImageResource(iconChatFloatingButton)
                 button_chat.show()
                 button_chat.setOnClickListener {
                     goToChatSeller()
@@ -1241,6 +1264,10 @@ class ShopPageFragment :
         context?.let {
             RouteManager.route(it, linkUrl.toString())
         }
+    }
+
+    override fun openShopInfo() {
+        redirectToShopInfoPage()
     }
 
     override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {

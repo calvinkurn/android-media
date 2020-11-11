@@ -14,7 +14,9 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.PagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
@@ -60,9 +62,23 @@ internal class ShopPageFragmentPagerAdapter(
         }?.also { iconDrawable ->
             DrawableCompat.setTint(iconDrawable, ContextCompat.getColor(
                     this,
-                    if (isActive) R.color.color_green_shop_tab else R.color.color_gray_shop_tab
+                    if (isActive) getTabActivateColor() else getTabInactiveColor()
             ))
         }
+    }
+
+    private fun getTabInactiveColor(): Int {
+        return if (ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform))
+            R.color.color_gray_shop_tab_new
+        else
+            R.color.color_gray_shop_tab
+    }
+
+    private fun getTabActivateColor(): Int {
+        return if (ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform))
+            R.color.color_green_shop_tab_new
+        else
+            R.color.color_green_shop_tab
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
