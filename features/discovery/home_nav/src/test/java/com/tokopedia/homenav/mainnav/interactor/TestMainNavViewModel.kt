@@ -9,7 +9,7 @@ import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.homenav.mainnav.domain.model.NavProductOrder
-import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
+import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
@@ -94,7 +94,7 @@ class TestMainNavViewModel {
     @Test
     fun `test when get complain notification then viewmodel update complain visitable with notification`() {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
-        val getResolutionNotification = mockk<GetResolutionNotification>()
+        val getResolutionNotification = mockk<GetNavNotification>()
 
         val mockUnreadCount = 800
 
@@ -102,11 +102,11 @@ class TestMainNavViewModel {
                 .answers { HomeNavMenuViewModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
         every { clientMenuGenerator.getTicker(menuId = any()) }
                 .answers { HomeNavTickerViewModel() }
-        coEvery { getResolutionNotification.executeOnBackground() }.answers { NotificationResolutionModel(mockUnreadCount) }
+        coEvery { getResolutionNotification.executeOnBackground() }.answers { NavNotificationModel(mockUnreadCount) }
 
         viewModel = createViewModel(
                 clientMenuGenerator = clientMenuGenerator,
-                getResolutionNotification = getResolutionNotification
+                getNavNotification = getResolutionNotification
         )
 
         val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()

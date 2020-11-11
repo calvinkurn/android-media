@@ -4,8 +4,7 @@ import com.tokopedia.homenav.mainnav.view.adapter.typefactory.OrderListTypeFacto
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class OtherTransactionModel(
-        val othersTransactionCount: Int,
-        val applink: String
+        val othersTransactionCount: Int
 ): OrderNavVisitable, ImpressHolder() {
     override fun type(factory: OrderListTypeFactory): Int {
         return factory.type(this)

@@ -10,7 +10,7 @@ import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
 import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.domain.model.NavOrderListModel
-import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
+import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
@@ -29,6 +29,7 @@ import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -48,7 +49,7 @@ class MainNavViewModel @Inject constructor(
         private val getSaldoUseCase: Lazy<GetSaldoUseCase>,
         private val getMainNavDataUseCase: Lazy<GetMainNavDataUseCase>,
         private val clientMenuGenerator: Lazy<ClientMenuGenerator>,
-        private val getResolutionNotification: Lazy<GetResolutionNotification>,
+        private val getNavNotification: Lazy<GetNavNotification>,
         private val getUohOrdersNavUseCase: Lazy<GetUohOrdersNavUseCase>,
         private val getPaymentOrdersNavUseCase: Lazy<GetPaymentOrdersNavUseCase>
 ): BaseViewModel(baseDispatcher.get().io()) {
@@ -91,11 +92,13 @@ class MainNavViewModel @Inject constructor(
         get() = _shopResultListener
     private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
-    private var resolutionNotification: NotificationResolutionModel = NotificationResolutionModel(unreadCount = 0)
+    private var navNotification: NavNotificationModel = NavNotificationModel(
+            unreadCountInboxTicket = 0,
+            unreadCountComplain = 0
+    )
 
     init {
         getMainNavData()
-        getNotification()
     }
 
     // ============================================================================================
@@ -156,8 +159,11 @@ class MainNavViewModel @Inject constructor(
             p1DataJob.join()
 
             val p2DataJob = launchCatchError(context = coroutineContext, block = {
-                getOngoingTransaction()
-                onlyForLoggedInUser { getTransactionMenu() }
+                getTransactionMenu()
+                onlyForLoggedInUser {
+                    getOngoingTransaction()
+                    getNotification()
+                }
                 getUserMenu()
             }) {
                 Timber.d("P2 error")
@@ -215,12 +221,15 @@ class MainNavViewModel @Inject constructor(
             if (showOpenShopTicker) firstSectionList.add(it.getTicker(ID_OPEN_SHOP_TICKER))
             firstSectionList.add(SeparatorViewModel())
 
-            val complainNotification = if (resolutionNotification.unreadCount != 0)
-                resolutionNotification.unreadCount.toString() else ""
+            val complainNotification = if (navNotification.unreadCountComplain.isMoreThanZero())
+                navNotification.unreadCountComplain.toString() else ""
+
+            val inboxTicketNotification = if (navNotification.unreadCountInboxTicket.isMoreThanZero())
+                navNotification.unreadCountInboxTicket.toString() else ""
 
             val secondSectionList = listOf(
                     it.getMenu(menuId = ID_COMPLAIN, notifCount = complainNotification, sectionId = MainNavConst.Section.USER_MENU),
-                    it.getMenu(menuId = ID_TOKOPEDIA_CARE, sectionId = MainNavConst.Section.USER_MENU),
+                    it.getMenu(menuId = ID_TOKOPEDIA_CARE, notifCount = inboxTicketNotification, sectionId = MainNavConst.Section.USER_MENU),
                     it.getMenu(menuId = ID_QR_CODE, sectionId = MainNavConst.Section.USER_MENU)
             )
             val completeList = firstSectionList.plus(secondSectionList)
@@ -321,17 +330,16 @@ class MainNavViewModel @Inject constructor(
 
     private fun getNotification() {
         launchCatchError(coroutineContext, block = {
-            val result = getResolutionNotification.get().executeOnBackground()
-            if (result.unreadCount != 0) {
-                resolutionNotification = result
-                val findExistingResolutionMenu = _mainNavListVisitable.find {
-                    it is HomeNavVisitable && it.id() == ID_COMPLAIN
-                }
-                findExistingResolutionMenu?.let {
-                    val indexOfExistingResolutionMenu = _mainNavListVisitable.indexOf(it)
-                    (findExistingResolutionMenu as? HomeNavMenuViewModel)?.notifCount = resolutionNotification?.unreadCount.toString()
-                    updateWidget(findExistingResolutionMenu, indexOfExistingResolutionMenu)
-                }
+            val result = getNavNotification.get().executeOnBackground()
+            if (result.unreadCountComplain != 0) {
+                val complainNotification = result.unreadCountComplain
+                val inboxTicketNotification = result.unreadCountInboxTicket
+                navNotification = NavNotificationModel(
+                        unreadCountComplain = complainNotification,
+                        unreadCountInboxTicket = inboxTicketNotification
+                )
+                _mainNavListVisitable.findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
+                _mainNavListVisitable.findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
             }
         }) {
             it.printStackTrace()
@@ -362,5 +370,19 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun onlyForLoggedInUser(function: suspend ()-> Unit) {
         if (userSession.get().isLoggedIn) function.invoke()
+    }
+
+    private fun List<Visitable<*>>.findMenu(menuId: Int): HomeNavMenuViewModel? {
+        val findExistingMenu = _mainNavListVisitable.find {
+            it is HomeNavVisitable && it.id() == menuId
+        }
+        return if (findExistingMenu is HomeNavMenuViewModel) findExistingMenu
+        else null
+    }
+
+    private fun HomeNavMenuViewModel.updateBadgeCounter(counter: String) {
+        val indexOfMenu = _mainNavListVisitable.indexOf(this)
+        this.notifCount = counter
+        updateWidget(this, indexOfMenu)
     }
 }

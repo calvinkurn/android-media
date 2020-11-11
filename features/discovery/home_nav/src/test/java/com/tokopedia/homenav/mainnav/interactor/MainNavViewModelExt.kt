@@ -4,7 +4,7 @@ import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.homenav.mainnav.data.pojo.user.ProfilePojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.homenav.mainnav.domain.model.NotificationResolutionModel
+import com.tokopedia.homenav.mainnav.domain.model.NavNotificationModel
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.domain.usecases.*
@@ -26,7 +26,7 @@ fun createViewModel (
         userSession: UserSessionInterface? = null,
         clientMenuGenerator: ClientMenuGenerator? = null,
         getSaldoUseCase: GetSaldoUseCase? = null,
-        getResolutionNotification: GetResolutionNotification? = null,
+        getNavNotification: GetNavNotification? = null,
         getUohOrdersNavUseCase: GetUohOrdersNavUseCase? = null,
         getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null
 ): MainNavViewModel {
@@ -44,8 +44,8 @@ fun createViewModel (
                 .answers { HomeNavTickerViewModel() }
     }
     val getSaldoUseCaseMock = getOrUseDefault(getSaldoUseCase) {}
-    val getResolutionNotificationMock = getOrUseDefault(getResolutionNotification) {
-        coEvery { it.executeOnBackground() }.answers { NotificationResolutionModel(0) }
+    val getResolutionNotificationMock = getOrUseDefault(getNavNotification) {
+        coEvery { it.executeOnBackground() }.answers { NavNotificationModel(0) }
     }
     val getUohOrdersNavUseCaseMock = getOrUseDefault(getUohOrdersNavUseCase) {
         coEvery { it.executeOnBackground() }.answers { listOf() }
