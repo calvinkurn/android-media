@@ -64,7 +64,7 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
-                    productModel.navProductModel.id)
+                    productModel.navProductModel.statusText)
             RouteManager.route(context, productModel.navProductModel.applink)
         }
     }

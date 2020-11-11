@@ -6,11 +6,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
 import kotlinx.android.synthetic.main.holder_other_transaction_product.view.*
 
 class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavListener): AbstractViewHolder<OtherTransactionModel>(itemView) {
+    val otherTrackingLabel = "other"
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.holder_other_transaction_product
@@ -23,6 +25,9 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
         )
 
         itemView.setOnClickListener {
+            TrackingTransactionSection.clickOnOrderStatus(
+                    mainNavListener.getUserId(),
+                    otherTrackingLabel)
             RouteManager.route(context, ApplinkConst.OMS_ORDER_DETAIL)
         }
     }
