@@ -45,6 +45,8 @@ dependencies {
     }
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -58,3 +60,5 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
