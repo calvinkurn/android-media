@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.data.response.KeywordDataItem
+import com.tokopedia.topads.common.data.util.Utils
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
 
@@ -36,7 +37,7 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
         holder.view.checkBox.setOnClickListener(null)
         holder.view.checkBox.isChecked = true
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
-        holder.view.keywordBid.textFieldInput.setText(items[holder.adapterPosition].bidSuggest.toString())
+        holder.view.keywordBid.textFieldInput.setText(Utils.convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
         holder.view.keywordDesc.visibility = View.GONE
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
@@ -53,6 +54,7 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
+                items[holder.adapterPosition].bidSuggest = result
                 when {
                     result < minBid -> {
                         holder.view.keywordBid.setError(true)

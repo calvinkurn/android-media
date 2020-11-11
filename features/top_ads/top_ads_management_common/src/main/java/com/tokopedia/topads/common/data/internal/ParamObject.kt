@@ -58,4 +58,6 @@ object ParamObject {
     const val LIMIT = "limit"
     const val ADS = "ads"
     const val ACTION = "action"
+    const val HEADLINE = "headline"
+    const val SOURCE_CREATE_HEADLINE = "sellerapp_create_headline_group"
 }

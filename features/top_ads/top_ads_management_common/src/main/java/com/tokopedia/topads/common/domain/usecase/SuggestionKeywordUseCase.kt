@@ -40,11 +40,12 @@ private const val KEYWORD_SUGGESTION: String = """
 @GqlQuery("TopAdsGetKeywordsQuery", KEYWORD_SUGGESTION)
 class SuggestionKeywordUseCase @Inject constructor(graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface) : GraphqlUseCase<KeywordSuggestionResponse.Result>(graphqlRepository) {
 
-    fun setParams(groupId: Int?, productIds: String?) {
+    fun setParams(groupId: Int?, productIds: String?,type:Int = 1) {
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.PRODUCT_IDS] = productIds
         queryMap[ParamObject.GROUP_ID] = groupId
         queryMap[ParamObject.SHOP_id] = userSession.shopId.toInt()
+        queryMap[ParamObject.TYPE] = type
         setRequestParams(queryMap)
     }
 

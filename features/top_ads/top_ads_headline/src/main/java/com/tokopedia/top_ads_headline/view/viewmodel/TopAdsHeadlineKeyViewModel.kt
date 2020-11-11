@@ -2,6 +2,7 @@ package com.tokopedia.top_ads_headline.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_CREATE_HEADLINE
 import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.common.data.response.KeywordData
 import com.tokopedia.topads.common.data.response.ResponseBidInfo
@@ -14,13 +15,14 @@ import javax.inject.Inject
 /**
  * Created by Pika on 6/11/20.
  */
+private const val TYPE_HEADLINE = 3
 class TopAdsHeadlineKeyViewModel @Inject constructor(
         private val bidInfoUseCase: BidInfoUseCase,
         private val suggestionKeywordUseCase: SuggestionKeywordUseCase) : ViewModel() {
 
     fun getSuggestionKeyword(productIds: String?, groupId: Int?, onSuccess: ((List<KeywordData>) -> Unit), onEmpty: (() -> Unit)) {
 
-        suggestionKeywordUseCase.setParams(groupId, productIds?.trim())
+        suggestionKeywordUseCase.setParams(groupId, productIds?.trim(),TYPE_HEADLINE)
         suggestionKeywordUseCase.executeQuerySafeMode({
             if (it.topAdsGetKeywordSuggestionV3.data.isEmpty())
                 onEmpty()
@@ -32,7 +34,7 @@ class TopAdsHeadlineKeyViewModel @Inject constructor(
     }
 
     fun getBidInfo(suggestion: ArrayList<DataSuggestions>, onSuccess: ((List<TopadsBidInfo.DataItem>) -> Unit), onEmpty: (() -> Unit)) {
-        bidInfoUseCase.setParams(suggestion, ParamObject.KEYWORD)
+        bidInfoUseCase.setParams(suggestion, ParamObject.HEADLINE, SOURCE_CREATE_HEADLINE)
         bidInfoUseCase.executeQuerySafeMode({
             if (it.topadsBidInfo.data.isEmpty())
                 onEmpty()

@@ -14,13 +14,13 @@ import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
 /**
  * Created by Pika on 6/10/20.
  */
-private const val maxBid: Int = 10000
 
 class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
                                private val onError: ((enable: Boolean) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeyAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
     private var minimumBid: Int = 0
+    private var maxBid:Int = 0
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -37,7 +37,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
         holder.view.checkBox.setOnClickListener(null)
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordDesc.text = String.format(holder.view.context.getString(R.string.topads_headline_keyword_desc), convertToCurrency(items[holder.adapterPosition].totalSearch.toLong()))
-        holder.view.keywordBid.textFieldInput.setText(items[holder.adapterPosition].bidSuggest.toString())
+        holder.view.keywordBid.textFieldInput.setText(convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
         holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
@@ -54,6 +54,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val result = number.toInt()
+                items[holder.adapterPosition].bidSuggest = result
                 when {
                     result < minimumBid -> {
                         holder.view.keywordBid.setError(true)
@@ -91,6 +92,12 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
         }
         notifyDataSetChanged()
     }
+
+    fun setMax(max:Int){
+        maxBid = max
+        notifyDataSetChanged()
+    }
+
 
     fun getSelectItems(): MutableList<KeywordDataItem> {
         val list: MutableList<KeywordDataItem> = mutableListOf()

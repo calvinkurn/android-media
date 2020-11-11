@@ -82,6 +82,9 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         addBtn?.setOnClickListener {
             addManualKeywords()
         }
+        btnNext?.setOnClickListener {
+            gotoNextPage()
+        }
         editText?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -177,6 +180,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
+        keywordListAdapter.setMax(data.firstOrNull()?.maxBid?:0)
 
     }
 
@@ -219,8 +223,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun onItemUnselect(pos: Int) {
-        setCount()
         removeFromList(pos)
+        setCount()
     }
 
     private fun removeFromList(pos: Int) {
@@ -229,6 +233,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun setCount() {
+        selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count),keywordSelectedAdapter.itemCount)
         selectedTitle.visibility = if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
         selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), keywordSelectedAdapter.itemCount + keywordListAdapter.getSelectItems().size)
     }
