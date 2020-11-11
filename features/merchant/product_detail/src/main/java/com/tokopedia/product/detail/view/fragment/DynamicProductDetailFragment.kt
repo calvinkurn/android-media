@@ -2138,6 +2138,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
             setupSearchbar(listOf(HintData(getString(R.string.pdp_search_hint))))
+            setToolbarPageName(ProductTrackingConstant.Category.PDP)
             show()
         }
     }
