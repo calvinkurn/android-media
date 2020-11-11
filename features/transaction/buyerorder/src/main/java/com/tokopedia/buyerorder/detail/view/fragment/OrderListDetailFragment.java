@@ -221,10 +221,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setBottomText(detail.value());
         if (VOUCHER_CODE.equalsIgnoreCase(detail.label())) {
             doubleTextView.setOnClickListener(view -> {
-                Utils.copyTextToClipBoard("voucher code", detail.value(), Objects.requireNonNull(getContext()));
-                Utils.vibrate(getContext());
-                Toaster.build(view, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
-
+                if (getContext() != null) {
+                    Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                    Utils.vibrate(getContext());
+                    Toaster.build(view, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+                }
             });
         }
         detailContent.addView(doubleTextView);

@@ -40,7 +40,7 @@ class AddToCartMultiUseCase @Inject constructor(private val useCase: GraphqlUseC
                     AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice.toString(),
                             quantity.toString(), category)
                     AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice.toString(),
-                            quantity.toString(), "", "",
+                            quantity.toString(), category, "",
                             "", "", "",
                             "", "", userId)
                 }

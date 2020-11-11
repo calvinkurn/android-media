@@ -637,17 +637,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.build(Objects.requireNonNull(getView()), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+        if (getView() != null) {
+            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+        }
     }
 
     @Override
     public void showFailureMessage(String message) {
-        Toaster.build(Objects.requireNonNull(getView()), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
+        if (getView() != null) {
+            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.build(Objects.requireNonNull(getView()), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+        if (getView() != null) {
+            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+        }
     }
 
     @Override
@@ -1031,8 +1037,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         intent.putExtra("OrderId", selectedOrderId);
         intent.putExtra("action_button_url", actionButtonUri);
         if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
-            if (presenter.shouldShowTimeForCancellation()) {
-                Toaster.build(Objects.requireNonNull(getView()),
+            if (presenter.shouldShowTimeForCancellation() && getView() != null) {
+                Toaster.build(getView(),
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
                         Toaster.TYPE_ERROR,

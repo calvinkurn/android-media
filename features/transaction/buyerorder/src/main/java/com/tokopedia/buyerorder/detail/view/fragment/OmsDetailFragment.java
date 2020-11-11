@@ -562,12 +562,16 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.build(Objects.requireNonNull(getView()), message, Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.build(Objects.requireNonNull(getView()), message, Toast.LENGTH_LONG, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toast.LENGTH_LONG, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
+        }
     }
 
     @Override
@@ -673,9 +677,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
-                            Toaster.build(Objects.requireNonNull(getView()), String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                            if (getView() != null) {
+                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                            }
                         } else {
-                            Toaster.build(Objects.requireNonNull(getView()), String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                            if (getView() != null) {
+                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                            }
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);
                     } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {

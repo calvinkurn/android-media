@@ -75,8 +75,6 @@ class UohListViewModel @Inject constructor(dispatcher: BuyerDispatcherProvider,
     val atcResult: LiveData<Result<AddToCartDataModel>>
         get() = _atcResult
 
-    private var addToCartFailedMessage = ""
-
     fun loadOrderList(orderQuery: String, paramOrder: UohListParam) {
         launch {
             _orderHistoryListResult.postValue(uohListUseCase.execute(paramOrder, orderQuery))
