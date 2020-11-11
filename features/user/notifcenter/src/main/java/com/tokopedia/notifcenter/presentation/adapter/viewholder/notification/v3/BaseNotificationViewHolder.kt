@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
-import android.content.res.ColorStateList
 import android.graphics.Typeface
 import android.text.Spannable
 import android.text.SpannableString
@@ -9,7 +8,6 @@ import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.widget.ImageViewCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -99,11 +97,6 @@ abstract class BaseNotificationViewHolder constructor(
     private fun bindIcon(element: NotificationUiModel) {
         icon?.let {
             ImageHandler.LoadImage(icon, element.sectionIcon)
-            if (!element.isRead()) {
-                ImageViewCompat.setImageTintList(icon, ColorStateList.valueOf(clickedColorIcon))
-            } else {
-                ImageViewCompat.setImageTintList(icon, null)
-            }
         }
     }
 
