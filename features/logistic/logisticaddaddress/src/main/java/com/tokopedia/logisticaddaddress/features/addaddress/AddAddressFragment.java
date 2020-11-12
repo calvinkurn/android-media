@@ -300,13 +300,13 @@ public class AddAddressFragment extends BaseDaggerFragment
     public void showErrorSnackbar(String message) {
         if (getActivity() == null) return;
         if (message == null || TextUtils.isEmpty(message)) {
-            Toaster.INSTANCE.make(getView(),
+            Toaster.build(getView(),
                     getActivity().getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
-                    });
+                    }).show();
         } else {
-            Toaster.INSTANCE.make(getView(),message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                    "", v -> {});
+            Toaster.build(getView(),message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    "", v -> {}).show();
         }
     }
 
