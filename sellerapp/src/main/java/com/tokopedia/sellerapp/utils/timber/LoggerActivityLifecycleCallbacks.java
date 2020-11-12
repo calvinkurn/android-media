@@ -16,23 +16,38 @@ public class LoggerActivityLifecycleCallbacks implements Application.ActivityLif
 
     private String userId = "";
 
+    private static final String ENABLE_ASYNC_USER_BASED_TIMBER_SESSION= "android_async_user_based_timber_session";
+
+    private LoggerWeaverInterface loggerWeaverInterface = null;
+    class LoggerWeaverInterface implements WeaveInterface {
+
+        Context appContext;
+        UserSession userSession;
+        LoggerWeaverInterface(Context context) {
+            appContext = context.getApplicationContext();
+            userSession = new UserSession(appContext);
+        }
+
+        @NotNull
+        @Override
+        public Object execute() {
+            UserSession userSession = new UserSession(appContext);
+            if (!userId.equals(userSession.getUserId())) {
+                userId = userSession.getUserId();
+                TimberWrapper.initConfig(appContext);
+            }
+            WorkManagerPruner.getInstance(appContext).pruneWorkManagerIfNeeded();
+            return true;
+        }
+    }
+
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         Context appContext = activity.getApplication();
-        WeaveInterface userTimberSession = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                UserSession userSession = new UserSession(appContext);
-                if (!userId.equals(userSession.getUserId())) {
-                    userId = userSession.getUserId();
-                    TimberWrapper.initConfig(appContext);
-                }
-                WorkManagerPruner.getInstance(appContext).pruneWorkManagerIfNeeded();
-                return true;
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineNow(userTimberSession);
+        if (loggerWeaverInterface == null) {
+            loggerWeaverInterface = new LoggerWeaverInterface(appContext);
+        }
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(loggerWeaverInterface, ENABLE_ASYNC_USER_BASED_TIMBER_SESSION, appContext);
     }
 
     @Override
