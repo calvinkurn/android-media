@@ -174,6 +174,9 @@ object ProductTrackingConstant {
 
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
+
+        const val CLICK_REPORT_FROM_COMPONENT= "click - laporkan on produk bermasalah"
+        const val CLICK_SHARE_FROM_CONTENT= "click - share product button on pdp"
     }
 
 

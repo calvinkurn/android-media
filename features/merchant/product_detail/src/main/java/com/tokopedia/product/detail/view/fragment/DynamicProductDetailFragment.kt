@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -371,13 +370,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 activity?.onBackPressed(); true
             }
             R.id.action_share -> {
-                shareProduct(); true
+                shareProductFromToolbar(); true
             }
             R.id.action_cart -> {
                 gotoCart(); true
             }
             R.id.action_report -> {
-                reportProduct(); true
+                reportProductFromToolbar(); true
             }
             R.id.action_warehouse -> {
                 warehouseProduct(); true
@@ -1743,12 +1742,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    override fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?) {
+        DynamicProductDetailTracking.Click.eventClickShareFromContent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
+        shareProduct()
+    }
+
+    private fun shareProductFromToolbar() {
+        viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
+        }
+        shareProduct()
+    }
 
     private fun shareProduct() {
         activity?.let {
             viewModel.getDynamicProductInfoP1?.let { productInfo ->
-                DynamicProductDetailTracking.Click.eventClickPdpShare(productInfo)
-
                 val productData = ProductData(
                         productInfo.finalPrice.getCurrencyFormatted(),
                         "${productInfo.data.isCashback.percentage}%",
@@ -1844,19 +1852,33 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         onSwipeRefresh()
     }
 
-    private fun reportProduct() {
+    override fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?) {
+        reportProduct({
+            DynamicProductDetailTracking.Click.eventClickReportFromComponent(viewModel.getDynamicProductInfoP1, viewModel.userId, componentTrackDataModel)
+        }, {})
+    }
+
+    private fun reportProductFromToolbar() {
+        reportProduct({
+            DynamicProductDetailTracking.Click.eventReportLogin()
+        },{
+            DynamicProductDetailTracking.Click.eventReportNoLogin()
+        })
+    }
+
+    private fun reportProduct(trackerLogin : (() -> Unit)? = null, trackerNonLogin : (() -> Unit)? = null) {
         viewModel.getDynamicProductInfoP1?.run {
             doActionOrLogin({
                 context?.let {
+                    trackerLogin?.invoke()
                     var deeplink = UriUtil.buildUri(ApplinkConstInternalMarketplace.REPORT_PRODUCT, basic.productID)
                     deeplink = Uri.parse(deeplink).buildUpon().appendQueryParameter(ApplinkConst.DFFALLBACKURL_KEY,
                             DynamicProductDetailMapper.generateProductReportFallback(basic.url)).toString()
                     val intent = RouteManager.getIntent(it, deeplink)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_REPORT)
                 }
-                productDetailTracking.eventReportLogin()
             }, {
-                productDetailTracking.eventReportNoLogin()
+                trackerNonLogin?.invoke()
             })
         }
     }
@@ -1890,7 +1912,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun loadProductData(forceRefresh: Boolean = false) {
         if (productId != null || (productKey != null && shopDomain != null)) {
             (context as? ProductDetailActivity)?.startMonitoringPltNetworkRequest()
-            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId)
+            viewModel.getProductP1(ProductParams(productId = productId, shopDomain = shopDomain, productName = productKey, warehouseId = warehouseId), forceRefresh, isAffiliate, layoutId, isNavOld())
         }
     }
 
@@ -3035,7 +3057,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun isNavRevamp(): Boolean = getAbTestPlatform().getString(ProductDetailConstant.EXP_TOP_NAV, ProductDetailConstant.VARIANT_OLD) == ProductDetailConstant.VARIANT_REVAMP
 
-    private fun isNavOld(): Boolean = getAbTestPlatform().getString(ProductDetailConstant.EXP_TOP_NAV, ProductDetailConstant.VARIANT_OLD) == ProductDetailConstant.VARIANT_OLD
+    override fun isNavOld(): Boolean = getAbTestPlatform().getString(ProductDetailConstant.EXP_TOP_NAV, ProductDetailConstant.VARIANT_OLD) == ProductDetailConstant.VARIANT_OLD
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
         if (isNavRevamp()) {
