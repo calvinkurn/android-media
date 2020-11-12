@@ -98,7 +98,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
 
     private fun initCollapse() {
         iv_collapse.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.unify_chips_ic_chevron_normal))
-        iv_collapse.setOnClickListener {
+        collapse_view.setOnClickListener {
             if (collapseFlag) {
                 iv_collapse.rotation = 0f
                 collapse(parent_collapse)
