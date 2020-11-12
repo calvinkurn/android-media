@@ -41,14 +41,13 @@
         android:id="@+id/tv_shipping_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/kurir_label"
-        app:layout_constraintStart_toEndOf="@id/shipping_title"
+        app:layout_constraintStart_toEndOf="@+id/shipping_title"
         app:layout_constraintTop_toBottomOf="@+id/shipping_title"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
+        app:typographyWeight="bold"
         tools:text="GO-JEK Same Day" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -79,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@id/tv_shipping_name"
         app:layout_constraintBottom_toBottomOf="@+id/booking_code_title"
         app:typographyType="body_3"
-        app:typographyWeight="reguler"
+        app:typographyWeight="bold"
         tools:text="ABCDEFHIJK >" />
 
     <RelativeLayout
@@ -177,7 +176,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/booking_code_title"
         app:layout_constraintTop_toBottomOf="@id/card_driver">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -200,19 +199,21 @@
             android:layout_toEndOf="@id/no_resi_title"
             app:srcCompat="@drawable/ic_copy_black" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/no_resi_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl6"
-            android:layout_toEndOf="@id/no_resi_copy"
-            android:inputType="none"
-            android:textColor="@color/Unify_N700"
-            android:textIsSelectable="true"
-            app:typographyType="body_3"
-            tools:text="TJNE-8K4LFVPNMT6 >" />
-
     </RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/no_resi_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/card_driver"
+        app:layout_constraintBottom_toBottomOf="@id/rl_no_resi"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
+        android:inputType="none"
+        android:textColor="@color/Unify_N700"
+        android:textIsSelectable="true"
+        app:typographyType="body_3"
+        tools:text="TJNE-8K4LFVPNMT6 >" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/alamat_label"
@@ -240,14 +241,12 @@
         android:id="@+id/shippingPrintedLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl7"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_68"
         app:labelTitle="@string/sudah_dicetak"
         app:labelType="general_light_grey"
         app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
-        app:layout_constraintStart_toEndOf="@id/shipping_address_copy"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/rl_no_resi" />
 
     <androidx.constraintlayout.widget.Barrier
@@ -258,20 +257,19 @@
         app:barrierDirection="bottom"
         app:constraint_referenced_ids="shippingPrintedLabel"
         app:layout_constraintBottom_toBottomOf="@+id/alamat_label"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@+id/rl_no_resi" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_receiver_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl7"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:inputType="none"
         android:textColor="@color/Neutral_N700_96"
         android:textIsSelectable="true"
         app:layout_constrainedWidth="true"
-        app:layout_constraintStart_toEndOf="@id/shipping_address_copy"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
         app:layout_constraintTop_toBottomOf="@id/barrierShippingPrinted"
         app:typographyType="body_3"
         app:typographyWeight="bold"
@@ -351,18 +349,19 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_som_dropshipper_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/spacing_lvl6"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_toEndOf="@id/tv_som_dropshipper_label"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="alibaba" />
-
     </RelativeLayout>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_som_dropshipper_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintStart_toStartOf="@id/tv_shipping_name"
+        app:layout_constraintBottom_toBottomOf="@id/rl_drop_shipper"
+        app:layout_constraintTop_toBottomOf="@id/tv_receiver_province"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="alibaba" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

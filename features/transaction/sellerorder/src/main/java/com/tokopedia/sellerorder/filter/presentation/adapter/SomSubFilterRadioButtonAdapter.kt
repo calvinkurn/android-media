@@ -81,12 +81,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
                 setChildStatusList()
                 toggleChildStatus(item, rb_filter.isChecked)
 
-                rb_filter.setOnCheckedChangeListener { _, isChecked ->
-                    toggleChildStatus(item, isChecked)
-                    clickHandlerRadio(item)
-                    somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
-                }
-                label_radio.setOnClickListener {
+                setOnClickListener {
                     toggleChildStatus(item, rb_filter.isChecked)
                     clickHandlerRadio(item)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)

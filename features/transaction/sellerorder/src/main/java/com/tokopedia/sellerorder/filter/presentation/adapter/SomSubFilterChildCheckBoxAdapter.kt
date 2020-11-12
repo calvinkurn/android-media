@@ -59,11 +59,8 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
                     idList.add(it.childId.firstOrNull() ?: 0)
                 }
 
-                label_checkbox.setOnClickListener {
+                setOnClickListener {
                     checkBoxClicked(cb_filter.isChecked)
-                }
-                cb_filter.setOnCheckedChangeListener { _, isChecked ->
-                    checkBoxClicked(isChecked)
                 }
             }
         }

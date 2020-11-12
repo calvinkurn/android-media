@@ -24,6 +24,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.common.util.StatusBarColorUtil
 import com.tokopedia.sellerorder.common.util.Utils.copyInt
 import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
@@ -68,6 +69,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
     private var somFilterUiModelListCopy = listOf<SomFilterUiModel>()
+    private var statusBarColorHelper: StatusBarColorUtil? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +105,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        undoStatusBarColorOverlay()
         super.onDismiss(dialog)
         if(!isApplyFilter) {
             val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate)
@@ -121,6 +125,16 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         showCloseIcon = false
         isHideable = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
+    }
+
+    private fun setStatusBarColorOverlay() {
+        statusBarColorHelper = StatusBarColorUtil(requireActivity())
+        statusBarColorHelper?.setStatusBarColor()
+    }
+
+    private fun undoStatusBarColorOverlay() {
+        statusBarColorHelper?.undoSetStatusBarColor()
+        statusBarColorHelper = null
     }
 
     override fun onDateClicked(position: Int) {
