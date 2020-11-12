@@ -78,8 +78,8 @@ class PictureScrollingView @JvmOverloads constructor(
 
     private fun setPageControl(media: List<MediaDataModel>?) {
         imageSliderPageControl?.setIndicator(media?.size ?: 0)
-        imageSliderPageControl?.activeColor = ContextCompat.getColor(context, R.color.Neutral_N700)
-        imageSliderPageControl?.inactiveColor = ContextCompat.getColor(context, R.color.pdp_inactive_page_control)
+        imageSliderPageControl?.activeColor = ContextCompat.getColor(context, R.color.product_detail_dms_page_control)
+        imageSliderPageControl?.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
     }
 
     private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
