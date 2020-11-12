@@ -133,8 +133,51 @@ class ShipmentPresenterChangeShippingAddressTest {
             view.setHasRunningApiCall(true)
             view.hideLoading()
             view.setHasRunningApiCall(false)
+            view.activityContext
             view.showToastNormal(any())
             view.renderChangeAddressSuccess()
+        }
+    }
+
+    @Test
+    fun changeShippingAddressFailed_ShouldShowError() {
+        // Given
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
+                .success(false)
+                .build())
+
+        // When
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false)
+
+        // Then
+        verifySequence {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.hideLoading()
+            view.setHasRunningApiCall(false)
+            view.activityContext
+            view.showToastError(any())
+        }
+    }
+
+    @Test
+    fun changeShippingAddressError_ShouldShowError() {
+        // Given
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
+                .success(false)
+                .build())
+
+        // When
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false)
+
+        // Then
+        verifySequence {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.hideLoading()
+            view.setHasRunningApiCall(false)
+            view.activityContext
+            view.showToastError(any())
         }
     }
 }
