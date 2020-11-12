@@ -16,13 +16,21 @@ const val TRADE_IN_DROP_OFF_IMAGE_URL = "https://ecs7.tokopedia.net/timi/Ditukar
 
 fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Context) {
 
-    val bottomSheet = BottomSheetUnify()
-    bottomSheet.showKnob = true
-    bottomSheet.showCloseIcon = false
-    bottomSheet.showHeader = false
+    BottomSheetUnify().apply {
+        val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info, null)
+        setupContent(view, context)
 
-    val view = View.inflate(context, R.layout.layout_bottomsheet_trade_in_info, null)
+        showKnob = true
+        showCloseIcon = false
+        showHeader = false
+        clearContentPadding = true
 
+        setChild(view)
+        show(fragmentManager, "Trade In Info")
+    }
+}
+
+private fun setupContent(view: View, context: Context) {
     if (view.tab_trade_in_info.getUnifyTabLayout().tabCount == 0) {
         view.tab_trade_in_info.addNewTab(context.getString(R.string.title_trade_in_default_address))
         view.tab_trade_in_info.addNewTab(context.getString(R.string.title_trade_in_drop_off_address))
@@ -45,10 +53,8 @@ fun showTradeInInfoBottomsheet(fragmentManager: FragmentManager, context: Contex
                 }
             }
         }
+
         override fun onTabUnselected(tab: TabLayout.Tab) {}
         override fun onTabReselected(tab: TabLayout.Tab) {}
     })
-
-    bottomSheet.setChild(view)
-    bottomSheet.show(fragmentManager, "Trade In Info")
 }
