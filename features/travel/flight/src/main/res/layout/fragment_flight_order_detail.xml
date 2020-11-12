@@ -24,14 +24,14 @@
                 app:tickerShapeType="full"
                 app:tickerType="warning" />
 
-            <include
-                layout="@layout/include_flight_order_detail_header"
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
+                android:id="@+id/flightOrderDetailHeaderStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
-            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyStatusView
-                android:id="@+id/flightOrderDetailJourneyStatus"
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
+                android:id="@+id/flightOrderDetailJourney"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />

@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.view_flight_order_detail_journey.view.*
 /**
  * @author by furqan on 10/11/2020
  */
-class FlightOrderDetailJourneyStatusView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
     var listener: Listener? = null

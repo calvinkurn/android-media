@@ -14,27 +14,25 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
-import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyStatusView
+import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
+import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
-import com.tokopedia.flight.orderdetail.presentation.model.mapper.OrderDetailStatusMapper
-import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
-import kotlinx.android.synthetic.main.include_flight_order_detail_header.*
 import javax.inject.Inject
 
 /**
  * @author by furqan on 19/10/2020
  */
-class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourneyStatusView.Listener {
+class FlightOrderDetailFragment : BaseDaggerFragment(),
+        FlightOrderDetailJourneyView.Listener,
+        FlightOrderDetailHeaderStatusView.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -120,6 +118,14 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
         flightOrderDetailViewModel.fetchETicketData()
     }
 
+    override fun onCopyInvoiceIdClicked(invoiceId: String) {
+        copyToClipboard(CLIP_LABEL_INVOICE_ID, invoiceId)
+    }
+
+    override fun onDetailPaymentClicked() {
+//        TODO("Not yet implemented")
+    }
+
     private fun showLoading() {
         containerContentOrderDetail.visibility = View.GONE
         containerLoaderOrderDetail.visibility = View.VISIBLE
@@ -132,60 +138,26 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
 
     private fun renderView(data: OrderDetailDataModel) {
         hideLoading()
-        renderOrderStatus(data.status, data.statusString)
-        renderInvoiceId(flightOrderDetailViewModel.invoiceId)
-        renderTransactionDate(data.createTime)
-        renderPaymentView(data.payment.gatewayName, data.payment.totalAmountStr)
 
-        flightOrderDetailJourneyStatus.listener = this
-        flightOrderDetailJourneyStatus.setData(data.hasETicket, data.journeys)
-        flightOrderDetailJourneyStatus.buildView()
-    }
+        /* Render Order Status */
+        flightOrderDetailHeaderStatus.listener = this
+        flightOrderDetailHeaderStatus.setData(
+                data.status,
+                data.statusString,
+                flightOrderDetailViewModel.invoiceId,
+                data.createTime,
+                data.payment.gatewayName,
+                data.payment.totalAmountStr
+        )
+        flightOrderDetailHeaderStatus.buildView()
 
-    private fun renderOrderStatus(statusInt: Int, statusString: String) {
-        context?.let {
-            when (OrderDetailStatusMapper.getStatusOrder(statusInt)) {
-                OrderDetailStatusMapper.SUCCESS -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_G200)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-                }
-                OrderDetailStatusMapper.IN_PROGRESS, OrderDetailStatusMapper.WAITING_FOR_PAYMENT -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_Y200)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
-                }
-                OrderDetailStatusMapper.FAILED, OrderDetailStatusMapper.REFUNDED -> {
-                    OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_R100)
-                    tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R400))
-                }
-            }
-            tgFlightOrderStatus.text = statusString
-        }
-    }
-
-    private fun renderInvoiceId(invoiceId: String) {
-        tgFlightOrderInvoice.text = invoiceId
-        ivFlightOrderInvoiceCopy.setOnClickListener {
-            copyToClipboard(CLIP_LABEL_INVOICE_ID, invoiceId)
-        }
-    }
-
-    private fun renderTransactionDate(transactionDate: String) {
-        tgFlightOrderCreateTime.text = TravelDateUtil.formatDate(
-                TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
-                TravelDateUtil.DEFAULT_VIEW_TIME_FORMAT,
-                transactionDate)
-    }
-
-    private fun renderPaymentView(paymentMethod: String, totalPayment: String) {
-        tgFlightOrderPaymentMethod.text = paymentMethod
-        tgFlightOrderTotalPayment.text = totalPayment
-
-        tgFlightOrderLabelDetailPayment.setOnClickListener {
-            openDetailPaymentBottomSheet()
-        }
-        ivFlightOrderLabelDetailPayment.setOnClickListener {
-            openDetailPaymentBottomSheet()
-        }
+        /* Render Journey Ticket View */
+        flightOrderDetailJourney.listener = this
+        flightOrderDetailJourney.setData(
+                data.hasETicket,
+                data.journeys
+        )
+        flightOrderDetailJourney.buildView()
     }
 
     private fun copyToClipboard(label: String, textToCopy: String) {
