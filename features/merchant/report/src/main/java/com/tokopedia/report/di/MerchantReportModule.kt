@@ -14,14 +14,12 @@ import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ImageAttachment
-import com.tokopedia.report.data.model.SubmitReportResponse
-import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchersProvider
 import javax.inject.Named
 
 @MerchantReportScope
@@ -30,7 +28,7 @@ class MerchantReportModule {
 
     @MerchantReportScope
     @Provides
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository

@@ -3,7 +3,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -39,8 +39,8 @@ class SellerHomeViewModel @Inject constructor(
         private val getPieChartDataUseCase: Lazy<GetPieChartDataUseCase>,
         private val getBarChartDataUseCase: Lazy<GetBarChartDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
-        private val dispatcher: SellerHomeCoroutineDispatcher
-) : CustomBaseViewModel(dispatcher.io()) {
+        private val dispatcher: CoroutineDispatchers
+) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val DATE_FORMAT = "dd-MM-yyyy"
@@ -202,7 +202,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getShopLocation() {
         launchCatchError(block = {
-            val result: Success<ShippingLoc> = Success(withContext(dispatcher.io()) {
+            val result: Success<ShippingLoc> = Success(withContext(dispatcher.io) {
                 getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.get().executeOnBackground()
             })

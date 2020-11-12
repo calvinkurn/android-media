@@ -1,7 +1,7 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
@@ -46,7 +46,7 @@ class ShopShowcasePickerViewModelTest {
                 getSellerShowcaseList,
                 getShopShowcaseTotalProductUseCase,
                 createShopShowcaseUseCase,
-                TestCoroutineDispatchers()
+                CoroutineTestDispatchersProvider
         )
     }
 

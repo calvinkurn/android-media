@@ -14,7 +14,7 @@ import com.tokopedia.shop.settings.basicinfo.data.UploadShopEditImageModel
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.UploadShopImageUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopEditBasicInfoViewModel
-import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -60,7 +60,7 @@ abstract class ShopEditBasicInfoViewModelTestFixture {
                 getAllowShopNameDomainChangesUseCase,
                 getShopDomainNameSuggestionUseCase,
                 validateDomainShopNameUseCase,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
 
         privateCurrentShopNameField = shopEditBasicInfoViewModel::class.java.getDeclaredField("currentShopName").apply {

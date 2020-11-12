@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.product.manage.common.coroutine.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.param.EditVariantCampaignProductResult
 import com.tokopedia.product.manage.feature.campaignstock.domain.model.response.GetStockAllocationData
 import com.tokopedia.product.manage.feature.campaignstock.domain.usecase.CampaignStockAllocationUseCase

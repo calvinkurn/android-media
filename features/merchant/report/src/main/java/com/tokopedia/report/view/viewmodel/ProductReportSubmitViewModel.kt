@@ -2,12 +2,12 @@ package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
-import kotlinx.coroutines.CoroutineDispatcher
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import rx.Subscriber
 import javax.inject.Inject
 
 class ProductReportSubmitViewModel @Inject constructor(private val useCase: SubmitReportUseCase,
-                                                       dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+                                                       dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.main){
 
     fun submitReport(productId: Int, categoryId: Int, input: Map<String, Any>,
                      onSuccess: (Boolean) -> Unit, onFail: (Throwable?) -> Unit){

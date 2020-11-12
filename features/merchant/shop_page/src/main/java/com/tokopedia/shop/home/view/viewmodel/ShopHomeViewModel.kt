@@ -30,7 +30,7 @@ import com.tokopedia.shop.home.domain.CheckCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.CheckCampaignNplException
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -54,7 +54,7 @@ class ShopHomeViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider,
+        private val dispatcherProvider: CoroutineDispatchers,
         private val addToCartUseCase: AddToCartUseCase,
         private val gqlCheckWishlistUseCase: Provider<GQLCheckWishlistUseCase>,
         private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
@@ -66,7 +66,7 @@ class ShopHomeViewModel @Inject constructor(
         private val shopProductSortMapper: ShopProductSortMapper,
         private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
         private val playWidgetTools: PlayWidgetTools
-) : BaseViewModel(dispatcherProvider.main()) {
+) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
@@ -136,7 +136,7 @@ class ShopHomeViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getShopPageHomeLayout(shopId)
                     },
@@ -146,7 +146,7 @@ class ShopHomeViewModel @Inject constructor(
                     }
             )
             val productList = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         if (!isRefreshShopLayout)
                             getProductListData(shopId, 1, shopProductFilterParameter)
@@ -156,7 +156,7 @@ class ShopHomeViewModel @Inject constructor(
             )
 
             val sortResponse  = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getSortListData()
                     },
@@ -189,7 +189,7 @@ class ShopHomeViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
-            val listProductData = withContext(dispatcherProvider.io()) {
+            val listProductData = withContext(dispatcherProvider.io) {
                 getProductListData(shopId, page, shopProductFilterParameter)
             }
             _newProductListData.postValue(Success(listProductData))
@@ -202,7 +202,7 @@ class ShopHomeViewModel @Inject constructor(
         val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
         val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
         if (index != 1) {
-            val merchantVoucherResponse = withContext(dispatcherProvider.io()) {
+            val merchantVoucherResponse = withContext(dispatcherProvider.io) {
                 getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
             }
             return data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
@@ -229,7 +229,7 @@ class ShopHomeViewModel @Inject constructor(
             onErrorAddToCart: (exception: Throwable) -> Unit
     ) {
         launchCatchError(block = {
-            val addToCartSubmitData = withContext(dispatcherProvider.io()) {
+            val addToCartSubmitData = withContext(dispatcherProvider.io) {
                 submitAddProductToCart(shopId, product)
             }
             if (addToCartSubmitData.data.success == 1)
@@ -249,7 +249,7 @@ class ShopHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val listResultCheckWishlist = shopHomeCarousellProductUiModel.map {
                 asyncCatchError(
-                        dispatcherProvider.io(),
+                        dispatcherProvider.io,
                         block = {
                             val resultCheckWishlist = checkListProductWishlist(it)
                             Pair(it, resultCheckWishlist)
@@ -350,7 +350,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getCampaignNplRemindMeStatus(model: ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem) {
         launchCatchError(block = {
-            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io()) {
+            val getCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
                 val campaignId = model.campaignId
                 getCampaignNotifyMe(campaignId)
             }
@@ -369,7 +369,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun clickRemindMe(campaignId: String, action: String) {
         launchCatchError(block = {
-            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io()) {
+            val checkCampaignNotifyMeModel = withContext(dispatcherProvider.io) {
                 checkCampaignNotifyMe(campaignId, action)
             }
             val checkCampaignNotifyMeUiModel = CheckCampaignNotifyMeUiModel(
@@ -402,7 +402,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getBottomSheetFilterData() {
         launchCatchError(coroutineContext, block = {
-            val filterBottomSheetData = withContext(dispatcherProvider.io()) {
+            val filterBottomSheetData = withContext(dispatcherProvider.io) {
                 getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
@@ -419,7 +419,7 @@ class ShopHomeViewModel @Inject constructor(
 
     fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
         launchCatchError(block = {
-            val filterResultProductCount = withContext(dispatcherProvider.io()) {
+            val filterResultProductCount = withContext(dispatcherProvider.io) {
                 getFilterResultCountData(shopId, tempShopProductFilterParameter)
             }
             _shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))
@@ -466,7 +466,7 @@ class ShopHomeViewModel @Inject constructor(
         launchCatchError(block = {
             val response = playWidgetTools.getWidgetFromNetwork(
                     PlayWidgetUseCase.WidgetType.ShopPage(shopId),
-                    dispatcherProvider.io()
+                    dispatcherProvider.io
             )
             val widgetUiModel = playWidgetTools.mapWidgetToModel(response)
             _playWidgetObservable.value = carouselPlayWidgetUiModel.copy(widgetUiModel = widgetUiModel)
@@ -480,7 +480,7 @@ class ShopHomeViewModel @Inject constructor(
             val response = playWidgetTools.setToggleReminder(
                     channelId,
                     remind,
-                    dispatcherProvider.io()
+                    dispatcherProvider.io
             )
             val reminderUiModel = playWidgetTools.mapWidgetToggleReminder(response)
             _playWidgetToggleReminderObservable.value = reminderUiModel.copy(remind = remind, position = position)

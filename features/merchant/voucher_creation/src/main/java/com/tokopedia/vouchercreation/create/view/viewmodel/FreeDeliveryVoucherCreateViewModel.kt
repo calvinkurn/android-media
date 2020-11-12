@@ -9,7 +9,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType

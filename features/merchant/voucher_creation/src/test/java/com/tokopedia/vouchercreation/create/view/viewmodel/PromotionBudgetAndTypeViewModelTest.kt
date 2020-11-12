@@ -5,7 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import io.mockk.MockKAnnotations
@@ -36,7 +36,7 @@ class PromotionBudgetAndTypeViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = PromotionBudgetAndTypeViewModel(TestCoroutineDispatchers, basicShopInfoUseCase, userSession)
+        mViewModel = PromotionBudgetAndTypeViewModel(CoroutineTestDispatchersProvider, basicShopInfoUseCase, userSession)
     }
 
     @Test

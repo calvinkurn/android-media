@@ -7,7 +7,7 @@ import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.talk.common.coroutine.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.talk.feature.write.data.mapper.TalkWriteMapper
 import com.tokopedia.talk.feature.write.data.model.DiscussionGetWritingForm
 import com.tokopedia.talk.feature.write.data.model.DiscussionSubmitForm

@@ -1,14 +1,13 @@
-package com.tokopedia.product.manage.verification
+package com.tokopedia.coroutines.test.ext
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import junit.framework.TestCase.assertEquals
+import com.tokopedia.usecase.coroutines.Result
+import org.junit.Assert.assertEquals
 
 fun<T> LiveData<T>.verifyValueEquals(expected: Any?) {
-    val actual = value
-    assertEquals(expected, actual)
+    assertEquals(expected, value)
 }
 
 fun<T: Any> LiveData<Result<T>>.verifySuccessEquals(expected: Success<Any>) {
@@ -19,6 +18,8 @@ fun<T: Any> LiveData<Result<T>>.verifySuccessEquals(expected: Success<Any>) {
 
 fun<T: Any> LiveData<Result<T>>.verifyErrorEquals(expected: Fail) {
     val expectedResult = expected.throwable::class.java
-    val actualResult = (value as? Fail)?.let { it.throwable::class.java }
+    val actualResult = (value as? Fail)?.let {
+        it.throwable::class.java
+    }
     assertEquals(expectedResult, actualResult)
 }

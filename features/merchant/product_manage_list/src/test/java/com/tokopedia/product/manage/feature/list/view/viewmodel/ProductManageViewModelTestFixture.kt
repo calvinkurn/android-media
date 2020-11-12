@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.common.list.domain.usecase.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.list.domain.SetFeaturedProductUseCase
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -20,10 +20,10 @@ import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
 import org.junit.Rule
 
-abstract class ProductManageViewModelTestFixture {
+open class ProductManageViewModelTestFixture {
 
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @RelaxedMockK
     lateinit var editStockUseCase: EditStockUseCase
@@ -72,7 +72,7 @@ abstract class ProductManageViewModelTestFixture {
             multiEditProductUseCase,
             getProductListMetaUseCase,
             editProductVariantUseCase,
-            TestCoroutineDispatchers
+            CoroutineTestDispatchersProvider
         )
     }
 }

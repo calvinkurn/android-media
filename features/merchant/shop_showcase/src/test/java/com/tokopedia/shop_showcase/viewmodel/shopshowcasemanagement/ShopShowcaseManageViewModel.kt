@@ -1,13 +1,12 @@
 package com.tokopedia.shop_showcase.viewmodel.shopshowcasemanagement
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.shop_showcase.coroutines.TestCoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.DeleteShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ReorderShopShowcaseResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.*
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcaseListViewModel
@@ -17,12 +16,10 @@ import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
-
 
 @ExperimentalCoroutinesApi
 class ShopShowcaseManageViewModel {
@@ -57,7 +54,7 @@ class ShopShowcaseManageViewModel {
                 deleteShowcase,
                 reorderShowcase,
                 getShopShowcaseTotalProductUseCase,
-                TestCoroutineDispatchers()
+                CoroutineTestDispatchersProvider
         )
     }
 

@@ -6,7 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ChangeVoucherPeriodUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
@@ -54,7 +54,7 @@ class ChangeVoucherPeriodViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        mViewModel = ChangeVoucherPeriodViewModel(TestCoroutineDispatchers, changeVoucherPeriodUseCase, getTokenUseCase)
+        mViewModel = ChangeVoucherPeriodViewModel(CoroutineTestDispatchersProvider, changeVoucherPeriodUseCase, getTokenUseCase)
 
         mViewModel.updateVoucherSuccessLiveData.observeForever(updateVoucherSuccessObserver)
     }

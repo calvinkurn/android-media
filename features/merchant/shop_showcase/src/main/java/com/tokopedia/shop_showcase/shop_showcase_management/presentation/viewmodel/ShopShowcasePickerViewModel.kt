@@ -3,7 +3,7 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
@@ -22,8 +22,8 @@ class ShopShowcasePickerViewModel @Inject constructor(
         private val getShopShowcaseListSellerUseCase: GetShopShowcaseListSellerUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
-        private val dispatchers: ShopShowcaseDispatchProvider
-): BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val _getListSellerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListSellerResponse>>()
     val getListSellerShopShowcaseResponse: LiveData<Result<ShopShowcaseListSellerResponse>>
@@ -38,7 +38,7 @@ class ShopShowcasePickerViewModel @Inject constructor(
 
     fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 getShopShowcaseListSellerUseCase.params = GetShopShowcaseListSellerUseCase.createRequestParams(
                         // set withDefault to false to avoid get default generated showcase
                         withDefault = false
@@ -56,7 +56,7 @@ class ShopShowcasePickerViewModel @Inject constructor(
     fun getTotalProduct(shopId: String, page: Int, perPage: Int,
                         sortId: Int, etalase: String, search: String) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 val paramInput = mapOf(
                         "page" to page,
                         "fkeyword" to search,
@@ -78,7 +78,7 @@ class ShopShowcasePickerViewModel @Inject constructor(
 
     fun addShopShowcase(data: AddShopShowcaseParam) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 createShopShowcaseUseCase.params = CreateShopShowcaseUseCase.createRequestParams(data)
                 _createShopShowcase.postValue(Success(createShopShowcaseUseCase.executeOnBackground()))
             }

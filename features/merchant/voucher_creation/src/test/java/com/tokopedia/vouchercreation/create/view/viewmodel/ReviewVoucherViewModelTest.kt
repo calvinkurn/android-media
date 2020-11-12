@@ -2,7 +2,7 @@ package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import android.graphics.Bitmap
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.*
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import io.mockk.MockKAnnotations
@@ -55,7 +55,7 @@ class ReviewVoucherViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = ReviewVoucherViewModel(TestCoroutineDispatchers, createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
+        mViewModel = ReviewVoucherViewModel(CoroutineTestDispatchersProvider, createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
     }
 
     @Test

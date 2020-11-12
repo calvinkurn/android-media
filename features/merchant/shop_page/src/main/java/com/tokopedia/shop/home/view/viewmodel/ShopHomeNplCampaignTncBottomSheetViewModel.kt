@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,10 +16,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatcherProvider,
+        private val dispatcherProvider: CoroutineDispatchers,
         private val userSession: UserSessionInterface,
         private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase
-) : BaseViewModel(dispatcherProvider.main()) {
+) : BaseViewModel(dispatcherProvider.main) {
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -30,7 +30,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
 
     fun getTnc(campaignId: String) {
         launchCatchError(block = {
-            val tncData = withContext(dispatcherProvider.io()){
+            val tncData = withContext(dispatcherProvider.io){
                 getTncResponse(campaignId)
             }
             _campaignTncLiveData.postValue(Success(tncData))

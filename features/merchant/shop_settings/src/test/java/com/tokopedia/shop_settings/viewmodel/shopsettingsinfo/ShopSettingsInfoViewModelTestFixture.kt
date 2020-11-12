@@ -7,7 +7,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShop
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
-import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,7 +42,7 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 getShopBasicDataUseCase,
                 getShopStatusUseCase,
                 updateShopScheduleUseCase,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
     }
 

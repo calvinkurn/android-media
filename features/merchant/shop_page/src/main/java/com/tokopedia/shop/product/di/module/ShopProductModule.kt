@@ -26,8 +26,8 @@ import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.repository.ShopProductRepositoryImpl
@@ -592,7 +592,7 @@ class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
-        return CoroutineDispatcherProviderImpl
+    fun getCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
     }
 }

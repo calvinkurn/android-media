@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackPercentageValidationUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackRupiahValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType

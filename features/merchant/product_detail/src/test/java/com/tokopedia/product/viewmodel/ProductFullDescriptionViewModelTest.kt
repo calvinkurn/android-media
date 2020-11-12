@@ -5,7 +5,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.usecase.GetProductSpecificationUseCase
 import com.tokopedia.product.detail.view.viewmodel.ProductFullDescriptionViewModel
-import com.tokopedia.product.util.TestDispatcherProvider
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -24,7 +24,7 @@ class ProductFullDescriptionViewModelTest {
     lateinit var getProductSpecificationUseCase: GetProductSpecificationUseCase
 
     private val viewModel by lazy {
-        ProductFullDescriptionViewModel(TestDispatcherProvider(), getProductSpecificationUseCase)
+        ProductFullDescriptionViewModel(CoroutineTestDispatchersProvider, getProductSpecificationUseCase)
     }
 
     @get:Rule
