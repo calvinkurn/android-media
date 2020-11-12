@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.common.robot
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -114,12 +113,7 @@ class OrderSummaryPageRobot {
     }
 
     infix fun pay(func: OrderSummaryPageResultRobot.() -> Unit) {
-        onView(withId(R.id.btn_pay)).perform(scrollTo()).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            val btn = (view as UnifyButton)
-            Log.i("qwertyuiop", "btn is loading ${btn.isLoading}")
-            Log.i("qwertyuiop", "btn text ${btn.text}")
-        }.perform(click())
+        onView(withId(R.id.btn_pay)).perform(scrollTo()).perform(click())
         OrderSummaryPageResultRobot().apply(func)
     }
 
