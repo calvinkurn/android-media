@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -251,10 +252,17 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun openShopPageWithBroadcastStatus(isSaved: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
-        intent.putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        startActivity(intent)
-        activity?.finish()
+        if (activity?.callingActivity == null) {
+            val intent = RouteManager.getIntent(context, ApplinkConst.SHOP, userSession.shopId)
+                    .putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+            startActivity(intent)
+            activity?.finish()
+        } else {
+            activity?.setResult(
+                    Activity.RESULT_OK,
+                    Intent().putExtra(NEWLY_BROADCAST_CHANNEL_SAVED, isSaved)
+            )
+            activity?.finish()
+        }
     }
 }
