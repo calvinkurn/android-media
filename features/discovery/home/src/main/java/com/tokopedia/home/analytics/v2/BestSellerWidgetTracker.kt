@@ -9,6 +9,8 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
  * Created by Lukas on 09/11/20.
  */
 object BestSellerWidgetTracker : BaseTracking(){
+    private const val IMPRESSION_ON_PRODUCT = "impression on product %s"
+    private const val CLICK_ON_PRODUCT = "click on product %s"
     private const val BEST_SELLER = "dynamic channel best seller"
     private const val LIST_BEST_SELLER = "/ - p%s - dynamic channel best seller - product"
     private const val CLICK_FILTER_BEST_SELLER = "click chips filter on dynamic channel best seller"
@@ -20,7 +22,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                 .constructBasicProductView(
                         Event.PRODUCT_VIEW,
                         Category.HOMEPAGE,
-                        Action.IMPRESSION_ON.format(BEST_SELLER),
+                        IMPRESSION_ON_PRODUCT.format(BEST_SELLER),
                         Label.NONE,
                         LIST_BEST_SELLER.format(position),
                         listOf(mapToProductTracking(recommendationItem, channelId, headerName, pageName))
@@ -36,7 +38,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                 .constructBasicProductClick(
                         Event.PRODUCT_CLICK,
                         Category.HOMEPAGE,
-                        Action.CLICK_ON.format(BEST_SELLER),
+                        CLICK_ON_PRODUCT.format(BEST_SELLER),
                         "$channelId - $headerName",
                         LIST_BEST_SELLER.format(position),
                         listOf(mapToProductTracking(recommendationItem, channelId, headerName, pageName))
@@ -99,7 +101,7 @@ object BestSellerWidgetTracker : BaseTracking(){
                 recommendationType = recommendationItem.recommendationType,
                 headerName = headerName,
                 isCarousel = true,
-                productPrice = recommendationItem.price,
+                productPrice = recommendationItem.priceInt.toString(),
                 productPosition = recommendationItem.position.toString(),
                 isFreeOngkir = recommendationItem.isFreeOngkirActive,
                 pageName = pageName,

@@ -52,6 +52,8 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
         if(payloads.isNotEmpty() && payloads.first() is Bundle){
             val bundle = payloads.first() as Bundle
             if(bundle.containsKey(BEST_SELLER_UPDATE_RECOMMENDATION)){
+                bestSellerDataModel = element
+                initHeader(element)
                 initFilterChip(element)
                 initRecommendation(element)
                 itemView.best_seller_loading_recommendation.hide()
@@ -96,8 +98,7 @@ class BestSellerViewHolder (view: View, private val listener: RecommendationWidg
             val recommendationCarouselList: MutableList<Visitable<RecommendationCarouselTypeFactory>> = element.recommendationItemList.withIndex().map {
                 RecommendationCarouselItemDataModel(it.value, element.productCardModelList[it.index])
             }.toMutableList()
-
-            recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
+            if(element.seeMoreAppLink.isNotBlank()) recommendationCarouselList.add(RecommendationSeeMoreDataModel(element.seeMoreAppLink))
             recommendationAdapter.submitList(recommendationCarouselList)
             itemView.best_seller_recommendation_recycler_view.show()
             itemView.best_seller_recommendation_recycler_view.layoutParams.height = element.height
