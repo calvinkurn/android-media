@@ -355,7 +355,7 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?, needToEvaluateRecommendation:Boolean = true): HomeDataModel? {
+    private fun evaluateAvailableComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let {
             var newHomeViewModel = homeDataModel
             newHomeViewModel = evaluateGeolocationComponent(newHomeViewModel)
@@ -363,25 +363,10 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluatePlayCarouselWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
-            if (needToEvaluateRecommendation) newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
-            newHomeViewModel = evaluateDynamicChannelModel(newHomeViewModel)
-            newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
-//            newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
+            newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
-    }
-
-    private fun evaluateDynamicChannelModel(newHomeViewModel: HomeDataModel?): HomeDataModel? {
-        newHomeViewModel?.let {
-            val getDynamicChannelModelComponent = it.list.filterIsInstance(HomeComponentVisitable::class.java)
-            if (getDynamicChannelModelComponent.isEmpty()) {
-                val list = it.list.toMutableList()
-                list.add(DynamicChannelLoadingModel())
-                return newHomeViewModel.copy(list = list)
-            }
-        }
-        return newHomeViewModel
     }
 
     private fun evaluateGeolocationComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
@@ -735,38 +720,6 @@ open class HomeViewModel @Inject constructor(
 
         return homeDataModel
     }
-
-    private fun evaluatePopularKeywordComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { homeViewModel ->
-            val popularWidget = homeVisitableListData.find { visitable -> visitable is PopularKeywordListDataModel}
-            if(popularWidget != null) {
-                val list = homeViewModel.list.toMutableList()
-                // find the old data from current list
-                list.withIndex().find { (_, value) -> value is PopularKeywordListDataModel }?.let {
-                    list[it.index] = popularWidget
-                }
-                return homeViewModel.copy(list = list)
-            }
-        }
-        return homeDataModel
-    }
-
-//    private fun evaluateTopAdsBannerComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
-//        homeDataModel?.let { homeDataModel ->
-//            val currentList = homeVisitableListData.filterIsInstance<HomeTopAdsBannerDataModel>()
-//            if (currentList.isNotEmpty()) {
-//                val list = homeDataModel.list.toMutableList()
-//                // find the old data from current list
-//                list.forEachIndexed { pos, data ->
-//                    if (data is HomeTopAdsBannerDataModel) {
-//                        list[pos] = data
-//                    }
-//                }
-//                return homeDataModel.copy(list = list)
-//            }
-//        }
-//        return homeDataModel
-//    }
 
     fun getRecommendationFeedSectionPosition() = (homeVisitableListData.size?:0)-1
 
@@ -1297,7 +1250,7 @@ open class HomeViewModel @Inject constructor(
             }
         }
         homeVisitableListData = newList
-        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData))
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
     }
 
     override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
@@ -1308,15 +1261,15 @@ open class HomeViewModel @Inject constructor(
         if(newList.find { getVisitableId(it) == getVisitableId(visitable) && it::class.java == visitable::class.java } != null) return
 
         //prevent widget becomes the last instead of recom
-        val listLastIndex = newList.lastIndex
-        if (addedPosition == listLastIndex && visitable !is HomeRecommendationFeedDataModel) {
-            addedPosition -= 1
+        if (homeVisitableListData.find { it is HomeRecommendationFeedDataModel } != null &&
+                visitable is HomeRecommendationFeedDataModel) {
+            return
         }
 
         if((addedPosition == -1 || addedPosition > newList.size)) newList.add(visitable)
         else newList.add(addedPosition, visitable)
         homeVisitableListData = newList
-        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData))
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
     }
 
     override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
@@ -1326,7 +1279,7 @@ open class HomeViewModel @Inject constructor(
             newList.remove(it)
         }
         homeVisitableListData = newList
-        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData))
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData.copy()))
     }
 
     override suspend fun updateHomeData(homeDataModel: HomeDataModel) {
@@ -1427,7 +1380,7 @@ open class HomeViewModel @Inject constructor(
 
     private fun removeDynamicChannelLoadingModel() {
         val currentList = homeVisitableListData
-        currentList?.let {
+        currentList.let {
             val detectLoadingModel = homeVisitableListData.find { visitable -> visitable is DynamicChannelLoadingModel }
             val detectRetryModel = homeVisitableListData.find { visitable -> visitable is DynamicChannelRetryModel }
 
@@ -1441,7 +1394,7 @@ open class HomeViewModel @Inject constructor(
 
             (detectLoadingModel as? DynamicChannelLoadingModel)?.let {
                 launch(Dispatchers.Main) {
-                    deleteWidget(it, currentList.indexOf(it))
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(it, currentList.indexOf(it), this@HomeViewModel))
                     addWidget(DynamicChannelRetryModel(false), currentList.size)
                 }
             }
