@@ -53,6 +53,48 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventClickShareFromContent(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    "",
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT)
+        }
+
+        fun eventClickReportFromComponent(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    "",
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_REPORT_FROM_COMPONENT,
+                    "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_ISLOGGIN] = (userId.isNotEmpty()).toString()
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = productInfo?.shopTypeString ?: ""
+            mapEvent[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = productInfo?.basic?.shopID ?: ""
+
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_REPORT_FROM_COMPONENT)
+        }
+
+        fun eventReportNoLogin() {
+            TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK,
+                    ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
+        }
+
+        fun eventReportLogin() {
+            TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK,
+                    ProductTrackingConstant.Report.EVENT_LABEL)
+        }
+
         fun eventClickCustomInfo(title: String, userId: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val componentTitle = "component title: $title"
             val mapEvent = TrackAppUtils.gtmData(

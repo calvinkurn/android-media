@@ -259,4 +259,7 @@
 
     <string name="double_string_builder">%1s %2s</string>
 
+    //report
+    <string name="merchant_product_detail_report_text">Produk bermasalah? Laporkan</string>
+
 </resources>

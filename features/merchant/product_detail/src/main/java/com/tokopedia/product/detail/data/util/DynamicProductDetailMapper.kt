@@ -83,6 +83,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.TOP_ADS -> {
                     listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.REPORT -> {
+                    listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
