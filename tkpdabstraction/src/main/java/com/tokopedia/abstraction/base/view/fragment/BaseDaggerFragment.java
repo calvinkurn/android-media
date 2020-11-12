@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 /**
  * @author kulomady on 1/9/17.
  */
-public abstract class BaseDaggerFragment extends CmFragment {
+public abstract class BaseDaggerFragment extends TkpdBaseV4Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

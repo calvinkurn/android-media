@@ -105,7 +105,6 @@ ext {
             mapviewer               : ":libraries:mapviewer",
             tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
-            screenRecorder          : ":libraries:screen_recorder",
-            tkpdFragmentLifecycle   :":libraries:fragment_lifecycle"
+            screenRecorder          : ":libraries:screen_recorder"
     ]
 }

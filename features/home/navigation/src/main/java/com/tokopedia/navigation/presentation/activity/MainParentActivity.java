@@ -61,7 +61,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.home.HomeInternalRouter;
-import com.tokopedia.fragmentLifecycle.FragmentLifecycleObserver;
+import com.tokopedia.abstraction.base.view.fragmentLifecycle.FragmentLifecycleObserver;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;

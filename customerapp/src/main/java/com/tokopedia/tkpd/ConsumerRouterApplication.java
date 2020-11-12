@@ -310,7 +310,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void onNewIntent(Context context, Intent intent) {
         NFCSubscriber.onNewIntent(context, intent);
-        //todo Rahul - ask whether this code will run on seller app or not
         if(context instanceof Activity) {
             CMInAppManager.getInstance().getActivityLifecycleHandler().onNewIntent((Activity) context, intent);
         }

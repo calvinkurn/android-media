@@ -1,8 +1,7 @@
 package com.tokopedia.promotionstarget.cmGratification.lifecycle
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.fragmentLifecycle.FragmentLifecycleCallback
-import com.tokopedia.promotionstarget.cmGratification.lifecycle.CmActivityLiefcycleContract
+import com.tokopedia.abstraction.base.view.fragmentLifecycle.FragmentLifecycleCallback
 
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType
 
@@ -31,7 +30,6 @@ class GratifFragmentLifeCycleCallback(val cmActivityLiefcycleContract: CmActivit
         cancelJob(fragment.hashCode(), GratifCancellationExceptionType.FRAGMENT_DESTROYED)
     }
 
-    //todo Rahul refactor
     fun cancelJob(entityHashCode: Int, @GratifCancellationExceptionType reason: String?) {
         cmActivityLiefcycleContract.cancelJob(entityHashCode, reason)
     }

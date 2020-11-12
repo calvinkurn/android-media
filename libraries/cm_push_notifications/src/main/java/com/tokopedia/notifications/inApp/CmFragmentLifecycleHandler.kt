@@ -2,7 +2,6 @@ package com.tokopedia.notifications.inApp
 
 import androidx.fragment.app.Fragment
 
-//todo Rahul -discuss that two sources can show in app - ideally it should be one
 class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback,
                                  private val pushIntentHandler: PushIntentHandler) {
 
