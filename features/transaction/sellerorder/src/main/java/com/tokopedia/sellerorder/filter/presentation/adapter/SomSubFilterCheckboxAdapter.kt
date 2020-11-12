@@ -22,9 +22,9 @@ class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckb
         this.idFilter = idFilter
         val callBack = SomSubFilterDiffUtil(listSubFilter, newSubFilterList)
         val diffResult = DiffUtil.calculateDiff(callBack)
-        diffResult.dispatchUpdatesTo(this)
         this.listSubFilter.clear()
         this.listSubFilter.addAll(newSubFilterList)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateCheckboxFilter(updatedState: Boolean, position: Int) {
@@ -70,6 +70,10 @@ class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckb
 
                 setOnClickListener {
                     checkBoxClicked(cb_filter.isChecked)
+                }
+
+                cb_filter.setOnCheckedChangeListener { _, isChecked ->
+                    checkBoxClicked(isChecked)
                 }
             }
         }

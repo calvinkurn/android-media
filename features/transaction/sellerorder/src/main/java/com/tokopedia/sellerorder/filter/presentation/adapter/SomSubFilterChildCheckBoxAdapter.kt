@@ -62,6 +62,9 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
                 setOnClickListener {
                     checkBoxClicked(cb_filter.isChecked)
                 }
+                cb_filter.setOnCheckedChangeListener { _, isChecked ->
+                    checkBoxClicked(isChecked)
+                }
             }
         }
 
