@@ -532,7 +532,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.END);
-        infoValue.addView(doubleTextView);
+        llDiscount.addView(doubleTextView);
     }
 
     @Override
