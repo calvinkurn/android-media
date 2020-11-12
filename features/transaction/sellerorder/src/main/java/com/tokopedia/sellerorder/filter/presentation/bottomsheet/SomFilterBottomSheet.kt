@@ -330,7 +330,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         context?.let {
             bottomSheetAction.text = it.resources.getString(R.string.reset)
         }
-        bottomSheetAction.setTextSize(TypedValue.COMPLEX_UNIT_SP, SIZE_ACTION_RESET)
         bottomSheetAction.setOnClickListener {
             SomAnalytics.eventClickResetButtonOnFilterPage()
             actionResetFilter()
