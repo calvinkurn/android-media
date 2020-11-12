@@ -55,8 +55,8 @@ class ChatWidgetToolTip @JvmOverloads constructor(context: Context, attrs: Attri
         }
     }
 
-    fun setToolTipDes(des: Spanned){
-        toolTipText?.text = des
+    fun setToolTipDescription(descripton: CharSequence){
+        toolTipText?.text = descripton
     }
 
     fun showAtTop(anchorView: View?) {

@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.contactus.R
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -128,8 +129,8 @@ class InboxListPresenter(private val mUseCase: GetTicketListUseCase,
         return String.format(applinkPrefix, topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.messageId)
     }
 
-    override fun getWelcomeMessage(): Spanned {
-        return HtmlUtil.fromHtml(topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.welcomeMessage
+    override fun getWelcomeMessage(): CharSequence {
+        return MethodChecker.fromHtmlWithoutExtraSpace(topBotStatusResponse?.chipTopBotStatusInbox?.chipTopBotStatusData?.welcomeMessage
                 ?: "")
     }
 

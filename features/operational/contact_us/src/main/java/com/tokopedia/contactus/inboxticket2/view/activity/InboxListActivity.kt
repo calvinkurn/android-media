@@ -108,7 +108,7 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
     override fun showChatBotWidget() {
         chatWidget?.show()
         val welcomeMessage = (mPresenter as InboxListContract.Presenter).getWelcomeMessage()
-        chatWidget?.setToolTipDes(welcomeMessage)
+        chatWidget?.setToolTipDescription(welcomeMessage)
         showChatBotWidgetNotification()
 
     }

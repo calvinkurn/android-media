@@ -44,8 +44,8 @@ class CustomChatWidgetView @JvmOverloads constructor(context: Context, attrs: At
         widgetCardView.cardElevation = 0F
     }
 
-    fun setToolTipDes(des: Spanned){
-        toolTip.setToolTipDes(des)
+    fun setToolTipDescription(description: CharSequence){
+        toolTip.setToolTipDescription(description)
     }
 
     interface CustomChatWidgetListener {

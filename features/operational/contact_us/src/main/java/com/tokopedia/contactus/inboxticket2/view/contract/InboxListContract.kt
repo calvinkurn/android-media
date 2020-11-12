@@ -35,7 +35,7 @@ interface InboxListContract {
         fun getTicketList(requestParams: RequestParams?)
         fun getTopBotStatus()
         fun getChatbotApplink(): String
-        fun getWelcomeMessage(): Spanned
+        fun getWelcomeMessage(): CharSequence
         fun getNotifiactionIndiactor(): Boolean
     }
 }
