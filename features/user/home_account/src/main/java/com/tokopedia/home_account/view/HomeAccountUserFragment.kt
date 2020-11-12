@@ -197,7 +197,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                 adapter?.removeItemAt(0)
             }
             addItem(0, mapper.mapToProfileDataView(buyerAccount))
-            notifyItemRangeChanged(0, 4)
+            adapter?.notifyDataSetChanged()
         }
         hideLoading()
         fpmBuyer?.run { stopTrace() }
@@ -225,14 +225,10 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
     fun showLoading() {
         home_account_shimmer_layout?.show()
-//        home_account_main_container?.hide()
-//        container_main?.displayedChild = CONTAINER_LOADER
     }
 
     fun hideLoading() {
         home_account_shimmer_layout?.hide()
-//        home_account_main_container?.show()
-//        container_main?.displayedChild = CONTAINER_DATA
     }
 
     private fun setupStatusBar() {

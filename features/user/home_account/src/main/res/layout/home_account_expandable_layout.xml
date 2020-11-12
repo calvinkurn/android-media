@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingLeft="@dimen/padding_dp_16"
     android:paddingRight="@dimen/padding_dp_16"
-
     android:id="@+id/home_account_expandable_layout_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"

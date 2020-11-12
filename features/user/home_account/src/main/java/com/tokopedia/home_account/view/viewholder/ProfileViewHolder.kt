@@ -1,5 +1,6 @@
 package com.tokopedia.home_account.view.viewholder
 
+import android.content.res.Configuration
 import android.view.View
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -15,6 +16,7 @@ import com.tokopedia.home_account.view.SpanningLinearLayoutManager
 import com.tokopedia.home_account.view.adapter.HomeAccountFinancialAdapter
 import com.tokopedia.home_account.view.adapter.HomeAccountMemberAdapter
 import com.tokopedia.home_account.view.listener.HomeAccountUserListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.home_account_financial.view.*
 import kotlinx.android.synthetic.main.home_account_item_profile.view.*
@@ -31,7 +33,14 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
     fun bind(profile: ProfileDataView) {
         with(itemView) {
             account_user_item_profile_name?.text = profile.name
-            account_user_item_profile_phone?.text = Utils.formatPhoneNumber(profile.phone)
+            if(profile.phone.isNotEmpty()) {
+                account_user_item_profile_phone?.text = Utils.formatPhoneNumber(profile.phone)
+            }else {
+                account_user_item_profile_phone?.hide()
+                account_user_item_profile_name?.run {
+                    account_user_item_profile_name?.setPadding(paddingLeft, 8, paddingRight, paddingBottom)
+                }
+            }
             account_user_item_profile_email?.text = profile.email
             account_user_item_profile_edit?.setOnClickListener { listener.onEditProfileClicked() }
 
@@ -39,6 +48,17 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
 
             setupMemberAdapter(itemView, profile)
             setupFinancialAdapter(itemView, profile)
+
+            val mode = context?.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)
+            when (mode) {
+                Configuration.UI_MODE_NIGHT_YES -> {
+                    account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop_dark)
+                }
+                Configuration.UI_MODE_NIGHT_NO -> {
+                    account_user_item_profile_container?.setBackgroundResource(R.drawable.ic_account_backdrop)
+                }
+                Configuration.UI_MODE_NIGHT_UNDEFINED -> {}
+            }
 
             listener.onItemViewBinded(adapterPosition, itemView)
         }

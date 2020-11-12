@@ -20,37 +20,38 @@
         app:unify_image_corner_radius="4" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:textSize="@dimen/fontSize_lvl4"
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/home_account_dp_20"
         app:layout_constraintStart_toEndOf="@+id/account_user_item_profile_avatar"
         app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_avatar"
-        app:typographyType="heading_3"
         app:typographyWeight="bold"
-        android:lineHeight="12px"
+        android:lineHeight="22dp"
         tools:text="Babang Nico" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:textSize="@dimen/fontSize_lvl2"
         android:id="@+id/account_user_item_profile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_2"
-        android:lineHeight="12px"
+        android:lineHeight="18dp"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_name"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_name"
-        app:typographyType="body_2"
         tools:text="082242454504" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:textSize="@dimen/fontSize_lvl2"
         android:id="@+id/account_user_item_profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_2"
-        android:lineHeight="12dp"
+        android:lineHeight="18dp"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_phone"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
-        app:typographyType="body_2"
         tools:text="yoris.prayogo@tokopedia.com" />
 
     <ImageView
@@ -58,7 +59,6 @@
         android:paddingLeft="@dimen/home_account_dp_20"
         android:paddingTop="@dimen/home_account_dp_12"
         android:paddingBottom="@dimen/home_account_dp_12"
-
         android:layout_marginRight="@dimen/home_account_dp_6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

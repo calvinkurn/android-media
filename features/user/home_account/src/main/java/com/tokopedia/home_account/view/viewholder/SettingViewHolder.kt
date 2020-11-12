@@ -31,7 +31,7 @@ class SettingViewHolder(itemView: View, val listener: HomeAccountUserListener): 
             else {
                 home_account_expandable_layout_title?.visibility = View.GONE
             }
-            itemView.home_account_expandable_layout_container.background = ColorDrawable(Color.parseColor("#FFFFFF"))
+
             if(setting.showArrowDown){
                 itemView.home_account_expandable_arrow?.show()
             }else {
