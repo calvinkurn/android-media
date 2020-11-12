@@ -2,7 +2,7 @@ package com.tokopedia.shop_settings.presenter.shopsettingsnote
 
 import android.text.TextUtils
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +32,7 @@ class ShopSettingsNoteAddEditPresenterTest: ShopSettingsNoteTestFixture() {
                 "",
                 ""
         )
-        val shopNoteViewModel = ShopNoteViewModel(note)
+        val shopNoteViewModel = ShopNoteUiModel(note)
         shopSettingsNoteAddEditPresenter.saveNote(shopNoteViewModel, false)
 
         verify {
@@ -60,7 +60,7 @@ class ShopSettingsNoteAddEditPresenterTest: ShopSettingsNoteTestFixture() {
                 "",
                 ""
         )
-        val shopNoteViewModel = ShopNoteViewModel(note)
+        val shopNoteViewModel = ShopNoteUiModel(note)
         shopSettingsNoteAddEditPresenter.saveNote(shopNoteViewModel, true)
 
         verify {
@@ -91,7 +91,7 @@ class ShopSettingsNoteAddEditPresenterTest: ShopSettingsNoteTestFixture() {
                 "",
                 ""
         )
-        var shopNoteViewModel = ShopNoteViewModel(note)
+        var shopNoteViewModel = ShopNoteUiModel(note)
         shopSettingsNoteAddEditPresenter.saveNote(shopNoteViewModel, false)
 
         note = ShopNoteModel(
@@ -104,7 +104,7 @@ class ShopSettingsNoteAddEditPresenterTest: ShopSettingsNoteTestFixture() {
                 "",
                 ""
         )
-        shopNoteViewModel = ShopNoteViewModel(note)
+        shopNoteViewModel = ShopNoteUiModel(note)
         shopSettingsNoteAddEditPresenter.saveNote(shopNoteViewModel, false)
 
         note = ShopNoteModel(
@@ -117,7 +117,7 @@ class ShopSettingsNoteAddEditPresenterTest: ShopSettingsNoteTestFixture() {
                 "",
                 ""
         )
-        shopNoteViewModel = ShopNoteViewModel(note)
+        shopNoteViewModel = ShopNoteUiModel(note)
         shopSettingsNoteAddEditPresenter.saveNote(shopNoteViewModel, false)
 
         note = ShopNoteModel(
@@ -130,7 +130,7 @@ class ShopSettingsNoteAddEditPresenterTest: ShopSettingsNoteTestFixture() {
                 "",
                 ""
         )
-        shopNoteViewModel = ShopNoteViewModel(note)
+        shopNoteViewModel = ShopNoteUiModel(note)
         shopSettingsNoteAddEditPresenter.saveNote(shopNoteViewModel, false)
 
         verify {

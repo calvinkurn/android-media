@@ -111,18 +111,18 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
         ): Map<String, Any> = mapOf(
                 PARAM_AUTHOR_ID to widgetType.authorId,
                 PARAM_AUTHOR_TYPE to widgetType.authorType,
-                PARAM_WIDGET_TYPE to widgetType.typeString
+                PARAM_WIDGET_TYPE to widgetType.typeKey
         )
     }
 
     sealed class WidgetType {
 
-        abstract val typeString: String
+        abstract val typeKey: String
         abstract val authorId: String
         abstract val authorType: String
 
         data class ShopPage(val shopId: String) : WidgetType() {
-            override val typeString: String
+            override val typeKey: String
                 get() = "SHOP_PAGE"
 
             override val authorId: String
@@ -132,7 +132,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = "shop"
         }
         object Home : WidgetType() {
-            override val typeString: String
+            override val typeKey: String
                 get() = "HOME"
 
             override val authorId: String
@@ -142,7 +142,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                 get() = ""
         }
         object Feeds : WidgetType() {
-            override val typeString: String
+            override val typeKey: String
                 get() = "FEEDS"
 
             override val authorId: String

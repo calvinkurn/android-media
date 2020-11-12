@@ -1,14 +1,14 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
-import androidx.annotation.NonNull
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.NonNull
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
@@ -21,6 +21,8 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -29,6 +31,7 @@ import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
@@ -242,6 +245,22 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         val adapter = getAdapter()
         if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
             adapter.removeElement(model)
+        }
+    }
+
+    override fun hideOptionList(model: HelpFullQuestionsViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is HelpFullQuestionsViewModel) {
+            model.isSubmited = true
+            adapter.setElement(0, model)
+        }
+    }
+
+    override fun hideCsatOptionList(model: CsatOptionsViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is CsatOptionsViewModel) {
+            model.isSubmited = true
+            adapter.setElement(0, model)
         }
     }
 

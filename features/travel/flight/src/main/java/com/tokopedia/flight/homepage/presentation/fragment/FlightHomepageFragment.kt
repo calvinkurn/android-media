@@ -11,13 +11,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.DeeplinkMapper.getRegisteredNavigation
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
+import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
+import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.airportv2.presentation.bottomsheet.FlightAirportPickerBottomSheet
@@ -51,7 +52,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 27/03/2020
  */
-class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.FlightSearchFormListener {
+class FlightHomepageFragment : BaseDaggerFragment(),
+        FlightSearchFormView.FlightSearchFormListener, TravelVideoBannerWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -104,8 +106,9 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 }
             }
 
-            flightHomepageViewModel.fetchBannerData(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), true)
+            flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
+            flightHomepageViewModel.fetchVideoBannerData()
         }
     }
 
@@ -115,6 +118,7 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
         flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    renderBannerTitle(it.data.meta.label)
                     renderBannerView(it.data.banners)
                 }
                 is Fail -> {
@@ -122,6 +126,17 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
                 }
             }
             stopTrace()
+        })
+
+        flightHomepageViewModel.videoBanner.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderVideoBannerView(it.data)
+                }
+                is Fail -> {
+                    hideVideoBannerView()
+                }
+            }
         })
 
         flightHomepageViewModel.homepageData.observe(viewLifecycleOwner, Observer {
@@ -291,6 +306,29 @@ class FlightHomepageFragment : BaseDaggerFragment(), FlightSearchFormView.Flight
             flightHomepageSearchForm.init()
         }
 
+    }
+
+    override fun onVideoBannerClicked(bannerData: TravelVideoBannerModel) {
+        // do nothing for now, will use for tracking later
+    }
+
+    private fun renderVideoBannerView(bannerData: TravelCollectiveBannerModel) {
+        flightHomepageVideoBanner.listener = this
+        flightHomepageVideoBanner.setData(bannerData)
+        flightHomepageVideoBanner.build()
+    }
+
+    private fun hideVideoBannerView() {
+        flightHomepageVideoBanner.hideTravelVideoBanner()
+    }
+
+    private fun renderBannerTitle(title: String) {
+        if (title.isNotEmpty()) {
+            flightHomepageBannerTitle.text = title
+            flightHomepageBannerTitle.visibility = View.VISIBLE
+        } else {
+            flightHomepageBannerTitle.visibility = View.GONE
+        }
     }
 
     private fun renderBannerView(bannerList: List<TravelCollectiveBannerModel.Banner>) {
