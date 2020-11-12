@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.view.viewholder
 
+import android.text.method.LinkMovementMethod
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
@@ -19,6 +20,7 @@ class ProductReportViewHolder(val view: View, val listener: DynamicProductDetail
     }
 
     override fun bind(element: ProductReportDataModel) {
+        view.product_report_txt.movementMethod = LinkMovementMethod.getInstance()
         view.product_report_txt.text = view.context.getString(R.string.merchant_product_detail_report_text)
                 .linkTextWithGiven(view.context, "Laporkan" to {
                     listener.reportProductFromComponent(getComponentTrackData(element))

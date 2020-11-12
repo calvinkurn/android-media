@@ -60,12 +60,15 @@
         android:id="@+id/pdp_navtoolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="?actionBarSize"
         android:visibility="gone"
-        app:toolbarBackButton="back"
-        app:toolbarInitialTheme="light"
-        app:toolbarContentType="typeSearchbar"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:layout_constraintTop_toTopOf="parent"
         app:toolbarAlwaysShowShadow="false"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:toolbarBackButton="back"
+        app:toolbarContentType="typeSearchbar"
+        app:toolbarInitialTheme="light" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/toolbar_barrier"
