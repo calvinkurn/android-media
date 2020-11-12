@@ -16,6 +16,7 @@ import android.webkit.WebViewClient
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
@@ -83,7 +84,6 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         observeOvoTopUpUrl()
 
-        // DEBUG
         viewModel.getOvoTopUpUrl(getRedirectUrl(), getCustomerData())
     }
 
@@ -91,11 +91,6 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         webView = view.findViewById(R.id.web_view)
         progressBar = view.findViewById(R.id.progress_bar)
         globalError = view.findViewById(R.id.global_error)
-
-        // DEBUG
-//        progressBar?.setOnClickListener {
-//            viewModel.getOvoTopUpUrl(getRedirectUrl())
-//        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -113,11 +108,6 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-        // DEBUG
-//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WebView.setWebContentsDebuggingEnabled(true)
-//            webView?.loadUrl("https://www.google.com")
-//        }
     }
 
     private fun observeOvoTopUpUrl() {
@@ -205,7 +195,6 @@ class OvoTopUpWebViewFragment : BaseDaggerFragment() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            // DEBUG
             progressBar?.gone()
         }
     }

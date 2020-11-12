@@ -9,6 +9,7 @@ import android.os.Build
 import android.view.View
 import android.webkit.*
 import com.google.android.play.core.splitcompat.SplitCompat
+import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -64,10 +65,6 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
                     customPeekHeight = height
                 }
                 setChild(child)
-                // DEBUG
-//                setCloseClickListener {
-//                    webView?.loadAuthUrl(generateUrl(userSessionInterface), userSessionInterface)
-//                }
                 show(it, null)
             }
         }
@@ -90,13 +87,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             webSettings?.mediaPlaybackRequiresUserGesture = false
         }
-        // DEBUG
-//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WebView.setWebContentsDebuggingEnabled(true)
-//            webView?.loadUrl("https://www.bing.com")
-//        }
 
-        // DEBUG
         loadOvoActivationWebView(userSession)
     }
 
