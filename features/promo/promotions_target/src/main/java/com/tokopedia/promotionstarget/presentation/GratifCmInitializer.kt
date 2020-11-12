@@ -3,8 +3,6 @@ package com.tokopedia.promotionstarget.presentation
 import android.app.Application
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.CmEventListenerManager
-import com.tokopedia.promotionstarget.cmGratification.broadcast.BroadcastHandler
-import com.tokopedia.promotionstarget.cmGratification.broadcast.BroadcastScreenNamesProvider
 import com.tokopedia.promotionstarget.cmGratification.broadcast.PendingData
 import com.tokopedia.promotionstarget.cmGratification.dialog.GratificationDialogHandler
 import com.tokopedia.promotionstarget.cmGratification.lifecycle.ActivityProviderImpl
@@ -26,14 +24,11 @@ object GratifCmInitializer {
 
         val gratificationPresenter = GratificationPresenter(appContext)
         gratificationPresenter.dialogVisibilityContract = CMInAppManager.getInstance()
-        val broadcastScreenNamesProvider = BroadcastScreenNamesProvider()
 
-
-        val dialogHandler = GratificationDialogHandler(gratificationPresenter, mapOfGratifJobs, mapOfPendingInApp, broadcastScreenNamesProvider.screenNames(), activityProvider)
+        val dialogHandler = GratificationDialogHandler(gratificationPresenter, mapOfGratifJobs, mapOfPendingInApp, arrayListOf(), activityProvider)
         val pushHandler = GratifCmPushHandler(dialogHandler)
-        val broadCastHandler = BroadcastHandler(dialogHandler)
 
-        val cmActivityLifecycleCallbacks = CmActivityLifecycleCallbacks(appContext, broadCastHandler, broadcastScreenNamesProvider, mapOfGratifJobs)
+        val cmActivityLifecycleCallbacks = CmActivityLifecycleCallbacks(appContext, null, null, mapOfGratifJobs)
         val fragmentLifecycleCallback = GratifFragmentLifeCycleCallback(cmActivityLifecycleCallbacks)
 
         appContext.registerActivityLifecycleCallbacks(cmActivityLifecycleCallbacks)
