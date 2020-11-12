@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
@@ -24,16 +25,19 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
+        val parentComponent = getComponent(componentId, pageEndPoint)?.parentComponentId?.let {
+            getComponent(it, pageEndPoint)
+        }
         val recommendationData =
-                recommendationUseCase.getData(createRequestParams(page, componentId))
+                recommendationUseCase.getData(createRequestParams(page, componentId, parentComponent?.chipSelectionData?.id))
         return mapRecommendationToDiscoveryResponse(recommendationData)
     }
 
-    private fun createRequestParams(page: String, componentId: String): GetRecommendationRequestParam {
+    private fun createRequestParams(page: String, componentId: String, queryParam: String?): GetRecommendationRequestParam {
         return GetRecommendationRequestParam(
                 pageNumber = page.toIntOrZero(),
                 pageName = "category_page",
-                queryParam = "",
+                queryParam = queryParam ?: "",
                 categoryIds = arrayListOf(componentId),
                 xDevice = "android",
                 xSource = "category_landing_page"
