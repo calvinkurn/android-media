@@ -166,9 +166,8 @@
             android:layout_height="@dimen/dp_10"
             android:visibility="gone"
             android:background="@drawable/rounded_chat_widget_notifiaction_red"
-            app:layout_constraintCircle="@id/chat_widget"
-            app:layout_constraintCircleRadius="@dimen/dp_45"
-            app:layout_constraintCircleAngle="45"
+            app:layout_constraintTop_toTopOf="@id/chat_widget"
+            app:layout_constraintRight_toRightOf="@id/chat_widget"
             tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
