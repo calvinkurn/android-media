@@ -3,21 +3,21 @@
   "query": [
     {
       "businessUnit": "order management",
-      "eventCategory": "",
+      "eventCategory": "{{.*}}",
       "currentSite": "tokopediamarketplace",
-      "isLoggedInStatus": "{{true|false}}",
+      "isLoggedInStatus": "{{.*}}",
       "screenName": "order-list",
       "event": "openScreen",
-      "userId": "",
-      "eventAction": "",
-      "eventLabel": ""
+      "userId": "{{.*}}",
+      "eventAction": "{{.*}}",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
     },
     {
       "businessUnit": "order management",
       "clientId": "{{.*}}",
       "eventCategory": "order list",
       "currentSite": "tokopediamarketplace",
-      "isLoggedInStatus": "{{true|false}}",
       "item_list": "/order list - marketplace",
       "event": "view_item_list",
       "userId": "",
