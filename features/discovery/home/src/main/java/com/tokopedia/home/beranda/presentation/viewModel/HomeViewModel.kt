@@ -126,6 +126,7 @@ open class HomeViewModel @Inject constructor(
     val homeLiveData: LiveData<HomeDataModel>
         get() = _homeLiveData
     private val _homeLiveData: MutableLiveData<HomeDataModel> = MutableLiveData()
+    private var homeVisitableListData: MutableList<Visitable<*>> = mutableListOf()
 
     val searchHint: LiveData<SearchPlaceholder>
         get() = _searchHint
@@ -365,7 +366,7 @@ open class HomeViewModel @Inject constructor(
             if (needToEvaluateRecommendation) newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
             newHomeViewModel = evaluateDynamicChannelModel(newHomeViewModel)
             newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
-            newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
+//            newHomeViewModel = evaluateTopAdsBannerComponent(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
@@ -753,30 +754,22 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
-    private fun evaluateTopAdsBannerComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
-        homeDataModel?.let { homeViewModel ->
-            val listData = _homeLiveData.value?.list?.filterIsInstance<HomeTopAdsBannerDataModel>()
-            listData?.let {
-                if (it.isNotEmpty()) {
-                    val stack: Stack<HomeTopAdsBannerDataModel> = Stack<HomeTopAdsBannerDataModel>()
-                    stack.addAll(it.toMutableList())
-                    stack.reverse()
-
-                    val list = homeViewModel.list.toMutableList()
-                    // find the old data from current list
-                    list.forEachIndexed { pos, data ->
-                        run {
-                            if (data is HomeTopAdsBannerDataModel) {
-                                list[pos] = data
-                            }
-                        }
-                    }
-                    return homeViewModel.copy(list = list)
-                }
-            }
-        }
-        return homeDataModel
-    }
+//    private fun evaluateTopAdsBannerComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+//        homeDataModel?.let { homeDataModel ->
+//            val currentList = homeVisitableListData.filterIsInstance<HomeTopAdsBannerDataModel>()
+//            if (currentList.isNotEmpty()) {
+//                val list = homeDataModel.list.toMutableList()
+//                // find the old data from current list
+//                list.forEachIndexed { pos, data ->
+//                    if (data is HomeTopAdsBannerDataModel) {
+//                        list[pos] = data
+//                    }
+//                }
+//                return homeDataModel.copy(list = list)
+//            }
+//        }
+//        return homeDataModel
+//    }
 
     fun getRecommendationFeedSectionPosition() = (_homeLiveData.value?.list?.size?:0)-1
 
@@ -1306,15 +1299,14 @@ open class HomeViewModel @Inject constructor(
                 newList[it.index] = visitable
             }
         }
-        withContext(homeDispatcher.get().ui()) {
-            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-        }
+        homeVisitableListData = newList
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData))
     }
 
     override suspend fun addWidget(visitable: Visitable<*>, position: Int) {
         var addedPosition = position
 
-        val newList = _homeLiveData.value?.list?.toMutableList() ?: mutableListOf()
+        val newList = homeVisitableListData
         logChannelUpdate("Update channel: (Add widget ${visitable.javaClass.simpleName})")
         if(newList.find { getVisitableId(it) == getVisitableId(visitable) && it::class.java == visitable::class.java } != null) return
 
@@ -1326,9 +1318,8 @@ open class HomeViewModel @Inject constructor(
 
         if((addedPosition == -1 || addedPosition > newList.size)) newList.add(visitable)
         else newList.add(addedPosition, visitable)
-        withContext(homeDispatcher.get().ui()) {
-            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-        }
+        homeVisitableListData = newList
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData))
     }
 
     override suspend fun deleteWidget(visitable: Visitable<*>, position: Int) {
@@ -1337,18 +1328,16 @@ open class HomeViewModel @Inject constructor(
         newList.find {getVisitableId(it) == getVisitableId(visitable)}?.let {
             newList.remove(it)
         }
-        withContext(homeDispatcher.get().ui()) {
-            _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
-        }
+        homeVisitableListData = newList
+        _homeLiveData.postValue(_homeLiveData.value?.copy(list = homeVisitableListData))
     }
 
     override suspend fun updateHomeData(homeDataModel: HomeDataModel) {
         logChannelUpdate("Update channel: (Update all home data) data: ${homeDataModel.list.map { it.javaClass.simpleName }}")
         var newHomeDataModel = evaluateGeolocationComponent(homeDataModel)
         newHomeDataModel = evaluateAvailableComponent(newHomeDataModel)
-        withContext(homeDispatcher.get().ui()) {
-            _homeLiveData.value = newHomeDataModel
-        }
+        homeVisitableListData = newHomeDataModel?.list?.toMutableList()?:mutableListOf()
+        _homeLiveData.postValue(newHomeDataModel)
     }
 
     private fun getVisitableId(visitable: Visitable<*>): Any?{
