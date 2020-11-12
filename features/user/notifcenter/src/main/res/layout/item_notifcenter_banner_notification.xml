@@ -84,17 +84,15 @@
         tools:srcCompat="@tools:sample/avatars"
         tools:text="10 Okt 2020" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_countdown"
+    <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+        android:id="@+id/tu_countdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/spacing_lvl2"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="...put countdown here..."
-        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="@+id/tv_status"
         app:layout_constraintStart_toEndOf="@+id/tv_end_date"
         app:layout_constraintTop_toTopOf="@+id/tv_status"
-        app:typographyType="body_3"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:timer_unify_single_showClockIcon="true"
+        app:timer_unify_single_textWidth="wrap"
+        app:timer_unify_single_type="auto" />
 </androidx.constraintlayout.widget.ConstraintLayout>

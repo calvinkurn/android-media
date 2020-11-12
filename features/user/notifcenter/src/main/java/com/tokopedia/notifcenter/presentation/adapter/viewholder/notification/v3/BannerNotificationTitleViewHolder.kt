@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 
 class BannerNotificationTitleViewHolder(
@@ -21,7 +22,7 @@ class BannerNotificationTitleViewHolder(
     private val banner: ImageView? = itemView?.findViewById(R.id.iv_banner)
     private val status: Typography? = itemView?.findViewById(R.id.tv_status)
     private val endDate: Typography? = itemView?.findViewById(R.id.tv_end_date)
-    private val countDown: Typography? = itemView?.findViewById(R.id.tv_countdown)
+    private val countDown: TimerUnifySingle? = itemView?.findViewById(R.id.tu_countdown)
     private val imageSizer = DynamicSizeImageRequestListener()
 
     override fun bind(element: NotificationUiModel) {
@@ -29,6 +30,10 @@ class BannerNotificationTitleViewHolder(
         bindBannerImage(element)
         bindFooterTimeStatus(element)
         bindClickBanner(element)
+    }
+
+    override fun onViewRecycled() {
+        countDown?.timer?.cancel()
     }
 
     private fun bindBannerImage(element: NotificationUiModel) {
@@ -46,6 +51,21 @@ class BannerNotificationTitleViewHolder(
         val timeMetaData = TimeMetaData(
                 isIn24HourAfterCurrentTime, isAfterCurrentTime, isBeforeCurrentTime
         )
+        bindFooterWithTimeMetaData(element, timeMetaData)
+    }
+
+    private fun bindFooterTimeStatusHasEnded(element: NotificationUiModel) {
+        val timeMetaData = TimeMetaData(
+                isIn24HourAfterCurrentTime = false,
+                isAfterCurrentTime = false,
+                isBeforeCurrentTime = true
+        )
+        bindFooterWithTimeMetaData(element, timeMetaData)
+    }
+
+    private fun bindFooterWithTimeMetaData(
+            element: NotificationUiModel, timeMetaData: TimeMetaData
+    ) {
         bindState(element, timeMetaData)
         bindEndDate(element, timeMetaData)
         bindCountDown(element, timeMetaData)
@@ -81,16 +101,19 @@ class BannerNotificationTitleViewHolder(
         }
     }
 
-    //TODO: Implement countdown later
     private fun bindCountDown(element: NotificationUiModel, timeMetaData: TimeMetaData) {
-        val text: String? = when {
-            timeMetaData.isIn24HourAfterCurrentTime -> "countdown"
-            else -> null
-        }
-        if (text != null) {
+        if (timeMetaData.isIn24HourAfterCurrentTime) {
             countDown?.show()
+            showCountDownTimer(element)
         } else {
             countDown?.hide()
+        }
+    }
+
+    private fun showCountDownTimer(element: NotificationUiModel) {
+        countDown?.targetDate = element.expireTargetDate
+        countDown?.onFinish = {
+            bindFooterTimeStatusHasEnded(element)
         }
     }
 

@@ -8,6 +8,7 @@ import com.tokopedia.notifcenter.data.entity.notification.DataNotification
 import com.tokopedia.notifcenter.data.entity.notification.Options
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import java.util.*
 
 data class NotificationUiModel(
         @SerializedName("bottomsheet")
@@ -72,6 +73,11 @@ data class NotificationUiModel(
         val userId: Long = 0
 ) : Visitable<NotificationTypeFactory> {
 
+    val expireTargetDate: Calendar by lazy(LazyThreadSafetyMode.NONE) {
+        Calendar.getInstance().apply {
+            time = Date(expireTimeUnix * 1000)
+        }
+    }
     var options: Options = Options()
     val product: ProductData? get() = productData.getOrNull(0)
 
