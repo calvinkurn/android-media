@@ -1,9 +1,7 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.buyerorder.unifiedhistory.common.di.UohScope
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import dagger.Module
 import dagger.Provides
