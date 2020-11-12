@@ -19,7 +19,6 @@ import com.tokopedia.discovery2.repository.cpmtopads.CpmTopAdsRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlRepository
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
@@ -121,11 +120,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideCampaignSubscribeGQLRepository(@ApplicationContext context: Context): CampaignSubscribeRepo {
         return CampaignSubscribeGQLRepository(provideGetStringMethod(context))
-    }
-
-    @Provides
-    fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository {
-        return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))
     }
 
     @Provides

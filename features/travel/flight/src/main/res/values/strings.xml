@@ -257,6 +257,7 @@
     <string name="flight_passenger_passport_expired_date_more_than_20_year_error">Masa berlaku paspor tidak boleh lebih dari %s.</string>
     <string name="flight_booking_passport_number_empty_error">Nomor Paspor harus diisi</string>
     <string name="flight_booking_passport_number_alphanumeric_error">Nomor Paspor hanya boleh terdiri dari huruf dan angka</string>
+    <string name="flight_booking_passport_number_not_valid">Nomor Paspor tidak valid</string>
     <string name="flight_booking_passport_nationality_empty_error">Kewarganegaraan harus diisi</string>
     <string name="flight_booking_passport_issuer_country_empty_error">Negara Penerbit Paspor harus diisi</string>
     <string name="flight_booking_passport_expired_date_empty_error">Tanggal Berakhir Paspor harus diisi</string>
@@ -345,6 +346,9 @@ di tempatmu.</string>
     <string name="flight_search_see_only_best_pairing_journey_title">Mau pesan tiket dari pilihan sebelumnya?</string>
     <string name="flight_search_see_only_best_pairing_journey_description"><![CDATA[Harga tiket berangkatmu akan berubah ke harga semula yaitu <b>%1$s</b>.]]></string>
     <string name="flight_search_see_only_best_pairing_journey_button">Cek Penerbangan Best Pairing</string>
+
+    <string name="flight_search_has_seat_distancing_label">Seat Distancing</string>
+    <string name="flight_search_free_rapid_test_label">Free Rapid Test</string>
 
     <string name="flight_detail_bottom_sheet_title">Detail tiket</string>
     <string name="flight_detail_bottom_sheet_tab_journey_title">Perjalanan</string>

@@ -30,9 +30,6 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
 
-
-const val NATIVE = "native"
-const val REACT_NATIVE = "react-native"
 const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
@@ -63,9 +60,6 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         const val CATEGORY_ID = "category_id"
         const val EMBED_CATEGORY = "embedCategory"
 
-        @JvmField
-        var config: String = NATIVE
-
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
             val intent = Intent(context, DiscoveryActivity::class.java)
@@ -85,44 +79,11 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        moveToRnIfRequired()
+        inflateFragment()
         toolbar?.hide()
-        setObserver()
-    }
-
-    private fun moveToRnIfRequired() {
-        if (config.isNotEmpty()) {
-            if (config == NATIVE) {
-                inflateFragment()
-            } else {
-                routeToReactNativeDiscovery()
-            }
-        } else {
-            discoveryViewModel.getDiscoveryUIConfig()
-        }
-    }
-
-    private fun setObserver() {
-        discoveryViewModel.getDiscoveryUIConfigLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    config = it.data
-                    moveToRnIfRequired()
-                }
-            }
-        })
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
-    }
-
-    private fun routeToReactNativeDiscovery() {
-        RouteManager.route(
-                this,
-                ApplinkConst.REACT_DISCOVERY_PAGE.replace("{page_id}", intent?.data?.lastPathSegment
-                        ?: intent?.getStringExtra(END_POINT) ?: "")
-        )
-        finish()
     }
 
     private fun startPerformanceMonitoring() {

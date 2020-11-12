@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
@@ -171,6 +172,18 @@ internal fun ImageView.loadIcon(url: String?) {
     }
 }
 
+internal fun ImageView.loadImageTopRightCrop(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .transform(TopRightCrop())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
+                .into(this)
+    }
+}
+
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) hide()
     else showLabel(labelGroup)
@@ -281,5 +294,25 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
         hitRect.bottom += bottom
 
         parent.touchDelegate = TouchDelegate(hitRect, this)
+    }
+}
+
+internal fun renderLabelCampaign(
+        labelCampaignBackground: ImageView?,
+        textViewLabelCampaign: Typography?,
+        productCardModel: ProductCardModel
+) {
+    val labelCampaign = productCardModel.getLabelCampaign()
+
+    if (labelCampaign?.isShowLabelCampaign() == true) {
+        labelCampaignBackground?.show()
+        labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.imageUrl)
+
+        textViewLabelCampaign?.show()
+        textViewLabelCampaign?.text = MethodChecker.fromHtml(labelCampaign.title)
+    }
+    else {
+        labelCampaignBackground?.hide()
+        textViewLabelCampaign?.hide()
     }
 }

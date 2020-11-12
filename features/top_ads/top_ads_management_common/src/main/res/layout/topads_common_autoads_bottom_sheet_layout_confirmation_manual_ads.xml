@@ -42,7 +42,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
         android:text="@string/topads_common_confirmation_switch_manual"
-        android:textColor="@color/topads_heading_color"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toTopOf="@+id/subtitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

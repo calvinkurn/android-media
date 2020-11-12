@@ -9,5 +9,4 @@ object SellerHomePerformanceMonitoringConstant {
     const val SELLER_HOME_TABLE_TRACE = "seller_home_table"
     const val SELLER_HOME_PIE_CHART_TRACE = "seller_home_pie_chart"
     const val SELLER_HOME_BAR_CHART_TRACE = "seller_home_bar_chart"
-    const val SELLER_HOME_LAYOUT_TRACE = "seller_home_layout"
 }

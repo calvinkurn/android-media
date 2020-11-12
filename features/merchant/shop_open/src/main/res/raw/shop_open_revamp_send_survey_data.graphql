@@ -1,6 +1,0 @@
-mutation sendSurveyData($input: ParamSendSurveyData!) {
-  sendSurveyData(input: $input){
-    success
-  	message
-  }
-}
