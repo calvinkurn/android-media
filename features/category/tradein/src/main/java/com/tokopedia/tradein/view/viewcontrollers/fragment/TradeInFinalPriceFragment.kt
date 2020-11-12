@@ -1,5 +1,6 @@
 package com.tokopedia.tradein.view.viewcontrollers.fragment
 
+import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.globalerror.GlobalError
@@ -27,6 +29,7 @@ import kotlinx.android.synthetic.main.tradein_address_fragment.global_error
 import kotlinx.android.synthetic.main.tradein_address_fragment.iv_back
 import kotlinx.android.synthetic.main.tradein_address_fragment.progress_bar_layout
 import kotlinx.android.synthetic.main.tradein_final_price_fragment.*
+import kotlinx.android.synthetic.main.tradein_final_price_fragment.btn_continue
 import javax.inject.Inject
 
 class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
@@ -90,7 +93,7 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
 
     private fun renderDetails(dataResponse: DeviceDataResponse) {
         valid_till.text = getString(R.string.tradein_price_valid_until, dataResponse.expiryTimeFmt)
-        price_heading.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(dataResponse.oldPrice, true)
+        tv_final_amt.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(dataResponse.remainingPrice, true)
         tukar_tambah_price.text = getString(R.string.tradein_minus, CurrencyFormatUtil.convertPriceValueToIdrFormat(dataResponse.oldPrice, true))
         total_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(dataResponse.remainingPrice, true)
         val deviceReview: ArrayList<String> = arrayListOf()
@@ -98,7 +101,7 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
             deviceReview.add(getString(R.string.tradein_model_with_name, getString(EXTRA_DEVICE_DISPLAY_NAME, "")))
         }
         deviceReview.addAll(dataResponse.deviceReview)
-        checking_details.setOnClickListener {
+        tv_link_detail.setOnClickListener {
             tradeInAnalytics.clickFinalPriceCheckDetails()
             val bottomSheet = TradeInFinalPriceDetailsBottomSheet.newInstance(deviceReview)
             bottomSheet.show(childFragmentManager, "")
@@ -121,6 +124,13 @@ class TradeInFinalPriceFragment : BaseViewModelFragment<FinalPriceViewModel>() {
         setUpObservers()
         viewModel.getDiagnosticData()
         tradeInAnalytics.openFinalPricePage()
+
+        tv_slash_amt.apply {
+            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            text = CurrencyFormatUtil.convertPriceValueToIdrFormat(viewModel.tradeInParams?.newPrice
+                    ?: 0, true)
+        }
+        ImageHandler.LoadImage(pdp_image, viewModel.tradeInParams?.productImage)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

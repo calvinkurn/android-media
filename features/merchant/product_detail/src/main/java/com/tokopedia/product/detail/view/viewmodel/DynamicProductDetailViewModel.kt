@@ -750,7 +750,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
             tradeInParams.weight = it.basic.weight
-            tradeInParams.productImage = it.data.getFirstProductImage()
+            if(it.data.getImagePath().isNotEmpty()) {
+                tradeInParams.productImage = it.data.getImagePath()[0]
+            } else {
+                tradeInParams.productImage = it.data.getFirstProductImage()
+            }
         }
     }
 
