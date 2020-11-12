@@ -4,15 +4,6 @@ package com.tokopedia.flight.orderdetail.data
  * @author by furqan on 14/10/2020
  */
 object FlightOrderDetailGqlConst {
-    val QUERY_RESEND_E_TICKET = """
-        query FlightResendEmail(${'$'}invoiceID:String!,${'$'}email:String!) {
-          flightResendEmail(invoiceID:${'$'}invoiceID, email:${'$'}email) {
-            meta {
-              status
-            }
-          }
-        }
-    """.trimIndent()
     val QUERY_GET_ORDER_E_TICKET = """
         query FlightGetETicket(${'$'}data: FlightETicketArgs!!) {
             flightGetETicket(input:${'$'}data) {

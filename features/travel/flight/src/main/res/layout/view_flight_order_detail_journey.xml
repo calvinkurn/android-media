@@ -328,6 +328,7 @@
                 android:padding="@dimen/spacing_lvl4">
 
                 <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnFlightOrderDetailSendEticket"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_lvl3"
@@ -338,6 +339,7 @@
                     app:unifyButtonVariant="ghost" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
+                    android:id="@+id/btnFlightOrderDetailViewEticket"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl3"
@@ -357,7 +359,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
-        android:text="Terminal dapat berubah sewaktu-waktu. Mohon tiba di terminal min. 90 menit sebelum keberangkatan."
+        android:text="@string/flight_order_detail_terminal_change_warning_label"
         app:layout_constraintTop_toBottomOf="@id/cardContainerTicketDetails"
         app:typographyType="body_3" />
 

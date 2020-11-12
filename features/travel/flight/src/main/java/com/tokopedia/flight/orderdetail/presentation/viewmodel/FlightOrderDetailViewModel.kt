@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailJourneyModel
@@ -12,12 +13,15 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 /**
  * @author by furqan on 19/10/2020
  */
-class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseCase: FlightOrderDetailUseCase,
+class FlightOrderDetailViewModel @Inject constructor(private val userSession: UserSessionInterface,
+                                                     private val orderDetailUseCase: FlightOrderDetailUseCase,
+                                                     private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
                                                      private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -26,6 +30,12 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
     private val mutableOrderDetailData = MutableLiveData<Result<OrderDetailDataModel>>()
     val orderDetailData: LiveData<Result<OrderDetailDataModel>>
         get() = mutableOrderDetailData
+
+    private val mutableETicketData = MutableLiveData<Result<String>>()
+    val eticketData: LiveData<Result<String>>
+        get() = mutableETicketData
+
+    fun getUserEmail(): String = if (userSession.isLoggedIn) userSession.email else ""
 
     fun fetchOrderDetailData() {
         launchCatchError(dispatcherProvider.ui(), block = {
@@ -42,6 +52,16 @@ class FlightOrderDetailViewModel @Inject constructor(private val orderDetailUseC
         }) {
             it.printStackTrace()
             mutableOrderDetailData.postValue(Fail(it))
+        }
+    }
+
+    fun fetchETicketData() {
+        launchCatchError(dispatcherProvider.ui(), block = {
+            val eticketData = getInvoiceEticketUseCase.executeGetETicket(invoiceId)
+            if (eticketData.isNotEmpty()) mutableETicketData.postValue(Success(eticketData))
+        }) {
+            it.printStackTrace()
+            mutableETicketData.postValue(Fail(it))
         }
     }
 

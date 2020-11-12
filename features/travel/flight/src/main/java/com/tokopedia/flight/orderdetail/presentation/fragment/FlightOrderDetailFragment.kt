@@ -1,8 +1,10 @@
 package com.tokopedia.flight.orderdetail.presentation.fragment
 
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -20,6 +23,8 @@ import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.OrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
+import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
@@ -61,8 +66,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         showLoading()
+
         flightOrderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -73,10 +78,46 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
                 }
             }
         })
+
+        flightOrderDetailViewModel.eticketData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
+                }
+            }
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_SEND_E_TICKET -> {
+                if (resultCode == Activity.RESULT_OK)
+                    showSnackbarSuccess(getString(com.tokopedia.flight.orderlist.R.string.resend_eticket_success))
+            }
+        }
     }
 
     override fun onPnrCopyClicked(pnr: String, isReturn: Boolean) {
         copyToClipboard(if (isReturn) CLIP_LABEL_RETURN_BOOKING_CODE else CLIP_LABEL_DEPARTURE_BOOKING_CODE, pnr)
+    }
+
+    override fun onSendETicketClicked() {
+        val bottomSheet = FlightOrderResendEmailBottomSheet.getInstance(
+                flightOrderDetailViewModel.getUserEmail(),
+                flightOrderDetailViewModel.invoiceId
+        )
+        bottomSheet.setTargetFragment(this, REQUEST_CODE_SEND_E_TICKET)
+        bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        bottomSheet.show(requireFragmentManager(), FlightOrderResendEmailBottomSheet.TAG)
+    }
+
+    override fun onViewETicketClicked() {
+        flightOrderDetailViewModel.fetchETicketData()
     }
 
     private fun showLoading() {
@@ -97,7 +138,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
         renderPaymentView(data.payment.gatewayName, data.payment.totalAmountStr)
 
         flightOrderDetailJourneyStatus.listener = this
-        flightOrderDetailJourneyStatus.setData("", data.journeys)
+        flightOrderDetailJourneyStatus.setData(data.hasETicket, data.journeys)
         flightOrderDetailJourneyStatus.buildView()
     }
 
@@ -159,6 +200,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
 
     }
 
+    private fun showSnackbarSuccess(message: String) {
+        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+    }
+
     companion object {
         private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
@@ -167,6 +212,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(), FlightOrderDetailJourney
         private const val CLIP_LABEL_INVOICE_ID = "Flight Invoice Id"
         private const val CLIP_LABEL_DEPARTURE_BOOKING_CODE = "Flight Departure Booking Code"
         private const val CLIP_LABEL_RETURN_BOOKING_CODE = "Flight Return Booking Code"
+
+        private const val REQUEST_CODE_SEND_E_TICKET = 1111
 
         fun createInstance(invoiceId: String,
                            isCancellation: Boolean,

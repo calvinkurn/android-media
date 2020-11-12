@@ -368,6 +368,7 @@ di tempatmu.</string>
     <string name="flight_order_detail_return_ticket_title">Tiket pulang</string>
     <string name="flight_order_detail_send_e_ticket_label">Kirim E-tiket</string>
     <string name="flight_order_detail_see_e_ticket_label">Lihat E-tiket</string>
+    <string name="flight_order_detail_terminal_change_warning_label">Terminal dapat berubah sewaktu-waktu. Mohon tiba di terminal min. 90 menit sebelum keberangkatan.</string>
 
     <string name="flight_order_detail_trip_city">%1$s (%2$s) ➝ %3$s (%4$s)</string>
     <string name="flight_order_detail_airport_with_terminal">%1$s (Terminal %2$s)</string>
