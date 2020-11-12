@@ -87,4 +87,8 @@ object ApplinkConstInternalSellerapp {
     //SellerMenuActivity
     @JvmField
     val SELLER_MENU = "$INTERNAL_SELLERAPP/seller-menu"
+
+    // SellerActionActivity
+    @JvmField
+    val SELLER_ACTION = "$INTERNAL_SELLERAPP/seller-action"
 }
