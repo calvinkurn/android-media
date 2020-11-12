@@ -423,6 +423,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                     discountPercentage = it.discountPercentage,
                     reviewCount = it.countReview,
                     ratingCount = it.rating,
+                    countSoldRating = it.ratingAverage,
                     shopLocation = it.location,
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,
