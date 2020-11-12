@@ -80,6 +80,7 @@ object ProductDetailConstant {
     const val REQUEST_CODE_MERCHANT_VOUCHER = 564
     const val REQUEST_CODE_ETALASE = 565
     const val REQUEST_CODE_REPORT = 570
+    const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998
     const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
@@ -178,5 +179,6 @@ object ProductDetailConstant {
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
 
+    const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"
 }

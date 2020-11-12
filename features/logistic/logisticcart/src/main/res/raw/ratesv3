@@ -27,6 +27,8 @@ query RatesV3($param: OngkirRatesV3Input!) {
           text_etd
           text_notes
           text_service_desc
+          text_eta_summarize
+          error_code
         }
         order_priority {
           is_now
@@ -105,6 +107,10 @@ query RatesV3($param: OngkirRatesV3Input!) {
               icon_url
             }
           }
+          eta {
+            text_eta
+            error_code
+          }
         }
       }
       promo_stacking {
@@ -136,6 +142,10 @@ query RatesV3($param: OngkirRatesV3Input!) {
               formatted_price
               tnc_text
               tnc_link
+            }
+        eta {
+              text_eta
+              error_code
             }
       }
       info {
