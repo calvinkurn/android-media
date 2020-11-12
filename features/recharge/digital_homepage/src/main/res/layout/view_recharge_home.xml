@@ -31,11 +31,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        app:elevation="@dimen/dp_4"
-        android:background="@color/transparent"
         app:contentInsetLeft="@dimen/layout_lvl0"
         app:contentInsetStart="@dimen/layout_lvl0"
         app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
+        app:elevation="@dimen/dp_4"
         app:navigationIcon="@drawable/ic_action_back">
 
         <LinearLayout

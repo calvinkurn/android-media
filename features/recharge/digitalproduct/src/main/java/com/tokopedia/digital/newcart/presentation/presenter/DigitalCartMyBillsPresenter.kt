@@ -67,20 +67,20 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {
         val bodyCheckout = super.getRequestBodyCheckout(parameter)
         if (view.cartInfoData.crossSellingType == DigitalCartCrossSellingType.MYBILLS) {
-            bodyCheckout.attributes!!.subscribe = view.isSubscriptionChecked()
-            if (view.isEgoldChecked()) {
-                view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
-                    bodyCheckout.attributes?.apply {
-                        var title = info?.let { it.title ?: "" }
-                        fintechProduct = listOf(FintechProductCheckout(
-                                transactionType = transactionType,
-                                tierId = tierId,
-                                userId = identifier?.userId?.toLongOrNull(),
-                                fintechAmount = fintechAmount,
-                                fintechPartnerAmount = fintechPartnerAmount,
-                                productName = title
-                        ))
-                    }
+            bodyCheckout.attributes?.let { it.subscribe = view.isSubscriptionChecked() }
+        }
+        if (view.isEgoldChecked()) {
+            view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
+                bodyCheckout.attributes?.apply {
+                    var title = info?.let { it.title ?: "" }
+                    fintechProduct = listOf(FintechProductCheckout(
+                            transactionType = transactionType,
+                            tierId = tierId,
+                            userId = identifier?.userId?.toLongOrNull(),
+                            fintechAmount = fintechAmount,
+                            fintechPartnerAmount = fintechPartnerAmount,
+                            productName = title
+                    ))
                 }
             }
         }

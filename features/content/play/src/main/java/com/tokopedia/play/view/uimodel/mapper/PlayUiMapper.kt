@@ -135,14 +135,6 @@ object PlayUiMapper {
             isSelfMessage = playChat.user.id == userId
     )
 
-    fun mapPartnerInfoFromShop(shopId: String, shopInfo: ShopInfo) = PartnerInfoUiModel(
-            id = shopInfo.shopCore.shopId.toLong(),
-            name = shopInfo.shopCore.name,
-            type = PartnerType.Shop,
-            isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
-            isFollowable = shopId != shopInfo.shopCore.shopId
-    )
-
     fun mapProductSheet(title: String, partnerId: Long, productTagging: ProductTagging): ProductSheetUiModel {
         return ProductSheetUiModel(
                 title = title,
