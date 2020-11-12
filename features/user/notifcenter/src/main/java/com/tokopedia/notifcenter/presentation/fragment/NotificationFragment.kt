@@ -210,8 +210,8 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
         viewModel.cancelAllUseCase()
+        super.onSwipeRefresh()
     }
 
     override fun loadMoreNew(lastKnownPosition: Int, element: LoadMoreUiModel) {
