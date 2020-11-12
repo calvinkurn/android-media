@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.filter.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
@@ -39,6 +40,35 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private var somFilterUiModel = mutableListOf<SomFilterUiModel>()
     private var somListGetOrderListParam: SomListGetOrderListParam = SomListGetOrderListParam()
     private var somFilterDate: SomFilterDateUiModel? = null
+    private var isRequestCancelFilterApplied: Boolean = false
+
+    private fun shouldSelectRequestCancelFilter() {
+        if (isRequestCancelFilterApplied) {
+            val section = somFilterUiModel.find {
+                it.nameFilter == FILTER_TYPE_ORDER
+            }
+            section?.somFilterData?.indexOfFirst {
+                it.id == FILTER_CANCELLATION_REQUEST
+            }?.let {
+                section.somFilterData[it].run {
+                    updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, it, somFilterDate?.date.orEmpty())
+                    updateParamSom(idFilter)
+                }
+            }
+        }
+    }
+
+    private fun updateIsRequestCancelFilterApplied() {
+        isRequestCancelFilterApplied = somFilterUiModel.find {
+            it.nameFilter == FILTER_TYPE_ORDER
+        }?.somFilterData?.find { it.id == FILTER_CANCELLATION_REQUEST }?.isSelected ?: false
+    }
+
+    fun setIsRequestCancelFilterApplied(value: Boolean) {
+        isRequestCancelFilterApplied = value
+    }
+
+    fun isRequestCancelFilterApplied() = isRequestCancelFilterApplied
 
     fun getSomFilterUiModel() = somFilterUiModel
 
@@ -76,6 +106,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                         }
                     } ?: listOf()
 
+            shouldSelectRequestCancelFilter()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
             somFilterVisitable.addAll(somFilterUiModel)
             somFilterDate?.let { somFilterVisitable.add(it) }
@@ -117,6 +148,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             somFilterDate?.date = date
             somFilterVisitable.addAll(somFilterUiModel)
             somFilterDate?.let { somFilterVisitable.add(it) }
+            updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(somFilterVisitable))
         }, onError = {
             _updateFilterSelected.postValue(Fail(it))

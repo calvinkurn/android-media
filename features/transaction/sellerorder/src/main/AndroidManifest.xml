@@ -83,6 +83,11 @@
                     android:path="@string/path_finished"
                     android:scheme="@string/internal_scheme" />
 
+                <data
+                    android:host="@string/host_seller"
+                    android:path="@string/path_cancellation_request"
+                    android:scheme="@string/internal_scheme" />
+
             </intent-filter>
         </activity>
 

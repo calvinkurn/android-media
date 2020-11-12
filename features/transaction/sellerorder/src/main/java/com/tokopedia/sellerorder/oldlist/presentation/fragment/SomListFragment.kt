@@ -52,6 +52,7 @@ import com.tokopedia.sellerorder.common.presenter.model.Roles
 import com.tokopedia.sellerorder.common.presenter.model.SomListOrderParam
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.ERROR_GET_USER_ROLES
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.FROM_WIDGET_TAG
 import com.tokopedia.sellerorder.common.util.SomConsts.LIST_ORDER_SCREEN_NAME
@@ -165,6 +166,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var tabStatus = ""
     private var filterStatusIdStr = ""
     private var filterStatusId = 0
+    private var filterOrderType = 0
     private var isFilterApplied = false
     private var defaultStartDate = ""
     private var defaultEndDate = ""
@@ -207,6 +209,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     putString(TAB_ACTIVE, bundle.getString(TAB_ACTIVE))
                     putString(TAB_STATUS, bundle.getString(TAB_STATUS))
                     putString(FILTER_STATUS_ID, bundle.getString(FILTER_STATUS_ID))
+                    putString(FILTER_ORDER_TYPE, bundle.getString(FILTER_ORDER_TYPE))
                     putBoolean(FROM_WIDGET_TAG, bundle.getBoolean(FROM_WIDGET_TAG))
                 }
             }
@@ -231,6 +234,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             tabStatus = arguments?.getString(TAB_STATUS).toString()
             filterStatusIdStr = arguments?.getString(FILTER_STATUS_ID).toString()
             filterStatusId = filterStatusIdStr.toIntOrNull() ?: 0
+            filterOrderType = arguments?.getInt(FILTER_STATUS_ID, 0) ?: 0
             isFromWidget = arguments?.getBoolean(FROM_WIDGET_TAG)
         }
         checkUserRole()
@@ -414,6 +418,7 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (GlobalConfig.isSellerApp()) {
             if (searchKeyword.isNotBlank()) {
                 paramOrder.search = searchKeyword
+                paramOrder.orderTypeList = if (filterOrderType != 0) listOf(filterOrderType) else emptyList()
                 search_input_view.searchTextView.setText(searchKeyword)
                 search_input_view.searchTextView.text?.length?.let { search_input_view.searchTextView.setSelection(it) }
             }

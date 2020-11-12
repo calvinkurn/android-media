@@ -76,7 +76,7 @@ class SomListSortFilterTab(
     }
 
     private fun updateCounter(count: Int) {
-        sortFilter.indicatorCounter = count + if (selectedTab != null) 1 else 0
+        sortFilter.indicatorCounter = count + if (selectedTab != null && selectedTab?.key != SomConsts.STATUS_ALL_ORDER) 1 else 0
     }
 
     fun updateCounterSortFilter(filterDate: String = "") {
@@ -130,6 +130,11 @@ class SomListSortFilterTab(
             amount -= 1
             filterItems.find { it.title.contains(status) }?.title = composeTabTitle(status, amount)
         }
+    }
+
+    fun addCounter(n: Int) {
+        selectedCount += n
+        updateCounter(selectedCount)
     }
 
     fun shouldShowBulkAction() = selectedTab?.key == STATUS_NEW_ORDER

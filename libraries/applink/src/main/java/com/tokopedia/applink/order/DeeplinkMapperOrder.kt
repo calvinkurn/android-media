@@ -21,12 +21,14 @@ object DeeplinkMapperOrder {
     private const val CANCELLED = "order_canceled"
     private const val ALL_ORDER = "all_order"
     private const val FILTER_STATUS_ID = "filter_status_id"
+    private const val FILTER_ORDER_TYPE = "filter_order_type"
     private const val FILTER_WAITING_PICKUP = "7"
     private const val FILTER_WAITING_AWB = "9"
     private const val FILTER_AWB_INVALID = "10"
     private const val FILTER_AWB_CHANGE = "11"
     private const val FILTER_RETUR = "13"
     private const val FILTER_COMPLAINT = "15"
+    const val FILTER_CANCELLATION_REQUEST = 10
 
     fun getRegisteredNavigationOrder(deeplink: String): String {
         return if (deeplink.startsWithPattern(ApplinkConst.SELLER_ORDER_DETAIL)) getRegisteredNavigationOrderInternal(deeplink)
@@ -68,6 +70,14 @@ object DeeplinkMapperOrder {
     fun getRegisteredNavigationMainAppSellerCancelled(): String {
         val param = mapOf(QUERY_TAB_ACTIVE to CANCELLED)
         return UriUtil.buildUriAppendParam(ApplinkConstInternalOrder.CANCELLED, param)
+    }
+
+    fun getRegisteredNavigationMainAppSellerCancellationRequest(): String {
+        val param = mapOf(
+                QUERY_TAB_ACTIVE to ALL_ORDER,
+                FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST
+        )
+        return UriUtil.buildUriAppendParams(ApplinkConstInternalOrder.CANCELLATION_REQUEST, param)
     }
 
     fun getRegisteredNavigationMainAppSellerHistory(): String {
