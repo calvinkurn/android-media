@@ -7,6 +7,6 @@ import javax.inject.Inject
 
 class ChipFilterUseCase @Inject constructor(private val chipFilterRepository: ChipFilterRepository) {
     suspend fun getChipFilterData(componentId: String, pageEndPoint: String, position : Int, componentName : String?): List<ComponentsItem> {
-        return chipFilterRepository.getChipFilterData(componentId, hashMapOf(), pageEndPoint, position, componentName)
+        return getComponent(componentId, pageEndPoint)?.getComponentsItem() ?: chipFilterRepository.getChipFilterData(componentId, hashMapOf(), pageEndPoint, position, componentName)
     }
 }

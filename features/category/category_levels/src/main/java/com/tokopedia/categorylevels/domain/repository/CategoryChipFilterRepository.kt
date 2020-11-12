@@ -17,11 +17,9 @@ class CategoryChipFilterRepository @Inject constructor() : BaseRepository(), Chi
     lateinit var getRecommendationFilterChips: GetRecommendationFilterChips
 
     override suspend fun getChipFilterData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, position: Int, componentName: String?): List<ComponentsItem> {
-        return getComponent(componentId, pageEndPoint)!!.getComponentsItem() ?: run {
-            getRecommendationFilterChips.setParams(pageName = "quick_filter", xSource = "discopage")
-            return mapChipsToComponents(getRecommendationFilterChips.executeOnBackground(), componentName, position).also {
-                getComponent(componentId, pageEndPoint)!!.setComponentsItem(it)
-            }
+        getRecommendationFilterChips.setParams(pageName = "quick_filter", xSource = "discopage")
+        return mapChipsToComponents(getRecommendationFilterChips.executeOnBackground(), componentName, position).also {
+            getComponent(componentId, pageEndPoint)?.setComponentsItem(it)
         }
     }
 
