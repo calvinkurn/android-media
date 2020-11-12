@@ -116,6 +116,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -221,6 +222,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var accordionCollapseState = true
     private var refreshCartAfterBackFromPdp = true
     private var hasCalledOnSaveInstanceState = false
+    private var toolbarType = ""
 
     companion object {
 
@@ -243,9 +245,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         const val WISHLIST_SOURCE_AVAILABLE_ITEM = "WISHLIST_SOURCE_AVAILABLE_ITEM"
         const val WISHLIST_SOURCE_UNAVAILABLE_ITEM = "WISHLIST_SOURCE_UNAVAILABLE_ITEM"
         const val WORDING_GO_TO_HOMEPAGE = "Kembali ke Homepage"
-        const val TOOLBAR_VARIANT_BASIC = "existing navigation"
-        const val TOOLBAR_VARIANT_NAVIGATION = "navigation revamp"
-
+        const val TOOLBAR_VARIANT_BASIC = "Existing Navigation"
+        const val TOOLBAR_VARIANT_NAVIGATION = "Navigation Revamp"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?, args: String): CartFragment {
@@ -499,6 +500,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initRemoteConfig() {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false)
+
+        val EXP_NAME = "Navigation Revamp"
+        toolbarType = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                EXP_NAME, TOOLBAR_VARIANT_BASIC
+        )
     }
 
     override fun initView(view: View) {
@@ -794,9 +800,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun initToolbar(view: View) {
-        val navType = getToolbarABTest()
-
-        if (navType == TOOLBAR_VARIANT_NAVIGATION) {
+        if (toolbarType == TOOLBAR_VARIANT_NAVIGATION) {
             initNavigationToolbar(view)
             basicToolbar.gone()
             navToolbar.show()
@@ -805,16 +809,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             navToolbar.gone()
             basicToolbar.show()
         }
-    }
-
-    private fun getToolbarABTest(): String {
-        val EXP_NAME = "Navigation Revamp"
-
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(
-//                EXP_NAME, TOOLBAR_VARIANT_BASIC
-//        )
-
-        return TOOLBAR_VARIANT_BASIC
     }
 
     private fun initNavigationToolbar(view: View) {
@@ -826,7 +820,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setOnBackButtonClickListener { onBackPressed() }
                 setIcon(
                         IconBuilder()
-                                .addIcon(IconList.ID_WISHLIST, false, ::onNavigationToolbarWishlistClicked)
+                                .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, ::onNavigationToolbarWishlistClicked)
                                 .addIcon(IconList.ID_NAV_GLOBAL) {}
                 )
             }
@@ -2674,13 +2668,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun animateProductImage(message: String) {
-        val toolbarType = getToolbarABTest()
         var target: Pair<Int, Int>? = null
 
-        if (toolbarType == TOOLBAR_VARIANT_BASIC) {
+        if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
             target = toolbar.getWishlistIconPosition()
         } else {
-            target = Pair(0, 0)
+            val targetX = getScreenWidth() - resources.getDimensionPixelSize(R.dimen.dp_64)
+            target = Pair(targetX, 0)
         }
 
         tmpAnimatedImage.show()
@@ -2706,18 +2700,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 override fun onAnimationEnd(animation: Animator) {
                     tmpAnimatedImage.gone()
 
-                    if (toolbarType == TOOLBAR_VARIANT_BASIC) {
+                    if (toolbarType.equals(TOOLBAR_VARIANT_BASIC, true)) {
                         toolbar.animateWishlistIcon()
                     } else {
-                        navToolbar.apply {
-                            setOnBackButtonClickListener { onBackPressed() }
-                            setIcon(
-                                    IconBuilder()
-                                            .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, ::onNavigationToolbarWishlistClicked)
-                                            .addIcon(IconList.ID_NAV_GLOBAL) {}
-                            )
-                            triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
-                        }
+                        navToolbar.triggerLottieAnimation(IconList.ID_NAV_LOTTIE_WISHLIST)
                     }
 
                     showToastMessageGreen(message, false)
