@@ -1,6 +1,7 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.sellerhomecommon.common.const.MetricsType
+import com.tokopedia.sellerhomecommon.domain.model.LineModel
 import com.tokopedia.sellerhomecommon.domain.model.MultiTrendLineMetricModel
 import com.tokopedia.sellerhomecommon.domain.model.MultiTrendlineWidgetDataModel
 import com.tokopedia.sellerhomecommon.presentation.model.*
@@ -60,8 +61,15 @@ class MultiLineGraphMapper @Inject constructor() {
                                         xLabel = period.xLabel.orEmpty()
                                 )
                             }
-                    )
+                    ),
+                    isEmpty = isMetricEmpty(it.line)
             )
         }
+    }
+
+    private fun isMetricEmpty(line: LineModel?): Boolean {
+        val isCurrentPeriodEmpty = line?.currentPeriode?.sumBy { (it.yVal ?: 0f).toInt() } == 0
+        val isLastPeriodEmpty = line?.lastPeriode?.sumBy { (it.yVal ?: 0f).toInt() } == 0
+        return isCurrentPeriodEmpty && isLastPeriodEmpty
     }
 }

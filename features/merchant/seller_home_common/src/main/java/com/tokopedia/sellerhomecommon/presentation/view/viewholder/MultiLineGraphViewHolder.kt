@@ -154,7 +154,7 @@ class MultiLineGraphViewHolder(
 
     private fun setOnErrorState(element: MultiLineGraphWidgetUiModel) {
         with(itemView) {
-            tvShcMultiLineGraphTitle.text = element.title
+            setupTitle(element.title)
             shcMlgLoadingState.gone()
             shcMlgSuccessState.visible()
             getWidgetComponents().forEach {
@@ -165,6 +165,25 @@ class MultiLineGraphViewHolder(
         }
 
         setupTooltip(element)
+    }
+
+    private fun setupTitle(title: String) {
+        with(itemView) {
+            if (title.isNotBlank()) {
+                tvShcMultiLineGraphTitle.visible()
+                tvShcMultiLineGraphTitle.text = title
+
+                val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
+                val dimen8dp = context.resources.getDimension(R.dimen.layout_lvl1).toInt()
+                rvShcGraphMetrics.setMargin(dimen12dp, dimen8dp, dimen12dp, 0)
+            } else {
+
+                val dimen12dp = context.resources.getDimension(R.dimen.shc_dimen_12dp).toInt()
+                val dimen16dp = context.resources.getDimension(R.dimen.layout_lvl2).toInt()
+                tvShcMultiLineGraphTitle.gone()
+                rvShcGraphMetrics.setMargin(dimen12dp, dimen16dp, dimen12dp, 0)
+            }
+        }
     }
 
     private fun setOnSuccessState(element: MultiLineGraphWidgetUiModel) {
@@ -182,11 +201,11 @@ class MultiLineGraphViewHolder(
             shcMlgLoadingState.gone()
             commonWidgetErrorState.gone()
             shcMlgSuccessState.visible()
+            setupTitle(element.title)
+
             getWidgetComponents().forEach {
                 it.visible()
             }
-
-            tvShcMultiLineGraphTitle.text = element.title
 
             setupMetricCards(metricItems)
             hideLegendView()
@@ -255,6 +274,9 @@ class MultiLineGraphViewHolder(
 
     private fun setupMetricCards(items: List<MultiLineMetricUiModel>) {
         with(itemView) {
+            shcMlgSuccessState.post {
+                metricsAdapter.setRecyclerViewWidth(shcMlgSuccessState.width)
+            }
             rvShcGraphMetrics.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             rvShcGraphMetrics.adapter = metricsAdapter
 

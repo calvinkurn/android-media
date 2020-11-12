@@ -256,13 +256,11 @@ object SellerHomeTracking {
     }
 
     fun sendMultiLineGraphMetricClick(model: MultiLineGraphWidgetUiModel, metric: MultiLineMetricUiModel, userId: String) {
-        val isEmpty = metric.linePeriod.currentPeriod.isNullOrEmpty()
-
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_SELLER_WIDGET,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
                 action = arrayOf(TrackingConstant.CLICK_WIDGET_MULTI_LINE_GRAPH, model.dataKey).joinToString(" - "),
-                label = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+                label = if (metric.isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
         )
         eventMap[TrackingConstant.USER_ID] = userId
 
@@ -270,8 +268,7 @@ object SellerHomeTracking {
     }
 
     fun sendMultiLineGraphCtaClick(model: MultiLineGraphWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.metrics?.getOrNull(0)?.linePeriod?.currentPeriod?.isNullOrEmpty()
-                ?: true
+        val isEmpty = model.data?.metrics?.getOrNull(0)?.isEmpty ?: true
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.CLICK_SELLER_WIDGET,
                 category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
@@ -284,8 +281,7 @@ object SellerHomeTracking {
     }
 
     fun sendMultiLineGraphImpressionEvent(model: MultiLineGraphWidgetUiModel, userId: String) {
-        val isEmpty = model.data?.metrics?.getOrNull(0)?.linePeriod?.currentPeriod?.isNullOrEmpty()
-                ?: true
+        val isEmpty = model.data?.metrics?.getOrNull(0)?.isEmpty ?: true
 
         val eventMap = TrackingHelper.createMap(
                 event = TrackingConstant.VIEW_SELLER_WIDGET_IRIS,

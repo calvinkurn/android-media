@@ -34,7 +34,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvShcGraphMetrics"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/shc_dimen_12dp"
             android:layout_marginTop="@dimen/layout_lvl1"

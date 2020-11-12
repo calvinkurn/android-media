@@ -20,6 +20,7 @@ data class MultiLineMetricUiModel(
         val summary: MetricsSummaryUiModel = MetricsSummaryUiModel(),
         val yAxis: List<YAxisUiModel> = emptyList(),
         val linePeriod: LinePeriodUiModel = LinePeriodUiModel(),
+        val isEmpty: Boolean = false,
         var isSelected: Boolean = false
 )
 
