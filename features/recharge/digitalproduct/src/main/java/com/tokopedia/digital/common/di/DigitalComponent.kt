@@ -2,7 +2,6 @@ package com.tokopedia.digital.common.di
 
 
 import android.content.Context
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
@@ -24,8 +23,6 @@ interface DigitalComponent {
 
     @ApplicationContext
     fun context(): Context
-
-    fun abstractionRouter(): AbstractionRouter
 
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
 
