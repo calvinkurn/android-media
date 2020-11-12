@@ -180,7 +180,9 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 KEY_EVENT_LABEL to "",
                 CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
                 USER_ID to (userID ?: ""),
-                BUSINESS_UNIT to HOME_BROWSE)
+                BUSINESS_UNIT to HOME_BROWSE,
+                PAGE_TYPE to pageType,
+                PAGE_PATH to pagePath)
         getTracker().sendGeneralEvent(map)
     }
 
