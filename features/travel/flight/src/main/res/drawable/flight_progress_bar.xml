@@ -10,22 +10,22 @@
             <shape>
                 <corners android:radius="10dp" />
 
-                <solid android:color="@color/Unify_G400" />
+                <solid android:color="@color/Unify_G500" />
             </shape>
         </clip>
 
-        <color android:color="@color/Unify_G400" />
+        <color android:color="@color/Unify_G500" />
     </item>
     <item android:id="@android:id/progress">
         <clip>
             <shape>
                 <corners android:radius="10dp" />
 
-                <solid android:color="@color/Unify_G400" />
+                <solid android:color="@color/Unify_G500" />
             </shape>
         </clip>
 
-        <color android:color="@color/Unify_G400" />
+        <color android:color="@color/Unify_G500" />
     </item>
 
 </layer-list>

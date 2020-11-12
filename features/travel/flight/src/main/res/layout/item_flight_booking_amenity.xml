@@ -17,9 +17,12 @@
         android:layout_toLeftOf="@+id/image_checked"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_2"
+            android:textColor="@color/Unify_N700_96"
             android:id="@+id/tv_title"
-            style="@style/TextView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/spacing_lvl2"
             tools:text="Rp 0" />
 

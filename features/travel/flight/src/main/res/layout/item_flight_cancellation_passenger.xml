@@ -19,16 +19,23 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_passenger_name"
-            style="@style/TextView.Small.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:padding="@dimen/spacing_lvl1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="@string/flight_label_departure_flight" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_passenger_type"
-            style="@style/TextView.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:padding="@dimen/spacing_lvl1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
             tools:text="@string/flight_label_departure_flight" />
 
         <com.tokopedia.unifyprinciples.Typography

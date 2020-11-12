@@ -45,7 +45,7 @@ public class FlightBookingAmenityViewHolder extends AbstractViewHolder<FlightBoo
         title.setText(String.format("%s - %s", flightBookingLuggageViewModel.getTitle(), flightBookingLuggageViewModel.getPrice()));
         if (isItemChecked) {
             imageChecked.setVisibility(View.VISIBLE);
-            title.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
+            title.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G500));
         } else {
             imageChecked.setVisibility(View.INVISIBLE);
             title.setTextColor(ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));

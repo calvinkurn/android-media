@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_N0"
     android:fillViewport="true">
 
@@ -19,9 +20,9 @@
             android:layout_height="@dimen/layout_lvl0"
             android:layout_weight="1">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/txt_cancellation_tnc"
-                style="@style/TextView.Small"
+                app:typographyType="body_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/layout_lvl2"
@@ -58,9 +59,9 @@
                 android:layout_height="@dimen/flight_dp_36"
                 android:theme="@style/checkBoxStyle" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.tokopedia.unifyprinciples.Typography
+                app:typographyType="body_3"
                 android:id="@+id/tv_description"
-                style="@style/TextView.Micro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/flight_dp_10"
@@ -69,9 +70,10 @@
 
         </LinearLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_next"
-            style="@style/Button.Submit.Orange"
+            app:unifyButtonType="transaction"
+            app:unifyButtonSize="large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/layout_lvl2"

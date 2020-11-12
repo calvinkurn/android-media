@@ -76,9 +76,12 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
+                app:typographyType="small"
+                android:textColor="@color/Unify_N700_68"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:id="@+id/airline_refundable_info"
-                style="@style/TextView.Micro.BlackSecondary"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
@@ -87,14 +90,12 @@
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:paddingRight="@dimen/padding_16"
                 android:paddingBottom="@dimen/spacing_lvl3"
-                android:textSize="10sp"
                 android:visibility="gone"
                 tools:text="Refundable"
                 tools:visibility="visible" />
 
         </LinearLayout>
     </RelativeLayout>
-
 
     <LinearLayout
         android:id="@+id/container_pnr"
@@ -124,7 +125,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_lvl2"
             android:layout_marginRight="@dimen/spacing_lvl2"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="323088926194" />

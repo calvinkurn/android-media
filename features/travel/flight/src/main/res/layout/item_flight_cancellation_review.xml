@@ -4,19 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/spacing_lvl4"
     android:background="@color/Unify_N0"
-    android:orientation="vertical"
-    android:layout_marginBottom="@dimen/spacing_lvl4">
+    android:orientation="vertical">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_departure_label"
-        style="@style/TextView.TitleMedium.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Unify_N0"
         android:paddingLeft="@dimen/padding_16"
-        android:paddingRight="@dimen/padding_16"
         android:paddingTop="@dimen/flight_dp_20"
+        android:paddingRight="@dimen/padding_16"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_3"
         tools:text="@string/flight_label_departure_flight" />
 
     <LinearLayout
@@ -26,10 +27,10 @@
         android:background="@color/Unify_N0"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/spacing_lvl3"
         android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl3"
         android:paddingRight="@dimen/spacing_lvl4"
-        android:paddingTop="@dimen/spacing_lvl3">
+        android:paddingBottom="@dimen/spacing_lvl3">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/layout_lvl5"
@@ -43,16 +44,22 @@
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:orientation="vertical">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_departure_time_label"
-                style="@style/TextView.Micro.BlackSecondary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_lvl1"
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_3"
                 tools:text="@string/flight_label_departure_flight" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_journey_detail_label"
-                style="@style/TextView.Title.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="@dimen/spacing_lvl1"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_4"
                 tools:text="@string/flight_label_departure_flight" />
 
             <LinearLayout
@@ -61,16 +68,23 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/spacing_lvl1">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/airline_name"
-                    style="@style/TextView.Micro.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/spacing_lvl3"
                     android:layout_marginRight="@dimen/spacing_lvl3"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    app:typographyWeight="bold"
                     tools:text="Garuda" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/duration"
-                    style="@style/TextView.Micro.BlackSecondary" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_3" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -80,17 +94,19 @@
         android:layout_height="0.5dp"
         android:background="@drawable/line_divider" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.Micro.Bold"
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:background="@color/Unify_N0"
-        android:paddingBottom="@dimen/flight_dp_14"
         android:paddingLeft="@dimen/spacing_lvl4"
-        android:paddingRight="@dimen/spacing_lvl4"
         android:paddingTop="@dimen/spacing_lvl3"
-        android:text="@string/flight_cancellation_data_penumpang_label" />
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/flight_dp_14"
+        android:text="@string/flight_cancellation_data_penumpang_label"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/recycler_view_passenger"

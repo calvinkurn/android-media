@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:background="@drawable/bg_line_separator"
+            android:background="@drawable/flight_bg_line_seperator"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightDestinationAirport" />
@@ -151,7 +151,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:background="@drawable/bg_line_separator"
+            android:background="@drawable/flight_bg_line_seperator"
             app:layout_constraintLeft_toRightOf="@+id/icFlightDepartureDate"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightDepartureDate" />
@@ -201,7 +201,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:background="@drawable/bg_line_separator"
+            android:background="@drawable/flight_bg_line_seperator"
             app:layout_constraintLeft_toRightOf="@+id/icFlightReturnDate"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightReturnDate" />
@@ -251,7 +251,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:background="@drawable/bg_line_separator"
+            android:background="@drawable/flight_bg_line_seperator"
             app:layout_constraintLeft_toRightOf="@+id/icFlightPassenger"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightPassenger" />
@@ -301,7 +301,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl2"
-            android:background="@drawable/bg_line_separator"
+            android:background="@drawable/flight_bg_line_seperator"
             app:layout_constraintLeft_toRightOf="@+id/icFlightClass"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightClass" />

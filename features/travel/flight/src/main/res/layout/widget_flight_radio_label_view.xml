@@ -9,12 +9,13 @@
     android:orientation="horizontal"
     android:padding="@dimen/spacing_lvl4">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
-        style="@style/TextView.Title"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_4"
         tools:text="HARGA KHUSUS" />
 
     <androidx.appcompat.widget.SwitchCompat
