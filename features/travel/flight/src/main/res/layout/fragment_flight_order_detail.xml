@@ -19,6 +19,7 @@
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:closeButtonVisibility="gone"
                 app:descriptionText="Pembayaran berhasil. E-tiket akan diproses selama 1 jam ke depan."
                 app:tickerShapeType="full"
