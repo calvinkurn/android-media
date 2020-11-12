@@ -5,4 +5,6 @@
 
     <dimen name="default_nav_toolbar_start_transition">135dp</dimen>
     <dimen name="default_nav_toolbar_transition_range">50dp</dimen>
+
+    <dimen name="lottie_wishlist_padding_end">-16dp</dimen>
 </resources>

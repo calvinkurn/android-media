@@ -196,6 +196,10 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
             iconBadge.visibility = View.VISIBLE
             iconBadge.text = iconToolbar.badgeCounter.toString()
         }
+
+        if (iconToolbar.paddingEndRes != 0) {
+            iconImage.setPadding(0, 0, iconToolbar.paddingEndRes, 0)
+        }
     }
 
     private fun constructCounterTagById(id: Int) =
