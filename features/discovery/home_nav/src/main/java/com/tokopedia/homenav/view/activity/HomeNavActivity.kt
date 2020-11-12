@@ -24,8 +24,8 @@ class HomeNavActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setAnimation()
-        setContentView(R.layout.activity_main_nav)
         overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
+        setContentView(R.layout.activity_main_nav)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
@@ -39,41 +39,38 @@ class HomeNavActivity: AppCompatActivity() {
 
     override fun finish() {
         super.finish()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.transitionBackgroundFadeDuration = 400
-        }
         overridePendingTransition(R.anim.nav_fade_in, R.anim.slide_bottom)
     }
 
     private fun setAnimation() {
         if (Build.VERSION.SDK_INT > 20) {
-            val slide = Slide().apply {
-                slideEdge = Gravity.BOTTOM
-                duration = 200
-                interpolator = FastOutSlowInInterpolator()
-                addListener(object : Transition.TransitionListener{
-                    override fun onTransitionStart(p0: Transition?) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            setStatusBarColor(Color.TRANSPARENT)
-                        }
-                    }
-
-                    override fun onTransitionEnd(p0: Transition?) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            setStatusBarColor(Color.WHITE)
-                        }
-                    }
-
-                    override fun onTransitionCancel(p0: Transition?) {
-                    }
-
-                    override fun onTransitionPause(p0: Transition?) {
-                    }
-
-                    override fun onTransitionResume(p0: Transition?) {
-                    }
-                })
-            }
+//            val slide = Slide().apply {
+//                slideEdge = Gravity.LEFT
+//                duration = 200
+//                interpolator = FastOutSlowInInterpolator()
+//                addListener(object : Transition.TransitionListener{
+//                    override fun onTransitionStart(p0: Transition?) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            setStatusBarColor(Color.TRANSPARENT)
+//                        }
+//                    }
+//
+//                    override fun onTransitionEnd(p0: Transition?) {
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                            setStatusBarColor(Color.WHITE)
+//                        }
+//                    }
+//
+//                    override fun onTransitionCancel(p0: Transition?) {
+//                    }
+//
+//                    override fun onTransitionPause(p0: Transition?) {
+//                    }
+//
+//                    override fun onTransitionResume(p0: Transition?) {
+//                    }
+//                })
+//            }
 //            window.exitTransition = slide
 //            window.enterTransition = slide
 
