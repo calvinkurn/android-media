@@ -33,7 +33,6 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
-import com.tokopedia.notifcenter.di.module.NotificationContextModule
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
@@ -264,7 +263,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         DaggerNotificationComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .commonModule(context?.let { CommonModule(it) })
-                .notificationContextModule(context?.let { NotificationContextModule(it) })
                 .build()
                 .inject(this)
     }

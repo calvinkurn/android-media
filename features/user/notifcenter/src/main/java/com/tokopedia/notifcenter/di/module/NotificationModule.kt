@@ -3,6 +3,7 @@ package com.tokopedia.notifcenter.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
@@ -35,7 +36,7 @@ class NotificationModule {
     @Provides
     @NotificationScope
     @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(context: Context): String {
+    fun provideRecommendationRawQuery(@NotificationContext context: Context): String {
         return GraphqlHelper.loadRawString(
                 context.resources,
                 com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget
@@ -44,13 +45,17 @@ class NotificationModule {
 
     @Provides
     @NotificationScope
-    fun provideAddWishlistUseCase(context: Context): AddWishListUseCase {
+    fun provideAddWishlistUseCase(
+            @NotificationContext context: Context
+    ): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @Provides
     @NotificationScope
-    fun provideRemoveWishlistUseCase(context: Context): RemoveWishListUseCase {
+    fun provideRemoveWishlistUseCase(
+            @NotificationContext context: Context
+    ): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 
