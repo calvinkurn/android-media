@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.description.presentation.viewmodel
 
 import android.net.Uri
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -10,6 +11,7 @@ import com.tokopedia.product.addedit.description.presentation.model.DescriptionI
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.setPrivateProperty
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -100,7 +102,7 @@ class AddEditProductDescriptionViewModelTest {
     private val youtubeVideoUrlFromApp = "https://$youtubeAppHost/$videoId"
     private val youtubeVideoUrlFromWebsite = "https://$youtubeWebsiteHost/watch?v=$videoId"
     private val youtubeVideoUrlFromWebsiteWithoutWww = "https://$youtubeWebsiteHostWithoutWww/watch?v=$videoId"
-    private val unknownYoutubeUrl = "https://$unknownYoutubeHost/$videoId"
+    private val unknownYoutubeUrl = "http://$unknownYoutubeHost/$videoId"
     private var usedYoutubeVideoUrl = ""
 
     private val youtubeSuccessData = YoutubeVideoDetailModel()
@@ -238,6 +240,12 @@ class AddEditProductDescriptionViewModelTest {
 
         val result = viewModel.validateDuplicateVideo(addedVideoUrls, newVideoUrl)
         assert(result == "Link video tidak boleh sama")
+
+        // test empty resource message
+        every { resourceProvider.getDuplicateProductVideoErrorMessage() }  returns null
+
+        val resultEmpty = viewModel.validateDuplicateVideo(addedVideoUrls, newVideoUrl)
+        assert(resultEmpty.isEmpty())
     }
 
     @Test
@@ -274,17 +282,22 @@ class AddEditProductDescriptionViewModelTest {
         every { resourceProvider.getVariantEmptyMessage() }  returns "empty message"
 
         viewModel.updateProductInputModel(getTestProductInputModel())
-        val aaa = viewModel.getVariantSelectedMessage()
-        var isValid = aaa == "added message"
-        assert(isValid)
+        Assert.assertEquals(viewModel.getVariantSelectedMessage(), "added message")
 
         viewModel.updateProductInputModel(ProductInputModel())
-        isValid = viewModel.getVariantSelectedMessage() == "empty message"
-        assert(isValid)
+        Assert.assertEquals(viewModel.getVariantSelectedMessage(), "empty message")
+    }
 
-        viewModel.updateProductInputModel(null)
-        isValid = viewModel.getVariantSelectedMessage() == "empty message"
-        assert(isValid)
+    @Test
+    fun `When get message is null and getVariantSelectedMessage Expect return empty message`() {
+        every { resourceProvider.getVariantAddedMessage() }  returns null
+        every { resourceProvider.getVariantEmptyMessage() }  returns null
+
+        viewModel.updateProductInputModel(getTestProductInputModel())
+        Assert.assertTrue(viewModel.getVariantSelectedMessage().isEmpty())
+
+        viewModel.updateProductInputModel(ProductInputModel())
+        Assert.assertTrue(viewModel.getVariantSelectedMessage().isEmpty())
     }
 
     @Test
@@ -311,6 +324,17 @@ class AddEditProductDescriptionViewModelTest {
 
         viewModel.updateProductInputModel(productInput)
         isValid = viewModel.getVariantCountMessage(999).isEmpty()
+        assert(isValid)
+    }
+
+    @Test
+    fun `When getVariantCountMessage and message is null Expect return empty message`() {
+        every { resourceProvider.getVariantCountSuffix() } returns null
+        val productInput = getTestProductInputModel()
+
+        viewModel.updateProductInputModel(productInput)
+        val isValid = viewModel.getVariantCountMessage(0) ==
+                productInput.variantInputModel.selections[0].options.size.toString() + " "
         assert(isValid)
     }
 
@@ -363,9 +387,9 @@ class AddEditProductDescriptionViewModelTest {
         Assert.assertTrue(viewModel.categoryId.isNotEmpty())
 
         // VideoData
-        viewModel.isFetchingVideoData[0] = false
-        viewModel.urlToFetch[0] = "url"
-        viewModel.fetchedUrl[0] = "url"
+        viewModel.isFetchingVideoData = mutableMapOf(0 to false)
+        viewModel.urlToFetch = mutableMapOf(0 to "url")
+        viewModel.fetchedUrl = mutableMapOf(0 to "url")
         Assert.assertTrue(viewModel.isFetchingVideoData.isNotEmpty())
         Assert.assertTrue(viewModel.urlToFetch.isNotEmpty())
         Assert.assertTrue(viewModel.fetchedUrl.isNotEmpty())
@@ -373,9 +397,10 @@ class AddEditProductDescriptionViewModelTest {
 
     @Test
     fun `constant variables should empty when productInputModel is null`() {
-        viewModel.updateProductInputModel(null)
+        viewModel.setPrivateProperty("_productInputModel", MutableLiveData(null))
         Assert.assertTrue(viewModel.categoryId.isEmpty())
-        Assert.assertTrue(viewModel.descriptionInputModel.productDescription.isEmpty())
-        Assert.assertTrue(viewModel.variantInputModel.selections.isEmpty())
+        Assert.assertEquals(viewModel.descriptionInputModel, DescriptionInputModel())
+        Assert.assertEquals(viewModel.variantInputModel, VariantInputModel())
+        Assert.assertFalse(viewModel.hasVariant)
     }
 }

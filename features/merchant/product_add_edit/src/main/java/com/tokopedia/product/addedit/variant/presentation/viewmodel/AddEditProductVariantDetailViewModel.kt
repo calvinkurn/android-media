@@ -148,7 +148,7 @@ class AddEditProductVariantDetailViewModel @Inject constructor(
         if (inputLayoutModelMap.containsKey(fieldPosition)) inputLayoutModelMap[fieldPosition] = variantDetailInputLayoutModel
     }
 
-    fun updateProductInputModel(productInputModel: ProductInputModel?) {
+    fun updateProductInputModel(productInputModel: ProductInputModel) {
         this.productInputModel.value = productInputModel
         setDefaultPrimaryVariant() // set default variant if don't have any
     }

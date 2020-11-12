@@ -2,6 +2,7 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.callPrivateFunc
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
@@ -317,8 +318,8 @@ class AddEditProductVariantDetailViewModelTest: AddEditProductVariantDetailViewM
     fun `When productInput model became null Expect empty objects`() {
         viewModel.productInputModel = MutableLiveData<ProductInputModel>()
         assert(viewModel.productInputModel.value == null)
+        viewModel.callPrivateFunc("setDefaultPrimaryVariant")
 
-        viewModel.updateProductInputModel(null)
         viewModel.collapseHeader(1, 1)
         viewModel.expandHeader(1, 1)
         Assert.assertFalse(viewModel.isEditMode)

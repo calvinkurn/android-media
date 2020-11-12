@@ -71,7 +71,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
     }
 
-    fun updateProductInputModel(productInputModel: ProductInputModel?) {
+    fun updateProductInputModel(productInputModel: ProductInputModel) {
         _productInputModel.value = productInputModel
     }
 
