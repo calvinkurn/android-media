@@ -167,7 +167,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                 btnSaveSubFilter.isEnabled = true
                 actionTextView?.show()
                 actionText = getString(R.string.reset)
-                actionTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, SIZE_ACTION_RESET)
                 actionTextView?.setOnClickListener {
                     somSubFilterList?.find { it.idFilter == idFilter }?.let {
                         when (it.idFilter) {

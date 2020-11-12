@@ -30,9 +30,9 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         this.idFilter = idFilter
         val callBack = SomSubFilterDiffUtil(listSubFilter, newSubFilterList)
         val diffResult = DiffUtil.calculateDiff(callBack)
-        diffResult.dispatchUpdatesTo(this)
         this.listSubFilter.clear()
         this.listSubFilter.addAll(newSubFilterList)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     private fun clickHandlerRadio(item: SomFilterChipsUiModel) {
@@ -86,7 +86,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
                     clickHandlerRadio(item)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
                 }
-                label_radio.setOnClickListener {
+                setOnClickListener {
                     toggleChildStatus(item, rb_filter.isChecked)
                     clickHandlerRadio(item)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
