@@ -59,7 +59,7 @@ data class OrderPaymentCreditCard(
         val isDebit: Boolean = false
 ) {
     companion object {
-        internal const val DEBIT_GATEWAY_CODE = "DEBITCARD"
+        internal const val DEBIT_GATEWAY_CODE = "DEBITONLINE"
     }
 }
 
