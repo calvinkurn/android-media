@@ -173,7 +173,6 @@
     <string name="flight_label_transaction_date">Tanggal Transaksi</string>
     <string name="flight_label_order_id_detail">Invoice :</string>
     <string name="flight_label_show_invoice">KIRIM E-TIKET</string>
-    <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_label_reschedule_ticket">Atur Ulang Jadwal</string>
     <string name="flight_label_cek_t_and_c">* Harap diingat bahwa terminal dapat berubah sewaktu-waktu</string>
     <string name="flight_label_detail_counter">Detail Penerbangan %d</string>
@@ -378,5 +377,16 @@ di tempatmu.</string>
     <string name="flight_order_detail_passenger_detail_title">Detail penumpang</string>
     <string name="flight_order_detail_passenger_detail_number">%1$d.</string>
     <string name="flight_order_detail_passenger_amenities_label">%1$s %2$s - %3$s</string>
+
+    <string name="flight_order_detail_insurance_title_label">Terlindungi asuransi</string>
+    <string name="flight_order_detail_insurance_trip_label">Asuransi Perjalanan</string>
+    <string name="flight_order_detail_insurance_cancel_label">Asuransi Bebas Pembatalan</string>
+
+    <string name="flight_order_detail_check_in_title_label">Tentang pesananmu</string>
+    <string name="flight_order_detail_check_in_label">Web Check-in</string>
+    <string name="flight_order_detail_check_in_description">Check-in lebih awal lewat website.</string>
+
+    <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
+    <string name="flight_order_detail_cancel_description">Cek ketentuan pembatalan di sini.</string>
 
 </resources>

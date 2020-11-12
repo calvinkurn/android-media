@@ -43,6 +43,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
+                android:id="@+id/flightOrderDetailInsurance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
+                android:id="@+id/flightOrderDetailCheckIn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

@@ -14,10 +14,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
+import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailButtonModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
@@ -160,6 +163,64 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         /* Render Passenger View */
         flightOrderDetailPassenger.setData(data.passengers)
         flightOrderDetailPassenger.buildView()
+
+        /* Render Insurance View */
+        flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
+            override fun onTopButtonClicked() {
+//                TODO("Not yet implemented")
+            }
+
+            override fun onBottomButtonClicked() {
+//                TODO("Not yet implemented")
+            }
+
+        }
+        flightOrderDetailInsurance.setData(
+                getString(R.string.flight_order_detail_insurance_title_label),
+                FlightOrderDetailButtonModel(
+                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
+                        getString(R.string.flight_order_detail_insurance_trip_label),
+                        "",
+                        true
+                ),
+                FlightOrderDetailButtonModel(
+                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
+                        getString(R.string.flight_order_detail_insurance_cancel_label),
+                        "",
+                        false
+                )
+        )
+        flightOrderDetailInsurance.buildView()
+
+
+        /* Render Web Check In View */
+        flightOrderDetailCheckIn.listener = object : FlightOrderDetailButtonsView.Listener {
+            override fun onTopButtonClicked() {
+//                TODO("Not yet implemented")
+            }
+
+            override fun onBottomButtonClicked() {
+//                TODO("Not yet implemented")
+            }
+
+        }
+        flightOrderDetailCheckIn.setData(
+                getString(R.string.flight_order_detail_check_in_title_label),
+                FlightOrderDetailButtonModel(
+                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_web_check_in),
+                        getString(R.string.flight_order_detail_check_in_label),
+                        getString(R.string.flight_order_detail_check_in_description),
+                        true
+                ),
+                FlightOrderDetailButtonModel(
+                        MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_cancellation),
+                        getString(R.string.flight_label_cancel_ticket),
+                        getString(R.string.flight_order_detail_cancel_description),
+                        true
+                )
+        )
+        flightOrderDetailCheckIn.buildView()
+
 
         hideLoading()
     }
