@@ -163,9 +163,7 @@ class ShipmentPresenterChangeShippingAddressTest {
     @Test
     fun changeShippingAddressError_ShouldShowError() {
         // Given
-        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
-                .success(false)
-                .build())
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
         presenter.changeShippingAddress(RecipientAddressModel(), false, false, false)
