@@ -13,12 +13,11 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val title: String
     val subtitle: String
     val tooltip: TooltipUiModel?
-    val url: String
     val appLink: String
     val dataKey: String
     val ctaText: String
     var data: T?
-    val impressHolder: ImpressHolder
+    var impressHolder: ImpressHolder
     var isLoaded: Boolean
     var isLoading: Boolean
     var isFromCache: Boolean

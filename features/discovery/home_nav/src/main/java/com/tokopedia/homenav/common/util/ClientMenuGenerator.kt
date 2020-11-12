@@ -8,7 +8,7 @@ import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
 
-class ClientMenuGenerator(val context: Context) {
+class ClientMenuGenerator(val context: Context, val isLoggedIn: Boolean = false) {
     companion object {
         val ID_WISHLIST_MENU = 901
         val ID_FAVORITE_SHOP = 902
@@ -56,7 +56,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_WISHLIST_MENU,
                 srcIconId = IconUnify.HEART,
                 itemTitle = context.getString(R.string.menu_user_menu_wishlist),
-                applink = ApplinkConst.NEW_WISHLIST,
+                applink = ApplinkConst.NEW_WISHLIST.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -67,7 +67,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_FAVORITE_SHOP,
                 srcIconId = IconUnify.SHOP_FAVORITE,
                 itemTitle = context.getString(R.string.menu_user_menu_favorite_shop),
-                applink = ApplinkConst.FAVORITE,
+                applink = ApplinkConst.FAVORITE.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -78,7 +78,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_RECENT_VIEW,
                 srcIconId = IconUnify.CLOCK,
                 itemTitle = context.getString(R.string.menu_user_menu_recent_view),
-                applink = ApplinkConst.RECENT_VIEW,
+                applink = ApplinkConst.RECENT_VIEW.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -89,7 +89,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_SUBSCRIPTION,
                 srcIconId = IconUnify.BILL,
                 itemTitle = context.getString(R.string.menu_user_menu_subscription),
-                applink = APPLINK_MY_BILLS,
+                applink = APPLINK_MY_BILLS.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -100,7 +100,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_COMPLAIN,
                 srcIconId = IconUnify.COMPLAINT,
                 itemTitle = context.getString(R.string.menu_user_menu_complain),
-                applink = APPLINK_COMPLAIN,
+                applink = APPLINK_COMPLAIN.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -111,7 +111,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_TOKOPEDIA_CARE,
                 srcIconId = IconUnify.CALL_CENTER,
                 itemTitle = context.getString(R.string.menu_user_menu_tokopedia_care),
-                applink = ApplinkConst.CONTACT_US_NATIVE,
+                applink = ApplinkConst.CONTACT_US_NATIVE.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -133,7 +133,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_ALL_TRANSACTION,
                 srcIconId = IconUnify.LIST_TRANSACTION,
                 itemTitle = context.getString(R.string.menu_transaction_menu_all_transaction),
-                applink = ApplinkConst.OMS_ORDER_DETAIL,
+                applink = ApplinkConst.OMS_ORDER_DETAIL.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -144,7 +144,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_TICKET,
                 srcIconId = IconUnify.TICKET_ACTIVE,
                 itemTitle = context.getString(R.string.menu_transaction_menu_ticket),
-                applink = APPLINK_TICKET,
+                applink = APPLINK_TICKET.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -155,7 +155,7 @@ class ClientMenuGenerator(val context: Context) {
                 id = ID_REVIEW,
                 srcIconId = IconUnify.STAR,
                 itemTitle = context.getString(R.string.menu_transaction_menu_review),
-                applink = ApplinkConst.REPUTATION,
+                applink = ApplinkConst.REPUTATION.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )
@@ -166,7 +166,15 @@ class ClientMenuGenerator(val context: Context) {
                 title = context.getString(R.string.menu_user_menu_shop_ticker_title),
                 description = context.getString(R.string.menu_user_menu_shop_ticker_description),
                 tickerType = Ticker.TYPE_ANNOUNCEMENT,
-                applink = ApplinkConst.CREATE_SHOP
+                applink = ApplinkConst.CREATE_SHOP.needLoginValidation()
         )
+    }
+
+    private fun String.needLoginValidation(): String {
+        return if (isLoggedIn) {
+            this
+        } else {
+            ApplinkConst.LOGIN
+        }
     }
 }

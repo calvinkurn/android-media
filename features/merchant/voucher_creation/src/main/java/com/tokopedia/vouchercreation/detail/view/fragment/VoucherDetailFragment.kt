@@ -503,7 +503,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
 
             if (status == VoucherStatusConst.ONGOING) {
                 voucherDetailInfoList.addAll(listOf(
-                        UsageProgressUiModel(type, quota, remainingQuota, bookedQuota),
+                        UsageProgressUiModel(type, quota, confirmedQuota, bookedQuota),
                         DividerUiModel(DividerUiModel.THICK),
                         getOngoingTipsSection(isPublic)
                 ))
@@ -512,7 +512,7 @@ class VoucherDetailFragment : BaseDetailFragment() {
             if (status == VoucherStatusConst.ENDED) {
                 voucherDetailInfoList.add(
                         // pass empty string for now as product requirement changed temporarily
-                        PromoPerformanceUiModel("", bookedQuota, quota)
+                        PromoPerformanceUiModel("", confirmedQuota, quota)
                 )
             }
 

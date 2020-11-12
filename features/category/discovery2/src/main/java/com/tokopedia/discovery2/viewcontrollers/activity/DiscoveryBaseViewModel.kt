@@ -25,7 +25,7 @@ abstract class DiscoveryBaseViewModel : LifecycleObserver {
         }
     }
 
-    fun onDetachToViewHolder() {
+    open fun onDetachToViewHolder() {
 
     }
 
