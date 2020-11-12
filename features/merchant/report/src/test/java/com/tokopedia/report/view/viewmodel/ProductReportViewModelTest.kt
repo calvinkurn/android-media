@@ -9,6 +9,7 @@ import com.tokopedia.report.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.lang.reflect.Type
@@ -26,6 +27,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         )
         viewModel = ProductReportViewModel(graphqlRepository, anyString(), TestCoroutineDispatchers)
         onGetReportReasonSuccess_thenReturn(expectedResponse)
+        verifyUseCaseCalled()
         verifyGetReportReasonSuccess(Success(expectedResponse.getSuccessData<ProductReportReason.Response>().data))
     }
 
@@ -34,6 +36,7 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
         val expectedError = Throwable()
         viewModel = ProductReportViewModel(graphqlRepository, anyString(), TestCoroutineDispatchers)
         onGetReportReasonError_thenReturn(expectedError)
+        verifyUseCaseCalled()
         verifyGetReportReasonFails(Fail(expectedError))
     }
 
@@ -43,6 +46,10 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
 
     private fun onGetReportReasonError_thenReturn(throwable: Throwable) {
         coEvery { graphqlRepository.getReseponse(any()) } throws throwable
+    }
+
+    private fun verifyUseCaseCalled() {
+        coVerify { graphqlRepository.getReseponse(any()) }
     }
 
     private fun verifyGetReportReasonSuccess(success: Success<List<ProductReportReason>>) {
