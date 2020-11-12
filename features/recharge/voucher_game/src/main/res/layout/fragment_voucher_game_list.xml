@@ -12,9 +12,10 @@
         android:layout_height="wrap_content"
         app:theme="@style/Toolbar.White">
 
-        <com.tokopedia.vouchergame.list.view.widget.VoucherGameSearchInputView
+        <com.tokopedia.unifycomponents.SearchBarUnify
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
+            app:search_bar_show_icon="false"
             android:layout_height="wrap_content"
             app:siv_search_hint="@string/vg_search_bar_label"
             app:layout_scrollFlags="scroll|enterAlways" />
