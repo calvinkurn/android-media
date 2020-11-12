@@ -9,7 +9,6 @@ import android.os.Build
 import android.view.View
 import android.webkit.*
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
