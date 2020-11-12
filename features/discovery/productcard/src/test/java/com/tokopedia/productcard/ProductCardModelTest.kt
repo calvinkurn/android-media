@@ -1,5 +1,6 @@
 package com.tokopedia.productcard
 
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.ProductCardModel.LabelGroupVariant
 import com.tokopedia.productcard.utils.LIGHT_GREY
 import com.tokopedia.productcard.utils.TYPE_VARIANT_COLOR
@@ -33,7 +34,7 @@ internal class ProductCardModelTest {
             givenLabelGroupVariant: List<LabelGroupVariant>,
             expectedRenderedLabelGroupVariant: List<LabelGroupVariant>
     ) {
-        val productCardModel = ProductCardModel(labelGroupVariant = givenLabelGroupVariant)
+        val productCardModel = ProductCardModel(labelGroupVariantList = givenLabelGroupVariant)
         val actualRenderedLabelGroupVariant = productCardModel.getRenderedLabelGroupVariantList()
 
         assertThat(actualRenderedLabelGroupVariant, `is`(expectedRenderedLabelGroupVariant))
@@ -163,7 +164,50 @@ internal class ProductCardModelTest {
                 labelVariantSize2,
                 labelVariantSize3,
                 labelVariantSize4,
-                labelVariantCustom
+                LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = (labelVariantCustom.title.toIntOrZero() + 1).toString())
+        )
+
+        `Test rendered label group variant`(labelGroupVariant, expectedRenderedLabelGroupVariant)
+    }
+
+    @Test
+    fun `getRenderedLabelGroupVariant should create new custom variant when there are hidden labels`() {
+        val labelGroupVariant = listOf(
+                labelVariantSize1,
+                labelVariantSize2,
+                labelVariantSize3,
+                labelVariantSize4,
+                labelVariantSize7
+        )
+
+        val expectedRenderedLabelGroupVariant = listOf(
+                labelVariantSize1,
+                labelVariantSize2,
+                labelVariantSize3,
+                labelVariantSize4,
+                LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = 1.toString())
+        )
+
+        `Test rendered label group variant`(labelGroupVariant, expectedRenderedLabelGroupVariant)
+    }
+
+    @Test
+    fun `getRenderedLabelGroupVariant should handle custom variant with non-integer title`() {
+        val labelGroupVariant = listOf(
+                labelVariantSize1,
+                labelVariantSize2,
+                labelVariantSize3,
+                labelVariantSize4,
+                labelVariantSize7,
+                LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "notinteger")
+        )
+
+        val expectedRenderedLabelGroupVariant = listOf(
+                labelVariantSize1,
+                labelVariantSize2,
+                labelVariantSize3,
+                labelVariantSize4,
+                LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = 1.toString())
         )
 
         `Test rendered label group variant`(labelGroupVariant, expectedRenderedLabelGroupVariant)

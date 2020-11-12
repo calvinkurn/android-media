@@ -1463,11 +1463,11 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
 }
 
 private fun testLabelVariantColor(): ProductCardModelMatcher {
-    val labelColor1 = LabelGroupVariant(typeVariant = "color", hexColor = "#ff0016")
-    val labelColor2 = LabelGroupVariant(typeVariant = "color", hexColor = "#bf00ff")
-    val labelColor3 = LabelGroupVariant(typeVariant = "color", hexColor = "#ffffff")
-    val labelColor4 = LabelGroupVariant(typeVariant = "color", hexColor = "#000000")
-    val labelCustom = LabelGroupVariant(typeVariant = "custom", title = "2")
+    val labelColor1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ff0016")
+    val labelColor2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#bf00ff")
+    val labelColor3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#ffffff")
+    val labelColor4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_COLOR, hexColor = "#000000")
+    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
 
     val productCardModel = ProductCardModel(
             productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
@@ -1482,7 +1482,7 @@ private fun testLabelVariantColor(): ProductCardModelMatcher {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
             hasThreeDots = true,
-            labelGroupVariant = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelCustom)
+            labelGroupVariantList = listOf(labelColor1, labelColor2, labelColor3, labelColor4, labelCustom)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
@@ -1508,11 +1508,11 @@ private fun testLabelVariantColor(): ProductCardModelMatcher {
 }
 
 private fun testLabelVariantSize(): ProductCardModelMatcher {
-    val labelSize1 = LabelGroupVariant(typeVariant = "size", title = "S", type = LIGHT_GREY)
-    val labelSize2 = LabelGroupVariant(typeVariant = "size", title = "M", type = LIGHT_GREY)
-    val labelSize3 = LabelGroupVariant(typeVariant = "size", title = "XXXL", type = LIGHT_GREY)
-    val labelSize4 = LabelGroupVariant(typeVariant = "size", title = "All size", type = LIGHT_GREY)
-    val labelCustom = LabelGroupVariant(typeVariant = "custom", title = "2")
+    val labelSize1 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "S", type = LIGHT_GREY)
+    val labelSize2 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "M", type = LIGHT_GREY)
+    val labelSize3 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "XXXL", type = LIGHT_GREY)
+    val labelSize4 = LabelGroupVariant(typeVariant = TYPE_VARIANT_SIZE, title = "All size", type = LIGHT_GREY)
+    val labelCustom = LabelGroupVariant(typeVariant = TYPE_VARIANT_CUSTOM, title = "2")
 
     val productCardModel = ProductCardModel(
             productName = "Maximum Info and Label with two lines product name on any view of any screensize no matter what...... blablabla blablabla blablabla blablabla blablabla",
@@ -1527,7 +1527,7 @@ private fun testLabelVariantSize(): ProductCardModelMatcher {
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
             hasThreeDots = true,
-            labelGroupVariant = listOf(labelSize1, labelSize2, labelSize3, labelSize4, labelCustom)
+            labelGroupVariantList = listOf(labelSize1, labelSize2, labelSize3, labelSize4, labelCustom)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {

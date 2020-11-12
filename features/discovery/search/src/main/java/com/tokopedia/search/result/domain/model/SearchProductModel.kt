@@ -352,6 +352,10 @@ data class SearchProductModel(
             @Expose
             val labelGroupList: List<ProductLabelGroup> = listOf(),
 
+            @SerializedName("labelGroupVariant")
+            @Expose
+            val labelGroupVariantList: List<ProductLabelGroupVariant> = listOf(),
+
             @SerializedName("badges")
             @Expose
             val badgeList: List<ProductBadge> = listOf(),
@@ -450,6 +454,24 @@ data class SearchProductModel(
             @SerializedName("url")
             @Expose
             val url: String = ""
+    )
+
+    data class ProductLabelGroupVariant(
+           @SerializedName("title")
+           @Expose
+           val title: String = "",
+
+           @SerializedName("type")
+           @Expose
+           val type: String = "",
+
+           @SerializedName("type_variant")
+           @Expose
+           val typeVariant: String = "",
+
+           @SerializedName("hex_color")
+           @Expose
+           val hexColor: String = ""
     )
 
     data class ProductBadge(
