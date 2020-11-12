@@ -398,9 +398,9 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.colorSheetTitle));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setAllCaps(false);
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), R.color.tkpd_main_green));
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setAllCaps(false);
     }
 }
