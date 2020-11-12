@@ -259,4 +259,35 @@ class OrderSummaryPageActivityCreditCardTest {
             )
         }
     }
+
+    @Test
+    fun happyFlow_DebitCard() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_DEBIT_CARD_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallment(null)
+
+            assertPayment("Rp116.725", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.725",
+                        totalPrice = "Rp116.725"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
 }
