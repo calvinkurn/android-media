@@ -237,6 +237,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
+    private var toasterWishlistText = ""
 
     private val BUNDLE = "bundle"
 
@@ -957,6 +958,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (productP3value != null) {
                 if (isActive) {
                     productInfo?.basic?.productID?.let {
+                        toasterWishlistText = getString(R.string.toaster_success_remove_wishlist)
                         viewModel.removeWishList(it,
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                                 onErrorRemoveWishList = this::onErrorRemoveWishList)
@@ -965,6 +967,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
                 } else {
                     productInfo?.basic?.productID?.let {
+                        toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_fab)
                         addWishList()
                         productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
@@ -2117,7 +2120,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {
-        view?.showToasterSuccess(getString(R.string.msg_success_remove_wishlist))
+        view?.showToasterSuccess(toasterWishlistText)
         pdpUiUpdater?.updateWishlistData(false)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         sendIntentResultWishlistChange(productId ?: "", false)
@@ -2132,7 +2135,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessAddWishlist(productId: String?) {
-        view?.showToasterSuccess(getString(R.string.msg_success_add_wishlist))
+        view?.showToasterSuccess(toasterWishlistText)
         pdpUiUpdater?.updateWishlistData(true)
         dynamicAdapter.notifyBasicContentWithPayloads(pdpUiUpdater?.basicContentMap, ProductDetailConstant.PAYLOAD_WISHLIST)
         DynamicProductDetailTracking.Branch.eventBranchAddToWishlist(viewModel.getDynamicProductInfoP1, (UserSession(activity)).userId, pdpUiUpdater?.productInfoMap?.data?.find { content ->
@@ -2404,6 +2407,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             if (viewModel.buttonActionType == ProductDetailConstant.REMIND_ME_BUTTON) {
                 addWishList()
+                toasterWishlistText = getString(R.string.toaster_success_add_wishlist_from_button)
                 return@let
             }
 
@@ -3083,8 +3087,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun isProductOos(): Boolean {
         return pdpUiUpdater?.tickerInfoMap?.let {
-            (it.isOos() && !it.isProductCampaign() && it.isProductInactive()) ||
-                    (it.isProductInactive() && !it.isOos())
+            it.isOos() || it.isProductInactive()
         } ?: false
     }
 
