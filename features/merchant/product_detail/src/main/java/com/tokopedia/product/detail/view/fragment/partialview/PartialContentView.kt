@@ -81,7 +81,7 @@ class PartialContentView(private val view: View,
     }
 
     fun renderShareButton(componentTrackDataModel: ComponentTrackDataModel?) = with(view) {
-        if (listener.isNavOld()) {
+        if (!listener.isNavOld()) {
             share_product_pdp.show()
             share_product_pdp.setOnClickListener {
                 listener.shareProductFromContent(componentTrackDataModel)
