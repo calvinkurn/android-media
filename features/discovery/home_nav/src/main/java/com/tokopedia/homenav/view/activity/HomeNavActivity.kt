@@ -1,41 +1,86 @@
 package com.tokopedia.homenav.view.activity
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.transition.Slide
+import android.transition.Transition
+import android.view.Gravity
+import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.homenav.R
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 
-class HomeNavActivity: BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
+
+class HomeNavActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setAnimation()
+        setContentView(R.layout.activity_main_nav)
+        overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarColor(Color.WHITE)
         }
 
-        findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)?.let {
+        findViewById<Toolbar>(R.id.toolbar)?.let {
             setSupportActionBar(it)
             it.navigationIcon = getResDrawable(R.drawable.ic_close_x_black)
         }
         setupNavigation()
     }
 
-    override fun getLayoutRes() = R.layout.activity_main_nav
+    override fun finish() {
+        super.finish()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.transitionBackgroundFadeDuration = 400
+        }
+        overridePendingTransition(R.anim.nav_fade_in, R.anim.slide_bottom)
+    }
 
+    private fun setAnimation() {
+        if (Build.VERSION.SDK_INT > 20) {
+            val slide = Slide().apply {
+                slideEdge = Gravity.BOTTOM
+                duration = 200
+                interpolator = FastOutSlowInInterpolator()
+                addListener(object : Transition.TransitionListener{
+                    override fun onTransitionStart(p0: Transition?) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            setStatusBarColor(Color.TRANSPARENT)
+                        }
+                    }
 
-    override fun getParentViewResourceID(): Int = R.id.fragment_container
+                    override fun onTransitionEnd(p0: Transition?) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            setStatusBarColor(Color.WHITE)
+                        }
+                    }
 
-    fun setupNavigation() {
+                    override fun onTransitionCancel(p0: Transition?) {
+                    }
+
+                    override fun onTransitionPause(p0: Transition?) {
+                    }
+
+                    override fun onTransitionResume(p0: Transition?) {
+                    }
+                })
+            }
+//            window.exitTransition = slide
+//            window.enterTransition = slide
+
+        }
+    }
+
+    private fun setupNavigation() {
         val navController = findNavController(R.id.fragment_container)
         val listener = AppBarConfiguration.OnNavigateUpListener {
             navController.navigateUp()

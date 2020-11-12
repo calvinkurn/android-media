@@ -41,7 +41,7 @@ class GetCategoryGroupUseCase (
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setTypeClass(DynamicHomeIconEntity::class.java)
-        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+        graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
     }
 
     fun createParams(page: String){
