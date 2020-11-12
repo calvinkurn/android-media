@@ -38,6 +38,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
@@ -268,6 +269,16 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setPricing(Pricing pricing) {
+        // no-op
+    }
+
+    @Override
+    public void setDiscount(Discount discount) {
+        // no-op
+    }
+
+    @Override
+    public void setDiscountVisibility(int visibility) {
         // no-op
     }
 

@@ -60,6 +60,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
@@ -206,6 +207,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private String boughtDate;
     private Boolean isRequestedCancel;
     private String _helplink;
+    private View dividerDiscount;
+    private LinearLayout llDiscount;
 
     @Override
     protected String getScreenName() {
@@ -273,6 +276,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         recommendationList = view.findViewById(R.id.recommendation_list);
         recommendListTitle = view.findViewById(R.id.recommend_title);
         viewRecomendItems = view.findViewById(R.id.recommend_items);
+        dividerDiscount = view.findViewById(R.id.divider_discount);
+        llDiscount = view.findViewById(R.id.ll_info_discount);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
         setUpScrollChangeListener();
@@ -515,6 +520,25 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.END);
         infoValue.addView(doubleTextView);
+    }
+
+    @Override
+    public void setDiscount(Discount discount) {
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(discount.getLabel());
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_secondary_54));
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setBottomText(discount.getValue());
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setBottomGravity(Gravity.END);
+        infoValue.addView(doubleTextView);
+    }
+
+    @Override
+    public void setDiscountVisibility(int visibility) {
+        dividerDiscount.setVisibility(visibility);
+        llDiscount.setVisibility(visibility);
     }
 
     @Override

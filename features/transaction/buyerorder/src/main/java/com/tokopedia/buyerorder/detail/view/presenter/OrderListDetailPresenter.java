@@ -27,6 +27,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
@@ -538,6 +539,18 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         for (Pricing pricing : details.pricing()) {
             getView().setPricing(pricing);
         }
+
+        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            if (details.discounts() != null && details.discounts().size() > 0) {
+                getView().setDiscountVisibility(View.VISIBLE);
+                for (Discount discount : details.discounts()) {
+                    getView().setDiscount(discount);
+                }
+            } else {
+                getView().setDiscountVisibility(View.GONE);
+            }
+        }
+
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs(), details.getHelpLink());
 

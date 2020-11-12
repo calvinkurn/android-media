@@ -49,6 +49,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.EntityPessenger;
@@ -339,6 +340,16 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         doubleTextView.setBottomTextSize(16);
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         infoValue.addView(doubleTextView);
+    }
+
+    @Override
+    public void setDiscount(Discount discount) {
+        // no-op
+    }
+
+    @Override
+    public void setDiscountVisibility(int visibility) {
+        // no-op
     }
 
     @Override
