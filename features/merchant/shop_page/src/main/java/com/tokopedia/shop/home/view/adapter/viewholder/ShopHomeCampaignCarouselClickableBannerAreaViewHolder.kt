@@ -13,7 +13,6 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import kotlinx.android.synthetic.main.item_shop_campaign_carousel_clickable_banner_area.view.*
 
 /**
