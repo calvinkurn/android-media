@@ -8,6 +8,7 @@ import com.tokopedia.user.session.UserSessionInterface
  * Created by mzennis on 13/07/20.
  * https://docs.google.com/spreadsheets/d/1efo8NsCI_ECqvd77pdy6F0J_053drVjmGbAb4hJOKlg/edit#gid=292707357
  * Row 8 - 69
+ * Save Live to VOD https://mynakama.tokopedia.com/datatracker/product/requestdetail/161
  */
 class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
 
@@ -571,8 +572,45 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     *
+     * Click save vod on Report Page
      */
+    fun clickSaveVodOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "save vod",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Click Delete vod on Report Page
+     */
+    fun clickDeleteVodOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "delete vod",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * View confirm on pop up delete on Report Page
+     */
+    fun viewConfirmDeleteOnReportPage(channelId: String) {
+        viewCustomGeneralEvent(
+                "confirm on pop up delete",
+                "- $channelId"
+        )
+    }
+
+    /**
+     * Click Delete on pop up delete on Report Page
+     */
+    fun clickDeleteOnPopupOnReportPage(channelId: String) {
+        clickGeneralEvent(
+                "delete on pop up delete",
+                "- $channelId"
+        )
+    }
+
     private fun viewGeneralEvent(action: String, label: String = "") {
         val eventAction = StringBuilder()
         eventAction.append(KEY_TRACK_VIEW)
