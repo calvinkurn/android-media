@@ -65,7 +65,6 @@ public class CMInAppManager implements CmInAppListener,
     //DialogHandlers
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
-    String TEMP_TAG = "GratifTag";
 
     static {
         inAppManager = new CMInAppManager();
@@ -125,14 +124,11 @@ public class CMInAppManager implements CmInAppListener,
         synchronized (lock) {
             if (canShowInApp(inAppDataList)) {
                 CMInApp cmInApp = inAppDataList.get(0);
-                Timber.d(TEMP_TAG + " in-app found for screen name=" + screenName + ",type=" + cmInApp.type);
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
                 showDialog(cmInApp);
                 dataConsumed(cmInApp);
                 sendAmplificationEventInAppRead(cmInApp);
-            } else {
-                Timber.d(TEMP_TAG + " NO in-app found for screen name=" + screenName);
             }
         }
     }

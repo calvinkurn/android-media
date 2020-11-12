@@ -86,10 +86,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID, object : GratificationPresenter.AbstractGratifPopupCallback() {
 
                 override fun onShow(dialog: DialogInterface) {
-
+                    //Do nothing
                 }
 
                 override fun onDismiss(dialog: DialogInterface) {
+                    //Do nothing
                 }
 
                 override fun onIgnored(reason: Int) {

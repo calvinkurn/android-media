@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
@@ -38,17 +37,15 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     private LocalBroadcastManager localBroadcastManager;
     private UserSessionInterface userSession;
 
-    String TAG = " GratifTag";
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d("NOOB","onMessageReceived");
         mContext = getApplicationContext();
         localBroadcastManager = LocalBroadcastManager.getInstance(mContext);
         userSession = new UserSession(this);
 
         Bundle data = convertMap(remoteMessage);
-        Timber.d(TAG+" " + data.toString());
+        Timber.d("FCM " + data.toString());
 
         if (appNotificationReceiver == null) {
             appNotificationReceiver = createInstance(mContext);

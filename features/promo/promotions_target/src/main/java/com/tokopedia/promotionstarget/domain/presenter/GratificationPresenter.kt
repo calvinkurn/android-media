@@ -108,9 +108,7 @@ class GratificationPresenter @Inject constructor(val context: Context) {
                                     closeCurrentActivity: Boolean) {
 
         val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
-        Timber.d("$TAG GRATIF ENGINE API START with=$map")
         val notifResponse = notificationUseCase.getResponse(map)
-        Timber.d("$TAG GRATIF ENGINE API END with=$notifResponse")
         val reason = notifResponse.response?.resultStatus?.code
         if (reason == GratifResultStatus.SUCCESS) {
             val code = notifResponse.response.promoCode
@@ -248,6 +246,7 @@ class GratificationPresenter @Inject constructor(val context: Context) {
                 }
             }
         } catch (th: Throwable) {
+            Timber.e(th)
         }
     }
 
@@ -257,6 +256,7 @@ class GratificationPresenter @Inject constructor(val context: Context) {
                 job = SupervisorJob()
             }
         } catch (th: Throwable) {
+            Timber.e(th)
         }
     }
 

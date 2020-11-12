@@ -18,17 +18,6 @@ class PushIntentHandler {
         return isHandled
     }
 
-//    fun isPushIntentHandled(bundle: Bundle?): Boolean {
-//        var isHandled = false
-//        for (pushHandler in getPushIntentHandlerList()) {
-//            val tempIsHandled = pushHandler.isPushIntentHandled(bundle)
-//            if (tempIsHandled) {
-//                isHandled = tempIsHandled
-//            }
-//        }
-//        return isHandled
-//    }
-
     private fun getPushIntentHandlerList() = CmEventListener.pushIntentContractList
 }
 
