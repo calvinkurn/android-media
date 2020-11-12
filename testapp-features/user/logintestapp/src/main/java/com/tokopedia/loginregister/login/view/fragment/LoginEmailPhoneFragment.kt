@@ -36,7 +36,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
-import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -502,7 +501,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            setPOCFingerprint()
             presenter.loginEmail(email, passwordEditText.text.toString())
             activity?.let {
                 KeyboardHandler.hideSoftKeyboard(it)
@@ -972,20 +970,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 presenter.getTickerInfo()
             }
         }
-    }
-
-    private fun setPOCFingerprint() {
-        val visorInstance = VisorFingerprintInstance()
-        var visorToken = ""
-        visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
-            override fun onSuccessInitToken(token: String) {
-                visorToken = token
-            }
-
-            override fun onFailedInitToken(error: String) {
-
-            }
-        })
     }
 
     companion object {
