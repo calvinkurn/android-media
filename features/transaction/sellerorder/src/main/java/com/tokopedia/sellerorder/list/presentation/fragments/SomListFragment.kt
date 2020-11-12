@@ -962,7 +962,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun setupListeners() {
         tickerSomList.setDescriptionClickEvent(this)
         globalErrorSomList.setActionClickListener {
-            globalErrorSomList.gone()
+            scrollViewErrorState.gone()
             loadInitialData()
         }
 
@@ -1159,7 +1159,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         globalErrorSomList.setType(errorType)
         sortFilterSomList.invisible()
-        globalErrorSomList.show()
+        scrollViewErrorState.show()
         errorToaster?.dismiss()
     }
 
@@ -1284,7 +1284,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun refreshOrderList() {
-        globalErrorSomList.gone()
+        scrollViewErrorState.gone()
         isLoadingInitialData = true
         loadOrderList()
     }
