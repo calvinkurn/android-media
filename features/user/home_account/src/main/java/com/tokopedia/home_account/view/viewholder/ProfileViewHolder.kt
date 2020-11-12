@@ -65,7 +65,6 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
         itemView.home_account_member_layout_rv?.adapter = adapter
         itemView.home_account_member_layout_rv?.setHasFixedSize(true)
         val layoutManager = SpanningLinearLayoutManager(itemView.home_account_member_layout_rv?.context, LinearLayoutManager.HORIZONTAL, false)
-
         val verticalDivider = ContextCompat.getDrawable(itemView.context, R.drawable.vertical_divider)
         val dividerItemDecoration = DividerItemDecoration(itemView.home_account_member_layout_rv.context,
                 layoutManager.orientation)
@@ -77,6 +76,7 @@ class ProfileViewHolder(itemView: View, val listener: HomeAccountUserListener): 
         itemView.home_account_member_layout_rv.addItemDecoration(dividerItemDecoration)
         itemView.home_account_member_layout_rv?.layoutManager = layoutManager
 
+        itemView.home_account_member_layout_rv?.isLayoutFrozen = true
         itemView.home_account_member_layout_member_forward?.setOnClickListener {
             listener.onSettingItemClicked(
                     CommonDataView(applink = ApplinkConst.TOKOPOINTS)

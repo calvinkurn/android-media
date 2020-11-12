@@ -50,7 +50,7 @@ class CommonViewHolder(itemView: View, val listener: HomeAccountUserListener): B
                     account_user_item_common_body?.text = common.body
                     account_user_item_common_switch?.isChecked = common.isChecked
                     account_user_item_common_switch?.setOnCheckedChangeListener { _, isChecked ->
-                        listener.onSwitchChanged(common, isChecked)
+                        listener.onSwitchChanged(common, isChecked, account_user_item_common_switch)
                     }
                 }
                 else -> {

@@ -1,33 +1,33 @@
 <resources>
     <string name="home_account_title">Akun Saya</string>
 
-    <string name="account_home_clear_cache_warning">Lanjut bersihkan cache?</string>
-    <string name="account_home_clear_cache_message">Kami akan menutup aplikasimu biar cache-nya bersih semua. Nanti buka Tokopedia lagi, ya!</string>
-    <string name="account_home_label_clear_cache_ok">Bersihkan Cache</string>
-    <string name="account_home_label_clear_cache_cancel">Batal</string>
+    <string name="new_home_account_clear_cache_warning">Lanjut bersihkan cache?</string>
+    <string name="new_home_account_clear_cache_message">Kami akan menutup aplikasimu biar cache-nya bersih semua. Nanti buka Tokopedia lagi, ya!</string>
+    <string name="new_home_account_label_clear_cache_ok">Bersihkan Cache</string>
+    <string name="new_home_account_label_clear_cache_cancel">Batal</string>
 
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
     <string name="error_bank_no_password_content">Silahkan buat kata sandi Tokopedia terlebih dahulu untuk menambah rekening.</string>
     <string name="error_no_password_yes">Buat kata sandi</string>
     <string name="error_no_password_no">Tutup</string>
 
-    <string name="account_home_label_logout">Keluar dari Tokopedia</string>
-    <string name="account_home_button_logout">Keluar</string>
-    <string name="account_home_label_logout_confirmation">Apakah Anda ingin keluar?</string>
-    <string name="account_home_label_cancel">Batal</string>
+    <string name="new_home_account_label_logout">Keluar dari Tokopedia</string>
+    <string name="new_home_account_button_logout">Keluar</string>
+    <string name="new_home_account_label_logout_confirmation">Apakah Anda ingin keluar?</string>
+    <string name="new_home_account_label_cancel">Batal</string>
 
-    <string name="account_home_title_geolocation_alertdialog">Bagikan lokasimu ke Tokopedia?</string>
-    <string name="account_home_body_geolocation_alertdialog">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
+    <string name="new_home_account_title_geolocation_alertdialog">Bagikan lokasimu ke Tokopedia?</string>
+    <string name="new_home_account_body_geolocation_alertdialog">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
 
-    <string name="account_home_ok_geolocation_alertdialog">Bagikan Lokasi</string>
-    <string name="account_home_batal_geolocation_alertdialog">Batal</string>
+    <string name="new_home_account_ok_geolocation_alertdialog">Bagikan Lokasi</string>
+    <string name="new_home_account_batal_geolocation_alertdialog">Batal</string>
 
-    <string name="account_home_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
-    <string name="account_home_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
-    <string name="account_home_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
-    <string name="account_home_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
-    <string name="account_home_safe_mode_selected_dialog_positive_button">Aktifkan</string>
-    <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
+    <string name="new_home_account_safe_mode_selected_dialog_title">Aktifkan Safe Mode</string>
+    <string name="new_home_account_safe_mode_selected_dialog_msg">Fitur ini akan otomatis menyaring hasil pencarian sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_msg">Hasil pencarian tidak disaring otomais sesuai kebijakan dan batasan usia pengguna</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_title">Nonaktifkan Safe Mode</string>
+    <string name="new_home_account_safe_mode_selected_dialog_positive_button">Aktifkan</string>
+    <string name="new_home_account_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
 
 
     <!-- Menu Setting Section Title -->
@@ -54,6 +54,7 @@
     <string name="menu_account_title_sign_out">Keluar Akun</string>
     <string name="menu_account_title_dev_options">Developer Options</string>
     <string name="menu_account_title_feedback_form">Feedback Form</string>
+    <string name="menu_account_old_account">Switch to old Fragment</string>
 
     <!-- Menu Setting Item Description -->
     <string name="menu_account_desc_address">Atur alamat pengiriman belanjaan</string>
@@ -67,7 +68,7 @@
     <string name="menu_account_desc_safe_mode">Hasil pencarian aman untuk segala usia</string>
     <string name="menu_account_desc_clear_cache">Solusi cepat untuk atasi masalah aplikasi</string>
 
-    <string name="account_home_go_to_wishlist">Lihat Wishlist</string>
-    <string name="account_home_error_no_internet_connection">Tidak ada koneksi internet</string>
+    <string name="new_home_account_go_to_wishlist">Lihat Wishlist</string>
+    <string name="new_home_account_error_no_internet_connection">Tidak ada koneksi internet</string>
 
 </resources>

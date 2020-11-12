@@ -281,6 +281,7 @@ object AccountConstants {
         const val SETTING_ABOUT_US = 36
         const val SETTING_NOTIFICATION = 38
         const val SETTING_SECURITY = 39
+        const val SETTING_OLD_ACCOUNT = 40
 
         const val PLAYSTORE_URL = "https://play.google.com/store/apps/details?id="
         const val RESCENTER_SELLER = "https://m.tokopedia.com/resolution-center/inbox/seller"

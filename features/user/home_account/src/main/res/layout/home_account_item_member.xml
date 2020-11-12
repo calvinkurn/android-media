@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="@dimen/unify_space_8"
     xmlns:tools="http://schemas.android.com/tools"
     android:gravity="center"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -11,8 +11,8 @@
     <ImageView
         tools:src="@drawable/ic_account_cc"
         android:id="@+id/home_account_item_member_icon"
-        android:layout_width="28dp"
-        android:layout_height="28dp"/>
+        android:layout_width="@dimen/home_account_dp_28"
+        android:layout_height="@dimen/home_account_dp_28"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/home_account_item_member_subtitle"

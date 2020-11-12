@@ -26,6 +26,7 @@ import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
+import com.tokopedia.home.account.presentation.activity.AccountHomeActivity;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
@@ -109,13 +110,15 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void setToolbar(View view) {
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
+        Toolbar toolbar = view.findViewById(R.id.toolbar_account);
+
+//        View statusBarBackground = view.findViewById(R.id.status_bar_bg);
         if (getActivity() != null) {
-            statusBarBackground.getLayoutParams().height =
-                    DisplayMetricUtils.getStatusBarHeight(getActivity());
+//            statusBarBackground.getLayoutParams().height =
+//                    DisplayMetricUtils.getStatusBarHeight(getActivity());
         }
         TextView title = toolbar.findViewById(R.id.toolbar_title);
+
         title.setText(getString(R.string.title_account));
         menuNotification = toolbar.findViewById(R.id.action_notification);
         menuInbox = toolbar.findViewById(R.id.action_inbox);
@@ -139,16 +142,19 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 
+        view.findViewById(R.id.action_back).setOnClickListener(v -> {
+            getActivity().onBackPressed();
+        });
         //status bar background compability
-        statusBarBackground.getLayoutParams().height =
-                DisplayMetricUtils.getStatusBarHeight(getActivity());
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            statusBarBackground.setVisibility(View.INVISIBLE);
-        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            statusBarBackground.setVisibility(View.VISIBLE);
-        } else {
-            statusBarBackground.setVisibility(View.GONE);
-        }
+//        statusBarBackground.getLayoutParams().height =
+//                DisplayMetricUtils.getStatusBarHeight(getActivity());
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            statusBarBackground.setVisibility(View.INVISIBLE);
+//        } else if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+//            statusBarBackground.setVisibility(View.VISIBLE);
+//        } else {
+//            statusBarBackground.setVisibility(View.GONE);
+//        }
 
         setHasOptionsMenu(true);
     }

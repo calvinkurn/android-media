@@ -12,7 +12,7 @@ data class CommonDataView(
         val type: Int = 1,
         val applink: String = "",
         val id: Int = 0,
-        val isChecked: Boolean = false,
+        var isChecked: Boolean = false,
         var endText: String = "",
         val urlIcon: String = ""
 )

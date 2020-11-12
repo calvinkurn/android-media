@@ -1,7 +1,11 @@
 package com.tokopedia.home_account
 
+import android.Manifest
+import android.app.Activity
 import android.content.Context
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.PermissionCheckerHelper.PermissionCheckListener
 import javax.inject.Inject
 
 /**
@@ -20,4 +24,7 @@ class PermissionChecker @Inject constructor(val context: Context, val permission
         return false
     }
 
+    fun askLocationPermission(activity: FragmentActivity, listener: PermissionCheckListener){
+        permissionCheckerHelper.checkPermissions(activity, arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION), listener, "")
+    }
 }

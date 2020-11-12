@@ -28,7 +28,7 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
                 CommonDataView(applink = ApplinkConstInternalGlobal.PAYMENT_SETTING, title = context?.getString(R.string.menu_account_title_instant_payment), body = context?.getString(R.string.menu_account_desc_instant_payment), type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_card),
                 CommonDataView(applink = ApplinkConstInternalMarketplace.PREFERENCE_LIST, title = context?.getString(R.string.menu_account_title_quick_buy), body = context?.getString(R.string.menu_account_desc_quick_buy), type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_quick_buy),
                 CommonDataView(applink = ApplinkConstInternalGlobal.ACCOUNT_SETTING, title = context?.getString(R.string.menu_account_title_security), body = context?.getString(R.string.menu_account_desc_security), type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_lock, id = AccountConstants.SettingCode.SETTING_SECURITY),
-                CommonDataView(applink = ApplinkConst.NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_ring, id = AccountConstants.SettingCode.SETTING_NOTIFICATION)
+                CommonDataView(applink = ApplinkConst.SETTING_NOTIFICATION, title = context?.getString(R.string.menu_account_title_notification), body = context?.getString(R.string.menu_account_desc_notification), type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_ring, id = AccountConstants.SettingCode.SETTING_NOTIFICATION)
         ), isExpanded = true)
     }
 
@@ -58,7 +58,9 @@ class StaticMenuGenerator @Inject constructor(val context: Context) {
     fun generateDeveloperOptionsSettingMenu(): SettingDataView {
         return  SettingDataView(context.getString(R.string.menu_account_section_title_developer), mutableListOf(
                 CommonDataView(title = context.getString(R.string.menu_account_title_dev_options), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_toped, id = AccountConstants.SettingCode.SETTING_DEV_OPTIONS),
-                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_toped, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM))
-                , showArrowDown = true)
+                CommonDataView(title = context.getString(R.string.menu_account_title_feedback_form), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_toped, id = AccountConstants.SettingCode.SETTING_FEEDBACK_FORM),
+                CommonDataView(title = context.getString(R.string.menu_account_old_account), body = "", type = CommonViewHolder.TYPE_WITHOUT_BODY, icon = R.drawable.ic_account_toped, id = AccountConstants.SettingCode.SETTING_OLD_ACCOUNT))
+
+        , showArrowDown = true)
     }
 }

@@ -10,26 +10,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-<!--    <androidx.appcompat.widget.AppCompatImageView-->
-<!--        android:id="@+id/account_user_item_profile_backdrop"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="0dp"-->
-<!--        android:paddingBottom="50dp"-->
-<!--        android:scaleType="centerCrop"-->
-<!--        android:translationY="-13dp"-->
-<!--        app:layout_constraintBottom_toBottomOf="@+id/home_account_profile_member_section"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.0"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent"-->
-<!--        app:layout_constraintVertical_bias="0.0"-->
-<!--        app:srcCompat="@drawable/ic_account_backdrop" />-->
-
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="@dimen/home_account_dp_46"
         android:id="@+id/account_user_item_profile_avatar"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="@dimen/home_account_dp_64"
+        android:layout_height="@dimen/home_account_dp_64"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_corner_radius="4" />
@@ -38,7 +23,7 @@
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="@dimen/home_account_dp_20"
         app:layout_constraintStart_toEndOf="@+id/account_user_item_profile_avatar"
         app:layout_constraintTop_toTopOf="@+id/account_user_item_profile_avatar"
         app:typographyType="heading_3"
@@ -50,7 +35,7 @@
         android:id="@+id/account_user_item_profile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="@dimen/home_account_dp_2"
         android:lineHeight="12px"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_name"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_name"
@@ -61,8 +46,8 @@
         android:id="@+id/account_user_item_profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:lineHeight="12px"
+        android:layout_marginTop="@dimen/home_account_dp_2"
+        android:lineHeight="12dp"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_phone"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
         app:typographyType="body_2"
@@ -70,11 +55,11 @@
 
     <ImageView
         android:id="@+id/account_user_item_profile_edit"
-        android:paddingLeft="20dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
+        android:paddingLeft="@dimen/home_account_dp_20"
+        android:paddingTop="@dimen/home_account_dp_12"
+        android:paddingBottom="@dimen/home_account_dp_12"
 
-        android:layout_marginRight="6dp"
+        android:layout_marginRight="@dimen/home_account_dp_6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="@+id/account_user_item_profile_email"
@@ -87,7 +72,7 @@
         layout="@layout/home_account_financial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/unify_space_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_email" />
@@ -97,7 +82,7 @@
         layout="@layout/home_account_member"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="@dimen/unify_space_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_account_profile_financial_section" />

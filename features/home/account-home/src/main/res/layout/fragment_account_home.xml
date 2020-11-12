@@ -2,7 +2,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:descendantFocusability="blocksDescendants"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,16 +14,15 @@
         android:background="@color/white"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <View
-            android:visibility="invisible"
-            app:layout_collapseMode="pin"
-            android:id="@+id/status_bar_bg"
-            android:background="@color/green_600"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"/>
+<!--        <View-->
+<!--            android:visibility="invisible"-->
+<!--            app:layout_collapseMode="pin"-->
+<!--            android:id="@+id/status_bar_bg"-->
+<!--            android:background="@color/green_600"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="25dp"/>-->
 
-        <include layout="@layout/toolbar_account"
-            app:layout_anchor="@id/status_bar_bg" />
+        <include layout="@layout/toolbar_account" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

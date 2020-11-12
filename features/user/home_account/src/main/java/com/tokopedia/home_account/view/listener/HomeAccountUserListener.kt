@@ -3,6 +3,7 @@ package com.tokopedia.home_account.view.listener
 import android.view.View
 import com.tokopedia.home_account.data.model.CommonDataView
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
 /**
  * Created by Yoris Prayogo on 16/10/20.
@@ -13,7 +14,7 @@ interface HomeAccountUserListener {
     fun onEditProfileClicked()
     fun onSettingItemClicked(item: CommonDataView)
     fun onMemberItemClicked(applink: String)
-    fun onSwitchChanged(item: CommonDataView, isActive: Boolean)
+    fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify)
     fun onItemViewBinded(position: Int, itemView: View)
     fun onProductRecommendationImpression(item: RecommendationItem, adapterPosition: Int)
     fun onProductRecommendationClicked(item: RecommendationItem, adapterPosition: Int)

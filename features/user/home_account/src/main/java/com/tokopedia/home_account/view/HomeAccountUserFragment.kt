@@ -71,9 +71,11 @@ import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScro
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.home_account_user_fragment.*
 import javax.inject.Inject
 
@@ -144,18 +146,6 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun setupObserver() {
-//        viewModel.settingData.observe(viewLifecycleOwner, Observer {
-//            addItem(it)
-//        })
-//        viewModel.settingApplication.observe(viewLifecycleOwner, Observer {
-//            addItem(it)
-//        })
-//        viewModel.aboutTokopedia.observe(viewLifecycleOwner, Observer {
-//            addItem(it)
-//            addItem(
-//            )
-//        })
-
         viewModel.buyerAccountDataData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetBuyerAccount(it.data)
@@ -320,13 +310,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun showDialogClearCache() {
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.account_home_clear_cache_warning))
-            dialog.setDescription(getString(R.string.account_home_clear_cache_message))
-            dialog.setPrimaryCTAText(getString(R.string.account_home_label_clear_cache_ok))
+            dialog.setTitle(getString(R.string.new_home_account_clear_cache_warning))
+            dialog.setDescription(getString(R.string.new_home_account_clear_cache_message))
+            dialog.setPrimaryCTAText(getString(R.string.new_home_account_label_clear_cache_ok))
             dialog.setPrimaryCTAClickListener {
                 clearCache()
             }
-            dialog.setSecondaryCTAText(getString(R.string.account_home_label_clear_cache_cancel))
+            dialog.setSecondaryCTAText(getString(R.string.new_home_account_label_clear_cache_cancel))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
             }
@@ -394,16 +384,21 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         mapSettingId(item)
     }
 
-    override fun onSwitchChanged(item: CommonDataView, isActive: Boolean) {
+    override fun onSwitchChanged(item: CommonDataView, isActive: Boolean, switch: SwitchUnify) {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_SHAKE_ID -> {
                 accountPref.saveSettingValue(AccountConstants.KEY.KEY_PREF_SHAKE, isActive)
             }
             AccountConstants.SettingCode.SETTING_GEOLOCATION_ID -> {
-                createAndShowLocationAlertDialog(isActive)
+                if(isActive) {
+                    switch.isChecked = false
+                    createAndShowLocationAlertDialog(isActive)
+                }
             }
             AccountConstants.SettingCode.SETTING_SAFE_SEARCH_ID -> {
-                createAndShowSafeModeAlertDialog(isActive)
+                if(isActive) {
+                    createAndShowSafeModeAlertDialog(isActive)
+                }
             }
             else -> {
             }
@@ -411,15 +406,15 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     }
 
     private fun createAndShowSafeModeAlertDialog(currentValue: Boolean) {
-        var dialogTitleMsg = getString(R.string.account_home_safe_mode_selected_dialog_title)
-        var dialogBodyMsg = getString(R.string.account_home_safe_mode_selected_dialog_msg)
-        var dialogPositiveButton = getString(R.string.account_home_safe_mode_selected_dialog_positive_button)
-        val dialogNegativeButton = getString(R.string.account_home_label_cancel)
+        var dialogTitleMsg = getString(R.string.new_home_account_safe_mode_selected_dialog_title)
+        var dialogBodyMsg = getString(R.string.new_home_account_safe_mode_selected_dialog_msg)
+        var dialogPositiveButton = getString(R.string.new_home_account_safe_mode_selected_dialog_positive_button)
+        val dialogNegativeButton = getString(R.string.new_home_account_label_cancel)
 
         if (currentValue) {
-            dialogTitleMsg = getString(R.string.account_home_safe_mode_unselected_dialog_title)
-            dialogBodyMsg = getString(R.string.account_home_safe_mode_unselected_dialog_msg)
-            dialogPositiveButton = getString(R.string.account_home_safe_mode_unselected_dialog_positive_button)
+            dialogTitleMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_title)
+            dialogBodyMsg = getString(R.string.new_home_account_safe_mode_unselected_dialog_msg)
+            dialogPositiveButton = getString(R.string.new_home_account_safe_mode_unselected_dialog_positive_button)
         }
 
         context?.run {
@@ -498,12 +493,13 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
             AccountConstants.SettingCode.SETTING_FEEDBACK_FORM -> if (GlobalConfig.isAllowDebuggingTools()) {
                 RouteManager.route(activity, ApplinkConst.FEEDBACK_FORM)
             }
-
+            AccountConstants.SettingCode.SETTING_OLD_ACCOUNT -> if (GlobalConfig.isAllowDebuggingTools()) {
+                RouteManager.route(activity, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
+            }
             AccountConstants.SettingCode.SETTING_OUT_ID -> {
                 homeAccountAnalytic.eventClickSetting(LOGOUT)
                 showDialogLogout()
             }
-
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 showDialogClearCache()
             }
@@ -533,14 +529,14 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.account_home_label_logout))
-            dialog.setDescription(getString(R.string.account_home_label_logout_confirmation))
-            dialog.setPrimaryCTAText(getString(R.string.account_home_button_logout))
+            dialog.setTitle(getString(R.string.new_home_account_label_logout))
+            dialog.setDescription(getString(R.string.new_home_account_label_logout_confirmation))
+            dialog.setPrimaryCTAText(getString(R.string.new_home_account_button_logout))
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 doLogout()
             }
-            dialog.setSecondaryCTAText(getString(R.string.account_home_label_cancel))
+            dialog.setSecondaryCTAText(getString(R.string.new_home_account_label_cancel))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
             }
@@ -557,19 +553,41 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
 
         context?.run {
             val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(getString(R.string.account_home_title_geolocation_alertdialog))
-                setDescription(getString(R.string.account_home_body_geolocation_alertdialog))
-                setPrimaryCTAText(getString(R.string.account_home_ok_geolocation_alertdialog))
+                setTitle(getString(R.string.new_home_account_title_geolocation_alertdialog))
+                setDescription(getString(R.string.new_home_account_body_geolocation_alertdialog))
+                setPrimaryCTAText(getString(R.string.new_home_account_ok_geolocation_alertdialog))
                 setPrimaryCTAClickListener {
-                    goToApplicationDetailActivity()
+                    askPermissionLocation()
+                    dismiss()
                 }
-                setSecondaryCTAText(getString(R.string.account_home_batal_geolocation_alertdialog))
+                setSecondaryCTAText(getString(R.string.new_home_account_batal_geolocation_alertdialog))
                 setSecondaryCTAClickListener {
                     dismiss()
                 }
             }
             dialog.show()
         }
+    }
+
+    private fun askPermissionLocation() {
+        activity?.run {
+            permissionChecker.askLocationPermission(this, object : PermissionCheckerHelper.PermissionCheckListener {
+                override fun onPermissionDenied(permissionText: String) {
+
+                }
+                override fun onNeverAskAgain(permissionText: String) {
+                    goToApplicationDetailActivity()
+                }
+                override fun onPermissionGranted() {
+                    updateLocationSwitch(true)
+                }
+            })
+        }
+    }
+
+    private fun updateLocationSwitch(isEnable: Boolean){
+        (adapter?.getItem(2) as SettingDataView).items.find { it.id == AccountConstants.SettingCode.SETTING_GEOLOCATION_ID }?.isChecked = isEnable
+        adapter?.notifyItemChanged(2)
     }
 
     private fun goToApplicationDetailActivity() {
@@ -817,7 +835,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                     getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_NORMAL,
-                    getString(R.string.account_home_go_to_wishlist),
+                    getString(R.string.new_home_account_go_to_wishlist),
                     View.OnClickListener {
                         RouteManager.route(activity, ApplinkConst.WISHLIST)
                     }
@@ -849,7 +867,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun showErrorNoConnection() {
         if (view != null && userVisibleHint) {
             view?.let {
-                Toaster.make(it, getString(R.string.account_home_error_no_internet_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                Toaster.make(it, getString(R.string.new_home_account_error_no_internet_connection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
                         getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }

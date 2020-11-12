@@ -18,7 +18,7 @@
         tools:text="Title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="@dimen/home_account_dp_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/home_account_financial_layout_title"
