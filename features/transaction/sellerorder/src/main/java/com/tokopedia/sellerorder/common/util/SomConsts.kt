@@ -31,10 +31,12 @@ object SomConsts {
     const val TAB_ACTIVE = "tab_active"
     const val TAB_STATUS = "tab_status"
     const val FILTER_STATUS_ID = "filter_status_id"
+    const val FILTER_ORDER_TYPE = "filter_order_type"
     const val FILTER_TYPE_CHECKBOX = "checkbox"
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
+    const val FILTER_CANCELLATION_REQUEST = "cancellation_request"
     const val FROM_WIDGET_TAG = "from widget"
 
     const val STATUS_ALL_ORDER = "all_order"

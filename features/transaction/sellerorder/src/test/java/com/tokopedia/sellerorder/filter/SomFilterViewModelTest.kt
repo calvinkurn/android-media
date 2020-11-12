@@ -57,7 +57,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                 getSomOrderFilterUseCase.execute()
             } returns baseSomFilterList
 
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate, isResetFilter)
+            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
@@ -72,7 +72,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             val exception = NullPointerException()
             coEvery { getSomOrderFilterUseCase.execute() } coAnswers { throw exception }
 
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate, isResetFilter)
+            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
 
             val expectedFail = Fail(exception)
             somFilterViewModel.filterResult.verifyErrorEquals(expectedFail)

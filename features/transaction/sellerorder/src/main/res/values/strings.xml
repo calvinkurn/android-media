@@ -70,6 +70,7 @@
     <string name="som_deadline_done">Selesai Otomatis</string>
     <string name="lihat_caps">LIHAT</string>
     <string name="see_detail">Lihat Detail</string>
+    <string name="detail_product">Detail Produk</string>
     <string name="see_invoice">Lihat Invoice</string>
     <string name="lihat">Lihat</string>
     <string name="placeholder_kode_booking">Terima pesanan terlebih dahulu</string>
@@ -77,6 +78,7 @@
     <string name="awb_label">awb</string>
     <string name="resi_tersalin">Nomor resi sudah tersalin</string>
     <string name="invoice_label">invoice</string>
+    <string name="sudah_dicetak">Sudah dicetak</string>
     <string name="invoice_tersalin">Invoice sudah tersalin</string>
     <string name="detail_pengiriman">Detail Pengiriman</string>
     <string name="kode_booking">Kode Booking</string>
@@ -87,6 +89,7 @@
     <string name="catatan">Catatan</string>
     <string name="terima_pesanan">Terima Pesanan</string>
     <string name="rincian_pembayaran">Rincian Pembayaran</string>
+    <string name="metode_pembayaran">Metode Pembayaran</string>
     <string name="product_price_label">Total Harga</string>
     <string name="shipping_price_label">Total Ongkos Kirim</string>
     <string name="insurance_price_label">Biaya Asuransi</string>
@@ -361,6 +364,9 @@
 
     <string name="waiting_payment_orders_product_quantity_and_price">%1$d x %2$s</string>
 
+    <string name="waiting_payment_empty_state_title">Belum ada transaksi yang sedang menunggu pembayaran</string>
+    <string name="waiting_payment_empty_state_description">Sembari menunggu, persiapkan stok produk-produk agar tokomu siap untung.</string>
+
     <string name="btn_waiting_payment_check_and_set_Stock"><![CDATA[Cek & Atur Stok]]></string>
     <string name="btn_reload">Muat Ulang</string>
 
@@ -377,6 +383,7 @@
     <string name="som_list_more_products">+%1$s produk lainnya</string>
     <string name="som_list_bulk_accept_order_button">Terima Pesanan Sekaligus</string>
     <string name="som_list_multi_select">Pilih Sekaligus</string>
+    <string name="som_list_multi_select_cancel">Batalkan</string>
     <string name="som_list_order_courier_label">Kurir:</string>
     <string name="som_list_order_counter">%1$d Pesanan</string>
     <string name="som_list_order_counter_multi_select_enabled">%1$d Pesanan dipilih</string>
@@ -391,18 +398,16 @@
     <string name="som_list_failed_accept_order">Gagal terima pesanan.</string>
     <string name="som_list_order_cannot_be_selected">Oops, pesanan tidak dapat dipilih</string>
     <string name="som_list_bulk_accept_dialog_title_on_progress">%1$d pesanan sedang diterima</string>
-    <string name="som_list_bulk_accept_dialog_description_on_progress">Ngga pakai lama, Toped langsung terima pesanan kamu sekaligus.</string>
+    <string name="som_list_bulk_accept_dialog_description_on_progress">Nggak pakai lama, Toped langsung terima pesanan kamu sekaligus.</string>
     <string name="som_list_bulk_accept_dialog_title_success">Berhasil terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_success">Hore! semua pesanan kamu siap dikirim.</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_success">Mengerti</string>
-    <string name="som_list_bulk_accept_dialog_title_partial_success">Berhasil terima %1$d pesanan tapi %2$d gagal.</string>
-    <string name="som_list_bulk_accept_dialog_description_partial_success_can_retry">Hiks. Ada %1$d pesanan kamu gagal diterima. Coba lagi yuk</string>
+    <string name="som_list_bulk_accept_dialog_description_success">Hore! semua pesanan kamu siap dikemas dan dikirim.</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_success">Mantap</string>
+    <string name="som_list_bulk_accept_dialog_description_partial_success_can_retry">Ada %1$d pesanan yang gagal diterima. Coba lagi, yuk!</string>
     <string name="som_list_bulk_accept_dialog_primary_button_partial_success_can_retry">Coba Lagi</string>
     <string name="som_list_bulk_accept_dialog_secondary_button_partial_success_can_retry">Kembali</string>
-    <string name="som_list_bulk_accept_dialog_description_partial_success_cant_retry">Hiks. Ada %1$d pesanan kamu gagal diterima.</string>
-    <string name="som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry">Mengerti</string>
+    <string name="som_list_bulk_accept_dialog_primary_button_partial_success_cant_retry">Oke Deh</string>
     <string name="som_list_bulk_accept_dialog_title_failed">Gagal terima %1$d pesanan baru</string>
-    <string name="som_list_bulk_accept_dialog_description_failed">Hiks. Semua pesanan kamu gagal diterima. Coba lagi yuk</string>
+    <string name="som_list_bulk_accept_dialog_description_failed">Hiks, semua pesanan kamu gagal diterima. Coba lagi, yuk!</string>
     <string name="som_list_bulk_accept_dialog_primary_button_failed">Coba Lagi</string>
     <string name="som_list_bulk_accept_dialog_secondary_button_failed">Kembali</string>
     <string name="som_list_coachmark_new_order_card_title">Cepat cek dan terima pesanan</string>

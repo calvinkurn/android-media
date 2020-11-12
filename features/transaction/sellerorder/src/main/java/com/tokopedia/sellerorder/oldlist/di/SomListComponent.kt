@@ -11,7 +11,7 @@ import dagger.Component
  */
 
 @SomListScope
-@Component(modules = [SomListViewModelModule::class], dependencies = [SomComponent::class])
+@Component(modules = [SomListViewModelModule::class, SomListModule::class], dependencies = [SomComponent::class])
 interface SomListComponent {
 
     fun inject(somListActivity: SomListActivity)

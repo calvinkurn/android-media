@@ -12,7 +12,6 @@ import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewMode
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -124,8 +123,6 @@ class SomListViewModel @Inject constructor(
         startDate = Utils.getFormattedDate(90, DATE_FORMAT)
         endDate = Utils.getFormattedDate(0, DATE_FORMAT)
     }
-
-    private var somFilterUiModel: List<SomFilterUiModel> = mutableListOf()
 
     var isMultiSelectEnabled: Boolean = false
 
@@ -249,6 +246,10 @@ class SomListViewModel @Inject constructor(
         getOrderListParams.search = keyword
     }
 
+    fun resetGetOrderListParam() {
+        this.getOrderListParams = SomListGetOrderListParam()
+    }
+
     fun resetNextOrderId() {
         getOrderListParams.nextOrderId = 0
     }
@@ -261,9 +262,7 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun getSomFilterUi() = somFilterUiModel
-
-    fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
-        this.somFilterUiModel = somFilterUiModelList
+    fun setOrderTypeFilter(orderTypes: List<Int>) {
+        this.getOrderListParams.orderTypeList = orderTypes
     }
 }

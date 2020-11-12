@@ -6,7 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import kotlinx.android.synthetic.main.filter_checkbox_item.view.*
 import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.*
+import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.cb_filter
+import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.label_checkbox
 
 class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: SomSubChildFilterListener)
     : RecyclerView.Adapter<SomSubFilterChildCheckBoxAdapter.SomSubFilterChildCheckViewHolder>() {
@@ -20,7 +23,8 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
     fun setSubFilterList(newSubChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
                          keyFilter: String) {
         this.keyFilter = keyFilter
-        this.subChildFilterList = newSubChildFilterList.toMutableList()
+        this.subChildFilterList.clear()
+        this.subChildFilterList.addAll(newSubChildFilterList.toMutableList())
         notifyDataSetChanged()
     }
 
@@ -58,11 +62,12 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
                     idList.add(it.childId.firstOrNull() ?: 0)
                 }
 
-                label_checkbox.setOnClickListener {
-                    checkBoxClicked(cb_filter.isChecked)
-                }
                 cb_filter.setOnCheckedChangeListener { _, isChecked ->
                     checkBoxClicked(isChecked)
+                }
+
+                setOnClickListener {
+                    cb_filter.isChecked = cb_filter.isChecked != true
                 }
             }
         }

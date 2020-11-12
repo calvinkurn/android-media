@@ -1,7 +1,11 @@
 package com.tokopedia.sellerorder.filter.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 
 class SomSubFilterDiffUtil(private val oldList: List<SomFilterChipsUiModel>, private val newList: List<SomFilterChipsUiModel>): DiffUtil.Callback() {
 

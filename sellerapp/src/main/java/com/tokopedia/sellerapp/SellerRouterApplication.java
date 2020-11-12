@@ -44,6 +44,7 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -64,10 +65,7 @@ import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
-import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -80,7 +78,6 @@ import java.util.ArrayList;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import rx.Observable;
 import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -411,11 +408,16 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage) {
+    public Fragment getSomListFragment(String tabPage, int orderType) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
-        return SomListFragment.newInstance(bundle);
+        bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        if (getBooleanRemoteConfig(RemoteConfigKey.ENABLE_NEW_SOM, false)) {
+            return SomListFragment.newInstance(bundle);
+        } else {
+            return com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment.newInstance(bundle);
+        }
     }
 
     @NotNull

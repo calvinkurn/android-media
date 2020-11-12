@@ -625,6 +625,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb,
                 awb = detailResponse.shipment.awb,
                 awbTextColor = detailResponse.shipment.awbTextColor,
+                isShippingPrinted = detailResponse.flagOrderMeta.isShippingPrinted,
                 logisticInfo = detailResponse.logisticInfo
         )
 
