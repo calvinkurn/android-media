@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget.cmGratification.lifecycle
+package com.tokopedia.promotionstarget.cm.lifecycle
 
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType
 

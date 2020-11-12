@@ -1,16 +1,12 @@
-package com.tokopedia.promotionstarget.cmGratification.dialog
+package com.tokopedia.promotionstarget.cm.dialog
 
 import android.app.Activity
-import android.content.Context
 import android.content.DialogInterface
-import android.os.Handler
-import android.os.Looper
-import android.widget.Toast
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.InAppPopupContract
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import com.tokopedia.promotionstarget.cmGratification.ActivityProvider
-import com.tokopedia.promotionstarget.cmGratification.broadcast.PendingData
+import com.tokopedia.promotionstarget.cm.ActivityProvider
+import com.tokopedia.promotionstarget.cm.broadcast.PendingData
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter

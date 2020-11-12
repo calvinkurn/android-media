@@ -1,8 +1,8 @@
-package com.tokopedia.promotionstarget.cmGratification.lifecycle
+package com.tokopedia.promotionstarget.cm.lifecycle
 
 import android.app.Activity
 import android.os.Bundle
-import com.tokopedia.promotionstarget.cmGratification.ActivityProvider
+import com.tokopedia.promotionstarget.cm.ActivityProvider
 import com.tokopedia.promotionstarget.presentation.subscriber.BaseApplicationLifecycleCallbacks
 import java.lang.ref.WeakReference
 

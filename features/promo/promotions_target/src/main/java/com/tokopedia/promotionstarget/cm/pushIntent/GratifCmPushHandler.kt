@@ -1,10 +1,10 @@
-package com.tokopedia.promotionstarget.cmGratification.pushIntent
+package com.tokopedia.promotionstarget.cm.pushIntent
 
 import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.notifications.inApp.PushIntentContract
-import com.tokopedia.promotionstarget.cmGratification.dialog.GratificationDialogHandler
+import com.tokopedia.promotionstarget.cm.dialog.GratificationDialogHandler
 
 const val EXTRA_BASE_MODEL = "extra_base_model"
 const val GRATIFICATION_ID = "gratificationId"

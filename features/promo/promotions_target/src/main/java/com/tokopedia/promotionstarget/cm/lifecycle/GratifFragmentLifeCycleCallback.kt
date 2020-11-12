@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget.cmGratification.lifecycle
+package com.tokopedia.promotionstarget.cm.lifecycle
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragmentLifecycle.FragmentLifecycleCallback

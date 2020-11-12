@@ -1,4 +1,4 @@
-package com.tokopedia.promotionstarget.cmGratification.broadcast
+package com.tokopedia.promotionstarget.cm.broadcast
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -7,7 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
-import com.tokopedia.promotionstarget.cmGratification.dialog.GratificationDialogHandler
+import com.tokopedia.promotionstarget.cm.dialog.GratificationDialogHandler
 import java.lang.ref.WeakReference
 
 const val DISCO_IS_NATIVE = "DISCO_IS_NATIVE"

@@ -1,10 +1,10 @@
-package com.tokopedia.promotionstarget.cmGratification.lifecycle
+package com.tokopedia.promotionstarget.cm.lifecycle
 
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
-import com.tokopedia.promotionstarget.cmGratification.broadcast.BroadcastHandler
-import com.tokopedia.promotionstarget.cmGratification.broadcast.BroadcastScreenNamesProvider
+import com.tokopedia.promotionstarget.cm.broadcast.BroadcastHandler
+import com.tokopedia.promotionstarget.cm.broadcast.BroadcastScreenNamesProvider
 import com.tokopedia.promotionstarget.domain.presenter.GratifCancellationExceptionType
 import com.tokopedia.promotionstarget.presentation.subscriber.BaseApplicationLifecycleCallbacks
 import kotlinx.coroutines.CancellationException
