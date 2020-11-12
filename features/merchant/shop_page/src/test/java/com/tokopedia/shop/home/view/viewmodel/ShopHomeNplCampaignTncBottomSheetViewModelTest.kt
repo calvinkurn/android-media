@@ -6,7 +6,7 @@ import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,7 +26,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     @RelaxedMockK
     lateinit var getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase
 
-    private val dispatcherProvider = TestCoroutineDispatcherProviderImpl
+    private val dispatcherProvider = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: ShopHomeNplCampaignTncBottomSheetViewModel
 
