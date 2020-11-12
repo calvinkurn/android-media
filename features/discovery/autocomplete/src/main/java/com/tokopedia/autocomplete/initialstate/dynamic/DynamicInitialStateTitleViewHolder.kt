@@ -22,8 +22,9 @@ class DynamicInitialStateTitleViewHolder(itemView: View, private val clickListen
     private fun bindActionButton(item: DynamicInitialStateTitleViewModel) {
         itemView.initialStateDynamicButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.initialStateDynamicButton?.text = item.labelAction
+            itemView.initialStateDynamicButton?.isEnabled = true
             itemView.initialStateDynamicButton?.setOnClickListener {
-                itemView.initialStateDynamicButton?.isClickable = false
+                itemView.initialStateDynamicButton?.isEnabled = false
                 clickListener.onRefreshDynamicSection(item.featureId)
             }
         }
