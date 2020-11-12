@@ -134,6 +134,7 @@ ext {
             reviewProduct                   : ":features:merchant:review_product",
             reputationCommon                : ":features:merchant:reputation_common",
             review                          : ":features:merchant:review",
+            sellerAction                    : ":features:merchant:seller_action",
             sellerActiveCommon              : ":features:merchant:seller_active_common",
             sellerHome                      : ":features:merchant:seller_home",
             sellerHomeCommon                : ":features:merchant:seller_home_common",
