@@ -1,10 +1,16 @@
 package com.tokopedia.vouchergame.list.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,8 +20,10 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.CommonUtils.hideKeyboard
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
@@ -25,7 +33,6 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperatorAttributes
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -48,9 +55,8 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
+class VoucherGameListFragment : BaseListFragment<Visitable<*>,
         VoucherGameListAdapterFactory>(),
-        SearchInputView.ResetListener,
         VoucherGameListViewHolder.OnClickListener {
 
     @Inject
@@ -61,8 +67,10 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
+
     @Inject
     lateinit var rechargeAnalytics: RechargeAnalytics
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -160,8 +168,39 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
     }
 
     private fun initView() {
-        searchInputView.setResetListener(this)
-        searchInputView.searchTextView.setOnClickListener { voucherGameAnalytics.eventClickSearchBox() }
+
+        search_input_view.clearListener = {
+            search_input_view.searchBarTextField.setText("")
+            voucherGameAnalytics.eventClearSearchBox()
+        }
+
+        search_input_view.searchBarTextField.setOnEditorActionListener(object: TextView.OnEditorActionListener{
+            override fun onEditorAction(text: TextView?, actionId: Int, p2: KeyEvent?): Boolean {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    text?.let {
+                        if (text.text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it.text.toString()) }
+                    KeyboardHandler.hideSoftKeyboard(activity)
+                    return true
+                }
+                return false
+            }
+
+        } )
+
+        search_input_view.searchBarTextField.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                text?.let { searchVoucherGame(it.toString(), swipe_refresh_layout.isRefreshing) }
+            }
+
+        })
+
+        search_input_view.searchBarTextField.setOnClickListener { voucherGameAnalytics.eventClickSearchBox() }
 
         recycler_view.addItemDecoration(VoucherGameListDecorator(resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE)))
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -172,8 +211,8 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
                     if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                         val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
                         with(operatorList.data) {
-                            if (searchInputView.searchText.isNotEmpty()) {
-                                voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                            if (search_input_view.searchBarTextField.text.isNotEmpty()) {
+                                voucherGameAnalytics.impressionOperatorCardSearchResult(search_input_view.searchBarTextField.text.toString(),
                                         operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                             } else {
                                 voucherGameAnalytics.impressionOperatorCard(
@@ -193,7 +232,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
     }
 
     private fun renderOperators(data: VoucherGameListData) {
-        searchInputView.setSearchHint(data.text)
+        search_input_view.searchBarTextField.setHint(data.text)
 
         if (data.operators.isEmpty()) {
             adapter.clearAllElements()
@@ -204,7 +243,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
 
             recycler_view.post {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                if (searchInputView.searchText.isEmpty()) {
+                if (search_input_view.searchBarTextField.text.isNullOrEmpty()) {
                     voucherGameAnalytics.impressionOperatorCard(
                             data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                 }
@@ -259,7 +298,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
             }
 
             if (messages.size == 1) {
-                with (messages.first()) {
+                with(messages.first()) {
                     ticker_view.tickerTitle = title
                     ticker_view.setHtmlDescription(description)
                     ticker_view.tickerType = type
@@ -301,6 +340,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         getComponent(VoucherGameListComponent::class.java).inject(this)
     }
 
+
     override fun loadInitialData() {
         searchVoucherGame("", true)
     }
@@ -314,13 +354,13 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onItemClicked(operator: VoucherGameOperator) {
-        if (searchInputView.searchText.isNotEmpty()) {
-            voucherGameAnalytics.eventClickSearchResult(searchInputView.searchText)
+        if (search_input_view.searchBarTextField.text.isNotEmpty()) { //utk tracking kalau datanya ada
+            voucherGameAnalytics.eventClickSearchResult(search_input_view.searchBarTextField.text.toString()) //kirim textnya
 
             val operatorList = voucherGameViewModel.voucherGameList.value
             if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                voucherGameAnalytics.impressionOperatorCardSearchResult(search_input_view.searchBarTextField.text.toString(), //kirim textnya
                         operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
             }
 
@@ -365,18 +405,6 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         return model
     }
 
-    override fun onSearchSubmitted(text: String?) {
-        text?.let { if (text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
-    }
-
-    override fun onSearchTextChanged(text: String?) {
-        text?.let { searchVoucherGame(it, swipe_refresh_layout.isRefreshing) }
-    }
-
-    override fun onSearchReset() {
-        voucherGameAnalytics.eventClearSearchBox()
-    }
-
     private fun searchVoucherGame(query: String, loadFromCloud: Boolean = false) {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
@@ -396,9 +424,9 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
         return R.id.swipe_refresh_layout
     }
 
-    override fun getSearchInputViewResourceId(): Int {
-        return R.id.search_input_view
-    }
+   /* override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view  //belum tau
+    }*/
 
     companion object {
 
@@ -417,5 +445,7 @@ class VoucherGameListFragment : BaseSearchListFragment<Visitable<*>,
             fragment.arguments = bundle
             return fragment
         }
+
     }
+
 }
