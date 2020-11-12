@@ -159,6 +159,8 @@ class ShopPageFragment :
         private const val START_PAGE = 1
         private const val DEFAULT_SORT_ID = 0
 
+        private const val REQUEST_CODE_START_LIVE_STREAMING = 7621
+
         @JvmStatic
         fun createInstance() = ShopPageFragment()
     }
@@ -498,6 +500,7 @@ class ShopPageFragment :
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
+                handlePlayBroadcastExtra(this@run)
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
@@ -1013,18 +1016,13 @@ class ShopPageFragment :
     private fun getHomeFragment(): Fragment? {
         return if (isShowHomeTab()) {
             if (isShowNewHomeTab()) {
-                val isNewlyBroadcastChannelSaved: Boolean? = if (activity?.intent?.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED) == true) {
-                            activity?.intent?.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
-                        } else null
-
                 ShopPageHomeFragment.createInstance(
                         shopId,
                         shopPageHeaderDataModel?.isOfficial ?: false,
                         shopPageHeaderDataModel?.isGoldMerchant ?: false,
                         shopPageHeaderDataModel?.shopName.orEmpty(),
                         shopAttribution ?: "",
-                        shopRef,
-                        isNewlyBroadcastChannelSaved
+                        shopRef
                 )
             } else {
                 HomeProductFragment.createInstance(
@@ -1105,6 +1103,8 @@ class ShopPageFragment :
                 refreshData()
                 goToCart()
             }
+        } else if (requestCode == REQUEST_CODE_START_LIVE_STREAMING) {
+            if (data != null) handleResultVideoFromLiveStreaming(resultCode, data)
         }
     }
 
@@ -1382,6 +1382,38 @@ class ShopPageFragment :
      * Play Widget "Start Live Streaming"
      */
     override fun onStartLiveStreamingClicked() {
-        RouteManager.route(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER)
+        startActivityForResult(intent, REQUEST_CODE_START_LIVE_STREAMING)
+    }
+
+    private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
+        if (resultCode == Activity.RESULT_OK) handlePlayBroadcastExtra(data)
+    }
+
+    private fun handlePlayBroadcastExtra(data: Intent) {
+        val isChannelSaved: Boolean = if (data.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED)) {
+            data.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
+        } else return
+
+        if (isChannelSaved) showWidgetTranscodingToaster()
+        else showWidgetDeletedToaster()
+    }
+
+    private fun showWidgetTranscodingToaster() {
+        Toaster.build(
+                view = requireView(),
+                text = getString(R.string.shop_page_play_widget_sgc_save_video),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_NORMAL
+        ).show()
+    }
+
+    private fun showWidgetDeletedToaster() {
+        Toaster.build(
+                requireView(),
+                getString(R.string.shop_page_play_widget_sgc_video_deleted),
+                Toaster.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL
+        ).show()
     }
 }
