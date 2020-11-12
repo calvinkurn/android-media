@@ -37,13 +37,8 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         this.listener = listenerBills
     }
 
-    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>, showTitle: Boolean) {
-        if (showTitle) {
-            titleWidget.text = context.getString(R.string.common_topup_title_recent_transaction_widget)
-            titleWidget.show()
-        } else {
-            titleWidget.hide()
-        }
+    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
+        titleWidget.text = context.getString(R.string.common_topup_title_recent_transaction_widget)
         initAdapterWithData(recentNumbers)
     }
 
@@ -85,5 +80,9 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         if (digitalTrackRecentList.size > 0) {
             listener.onTrackImpressionRecentList(digitalTrackRecentList)
         }
+    }
+
+    fun toggleTitle(value: Boolean) {
+        if (value) titleWidget.show() else titleWidget.hide()
     }
 }
