@@ -23,6 +23,8 @@ object ProductDetailConstant {
 
     const val VALUE_NEW_ETALASE = "new"
 
+    const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
+
     //waarehouse product
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
