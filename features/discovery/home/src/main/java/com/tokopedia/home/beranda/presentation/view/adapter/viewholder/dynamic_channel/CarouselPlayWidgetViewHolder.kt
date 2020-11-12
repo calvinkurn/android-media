@@ -77,7 +77,7 @@ class CarouselPlayWidgetViewHolder(
         if (element.widgetUiModel is PlayWidgetUiModel.Medium) {
             playWidgetAnalyticListener.widgetId = element.homeChannel.id
             playWidgetAnalyticListener.widgetName = element.widgetUiModel.title
-            playWidgetAnalyticListener.widgetPosition = element.homeChannel.getPosition()
+            playWidgetAnalyticListener.setWidgetPosition(element.homeChannel.getPosition())
         }
     }
 

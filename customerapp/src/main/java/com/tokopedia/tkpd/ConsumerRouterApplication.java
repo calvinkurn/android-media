@@ -67,7 +67,6 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -92,7 +91,6 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
-import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -146,7 +144,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GamificationRouter,
         ReactNativeRouter,
         NetworkRouter,
-        GlobalNavRouter,
         OmsModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
@@ -615,26 +612,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getHomeFragment(boolean scrollToRecommendList) {
-        return HomeInternalRouter.getHomeFragment(scrollToRecommendList);
-    }
-
-    @Override
-    public Fragment getFeedPlusFragment(Bundle bundle) {
-        return FeedPlusContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return OfficialHomeContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public ApplicationUpdate getAppUpdate(Context context) {
-        return new FirebaseRemoteAppUpdate(context);
-    }
-
-    @Override
     public long getLongRemoteConfig(String key, long defaultValue) {
         return remoteConfig.getLong(key, defaultValue);
     }
@@ -642,15 +619,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
-    }
-
-    @Override
-    public void sendOpenHomeEvent() {
-        UserSessionInterface userSession = new UserSession(context);
-        Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
     }
 
     @Override

@@ -198,24 +198,27 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getMerchantVoucherList(shopId: String, numVoucher: Int = 0, shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel): ShopHomeVoucherUiModel {
-        val index = shopPageHomeLayoutUiModel.listWidget.indexOfFirst { it is ShopHomeVoucherUiModel }
-        val data = shopPageHomeLayoutUiModel.listWidget[index] as ShopHomeVoucherUiModel
-        if (index != 1) {
+    private suspend fun getMerchantVoucherList(
+            shopId: String,
+            numVoucher: Int = 0,
+            shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel
+    ): ShopHomeVoucherUiModel? {
+        val voucherUiModel = shopPageHomeLayoutUiModel.listWidget.filterIsInstance<ShopHomeVoucherUiModel>().firstOrNull()
+        return voucherUiModel?.let{
             val merchantVoucherResponse = withContext(dispatcherProvider.io()) {
                 getMerchantVoucherListUseCase.createObservable(GetMerchantVoucherListUseCase.createRequestParams(shopId, numVoucher)).toBlocking().first()
             }
-            return data.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
+            it.copy(data = ShopPageHomeMapper.mapToListVoucher(merchantVoucherResponse), isError = false)
         }
-        return data
     }
 
     fun getMerchantVoucherList(shopId: String, numVoucher: Int) {
         val result = shopHomeLayoutData.value
         if (result is Success) {
             launchCatchError(block = {
-                val addMerchantVoucherLayout = getMerchantVoucherList(shopId, numVoucher, result.data)
-                _shopHomeMerchantVoucherLayoutData.value = Success(addMerchantVoucherLayout)
+                getMerchantVoucherList(shopId, numVoucher, result.data)?.let{
+                    _shopHomeMerchantVoucherLayoutData.value = Success(it)
+                }
             }) {
                 _shopHomeMerchantVoucherLayoutData.value = Fail(it)
             }
@@ -223,7 +226,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-            product: ShopHomeProductViewModel,
+            product: ShopHomeProductUiModel,
             shopId: String,
             onSuccessAddToCart: (dataModelAtc: DataModel) -> Unit,
             onErrorAddToCart: (exception: Throwable) -> Unit
@@ -310,7 +313,7 @@ class ShopHomeViewModel @Inject constructor(
     fun getVideoYoutube(videoUrl: String, widgetId: String) {
         launchCatchError(block = {
             getYoutubeVideoUseCase.setVideoUrl(videoUrl)
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(dispatcherProvider.io()) {
                 convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
             }
             _videoYoutube.value = Pair(widgetId, Success(result))
@@ -323,7 +326,7 @@ class ShopHomeViewModel @Inject constructor(
         return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
     }
 
-    private fun submitAddProductToCart(shopId: String, product: ShopHomeProductViewModel): AddToCartDataModel {
+    private fun submitAddProductToCart(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
         val requestParams = AddToCartUseCase.getMinimumParams(product.id
                 ?: "", shopId, productName = product.name ?: "", price = product.displayedPrice
                 ?: "", userId = userId)

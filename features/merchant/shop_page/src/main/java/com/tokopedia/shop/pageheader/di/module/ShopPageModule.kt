@@ -10,6 +10,8 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GqlQueryConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
@@ -62,28 +64,8 @@ class ShopPageModule {
 
     @ShopPageScope
     @Provides
-    @Named(ShopPageConstant.MODERATE_STATUS_QUERY)
-    fun moderateStatusQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.shop_moderate_request_status
-        );
-    }
-
-    @ShopPageScope
-    @Provides
     fun provideGetBroadcasterShopConfigUseCase(graphqlUseCase: MultiRequestGraphqlUseCase): GetBroadcasterShopConfigUseCase {
         return GetBroadcasterShopConfigUseCase(graphqlUseCase)
-    }
-
-    @ShopPageScope
-    @Provides
-    @Named(ShopPageConstant.MODERATE_REQUEST_QUERY)
-    fun requestQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.mutation_moderate_shop
-        );
     }
 
     @ShopPageScope
@@ -225,5 +207,11 @@ class ShopPageModule {
                 ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist,
                 GQLQueryConstant.SHOP_PRODUCT to queryShopProduct
         )
+    }
+
+    @ShopPageScope
+    @Provides
+    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
+        return CoroutineDispatcherProviderImpl
     }
 }

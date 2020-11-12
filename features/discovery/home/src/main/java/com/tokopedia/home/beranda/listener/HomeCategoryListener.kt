@@ -106,12 +106,6 @@ interface HomeCategoryListener {
 
     fun removeViewHolderAtPosition(position: Int)
 
-//    fun onPlayBannerCarouselRefresh(playCarouselCardDataModel: PlayCarouselCardDataModel, position: Int)
-
-//    fun onPlayBannerReminderClick(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
-
-//    fun onPlayV2Click(playBannerCarouselItemDataModel: PlayBannerCarouselItemDataModel)
-
     fun onDynamicChannelRetryClicked()
 
     fun getTopAdsBannerNextPageToken(): String

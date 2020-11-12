@@ -17,13 +17,13 @@
         android:lineSpacingExtra="6sp"
         android:maxLines="2"
         android:textColor="@color/tp_loyalty_color"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="wrap"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
         tools:text="Huge News!"
         tools:visibility="visible" />
 
@@ -49,27 +49,31 @@
         android:layout_marginEnd="@dimen/dp_14"
         android:layout_marginRight="@dimen/dp_14"
         android:textColor="@color/medium_green"
-        app:typographyType="heading_5"
-        app:typographyWeight="bold"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/text_title_column"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
         tools:text="Lihat Semua"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_sub_title_column"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:ellipsize="end"
         android:lineSpacingExtra="@dimen/sp_6"
+        android:maxLines="1"
         android:textColor="@color/tp_subtitle_color_topads"
-        app:typographyType="body_3"
+        app:layout_constraintEnd_toStartOf="@id/text_see_all_column"
         app:layout_constraintLeft_toLeftOf="@+id/text_title_column"
         app:layout_constraintStart_toStartOf="@+id/text_title_column"
         app:layout_constraintTop_toBottomOf="@+id/text_title_column"
-        tools:text="Cari tahu sekarang juga" />
+        app:typographyType="body_3"
+        tools:text="Cari tahu sekarang" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_column"
