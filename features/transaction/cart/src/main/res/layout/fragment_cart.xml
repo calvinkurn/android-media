@@ -42,7 +42,6 @@
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:toolbarAlwaysShowShadow="false"
-            app:toolbarBackButton="back"
             app:toolbarInitialTheme="light"
             app:toolbarTitle="@string/cart"
             app:toolbarContentType="typeTitle" />

@@ -814,7 +814,27 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun initNavigationToolbar(view: View) {
         activity?.let {
             val statusBarBackground = view.findViewById<View>(R.id.status_bar_bg)
-            statusBarBackground.hide()
+
+            val args = arguments?.getString(CartFragment::class.java.simpleName)
+            if (args?.isNotEmpty() == true) {
+                isToolbarWithBackButton = false
+            }
+
+            if (isToolbarWithBackButton) {
+                statusBarBackground.hide()
+            } else {
+                when {
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                        statusBarBackground.visibility = View.INVISIBLE
+                    }
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> {
+                        statusBarBackground.show()
+                    }
+                    else -> {
+                        statusBarBackground.hide()
+                    }
+                }
+            }
 
             navToolbar.apply {
                 setOnBackButtonClickListener { onBackPressed() }
@@ -823,9 +843,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, ::onNavigationToolbarWishlistClicked)
                                 .addIcon(IconList.ID_NAV_GLOBAL) {}
                 )
-            }
 
-            navToolbar.collapseIcon
+                if (isToolbarWithBackButton) {
+                    setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                } else {
+                    setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+                }
+            }
         }
     }
 
