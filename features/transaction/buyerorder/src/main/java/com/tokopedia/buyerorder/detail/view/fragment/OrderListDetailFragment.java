@@ -26,7 +26,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
@@ -347,7 +346,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void showSuccessMessage(String message) {
-        Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+        Toaster.build(getView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     @Override
@@ -494,14 +493,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails) {
         // no-op
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
     }
 
     @Override

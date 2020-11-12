@@ -2,6 +2,7 @@ package com.tokopedia.buyerorder.list.view.presenter;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.buyerorder.list.data.OrderLabelList;
 import com.tokopedia.buyerorder.list.data.ticker.TickerResponse;
 
@@ -17,8 +18,8 @@ public class OrderListInitContract {
          void getTickerInfo();
      }
 
-    public interface View {
-        Context getAppContext();
+    public interface View extends CustomerView {
+        Context getActivity();
 
         void removeProgressBarView();
 

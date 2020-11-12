@@ -486,14 +486,6 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity();
-        else
-            return null;
-    }
-
-    @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
@@ -626,7 +618,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            permissionCheckerHelper.onRequestPermissionsResult(getAppContext(), requestCode, permissions, grantResults);
+            permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
         }
     }
 
@@ -664,7 +656,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                         @Override
                         public void onClick(View v) {
                             if (!metaDataInfo.getCustomLinkAppUrl().isEmpty()) {
-                                RouteManager.route(getAppContext(), metaDataInfo.getCustomLinkAppUrl());
+                                RouteManager.route(getActivity(), metaDataInfo.getCustomLinkAppUrl());
                             }
                         }
                     });

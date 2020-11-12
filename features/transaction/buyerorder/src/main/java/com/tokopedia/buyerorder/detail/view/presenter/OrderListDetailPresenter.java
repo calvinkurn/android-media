@@ -129,7 +129,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString) {
-        if (getView() == null || getView().getAppContext() == null)
+        if (getView() == null || getView().getActivity() == null)
             return;
 
         this.orderCategory = orderCategory;
@@ -143,7 +143,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 variables.put("orderCategory", orderCategory);
                 variables.put(ORDER_ID, orderId);
                 graphqlRequest = new
-                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
                         R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
 
             } else {
@@ -151,7 +151,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 variables.put(PAYMENT_ID, paymentId);
                 variables.put(CART_STRING, cartString);
                 graphqlRequest = new
-                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
                         R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
             }
 
@@ -162,7 +162,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ACTION, 1);
             variables.put(UPSTREAM, upstream != null ? upstream : "");
             graphqlRequest = new
-                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
                     R.raw.orderdetails), DetailsData.class, variables, false);
         }
 
@@ -177,7 +177,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext() != null) {
+                if (getView() != null && getView().getActivity() != null) {
                     Timber.d("error occured" + e);
                     getView().hideProgressBar();
                 }
@@ -254,24 +254,24 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                 @Override
                 public void onError(Throwable e) {
-                    if (getView() != null && getView().getAppContext() != null) {
+                    if (getView() != null && getView().getActivity() != null) {
                         getView().showSuccessMessageWithAction(e.getMessage());
                     }
                 }
 
                 @Override
                 public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                    if (getView() != null && getView().getAppContext() != null) {
+                    if (getView() != null && getView().getActivity() != null) {
                         Type token = new TypeToken<SendEventEmail>() {
                         }.getType();
                         RestResponse restResponse = typeDataResponseMap.get(token);
                         actionButtonLayout.setClickable(false);
                         if (restResponse.getCode() == 200 && restResponse.getErrorBody() == null) {
-                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_success));
-                            getView().showSuccessMessageWithAction(getView().getAppContext().getString(R.string.event_voucher_code_copied));
+                            actionButtonText.setText(getView().getActivity().getString(R.string.event_voucher_code_success));
+                            getView().showSuccessMessageWithAction(getView().getActivity().getString(R.string.event_voucher_code_copied));
                         } else {
                             Gson gson = new Gson();
-                            actionButtonText.setText(getView().getAppContext().getString(R.string.event_voucher_code_fail));
+                            actionButtonText.setText(getView().getActivity().getString(R.string.event_voucher_code_fail));
                             SendEventEmail dataResponse = gson.fromJson(restResponse.getErrorBody(), SendEventEmail.class);
                             getView().showSuccessMessageWithAction(dataResponse.getData().getMessage());
                         }
@@ -291,7 +291,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
                 R.raw.tapactions), ActionButtonList.class, variables, false);
 
         orderDetailsUseCase.clearRequest();
@@ -401,7 +401,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
-        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
         addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
             public void onCompleted() {
@@ -410,7 +410,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext() != null) {
+                if (getView() != null && getView().getActivity() != null) {
                     getView().hideProgressBar();
                     getView().showErrorMessage(e.getMessage());
                 }
@@ -418,7 +418,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onNext(AtcMultiData atcMultiData) {
-                if (getView() != null && getView().getAppContext() != null) {
+                if (getView() != null && getView().getActivity() != null) {
                     getView().hideProgressBar();
                     if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
                         getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
@@ -456,7 +456,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     private void setDetailsData(OrderDetails details) {
-        if (getView() == null || getView().getAppContext() == null)
+        if (getView() == null || getView().getActivity() == null)
             return;
         this.details = details;
         getView().hideProgressBar();
@@ -586,10 +586,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     public void updateOrderCancelReason(String cancelReason, String orderId,
                                         int cancelOrReplacement, String url) {
-        if (getView() == null || getView().getAppContext() == null)
+        if (getView() == null || getView().getActivity() == null)
             return;
 
-        UserSession userSession = new UserSession(getView().getAppContext());
+        UserSession userSession = new UserSession(getView().getActivity());
         String userId = userSession.getUserId();
 
         RequestParams requestParams = RequestParams.create();
@@ -612,7 +612,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                                             @Override
                                             public void onError(Throwable e) {
-                                                if (getView() != null && getView().getAppContext() != null) {
+                                                if (getView() != null && getView().getActivity() != null) {
                                                     Timber.d(e);
                                                     getView().showErrorMessage(e.getMessage());
                                                     getView().hideProgressBar();
@@ -622,7 +622,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                                             @Override
                                             public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                                                if (getView() != null && getView().getAppContext() != null) {
+                                                if (getView() != null && getView().getActivity() != null) {
                                                     Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
                                                     }.getType();
                                                     RestResponse restResponse = typeDataResponseMap.get(token);
@@ -643,9 +643,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public void finishOrder(String orderId, String url) {
-        if (getView() == null || getView().getAppContext() == null)
+        if (getView() == null || getView().getActivity() == null)
             return;
-        UserSession userSession = new UserSession(getView().getAppContext());
+        UserSession userSession = new UserSession(getView().getActivity());
         String userId = userSession.getUserId();
         String deviceId = userSession.getDeviceId();
 
@@ -670,7 +670,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext() != null) {
+                if (getView() != null && getView().getActivity() != null) {
                     Timber.d(e);
                     getView().hideProgressBar();
                     getView().showErrorMessage(e.getMessage());
@@ -680,7 +680,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             @Override
             public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                if (getView() != null && getView().getAppContext() != null) {
+                if (getView() != null && getView().getActivity() != null) {
                     Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
                     }.getType();
                     RestResponse restResponse = typeDataResponseMap.get(token);
@@ -721,7 +721,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (isdownloadable(uri)) {
             getView().askPermission();
         } else {
-            if (getView() != null && getView().getAppContext() != null && getView().getAppContext().getApplicationContext() != null && getView().getActivity() != null) {
+            if (getView() != null && getView().getActivity() != null && getView().getActivity().getApplicationContext() != null && getView().getActivity() != null) {
                 RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }
@@ -729,7 +729,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @SuppressLint("MissingPermission")
     public void permissionGrantedContinueDownload() {
-        DownloadHelper downloadHelper = new DownloadHelper(getView().getAppContext(), pdfUri, Insurance_File_Name, () -> {
+        DownloadHelper downloadHelper = new DownloadHelper(getView().getActivity(), pdfUri, Insurance_File_Name, () -> {
             // download success call back
 
         });
@@ -784,7 +784,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         Map<String, Object> variablesWidget = new HashMap<>();
         variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
         graphqlRequestForRecommendation = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
                 R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
     }
@@ -797,7 +797,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         variable.put(CATEGORY_IDS, category);
         variable.put(MP_CATEGORY_IDS, categoryList);
         graphqlRequestForMPRecommendation = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
                 R.raw.recommendation_mp), RecommendationResponse.class, variable);
         return graphqlRequestForMPRecommendation;
     }

@@ -81,8 +81,6 @@ public interface OrderListDetailContract {
 
         void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails);
 
-        Context getAppContext();
-
         Context getActivity();
 
         void setPayMethodInfo(PayMethod payMethod);

@@ -35,7 +35,7 @@ public class OrderListContract {
 
         void renderEmptyList(int typeRequest, long elapsedDays);
 
-        Context getAppContext();
+        Context getActivity();
 
         void setLastOrderId(int orderid);
 

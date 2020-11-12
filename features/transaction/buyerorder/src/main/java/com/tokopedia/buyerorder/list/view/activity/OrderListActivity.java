@@ -184,11 +184,6 @@ public class OrderListActivity extends BaseSimpleActivity
     }
 
     @Override
-    public Context getAppContext() {
-        return this.getApplicationContext();
-    }
-
-    @Override
     public Bundle getBundle() {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null) {
@@ -196,6 +191,11 @@ public class OrderListActivity extends BaseSimpleActivity
         } else {
             return bundle;
         }
+    }
+
+    @Override
+    public Context getActivity() {
+        return this;
     }
 
     @Override

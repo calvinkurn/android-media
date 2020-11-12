@@ -217,7 +217,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trackingQueue = new TrackingQueue(getAppContext());
+        trackingQueue = new TrackingQueue(getActivity());
         setRetainInstance(isRetainInstance());
         if (getArguments() != null) {
             setupArguments(getArguments());
@@ -523,14 +523,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
             filterDate.setVisibility(View.GONE);
             surveyBtn.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
     }
 
     @Override

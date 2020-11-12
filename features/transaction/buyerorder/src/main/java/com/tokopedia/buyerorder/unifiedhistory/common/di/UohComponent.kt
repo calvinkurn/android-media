@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
@@ -14,7 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  */
 
 @UohScope
-@Component(modules = [UohModule::class, UohViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [UohModule::class, UohListModule::class, UohViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface UohComponent {
     @ApplicationContext
     fun context(): Context
