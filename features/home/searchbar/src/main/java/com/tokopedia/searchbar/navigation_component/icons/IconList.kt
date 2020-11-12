@@ -1,6 +1,7 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.searchbar.R
 
@@ -13,6 +14,15 @@ object IconList {
     const val ID_NAV_GLOBAL = IconUnify.MENU_HAMBURGER
     const val ID_WISHLIST = IconUnify.HEART
     const val ID_SHARE = IconUnify.SHARE_MOBILE
+    const val ID_SETTING = IconUnify.SETTING
+
+    const val NAME_MESSAGE = "Inbox"
+    const val NAME_NOTIFICATION = "Notif"
+    const val NAME_CART = "Cart"
+    const val NAME_NAV_GLOBAL = "Global Menu"
+    const val NAME_WISHLIST = "Wishlist"
+    const val NAME_SHARE = "Share"
+    const val NAME_SETTING = "Setting"
 
     const val ID_NAV_LOTTIE_WISHLIST = 91
 
@@ -22,7 +32,9 @@ object IconList {
             return IconToolbar(
                     id = ID_MESSAGE,
                     applink = ApplinkConst.INBOX,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_MESSAGE
             ) {
                 onClick.invoke()
             }
@@ -34,7 +46,9 @@ object IconList {
             return IconToolbar(
                     id = ID_NOTIFICATION,
                     applink = ApplinkConst.NOTIFICATION,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_NOTIFICATION
             ) {
                 onClick.invoke()
             }
@@ -46,7 +60,9 @@ object IconList {
             return IconToolbar(
                     id = ID_CART,
                     applink = ApplinkConst.CART,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_CART
             ) {
                 onClick.invoke()
             }
@@ -58,7 +74,8 @@ object IconList {
             return IconToolbar(
                     id = ID_NAV_GLOBAL,
                     applink = ApplinkConst.HOME_NAVIGATION,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    name = NAME_NAV_GLOBAL
             ) {
                 onClick.invoke()
             }
@@ -70,7 +87,9 @@ object IconList {
             return IconToolbar(
                     id = ID_WISHLIST,
                     applink = ApplinkConst.NEW_WISHLIST,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_WISHLIST
             ) {
                 onClick.invoke()
             }
@@ -82,7 +101,21 @@ object IconList {
             return IconToolbar(
                     id = ID_SHARE,
                     applink = "",
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    name = NAME_SHARE
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object SettingIcon: IconConfigItem {
+        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                    id = ID_SETTING,
+                    applink = ApplinkConstInternalGlobal.GENERAL_SETTING,
+                    disableRouteManager = disableRouteManager,
+                    name = NAME_SETTING
             ) {
                 onClick.invoke()
             }
@@ -97,7 +130,9 @@ object IconList {
                     imageRes = R.raw.toolbar_lottie_wishlist,
                     applink = "",
                     iconType = IconToolbar.TYPE_LOTTIE,
-                    disableRouteManager = disableRouteManager
+                    disableRouteManager = disableRouteManager,
+                    nonLoginApplink = ApplinkConst.LOGIN,
+                    name = NAME_WISHLIST
             ) {
                 onClick.invoke()
             }

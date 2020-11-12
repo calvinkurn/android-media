@@ -13,6 +13,8 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderPaymentModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OrderProductModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.orderlist.OtherTransactionModel
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import kotlinx.android.synthetic.main.holder_transaction_list.view.*
 
 class TransactionListViewHolder(itemView: View,
@@ -41,6 +43,9 @@ class TransactionListViewHolder(itemView: View,
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
         visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })
+        if (element.othersTransactionCount.isMoreThanZero()) {
+            visitableList.add(OtherTransactionModel(element.othersTransactionCount))
+        }
         adapter.setVisitables(visitableList)
     }
 }
