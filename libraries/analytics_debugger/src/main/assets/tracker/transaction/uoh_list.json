@@ -5,12 +5,11 @@
       "businessUnit": "order management",
       "eventCategory": "",
       "currentSite": "tokopediamarketplace",
-      "isLoggedInStatus": "",
+      "isLoggedInStatus": "{{true|false}}",
       "screenName": "order-list",
       "event": "openScreen",
-      "userId": "{{\\d+}}",
+      "userId": "",
       "eventAction": "",
-      "sessionIris": "{{.*}}",
       "eventLabel": ""
     },
     {
@@ -18,9 +17,10 @@
       "clientId": "{{.*}}",
       "eventCategory": "order list",
       "currentSite": "tokopediamarketplace",
+      "isLoggedInStatus": "{{true|false}}",
       "item_list": "/order list - marketplace",
       "event": "view_item_list",
-      "userId": "{{\\d+}}",
+      "userId": "",
       "eventAction": "view order card marketplace",
       "sessionIris": "{{.*}}",
       "items": [
