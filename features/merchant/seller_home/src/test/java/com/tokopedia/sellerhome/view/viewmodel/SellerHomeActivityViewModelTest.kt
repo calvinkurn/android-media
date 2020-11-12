@@ -7,14 +7,15 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
-import com.tokopedia.sellerhome.view.model.*
+import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
+import com.tokopedia.sellerhome.view.model.NotificationUiModel
+import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -170,7 +171,7 @@ class SellerHomeActivityViewModelTest {
         assert(customOnErrorViewModel.mockLiveData.value is Fail)
     }
 
-    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(Dispatchers.Unconfined) {
+    inner class CustomOnErrorViewModel(private val job: Job) : CustomBaseViewModel(SellerHomeCoroutineTestDispatcher) {
 
         private val _mockLiveData = MutableLiveData<Result<Any>>()
         val mockLiveData: LiveData<Result<Any>>
