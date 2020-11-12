@@ -4,10 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCampaignCarouselProductItemViewHolder
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 class ShopCampaignCarouselProductAdapterTypeFactory(
         private val shopHomeNewProductLaunchCampaignUiModel: ShopHomeNewProductLaunchCampaignUiModel,
@@ -17,7 +17,7 @@ class ShopCampaignCarouselProductAdapterTypeFactory(
 
     var adapter: ShopCampaignCarouselProductAdapter? = null
 
-    override fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int {
+    override fun type(shopHomeProductViewModel: ShopHomeProductUiModel): Int {
         return ShopHomeCampaignCarouselProductItemViewHolder.LAYOUT
     }
 

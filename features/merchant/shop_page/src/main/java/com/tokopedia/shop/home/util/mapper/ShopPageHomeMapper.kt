@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupViewModel
+import java.util.*
 import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
@@ -41,9 +42,9 @@ object ShopPageHomeMapper {
     fun mapToHomeProductViewModelForAllProduct(
             shopProduct: ShopProduct,
             isMyOwnProduct: Boolean
-    ): ShopHomeProductViewModel =
+    ): ShopHomeProductUiModel =
             with(shopProduct) {
-                ShopHomeProductViewModel().also {
+                ShopHomeProductUiModel().also {
                     it.id = productId
                     it.name = name
                     it.displayedPrice = price.textIdr
@@ -78,7 +79,7 @@ object ShopPageHomeMapper {
     }
 
 
-    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
         val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
@@ -107,7 +108,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    fun mapToProductCardCampaignModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
+    fun mapToProductCardCampaignModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -181,12 +182,10 @@ object ShopPageHomeMapper {
             VOUCHER.toLowerCase() -> {
                 mapToVoucherUiModel(widgetResponse)
             }
-            DYNAMIC.toLowerCase()-> {
-                mapToPlayWidgetUiModel(widgetResponse, isMyOwnProduct)
-            }
             CAMPAIGN.toLowerCase() -> {
                 mapToNewProductLaunchCampaignUiModel(widgetResponse, isLoggedIn)
             }
+            DYNAMIC.toLowerCase(Locale.getDefault()) -> if (isMyOwnProduct) null else mapCarouselPlayWidget(widgetResponse)
             else -> {
                 null
             }
@@ -237,9 +236,9 @@ object ShopPageHomeMapper {
     private fun mapCampaignListProduct(
             statusCampaign: String ,
             listProduct: List<ShopLayoutWidget.Widget.Data.Product>
-    ): List<ShopHomeProductViewModel> {
+    ): List<ShopHomeProductUiModel> {
         return listProduct.map {
-            ShopHomeProductViewModel().apply {
+            ShopHomeProductUiModel().apply {
                 id = it.id.toString()
                 name = it.name
                 displayedPrice = it.discountedPrice
@@ -350,17 +349,6 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToPlayWidgetUiModel(widgetModel: ShopLayoutWidget.Widget, isMyOwnProduct: Boolean): ShopHomePlayCarouselUiModel? {
-        if(isMyOwnProduct) return null
-        return ShopHomePlayCarouselUiModel(
-                widgetId = widgetModel.widgetID,
-                layoutOrder = widgetModel.layoutOrder,
-                name = widgetModel.name,
-                type = widgetModel.type,
-                header = mapToHeaderModel(widgetModel.header)
-        )
-    }
-
     private fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
         return BaseShopHomeWidgetUiModel.Header(
                 header.title,
@@ -375,8 +363,8 @@ object ShopPageHomeMapper {
     private fun mapToWidgetProductListItemViewModel(
             data: List<ShopLayoutWidget.Widget.Data>,
             isMyOwnProduct: Boolean
-    ): List<ShopHomeProductViewModel> {
-        return mutableListOf<ShopHomeProductViewModel>().apply {
+    ): List<ShopHomeProductUiModel> {
+        return mutableListOf<ShopHomeProductUiModel>().apply {
             data.onEach {
                 add(mapToWidgetProductItem(it, isMyOwnProduct))
             }
@@ -386,8 +374,8 @@ object ShopPageHomeMapper {
     private fun mapToWidgetProductItem(
             response: ShopLayoutWidget.Widget.Data,
             isMyOwnProduct: Boolean
-    ): ShopHomeProductViewModel =
-            ShopHomeProductViewModel().apply {
+    ): ShopHomeProductUiModel =
+            ShopHomeProductUiModel().apply {
                 id = response.productID.toString()
                 name = response.name
                 displayedPrice = response.displayPrice
@@ -415,4 +403,15 @@ object ShopPageHomeMapper {
                 model.isAvailable
         )
     }
+
+    /*
+     * Play widget
+     */
+    private fun mapCarouselPlayWidget(model: ShopLayoutWidget.Widget) = CarouselPlayWidgetUiModel(
+            widgetId = model.widgetID,
+            layoutOrder = model.layoutOrder,
+            name = model.name,
+            type = model.type,
+            header = mapToHeaderModel(model.header)
+    )
 }

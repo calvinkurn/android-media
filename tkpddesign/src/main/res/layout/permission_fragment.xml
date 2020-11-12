@@ -74,7 +74,7 @@
         android:paddingTop="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12"
         android:text="@string/design_beri_akses"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_goneMarginTop="@dimen/dp_16"

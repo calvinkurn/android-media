@@ -102,7 +102,7 @@ public interface OrderListDetailContract {
 
         void finishOrderDetail();
 
-        void showSucessMessage(String message);
+        void showSuccessMessage(String message);
 
         void showSuccessMessageWithAction(String message);
 

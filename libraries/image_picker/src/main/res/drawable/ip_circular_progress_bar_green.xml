@@ -6,7 +6,7 @@
             android:thickness="@dimen/dp_3"
             android:useLevel="false">
 
-            <solid android:color="@color/white_two"/>
+            <solid android:color="@color/Unify_N100"/>
         </shape>
     </item>
 
@@ -16,7 +16,7 @@
             android:thickness="@dimen/dp_3"
             android:useLevel="true">
 
-            <solid android:color="@color/tkpd_main_green"/>
+            <solid android:color="@color/Unify_G400"/>
         </shape>
     </item>
 
