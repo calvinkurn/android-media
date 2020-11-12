@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.shopwidget.shopcard.ShopCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/shopCardView"
-    android:layout_width="match_parent"
+    android:id="@+id/adsBannerShopCardView"
     android:layout_height="wrap_content"
-    android:foreground="?attr/selectableItemBackground" />
+    android:layout_width="match_parent" />
