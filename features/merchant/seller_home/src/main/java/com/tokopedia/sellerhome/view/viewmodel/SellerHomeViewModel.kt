@@ -100,13 +100,13 @@ class SellerHomeViewModel @Inject constructor(
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                liveData.postValue(Success(useCase.executeOnBackground()))
+                liveData.value = Success(useCase.executeOnBackground())
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        liveData.postValue(Success(useCase.executeOnBackground()))
+        liveData.value = Success(useCase.executeOnBackground())
     }
 
     fun getTicker() {
@@ -114,7 +114,7 @@ class SellerHomeViewModel @Inject constructor(
             getTickerUseCase.get().params = GetTickerUseCase.createParams(TICKER_PAGE_NAME)
             getDataFromUseCase(getTickerUseCase.get(), _homeTicker)
         }, onError = {
-            _homeTicker.postValue(Fail(it))
+            _homeTicker.value = Fail(it)
         })
     }
 
@@ -123,7 +123,7 @@ class SellerHomeViewModel @Inject constructor(
             getLayoutUseCase.get().params = GetLayoutUseCase.getRequestParams(shopId, SELLER_HOME_PAGE_NAME)
             getDataFromUseCase(getLayoutUseCase.get(), _widgetLayout)
         }, onError = {
-            _widgetLayout.postValue(Fail(it))
+            _widgetLayout.value = Fail(it)
         })
     }
 
@@ -132,7 +132,7 @@ class SellerHomeViewModel @Inject constructor(
             getCardDataUseCase.get().params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getCardDataUseCase.get(), _cardWidgetData)
         }, onError = {
-            _cardWidgetData.postValue(Fail(it))
+            _cardWidgetData.value = Fail(it)
         })
     }
 
@@ -141,7 +141,7 @@ class SellerHomeViewModel @Inject constructor(
             getLineGraphDataUseCase.get().params = GetLineGraphDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getLineGraphDataUseCase.get(), _lineGraphWidgetData)
         }, onError = {
-            _lineGraphWidgetData.postValue(Fail(it))
+            _lineGraphWidgetData.value = Fail(it)
         })
     }
 
@@ -151,7 +151,7 @@ class SellerHomeViewModel @Inject constructor(
             getProgressDataUseCase.get().params = GetProgressDataUseCase.getRequestParams(today, dataKeys)
             getDataFromUseCase(getProgressDataUseCase.get(), _progressWidgetData)
         }, onError = {
-            _progressWidgetData.postValue(Fail(it))
+            _progressWidgetData.value = Fail(it)
         })
     }
 
@@ -160,7 +160,7 @@ class SellerHomeViewModel @Inject constructor(
             getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getPostDataUseCase.get(), _postListWidgetData)
         }, onError = {
-            _postListWidgetData.postValue(Fail(it))
+            _postListWidgetData.value = Fail(it)
         })
     }
 
@@ -169,7 +169,7 @@ class SellerHomeViewModel @Inject constructor(
             getCarouselDataUseCase.get().params = GetCarouselDataUseCase.getRequestParams(dataKeys)
             getDataFromUseCase(getCarouselDataUseCase.get(), _carouselWidgetData)
         }, onError = {
-            _carouselWidgetData.postValue(Fail(it))
+            _carouselWidgetData.value = Fail(it)
         })
     }
 
@@ -178,7 +178,7 @@ class SellerHomeViewModel @Inject constructor(
             getTableDataUseCase.get().params = GetTableDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getTableDataUseCase.get(), _tableWidgetData)
         }, onError = {
-            _tableWidgetData.postValue(Fail(it))
+            _tableWidgetData.value = Fail(it)
         })
     }
 
@@ -187,7 +187,7 @@ class SellerHomeViewModel @Inject constructor(
             getPieChartDataUseCase.get().params = GetPieChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getPieChartDataUseCase.get(), _pieChartWidgetData)
         }, onError = {
-            _pieChartWidgetData.postValue(Fail(it))
+            _pieChartWidgetData.value = Fail(it)
         })
     }
 
@@ -196,7 +196,7 @@ class SellerHomeViewModel @Inject constructor(
             getBarChartDataUseCase.get().params = GetBarChartDataUseCase.getRequestParams(dataKeys, dynamicParameter)
             getDataFromUseCase(getBarChartDataUseCase.get(), _barChartWidgetData)
         }, onError = {
-            _barChartWidgetData.postValue(Fail(it))
+            _barChartWidgetData.value = Fail(it)
         })
     }
 
@@ -206,9 +206,9 @@ class SellerHomeViewModel @Inject constructor(
                 getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.get().executeOnBackground()
             })
-            _shopLocation.postValue(result)
+            _shopLocation.value = result
         }, onError = {
-            _shopLocation.postValue(Fail(it))
+            _shopLocation.value = Fail(it)
         })
     }
 }
