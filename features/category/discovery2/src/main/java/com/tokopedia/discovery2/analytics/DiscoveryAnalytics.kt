@@ -15,12 +15,12 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlin.collections.set
 
-class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
-                         val pagePath: String = EMPTY_STRING,
-                         val pageIdentifier: String = EMPTY_STRING,
-                         val campaignCode: String = EMPTY_STRING,
-                         val sourceIdentifier: String = EMPTY_STRING,
-                         val trackingQueue: TrackingQueue) {
+open class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
+                              val pagePath: String = EMPTY_STRING,
+                              val pageIdentifier: String = EMPTY_STRING,
+                              val campaignCode: String = EMPTY_STRING,
+                              val sourceIdentifier: String = EMPTY_STRING,
+                              val trackingQueue: TrackingQueue) {
 
     private var eventDiscoveryCategory: String = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
     private var productCardImpressionLabel: String = EMPTY_STRING

@@ -17,6 +17,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
+import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.di.DiscoveryComponent
 import com.tokopedia.discovery2.di.DiscoveryModule
@@ -24,7 +25,9 @@ import com.tokopedia.discovery2.di.DiscoveryRepoProvider
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.tokopoints_item_layout.*
 import javax.inject.Inject
 
 
@@ -37,11 +40,14 @@ const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
 
 open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
-    private lateinit var discoveryViewModel: DiscoveryViewModel
+    protected lateinit var discoveryViewModel: DiscoveryViewModel
 
     @JvmField
     @Inject
     var pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface? = null
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -191,6 +197,28 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         }
     }
 
-    open fun getNewRepoProvider() : RepositoryProvider = DiscoveryRepoProvider()
+    open fun getNewRepoProvider(): RepositoryProvider = DiscoveryRepoProvider()
+
+    open fun getAnalyticsClass() = ::DiscoveryAnalytics
+
+    open fun getPagePath() = discoveryViewModel.pagePath
+
+    open fun getPageType() = discoveryViewModel.pageType
+
+    open fun getPageIdentifier() = discoveryViewModel.pageIdentifier
+
+    open fun getCampaignCode() = discoveryViewModel.campaignCode
+
+    fun getSourceIdentifier() = intent.getStringExtra(SOURCE) ?: ""
+
+    open fun getAnalytics(): DiscoveryAnalytics {
+        return getAnalyticsClass().invoke(getPageType(),
+                getPagePath(),
+                getPageIdentifier(),
+                getCampaignCode(),
+                getSourceIdentifier(),
+                trackingQueue)
+    }
+
 
 }

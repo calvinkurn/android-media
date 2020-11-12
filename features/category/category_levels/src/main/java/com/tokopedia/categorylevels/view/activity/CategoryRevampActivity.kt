@@ -1,9 +1,13 @@
 package com.tokopedia.categorylevels.view.activity
 
 import android.os.Bundle
+import com.tokopedia.categorylevels.analytics.CategoryPageAnalyticss
 import com.tokopedia.categorylevels.di.CategoryRepoProvider
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlin.reflect.KFunction6
 
 class CategoryRevampActivity : DiscoveryActivity() {
 
@@ -23,4 +27,6 @@ class CategoryRevampActivity : DiscoveryActivity() {
         }
         return CategoryRepoProvider(departmentName, departmentId)
     }
+
+    override fun getAnalyticsClass() = :: CategoryPageAnalyticss
 }

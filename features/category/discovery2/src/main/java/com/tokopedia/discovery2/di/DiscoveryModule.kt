@@ -153,4 +153,5 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     fun providePageLoadTimePerformanceMonitoring() : PageLoadTimePerformanceInterface {
         return repoProvider.providePageLoadTimePerformanceMonitoring()
     }
+
 }
