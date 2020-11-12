@@ -8,6 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import kotlinx.android.synthetic.main.filter_checkbox_item.view.*
+import kotlinx.android.synthetic.main.filter_checkbox_item.view.cb_filter
+import kotlinx.android.synthetic.main.filter_checkbox_item.view.label_checkbox
+import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.*
 
 class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckboxFilterListener):
         RecyclerView.Adapter<SomSubFilterCheckboxAdapter.CheckboxViewHolder>(){
@@ -69,9 +72,8 @@ class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckb
                 cb_filter.isChecked = item.isSelected
 
                 setOnClickListener {
-                    checkBoxClicked(cb_filter.isChecked)
+                    cb_filter.isChecked = cb_filter.isChecked != true
                 }
-
                 cb_filter.setOnCheckedChangeListener { _, isChecked ->
                     checkBoxClicked(isChecked)
                 }
