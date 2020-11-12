@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.util
 
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_PENAWARAN
@@ -25,8 +26,11 @@ object ShopUtil {
         }
     }
 
-    fun isUsingNewNavigation(abTestPlatform: AbTestPlatform?): Boolean {
-        val navType = abTestPlatform?.getString(ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_KEY, ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_OLD_VALUE)
+    fun isUsingNewNavigation(): Boolean {
+        val navType = RemoteConfigInstance.getInstance().abTestPlatform?.getString(
+                ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_KEY,
+                ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_OLD_VALUE
+        )
         return navType == ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_NEW_VALUE
     }
 }

@@ -50,9 +50,7 @@ import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -193,23 +191,23 @@ class ShopPageFragment :
     private lateinit var errorButton: View
     private val iconTabHome: Int
         get() = R.drawable.ic_shop_tab_home_new.takeIf {
-            isUsingNewNavigation(abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_home_inactive
     private val iconTabProduct: Int
         get() = R.drawable.ic_shop_tab_product_new.takeIf {
-            isUsingNewNavigation(abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_products_inactive
     private val iconTabFeed: Int
         get() = R.drawable.ic_shop_tab_feed_new.takeIf {
-            isUsingNewNavigation(abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_feed_inactive
     private val iconTabReview: Int
         get() = R.drawable.ic_shop_tab_review_new.takeIf {
-            isUsingNewNavigation(abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_shop_tab_review_inactive
     private val iconChatFloatingButton: Int
         get() = R.drawable.ic_chat_floating_button.takeIf {
-            isUsingNewNavigation(abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_chat_floating_button_old
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
@@ -233,7 +231,6 @@ class ShopPageFragment :
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
-    private var abTestPlatform: AbTestPlatform? = null
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -478,11 +475,6 @@ class ShopPageFragment :
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        abTestPlatform = RemoteConfigInstance.getInstance().abTestPlatform
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         stopPreparePltShopPage()
@@ -611,7 +603,7 @@ class ShopPageFragment :
             initOldToolbar()
         }
         else{
-            if (isUsingNewNavigation(abTestPlatform)) {
+            if (isUsingNewNavigation()) {
                 initNewToolbar()
             } else {
                 initOldToolbar()

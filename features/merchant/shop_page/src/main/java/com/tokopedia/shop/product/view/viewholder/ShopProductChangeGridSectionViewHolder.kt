@@ -31,17 +31,17 @@ class ShopProductChangeGridSectionViewHolder(
 
     private val drawableProductGridList : Int
         get() = R.drawable.ic_shop_page_product_grid_list.takeIf {
-            ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)
+            ShopUtil.isUsingNewNavigation()
         } ?: R.drawable.ic_shop_page_product_grid_list_old
 
     private val drawableProductGridSmall : Int
         get() = R.drawable.ic_shop_page_product_grid_small.takeIf {
-            ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)
+            ShopUtil.isUsingNewNavigation()
         } ?: R.drawable.ic_shop_page_product_grid_small_old
 
     private val drawableProductGridBig : Int
         get() = R.drawable.ic_shop_page_product_grid_big.takeIf {
-            ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)
+            ShopUtil.isUsingNewNavigation()
         } ?: R.drawable.ic_shop_page_product_grid_big_old
 
     override fun bind(model: ShopProductChangeGridSectionUiModel) {
@@ -56,7 +56,7 @@ class ShopProductChangeGridSectionViewHolder(
         itemView.iv_grid_icon?.setOnClickListener {
             listener.onChangeProductGridClicked(switchGridLayout(model.gridType))
         }
-        if(ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)){
+        if(ShopUtil.isUsingNewNavigation()){
             itemView.label_tampilan?.hide()
         }else{
             itemView.label_tampilan?.show()

@@ -68,14 +68,14 @@ internal class ShopPageFragmentPagerAdapter(
     }
 
     private fun getTabInactiveColor(): Int {
-        return if (ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform))
+        return if (ShopUtil.isUsingNewNavigation())
             R.color.color_gray_shop_tab_new
         else
             R.color.color_gray_shop_tab
     }
 
     private fun getTabActivateColor(): Int {
-        return if (ShopUtil.isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform))
+        return if (ShopUtil.isUsingNewNavigation())
             R.color.color_green_shop_tab_new
         else
             R.color.color_green_shop_tab

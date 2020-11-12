@@ -39,15 +39,15 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
     private var isShopFavorite = false
     private val shopPageProfileBadgeView: AppCompatImageView
         get() = view.shop_page_main_profile_badge.takeIf {
-            isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)
+            isUsingNewNavigation()
         }?: view.shop_page_main_profile_badge_old
     private val locationImageIcon : Int
         get() = R.drawable.ic_shop_location.takeIf {
-            isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_shop_location_old
     private val followerImageIcon : Int
         get() = R.drawable.ic_shop_follower.takeIf {
-            isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)
+            isUsingNewNavigation()
         } ?: R.drawable.ic_shop_follower_old
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
@@ -94,7 +94,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         else
             view.shop_page_main_profile_free_ongkir.hide()
 
-        if(isUsingNewNavigation(RemoteConfigInstance.getInstance().abTestPlatform)) {
+        if(isUsingNewNavigation()) {
             view.shop_page_chevron_shop_info.show()
             view.shop_page_chevron_shop_info.setOnClickListener {
                 listener.openShopInfo()
