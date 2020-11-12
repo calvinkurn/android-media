@@ -64,8 +64,15 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
 
     override fun gotoNextPage() {
         stepperModel?.minBid = minSuggestedBid
+        stepperModel?.manualSelectedKeywords = getManualAddedKeywords()
         stepperModel?.selectedKeywords = getSelectedKeywords()
         stepperListener?.goToNextPage(stepperModel)
+    }
+
+    private fun getManualAddedKeywords(): MutableList<KeywordDataItem> {
+        return keywordSelectedAdapter.items.map {
+            it
+        }.toMutableList()
     }
 
     private fun getSelectedKeywords(): MutableList<KeywordDataItem> {
@@ -81,6 +88,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     override fun populateView() {
         setAdapter()
         setToolTip()
+        setInitialSetup()
         addBtn?.setOnClickListener {
             addManualKeywords()
         }
@@ -112,6 +120,13 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         })
         btnNext.setOnClickListener {
             gotoNextPage()
+        }
+    }
+
+    private fun setInitialSetup() {
+        stepperModel?.manualSelectedKeywords?.let {
+            keywordSelectedAdapter.items.addAll(it)
+            keywordSelectedAdapter.notifyDataSetChanged()
         }
     }
 
@@ -167,7 +182,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         keywordSelectedAdapter = TopAdsHeadlineKeySelectedAdapter(::onItemUnselect, ::onError)
-        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onError)
+        keywordListAdapter = TopAdsHeadlineKeyAdapter(::onItemChecked, ::onError, stepperModel?.selectedKeywords)
         getLatestBid()
         viewModel.getSuggestionKeyword(stepperModel?.selectedProductIds?.joinToString(","), 0, ::onSuccessSuggestionKeywords, ::onEmptySuggestion)
     }

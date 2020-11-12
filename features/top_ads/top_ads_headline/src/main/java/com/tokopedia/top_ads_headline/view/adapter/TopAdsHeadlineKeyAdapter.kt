@@ -15,8 +15,9 @@ import kotlinx.android.synthetic.main.topads_headline_keyword_item.view.*
  * Created by Pika on 6/10/20.
  */
 
-class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
-                               private val onError: ((enable: Boolean) -> Unit)) : RecyclerView.Adapter<TopAdsHeadlineKeyAdapter.ViewHolder>() {
+class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
+                               private val onError: (enable: Boolean) -> Unit,
+                               private val selectedKeywords: MutableList<KeywordDataItem>?) : RecyclerView.Adapter<TopAdsHeadlineKeyAdapter.ViewHolder>() {
 
     var items: MutableList<KeywordDataItem> = mutableListOf()
     private var minimumBid: Int = 0
@@ -38,7 +39,20 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordDesc.text = String.format(holder.view.context.getString(R.string.topads_headline_keyword_desc), convertToCurrency(items[holder.adapterPosition].totalSearch.toLong()))
         holder.view.keywordBid.textFieldInput.setText(convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
-        holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
+        if (selectedKeywords?.isEmpty() == true) {
+            holder.view.checkBox.isChecked = items[holder.adapterPosition].onChecked
+            holder.view.keywordBid.textFieldInput.setText(convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
+        }
+        else {
+            holder.view.checkBox.isChecked = false
+            selectedKeywords?.forEach {
+                if(it.keyword == items[holder.adapterPosition].keyword){
+                    holder.view.checkBox.isChecked = true
+                    holder.view.keywordBid.textFieldInput.setText(convertToCurrency(it.bidSuggest.toLong()))
+                    return@forEach
+                }
+            }
+        }
         holder.view.setOnClickListener {
             holder.view.checkBox.isChecked = !holder.view.checkBox.isChecked
             items[holder.adapterPosition].onChecked = holder.view.checkBox.isChecked
@@ -98,7 +112,6 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
         notifyDataSetChanged()
     }
 
-
     fun getSelectItems(): MutableList<KeywordDataItem> {
         val list: MutableList<KeywordDataItem> = mutableListOf()
         items.forEach {
@@ -107,6 +120,4 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: ((pos: Int) -> Unit),
         }
         return list
     }
-
-
 }
