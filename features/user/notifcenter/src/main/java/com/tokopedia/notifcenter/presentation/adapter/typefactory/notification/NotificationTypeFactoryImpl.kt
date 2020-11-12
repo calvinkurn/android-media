@@ -13,13 +13,16 @@ import com.tokopedia.notifcenter.data.uimodel.*
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.*
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
 class NotificationTypeFactoryImpl constructor(
         viewListener: Any
 ) : BaseAdapterTypeFactory(), NotificationTypeFactory {
 
-    private val notificationListener = viewListener as? NotificationItemListener
-    private val loadMoreListener = viewListener as? LoadMoreViewHolder.Listener
+    var recommendationListener: RecommendationListener? = null
+
+    private val notificationListener = viewListener as NotificationItemListener
+    private val loadMoreListener = viewListener as LoadMoreViewHolder.Listener
 
     override fun type(sectionTitleUiModel: SectionTitleUiModel): Int {
         return SectionTitleViewHolder.LAYOUT
@@ -96,9 +99,11 @@ class NotificationTypeFactoryImpl constructor(
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
-            RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view)
             NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)
             NotificationLoadingViewHolder.LAYOUT -> NotificationLoadingViewHolder(view)
+            RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(
+                    view, recommendationListener
+            )
             LoadMoreViewHolder.LAYOUT -> LoadMoreViewHolder(
                     view, loadMoreListener
             )

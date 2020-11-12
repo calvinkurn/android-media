@@ -2,13 +2,16 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 
-class RecommendationViewHolder(
-        itemView: View?
+class RecommendationViewHolder constructor(
+        itemView: View?,
+        private val recommendationListener: RecommendationListener?
 ) : AbstractViewHolder<RecommendationUiModel>(itemView) {
 
     private val productCard: ProductCardGridView? = itemView?.findViewById(
@@ -50,19 +53,23 @@ class RecommendationViewHolder(
                             hasThreeDots = true
                     )
             )
-//            setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
-//                override fun onViewHint() {
-//                    recommendationListener.onProductImpression(element.recommendationItem)
-//                }
-//            })
-//
-//            setOnClickListener {
-//                recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
-//            }
-//
-//            setThreeDotsOnClickListener {
-//                recommendationListener.onThreeDotsClick(element.recommendationItem, adapterPosition)
-//            }
+            setImageProductViewHintListener(element.recommendationItem, object : ViewHintListener {
+                override fun onViewHint() {
+                    recommendationListener?.onProductImpression(element.recommendationItem)
+                }
+            })
+
+            setOnClickListener {
+                recommendationListener?.onProductClick(
+                        element.recommendationItem, null
+                )
+            }
+
+            setThreeDotsOnClickListener {
+                recommendationListener?.onThreeDotsClick(
+                        element.recommendationItem, adapterPosition
+                )
+            }
         }
     }
 

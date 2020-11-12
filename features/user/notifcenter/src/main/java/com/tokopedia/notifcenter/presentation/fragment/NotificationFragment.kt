@@ -24,6 +24,7 @@ import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -32,6 +33,7 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.di.module.NotificationContextModule
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 import com.tokopedia.notifcenter.presentation.adapter.decoration.NotificationItemDecoration
@@ -41,10 +43,12 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -56,12 +60,18 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    @Inject
+    lateinit var analytic: NotificationAnalytic
+
+    private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     private var rv: RecyclerView? = null
     private var rvAdapter: NotificationAdapter? = null
-    private var rvLm = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
     private var rvScrollListener: NotificationEndlessRecyclerViewScrollListener? = null
+    private var rvTypeFactory: NotificationTypeFactoryImpl? = null
     private var filter: NotificationFilterView? = null
     private var containerListener: InboxFragmentContainer? = null
+    private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
+    private var trackingQueue: TrackingQueue? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -71,7 +81,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_layout
     override fun getScreenName(): String = "Notification"
-    override fun getAdapterTypeFactory() = NotificationTypeFactoryImpl(this)
     override fun onItemClicked(t: Visitable<*>?) {}
     override fun isAutoLoadEnabled(): Boolean = true
 
@@ -93,6 +102,21 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initRecommendationComponent()
+    }
+
+    private fun initRecommendationComponent() {
+        context?.let {
+            trackingQueue = TrackingQueue(it)
+            recommendationLifeCycleAware = RecommendationLifeCycleAware(
+                    analytic, trackingQueue, rvAdapter, viewModel, this, it
+            )
+        }
+        rvTypeFactory?.recommendationListener = recommendationLifeCycleAware
+    }
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -111,6 +135,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, NotificationTypeFactory> {
         rvAdapter = NotificationAdapter(adapterTypeFactory)
         return rvAdapter as NotificationAdapter
+    }
+
+    override fun getAdapterTypeFactory(): NotificationTypeFactory {
+        rvTypeFactory = NotificationTypeFactoryImpl(this)
+        return rvTypeFactory!!
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -235,6 +264,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         DaggerNotificationComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .commonModule(context?.let { CommonModule(it) })
+                .notificationContextModule(context?.let { NotificationContextModule(it) })
                 .build()
                 .inject(this)
     }
@@ -259,6 +289,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        recommendationLifeCycleAware?.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_CHECKOUT -> onReturnFromCheckout(resultCode, data)
         }
@@ -328,8 +359,6 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     companion object {
-
         private const val REQUEST_CHECKOUT = 0
-
     }
 }
