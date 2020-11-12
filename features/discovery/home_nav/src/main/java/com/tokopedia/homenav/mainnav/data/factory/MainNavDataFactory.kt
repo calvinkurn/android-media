@@ -1,5 +1,6 @@
 package com.tokopedia.homenav.mainnav.data.factory
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
@@ -12,5 +13,5 @@ interface MainNavDataFactory {
     fun addSeparatorSection(): MainNavDataFactory
     fun addBUListSection(categoryData: List<DynamicHomeIconEntity.Category>?): MainNavDataFactory
 
-    fun build(): List<HomeNavVisitable>
+    fun build(): List<Visitable<*>>
 }

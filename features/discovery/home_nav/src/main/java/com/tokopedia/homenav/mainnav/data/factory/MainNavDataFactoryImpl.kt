@@ -2,6 +2,7 @@ package com.tokopedia.homenav.mainnav.data.factory
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.mainnav.data.mapper.toVisitable
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
@@ -15,7 +16,7 @@ class MainNavDataFactoryImpl(
         private val userSession: UserSessionInterface
 ): MainNavDataFactory {
 
-    private var visitableList: MutableList<HomeNavVisitable> = mutableListOf()
+    private var visitableList: MutableList<Visitable<*>> = mutableListOf()
     private lateinit var userPojo: UserPojo
 
     override fun buildVisitableList(userPojo: UserPojo): MainNavDataFactory {
@@ -51,7 +52,7 @@ class MainNavDataFactoryImpl(
         return this
     }
 
-    override fun build(): List<HomeNavVisitable> {
+    override fun build(): List<Visitable<*>> {
         return visitableList
     }
 

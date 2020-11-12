@@ -13,18 +13,24 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.homenav.R
-import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
+import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
-import com.tokopedia.homenav.mainnav.view.adapter.MainNavAdapter
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactoryImpl
-import com.tokopedia.homenav.mainnav.view.analytics.MainNavAnalytics
+import com.tokopedia.homenav.mainnav.view.adapter.viewholder.MainNavListAdapter
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingBuSection
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingTransactionSection
+import com.tokopedia.homenav.mainnav.view.analytics.TrackingUserMenuSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
@@ -45,10 +51,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     @Inject
     lateinit var viewModel: MainNavViewModel
-
     lateinit var recyclerView: RecyclerView
     lateinit var layoutManager: LinearLayoutManager
-    lateinit var adapter: MainNavAdapter
+    lateinit var adapter: MainNavListAdapter
 
     private lateinit var userSession: UserSessionInterface
 
@@ -159,12 +164,32 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
         view?.let {
-            MainNavAnalytics.onClickBusinessUnitItem(homeNavMenuViewModel.itemTitle, userSession.userId)
-            NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                    bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
+            if (homeNavMenuViewModel.sectionId == MainNavConst.Section.BU_ICON) {
+                TrackingBuSection.onClickBusinessUnitItem(homeNavMenuViewModel.itemTitle, userSession.userId)
+                NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+                        bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
+            } else {
+                hitClickTrackingBasedOnId(homeNavMenuViewModel)
+            }
         }
     }
 
+    private fun hitClickTrackingBasedOnId(homeNavMenuViewModel: HomeNavMenuViewModel) {
+        when(homeNavMenuViewModel.id) {
+            ID_ALL_TRANSACTION -> TrackingTransactionSection.clickOnAllTransaction(userSession.userId)
+            ID_TICKET -> TrackingTransactionSection.clickOnTicket(userSession.userId)
+            ID_REVIEW -> TrackingTransactionSection.clickOnReview(userSession.userId)
+            else -> TrackingUserMenuSection.clickOnUserMenu(homeNavMenuViewModel.itemTitle, userSession.userId)
+        }
+    }
+
+    override fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel) {
+
+    }
+
+    override fun getUserId(): String {
+        return userSession.userId
+    }
 
     private fun observeCategoryListData(){
         onRefresh()
@@ -177,14 +202,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
-        adapter = MainNavAdapter(mainNavFactory)
+        adapter = MainNavListAdapter(mainNavFactory)
         layoutManager = LinearLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
 
     private fun populateAccountHeader(data: AccountHeaderViewModel) {
-        val dataList: List<HomeNavVisitable> = mutableListOf(data)
+        val dataList: List<Visitable<*>> = mutableListOf(data)
         adapter.submitList(dataList)
     }
 
@@ -200,14 +225,4 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         }
         return userSession
     }
-
-    private fun haveUserLogoutData(): Boolean {
-        val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
-        return name.isNotEmpty()
-    }
-
-    private fun getSharedPreference(): SharedPreferences {
-        return requireContext().getSharedPreferences(AccountHeaderViewModel.STICKY_LOGIN_REMINDER_PREF, Context.MODE_PRIVATE)
-    }
-
 }

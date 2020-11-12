@@ -114,28 +114,16 @@
         app:typographyType="heading_6"
         tools:text="Rp100.000" />
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_message"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:visibility="gone"
-        app:closeButtonVisibility="gone"
-        app:descriptionText="Barang mengandung nikotin atau tembakau tidak dapat dibeli di aplikasi Android"
-        app:layout_constraintEnd_toEndOf="@id/tv_product_name"
-        app:layout_constraintStart_toStartOf="@id/iv_product_card"
-        app:layout_constraintTop_toBottomOf="@id/iv_product_card"
-        app:tickerShapeType="loose"
-        app:tickerType="warning"
-        tools:layout_height="@dimen/dp_56" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_move_to_wishlist"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_24"
+        android:paddingStart="0dp"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         android:ellipsize="end"
         android:maxLines="1"
         android:text="@string/label_move_to_wishlist"
