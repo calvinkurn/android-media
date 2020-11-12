@@ -2,10 +2,7 @@ package com.tokopedia.home.util
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -50,7 +47,7 @@ class DeleteWidgetCommand(private val visitable: Visitable<*>?, private val posi
     }
 }
 
-class HomeCommandProcessor (dispatchers: CoroutineDispatcher): CoroutineScope{
+class HomeCommandProcessor (val dispatchers: CoroutineDispatcher): CoroutineScope{
     companion object{
         private const val CAPACITY_QUEUE = 15
     }
@@ -58,12 +55,16 @@ class HomeCommandProcessor (dispatchers: CoroutineDispatcher): CoroutineScope{
     override val coroutineContext: CoroutineContext = dispatchers + masterJob
 
     fun sendWithQueueMethod(orderCommand: SubmitCommand) {
-        orderCommand.send()
+        launch {
+            orderCommand.send()
+        }
     }
 
     fun sendWithQueueMethod(orderCommands: List<SubmitCommand>){
-        orderCommands.forEach {
-            it.send()
+        launch {
+            orderCommands.forEach {
+                it.send()
+            }
         }
     }
 
