@@ -37,6 +37,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilter
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.usecase.RequestParams
@@ -916,37 +917,55 @@ class DynamicProductDetailViewModelTest {
     @Test
     fun onSuccessToggleFavoriteShop() {
         val shopId = "1234"
+        val data = FollowShop()
+        data.isSuccess = true
+
         coEvery {
-            toggleFavoriteUseCase.executeOnBackground().followShop.isSuccess
-        } returns anyBoolean()
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop
+        } returns data
 
         viewModel.toggleFavorite(shopId)
 
-        verify {
-            toggleFavoriteUseCase.createRequestParam(shopId)
-            toggleFavoriteUseCase.createRequestParam(shopId)
-        }
         coVerify {
-            toggleFavoriteUseCase.executeOnBackground()
+            toggleFavoriteUseCase.executeOnBackground(any())
         }
 
-        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data, anyBoolean())
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, false)
+    }
+
+    @Test
+    fun onSuccessToggleFavoriteShopNpl() {
+        val shopId = "1234"
+        val isNpl = true
+        val data = FollowShop()
+        data.isSuccess = true
+
+        coEvery {
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop
+        } returns data
+
+        viewModel.toggleFavorite(shopId, isNpl)
+
+        coVerify {
+            toggleFavoriteUseCase.executeOnBackground(any())
+        }
+
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.first, true)
+        Assert.assertEquals((viewModel.toggleFavoriteResult.value as Success).data.second, isNpl)
     }
 
     @Test
     fun onErrorToggleFavoriteShop() {
         val shopId = "1234"
         coEvery {
-            toggleFavoriteUseCase.executeOnBackground().followShop.isSuccess
+            toggleFavoriteUseCase.executeOnBackground(any()).followShop.isSuccess
         } throws Throwable()
 
         viewModel.toggleFavorite(shopId)
 
-        verify {
-            toggleFavoriteUseCase.createRequestParam(shopId)
-        }
         coVerify {
-            toggleFavoriteUseCase.executeOnBackground()
+            toggleFavoriteUseCase.executeOnBackground(any())
         }
 
         Assert.assertTrue(viewModel.toggleFavoriteResult.value is Fail)

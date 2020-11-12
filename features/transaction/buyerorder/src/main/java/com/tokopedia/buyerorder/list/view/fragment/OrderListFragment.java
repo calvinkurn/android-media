@@ -88,6 +88,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -636,17 +637,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+        }
     }
 
     @Override
     public void showFailureMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        if (getView() != null) {
+            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+        }
     }
 
     @Override
@@ -1030,12 +1037,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         intent.putExtra("OrderId", selectedOrderId);
         intent.putExtra("action_button_url", actionButtonUri);
         if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
-            if (presenter.shouldShowTimeForCancellation()) {
-                Toaster.INSTANCE.showErrorWithAction(mainContent,
+            if (presenter.shouldShowTimeForCancellation() && getView() != null) {
+                Toaster.build(getView(),
                         presenter.getCancelTime(),
                         Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
                         getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
-                        });
+                        }).show();
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
         } else if (status.status().equals(STATUS_CODE_11)) {

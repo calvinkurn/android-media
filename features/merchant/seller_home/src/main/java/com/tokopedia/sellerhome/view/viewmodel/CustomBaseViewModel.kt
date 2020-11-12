@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
 /**
