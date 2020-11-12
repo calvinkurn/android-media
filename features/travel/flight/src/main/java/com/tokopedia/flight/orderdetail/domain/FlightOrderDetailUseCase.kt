@@ -289,7 +289,12 @@ class FlightOrderDetailUseCase @Inject constructor(
                                                         value = bottomInfo.value
                                                 )
                                             }.toList(),
-                                            notes = cancellation.refundDetail.notes
+                                            notes = cancellation.refundDetail.notes.map { notes ->
+                                                OrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
+                                                        notes.key,
+                                                        notes.value
+                                                )
+                                            }
                                     )
                             )
                         }.toList()

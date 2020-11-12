@@ -658,7 +658,7 @@ class OrderDetailCancellation(
             val bottomInfo: List<OrderDetailRefundKeyValue> = arrayListOf(),
             @SerializedName("notes")
             @Expose
-            val notes: List<String> = arrayListOf()
+            val notes: List<OrderDetailRefundKeyValue> = arrayListOf()
     )
 
     class OrderDetailRefundKeyValue(

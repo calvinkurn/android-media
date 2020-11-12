@@ -28,7 +28,7 @@ data class OrderDetailCancellationModel(
             val topInfo: List<OrderDetailRefundKeyValueModel>,
             val middleInfo: List<OrderDetailRefundTitleContentModel>,
             val bottomInfo: List<OrderDetailRefundKeyValueModel>,
-            val notes: List<String>
+            val notes: List<OrderDetailRefundKeyValueModel>
     ) : Parcelable
 
     @Parcelize
