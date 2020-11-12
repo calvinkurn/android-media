@@ -4,11 +4,10 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 /**
- * @author by furqan on 16/10/2020
+ * @author by furqan on 13/11/2020
  */
 @Parcelize
-data class OrderDetailFareModel(
-        val adultNumeric: Long,
-        val childNumeric: Long,
-        val infantNumeric: Long
+class FlightOrderDetailSimpleModel(
+        val leftValue: String,
+        val rightValue: String
 ) : Parcelable

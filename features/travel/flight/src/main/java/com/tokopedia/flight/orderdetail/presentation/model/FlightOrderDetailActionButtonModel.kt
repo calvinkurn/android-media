@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailActionButtonModel(
+data class FlightOrderDetailActionButtonModel(
         val id: Int,
         val label: String,
         val buttonType: String,

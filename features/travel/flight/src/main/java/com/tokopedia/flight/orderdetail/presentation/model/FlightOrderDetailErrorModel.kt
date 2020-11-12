@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailErrorModel(
+data class FlightOrderDetailErrorModel(
         @SerializedName("ID")
         @Expose
         val id: String = "",

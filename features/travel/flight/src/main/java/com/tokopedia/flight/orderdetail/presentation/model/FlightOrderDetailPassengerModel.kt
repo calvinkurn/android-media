@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailPassengerModel(
+data class FlightOrderDetailPassengerModel(
         val passengerNo: Int,
         val id: Int,
         val type: Int,
@@ -21,6 +21,6 @@ data class OrderDetailPassengerModel(
         val passportNo: String,
         val passportCountry: String,
         val passportExpiry: String,
-        val amenities: List<OrderDetailAmenityModel>,
-        val cancelStatus: List<OrderDetailPassengerCancelStatusModel>
+        val amenities: List<FlightOrderDetailAmenityModel>,
+        val cancelStatus: List<FlightOrderDetailPassengerCancelStatusModel>
 ) : Parcelable

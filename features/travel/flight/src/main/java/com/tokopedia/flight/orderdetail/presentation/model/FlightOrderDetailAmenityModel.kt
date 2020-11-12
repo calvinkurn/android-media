@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailAmenityModel(
+data class FlightOrderDetailAmenityModel(
         val departureId: String,
         val arrivalId: String,
         val type: Int,

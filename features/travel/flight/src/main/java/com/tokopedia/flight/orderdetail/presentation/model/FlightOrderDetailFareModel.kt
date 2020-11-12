@@ -7,8 +7,8 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-class OrderDetailPassengerCancelStatusModel(
-        val status: Int,
-        val statusStr: String,
-        val statusType: String
+data class FlightOrderDetailFareModel(
+        val adultNumeric: Long,
+        val childNumeric: Long,
+        val infantNumeric: Long
 ) : Parcelable

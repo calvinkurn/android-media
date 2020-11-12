@@ -19,7 +19,7 @@ import javax.inject.Inject
 class FlightOrderDetailUseCase @Inject constructor(
         private val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(invoiceId: String, isFromCloud: Boolean = true): OrderDetailDataModel {
+    suspend fun execute(invoiceId: String, isFromCloud: Boolean = true): FlightOrderDetailDataModel {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(
                 if (isFromCloud) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
         useCase.clearRequest()
@@ -40,9 +40,9 @@ class FlightOrderDetailUseCase @Inject constructor(
         }
     }
 
-    private fun transformEntityToModel(orderDetailData: FlightOrderDetailEntity.OrderDetailData): OrderDetailDataModel =
+    private fun transformEntityToModel(orderDetailData: FlightOrderDetailEntity.OrderDetailData): FlightOrderDetailDataModel =
             orderDetailData.let {
-                OrderDetailDataModel(
+                FlightOrderDetailDataModel(
                         omsId = it.omsId,
                         createTime = it.createTime,
                         status = it.status,
@@ -69,7 +69,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                         contactUsURL = it.flight.contactUsURL,
                         hasETicket = it.flight.hasETicket,
                         payment = it.flight.payment.let { payment ->
-                            OrderDetailPaymentModel(
+                            FlightOrderDetailPaymentModel(
                                     id = payment.id,
                                     status = payment.status,
                                     statusStr = payment.statusStr,
@@ -98,7 +98,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         },
                         journeys = it.flight.journeys.map { journey ->
-                            OrderDetailJourneyModel(
+                            FlightOrderDetailJourneyModel(
                                     id = journey.id,
                                     status = journey.status,
                                     departureId = journey.departureId,
@@ -114,13 +114,13 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     addDayArrival = journey.addDayArrival,
                                     duration = journey.duration,
                                     durationMinute = journey.durationMinute,
-                                    fare = OrderDetailFareModel(
+                                    fare = FlightOrderDetailFareModel(
                                             adultNumeric = journey.fare.adultNumeric,
                                             childNumeric = journey.fare.childNumeric,
                                             infantNumeric = journey.fare.infantNumeric
                                     ),
                                     routes = journey.routes.map { route ->
-                                        OrderDetailRouteModel(
+                                        FlightOrderDetailRouteModel(
                                                 departureId = route.departureId,
                                                 departureTime = route.departureTime,
                                                 departureAirportName = route.departureAirportName,
@@ -146,18 +146,18 @@ class FlightOrderDetailUseCase @Inject constructor(
                                                 carrier = route.carrier,
                                                 stopDetails = route.stopDetails,
                                                 ticketNumbers = route.ticketNumbers.map { ticket ->
-                                                    OrderDetailRouteModel.OrderDetailTicketNumberModel(
+                                                    FlightOrderDetailRouteModel.OrderDetailTicketNumberModel(
                                                             passengerId = ticket.passengerId,
                                                             ticketNumber = ticket.ticketNumber
                                                     )
                                                 }.toList(),
-                                                freeAmenities = OrderDetailFreeAmenityModel(
-                                                        cabinBaggage = OrderDetailFreeAmenityModel.OrderDetailBaggageModel(
+                                                freeAmenities = FlightOrderDetailFreeAmenityModel(
+                                                        cabinBaggage = FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(
                                                                 isUpTo = route.freeAmenities.cabinBaggage.isUpTo,
                                                                 unit = route.freeAmenities.cabinBaggage.unit,
                                                                 value = route.freeAmenities.cabinBaggage.value
                                                         ),
-                                                        freeBaggage = OrderDetailFreeAmenityModel.OrderDetailBaggageModel(
+                                                        freeBaggage = FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(
                                                                 isUpTo = route.freeAmenities.freeBaggage.isUpTo,
                                                                 unit = route.freeAmenities.freeBaggage.unit,
                                                                 value = route.freeAmenities.freeBaggage.value
@@ -169,7 +169,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                                 )
                                         )
                                     }.toList(),
-                                    webCheckIn = OrderDetailWebCheckInModel(
+                                    webCheckIn = FlightOrderDetailWebCheckInModel(
                                             title = journey.webCheckIn.title,
                                             subtitle = journey.webCheckIn.subtitle,
                                             startTime = journey.webCheckIn.startTime,
@@ -181,7 +181,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         }.toList(),
                         passengers = it.flight.passengers.mapIndexed { index, passenger ->
-                            OrderDetailPassengerModel(
+                            FlightOrderDetailPassengerModel(
                                     passengerNo = index + 1,
                                     id = passenger.id,
                                     type = passenger.type,
@@ -196,7 +196,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     passportCountry = passenger.passportCountry,
                                     passportExpiry = passenger.passportExpiry,
                                     amenities = passenger.amenities.map { amenity ->
-                                        OrderDetailAmenityModel(
+                                        FlightOrderDetailAmenityModel(
                                                 departureId = amenity.departureId,
                                                 arrivalId = amenity.arrivalId,
                                                 type = amenity.type,
@@ -206,7 +206,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                                         )
                                     }.toList(),
                                     cancelStatus = passenger.cancelStatus.map { cancel ->
-                                        OrderDetailPassengerCancelStatusModel(
+                                        FlightOrderDetailPassengerCancelStatusModel(
                                                 status = cancel.status,
                                                 statusStr = cancel.statusStr,
                                                 statusType = cancel.statusType
@@ -215,7 +215,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         }.toList(),
                         actionButtons = it.flight.actionButtons.map { actionButton ->
-                            OrderDetailActionButtonModel(
+                            FlightOrderDetailActionButtonModel(
                                     id = actionButton.id,
                                     label = actionButton.label,
                                     buttonType = actionButton.buttonType,
@@ -227,7 +227,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         }.toList(),
                         conditionalInfos = it.flight.conditionalInfo.map { conditionalInfo ->
-                            OrderDetailConditionalInfoModel(
+                            FlightOrderDetailConditionalInfoModel(
                                     type = conditionalInfo.type,
                                     title = conditionalInfo.title,
                                     text = conditionalInfo.text,
@@ -236,7 +236,7 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         }.toList(),
                         insurances = it.flight.insurances.map { insurance ->
-                            OrderDetailInsuranceModel(
+                            FlightOrderDetailInsuranceModel(
                                     id = insurance.id,
                                     title = insurance.title,
                                     tagline = insurance.tagline,
@@ -245,10 +245,10 @@ class FlightOrderDetailUseCase @Inject constructor(
                             )
                         }.toList(),
                         cancellations = it.flight.cancellations.map { cancellation ->
-                            OrderDetailCancellationModel(
+                            FlightOrderDetailCancellationModel(
                                     cancelId = cancellation.cancelId,
                                     cancelDetails = cancellation.cancelDetail.map { cancelDetail ->
-                                        OrderDetailCancellationModel.OrderDetailCancellationDetail(
+                                        FlightOrderDetailCancellationModel.OrderDetailCancellationDetail(
                                                 journeyId = cancelDetail.journeyId,
                                                 passengerId = cancelDetail.passengerId,
                                                 refundedGateway = cancelDetail.refundedGateway,
@@ -265,18 +265,18 @@ class FlightOrderDetailUseCase @Inject constructor(
                                     statusStr = cancellation.statusStr,
                                     statusType = cancellation.statusType,
                                     refundInfo = cancellation.refundInfo,
-                                    refundDetail = OrderDetailCancellationModel.OrderDetailRefundDetailModel(
+                                    refundDetail = FlightOrderDetailCancellationModel.OrderDetailRefundDetailModel(
                                             topInfo = cancellation.refundDetail.topInfo.map { topInfo ->
-                                                OrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
+                                                FlightOrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
                                                         key = topInfo.key,
                                                         value = topInfo.value
                                                 )
                                             }.toList(),
                                             middleInfo = cancellation.refundDetail.middleInfo.map { middleInfo ->
-                                                OrderDetailCancellationModel.OrderDetailRefundTitleContentModel(
+                                                FlightOrderDetailCancellationModel.OrderDetailRefundTitleContentModel(
                                                         title = middleInfo.title,
                                                         content = middleInfo.content.map { content ->
-                                                            OrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
+                                                            FlightOrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
                                                                     key = content.key,
                                                                     value = content.value
                                                             )
@@ -284,13 +284,13 @@ class FlightOrderDetailUseCase @Inject constructor(
                                                 )
                                             }.toList(),
                                             bottomInfo = cancellation.refundDetail.bottomInfo.map { bottomInfo ->
-                                                OrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
+                                                FlightOrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
                                                         key = bottomInfo.key,
                                                         value = bottomInfo.value
                                                 )
                                             }.toList(),
                                             notes = cancellation.refundDetail.notes.map { notes ->
-                                                OrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
+                                                FlightOrderDetailCancellationModel.OrderDetailRefundKeyValueModel(
                                                         notes.key,
                                                         notes.value
                                                 )

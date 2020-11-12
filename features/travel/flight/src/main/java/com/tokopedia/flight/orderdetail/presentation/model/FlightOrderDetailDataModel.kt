@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailDataModel(
+data class FlightOrderDetailDataModel(
         val omsId: Int,
         val createTime: String,
         val status: Int,
@@ -33,11 +33,11 @@ data class OrderDetailDataModel(
         val classText: String,
         val contactUsURL: String,
         val hasETicket: Boolean,
-        val payment: OrderDetailPaymentModel,
-        val journeys: List<OrderDetailJourneyModel>,
-        val passengers: List<OrderDetailPassengerModel>,
-        val actionButtons: List<OrderDetailActionButtonModel>,
-        val conditionalInfos: List<OrderDetailConditionalInfoModel>,
-        val insurances: List<OrderDetailInsuranceModel>,
-        val cancellations: List<OrderDetailCancellationModel>
+        val payment: FlightOrderDetailPaymentModel,
+        val journeys: List<FlightOrderDetailJourneyModel>,
+        val passengers: List<FlightOrderDetailPassengerModel>,
+        val actionButtons: List<FlightOrderDetailActionButtonModel>,
+        val conditionalInfos: List<FlightOrderDetailConditionalInfoModel>,
+        val insurances: List<FlightOrderDetailInsuranceModel>,
+        val cancellations: List<FlightOrderDetailCancellationModel>
 ) : Parcelable

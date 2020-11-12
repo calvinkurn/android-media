@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailJourneyModel(
+data class FlightOrderDetailJourneyModel(
         val id: Int,
         val status: Int,
         val departureId: String,
@@ -23,9 +23,9 @@ data class OrderDetailJourneyModel(
         val addDayArrival: Int,
         val duration: String,
         val durationMinute: Int,
-        val fare: OrderDetailFareModel,
-        val routes: List<OrderDetailRouteModel>,
-        val webCheckIn: OrderDetailWebCheckInModel,
+        val fare: FlightOrderDetailFareModel,
+        val routes: List<FlightOrderDetailRouteModel>,
+        val webCheckIn: FlightOrderDetailWebCheckInModel,
         var airlineLogo: String? = null,
         var airlineName: String = "",
         var refundableInfo: Boolean = false,

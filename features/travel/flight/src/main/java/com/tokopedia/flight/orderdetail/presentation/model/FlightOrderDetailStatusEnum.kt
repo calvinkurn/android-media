@@ -3,7 +3,7 @@ package com.tokopedia.flight.orderdetail.presentation.model
 /**
  * @author by furqan on 26/10/2020
  */
-enum class OrderDetailStatusEnum(val value: Int) {
+enum class FlightOrderDetailStatusEnum(val value: Int) {
     EXPIRED(0),
     WAITING_FOR_PAYMENT(100),
     WAITING_FOR_THIRD_PARTY(101),

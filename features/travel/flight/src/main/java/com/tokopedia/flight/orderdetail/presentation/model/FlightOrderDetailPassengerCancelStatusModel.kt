@@ -7,10 +7,8 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailConditionalInfoModel(
-        val type: String,
-        val title: String,
-        val text: String,
-        val border: String,
-        val background: String
+class FlightOrderDetailPassengerCancelStatusModel(
+        val status: Int,
+        val statusStr: String,
+        val statusType: String
 ) : Parcelable

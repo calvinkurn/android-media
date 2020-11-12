@@ -5,7 +5,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.*
 /**
  * @author by furqan on 16/10/2020
  */
-val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
+val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         1,
         "0001-01-01T00:00:00Z",
         1,
@@ -30,7 +30,7 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
         false,
         "Ekonomi",
         "dummy contact us URL",
-        OrderDetailPaymentModel(
+        FlightOrderDetailPaymentModel(
                 1,
                 1,
                 "Paid",
@@ -58,7 +58,7 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
                 "Rp1.000.000"
         ),
         arrayListOf(
-                OrderDetailJourneyModel(
+                FlightOrderDetailJourneyModel(
                         1,
                         1,
                         "123",
@@ -74,13 +74,13 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
                         0,
                         "2j",
                         120,
-                        OrderDetailFareModel(
+                        FlightOrderDetailFareModel(
                                 1000000,
                                 0,
                                 0
                         ),
                         arrayListOf(
-                                OrderDetailRouteModel(
+                                FlightOrderDetailRouteModel(
                                         "123",
                                         "departure time",
                                         "departure airport",
@@ -106,9 +106,9 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
                                         "",
                                         arrayListOf(),
                                         arrayListOf(),
-                                        OrderDetailFreeAmenityModel(
-                                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                        FlightOrderDetailFreeAmenityModel(
+                                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
                                                 false,
                                                 false,
                                                 false,
@@ -116,7 +116,7 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
                                         )
                                 )
                         ),
-                        OrderDetailWebCheckInModel(
+                        FlightOrderDetailWebCheckInModel(
                                 "Check In",
                                 "",
                                 "",
@@ -128,7 +128,7 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
                 )
         ),
         arrayListOf(
-                OrderDetailPassengerModel(
+                FlightOrderDetailPassengerModel(
                         1,
                         1,
                         1,
@@ -152,7 +152,7 @@ val DUMMY_ORDER_DETAIL_DATA = OrderDetailDataModel(
         arrayListOf()
 )
 
-val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = OrderDetailJourneyModel(
+val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = FlightOrderDetailJourneyModel(
         1,
         1,
         "123",
@@ -168,13 +168,13 @@ val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = OrderDetailJourneyModel(
         0,
         "2j",
         120,
-        OrderDetailFareModel(
+        FlightOrderDetailFareModel(
                 1000000,
                 0,
                 0
         ),
         arrayListOf(
-                OrderDetailRouteModel(
+                FlightOrderDetailRouteModel(
                         "123",
                         "departure time",
                         "departure airport",
@@ -200,16 +200,16 @@ val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = OrderDetailJourneyModel(
                         "",
                         arrayListOf(),
                         arrayListOf(),
-                        OrderDetailFreeAmenityModel(
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                        FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
                                 false,
                                 false,
                                 false,
                                 arrayListOf()
                         )
                 ),
-                OrderDetailRouteModel(
+                FlightOrderDetailRouteModel(
                         "123",
                         "departure time",
                         "departure airport",
@@ -235,9 +235,9 @@ val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = OrderDetailJourneyModel(
                         "",
                         arrayListOf(),
                         arrayListOf(),
-                        OrderDetailFreeAmenityModel(
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                        FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
                                 false,
                                 false,
                                 false,
@@ -245,7 +245,7 @@ val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = OrderDetailJourneyModel(
                         )
                 )
         ),
-        OrderDetailWebCheckInModel(
+        FlightOrderDetailWebCheckInModel(
                 "Check In",
                 "",
                 "",
@@ -256,7 +256,7 @@ val DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE = OrderDetailJourneyModel(
         )
 )
 
-val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = OrderDetailJourneyModel(
+val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = FlightOrderDetailJourneyModel(
         1,
         1,
         "123",
@@ -272,13 +272,13 @@ val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = OrderDetailJourneyModel(
         0,
         "2j",
         120,
-        OrderDetailFareModel(
+        FlightOrderDetailFareModel(
                 1000000,
                 0,
                 0
         ),
         arrayListOf(
-                OrderDetailRouteModel(
+                FlightOrderDetailRouteModel(
                         "123",
                         "departure time",
                         "departure airport",
@@ -304,16 +304,16 @@ val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = OrderDetailJourneyModel(
                         "",
                         arrayListOf(),
                         arrayListOf(),
-                        OrderDetailFreeAmenityModel(
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                        FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
                                 false,
                                 false,
                                 false,
                                 arrayListOf()
                         )
                 ),
-                OrderDetailRouteModel(
+                FlightOrderDetailRouteModel(
                         "123",
                         "departure time",
                         "departure airport",
@@ -339,9 +339,9 @@ val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = OrderDetailJourneyModel(
                         "",
                         arrayListOf(),
                         arrayListOf(),
-                        OrderDetailFreeAmenityModel(
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
-                                OrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                        FlightOrderDetailFreeAmenityModel(
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
                                 false,
                                 false,
                                 false,
@@ -349,7 +349,7 @@ val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = OrderDetailJourneyModel(
                         )
                 )
         ),
-        OrderDetailWebCheckInModel(
+        FlightOrderDetailWebCheckInModel(
                 "Check In",
                 "",
                 "",

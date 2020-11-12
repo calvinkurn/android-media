@@ -7,10 +7,12 @@ import kotlinx.android.parcel.Parcelize
  * @author by furqan on 16/10/2020
  */
 @Parcelize
-data class OrderDetailInsuranceModel(
-        val id: String,
+data class FlightOrderDetailWebCheckInModel(
         val title: String,
-        val tagline: String,
-        val paidAmount: String,
-        val paidAmountNumeric: Long
+        val subtitle: String,
+        val startTime: String,
+        val endTime: String,
+        val iconUrl: String,
+        val appUrl: String,
+        val webUrl: String
 ) : Parcelable
