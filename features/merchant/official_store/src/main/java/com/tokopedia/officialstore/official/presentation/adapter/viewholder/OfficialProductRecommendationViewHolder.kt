@@ -5,18 +5,18 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.common.OfficialStoreConstant
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class OfficialProductRecommendationViewHolder(
         view: View
-): AbstractViewHolder<ProductRecommendationViewModel>(view) {
+): AbstractViewHolder<ProductRecommendationDataModel>(view) {
 
     private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
 
-    override fun bind(element: ProductRecommendationViewModel) {
+    override fun bind(element: ProductRecommendationDataModel) {
         productCardView?.run {
             setProductModel(
                     ProductCardModel(
@@ -90,7 +90,7 @@ class OfficialProductRecommendationViewHolder(
         }
     }
 
-    override fun bind(element: ProductRecommendationViewModel, payloads: List<Any>) {
+    override fun bind(element: ProductRecommendationDataModel, payloads: List<Any>) {
         if (payloads.getOrNull(0) !is Boolean) return
 
         productCardView?.setThreeDotsOnClickListener {

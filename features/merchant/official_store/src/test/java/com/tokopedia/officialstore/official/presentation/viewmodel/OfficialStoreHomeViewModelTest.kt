@@ -186,12 +186,15 @@ class OfficialStoreHomeViewModelTest {
             val recommendation = RecommendationItem(isTopAds = isTopAds)
             val callback = mockk<((Boolean, Throwable?) -> Unit)>()
 
+
             coEvery {
                 topAdsWishlishedUseCase.createObservable(any())
             } returns mockObservable(wishList)
 
             viewModel.addWishlist(recommendation, callback)
             coVerify { topAdsWishlishedUseCase.createObservable(any()) }
+
+            verify { callback.invoke(any(), any()) }
 
             print(viewModel.topAdsWishlistResult)
             Assert.assertTrue(viewModel.topAdsWishlistResult.value is Success)
