@@ -203,7 +203,7 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
         Utils.setSearchListener(context, view, ::fetchData)
     }
 
-    fun fetchgroupList(search: String) {
+    private fun fetchgroupList(search: String) {
         movetoGroupSheet.updateData(mutableListOf())
         topAdsDashboardPresenter.getGroupList(resources, search, ::onSuccessGroupList)
     }
@@ -302,7 +302,10 @@ class TopAdsDashWithoutGroupFragment : BaseDaggerFragment() {
 
     private fun onSuccessResult(response: NonGroupResponse.TopadsDashboardGroupProducts) {
         totalCount = response.meta.page.total
-        totalPage = (totalCount / response.meta.page.perPage) + 1
+        totalPage = if (totalCount % response.meta.page.perPage == 0) {
+            totalCount / response.meta.page.perPage
+        } else
+            (totalCount / response.meta.page.perPage) + 1
         recyclerviewScrollListener.updateStateAfterGetData()
         loader.visibility = View.GONE
         response.data.forEach {

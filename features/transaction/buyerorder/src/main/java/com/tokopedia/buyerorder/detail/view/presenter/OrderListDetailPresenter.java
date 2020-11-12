@@ -17,12 +17,13 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
+import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
-import com.tokopedia.buyerorder.detail.data.Body;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
@@ -35,7 +36,6 @@ import com.tokopedia.buyerorder.detail.data.Pricing;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
-import com.tokopedia.buyerorder.detail.data.buyagain.ResponseBuyAgain;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
@@ -54,6 +54,7 @@ import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -108,12 +109,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     RequestCancelInfo requestCancelInfo;
     @Inject
     SendEventNotificationUseCase sendEventNotificationUseCase;
+    @Inject
+    AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
+    @Inject
+    UserSessionInterface userSessionInterface;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
     private boolean isdownloadable = false;
     private OrderDetails details;
-    private List<Body> retryBody = new ArrayList<>();
     ArrayList<Integer> categoryList;
     String category;
 
@@ -182,8 +186,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             public void onNext(GraphqlResponse response) {
                 if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
-                    setDetailsData(data.orderDetails());
-                    orderDetails = data.orderDetails();
+                    if (data != null) {
+                        setDetailsData(data.orderDetails());
+                        orderDetails = data.orderDetails();
+                    }
 
                     if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                         List<Items> list = orderDetails.getItems();
@@ -198,7 +204,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                             category = String.join(",", category);
                         } else {
-                            category = category.toString().substring(1, category.toString().length() - 1);
+                            category = category.substring(1, category.length() - 1);
                         }
                     } else {
                         RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
@@ -307,25 +313,29 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         if (view != null) {
                             if (response != null) {
                                 ActionButtonList data = response.getData(ActionButtonList.class);
-                                actionButtonList = data.getActionButtonList();
-                                if (actionButtonList != null)
-                                    if (flag) {
-                                        view.setTapActionButton(position, actionButtonList);
-                                        for (int i = 0; i < actionButtonList.size(); i++) {
-                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
-                                                actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                if (data != null) {
+                                    actionButtonList = data.getActionButtonList();
+                                    if (actionButtonList != null)
+                                        if (flag) {
+                                            view.setTapActionButton(position, actionButtonList);
+                                            for (int i = 0; i < actionButtonList.size(); i++) {
+                                                if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
+                                                    actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                                }
                                             }
+                                        } else {
+                                            view.setActionButton(position, actionButtonList);
                                         }
-                                    } else {
-                                        view.setActionButton(position, actionButtonList);
-                                    }
+                                }
                             }
                         } else {
                             if (response != null) {
                                 ActionButtonList data = response.getData(ActionButtonList.class);
-                                actionButtonList = data.getActionButtonList();
-                                if (actionButtonList != null && actionButtonList.size() > 0)
-                                    getView().setActionButtons(actionButtonList);
+                                if (data != null) {
+                                    actionButtonList = data.getActionButtonList();
+                                    if (actionButtonList != null && actionButtonList.size() > 0)
+                                        getView().setActionButtons(actionButtonList);
+                                }
                             }
                         }
                     }
@@ -336,6 +346,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String QUANTITY = "quantity";
     public static final String NOTES = "notes";
     public static final String SHOP_ID = "shop_id";
+    public static final String PRODUCT_PRICE = "product_price";
+    public static final String CATEGORY = "category";
+    public static final String PRODUCT_NAME = "product_name";
 
 
     private JsonArray generateInputQueryBuyAgain(List<Items> items) {
@@ -347,11 +360,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             int quantity = 0;
             int shopId = 0;
             String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
                 shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
             }
@@ -359,6 +378,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             passenger.addProperty(QUANTITY, quantity);
             passenger.addProperty(NOTES, notes);
             passenger.addProperty(SHOP_ID, shopId);
+            passenger.addProperty(PRODUCT_PRICE, price);
+            passenger.addProperty(CATEGORY, category);
+            passenger.addProperty(PRODUCT_NAME, productName);
             jsonArray.add(passenger);
         }
         return jsonArray;
@@ -374,23 +396,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         onBuyAgainItems(orderDetails.getItems(), eventActionLabel, statusCode);
     }
 
-    private GraphqlUseCase buyAgainUseCase;
-
     @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
-        JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(items));
-
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.buy_again), ResponseBuyAgain.class, variables, false);
-
-        buyAgainUseCase = new GraphqlUseCase();
-        buyAgainUseCase.clearRequest();
-        buyAgainUseCase.addRequest(graphqlRequest);
-
-        buyAgainUseCase.execute(new Subscriber<GraphqlResponse>() {
+        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+        addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
             public void onCompleted() {
 
@@ -405,18 +416,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             }
 
             @Override
-            public void onNext(GraphqlResponse objects) {
+            public void onNext(AtcMultiData atcMultiData) {
                 if (getView() != null && getView().getAppContext() != null) {
                     getView().hideProgressBar();
-                    ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
-                    if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                    if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     } else {
-                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, true, eventActionLabel, statusCode);
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, true, eventActionLabel, statusCode);
                 }
-
             }
         });
     }
@@ -607,11 +616,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                                     DataResponseCommon dataResponse = restResponse.getData();
                                                     CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                                                     if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                                                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
                                                     else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
                                                         getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                                                     else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                                                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
                                                     getView().hideProgressBar();
                                                     getView().finishOrderDetail();
                                                 }
@@ -665,11 +674,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DataResponseCommon dataResponse = restResponse.getData();
                     CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                     if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
                     else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
                         getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                     else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
                     getView().hideProgressBar();
                     getView().finishOrderDetail();
                 }
@@ -690,9 +699,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (finishOrderUseCase != null) {
             finishOrderUseCase.unsubscribe();
         }
-        if (buyAgainUseCase != null) {
-            buyAgainUseCase.unsubscribe();
-        }
+        addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
     }
 

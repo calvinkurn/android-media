@@ -49,7 +49,7 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
     private var selectedItem = AutoTopUpItem()
     private var bonus = 1
     private var autoTopupStatus: AutoTopUpStatus? = null
-    private val COACH_MARK_TAG = "info"
+    private var autoTopupEnabled = true
 
     private val enableAutoAdssheet: TopAdsChooseTopUpAmountSheet? by lazy {
         TopAdsChooseTopUpAmountSheet.newInstance()
@@ -221,12 +221,17 @@ class TopAdsEditAutoTopUpFragment : BaseDaggerFragment() {
                 setLayoutOnToggle(true)
             }
             dialog.setSecondaryCTAClickListener {
+                autoTopupEnabled = false
                 dialog.dismiss()
                 viewModel.saveSelection(GraphqlHelper
                         .loadRawString(resources, R.raw.gql_topads_save_auto_topup_selection),
                         auto_topup_status.isChecked, selectedItem)
                 setLayoutOnToggle(false)
                 showToastSuccess(TYPE_AUTOTOPUP_DISABLED)
+            }
+            dialog.setOnDismissListener {
+                if(autoTopupEnabled)
+                    setLayoutOnToggle(true)
             }
             dialog.show()
         }
