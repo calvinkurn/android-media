@@ -400,24 +400,6 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
     }
 
     /**
-     * View Exit Modal on Preparation Page
-     */
-    fun viewExitDialogOnFinalSetupPage() {
-        viewGeneralEvent(
-                action = "popup message exit on preparation page"
-        )
-    }
-
-    /**
-     * Click `Keluar` on Exit Modal Preparation Page
-     */
-    fun clickExitOnDialogFinalSetupPage() {
-        clickGeneralEvent(
-                action = "keluar on preparation page"
-        )
-    }
-
-    /**
      * View Error Message (:Param) on Preparation Page
      */
     fun viewErrorOnFinalSetupPage(errorMessage: String) {
@@ -549,16 +531,6 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      */
     fun openReportScreen(channelId: String) {
         sendScreen("/$KEY_TRACK_CATEGORY - report summary - ${userSession.shopId} - $channelId")
-    }
-
-    /**
-     * Click Selesai on Report Page
-     */
-    fun clickDoneOnReportPage(channelId: String, titleChannel: String) {
-        clickGeneralEvent(
-                "selesai on report page",
-                "- $channelId - $titleChannel"
-        )
     }
 
     /**
