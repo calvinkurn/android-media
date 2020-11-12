@@ -78,8 +78,8 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btn_similar_items"
-                app:unifyButtonType="alternate"
-                app:unifyButtonVariant="ghost" />
+                app:unifyButtonVariant="text"
+                app:unifyButtonSize="medium"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </FrameLayout>

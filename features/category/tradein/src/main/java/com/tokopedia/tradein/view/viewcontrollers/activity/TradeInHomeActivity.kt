@@ -228,7 +228,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
                             currentFragment = TradeInInitialPriceFragment
                                     .getFragmentInstance(maxPrice, isEligibleForTradein, notEligibleMessage)
                             supportFragmentManager.beginTransaction()
-                                    .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                                    .setCustomAnimations(R.anim.tradein_right_to_left, R.anim.tradein_left_to_right)
                                     .add(R.id.tradein_parent_view, currentFragment, TRADEIN_INITIAL_FRAGMENT)
                                     .addToBackStack("")
                                     .commit()
@@ -258,7 +258,7 @@ class TradeInHomeActivity : BaseViewModelActivity<TradeInHomeViewModel>(){
         currentFragment = TradeInFinalPriceFragment.getFragmentInstance(deviceDisplayName)
         supportFragmentManager.beginTransaction()
                 .add(R.id.tradein_parent_view, currentFragment, TRADEIN_FINAL_PRICE_FRAGMENT)
-                .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out, android.R.animator.fade_in, android.R.animator.fade_out)
+                .setCustomAnimations(R.anim.tradein_right_to_left, R.anim.tradein_left_to_right)
                 .addToBackStack("")
                 .commit()
     }

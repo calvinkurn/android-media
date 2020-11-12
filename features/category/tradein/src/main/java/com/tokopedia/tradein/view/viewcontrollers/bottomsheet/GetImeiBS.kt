@@ -1,15 +1,18 @@
 package com.tokopedia.tradein.view.viewcontrollers.bottomsheet
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextAreaUnify
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 
 class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
     private var actionListener: ActionListener? = null
@@ -37,6 +40,10 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
 
     private fun initLayout() {
         setTitle(getString(R.string.tradein_imei_title))
+        isDragable = true
+        isHideable = true
+        isKeyboardOverlap = false
+        customPeekHeight = (getScreenHeight()).toDp()
         showCloseIcon = false
         showKnob = true
         contentView = View.inflate(context,
@@ -45,6 +52,7 @@ class GetImeiBS(val vm: TradeInHomeViewModel) : BottomSheetUnify() {
         val btnContinue = contentView?.findViewById<UnifyButton>(R.id.btn_continue)
         etWrapper = contentView?.findViewById(R.id.wrapper_imei)
         etWrapper?.textAreaWrapper?.helperText = "Tekan *#06# untuk cek IMEI atau dengan cara berikut";
+        etWrapper?.textAreaInput?.inputType = InputType.TYPE_CLASS_NUMBER
 
         btnContinue?.setOnClickListener {
             when {
