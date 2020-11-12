@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull
  */
 open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                                        defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     protected val recyclerView: RecyclerView
     protected val titleWidget: TextView
@@ -37,8 +37,13 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         this.listener = listenerBills
     }
 
-    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>) {
-        titleWidget.text = context.getString(R.string.common_topup_title_recent_transaction_widget)
+    fun setRecentNumbers(recentNumbers: List<TopupBillsRecommendation>, showTitle: Boolean) {
+        if (showTitle) {
+            titleWidget.text = context.getString(R.string.common_topup_title_recent_transaction_widget)
+            titleWidget.show()
+        } else {
+            titleWidget.hide()
+        }
         initAdapterWithData(recentNumbers)
     }
 
@@ -80,9 +85,5 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         if (digitalTrackRecentList.size > 0) {
             listener.onTrackImpressionRecentList(digitalTrackRecentList)
         }
-    }
-
-    override fun toggleTitle(value: Boolean) {
-        if (value) titleWidget.show() else titleWidget.hide()
     }
 }
