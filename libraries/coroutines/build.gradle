@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+dependencies {
+    api rootProject.ext.miscDependencies.coroutineCore
+    api rootProject.ext.miscDependencies.coroutineAndroid
+}
+
+project.ext {
+    artifactId = 'coroutines'
+    groupId = 'com.tokopedia.library'
+    versionName = "0.0.1"
+    artifactName = "coroutines-release"
+}
+
+apply from: '../../publish_local.gradle'

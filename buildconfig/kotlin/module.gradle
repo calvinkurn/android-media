@@ -85,8 +85,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
-    implementation rootProject.ext.miscDependencies.coroutineCore
-    implementation rootProject.ext.miscDependencies.coroutineAndroid
+    implementation project(rootProject.ext.libraries.coroutines)
     implementation rootProject.ext.miscDependencies.robust
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
@@ -108,6 +107,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
+    testImplementation project(rootProject.ext.libraries.coroutinesTest)
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'

@@ -106,5 +106,7 @@ ext {
             tokopatch               : ":libraries:tokopatch",
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
+            coroutines              : ":libraries:coroutines",
+            coroutinesTest          : ":libraries:coroutines_test"
     ]
 }
