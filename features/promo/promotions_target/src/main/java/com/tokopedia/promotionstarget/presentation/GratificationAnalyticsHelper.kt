@@ -4,6 +4,7 @@ import com.tokopedia.promotionstarget.data.coupon.CouponStatusType
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
 import com.tokopedia.promotionstarget.data.notification.NotificationStatusType
+import com.tokopedia.promotionstarget.data.notification.PopupType
 
 object GratificationAnalyticsHelper {
 
@@ -23,7 +24,7 @@ object GratificationAnalyticsHelper {
 
         GratificationAnalytics.userClickMainCtaPush(userId,
                 screenName,
-                getActionForDisplay(gratifNotification, couponDetailResponse),
+                getAction(gratifNotification, couponDetailResponse),
                 label)
     }
 
@@ -42,10 +43,37 @@ object GratificationAnalyticsHelper {
         )
     }
 
+    private fun getAction(gratifNotification: GratifNotification?, couponDetailResponse: TokopointsCouponDetailResponse?): String {
+        val popupType = getPopupType(gratifNotification, couponDetailResponse)
+        return when (popupType) {
+            PopupType.ACTIVE, PopupType.SEEN -> GratifActions.CLICK_YUK_BELANJA_HEMAT
+            PopupType.USED, PopupType.EXPIRED -> GratifActions.CLICK_LANJUT_BERBELANJA
+            else -> ""
+        }
+    }
+
+    @PopupType
+    fun getPopupType(gratifNotification: GratifNotification?, couponDetailResponse: TokopointsCouponDetailResponse?): Int {
+        gratifNotification?.notificationStatus?.let {
+            if (it == NotificationStatusType.SEEN) {
+                return PopupType.SEEN
+            }
+        }
+        couponDetailResponse?.coupon?.couponStatus?.let {
+            when (it) {
+                CouponStatusType.ACTIVE -> PopupType.ACTIVE
+                CouponStatusType.EXPIRED -> PopupType.EXPIRED
+                CouponStatusType.USED -> PopupType.USED
+                else -> PopupType.UNKNOWN
+            }
+        }
+        return PopupType.UNKNOWN
+    }
+
     fun handleClickSecondaryCta(userId: String, entryPoint: Int,
-                                    gratifNotification: GratifNotification?,
-                                    couponDetailResponse: TokopointsCouponDetailResponse?,
-                                    screenName: String) {
+                                gratifNotification: GratifNotification?,
+                                couponDetailResponse: TokopointsCouponDetailResponse?,
+                                screenName: String) {
         if (gratifNotification == null || couponDetailResponse == null) return
 
         GratificationAnalytics.userClickSecondaryCtaPush(userId,
@@ -57,37 +85,8 @@ object GratificationAnalyticsHelper {
         )
     }
 
-    private fun getPopupType(gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse): String {
-        return "${gratifNotification.notificationStatus}x${couponDetailResponse.coupon?.couponStatus}"
-    }
-
-    private fun getActionForDisplay(gratifNotification: GratifNotification, couponDetailResponse: TokopointsCouponDetailResponse): String {
-        //regular
-        if (gratifNotification.notificationStatus == NotificationStatusType.ACTIVE_PUSH_NOTIF && couponDetailResponse.coupon?.couponStatus == CouponStatusType.ACTIVE) {
-            return GratifActions.CLICK_YUK_BELANJA_HEMAT
-        }
-
-        //used
-        if (couponDetailResponse.coupon?.couponStatus == CouponStatusType.USED) {
-            return GratifActions.CLICK_LANJUT_BERBELANJA
-        }
-
-        //expired
-        if (couponDetailResponse.coupon?.couponStatus == CouponStatusType.EXPIRED) {
-            return GratifActions.CLICK_LANJUT_BERBELANJA
-        }
-
-        //seen
-        if (gratifNotification.notificationStatus == NotificationStatusType.SEEN) {
-            return GratifActions.CLICK_YUK_BELANJA_HEMAT
-        }
-
-        return ""
-
-    }
-
     private fun createLabel(entryPoint: Int,
-                            popupType: String,
+                            popupType: Int,
                             baseCode: String?,
                             eventId: String?,
                             autoApplyStatus: String?
@@ -95,7 +94,7 @@ object GratificationAnalyticsHelper {
         if (autoApplyStatus.isNullOrEmpty()) {
             return "$entryPoint - $popupType - $baseCode - $eventId"
         } else {
-            return "$entryPoint - $popupType - $baseCode - $eventId -$autoApplyStatus"
+            return "$entryPoint - $popupType - $baseCode - $eventId - $autoApplyStatus"
         }
 
     }

@@ -61,7 +61,7 @@ object GratificationAnalytics {
     }
 
     //4,6,9,11,13,15
-    fun userDismissPopup(userId: String, entryPoint: Int, popupType: String?, baseCode: String?, eventId: String?, screenName: String) {
+    fun userDismissPopup(userId: String, entryPoint: Int, popupType: Int, baseCode: String?, eventId: String?, screenName: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF
@@ -76,7 +76,7 @@ object GratificationAnalytics {
     }
 
     //8
-    fun userClickSecondaryCtaPush(userId: String, entryPoint: Int, popupType: String, baseCode: String?, eventId: String?, screenName: String) {
+    fun userClickSecondaryCtaPush(userId: String, entryPoint: Int, popupType: Int, baseCode: String?, eventId: String?, screenName: String) {
         val map = mutableMapOf<String, Any>()
 
         map[KEY_EVENT] = GratifEvents.CLICK_GRATIF

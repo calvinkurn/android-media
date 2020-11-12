@@ -334,27 +334,9 @@ class CmGratificationDialog {
     private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int) {
         view.post {
             if (view.context is AppCompatActivity && !(view.context as AppCompatActivity).isFinishing) {
-                viewModel.updateGratification(gratifNotification.notificationID, notificationEntryType, getPopupType(), screenName)
+                viewModel.updateGratification(gratifNotification.notificationID, notificationEntryType, GratificationAnalyticsHelper.getPopupType(gratifNotification, couponDetailResponse), screenName)
             }
         }
-    }
-
-    @PopupType
-    fun getPopupType(): Int {
-        gratifNotification?.notificationStatus?.let {
-            if (it == NotificationStatusType.SEEN) {
-                return PopupType.SEEN
-            }
-        }
-        couponDetailResponse?.coupon?.couponStatus?.let {
-            when (it) {
-                CouponStatusType.ACTIVE -> PopupType.ACTIVE
-                CouponStatusType.EXPIRED -> PopupType.EXPIRED
-                CouponStatusType.USED -> PopupType.USED
-                else -> PopupType.UNKNOWN
-            }
-        }
-        return PopupType.UNKNOWN
     }
 
     private fun expandBottomSheet() {
