@@ -77,6 +77,7 @@ import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_AVAILABLE_VARIANT
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_IS_VARIANT_SELECTED
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_APPLINK_SHOP_ID
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.common.data.model.constant.ProductShopStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.constant.TopAdsShopCategoryTypeDef
@@ -148,7 +149,6 @@ import javax.inject.Inject
  * Bottom separator : ProductVariantViewHolder, ProductNotifyMeViewHolder
  * Top separator : All of the view holder except above
  */
-private const val DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
 
 class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, ProductAccessRequestDialogFragment.Listener, PartialButtonActionListener {
 
@@ -2210,7 +2210,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 showTopAdsBottomSheet()
             } else {
                 val intent = RouteManager.getIntent(context,secondAppLink).apply {
-                    putExtra(DIRECTED_FROM_MANAGE_OR_PDP
+                    putExtra(PARAM_DIRECTED_FROM_MANAGE_OR_PDP
                             ,true)
                 }
                 startActivity(intent)

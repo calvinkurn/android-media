@@ -31,6 +31,8 @@ object ProductDetailCommonConstant{
     const val SHOP_ID_PARAM = "shopId"
     const val PRODUCT_ID_PARAM = "productId"
     const val INCLUDE_UI_PARAM = "includeUI"
+    const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
+
 
     val URL_APPLY_LEASING =   "${TokopediaUrl.getInstance().WEB}kredit-motor/kalkulator?productID=%s"
 
