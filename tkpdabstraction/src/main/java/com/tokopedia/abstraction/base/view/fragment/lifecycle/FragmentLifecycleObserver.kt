@@ -1,4 +1,4 @@
-package com.tokopedia.abstraction.base.view.fragmentLifecycle
+package com.tokopedia.abstraction.base.view.fragment.lifecycle
 
 import androidx.fragment.app.Fragment
 

@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.abstraction.base.view.fragmentLifecycle.FragmentLifecycleObserver;
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.FragmentObserver;
 import com.tokopedia.notifications.common.CMConstant;

@@ -7,9 +7,10 @@ import android.os.Build;
 
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.fragmentLifecycle.FragmentLifecycleObserver;
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater;
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 
-import static com.tokopedia.abstraction.base.view.fragment.FragmentInflater.DEFAULT;
+import static com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater.DEFAULT;
 
 /**
  * Created by Herdi_WORK on 22.11.16.

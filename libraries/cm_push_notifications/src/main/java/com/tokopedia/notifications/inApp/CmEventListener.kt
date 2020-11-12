@@ -1,6 +1,6 @@
 package com.tokopedia.notifications.inApp
 
-import com.tokopedia.abstraction.base.view.fragmentLifecycle.FragmentLifecycleCallback
+import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleCallback
 
 object CmEventListener {
     val pushIntentContractList = arrayListOf<PushIntentContract>()
