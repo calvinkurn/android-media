@@ -54,21 +54,6 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
         return null
     }
 
-    fun showIgnoreToast(currentActivity: WeakReference<Activity>?, type: String, @GratifPopupIngoreType reason: Int) {
-        val handler = Handler(Looper.getMainLooper())
-        handler.post {
-            val context = currentActivity?.get()
-            if (context != null) {
-                val sp1 = context.getSharedPreferences("promo_gratif", Context.MODE_PRIVATE)
-                val isDebugGratifChecked = sp1.getBoolean("gratif_debug_toast", false)
-                if (isDebugGratifChecked) {
-                    val message = "DEBUG - $type - $reason"
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
     override fun handleInAppPopup(data: CMInApp, entityHashCode: Int, screenName: String) {
         activityProvider.getActivity()?.get()?.let { currentActivity ->
 
@@ -102,7 +87,6 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                 if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
                     dataConsumed(data)
                 }
-                showIgnoreToast(null, "organic", reason)
             }
 
             override fun onExeption(ex: Exception) {

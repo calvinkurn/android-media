@@ -138,12 +138,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private PermissionCheckerHelper permissionCheckerHelper;
     private EditText etUIBlockDelay;
 
-    private EditText etDelayGratif;
-    private AppCompatTextView btnDelayGratif;
-    private CheckBox cbGratifDebugToast;
-    private AppCompatTextView btnShowLogs;
-    private CheckBox cbUpdateGratifNotif;
-
     @Override
     public String getScreenName() {
         return getString(R.string.screen_name);
@@ -268,11 +262,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
-        etDelayGratif = findViewById(R.id.et_delay_gratif);
-        btnDelayGratif = findViewById(R.id.btn_delay_gratif_pop_up);
-        cbGratifDebugToast = findViewById(R.id.cb_gratif_debug_toast);
-        btnShowLogs = findViewById(R.id.btn_log_viewer);
-        cbUpdateGratifNotif = findViewById(R.id.cb_update_gratif_notif);
     }
 
     private void initListener() {
@@ -525,48 +514,6 @@ public class DeveloperOptionActivity extends BaseActivity {
             new FakeResponseActivityProvider().startActivity(this);
         });
 
-        SharedPreferences gratifSp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-        int delayGraif = gratifSp.getInt("get_notification_delay", 0);
-        etDelayGratif.setText(String.valueOf(delayGraif));
-
-        btnDelayGratif.setOnClickListener(v -> {
-            String delay = etDelayGratif.getText().toString();
-            try {
-                int delayInNum = Integer.parseInt(delay);
-                SharedPreferences sp1 = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-                sp1.edit().putInt("get_notification_delay", delayInNum).apply();
-            } catch (Exception e) {
-                Timber.e(e);
-                Toast.makeText(btnDelayGratif.getContext(), "Unable to save", Toast.LENGTH_SHORT).show();
-            }
-
-
-        });
-
-        boolean isDebugGratifChecked = gratifSp.getBoolean("gratif_debug_toast", false);
-
-        cbGratifDebugToast.setChecked(isDebugGratifChecked);
-
-        cbGratifDebugToast.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            SharedPreferences sp = getSharedPreferences("promo_gratif", Context.MODE_PRIVATE);
-            sp.edit().putBoolean("gratif_debug_toast", isChecked).apply();
-        });
-
-        btnShowLogs.setOnClickListener(v -> {
-            try {
-                String className = "com.tokopedia.logger.viewer.LogcatActivity";
-                Intent i = new Intent(v.getContext(), Class.forName(className));
-                startActivity(i);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        boolean exludeParamsInGratifUpdateApi = gratifSp.getBoolean("exclude_params", false);
-        cbUpdateGratifNotif.setChecked(exludeParamsInGratifUpdateApi);
-        cbUpdateGratifNotif.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            gratifSp.edit().putBoolean("exclude_params", isChecked).apply();
-        });
     }
 
     private int toInt(String str) {

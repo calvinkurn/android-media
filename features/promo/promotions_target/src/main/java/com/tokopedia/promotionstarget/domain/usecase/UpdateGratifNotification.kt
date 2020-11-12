@@ -22,12 +22,4 @@ class UpdateGratifNotification @Inject constructor(@Named(UPDATE_GRATIF) val que
         variables[PARAMS.SCREEN_NAME] = screenName
         return variables
     }
-
-    fun getQueryParamsForTest(notificationId: Int, notificationEntryType:Int): HashMap<String, Any> {
-        val variables = HashMap<String, Any>()
-        variables[PARAMS.NOTIFICATION_ID] = notificationId
-        variables[PARAMS.NOTIFICATION_ENTRY_TYPE] = notificationEntryType
-        return variables
-    }
-
 }

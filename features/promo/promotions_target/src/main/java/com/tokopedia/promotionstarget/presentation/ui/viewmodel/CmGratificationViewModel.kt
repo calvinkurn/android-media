@@ -23,8 +23,7 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
                                                    val workerDispatcher: CoroutineDispatcher,
                                                    val autoApplyUseCase: AutoApplyUseCase,
                                                    val updateGratifNotificationUsecase: UpdateGratifNotification,
-                                                   val app: Application,
-                                                   val sharedPreferences: SharedPreferences
+                                                   val app: Application
 ) : BaseAndroidViewModel(uiDispatcher, app) {
 
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
@@ -47,16 +46,10 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
             withContext(workerDispatcher) {
                 if (!notificationID.isNullOrEmpty()) {
                     Locks.notificationMutex.withLock {
-                        val excludeParams = sharedPreferences.getBoolean("exclude_params", false)
-                        val map = if (excludeParams) {
-                            updateGratifNotificationUsecase.getQueryParamsForTest(notificationID.toInt(),
-                                    notificationEntryType)
-                        } else {
-                            updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(),
+                        val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(),
                                     notificationEntryType,
                                     popupType,
                                     screenName)
-                        }
                         updateGratifNotificationUsecase.getResponse(map)
                     }
                 }
