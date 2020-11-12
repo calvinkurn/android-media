@@ -74,7 +74,6 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?)
             Log.e(TAG, "getGroupView: convertView was null $listTitle at Listposition $listPosition ")
         }
         val listTitleTextView = convertViewTemp?.findViewById<View>(R.id.listTitle) as? Typography
-        listTitleTextView?.setTypeface(null, Typeface.BOLD)
         listTitleTextView?.text = listTitle
         Log.e(TAG, "getGroupView:  $listTitle at Listposition $listPosition lisTitleTextView was $listTitleTextView")
         return convertViewTemp!!
