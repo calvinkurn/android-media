@@ -8,7 +8,6 @@ import com.tokopedia.promotionstarget.cm.dialog.GratificationDialogHandler
 
 const val EXTRA_BASE_MODEL = "extra_base_model"
 const val GRATIFICATION_ID = "gratificationId"
-const val GRATIFICATION_ID_PROCESSED = "gratificationId_processed"
 
 class GratifCmPushHandler(private val gratificationDialogHandler: GratificationDialogHandler) : PushIntentContract {
 
@@ -33,11 +32,10 @@ class GratifCmPushHandler(private val gratificationDialogHandler: GratificationD
 
     override fun isPushIntentHandled(bundle: Bundle?): Boolean {
         var canShowPopupFromPush = false
-        var gratificationId: String? = null
         if (bundle != null) {
             val isComingFromPush = bundle.keySet().contains(EXTRA_BASE_MODEL)
             if (isComingFromPush) {
-                gratificationId = bundle.getString(GRATIFICATION_ID)
+                val gratificationId = bundle.getString(GRATIFICATION_ID)
                 canShowPopupFromPush = !TextUtils.isEmpty(gratificationId)
             }
         }
