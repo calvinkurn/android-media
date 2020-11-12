@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
-import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_flight_order_detail_journey.view.*
 
@@ -19,14 +19,14 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
     var listener: Listener? = null
 
     private var hasETicket: Boolean = false
-    private var journeys: List<OrderDetailJourneyModel> = arrayListOf()
+    private var journeys: List<FlightOrderDetailJourneyModel> = arrayListOf()
 
     init {
         View.inflate(context, R.layout.view_flight_order_detail_journey, this)
     }
 
     fun setData(hasETicket: Boolean,
-                journeyList: List<OrderDetailJourneyModel>) {
+                journeyList: List<FlightOrderDetailJourneyModel>) {
         this.hasETicket = hasETicket
         this.journeys = journeyList
     }
@@ -124,7 +124,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
         }
     }
 
-    private fun renderReturnTicketView(returnJourney: OrderDetailJourneyModel, hasTerminalInfo: Boolean) {
+    private fun renderReturnTicketView(returnJourney: FlightOrderDetailJourneyModel, hasTerminalInfo: Boolean) {
         var hasTerminal: Boolean = hasTerminalInfo
 
         titleFlightOrderReturnTicket.visibility = View.VISIBLE

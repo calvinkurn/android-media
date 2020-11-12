@@ -36,6 +36,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
+            <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailPassengerView
+                android:id="@+id/flightOrderDetailPassenger"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3" />
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

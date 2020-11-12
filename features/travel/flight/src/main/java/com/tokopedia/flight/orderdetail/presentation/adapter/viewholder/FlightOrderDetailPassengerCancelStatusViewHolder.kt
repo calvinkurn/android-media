@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
-import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailPassengerCancelStatusModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerCancelStatusModel
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus
 import kotlinx.android.synthetic.main.item_flight_order_detail_passenger_cancel_status.view.*
@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_flight_order_detail_passenger_cancel_
  */
 class FlightOrderDetailPassengerCancelStatusViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(passengerCancellationStatus: OrderDetailPassengerCancelStatusModel) {
+    fun bind(passengerCancellationStatus: FlightOrderDetailPassengerCancelStatusModel) {
         with(itemView) {
             tgFlightOrderPassengerCancelStatus.text = passengerCancellationStatus.statusStr
 

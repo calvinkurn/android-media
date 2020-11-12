@@ -9,5 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 class FlightOrderDetailSimpleModel(
         val leftValue: String,
-        val rightValue: String
+        val rightValue: String,
+        val isLeftBold: Boolean,
+        val isRightBold: Boolean
 ) : Parcelable

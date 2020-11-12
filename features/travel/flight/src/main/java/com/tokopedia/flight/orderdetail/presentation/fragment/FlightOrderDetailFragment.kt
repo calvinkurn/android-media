@@ -18,7 +18,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
-import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
 import com.tokopedia.unifycomponents.Toaster
@@ -136,9 +136,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         containerLoaderOrderDetail.visibility = View.GONE
     }
 
-    private fun renderView(data: OrderDetailDataModel) {
-        hideLoading()
-
+    private fun renderView(data: FlightOrderDetailDataModel) {
         /* Render Order Status */
         flightOrderDetailHeaderStatus.listener = this
         flightOrderDetailHeaderStatus.setData(
@@ -158,6 +156,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 data.journeys
         )
         flightOrderDetailJourney.buildView()
+
+        /* Render Passenger View */
+        flightOrderDetailPassenger.setData(data.passengers)
+        flightOrderDetailPassenger.buildView()
+
+        hideLoading()
     }
 
     private fun copyToClipboard(label: String, textToCopy: String) {

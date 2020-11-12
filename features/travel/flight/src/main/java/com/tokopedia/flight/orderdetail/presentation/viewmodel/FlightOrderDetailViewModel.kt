@@ -7,8 +7,8 @@ import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
-import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailDataModel
-import com.tokopedia.flight.orderdetail.presentation.model.OrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,8 +27,8 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     var invoiceId: String = ""
 
-    private val mutableOrderDetailData = MutableLiveData<Result<OrderDetailDataModel>>()
-    val orderDetailData: LiveData<Result<OrderDetailDataModel>>
+    private val mutableOrderDetailData = MutableLiveData<Result<FlightOrderDetailDataModel>>()
+    val orderDetailData: LiveData<Result<FlightOrderDetailDataModel>>
         get() = mutableOrderDetailData
 
     private val mutableETicketData = MutableLiveData<Result<String>>()
@@ -65,7 +65,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         }
     }
 
-    private fun getAirlineLogo(journey: OrderDetailJourneyModel): String? {
+    private fun getAirlineLogo(journey: FlightOrderDetailJourneyModel): String? {
         var logoUrl = ""
         var isMultiAirline = false
 
@@ -80,7 +80,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         return if (!isMultiAirline && logoUrl.isNotEmpty()) logoUrl else null
     }
 
-    private fun getAirlineName(journey: OrderDetailJourneyModel): String {
+    private fun getAirlineName(journey: FlightOrderDetailJourneyModel): String {
         val airlineName = arrayListOf<String>()
 
         for (item in journey.routes) {
@@ -92,7 +92,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         return airlineName.joinToString(" + ")
     }
 
-    private fun getRefundableInfo(journey: OrderDetailJourneyModel): Boolean {
+    private fun getRefundableInfo(journey: FlightOrderDetailJourneyModel): Boolean {
         var isRefundable = false
 
         for (item in journey.routes) {
@@ -105,7 +105,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         return isRefundable
     }
 
-    private fun getDepartureDateAndTime(journey: OrderDetailJourneyModel): Pair<String, String> {
+    private fun getDepartureDateAndTime(journey: FlightOrderDetailJourneyModel): Pair<String, String> {
 
         val time = "${TravelDateUtil.formatDate(TravelDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TravelDateUtil.HH_MM, journey.departureTime)} - ${TravelDateUtil.formatDate(

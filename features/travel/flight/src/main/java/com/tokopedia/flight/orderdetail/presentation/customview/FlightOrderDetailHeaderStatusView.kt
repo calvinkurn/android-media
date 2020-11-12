@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.flight.R
-import com.tokopedia.flight.orderdetail.presentation.model.mapper.OrderDetailStatusMapper
+import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import kotlinx.android.synthetic.main.view_flight_order_detail_status_header.view.*
 
@@ -53,16 +53,16 @@ class FlightOrderDetailHeaderStatusView @JvmOverloads constructor(context: Conte
 
     private fun renderOrderStatus() {
         context?.let {
-            when (OrderDetailStatusMapper.getStatusOrder(statusInt)) {
-                OrderDetailStatusMapper.SUCCESS -> {
+            when (FlightOrderDetailStatusMapper.getStatusOrder(statusInt)) {
+                FlightOrderDetailStatusMapper.SUCCESS -> {
                     OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_G200)
                     tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 }
-                OrderDetailStatusMapper.IN_PROGRESS, OrderDetailStatusMapper.WAITING_FOR_PAYMENT -> {
+                FlightOrderDetailStatusMapper.IN_PROGRESS, FlightOrderDetailStatusMapper.WAITING_FOR_PAYMENT -> {
                     OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_Y200)
                     tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
                 }
-                OrderDetailStatusMapper.FAILED, OrderDetailStatusMapper.REFUNDED -> {
+                FlightOrderDetailStatusMapper.FAILED, FlightOrderDetailStatusMapper.REFUNDED -> {
                     OrderDetailUtils.changeShapeColor(it, tgFlightOrderStatus.background, com.tokopedia.unifyprinciples.R.color.Unify_R100)
                     tgFlightOrderStatus.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_R400))
                 }
