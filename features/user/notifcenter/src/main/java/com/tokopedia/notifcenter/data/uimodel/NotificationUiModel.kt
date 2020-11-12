@@ -73,7 +73,8 @@ data class NotificationUiModel(
         val userId: Long = 0
 ) : Visitable<NotificationTypeFactory> {
 
-    val expireTargetDate: Calendar by lazy(LazyThreadSafetyMode.NONE) {
+    @delegate:Transient
+    val expireTargetDate: Calendar? by lazy(LazyThreadSafetyMode.NONE) {
         Calendar.getInstance().apply {
             time = Date(expireTimeUnix * 1000)
         }
