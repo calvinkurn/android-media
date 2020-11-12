@@ -123,7 +123,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onDetailPaymentClicked() {
-//        TODO("Not yet implemented")
+        openDetailPaymentBottomSheet()
     }
 
     private fun showLoading() {

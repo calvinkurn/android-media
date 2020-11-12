@@ -63,6 +63,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
     }
 
     private fun renderTicketView() {
+        var hasTerminalInfo: Boolean = false
         if (journeys.isNotEmpty()) {
             val onwardJourney = journeys[0]
             if (onwardJourney.airlineLogo != null) {
@@ -86,6 +87,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
             if (onwardJourney.routes.isNotEmpty() && onwardJourney.routes[0].departureTerminal.isNotEmpty()) {
                 tgFlightOrderDepartureAirport.text = context.getString(R.string.flight_order_detail_airport_with_terminal,
                         onwardJourney.departureAirportName, onwardJourney.routes[0].departureTerminal)
+                hasTerminalInfo = true
             } else {
                 tgFlightOrderDepartureAirport.text = onwardJourney.departureAirportName
             }
@@ -114,14 +116,17 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
             }
 
             if (journeys.size > 1) {
-                renderReturnTicketView(journeys[1])
+                renderReturnTicketView(journeys[1], hasTerminalInfo)
             } else {
+                renderTerminalNotes(hasTerminalInfo)
                 hideReturnTicketView()
             }
         }
     }
 
-    private fun renderReturnTicketView(returnJourney: OrderDetailJourneyModel) {
+    private fun renderReturnTicketView(returnJourney: OrderDetailJourneyModel, hasTerminalInfo: Boolean) {
+        var hasTerminal: Boolean = hasTerminalInfo
+
         titleFlightOrderReturnTicket.visibility = View.VISIBLE
         containerFlightOrderReturnTicket.visibility = View.VISIBLE
 
@@ -147,6 +152,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
         if (returnJourney.routes.isNotEmpty() && returnJourney.routes[0].departureTerminal.isNotEmpty()) {
             tgFlightOrderReturnAirport.text = context.getString(R.string.flight_order_detail_airport_with_terminal,
                     returnJourney.departureAirportName, returnJourney.routes[0].departureTerminal)
+            hasTerminal = true
         } else {
             tgFlightOrderReturnAirport.text = returnJourney.departureAirportName
         }
@@ -174,11 +180,17 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
             tgFlightOrderReturnBookingCodeLabel.visibility = View.GONE
             ivFlightOrderReturnBookingCodeCopy.visibility = View.GONE
         }
+
+        renderTerminalNotes(hasTerminal)
     }
 
     private fun hideReturnTicketView() {
         titleFlightOrderReturnTicket.visibility = View.GONE
         containerFlightOrderReturnTicket.visibility = View.GONE
+    }
+
+    private fun renderTerminalNotes(shouldShowTerminalNotes: Boolean) {
+        tgFlightOrderTerminalNote.visibility = if (shouldShowTerminalNotes) View.VISIBLE else View.GONE
     }
 
     interface Listener {
