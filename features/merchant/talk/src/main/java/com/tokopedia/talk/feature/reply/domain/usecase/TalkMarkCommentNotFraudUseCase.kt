@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.reply.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
@@ -11,7 +12,8 @@ class TalkMarkCommentNotFraudUseCase @Inject constructor(graphqlRepository: Grap
     companion object {
         const val PARAM_TALK_ID = "talk_id"
         const val PARAM_COMMENT_ID = "comment_id"
-        private val query by lazy {
+        private const val TALK_MARK_COMMENT_NOT_FRAUD_MUTATION_CLASS_NAME = "TalkMarkCommentNotFraud"
+        private const val query =
             """
                 mutation talkMarkCommentNotFraud(${'$'}talk_id: Int,${'$'}comment_id: Int) {
                   talkMarkCommentNotFraud(talk_id:${'$'}talk_id, comment_id:${'$'}comment_id) {
@@ -23,12 +25,16 @@ class TalkMarkCommentNotFraudUseCase @Inject constructor(graphqlRepository: Grap
                     messageErrorOriginal
                   }
                 }
-            """.trimIndent()
-        }
+            """
     }
 
     init {
-        setGraphqlQuery(query)
+        setupUseCase()
+    }
+
+    @GqlQuery(TALK_MARK_COMMENT_NOT_FRAUD_MUTATION_CLASS_NAME, query)
+    private fun setupUseCase() {
+        setGraphqlQuery(TalkMarkCommentNotFraud.GQL_QUERY)
         setTypeClass(TalkMarkCommentNotFraudResponseWrapper::class.java)
     }
 

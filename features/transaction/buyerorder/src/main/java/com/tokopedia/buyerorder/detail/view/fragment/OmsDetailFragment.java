@@ -92,6 +92,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -356,8 +357,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setContactUs(final ContactUs contactUs, String helpLink) {
         String text = getResources().getString(R.string.contact_us_text);
+        String clickableLink = getResources().getString(R.string.contact_us_clickable_text);
         SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf(getResources().getString(R.string.help_text));
+        int startIndexOfLink = text.indexOf(clickableLink);
         if (startIndexOfLink != -1) {
             spannableString.setSpan(new ClickableSpan() {
                 @Override
@@ -383,7 +385,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     ds.setUnderlineText(false);
                     ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
                 }
-            }, startIndexOfLink, startIndexOfLink + getResources().getString(R.string.help_text).length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             helpLabel.setHighlightColor(Color.TRANSPARENT);
             helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -559,14 +561,17 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void showSucessMessage(String message) {
-        Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+    public void showSuccessMessage(String message) {
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toast.LENGTH_SHORT, Toaster.TYPE_NORMAL, "", v -> { }).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.showNormalWithAction(mainView, message, Snackbar.LENGTH_INDEFINITE, "Oke", v1 -> {
-        });
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toast.LENGTH_LONG, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
+        }
     }
 
     @Override
@@ -672,11 +677,13 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 public void onClick(View v) {
                     if (actionButton.getControl().equalsIgnoreCase(KEY_BUTTON)) {
                         if (!TextUtils.isEmpty(item.getCategory()) && "Deal".equalsIgnoreCase(item.getCategory())) {
-                            Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
-                            });
+                            if (getView() != null) {
+                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.deal_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                            }
                         } else {
-                            Toaster.INSTANCE.showNormalWithAction(mainView, String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Snackbar.LENGTH_LONG, "Ok", v1 -> {
-                            });
+                            if (getView() != null) {
+                                Toaster.build(getView(), String.format("%s %s", getContext().getResources().getString(R.string.event_voucher_code_copied), metaDataInfo.getEntityaddress().getEmail()), Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "Ok", v1 -> { }).show();
+                            }
                         }
                         presenter.setActionButton(item.getActionButtons(), null, 0, false);
                     } else if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
