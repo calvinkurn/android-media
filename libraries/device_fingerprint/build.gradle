@@ -33,6 +33,8 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+    //datavisor
+    implementation files('libs/vangogh-release.aar')
 }
 
 project.ext {

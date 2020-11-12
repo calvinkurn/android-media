@@ -49,6 +49,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -870,6 +871,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
+            setPOCFingerprint()
             presenter.loginEmail(email, passwordEditText.text.toString())
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
@@ -1512,6 +1514,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
+    private fun setPOCFingerprint() {
+        val visorInstance = VisorFingerprintInstance()
+        var visorToken = ""
+        visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
+            override fun onSuccessInitToken(token: String) {
+                visorToken = token
+            }
+
+            override fun onFailedInitToken(error: String) {
+
+            }
+        })
+    }
+
     companion object {
 
         const val IS_AUTO_LOGIN = "auto_login"
@@ -1596,4 +1612,5 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
     }
+
 }
