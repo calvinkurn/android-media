@@ -32,13 +32,4 @@ class AddEditProductShipmentViewModel @Inject constructor(
 
         return isValid
     }
-
-    fun getIsAddMode(): Boolean {
-        return isAddMode && !isDraftMode
-    }
-
-    fun setShipmentInputModel(productInputModel: ProductInputModel?, isFirstMoved: Boolean) {
-        this.shipmentInputModel = productInputModel?.shipmentInputModel ?: ShipmentInputModel()
-        this.isFirstMoved = isFirstMoved
-    }
 }
