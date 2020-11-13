@@ -820,6 +820,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     viewModel.sendAnalyticsClickKeluarHalaman()
                     dismiss()
                     val intent = Intent()
+                    setPromoMvcLockCourierFlow(false)
                     setResultIsPromoMvcLockCourierFlow(intent)
                     it.setResult(Activity.RESULT_OK, intent)
                     it.finish()
@@ -839,6 +840,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     hidePromoCheckoutLastSeenBottomsheet()
                 } else {
                     val intent = Intent()
+                    setPromoMvcLockCourierFlow(false)
                     setResultIsPromoMvcLockCourierFlow(intent)
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
@@ -846,6 +848,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
         } else {
             val intent = Intent()
+            setPromoMvcLockCourierFlow(false)
             setResultIsPromoMvcLockCourierFlow(intent)
             activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
