@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.nps.helper.InAppReviewHelper
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.analytics.ThankYouPageAnalytics
 import com.tokopedia.thankyou_native.data.mapper.*
@@ -82,7 +83,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     }
 
     private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
-        if (selectedFragment is InstantPaymentFragment) {
+        if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
             dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID, object : GratificationPresenter.AbstractGratifPopupCallback() {
 
                 override fun onShow(dialog: DialogInterface) {
@@ -103,15 +104,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    fun cancelGratifDialog(){
+    fun cancelGratifDialog() {
         dialogController.cancelJob()
     }
 
@@ -181,7 +174,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
      * status if payment type is deferred/Processing
      * */
     override fun onBackPressed() {
-        if(::thanksPageData.isInitialized)
+        if (::thanksPageData.isInitialized)
             thankYouPageAnalytics.get().sendBackPressedEvent(thanksPageData.profileCode,
                     thanksPageData.paymentID.toString())
         if (!isOnBackPressOverride()) {
@@ -211,6 +204,16 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         const val SCREEN_NAME = "Finish Transaction"
         const val ARG_PAYMENT_ID = "payment_id"
         const val ARG_MERCHANT = "merchant"
+        const val REMOTE_GRATIF_DISABLED = "android_disable_gratif_thankyou"
+    }
+
+    private fun isGratifDisabled(): Boolean {
+        return try {
+            val remoteConfig = FirebaseRemoteConfigImpl(this)
+            return remoteConfig.getBoolean(REMOTE_GRATIF_DISABLED, false)
+        } catch (e: Exception) {
+            false
+        }
     }
 }
 
