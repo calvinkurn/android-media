@@ -656,6 +656,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         totalPrice.removeAllViews();
         actionBtnLayout.removeAllViews();
         paymentMethod.removeAllViews();
+        llDiscount.removeAllViews();
     }
 
     @Override
