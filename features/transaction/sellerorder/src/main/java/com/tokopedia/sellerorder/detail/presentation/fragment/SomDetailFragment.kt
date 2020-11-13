@@ -109,6 +109,7 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetR
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.unifycomponents.*
@@ -673,6 +674,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                             buttonResp.key.equals(KEY_ASK_BUYER, true) -> goToAskBuyer()
                             buttonResp.key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                             buttonResp.key.equals(KEY_RESPOND_TO_CANCELLATION, true) -> onShowBuyerRequestCancelReasonBottomSheet(buttonResp)
+                            buttonResp.key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()
                         }
                     }
                 }
@@ -854,6 +856,7 @@ class SomDetailFragment : BaseDaggerFragment(),
                 eventClickSecondaryActionInOrderDetail(it.displayName, detailResponse.statusCode.toString(), detailResponse.statusText)
                 secondaryBottomSheet?.dismiss()
                 when {
+                    key.equals(KEY_TRACK_SELLER, true) -> setActionGoToTrackingPage(it)
                     key.equals(KEY_REJECT_ORDER, true) -> setActionRejectOrder()
                     key.equals(KEY_BATALKAN_PESANAN, true) -> setActionRejectOrder()
                     key.equals(KEY_UBAH_NO_RESI, true) -> setActionUbahNoResi()

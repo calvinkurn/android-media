@@ -3,7 +3,6 @@ package com.tokopedia.sellerorder.filter.presentation.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,7 @@ import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import kotlinx.android.synthetic.main.activity_som_sub_filter.*
 
-class SomSubFilterActivity : BaseSimpleActivity(),
+class SomSubFilterActivity: BaseSimpleActivity(),
         SomSubFilterCheckboxAdapter.SomSubCheckboxFilterListener, SomSubFilterRadioButtonAdapter.SomSubRadioButtonFilterListener {
 
     companion object {
