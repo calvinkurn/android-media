@@ -13,7 +13,7 @@
         app:elevation="@dimen/spacing_lvl2">
 
         <androidx.appcompat.widget.Toolbar
-            android:id="@+id/inbox_reputation_detail_toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="?toolbarTheme"
