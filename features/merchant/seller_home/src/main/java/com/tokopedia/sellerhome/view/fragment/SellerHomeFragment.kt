@@ -392,7 +392,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.getAnnouncementWidgetData(dataKeys)
     }
 
-
     override fun onTooltipClicked(tooltip: TooltipUiModel) {
         if (!isAdded || context == null) return
         val tooltipBottomSheet = (childFragmentManager.findFragmentByTag(TAG_TOOLTIP) as? TooltipBottomSheet)
