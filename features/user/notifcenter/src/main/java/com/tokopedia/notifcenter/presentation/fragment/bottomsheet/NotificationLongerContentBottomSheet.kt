@@ -61,7 +61,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         if (notification?.isBanner() == true) {
             val imageRatio = notification?.imageMetaData?.getOrNull(0)?.ratio ?: Ratio()
             banner?.show()
-            banner?.ratio = (imageRatio.y / imageRatio.x.toFloat())
+            banner?.ratio = (imageRatio.y / imageRatio.x)
             ImageHandler.loadImageRounded(
                     context,
                     banner,

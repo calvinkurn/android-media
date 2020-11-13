@@ -44,7 +44,7 @@ class BannerNotificationTitleViewHolder(
         // https://github.com/bumptech/glide/issues/835#issuecomment-167438903
         banner?.layout(0, 0, 0, 0)
         val imageRatio = element.imageMetaData.getOrNull(0)?.ratio ?: Ratio()
-        banner?.ratio = (imageRatio.y / imageRatio.x.toFloat())
+        banner?.ratio = (imageRatio.y / imageRatio.x)
         ImageHandler.loadImageRounded(
                 itemView.context, banner, element.dataNotification.infoThumbnailUrl, bannerRadius
         )
