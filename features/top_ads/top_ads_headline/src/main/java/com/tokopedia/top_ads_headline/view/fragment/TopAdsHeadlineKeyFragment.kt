@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.adapter.TopAdsHeadlineKeyAdapter
@@ -66,6 +67,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         stepperModel?.minBid = minSuggestedBid
         stepperModel?.manualSelectedKeywords = getManualAddedKeywords()
         stepperModel?.selectedKeywords = getSelectedKeywords()
+        stepperModel?.keywordOperations = getKeyWordOperations()
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -73,6 +75,21 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         return keywordSelectedAdapter.items.map {
             it
         }.toMutableList()
+    }
+
+    private fun getKeyWordOperations(): List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> {
+        return ArrayList<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation>().apply {
+            stepperModel?.selectedKeywords?.forEach {
+                add(TopAdsManageHeadlineInput.Operation.Group.KeywordOperation(
+                        action = ParamObject.ACTION_CREATE,
+                        keyword = TopAdsManageHeadlineInput.Operation.Group.KeywordOperation.Keyword(
+                                type = ParamObject.HEADLINE_KEYWORD_TYPE,
+                                status = ParamObject.ACTIVE_STATUS,
+                                priceBid = it.bidSuggest,
+                                tag = it.keyword)
+                ))
+            }
+        }
     }
 
     private fun getSelectedKeywords(): MutableList<KeywordDataItem> {

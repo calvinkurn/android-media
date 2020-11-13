@@ -11,5 +11,10 @@ open class CreateHeadlineAdsStepperModel(
         var selectedProductIds: MutableList<Int> = mutableListOf(),
         var selectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var manualSelectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
+        var slogan: String = "",
+        var cpmModel: CpmModel = CpmModel(),
         var minBid: Int = 0,
-        var cpmModel: CpmModel = CpmModel()) : StepperModel
+        var dailyBudget: Int = 0,
+        var adOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> = ArrayList(),
+        var keywordOperations: List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList()
+) : StepperModel

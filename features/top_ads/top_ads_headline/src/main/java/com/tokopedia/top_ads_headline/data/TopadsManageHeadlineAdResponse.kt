@@ -20,7 +20,7 @@ data class TopadsManageHeadlineAdResponse(
         ) {
             data class Success(
                     @SerializedName("id")
-                    var id: Int,
+                    var id: String,
                     @SerializedName("resourceURL")
                     var resourceURL: String
             )

@@ -1,74 +1,80 @@
 package com.tokopedia.top_ads_headline.data
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class TopAdsManageHeadlineInput(
         @SerializedName("operation")
-        var operation: Operation,
+        var operation: Operation = Operation(),
         @SerializedName("source")
-        var source: String
+        var source: String = ""
 ) {
     data class Operation(
             @SerializedName("action")
-            var action: String,
+            var action: String = "",
             @SerializedName("group")
-            var group: Group
+            var group: Group = Group()
     ) {
         data class Group(
                 @SerializedName("adOperations")
-                var adOperations: List<AdOperation>,
+                var adOperations: List<AdOperation> = ArrayList(),
                 @SerializedName("dailyBudget")
-                var dailyBudget: Int,
+                var dailyBudget: Float = 0.0F,
                 @SerializedName("id")
-                var id: String,
+                var id: String = "",
                 @SerializedName("keywordOperations")
-                var keywordOperations: List<KeywordOperation>,
+                var keywordOperations: List<KeywordOperation> = ArrayList(),
                 @SerializedName("name")
-                var name: String,
+                var name: String = "",
                 @SerializedName("priceBid")
-                var priceBid: Int,
+                var priceBid: Float = 0.0F,
                 @SerializedName("scheduleEnd")
-                var scheduleEnd: String,
+                var scheduleEnd: String = "",
                 @SerializedName("scheduleStart")
-                var scheduleStart: String,
+                var scheduleStart: String = "",
                 @SerializedName("shopID")
-                var shopID: String
+                var shopID: String = ""
         ) {
+            @Parcelize
             data class AdOperation(
                     @SerializedName("action")
-                    var action: String,
+                    var action: String = "",
                     @SerializedName("ad")
-                    var ad: Ad
-            ) {
+                    var ad: Ad = Ad()
+            ) : Parcelable {
+                @Parcelize
                 data class Ad(
                         @SerializedName("id")
-                        var id: String,
+                        var id: String = "",
                         @SerializedName("productIDs")
-                        var productIDs: List<String>,
+                        var productIDs: List<String> = ArrayList(),
                         @SerializedName("slogan")
-                        var slogan: String,
+                        var slogan: String = "",
                         @SerializedName("title")
-                        var title: String
-                )
+                        var title: String = ""
+                ) : Parcelable
             }
 
+            @Parcelize
             data class KeywordOperation(
                     @SerializedName("action")
-                    var action: String,
+                    var action: String = "",
                     @SerializedName("keyword")
-                    var keyword: Keyword
-            ) {
+                    var keyword: Keyword = Keyword()
+            ) : Parcelable {
+                @Parcelize
                 data class Keyword(
                         @SerializedName("priceBid")
-                        var priceBid: Int,
+                        var priceBid: Int = 0,
                         @SerializedName("status")
-                        var status: String,
+                        var status: String = "",
                         @SerializedName("tag")
-                        var tag: String,
+                        var tag: String = "",
                         @SerializedName("type")
-                        var type: String
-                )
+                        var type: String = ""
+                ) : Parcelable
             }
         }
     }

@@ -20,6 +20,10 @@ private const val DEFAULT_SHIMMER_COUNT = 5
 private const val VIEW_SHIMMER = 0
 private const val VIEW_CATEGORY = 1
 private const val MAX_PRODUCT_SELECTION = 10
+const val PRODUCT_ADDED = 1
+const val PRODUCT_REMOVED = -1
+const val PRODUCT_SAME = 0
+
 class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>,
                          private var selectedProductList: HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>,
                          private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -29,7 +33,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         notifyDataSetChanged()
     }
 
-    fun refreshList(){
+    fun refreshList() {
         list.clear()
         notifyDataSetChanged()
     }
@@ -77,16 +81,19 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
     }
 
     private fun onItemSelection(isAlreadyChecked: Boolean, product: ResponseProductList.Result.TopadsGetListProduct.Data) {
+        var productConst = PRODUCT_SAME
         if (isAlreadyChecked) {
             selectedProductList.remove(product)
+            productConst = PRODUCT_REMOVED
         } else {
             if (selectedProductList.size == MAX_PRODUCT_SELECTION) {
                 productListAdapterListener?.onProductOverSelect()
             } else {
                 selectedProductList.add(product)
+                productConst = PRODUCT_ADDED
             }
         }
-        productListAdapterListener?.onProductClick(product)
+        productListAdapterListener?.onProductClick(product, productConst)
     }
 
     private fun showRating(rating: Int, ratingView: ViewGroup) {
@@ -115,6 +122,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         companion object {
             val Layout = R.layout.item_layout_product_list
         }
+
         val productImage: ImageUnify = itemView.findViewById(R.id.product_image)
         val checkBox: CheckboxUnify = itemView.findViewById(R.id.checkBox)
         val productName: Typography = itemView.findViewById(R.id.product_name)
@@ -127,6 +135,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         companion object {
             val Layout = R.layout.item_layout_topads_category_shimmer
         }
+
         init {
             itemView.topadsShimmer.run {
                 layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -173,6 +182,6 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
 
     interface ProductListAdapterListener {
         fun onProductOverSelect()
-        fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data)
+        fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data, added: Int)
     }
 }

@@ -40,12 +40,14 @@ data class KeywordData(
 
 @Parcelize
 data class KeywordDataItem(
+        //price Bid
         @field:SerializedName("bid_suggest")
         var bidSuggest: Int = 0,
 
         @field:SerializedName("total_search")
         var totalSearch: String = "",
 
+        //keywordj
         @field:SerializedName("keyword")
         var keyword: String = "",
 

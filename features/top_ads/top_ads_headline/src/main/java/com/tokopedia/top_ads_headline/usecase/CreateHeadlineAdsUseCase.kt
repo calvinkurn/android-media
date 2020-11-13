@@ -10,7 +10,7 @@ import com.tokopedia.top_ads_headline.data.TopadsManageHeadlineAdResponse
 import com.tokopedia.topads.common.data.internal.ParamObject
 import javax.inject.Inject
 
-const val TOP_ADS_CREATE_HEADLINE_ADS_QUERY: String = """mutation topadsManageHeadlineAd(${'$'}input:TopAdsManageHeadlineInput!){
+const val TOP_ADS_CREATE_HEADLINE_ADS_QUERY: String = """mutation topadsManageHeadlineAd(${'$'}input:topadsManageHeadlineAdInput!){
   topadsManageHeadlineAd(input:${'$'}input) {
     data {
       id

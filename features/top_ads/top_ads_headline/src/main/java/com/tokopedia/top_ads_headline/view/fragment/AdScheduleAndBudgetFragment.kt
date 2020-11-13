@@ -1,33 +1,46 @@
 package com.tokopedia.top_ads_headline.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.datepicker.OnDateChangedListener
+import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.sheet.HeadlinePreviewBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewModel
+import com.tokopedia.topads.common.activity.EXTRA_BUTTON
+import com.tokopedia.topads.common.activity.EXTRA_SUBTITLE
+import com.tokopedia.topads.common.activity.EXTRA_TITLE
+import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
+import com.tokopedia.topads.common.data.internal.ParamObject.HEADLINE_SOURCE
 import com.tokopedia.topads.common.data.util.DateTImeUtils.getSpecifiedDateFromStartDate
 import com.tokopedia.topads.common.data.util.DateTImeUtils.getSpecifiedDateFromToday
 import com.tokopedia.topads.common.data.util.DateTImeUtils.getToday
 import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
+import com.tokopedia.topads.common.getSellerMigrationFeatureName
+import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
+import com.tokopedia.topads.common.isFromPdpSellerMigration
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.fragment_ad_schedule_and_budget.*
 import kotlinx.android.synthetic.main.fragment_topads_product_list.tooltipBtn
 import java.util.*
@@ -36,13 +49,19 @@ import kotlin.collections.ArrayList
 
 private const val COUNTRY_ID = "ID"
 private const val LANGUAGE_ID = "in"
-private const val HEADLINE_DATETIME_FORMAT = "dd MMM yyyy, HH:mm"
+private const val HEADLINE_DATETIME_FORMAT1 = "dd MMM yyyy, HH:mm"
+private const val HEADLINE_DATETIME_FORMAT2 = "dd/MM/yyyy, hh:mm aa"
 private const val MINUTE_INTERVAL = 30
+private const val MULTIPLIER = 3
 
 class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
 
     private val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
-    private var selectedStartDate: GregorianCalendar? = context?.getToday()
+    private var selectedStartDate: Calendar? = context?.getToday()
+    private var selectedEndDate: Calendar? = null
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -78,6 +97,63 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         previewBtn.setOnClickListener {
             openPreviewBottomSheet()
         }
+        btnNext.setOnClickListener {
+            createHeadlineAd()
+        }
+    }
+
+    private fun createHeadlineAd() {
+        val topAdsHeadlineInput = getTopAdsManageHeadlineInput()
+        viewModel.createHeadlineAd(topAdsHeadlineInput, this::onCreationSuccess, this::onCreationError)
+
+    }
+
+    private fun onCreationError(message: String) {
+        view?.let { Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+    }
+
+    private fun onCreationSuccess() {
+        val intent: Intent = Intent(context, SuccessActivity::class.java).apply {
+            if (isFromPdpSellerMigration(activity?.intent?.extras)) {
+                putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
+                putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
+            }
+            putExtra(EXTRA_TITLE, getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
+            putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
+            putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
+        }
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    private fun getTopAdsManageHeadlineInput(): TopAdsManageHeadlineInput {
+        val startDate = if (adScheduleSwitch.isChecked) {
+            selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+        } else {
+            context?.getToday()?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+        }
+        val endDate = if (adScheduleSwitch.isChecked) {
+            selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
+        } else {
+            ""
+        }
+        return TopAdsManageHeadlineInput().apply {
+            source = HEADLINE_SOURCE
+            operation = TopAdsManageHeadlineInput.Operation(
+                    action = ACTION_CREATE,
+                    group = TopAdsManageHeadlineInput.Operation.Group(
+                            id = "0",
+                            shopID = userSession.shopId,
+                            name = stepperModel?.groupName ?: "",
+                            priceBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero(),
+                            dailyBudget = budgetCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero(),
+                            scheduleStart = startDate,
+                            scheduleEnd = endDate,
+                            adOperations = stepperModel?.adOperations ?: emptyList(),
+                            keywordOperations = stepperModel?.keywordOperations ?: emptyList()
+                    )
+            )
+        }
     }
 
     private fun openPreviewBottomSheet() {
@@ -92,9 +168,32 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         stepperModel?.minBid?.let {
             val cost = Utils.convertToCurrency(it.toLong())
             advertisingCost.textFieldInput.setText(cost)
-            val budget = it * 3
+            val budget = it * MULTIPLIER
+            stepperModel?.dailyBudget = budget
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget.toLong()))
+            budgetCost.textFieldInput.addTextChangedListener(watcher())
             budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget)
+        }
+    }
+
+    private fun watcher(): NumberTextWatcher? {
+        return object : NumberTextWatcher(budgetCost.textFieldInput, "${stepperModel?.dailyBudget ?: 0}") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val input = number.toInt()
+                if (input < stepperModel?.minBid ?: 0 * MULTIPLIER
+                        && budgetCost.isVisible) {
+                    budgetCost.setError(true)
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_budget_cost_error), stepperModel?.dailyBudget
+                            ?: "0"))
+                    btnNext.isEnabled = false
+                } else {
+                    stepperModel?.dailyBudget = input
+                    btnNext.isEnabled = true
+                    budgetCost.setMessage("")
+                    budgetCost.setError(false)
+                }
+            }
         }
     }
 
@@ -121,17 +220,18 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         startDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         endDate.textFieldIcon1.setPadding(padding, padding, padding, padding)
         context?.run {
-            val startDateString = getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT, localeID)
+            val startDateString = getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
             startDate.textFieldInput.setText(startDateString)
-            val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(HEADLINE_DATETIME_FORMAT, localeID)
+            val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
             endDate.textFieldInput.setText(endDateString)
             startDate.textFieldInput.setOnClickListener {
-                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(), getSpecifiedDateFromToday(years = 50), startDateListener)
+                openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), "", getToday(),
+                        getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onStartDateChanged)
             }
             endDate.textFieldInput.setOnClickListener {
-                getSpecifiedDateFromStartDate(selectedStartDate)?.let { it1 ->
+                getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, hours = 1)?.let { it1 ->
                     openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), getString(R.string.topads_headline_end_date_info),
-                            it1, getSpecifiedDateFromToday(years = 50), endDateListener)
+                            it1, getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onEndDateChanged)
                 }
             }
         }
@@ -148,28 +248,21 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         }
     }
 
-    private val startDateListener = object : OnDateChangedListener {
-        override fun onDateChanged(date: Long) {
-            val calendar = GregorianCalendar.getInstance()
-            calendar.timeInMillis = date
-            val startDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT, localeID)
-            startDate.textFieldInput.setText(startDateString)
-            selectedStartDate = calendar as GregorianCalendar
-        }
+    private fun onStartDateChanged(calendar: Calendar) {
+        val startDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
+        startDate.textFieldInput.setText(startDateString)
+        selectedStartDate = calendar
     }
 
-    private val endDateListener = object : OnDateChangedListener {
-        override fun onDateChanged(date: Long) {
-            val calendar = GregorianCalendar.getInstance()
-            calendar.timeInMillis = date
-            val endDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT, localeID)
-            endDate.textFieldInput.setText(endDateString)
-        }
+    private fun onEndDateChanged(calendar: Calendar) {
+        val endDateString = calendar.time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
+        endDate.textFieldInput.setText(endDateString)
+        selectedEndDate = calendar
     }
 
-    private fun openSetStartDateTimePicker(header: String, info: String, minDate: GregorianCalendar, maxDate: GregorianCalendar, onDateChanged: OnDateChangedListener) {
+    private fun openSetStartDateTimePicker(header: String, info: String, minDate: GregorianCalendar, maxDate: GregorianCalendar, onDateChanged: (Calendar) -> Unit) {
         context?.run {
-            val startDateTimePicker = DateTimePickerUnify(this, minDate, getToday(), maxDate, onDateChanged,
+            val startDateTimePicker = DateTimePickerUnify(this, minDate, getToday(), maxDate, null,
                     DateTimePickerUnify.TYPE_DATETIMEPICKER).apply {
                 setTitle(header)
                 if (info.isNotEmpty()) {
@@ -179,6 +272,12 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                     setInfoVisible(false)
                 }
                 minuteInterval = MINUTE_INTERVAL
+                datePickerButton.let { button ->
+                    button.setOnClickListener {
+                        onDateChanged.invoke(getDate())
+                        dismiss()
+                    }
+                }
             }
             startDateTimePicker.show(fragmentManager!!, "")
         }

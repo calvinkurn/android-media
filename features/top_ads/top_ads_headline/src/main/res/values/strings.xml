@@ -95,6 +95,10 @@
     <string name="topads_headline_preview_btn">Preview</string>
     <string name="topads_headline_budget_warning_text">Tanpa anggaran iklan, iklan akan tampil sesuai sisa kredit TopAds-mu.</string>
     <string name="topads_headline_preview_bottomsheet_header">Preview %s</string>
+    <string name="topads_headline_budget_cost_error">Batas minimum Rp%s</string>
+    <string name="topads_headline_success_title_message">Yay, %s diiklankan!</string>
+    <string name="topads_headline_success_subtitle_message">Performa iklanmu dapat dilihat lebih efektif setelah 7 hari iklan berjalan di Dashboard TopAds </string>
+    <string name="topads_headline_success_button_message">Kembali ke Dashboard</string>
 
     <!--tips for setting a schedule and budget-->
     <string name="topads_headline_tips_schedule_header">Tips mengatur jadwal iklan</string>

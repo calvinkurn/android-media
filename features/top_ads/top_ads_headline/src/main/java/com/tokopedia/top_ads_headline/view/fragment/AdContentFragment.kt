@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
@@ -20,6 +21,7 @@ import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -70,8 +72,27 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun gotoNextPage() {
+        stepperModel?.slogan = promotionalMessageInputText.textFieldInput.text.toString()
         stepperModel?.selectedProductIds = getAdItems()
+        stepperModel?.adOperations = getAdOperations()
         stepperListener?.goToNextPage(stepperModel)
+    }
+
+    private fun getAdOperations(): MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> {
+        return mutableListOf(TopAdsManageHeadlineInput.Operation.Group.AdOperation(
+                action = ParamObject.ACTION_CREATE,
+                ad = TopAdsManageHeadlineInput.Operation.Group.AdOperation.Ad(
+                        id = "0",
+                        title = stepperModel?.groupName ?: "",
+                        slogan = stepperModel?.slogan
+                                ?: "",
+                        productIDs = ArrayList<String>().apply {
+                            stepperModel?.selectedProductIds?.forEach {
+                                add(it.toString())
+                            }
+                        }
+                )
+        ))
     }
 
     private fun getAdItems(): MutableList<Int> {
@@ -137,6 +158,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     private fun onPromotionalBottomSheetDismiss(promotionalMessage: String) {
         promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
         stepperModel?.let {
+            it.slogan = promotionalMessage
             it.cpmModel.data[0].cpm.cpmShop.slogan = promotionalMessage
             onSuccess(it.cpmModel)
         }

@@ -62,6 +62,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private var isDataEnded = false
     private var linearLayoutManager = LinearLayoutManager(context)
+    private var categoryCount = 0
 
     companion object {
         fun newInstance(): TopAdsProductListFragment = TopAdsProductListFragment()
@@ -189,15 +190,22 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             if (isChecked) {
                 productsListAdapter.list.let {
                     selectedTopAdsProduct.addAll(it.take(MAX_PRODUCT_SELECTION))
+                    categoryCount = MAX_PRODUCT_SELECTION
                 }
             } else {
                 selectedTopAdsProduct.clear()
+                categoryCount = 0
             }
             setSelectProductText()
             productsListAdapter.notifyDataSetChanged()
             isProductSelectedListEdited = true
-            ticker.showWithCondition(selectedTopAdsProduct.size < MIN_PRODUCT_SELECTION)
+            setTickerAndBtn()
         }
+    }
+
+    private fun setTickerAndBtn() {
+        ticker.showWithCondition(categoryCount < MIN_PRODUCT_SELECTION)
+        btnNext.isEnabled = categoryCount >= MIN_PRODUCT_SELECTION
     }
 
     private fun setSelectProductText() {
@@ -237,6 +245,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             categoryListAdapter.setItems(it)
             it.first().let { topAdsCategory ->
                 selectedCategoryDataModel = topAdsCategory
+                categoryCount = 0
                 setProductSelectCbText()
                 fetchTopAdsProducts()
             }
@@ -259,15 +268,19 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         if (data.size == selectedTopAdsProduct.size && selectedTopAdsProduct == HashSet(data)) {
             selectProductCheckBox.setIndeterminate(false)
             selectProductCheckBox.isChecked = true
+            ticker.hide()
         } else {
             if (selectedTopAdsProduct.isNotEmpty()) {
+                var count = 0
                 for (product in data) {
                     if (selectedTopAdsProduct.contains(product)) {
                         selectProductCheckBox.setIndeterminate(true)
                         selectProductCheckBox.isChecked = true
-                        break
+                        count++
                     }
                 }
+                categoryCount = count
+                setTickerAndBtn()
             }
         }
     }
@@ -281,7 +294,6 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun onChipFilterClick(topAdsCategoryDataModel: TopAdsCategoryDataModel) {
         selectedCategoryDataModel = topAdsCategoryDataModel
         setProductSelectCbText()
-        ticker.hide()
         fetchTopAdsProducts()
     }
 
@@ -326,12 +338,11 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
     }
 
-    override fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data) {
-        val count = selectedTopAdsProduct.size
+    override fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data, added: Int) {
         isProductSelectedListEdited = true
         selectProductCheckBox.setIndeterminate(true)
         setSelectProductText()
-        ticker.showWithCondition(count < MIN_PRODUCT_SELECTION)
-        btnNext.isEnabled = count >= MIN_PRODUCT_SELECTION
+        categoryCount += added
+        setTickerAndBtn()
     }
 }
