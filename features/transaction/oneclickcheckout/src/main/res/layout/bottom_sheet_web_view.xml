@@ -11,9 +11,18 @@
         android:layout_height="@dimen/dp_8"
         app:loader_type="line" />
 
-    <com.tokopedia.webview.TkpdWebView
-        android:id="@+id/web_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl9"/>
+
+        <com.tokopedia.webview.TkpdWebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 </LinearLayout>
