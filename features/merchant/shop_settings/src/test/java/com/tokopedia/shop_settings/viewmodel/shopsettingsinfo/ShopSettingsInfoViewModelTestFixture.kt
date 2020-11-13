@@ -50,7 +50,7 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
         shopScheduleViewModel = ShopScheduleViewModel(
                 updateShopScheduleUseCase,
                 getShopBasicDataUseCase,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
     }
 

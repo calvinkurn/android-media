@@ -97,14 +97,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop name should return success`() {
-        runBlocking {
+        coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateShopName_thenReturn()
 
             val shopName: String = "shopname"
             shopEditBasicInfoViewModel.validateShopName(shopName = shopName)
-            Thread.sleep(1000)
+            advanceTimeBy(1000)
 
             verifySuccessValidateShopNameRequestParamsCalled(shopName)
 
@@ -119,14 +119,14 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success`() {
-        runBlocking {
+        coroutineTestRule.runBlockingTest {
             mockkObject(ValidateDomainShopNameUseCase)
 
             onValidateDomainName_thenReturn()
 
             val domainName: String = "domain"
             shopEditBasicInfoViewModel.validateShopDomain(domain = domainName)
-            Thread.sleep(2000)
+            advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameRequestParamsCalled(domainName)
 
@@ -141,13 +141,13 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate domain name should return success and get domain suggestion should return success`() {
-        runBlocking {
+        coroutineTestRule.runBlockingTest {
             onValidateDomainName_thenReturn()
             privateCurrentShopNameField.set(shopEditBasicInfoViewModel, "shop")
 
             onGetShopDomainNameSuggestion_thenReturn()
             shopEditBasicInfoViewModel.validateShopDomain(domain = "domain")
-            delay(2000)
+            advanceTimeBy(2000)
 
             verifySuccessValidateDomainNameCalled()
             verifyGetShopDomainNameSuggestionCalled()
@@ -198,15 +198,19 @@ class ShopEditBasicInfoViewModelTest : ShopEditBasicInfoViewModelTestFixture() {
 
     @Test
     fun `when validate shop name should activate job and call validation again to cancel job then completion validation it will be active again`() {
-        shopEditBasicInfoViewModel.validateShopName("shop")
-        shopEditBasicInfoViewModel.validateShopName("shopName")
-        assertTrue(shopEditBasicInfoViewModel.validateShopNameJob?.isActive == true)
+        coroutineTestRule.runBlockingTest {
+            shopEditBasicInfoViewModel.validateShopName("shop")
+            shopEditBasicInfoViewModel.validateShopName("shopName")
+            assertTrue(shopEditBasicInfoViewModel.validateShopNameJob?.isActive == true)
+        }
     }
 
     @Test
     fun `when validate shop domain should activate job and call validation again to cancel job then completion validation it will be active again`() {
-        shopEditBasicInfoViewModel.validateShopDomain("domain")
-        shopEditBasicInfoViewModel.validateShopDomain("shopDomain")
-        assertTrue(shopEditBasicInfoViewModel.validateShopDomainJob?.isActive == true)
+       coroutineTestRule.runBlockingTest {
+           shopEditBasicInfoViewModel.validateShopDomain("domain")
+           shopEditBasicInfoViewModel.validateShopDomain("shopDomain")
+           assertTrue(shopEditBasicInfoViewModel.validateShopDomainJob?.isActive == true)
+       }
     }
 }
