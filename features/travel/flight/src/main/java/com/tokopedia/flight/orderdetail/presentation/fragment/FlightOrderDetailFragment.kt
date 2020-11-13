@@ -20,6 +20,8 @@ import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity
+import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
@@ -27,6 +29,7 @@ import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetai
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailButtonModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -35,6 +38,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -113,6 +117,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
+
+        flightOrderDetailViewModel.cancellationData.observe(viewLifecycleOwner, Observer {
+            if (it.isNotEmpty()) {
+                navigateToCancellationPage(it)
+            }
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -122,6 +132,16 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             REQUEST_CODE_SEND_E_TICKET -> {
                 if (resultCode == Activity.RESULT_OK)
                     showSnackbarSuccess(getString(com.tokopedia.flight.orderlist.R.string.resend_eticket_success))
+            }
+            REQUEST_CODE_CANCELLATION -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    activity?.let {
+                        val intent = Intent()
+                        intent.putExtra(EXTRA_IS_AFTER_CANCELLATION, true)
+                        it.setResult(Activity.RESULT_OK, intent)
+                        it.finish()
+                    }
+                }
             }
         }
     }
@@ -225,13 +245,30 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
 
         /* Render Web Check In View */
+        val today = FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate())
+        val isCancellationButtonVisible: Boolean =
+                when {
+                    data.journeys.size > 1 -> {
+                        val returnDate: Date = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
+                                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.journeys[1].departureTime))
+                        !today.after(returnDate)
+                    }
+                    data.journeys.isNotEmpty() -> {
+                        val departureDate = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
+                                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.journeys[0].departureTime))
+                        !today.after(departureDate)
+                    }
+                    else -> {
+                        false
+                    }
+                }
         flightOrderDetailCheckIn.listener = object : FlightOrderDetailButtonsView.Listener {
             override fun onTopButtonClicked() {
 //                TODO("Not yet implemented")
             }
 
             override fun onBottomButtonClicked() {
-//                TODO("Not yet implemented")
+                flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
             }
 
         }
@@ -248,7 +285,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_cancellation),
                         getString(R.string.flight_label_cancel_ticket),
                         getString(R.string.flight_order_detail_cancel_description),
-                        true,
+                        isCancellationButtonVisible,
                         true
                 )
         )
@@ -298,16 +335,27 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         startActivity(FlightCancellationListActivity.createIntent(context, flightOrderDetailViewModel.orderId))
     }
 
+    private fun navigateToCancellationPage(cancellationItems: List<FlightCancellationJourney>) {
+        val intent = FlightCancellationPassengerActivity.createIntent(
+                requireContext(),
+                flightOrderDetailViewModel.orderId,
+                cancellationItems
+        )
+        startActivityForResult(intent, REQUEST_CODE_CANCELLATION)
+    }
+
     companion object {
         private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
         private const val EXTRA_REQUEST_CANCEL = "EXTRA_REQUEST_CANCEL"
+        private const val EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION"
 
         private const val CLIP_LABEL_INVOICE_ID = "Flight Invoice Id"
         private const val CLIP_LABEL_DEPARTURE_BOOKING_CODE = "Flight Departure Booking Code"
         private const val CLIP_LABEL_RETURN_BOOKING_CODE = "Flight Return Booking Code"
 
         private const val REQUEST_CODE_SEND_E_TICKET = 1111
+        private const val REQUEST_CODE_CANCELLATION = 1112
 
         fun createInstance(invoiceId: String,
                            isCancellation: Boolean,

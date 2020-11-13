@@ -12,6 +12,8 @@ import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticke
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
+import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -27,6 +29,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
                                                      private val orderDetailUseCase: FlightOrderDetailUseCase,
                                                      private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
                                                      private val crossSellUseCase: TravelCrossSellingUseCase,
+                                                     private val orderDetailCancellationMapper: FlightOrderDetailCancellationMapper,
                                                      private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -44,6 +47,10 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     private val mutableETicketData = MutableLiveData<Result<String>>()
     val eticketData: LiveData<Result<String>>
         get() = mutableETicketData
+
+    private val mutableCancellationData = MutableLiveData<List<FlightCancellationJourney>>()
+    val cancellationData: LiveData<List<FlightCancellationJourney>>
+        get() = mutableCancellationData
 
     fun getUserEmail(): String = if (userSession.isLoggedIn) userSession.email else ""
 
@@ -80,6 +87,10 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
             mutableCrossSell.postValue(crossSellUseCase.execute(TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
                     orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT))
         }
+    }
+
+    fun onNavigateToCancellationClicked(journeyList: List<FlightOrderDetailJourneyModel>) {
+        mutableCancellationData.value = orderDetailCancellationMapper.transform(journeyList)
     }
 
     private fun getAirlineLogo(journey: FlightOrderDetailJourneyModel): String? {
