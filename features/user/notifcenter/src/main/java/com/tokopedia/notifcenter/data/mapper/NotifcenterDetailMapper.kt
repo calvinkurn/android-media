@@ -21,7 +21,7 @@ class NotifcenterDetailMapper @Inject constructor() {
         val items = arrayListOf<Visitable<NotificationTypeFactory>>()
         val newSections = mapNewSection(response, needSectionTitle, needLoadMoreButton).items
         val earlierSections = mapEarlierSection(
-                response, needSectionTitle, needLoadMoreButton, items.isNotEmpty()
+                response, needSectionTitle, needLoadMoreButton, newSections.isNotEmpty()
         ).items
         items.addAll(newSections)
         items.addAll(earlierSections)
