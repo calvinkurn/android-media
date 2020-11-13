@@ -114,6 +114,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel;
@@ -1122,6 +1123,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
+    // Re-fetch rates to get promo mvc icon
+    private void reloadCourierForMvc(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+        List<PromoSpIdUiModel> promoSpids = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        if (promoSpids.size() == 0) return;
+
+        List<Object> object = shipmentAdapter.getShipmentDataList();
+        if (object != null && object.size() > 0) {
+            for (int i = 0; i < object.size(); i++) {
+                if (object.get(i) instanceof ShipmentCartItemModel) {
+                    ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) object.get(i);
+                    for (PromoSpIdUiModel promoSpId : promoSpids) {
+                        if (promoSpId.getUniqueId().equalsIgnoreCase(shipmentCartItemModel.getCartString())) {
+                            prepareReloadRates(i);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void onResultFromPromo(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             shipmentPresenter.setCouponStateChanged(true);
@@ -1133,6 +1155,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 shipmentPresenter.setValidateUsePromoRevampUiModel(validateUsePromoRevampUiModel);
                 updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
+
+                reloadCourierForMvc(validateUsePromoRevampUiModel);
             }
 
             ValidateUsePromoRequest validateUsePromoRequest = data.getParcelableExtra(com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_LAST_VALIDATE_USE_REQUEST);
