@@ -9,8 +9,12 @@ import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.home.account.R
+import com.tokopedia.home.account.constant.SettingConstant
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import kotlinx.android.synthetic.main.activity_account_home.*
 
 
@@ -20,14 +24,17 @@ import kotlinx.android.synthetic.main.activity_account_home.*
  */
 class AccountHomeActivity: BaseActivity() {
 
-//    override fun getNewFragment(): Fragment? {
-//        return AccountHomeFragment.newInstance(Bundle())
-//    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_account_home)
-        setupStatusBar()
-        setFragment()
+        val config = FirebaseRemoteConfigImpl(this)
+        if(config.getBoolean(SettingConstant.ENABLE_NEW_ACCOUNT, false)){
+            RouteManager.route(this, ApplinkConstInternalGlobal.NEW_HOME_ACCOUNT)
+            finish()
+        }else {
+            setContentView(R.layout.activity_account_home)
+            setupStatusBar()
+            setFragment()
+        }
     }
 
     private fun setFragment(){

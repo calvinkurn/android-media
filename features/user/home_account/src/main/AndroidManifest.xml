@@ -8,7 +8,7 @@
         <activity
             android:label="@string/home_account_title"
             android:name=".view.activity.HomeAccountUserActivity"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
