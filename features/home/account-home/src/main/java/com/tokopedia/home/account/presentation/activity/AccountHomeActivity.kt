@@ -55,7 +55,7 @@ class AccountHomeActivity: BaseActivity() {
             var flags: Int = account_parent_activity?.getSystemUiVisibility() ?: 0
             flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             account_parent_activity?.setSystemUiVisibility(flags)
-            window.statusBarColor = Color.WHITE
+            window.statusBarColor = androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         }
 
         //make full transparent statusBar

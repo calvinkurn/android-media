@@ -234,7 +234,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
     private fun setupStatusBar() {
         activity?.let {
             status_bar_bg.background = ColorDrawable(
-                    ContextCompat.getColor(it, R.color.green_600)
+                    ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)
             )
         }
         status_bar_bg.layoutParams.height = ViewHelper.getStatusBarHeight(activity)
