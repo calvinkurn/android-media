@@ -51,6 +51,7 @@ class OvoActivationWebViewBottomSheet(private val activationUrl: String,
             bottomSheetUnify = BottomSheetUnify().apply {
                 isDragable = true
                 isHideable = true
+                isFullpage = true
                 isKeyboardOverlap = false
                 showCloseIcon = true
                 showHeader = true
