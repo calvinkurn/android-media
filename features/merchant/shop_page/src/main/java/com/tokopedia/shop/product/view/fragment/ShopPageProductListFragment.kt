@@ -50,6 +50,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.*
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.GO_TO_MEMBERSHIP_DETAIL
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_PRODUCT_RENDER
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
@@ -65,7 +68,6 @@ import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageProductTabPerformanceMonitoringListener
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -752,7 +754,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun loadInitialData() {
         isLoadingNewProductData = true
         shopProductAdapter.clearAllElements()
-        startMonitoringPltNetworkRequest()
+        stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
         showLoading()
         initialProductListData?.let{
             viewModel.setInitialProductList(it)
@@ -873,7 +876,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun callInitialLoadAutomatically(): Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initPltMonitoring()
+        if (userVisibleHint) {
+            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
+        }
         super.onCreate(savedInstanceState)
         context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
         remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -884,31 +889,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         staggeredGridLayoutManager = StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
     }
 
-    private fun initPltMonitoring() {
-        if (!isShowNewShopHomeTab() && userVisibleHint) {
-            (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
-        }
-    }
-
-    private fun startMonitoringPltNetworkRequest() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.stopMonitoringPltPreparePage(it)
-                    shopPageActivity.startMonitoringPltNetworkRequest(it)
-                }
-            }
-        }
-    }
-
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.startMonitoringPltRenderPage(it)
-                }
-            }
-        }
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
@@ -919,19 +900,48 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 if (!isShowNewShopHomeTab()) {
                     shopPageActivity.stopMonitoringPltRenderPage(it)
                 }
             }
         }
-        stopPerformanceMonitoring()
+    }
+
+    private fun startMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.startCustomMetric(it, tag)
+                }
+            }
+        }
+    }
+
+    private fun stopMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopCustomMetric(it, tag)
+                }
+            }
+        }
     }
 
     private fun invalidateMonitoringPlt() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.invalidateMonitoringPlt(it)
+                }
+            }
+        }
+    }
+
+    private fun stopMonitoringPerformance() {
         if (!isShowNewShopHomeTab()) {
-            (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
+            (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
         }
     }
 
@@ -1097,6 +1107,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         })
 
         viewModel.productListData.observe(viewLifecycleOwner, Observer {
+            stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_MIDDLE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
             startMonitoringPltRenderPage()
             when (it) {
                 is Success -> {
@@ -1109,7 +1121,9 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             }
             getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    stopMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_RENDER)
                     stopMonitoringPltRenderPage()
+                    stopMonitoringPerformance()
                     getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             })
@@ -1182,7 +1196,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductAdapter.clearAllElements()
             onGetListErrorWithEmptyData(error)
         }
-        stopPerformanceMonitoring()
     }
 
     private fun onErrorGetMerchantVoucher() {
@@ -1319,19 +1332,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopProductAdapter.clearMembershipData()
         activity?.let {
             Toaster.make(view!!, ErrorHandler.getErrorMessage(context, t), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
-    }
-
-    private fun stopPerformanceMonitoring() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                if (!isShowNewShopHomeTab()) {
-                    shopPageActivity.stopMonitoringPltRenderPage(it)
-                }
-            }
-        }
-        if (!isShowNewShopHomeTab()) {
-            (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
         }
     }
 

@@ -26,13 +26,9 @@ import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 class PltShopPagePowerMerchantPerformanceTest {
 
     companion object {
+        private const val TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_power_merchant_product_tab_test_case_page_load_time"
         private const val SAMPLE_SHOP_ID = "1154916"
     }
-
-    private val TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE = "shop_page_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE = "shop_page_header_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_home_tab_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_product_tab_test_case_page_load_time"
 
     private var context: Context? = null
 
@@ -59,29 +55,10 @@ class PltShopPagePowerMerchantPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
-        activityRule.activity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE
-            )
-        }
-        activityRule.activity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE
-            )
-        }
-        activityRule.activity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
-            )
-        }
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE,
-                    GqlNetworkAnalyzerInterceptor.getNetworkData()
+                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()

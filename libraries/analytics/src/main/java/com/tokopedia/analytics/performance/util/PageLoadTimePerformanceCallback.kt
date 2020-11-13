@@ -23,6 +23,8 @@ open class PageLoadTimePerformanceCallback(
     var isRenderDone = false
     var traceName = ""
     var attributionValue: HashMap<String, String> = hashMapOf()
+    var customMetric: HashMap<String, Long> = hashMapOf()
+    var isCustomMetricDone: HashMap<String, Boolean> = hashMapOf()
 
     override fun getPltPerformanceData(): PltPerformanceData {
         return PltPerformanceData(
@@ -31,7 +33,8 @@ open class PageLoadTimePerformanceCallback(
                 renderPageDuration = renderDuration,
                 overallDuration = overallDuration,
                 isSuccess = (isNetworkDone && isRenderDone),
-                attribution = attributionValue
+                attribution = attributionValue,
+                customMetric = customMetric
         )
     }
 
@@ -66,6 +69,7 @@ open class PageLoadTimePerformanceCallback(
         if (preparePageDuration == 0L) {
             beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
             preparePageDuration = System.currentTimeMillis()
+            Log.d("SHOP_TEST_START", "startPreparePagePerformanceMonitoring")
         }
     }
 
@@ -75,6 +79,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
+            Log.d("SHOP_TEST_STOP", "stopPreparePagePerformanceMonitoring")
         }
     }
 
@@ -82,6 +87,7 @@ open class PageLoadTimePerformanceCallback(
         if (requestNetworkDuration == 0L) {
             beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
             requestNetworkDuration = System.currentTimeMillis()
+            Log.d("SHOP_TEST_START", "startNetworkRequestPerformanceMonitoring")
         }
 
         /**
@@ -98,6 +104,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
+            Log.d("SHOP_TEST_STOP", "stopNetworkRequestPerformanceMonitoring")
         }
     }
 
@@ -105,6 +112,7 @@ open class PageLoadTimePerformanceCallback(
         if (renderDuration == 0L) {
             beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
             renderDuration = System.currentTimeMillis()
+            Log.d("SHOP_TEST_START", "startRenderPerformanceMonitoring")
         }
 
         /**
@@ -121,6 +129,26 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+            Log.d("SHOP_TEST_STOP", "stopRenderPerformanceMonitoring : $renderDuration")
+        }
+    }
+
+    override fun startCustomMetric(tag: String) {
+        if (customMetric[tag] == null || customMetric[tag] == 0L) {
+            customMetric[tag] = System.currentTimeMillis()
+            isCustomMetricDone[tag] = false
+            Log.d("SHOP_TEST_START", "startCustomMetric: $tag : ${customMetric[tag]}")
+        }
+    }
+
+    override fun stopCustomMetric(tag: String) {
+        if (customMetric.containsKey(tag) && customMetric[tag] != 0L && isCustomMetricDone[tag] == false) {
+            val lastTime = customMetric[tag] ?: 0L
+            val duration = System.currentTimeMillis() - lastTime
+            customMetric[tag] = duration
+            isCustomMetricDone[tag] = true
+            performanceMonitoring?.putMetric(tag, duration)
+            Log.d("SHOP_TEST_STOP", "startCustomMetric: $tag : $duration")
         }
     }
 
@@ -141,6 +169,9 @@ open class PageLoadTimePerformanceCallback(
         isPrepareDone = true
         isNetworkDone = true
         isRenderDone = true
+        for (isDone in isCustomMetricDone) {
+            isDone.setValue(true)
+        }
         PerformanceAnalyticsUtil.decrement()
     }
 

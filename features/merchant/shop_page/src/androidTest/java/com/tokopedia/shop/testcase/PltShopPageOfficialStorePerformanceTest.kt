@@ -22,12 +22,9 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndT
 class PltShopPageOfficialStorePerformanceTest {
 
     companion object {
+        private const val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_official_store_home_tab_test_case_page_load_time"
         private const val SAMPLE_SHOP_ID = "3418893"
     }
-
-    private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HEADER_LOAD_TIME_PERFORMANCE = "shop_page_official_store_header_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_official_store_home_tab_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_official_store_product_tab_test_case_page_load_time"
 
     private var context: Context? = null
 
@@ -54,22 +51,10 @@ class PltShopPageOfficialStorePerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
-        activityRule.activity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HEADER_LOAD_TIME_PERFORMANCE
-            )
-        }
-        activityRule.activity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+        activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),
                     TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE
-            )
-        }
-        activityRule.activity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
             )
         }
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
