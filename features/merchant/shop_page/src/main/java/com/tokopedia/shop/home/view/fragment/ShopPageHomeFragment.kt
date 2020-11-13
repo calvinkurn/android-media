@@ -47,6 +47,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
@@ -214,6 +215,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private val widgetDeleteDialogContainer by lazy {
         PlayWidgetDeleteDialogContainer(object : PlayWidgetDeleteDialogContainer.Listener {
             override fun onDeleteButtonClicked(channelId: String) {
+                shopPlayWidgetAnalytic.onClickDialogDeleteChannel(channelId)
                 deleteChannel(channelId)
             }
         })
@@ -1608,7 +1610,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun setupPlayWidgetAnalyticListener() {
         playWidgetCoordinator.apply {
             shopPlayWidgetAnalytic.shopId = shopId
-            setAnalyticListener(shopPlayWidgetAnalytic)
+            setAnalyticListener(DefaultPlayWidgetInListAnalyticListener(shopPlayWidgetAnalytic))
         }
     }
 
@@ -1670,6 +1672,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun showPlayWidgetBottomSheet(channelUiModel: PlayWidgetMediumChannelUiModel) {
+        shopPlayWidgetAnalytic.onImpressMoreActionChannel(channelUiModel)
         getPlayWidgetActionBottomSheet(channelUiModel).show(childFragmentManager)
     }
 
@@ -1685,7 +1688,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     com.tokopedia.resources.common.R.drawable.ic_system_action_share_grey_24,
                     MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
                         getString(R.string.shop_page_play_widget_sgc_copy_link)
-                ) { copyToClipboard(channelUiModel.share.fullShareContent) }
+                ) {
+                    shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
+                    copyToClipboard(channelUiModel.share.fullShareContent)
+                }
             )
         }
         bottomSheetActionList.add(
@@ -1693,6 +1699,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 com.tokopedia.resources.common.R.drawable.ic_system_action_delete_black_24,
                 MethodChecker.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N400),
                 context?.getString(R.string.shop_page_play_widget_sgc_delete_video).orEmpty()) {
+                    shopPlayWidgetAnalytic.onClickMoreActionDeleteChannel(channelUiModel.channelId)
                     showDeleteWidgetConfirmationDialog(channelUiModel.channelId)
                     playWidgetActionBottomSheet.dismiss()
                 }
@@ -1718,6 +1725,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun showWidgetDeleteFailedToaster(channelId: String, reason: Throwable) {
+        shopPlayWidgetAnalytic.onImpressErrorDeleteChannel(channelId, reason.localizedMessage.orEmpty())
         activity?.run {
             Toaster.build(
                     view = findViewById(android.R.id.content),
@@ -1744,6 +1752,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun showDeleteWidgetConfirmationDialog(channelId: String) {
+        shopPlayWidgetAnalytic.onImpressDialogDeleteChannel(channelId)
         widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
     }
 

@@ -105,7 +105,7 @@ class PlayWidgetCardMediumTranscodeViewHolder(
         llError.visibility = View.VISIBLE
 
         btnErrorDelete.setOnClickListener {
-            listener.onFailedTranscodingChannelDeleteButtonClicked(itemView, model)
+            listener.onFailedTranscodingChannelDeleteButtonClicked(itemView, model, adapterPosition)
         }
     }
 
@@ -120,7 +120,8 @@ class PlayWidgetCardMediumTranscodeViewHolder(
 
         fun onFailedTranscodingChannelDeleteButtonClicked(
                 view: View,
-                item: PlayWidgetMediumChannelUiModel
+                item: PlayWidgetMediumChannelUiModel,
+                position: Int
         )
     }
 }

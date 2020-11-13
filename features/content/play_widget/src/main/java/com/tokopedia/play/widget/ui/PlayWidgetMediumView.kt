@@ -119,6 +119,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
         }
 
         override fun onMenuActionButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mAnalyticListener?.onClickMenuActionChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onMenuActionButtonClicked(this@PlayWidgetMediumView, item, position)
         }
     }
@@ -132,7 +133,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     private val transcodeCardListener = object : PlayWidgetCardMediumTranscodeViewHolder.Listener {
 
-        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel) {
+        override fun onFailedTranscodingChannelDeleteButtonClicked(view: View, item: PlayWidgetMediumChannelUiModel, position: Int) {
+            mAnalyticListener?.onClickDeleteChannel(this@PlayWidgetMediumView, item, position)
             mWidgetListener?.onDeleteFailedTranscodingChannel(this@PlayWidgetMediumView, item.channelId)
         }
     }

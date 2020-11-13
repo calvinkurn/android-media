@@ -60,6 +60,14 @@ class DefaultPlayWidgetInListAnalyticListener (
         analytic.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe, it)
     }
 
+    override fun onClickMenuActionChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int) = withWidgetPosition {
+        analytic.onClickMoreActionChannel(view, item, channelPositionInList, it)
+    }
+
+    override fun onClickDeleteChannel(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int) = withWidgetPosition {
+        analytic.onClickDeleteChannel(view, item, channelPositionInList, it)
+    }
+
     override fun onImpressChannelCard(view: PlayWidgetMediumView, item: PlayWidgetMediumChannelUiModel, channelPositionInList: Int, isAutoPlay: Boolean) = withWidgetPosition {
         analytic.onImpressChannelCard(view, item, channelPositionInList, isAutoPlay, it)
     }

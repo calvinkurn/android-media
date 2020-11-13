@@ -41,6 +41,18 @@ interface PlayWidgetMediumAnalyticListener {
             isRemindMe: Boolean
     ) {}
 
+    fun onClickMenuActionChannel(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            channelPositionInList: Int
+    ) {}
+
+    fun onClickDeleteChannel(
+            view: PlayWidgetMediumView,
+            item: PlayWidgetMediumChannelUiModel,
+            channelPositionInList: Int
+    ) {}
+
     fun onImpressChannelCard(
             view: PlayWidgetMediumView,
             item: PlayWidgetMediumChannelUiModel,
