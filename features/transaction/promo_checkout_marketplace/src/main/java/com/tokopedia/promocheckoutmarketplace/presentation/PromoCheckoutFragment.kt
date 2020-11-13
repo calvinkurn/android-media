@@ -89,6 +89,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var keyboardHeight = 0
     private var isPromoCheckoutlastSeenBottomsheetShown = false
     private var hasTriedToGetLastSeenData = false
+    private var isPromoMvcLockCourierFlow = false
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
@@ -135,13 +136,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         fun createInstance(pageSource: Int,
                            promoRequest: PromoRequest,
                            validateUsePromoRequest: ValidateUsePromoRequest,
-                           bboPromoCodes: ArrayList<String>): PromoCheckoutFragment {
+                           bboPromoCodes: ArrayList<String>,
+                           promoMvcLockCourierFlow: Boolean = false): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARGS_PAGE_SOURCE, pageSource)
                     putParcelable(ARGS_PROMO_REQUEST, promoRequest)
                     putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                     putStringArrayList(ARGS_BBO_PROMO_CODES, bboPromoCodes)
+                    putBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, promoMvcLockCourierFlow)
                 }
             }
         }
@@ -204,6 +207,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         initializePromoCheckoutLastSeenBottomsheet()
         initializeSwipeRefreshLayout()
         initializeRecyclerViewScrollListener()
+        initializeFlagIsPromoMvcLockCourierFlow()
 
         // Observe visitable data changes
         observeFragmentUiModel()
@@ -219,6 +223,19 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeApplyPromoResult()
         observeClearPromoResult()
         observeGetPromoLastSeenResult()
+    }
+
+    private fun initializeFlagIsPromoMvcLockCourierFlow() {
+        isPromoMvcLockCourierFlow = arguments?.getBoolean(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, false)
+                ?: false
+    }
+
+    private fun setPromoMvcLockCourierFlow(isPromoMvcLockCourierFlow: Boolean) {
+        this.isPromoMvcLockCourierFlow = isPromoMvcLockCourierFlow
+    }
+
+    private fun setResultIsPromoMvcLockCourierFlow(intent: Intent) {
+        intent.putExtra(ARGS_PROMO_MVC_LOCK_COURIER_FLOW, isPromoMvcLockCourierFlow)
     }
 
     override fun getRecyclerViewResourceId() = R.id.promo_checkout_marketplace_module_recycler_view
@@ -258,7 +275,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         buttonApplyPromo?.let { buttonApplyPromo ->
             buttonApplyPromo.setOnClickListener {
                 setButtonLoading(buttonApplyPromo, true)
-                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
+                        ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
@@ -268,7 +286,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         buttonApplyNoPromo?.let { buttonApplyNoPromo ->
             buttonApplyNoPromo.setOnClickListener {
                 setButtonLoading(buttonApplyNoPromo, true)
-                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
+                val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
+                        ?: ValidateUsePromoRequest()
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
@@ -482,10 +501,21 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     val intent = Intent()
                     if (it.data != null) {
                         intent.putExtra(ARGS_VALIDATE_USE_DATA_RESULT, it.data)
+                        if (it.data?.promoUiModel?.additionalInfoUiModel?.promoSpIds?.isNotEmpty() == true) {
+                            setPromoMvcLockCourierFlow(true)
+                        }
+                        val appliedMvcCartStrings = ArrayList<String>()
+                        it?.data?.promoUiModel?.voucherOrderUiModels?.forEach {
+                            if (it?.uniqueId?.isNotBlank() == true) {
+                                appliedMvcCartStrings.add(it.uniqueId)
+                            }
+                        }
+                        intent.putStringArrayListExtra(ARGS_APPLIED_MVC_CART_STRINGS, appliedMvcCartStrings)
                     }
                     if (it.lastValidateUseRequest != null) {
                         intent.putExtra(ARGS_LAST_VALIDATE_USE_REQUEST, it.lastValidateUseRequest)
                     }
+                    setResultIsPromoMvcLockCourierFlow(intent)
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
@@ -522,6 +552,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     if (it.lastValidateUseRequest != null) {
                         intent.putExtra(ARGS_LAST_VALIDATE_USE_REQUEST, it.lastValidateUseRequest)
                     }
+                    setResultIsPromoMvcLockCourierFlow(intent)
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
@@ -772,12 +803,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAClickListener {
                     viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
-                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
+                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
+                                ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, com.tokopedia.purchase_platform.common.R.raw.mutation_validate_use_promo_revamp), validateUsePromoRequest, bboPromoCodes
                                 ?: ArrayList())
                     } else {
-                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST) ?: ValidateUsePromoRequest()
+                        val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
+                                ?: ValidateUsePromoRequest()
                         val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                         viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
                                 ?: ArrayList())
@@ -786,6 +819,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setSecondaryCTAClickListener {
                     viewModel.sendAnalyticsClickKeluarHalaman()
                     dismiss()
+                    val intent = Intent()
+                    setResultIsPromoMvcLockCourierFlow(intent)
+                    it.setResult(Activity.RESULT_OK, intent)
                     it.finish()
                 }
             }.show()
@@ -802,10 +838,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 if (promoCheckoutLastSeenBottomsheet != null && promoCheckoutLastSeenBottomsheet?.state != BottomSheetBehavior.STATE_HIDDEN) {
                     hidePromoCheckoutLastSeenBottomsheet()
                 } else {
+                    val intent = Intent()
+                    setResultIsPromoMvcLockCourierFlow(intent)
+                    activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 }
             }
         } else {
+            val intent = Intent()
+            setResultIsPromoMvcLockCourierFlow(intent)
+            activity?.setResult(Activity.RESULT_OK, intent)
             activity?.finish()
         }
     }
