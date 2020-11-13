@@ -479,7 +479,6 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ERROR_PAGE_WHEN_LOAD_CART = "view error page when load cart";
         String CLICK_WISHLIST_ICON_IN_CART_PAGE = "click wishlist icon in cart page";
         String CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click follow shop on unavailable section";
-        String CLICK_UNFOLLOW_SHOP_ON_UNAVAILABLE_SECTION = "click unfollow shop on unavailable section";
     }
 
     interface EventLabel {
