@@ -85,7 +85,7 @@ object GlideBuilder {
     @JvmOverloads
     fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
         with(properties) {
-            var performanceMonitoring: PerformanceMonitoring
+            var performanceMonitoring: PerformanceMonitoring? = null
 
             val localTransform = mutableListOf<Transformation<Bitmap>>()
             val drawableError = imageView.resourceError(error)
