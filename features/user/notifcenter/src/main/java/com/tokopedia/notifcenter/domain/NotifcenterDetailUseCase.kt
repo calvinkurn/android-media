@@ -60,7 +60,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
-                filter, role, pagingNew.lastNotifId, arrayOf("new"), PARAM_LIMIT_VALUE
+                filter, role, pagingNew.lastNotifId, arrayOf("new")
         )
         val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
@@ -83,7 +83,7 @@ class NotifcenterDetailUseCase @Inject constructor(
             onError: (Throwable) -> Unit
     ) {
         val params = generateParam(
-                filter, role, pagingEarlier.lastNotifId, emptyArray(), PARAM_LIMIT_VALUE
+                filter, role, pagingEarlier.lastNotifId, emptyArray()
         )
         val needLoadMoreButton = !hasFilter(filter)
         getNotifications(
@@ -111,11 +111,10 @@ class NotifcenterDetailUseCase @Inject constructor(
         launchCatchError(
                 dispatchers.io(),
                 {
-                    val requestQuery = generateQueryFromParam(params)
                     val response = gqlUseCase.apply {
                         setTypeClass(NotifcenterDetailResponse::class.java)
                         setRequestParams(params)
-                        setGraphqlQuery(requestQuery)
+                        setGraphqlQuery(query)
                     }.executeOnBackground()
                     val items = mapping(response)
                     withContext(dispatchers.ui()) {
@@ -129,18 +128,6 @@ class NotifcenterDetailUseCase @Inject constructor(
                     }
                 }
         )
-    }
-
-    private fun generateQueryFromParam(params: Map<String, Any?>): String {
-        val limit = params[PARAM_LIMIT]
-        return if (limit != null) {
-            query.format(
-                    ", $$PARAM_LIMIT: Int",
-                    ", limit: $$PARAM_LIMIT"
-            )
-        } else {
-            query.format("", "")
-        }
     }
 
     private fun updateNewPaging(response: NotifcenterDetailResponse) {
@@ -157,20 +144,16 @@ class NotifcenterDetailUseCase @Inject constructor(
             @RoleType
             role: Int,
             lastNotifId: String,
-            fields: Array<String>,
-            limit: Int? = null
+            fields: Array<String>
     ): Map<String, Any?> {
-        val param = mutableMapOf(
+        // TODO: refactor fot account switcher
+        return mapOf(
                 PARAM_TYPE_ID to role,
                 PARAM_TAG_ID to filter,
                 PARAM_TIMEZONE to timeZone,
                 PARAM_LAST_NOTIF_ID to lastNotifId,
                 PARAM_FIELDS to fields
         )
-        limit?.let {
-            param[PARAM_LIMIT] = it
-        }
-        return param
     }
 
     fun cancelRunningOperation() {
@@ -183,8 +166,6 @@ class NotifcenterDetailUseCase @Inject constructor(
         private const val PARAM_TIMEZONE = "timezone"
         private const val PARAM_LAST_NOTIF_ID = "last_notif_id"
         private const val PARAM_FIELDS = "fields"
-        private const val PARAM_LIMIT = "limit"
-        private const val PARAM_LIMIT_VALUE = 20
     }
 
     private val query = """
@@ -194,7 +175,6 @@ class NotifcenterDetailUseCase @Inject constructor(
                 $$PARAM_TIMEZONE: String
                 $$PARAM_LAST_NOTIF_ID: String
                 $$PARAM_FIELDS: [String]
-                %s
             ){ 
             notifcenter_detail_v3(
                     type_id: $$PARAM_TYPE_ID, 
@@ -202,7 +182,6 @@ class NotifcenterDetailUseCase @Inject constructor(
                     timezone: $$PARAM_TIMEZONE, 
                     last_notif_id: $$PARAM_LAST_NOTIF_ID, 
                     fields: $$PARAM_FIELDS
-                    %s
                 ) { 
                 paging {
                     has_next 
