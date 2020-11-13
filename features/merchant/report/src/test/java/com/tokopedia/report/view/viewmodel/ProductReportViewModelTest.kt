@@ -3,6 +3,7 @@ package com.tokopedia.report.view.viewmodel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.report.coroutine.TestCoroutineDispatchers
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.verifyErrorEquals
@@ -26,8 +27,8 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
                 HashMap<Type, List<GraphqlError>>(),
                 false
         )
-        viewModel = ProductReportViewModel(graphqlRepository, anyString(), TestCoroutineDispatchers)
         onGetReportReasonSuccess_thenReturn(expectedResponse)
+        viewModel = ProductReportViewModel(graphqlRepository, anyString(), TestCoroutineDispatchers)
         verifyUseCaseCalled()
         verifyGetReportReasonSuccess(Success(expectedResponse.getSuccessData<ProductReportReason.Response>().data))
     }
@@ -36,10 +37,10 @@ class ProductReportViewModelTest : ProductReportViewModelTestFixture() {
     fun `when getReportReason error should return expected throwable`() {
         val errorGql = GraphqlError()
         errorGql.message = "Error getReportReason"
-        viewModel = ProductReportViewModel(graphqlRepository, anyString(), TestCoroutineDispatchers)
         onGetReportReasonError_thenReturn(errorGql)
+        viewModel = ProductReportViewModel(graphqlRepository, anyString(), TestCoroutineDispatchers)
         verifyUseCaseCalled()
-        verifyGetReportReasonFails(Fail(Throwable(errorGql.message)))
+        verifyGetReportReasonFails(Fail(MessageErrorException(errorGql.message)))
     }
 
     private fun onGetReportReasonSuccess_thenReturn(graphqlResponse: GraphqlResponse) {
