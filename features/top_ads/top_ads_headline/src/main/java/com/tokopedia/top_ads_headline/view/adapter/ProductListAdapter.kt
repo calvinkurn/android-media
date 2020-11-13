@@ -28,13 +28,17 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
                          private var selectedProductList: HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>,
                          private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    private var showShimmer = true
+
     fun setProductList(list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+        showShimmer = false
         this.list = list
         notifyDataSetChanged()
     }
 
     fun refreshList() {
         list.clear()
+        showShimmer = true
         notifyDataSetChanged()
     }
 
@@ -103,7 +107,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
     }
 
     override fun getItemCount(): Int {
-        return if (list.isEmpty()) {
+        return if (showShimmer) {
             DEFAULT_SHIMMER_COUNT
         } else {
             list.size
@@ -111,7 +115,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (list.size <= 0) {
+        return if (showShimmer) {
             VIEW_SHIMMER
         } else {
             VIEW_CATEGORY

@@ -190,7 +190,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             if (isChecked) {
                 productsListAdapter.list.let {
                     selectedTopAdsProduct.addAll(it.take(MAX_PRODUCT_SELECTION))
-                    categoryCount = MAX_PRODUCT_SELECTION
+                    categoryCount = selectedTopAdsProduct.size
                 }
             } else {
                 selectedTopAdsProduct.clear()
@@ -265,11 +265,17 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     private fun setSelectProductCbCheck(data: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
-        if (data.size == selectedTopAdsProduct.size && selectedTopAdsProduct == HashSet(data)) {
+        if (data.isEmpty()) {
+            selectProductCheckBox.hide()
+            ticker.hide()
+        } else if (data.size == selectedTopAdsProduct.size && selectedTopAdsProduct == HashSet(data)) {
+            selectProductCheckBox.show()
             selectProductCheckBox.setIndeterminate(false)
             selectProductCheckBox.isChecked = true
-            ticker.hide()
+            categoryCount = selectedTopAdsProduct.size
+            setTickerAndBtn()
         } else {
+            selectProductCheckBox.show()
             if (selectedTopAdsProduct.isNotEmpty()) {
                 var count = 0
                 for (product in data) {
@@ -280,8 +286,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                     }
                 }
                 categoryCount = count
-                setTickerAndBtn()
             }
+            setTickerAndBtn()
         }
     }
 
@@ -294,11 +300,12 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun onChipFilterClick(topAdsCategoryDataModel: TopAdsCategoryDataModel) {
         selectedCategoryDataModel = topAdsCategoryDataModel
         setProductSelectCbText()
+        productsListAdapter.refreshList()
         fetchTopAdsProducts()
     }
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
-        if (data.isNotEmpty()) {
+        if (data.isNotEmpty() || selectedCategoryDataModel?.id == DEFAULT_RECOMMENDATION_CATEGORY_ID) {
             productsListAdapter.setProductList(data as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>)
             prepareForNextFetch(eof)
             setSelectProductCbCheck(data)

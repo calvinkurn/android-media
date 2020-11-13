@@ -42,7 +42,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.fragment_ad_schedule_and_budget.*
-import kotlinx.android.synthetic.main.fragment_topads_product_list.tooltipBtn
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -90,6 +89,10 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
     }
 
     override fun populateView() {
+        advertisingCost.textFieldInput.isSaveEnabled = false
+        budgetCost.textFieldInput.isSaveEnabled = false
+        startDate.textFieldInput.isSaveEnabled = false
+        endDate.textFieldInput.isSaveEnabled = false
         setMinBid()
         setUpToolTip()
         setUpScheduleView()
@@ -127,12 +130,12 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
     }
 
     private fun getTopAdsManageHeadlineInput(): TopAdsManageHeadlineInput {
-        val startDate = if (adScheduleSwitch.isChecked) {
+        val scheduleStart = if (adScheduleSwitch.isChecked) {
             selectedStartDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
             context?.getToday()?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         }
-        val endDate = if (adScheduleSwitch.isChecked) {
+        val scheduleEnd = if (adScheduleSwitch.isChecked) {
             selectedEndDate?.time?.toFormattedString(HEADLINE_DATETIME_FORMAT2, localeID) ?: ""
         } else {
             ""
@@ -147,8 +150,8 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                             name = stepperModel?.groupName ?: "",
                             priceBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero(),
                             dailyBudget = budgetCost.textFieldInput.text.toString().removeCommaRawString().toFloatOrZero(),
-                            scheduleStart = startDate,
-                            scheduleEnd = endDate,
+                            scheduleStart = scheduleStart,
+                            scheduleEnd = scheduleEnd,
                             adOperations = stepperModel?.adOperations ?: emptyList(),
                             keywordOperations = stepperModel?.keywordOperations ?: emptyList()
                     )
@@ -157,31 +160,53 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
     }
 
     private fun openPreviewBottomSheet() {
-        val previewBottomSheet = context?.let { it1 ->
-            HeadlinePreviewBottomSheet.newInstance(stepperModel?.groupName ?: "",
-                    stepperModel?.cpmModel)
-        }
-        previewBottomSheet?.show(fragmentManager!!, "")
+        val previewBottomSheet = HeadlinePreviewBottomSheet.newInstance(stepperModel?.groupName ?: "",
+                stepperModel?.cpmModel)
+        previewBottomSheet.show(fragmentManager!!, "")
     }
 
     private fun setMinBid() {
         stepperModel?.minBid?.let {
             val cost = Utils.convertToCurrency(it.toLong())
             advertisingCost.textFieldInput.setText(cost)
+            advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
             val budget = it * MULTIPLIER
             stepperModel?.dailyBudget = budget
             budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget.toLong()))
-            budgetCost.textFieldInput.addTextChangedListener(watcher())
+            budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
             budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget)
         }
     }
 
-    private fun watcher(): NumberTextWatcher? {
+    private fun advertisingCostTextWatcher(): NumberTextWatcher? {
+        return object : NumberTextWatcher(advertisingCost.textFieldInput, "${stepperModel?.minBid ?: 0}") {
+            override fun onNumberChanged(number: Double) {
+                super.onNumberChanged(number)
+                val input = number.toInt()
+                if (input < stepperModel?.minBid ?: 0) {
+                    advertisingCost.setError(true)
+                    advertisingCost.setMessage(String.format(getString(R.string.topads_headline_budget_cost_error), stepperModel?.minBid
+                            ?: "0"))
+                    btnNext.isEnabled = false
+                } else {
+                    stepperModel?.dailyBudget = input * MULTIPLIER
+                    btnNext.isEnabled = true
+                    advertisingCost.setMessage("")
+                    advertisingCost.setError(false)
+                    budgetCost.textFieldInput.setText(Utils.convertToCurrency(stepperModel?.dailyBudget?.toLong()
+                            ?: 0))
+                }
+            }
+        }
+    }
+
+    private fun budgetCostTextWatcher(): NumberTextWatcher? {
         return object : NumberTextWatcher(budgetCost.textFieldInput, "${stepperModel?.dailyBudget ?: 0}") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                if (input < stepperModel?.minBid ?: 0 * MULTIPLIER
+                val minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
+                if (input < minBid * MULTIPLIER
                         && budgetCost.isVisible) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_budget_cost_error), stepperModel?.dailyBudget
