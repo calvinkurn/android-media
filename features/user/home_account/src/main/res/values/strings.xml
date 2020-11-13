@@ -33,7 +33,7 @@
     <!-- Menu Setting Section Title -->
     <string name="menu_account_section_title_account_setting">Pengaturan Akun</string>
     <string name="menu_account_section_title_app_setting">Pengaturan Aplikasi</string>
-    <string name="menu_account_section_title_about_us">Pengaturan Akun</string>
+    <string name="menu_account_section_title_about_us">Seputar Tokopedia</string>
     <string name="menu_account_section_title_developer">Pengaturan Developer</string>
 
     <!-- Menu Setting Item Title -->

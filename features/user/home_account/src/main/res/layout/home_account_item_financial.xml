@@ -29,9 +29,9 @@
             android:layout_marginStart="@dimen/home_account_dp_8"
             android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/fontSize_lvl2"
+            app:lineHeight="@dimen/home_account_dp_18"
             app:layout_constraintStart_toEndOf="@+id/account_user_item_financial_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:lineHeight="@dimen/home_account_dp_18"
             app:typographyWeight="bold"
             tools:text="Rp. 100.000.000" />
 
@@ -42,10 +42,10 @@
             android:layout_marginTop="@dimen/unify_space_2"
             android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/fontSize_lvl1"
+            app:lineHeight="@dimen/home_account_dp_14"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/account_user_item_financial_title"
             app:layout_constraintTop_toBottomOf="@+id/account_user_item_financial_title"
-            app:lineHeight="@dimen/home_account_dp_14"
             app:typographyType="body_3"
             tools:text="Body Text" />
 
