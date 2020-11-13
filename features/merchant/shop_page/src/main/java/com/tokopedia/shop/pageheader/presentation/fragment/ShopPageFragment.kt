@@ -872,10 +872,14 @@ class ShopPageFragment :
             avatar = shopPageP1Data.shopAvatar
         }
         new_navigation_toolbar?.run{
-            setupSearchbar(listOf(HintData(placeholder = getString(
+            setupSearchbar(
+                    hints =  listOf(HintData(placeholder = getString(
                     R.string.shop_product_search_hint_2,
-                    shopPageHeaderDataModel?.shopName.orEmpty()
-            ))))
+                    shopPageHeaderDataModel?.shopName.orEmpty()))),
+                    searchbarClickCallback = {
+                        redirectToShopSearchProduct()
+                    }
+            )
         }
         setShopName()
         customDimensionShopPage.updateCustomDimensionData(
