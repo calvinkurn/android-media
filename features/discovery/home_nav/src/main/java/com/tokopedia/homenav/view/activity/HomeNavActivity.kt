@@ -20,7 +20,7 @@ class HomeNavActivity: AppCompatActivity() {
         overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         setContentView(R.layout.activity_main_nav)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(Color.WHITE)
+            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
 
         findViewById<Toolbar>(R.id.toolbar)?.let {

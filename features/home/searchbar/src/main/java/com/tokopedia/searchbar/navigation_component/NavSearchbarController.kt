@@ -51,7 +51,11 @@ class NavSearchbarController(val view: View,
     private fun setHintSingle(hint: HintData) {
         etSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         etSearch.setOnClickListener {
-            onClickHint(hint.keyword)
+            if (searchbarClickCallback == null) {
+                onClickHint()
+            } else {
+                searchbarClickCallback.invoke(hint.keyword)
+            }
         }
     }
 
@@ -91,15 +95,18 @@ class NavSearchbarController(val view: View,
                 })
                 etSearch.startAnimation(slideOutUp)
                 etSearch.setOnClickListener {
-                    onClickHint(keyword)
+                    if (searchbarClickCallback == null) {
+                        onClickHint()
+                    } else {
+                        searchbarClickCallback.invoke(keyword)
+                    }
                 }
                 delay(durationAutoTransition)
             }
         }
     }
 
-    private fun onClickHint(keyword: String) {
-        searchbarClickCallback?.invoke(keyword)
+    private fun onClickHint() {
         RouteManager.route(context, applink)
     }
 

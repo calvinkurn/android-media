@@ -41,7 +41,7 @@
             tools:visibility="visible"
             android:visibility="gone"
             android:gravity="center"
-            android:textColor="@color/Neutral_N0"
+            android:textColor="@color/Unify_N0"
             app:layout_constraintStart_toStartOf="@id/order_product_image"
             app:layout_constraintTop_toTopOf="@id/order_product_image"
             app:layout_constraintEnd_toEndOf="@id/order_product_image"
