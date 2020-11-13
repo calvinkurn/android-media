@@ -79,7 +79,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
-            Log.d("SHOP_TEST_STOP", "stopPreparePagePerformanceMonitoring")
+            Log.d("SHOP_TEST_STOP", "stopPreparePagePerformanceMonitoring $preparePageDuration")
         }
     }
 
@@ -104,7 +104,7 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
-            Log.d("SHOP_TEST_STOP", "stopNetworkRequestPerformanceMonitoring")
+            Log.d("SHOP_TEST_STOP", "stopNetworkRequestPerformanceMonitoring $requestNetworkDuration")
         }
     }
 
@@ -137,7 +137,7 @@ open class PageLoadTimePerformanceCallback(
         if (customMetric[tag] == null || customMetric[tag] == 0L) {
             customMetric[tag] = System.currentTimeMillis()
             isCustomMetricDone[tag] = false
-            Log.d("SHOP_TEST_START", "startCustomMetric: $tag : ${customMetric[tag]}")
+            Log.d("SHOP_TEST_START", "startCustomMetric")
         }
     }
 
@@ -148,7 +148,7 @@ open class PageLoadTimePerformanceCallback(
             customMetric[tag] = duration
             isCustomMetricDone[tag] = true
             performanceMonitoring?.putMetric(tag, duration)
-            Log.d("SHOP_TEST_STOP", "startCustomMetric: $tag : $duration")
+            Log.d("SHOP_TEST_STOP", "stopCustomMetric: $tag : $duration")
         }
     }
 
@@ -169,9 +169,6 @@ open class PageLoadTimePerformanceCallback(
         isPrepareDone = true
         isNetworkDone = true
         isRenderDone = true
-        for (isDone in isCustomMetricDone) {
-            isDone.setValue(true)
-        }
         PerformanceAnalyticsUtil.decrement()
     }
 
