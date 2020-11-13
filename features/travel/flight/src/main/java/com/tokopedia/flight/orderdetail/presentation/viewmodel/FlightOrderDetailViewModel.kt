@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
@@ -34,6 +35,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
                                                      private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
                                                      private val crossSellUseCase: TravelCrossSellingUseCase,
                                                      private val orderDetailCancellationMapper: FlightOrderDetailCancellationMapper,
+                                                     private val flightAnalytics: FlightAnalytics,
                                                      private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
@@ -216,6 +218,43 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         }
 
         return totalAmount
+    }
+
+    fun trackOpenOrderDetail(userId: String, statusString: String) {
+        flightAnalytics.openOrderDetail(
+                "$statusString - $orderId",
+                userId
+        )
+    }
+
+    fun trackSendETicketClicked(userId: String) {
+        val orderDetailData = mutableOrderDetailData.value
+        if (orderDetailData != null && orderDetailData is Success) {
+            flightAnalytics.eventSendETicketOrderDetail(
+                    "${orderDetailData.data.statusString} - $orderId",
+                    userId
+            )
+        }
+    }
+
+    fun trackClickWebCheckIn(userId: String) {
+        val orderDetailData = mutableOrderDetailData.value
+        if (orderDetailData != null && orderDetailData is Success) {
+            flightAnalytics.eventWebCheckInOrderDetail(
+                    "${orderDetailData.data.statusString} - $orderId",
+                    userId
+            )
+        }
+    }
+
+    fun trackClickCancel(userId: String) {
+        val orderDetailData = mutableOrderDetailData.value
+        if (orderDetailData != null && orderDetailData is Success) {
+            flightAnalytics.eventWebCheckInOrderDetail(
+                    "${orderDetailData.data.statusString} - $orderId",
+                    userId
+            )
+        }
     }
 
     private fun getAirlineLogo(journey: FlightOrderDetailJourneyModel): String? {

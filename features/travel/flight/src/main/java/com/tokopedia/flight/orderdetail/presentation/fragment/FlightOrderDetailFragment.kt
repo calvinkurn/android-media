@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
@@ -38,6 +39,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
 import java.util.*
 import javax.inject.Inject
@@ -50,12 +52,16 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         FlightOrderDetailHeaderStatusView.Listener {
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightOrderDetailViewModel: FlightOrderDetailViewModel
     private lateinit var remoteConfig: RemoteConfig
 
     private var isCancellation: Boolean = false
     private var isRequestCancel: Boolean = false
+    private var isOpenTrackSent: Boolean = false
 
     override fun getScreenName(): String = ""
 
@@ -66,19 +72,26 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        context?.let {
-            remoteConfig = FirebaseRemoteConfigImpl(it)
+        if (userSession.isLoggedIn) {
+            context?.let {
+                remoteConfig = FirebaseRemoteConfigImpl(it)
+            }
+
+            isCancellation = arguments?.getBoolean(EXTRA_IS_CANCELLATION) ?: false
+            isRequestCancel = arguments?.getBoolean(EXTRA_REQUEST_CANCEL) ?: false
+
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
+            flightOrderDetailViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
+            flightOrderDetailViewModel.fetchOrderDetailData()
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+                flightOrderDetailViewModel.fetchCrossSellData()
+        } else {
+            context?.let {
+                RouteManager.route(it, ApplinkConst.LOGIN)
+                activity?.finish()
+            }
         }
-
-        isCancellation = arguments?.getBoolean(EXTRA_IS_CANCELLATION) ?: false
-        isRequestCancel = arguments?.getBoolean(EXTRA_REQUEST_CANCEL) ?: false
-
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
-        flightOrderDetailViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
-        flightOrderDetailViewModel.fetchOrderDetailData()
-        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
-            flightOrderDetailViewModel.fetchCrossSellData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -91,7 +104,15 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    if (!isOpenTrackSent) {
+                        flightOrderDetailViewModel.trackOpenOrderDetail(
+                                userSession.userId,
+                                it.data.statusString
+                        )
+                        isOpenTrackSent = true
+                    }
                     renderView(it.data)
+                    checkIfShouldGoToCancellation(it.data)
                 }
                 is Fail -> {
                 }
@@ -114,7 +135,6 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
                 }
                 is Fail -> {
-
                 }
             }
         })
@@ -152,6 +172,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSendETicketClicked() {
+        flightOrderDetailViewModel.trackSendETicketClicked(userSession.userId)
         val bottomSheet = FlightOrderResendEmailBottomSheet.getInstance(
                 flightOrderDetailViewModel.getUserEmail(),
                 flightOrderDetailViewModel.orderId
@@ -265,10 +286,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 }
         flightOrderDetailCheckIn.listener = object : FlightOrderDetailButtonsView.Listener {
             override fun onTopButtonClicked() {
+                flightOrderDetailViewModel.trackClickWebCheckIn(userSession.userId)
 //                TODO("Not yet implemented")
             }
 
             override fun onBottomButtonClicked() {
+                flightOrderDetailViewModel.trackClickCancel(userSession.userId)
                 flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
             }
 
@@ -349,6 +372,14 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 cancellationItems
         )
         startActivityForResult(intent, REQUEST_CODE_CANCELLATION)
+    }
+
+    private fun checkIfShouldGoToCancellation(data: FlightOrderDetailDataModel) {
+        if (isCancellation) {
+            navigateToCancellationDetailPage()
+        } else if (isRequestCancel) {
+            flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
+        }
     }
 
     companion object {
