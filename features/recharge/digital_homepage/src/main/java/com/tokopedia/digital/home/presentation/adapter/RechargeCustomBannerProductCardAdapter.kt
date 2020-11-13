@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter
 
 import android.graphics.Paint
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner_item.view.*
 
@@ -24,8 +25,8 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(PRODUCT_CARD_LAYOUT, parent, false)
-           return ViewHolder(view, listener)
+        val view = LayoutInflater.from(parent.context).inflate(PRODUCT_CARD_LAYOUT, parent, false)
+        return ViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = items.size
@@ -42,7 +43,10 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
 
                 tv_recharge_product_discount_price.text = MethodChecker.fromHtml(element.label2)
 
-                iv_recharge_product_image.loadImage(element.mediaUrl)
+                iv_recharge_product_image.loadImageRounded(element.mediaUrl)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    iv_recharge_product_image.clipToOutline = true
+                }
 
                 if (element.label3.isNotEmpty()) {
                     tv_recharge_product_tag.text = element.label3

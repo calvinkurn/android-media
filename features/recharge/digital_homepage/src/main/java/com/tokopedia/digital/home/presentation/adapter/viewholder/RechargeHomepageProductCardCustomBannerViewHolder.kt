@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.graphics.Paint
+import android.os.Build
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -17,10 +18,7 @@ import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
 import com.tokopedia.digital.home.presentation.adapter.RechargeCustomBannerProductCardAdapter
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner.view.*
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner_item.view.*
 import kotlin.math.abs
@@ -78,7 +76,12 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
                     tv_recharge_product_ori_price.text = MethodChecker.fromHtml(element.label1)
                     tv_recharge_product_ori_price.paintFlags = tv_recharge_product_discount_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     tv_recharge_product_discount_price.text = MethodChecker.fromHtml(element.label2)
-                    iv_recharge_product_image.loadImage(element.mediaUrl)
+
+                    iv_recharge_product_image.loadImageRounded(element.mediaUrl)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        iv_recharge_product_image.clipToOutline = true
+                    }
+
                     if (element.label3.isNotEmpty()) {
                         tv_recharge_product_tag.text = element.label3
                         tv_recharge_product_tag.show()
@@ -101,13 +104,13 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
 
     private fun hideItemView() {
         itemView.parallax_view.visibility = View.INVISIBLE
-        itemView.rv_recharge_product.visibility = View.INVISIBLE
         itemView.background_loader.visibility = View.VISIBLE
+        itemView.rv_recharge_product.hide()
+        itemView.layout_single_item.hide()
     }
 
     private fun showItemView() {
         itemView.parallax_view.visibility = View.VISIBLE
-        itemView.rv_recharge_product.visibility = View.VISIBLE
         itemView.background_loader.visibility = View.INVISIBLE
     }
 
