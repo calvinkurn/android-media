@@ -6,8 +6,10 @@ import com.tokopedia.report.coroutine.TestCoroutineDispatchers
 import com.tokopedia.report.domain.interactor.SubmitReportUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.mockkClass
 import org.junit.Before
 import org.junit.Rule
+import java.io.File
 
 abstract class ProductReportSubmitViewModelTestFixture {
 

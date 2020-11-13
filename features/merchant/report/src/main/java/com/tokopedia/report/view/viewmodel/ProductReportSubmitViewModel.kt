@@ -62,9 +62,6 @@ class ProductReportSubmitViewModel @Inject constructor(private val useCase: Subm
                 sourceId = SOURCE_ID,
                 filePath = filePath
         )
-        if (!filePath.exists()) {
-            return ""
-        }
         return when (val result = uploaderUseCase(params)) {
             is UploadResult.Success -> {
                 result.uploadId

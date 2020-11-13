@@ -2,12 +2,14 @@ package com.tokopedia.report.view.viewmodel
 
 import com.tokopedia.mediauploader.data.state.UploadResult
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import rx.observers.TestSubscriber
+import java.io.File
 
 class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture() {
 
@@ -77,10 +79,10 @@ class ProductReportSubmitViewModelTest : ProductReportSubmitViewModelTestFixture
     }
 
     private fun onUploadImage_thenReturn(uploadId: String) {
-        coEvery { uploaderUseCase.execute(any()) } returns UploadResult.Success(uploadId)
+        coEvery { uploaderUseCase.invoke(any()) } returns UploadResult.Success(uploadId)
     }
     private fun onUploadImageError_thenReturn(errorMessage: String) {
-        coEvery { uploaderUseCase.execute(any()) } returns UploadResult.Error(errorMessage)
+        coEvery { uploaderUseCase.invoke(any()) } returns UploadResult.Error(errorMessage)
     }
 
     private fun verifySubmitReportUseCaseCalled() {
