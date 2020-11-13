@@ -2,7 +2,6 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -18,10 +17,7 @@ import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companio
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
-import java.util.HashMap
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 
 class PltShopPagePowerMerchantPerformanceTest {
 
@@ -58,7 +54,8 @@ class PltShopPagePowerMerchantPerformanceTest {
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
+                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()

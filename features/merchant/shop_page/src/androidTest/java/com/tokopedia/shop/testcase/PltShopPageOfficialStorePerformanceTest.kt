@@ -9,15 +9,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import androidx.test.rule.ActivityTestRule
+import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig
 import com.tokopedia.shop.mock.ShopPageWithHomeTabMockResponseConfig.Companion.KEY_QUERY_GET_IS_SHOP_OFFICIAL
-import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
+import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
 import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
 class PltShopPageOfficialStorePerformanceTest {
 
@@ -54,7 +53,8 @@ class PltShopPageOfficialStorePerformanceTest {
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE
+                    TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE,
+                    GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
@@ -65,11 +65,16 @@ class PltShopPageOfficialStorePerformanceTest {
         Thread.sleep(10000)
     }
 
-    private fun savePLTPerformanceResultData(performanceData: PltPerformanceData, testCaseName: String) {
+    private fun savePLTPerformanceResultData(
+            performanceData: PltPerformanceData,
+            testCaseName: String,
+            networkData: NetworkData? = null
+    ){
         PerformanceDataFileUtils.writePLTPerformanceFile(
                 activityRule.activity,
                 testCaseName,
-                performanceData
+                performanceData,
+                networkData = networkData
         )
     }
 
