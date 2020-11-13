@@ -785,9 +785,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     view?.let {
                         it.post {
                             if (isSuccess) {
-                                Toaster.build(it, "Yay, aktivasi OVO berhasil. Sekarang kamu bisa bayar pakai OVO.", actionText = "Oke").show()
+                                Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             } else {
-                                Toaster.build(it, "Yaah, aktivasi OVO gagal. Coba lagi dalam beberapa saat.", type = Toaster.TYPE_ERROR, actionText = "Oke").show()
+                                Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
                             }
                             refresh()
                         }
