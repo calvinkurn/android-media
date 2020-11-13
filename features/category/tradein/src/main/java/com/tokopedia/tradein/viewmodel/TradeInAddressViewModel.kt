@@ -22,13 +22,13 @@ class TradeInAddressViewModel @Inject constructor(
 
     private val addressLiveData = MutableLiveData<AddressResult>()
     private var token: Token? = null
-    private val isEligible : MutableLiveData<Boolean?> = MutableLiveData()
+    private val isEligible: MutableLiveData<Boolean?> = MutableLiveData()
     var recipientAddressModel = RecipientAddressModel()
 
     fun getAddressLiveData(): LiveData<AddressResult> = addressLiveData
     fun getTradeInEligibleLiveData(): LiveData<Boolean?> = isEligible
 
-    fun getAddress(origin: String, weight: Int, shopId : Int) {
+    fun getAddress(origin: String, weight: Int, shopId: Int) {
         launchCatchError(block = {
             val address = getAddressUseCase.getAddress()
             recipientAddressModel = TradeInMapper.mapKeroAddressToRecipientAddress(address.defaultAddress)
@@ -43,12 +43,12 @@ class TradeInAddressViewModel @Inject constructor(
         })
     }
 
-    private fun getShopInfo(origin: String, weight: Int, shopId : Int) {
+    private fun getShopInfo(origin: String, weight: Int, shopId: Int) {
         progBarVisibility.value = true
         launchCatchError(block = {
             val shopInfoData = shopInfoUseCase.getShopInfo(shopId)
             for (shop in shopInfoData.shopInfoByID.result[0].shipmentInfo) {
-                if (shop.shipmentID == "25") {
+                if (shop.shipmentID == VALID_SHIPMENT_ID) {
                     isEligible.value = true
                     progBarVisibility.value = false
                     break
@@ -86,14 +86,14 @@ class TradeInAddressViewModel @Inject constructor(
 
     }
 
-    private fun isJabodetabekArea(origin: String, weight: Int, shopId : Int) {
+    private fun isJabodetabekArea(origin: String, weight: Int, shopId: Int) {
         if (addressLiveData.value?.defaultAddress?.city in array) {
             isEligible.value = true
         } else
             getShopInfo(origin, weight, shopId)
     }
 
-    fun setAddress(address: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data, origin: String, weight: Int, shopId : Int) {
+    fun setAddress(address: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data, origin: String, weight: Int, shopId: Int) {
         isEligible.value = null
         addressLiveData.value = AddressResult(address, token)
         isJabodetabekArea(origin, weight, shopId)
@@ -101,5 +101,6 @@ class TradeInAddressViewModel @Inject constructor(
 
     companion object {
         val array: List<Int> = arrayListOf(174, 175, 176, 177, 178, 179, 151, 168, 171, 144, 146, 463, 150, 167)
+        const val VALID_SHIPMENT_ID = "25"
     }
 }

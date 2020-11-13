@@ -114,9 +114,9 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
     fun handleEligibility(maxPrice: String, isElligibleForTradeIn: Boolean, notElligibleMessage: String) {
         setMaxPrice(maxPrice)
         if (isElligibleForTradeIn) {
-            isElligible()
+            setNonEligibleView()
         } else {
-            notElligible(notElligibleMessage)
+            setNotElligibleState(notElligibleMessage)
         }
     }
 
@@ -140,7 +140,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         tradeInInitialPriceViewModel = viewModel as TradeInInitialPriceViewModel
     }
 
-    fun notElligible(notEligibleText: String) {
+    fun setNotElligibleState(notEligibleText: String) {
         progress_bar_layout.hide()
         btn_continue.isEnabled = false
         phone_valid_ticker.show()
@@ -153,7 +153,7 @@ class TradeInInitialPriceFragment : BaseViewModelFragment<TradeInInitialPriceVie
         tv_old_product_price.text = getString(R.string.tradein_minus, maxPrice)
     }
 
-    private fun isElligible() {
+    private fun setNonEligibleView() {
         progress_bar_layout.hide()
         btn_continue.isEnabled = true
     }

@@ -285,6 +285,7 @@ class TradeInHomeViewModelTest {
 
         /** Not Diagnosed **/
         tradeInHomeViewModel.tradeInParams.usedPrice = 0
+        tradeInHomeViewModel.tradeInParams.newPrice = 400000
 
         tradeInHomeViewModel.onFinished(jsonObject)
 

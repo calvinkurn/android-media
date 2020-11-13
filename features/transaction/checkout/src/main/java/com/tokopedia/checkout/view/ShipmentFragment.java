@@ -2055,7 +2055,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         recipientAddressModel, cartPosition, codHistory,
                         shipmentCartItemModel.getIsLeasingProduct(), pslCode, products,
                         shipmentCartItemModel.getCartString(), shipmentCartItemModel.isOrderPrioritasDisable(),
-                        isTradeInByDropOff());
+                        isTradeInByDropOff(), shipmentCartItemModel.isFulfillment(), shipmentCartItemModel.getShipmentCartData().getPreOrderDuration());
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {
