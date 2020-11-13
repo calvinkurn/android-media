@@ -1,5 +1,7 @@
-query getTradeInDeviceDiag($params:TradeInDeviceDiagInput!){
- getTradeInDeviceDiag(params:$params)
+package com.tokopedia.tradein.raw
+
+const val GQL_GET_DEVICE_DIAG: String = """query getTradeInDeviceDiag(${'$'}params:TradeInDeviceDiagInput!){
+ getTradeInDeviceDiag(params:${'$'}params)
  {
      IsEligible
      OldPrice
@@ -27,3 +29,4 @@ query getTradeInDeviceDiag($params:TradeInDeviceDiagInput!){
      Message
    }
 }
+"""

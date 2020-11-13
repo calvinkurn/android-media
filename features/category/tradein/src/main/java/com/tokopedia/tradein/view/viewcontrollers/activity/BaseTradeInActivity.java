@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.view.viewcontrollers;
+package com.tokopedia.tradein.view.viewcontrollers.activity;
 
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
+import com.tokopedia.tradein.view.viewcontrollers.ContextInterface;
 import com.tokopedia.tradein.viewmodel.BaseTradeInViewModel;
 import com.tokopedia.tradein.di.DaggerTradeInComponent;
 import com.tokopedia.tradein.di.TradeInComponent;

@@ -1,4 +1,4 @@
-package com.tokopedia.tradein.viewmodel
+package com.tokopedia.tradein.viewmodel.liveState
 
 sealed class MoneyInCheckoutState
 data class ScheduleTimeError(val errMsg: String) : MoneyInCheckoutState()
