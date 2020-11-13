@@ -197,26 +197,6 @@ class OrderSummaryPageActivityCampaignTest {
         }
     }
 
-//    Deprecated
-//    @Test
-//    fun errorFlow_ErrorTickerButtonContinue() {
-//        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_RESPONSE_PATH
-//
-//        activityRule.launchActivity(null)
-//        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-//
-//        orderSummaryPage {
-//            assertPayment("Rp115.000", "Lanjutkan")
-//            assertPaymentErrorTicker("OVO Error Ticker")
-//        } pay {
-//            assertGoToPayment(
-//                    redirectUrl = "https://www.tokopedia.com/payment",
-//                    queryString = "transaction_id=123",
-//                    method = "POST"
-//            )
-//        }
-//    }
-
     @Test
     fun errorFlow_ErrorTickerButtonPayDisabled() {
         cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_CAMPAIGN_OVO_ONLY_ERROR_TICKER_DISABLE_BUTTON_RESPONSE_PATH
