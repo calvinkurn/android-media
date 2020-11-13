@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -13,7 +14,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  */
 
 @UohListScope
-@Component(modules = [UohListModule::class, UohListViewModelModule::class])
+@Component(modules = [UohListModule::class, UohListViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface UohListComponent {
     fun context(): Context
 

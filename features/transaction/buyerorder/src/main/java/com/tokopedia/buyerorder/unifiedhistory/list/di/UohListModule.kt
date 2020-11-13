@@ -1,14 +1,9 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.di
 
-import android.app.Activity
 import android.content.Context
-import androidx.fragment.app.FragmentActivity
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorder.common.BuyerDispatcherProvider
 import com.tokopedia.buyerorder.common.BuyerProductionDispatcherProvider
-import com.tokopedia.buyerorder.unifiedhistory.common.di.UohScope
-import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -27,6 +22,10 @@ import javax.inject.Named
 class UohListModule (val context: Context) {
     @UohListScope
     @Provides
+    fun provideContext(): Context = context
+    
+    @UohListScope
+    @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @UohListScope
@@ -35,17 +34,13 @@ class UohListModule (val context: Context) {
 
     @UohListScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @UohListScope
-    @Provides
     fun provideUohDispatcherProvider(): BuyerDispatcherProvider = BuyerProductionDispatcherProvider()
 
     @UohListScope
     @Provides
-    fun provideContext(): Context = context
+    fun provideUserSessionInterface(context: Context): UserSessionInterface {
+        return UserSession(context)
+    }
 
     @UohListScope
     @Provides

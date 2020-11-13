@@ -930,7 +930,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun initInjector() {
         activity?.let {
             DaggerUohListComponent.builder()
-                    .uohListComponent(UohListComponentInstance.getUohListComponent(it.application))
                     .uohListModule(context?.let { UohListModule(it)})
                     .build()
                     .inject(this)
