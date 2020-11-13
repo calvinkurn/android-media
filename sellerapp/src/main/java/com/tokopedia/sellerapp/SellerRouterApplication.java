@@ -27,6 +27,7 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkRouter;
@@ -40,7 +41,9 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -58,6 +61,7 @@ import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
@@ -70,11 +74,14 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -95,7 +102,7 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter{
+        LoginRouter {
 
     protected RemoteConfig remoteConfig;
     private TopAdsComponent topAdsComponent;
@@ -104,6 +111,8 @@ public abstract class SellerRouterApplication extends MainApplication
     private TetraDebugger tetraDebugger;
     protected CacheManager cacheManager;
 
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -111,7 +120,24 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
+        performLibraryInitialisation();
+    }
+
+    private void performLibraryInitialisation(){
+        WeaveInterface initWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return initLibraries();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+    }
+
+    private boolean initLibraries(){
+        initCMPushNotification();
         initTetraDebugger();
+        return true;
     }
 
     private void initResourceDownloadManager() {
@@ -129,6 +155,27 @@ public abstract class SellerRouterApplication extends MainApplication
 
     private void initializeDagger() {
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+
+    private void initCMPushNotification() {
+        CMPushNotificationManager.getInstance().init(this);
+        List<String> excludeScreenList = new ArrayList<>();
+        excludeScreenList.add(Constants.SPLASH);
+        excludeScreenList.add(Constants.DEEPLINK_ACTIVITY);
+        excludeScreenList.add(Constants.DEEPLINK_HANDLER_ACTIVITY);
+        CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+        CMPushNotificationManager.getInstance().refreshTokenFromBackground(token, force);
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
     }
 
     private void initTetraDebugger() {
@@ -386,16 +433,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
-
-    }
-
-    @Override
-    public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
     public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied);
@@ -442,4 +479,5 @@ public abstract class SellerRouterApplication extends MainApplication
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
+
 }
