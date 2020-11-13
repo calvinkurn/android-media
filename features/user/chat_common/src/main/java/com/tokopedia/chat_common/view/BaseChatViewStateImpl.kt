@@ -200,17 +200,17 @@ open class BaseChatViewStateImpl(
         when {
             labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 label.visibility = View.VISIBLE
             }
             labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                 label.visibility = View.VISIBLE
             }
             labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                 label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE
