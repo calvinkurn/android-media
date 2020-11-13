@@ -7,13 +7,13 @@ import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 /**
  * Created by jegul on 05/11/20
  */
-private val activeChannelTypes = listOf(PlayWidgetChannelType.Live, PlayWidgetChannelType.Vod)
+private val watchableChannelTypes = listOf(PlayWidgetChannelType.Live, PlayWidgetChannelType.Vod)
 
 val PlayWidgetUiModel.Medium.hasSuccessfulTranscodedChannel: Boolean
     get() = items.any {
         it is PlayWidgetMediumChannelUiModel &&
                 it.channelTypeTransition.prevType == PlayWidgetChannelType.Transcoding &&
-                it.channelTypeTransition.currentType in activeChannelTypes
+                it.channelTypeTransition.currentType in watchableChannelTypes
     }
 
 val PlayWidgetUiModel.Medium.hasFailedTranscodedChannel: Boolean
