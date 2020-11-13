@@ -61,7 +61,8 @@ class PlayBroadcastPrepareFragment @Inject constructor(
             }
 
             override fun onCloseIconClicked() {
-                onBackPressed()
+                analytic.clickCloseOnSetupPage()
+                activity?.onBackPressed()
             }
         })
     }
@@ -117,11 +118,6 @@ class PlayBroadcastPrepareFragment @Inject constructor(
         if (childFragment is PlayBroadcastSetupBottomSheet) {
             childFragment.setListener(setupListener)
         }
-    }
-
-    override fun onBackPressed(): Boolean {
-        analytic.clickCloseOnSetupPage()
-        return false
     }
 
     private fun initView(view: View) {
