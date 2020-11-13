@@ -234,7 +234,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.hint_text_input_layout, this);
+        View view = inflate(getContext(), R.layout.flight_hint_text_input_layout, this);
         mFrameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
         mTvLabel = (TextView) view.findViewById(R.id.tv_label);
         mTvHelper = (TextView) view.findViewById(R.id.tv_helper);
