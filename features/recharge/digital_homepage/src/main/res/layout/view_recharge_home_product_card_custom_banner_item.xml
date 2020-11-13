@@ -13,7 +13,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingEnd="8dp"
+            android:paddingEnd="@dimen/spacing_lvl3"
             >
 
             <View
@@ -46,6 +46,7 @@
                 android:layout_height="@dimen/layout_lvl3"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_recharge_product_title"
                 app:layout_constraintRight_toRightOf="parent"
+                android:scaleType="centerCrop"
                 app:layout_constraintTop_toTopOf="@+id/tv_recharge_product_title" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -60,9 +61,9 @@
                 app:layout_constraintLeft_toLeftOf="@id/tv_recharge_product_title"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_recharge_product_title"
-                app:typographyType="small"
+                app:typographyType="body_3"
                 tools:text="0821993837 \n XL Combo 10GB Internet + 5GB Xtra Kuota Malam"
-                tools:textSize="10sp" />
+                 />
 
             <LinearLayout
                 android:id="@+id/layout_recharge_product_discount_price"

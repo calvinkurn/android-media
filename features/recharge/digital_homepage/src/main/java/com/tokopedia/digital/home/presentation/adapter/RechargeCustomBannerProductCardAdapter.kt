@@ -17,32 +17,18 @@ import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_ban
 
 class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSections.Item>,
                                              val listener: RechargeHomepageItemListener)
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    : RecyclerView.Adapter<RechargeCustomBannerProductCardAdapter.ViewHolder>() {
 
-    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        if (position > 0) (viewHolder as ViewHolder).bind(items[position - 1])
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        viewHolder.bind(items[position])
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == EMPTY_LAYOUT) {
-            val view = LayoutInflater.from(parent.context).inflate(EMPTY_LAYOUT, parent, false)
-            EmptyViewHolder(view)
-        }
-        else {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(PRODUCT_CARD_LAYOUT, parent, false)
-            ViewHolder(view, listener)
-        }
+           return ViewHolder(view, listener)
     }
 
-    override fun getItemViewType(position: Int): Int {
-        return if (position == 0) EMPTY_LAYOUT else PRODUCT_CARD_LAYOUT
-    }
-
-    override fun getItemCount(): Int {
-        return items.size + 1
-    }
-
-    class EmptyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    override fun getItemCount(): Int = items.size
 
     class ViewHolder(itemView: View, val listener: RechargeHomepageItemListener)
         : RecyclerView.ViewHolder(itemView) {
@@ -74,7 +60,6 @@ class RechargeCustomBannerProductCardAdapter(val items: List<RechargeHomepageSec
     }
 
     companion object {
-        val EMPTY_LAYOUT = com.tokopedia.home_component.R.layout.home_banner_item_empty_carousel
         val PRODUCT_CARD_LAYOUT = R.layout.view_recharge_home_product_card_custom_banner_item
     }
 }

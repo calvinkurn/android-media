@@ -92,7 +92,7 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
                     val firstView = layoutManager.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
                     firstView?.let {
-                        val distanceFromLeft = it.left
+                        val distanceFromLeft = it.left - itemView.resources.getDimensionPixelSize(R.dimen.product_card_flashsale_width)
                         val translateX = distanceFromLeft * 0.2f
                         itemView.parallax_view.translationX = translateX
 

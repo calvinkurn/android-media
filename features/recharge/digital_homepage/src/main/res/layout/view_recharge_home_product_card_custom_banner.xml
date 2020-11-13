@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/unify_space_12"
             android:layout_marginBottom="@dimen/unify_space_12"
-            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingLeft="@dimen/product_card_flashsale_width"
             android:paddingRight="@dimen/spacing_lvl3"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
