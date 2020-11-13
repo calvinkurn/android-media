@@ -1,60 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:addStatesFromChildren="true"
-    android:focusable="true">
-    <TextView
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Label"
         android:paddingLeft="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4" />
+        android:paddingRight="@dimen/dp_4"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_2"
+        tools:text="Label" />
+
     <FrameLayout
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_minus8"
-        android:layout_marginBottom="@dimen/dp_minus6">
-    </FrameLayout>
+        android:layout_marginBottom="@dimen/dp_minus6"></FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4">
+
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
-            <TextView
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_helper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="HelperText"/>
-            <TextView
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2"
+                tools:text="HelperText" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="ErrorText"/>
-            <TextView
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2"
+                tools:text="ErrorText" />
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_success"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                tools:text="Toped Sukses"/>
+                android:textColor="@color/Unify_N700_68"
+                app:typographyType="body_2"
+                tools:text="Toped Sukses" />
         </LinearLayout>
-        <TextView
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_counter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|top"
             android:paddingLeft="@dimen/dp_2"
             android:paddingRight="@dimen/dp_2"
-            tools:text="2/20"/>
+            android:textColor="@color/Unify_N700_68"
+            app:typographyType="body_2"
+            tools:text="2/20" />
     </LinearLayout>
 
 </LinearLayout>
