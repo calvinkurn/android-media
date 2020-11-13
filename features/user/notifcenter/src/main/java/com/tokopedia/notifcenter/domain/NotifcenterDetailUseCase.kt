@@ -218,6 +218,15 @@ class NotifcenterDetailUseCase @Inject constructor(
                     expire_time_unix 
                     status 
                     read_status 
+                    image {
+                       url
+                       width
+                       height
+                       ratio {
+                          x
+                          y
+                       }
+                    }
                     data_notification {
                         app_link 
                         desktop_link 

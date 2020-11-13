@@ -1,16 +1,17 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
 import android.view.View
-import android.widget.ImageView
 import androidx.annotation.StringRes
-import com.tokopedia.abstraction.common.utils.image.DynamicSizeImageRequestListener
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.inboxcommon.time.TimeHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.data.entity.notification.Ratio
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 
@@ -19,11 +20,12 @@ class BannerNotificationTitleViewHolder(
         private val listener: NotificationItemListener?
 ) : BaseNotificationViewHolder(itemView, listener) {
 
-    private val banner: ImageView? = itemView?.findViewById(R.id.iv_banner)
+    private val banner: BroadcastBannerNotificationImageView? = itemView?.findViewById(
+            R.id.iv_banner
+    )
     private val status: Typography? = itemView?.findViewById(R.id.tv_status)
     private val endDate: Typography? = itemView?.findViewById(R.id.tv_end_date)
     private val countDown: TimerUnifySingle? = itemView?.findViewById(R.id.tu_countdown)
-    private val imageSizer = DynamicSizeImageRequestListener()
 
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
@@ -34,11 +36,17 @@ class BannerNotificationTitleViewHolder(
 
     override fun onViewRecycled() {
         countDown?.timer?.cancel()
+        ImageHandler.clearImage(banner)
     }
 
     private fun bindBannerImage(element: NotificationUiModel) {
-        ImageHandler.loadImageWithListener(
-                banner, element.dataNotification.infoThumbnailUrl, imageSizer
+        // workaround Glide issue with dynamic height size
+        // https://github.com/bumptech/glide/issues/835#issuecomment-167438903
+        banner?.layout(0, 0, 0, 0)
+        val imageRatio = element.imageMetaData.getOrNull(0)?.ratio ?: Ratio()
+        banner?.ratio = (imageRatio.y / imageRatio.x.toFloat())
+        ImageHandler.loadImageRounded(
+                itemView.context, banner, element.dataNotification.infoThumbnailUrl, bannerRadius
         )
     }
 
@@ -125,6 +133,7 @@ class BannerNotificationTitleViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_notifcenter_banner_notification
+        private val bannerRadius = 8f.toPx()
     }
 
     data class TimeMetaData(

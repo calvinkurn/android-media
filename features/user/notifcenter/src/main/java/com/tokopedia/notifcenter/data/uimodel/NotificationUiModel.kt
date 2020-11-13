@@ -3,10 +3,7 @@ package com.tokopedia.notifcenter.data.uimodel
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.data.entity.notification.Bottomsheet
-import com.tokopedia.notifcenter.data.entity.notification.DataNotification
-import com.tokopedia.notifcenter.data.entity.notification.Options
-import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.entity.notification.*
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import java.util.*
 
@@ -33,6 +30,8 @@ data class NotificationUiModel(
         val notifId: String = "",
         @SerializedName("product_data")
         val productData: List<ProductData> = listOf(),
+        @SerializedName("image")
+        val imageMetaData: List<ImageMetaData> = listOf(),
         @SerializedName("read_status")
         val readStatus: Int = 0,
         @SerializedName("section_icon")
