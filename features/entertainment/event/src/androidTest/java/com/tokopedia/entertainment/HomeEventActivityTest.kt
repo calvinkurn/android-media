@@ -132,7 +132,6 @@ class HomeEventActivityTest {
         Thread.sleep(2000)
         onView(withId(R.id.ent_recycle_view_category)).perform(RecyclerViewActions.actionOnItemAtPosition<CategoryEventViewHolder>(0, click()))
         Thread.sleep(2000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_carousel_product_event() {
@@ -144,7 +143,6 @@ class HomeEventActivityTest {
         Thread.sleep(3000)
         onView(withId(R.id.ent_recycle_view_carousel)).perform(RecyclerViewActions.actionOnItemAtPosition<EventCarouselEventViewHolder>(2, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_taman_bermain_lokal() {
@@ -162,7 +160,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun click_see_all_taman_bermain_lokal() {
@@ -172,7 +169,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_location_event() {
@@ -192,7 +188,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventLocationEventViewHolder>(0, click()))
         Thread.sleep(5000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_taman_bermain_mancanegara() {
@@ -211,7 +206,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun click_see_all_taman_bermain_mancanegara() {
@@ -221,7 +215,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_aktivitas() {
@@ -240,7 +233,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun click_see_all_aktivitas() {
@@ -250,7 +242,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_festival() {
@@ -269,7 +260,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun click_see_all_festival() {
@@ -279,7 +269,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
 
@@ -299,7 +288,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(1, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun click_see_all_event() {
@@ -309,7 +297,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun impression_aktivitas_anak() {
@@ -328,7 +315,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<EventGridEventViewHolder>(0, click()))
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     fun click_see_all_aktivitas_anak() {
@@ -338,7 +324,6 @@ class HomeEventActivityTest {
                         isDisplayed()))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
         Thread.sleep(3000)
-        onView(isRoot()).perform(pressBack())
     }
 
     @After
@@ -348,7 +333,7 @@ class HomeEventActivityTest {
 
     companion object {
         private const val ENTERTAINMENT_EVENT_HOME_VALIDATOR_QUERY = "tracker/event/homeeventcheck.json"
-        private const val KEY_EVENT_CHILD = "searchEventCategory"
+        private const val KEY_EVENT_CHILD = "EventCategories"
         private const val PATH_RESPONSE_HOME = "event_home.json"
     }
 

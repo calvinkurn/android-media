@@ -37,31 +37,30 @@ class PDPTicketEventActivityTest {
     private val graphqlCacheManager = GraphqlCacheManager()
 
     @get:Rule
-    var activityRule =  ActivityTestRule(EventPDPTicketActivity::class.java, false, false)
+    var activityRule = ActivityTestRule(EventPDPTicketActivity::class.java, false, false)
 
     @Before
-    fun setup(){
+    fun setup() {
         Intents.init()
         graphqlCacheManager.deleteAll()
         gtmLogDBSource.deleteAll().subscribe()
-        setupGraphqlMockResponse{
-            setupGraphqlMockResponse{
-                addMockResponse(
-                        KEY_QUERY_PDP_V3,
-                        ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP),
-                        MockModelConfig.FIND_BY_CONTAINS)
+        setupGraphqlMockResponse {
+            addMockResponse(
+                    KEY_QUERY_PDP_V3,
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP),
+                    MockModelConfig.FIND_BY_CONTAINS)
 
-                addMockResponse(
-                        KEY_QUERY_CONTENT,
-                        ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP_CONTENT),
-                        MockModelConfig.FIND_BY_CONTAINS)
+            addMockResponse(
+                    KEY_QUERY_CONTENT,
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP_CONTENT),
+                    MockModelConfig.FIND_BY_CONTAINS)
 
-                addMockResponse(
-                        KEY_TRAVEL_HOLIDAY,
-                        ResourceUtils.getJsonFromResource(PATH_RESPONSE_TRAVEL_HOLIDAY),
-                        MockModelConfig.FIND_BY_CONTAINS)
-            }
+            addMockResponse(
+                    KEY_TRAVEL_HOLIDAY,
+                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_TRAVEL_HOLIDAY),
+                    MockModelConfig.FIND_BY_CONTAINS)
         }
+
 
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(targetContext, EventPDPTicketActivity::class.java).apply {
