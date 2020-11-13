@@ -26,8 +26,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
         private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
-        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
-        private val userSessionInterface: UserSessionInterface
+        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     val userSessionShopId: String
@@ -50,7 +49,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
 
 
     val isUserLoggedIn: Boolean
-        get() = userSessionInterface.isLoggedIn
+        get() = userSession.isLoggedIn
 
     fun getTncBottomSheetData(campaignId: String, shopId: String, isOwner: Boolean) {
         launchCatchError(block = {
@@ -107,7 +106,7 @@ class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
     }
 
     private fun toggleFavorite(shopID: String): Boolean? {
-        if (!userSessionInterface.isLoggedIn) {
+        if (!userSession.isLoggedIn) {
             throw UserNotLoginException()
         }
         return toggleFavouriteShopUseCase.createObservable(
