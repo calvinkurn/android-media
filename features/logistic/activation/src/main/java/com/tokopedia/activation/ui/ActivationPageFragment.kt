@@ -373,8 +373,8 @@ class ActivationPageFragment: BaseDaggerFragment() {
             }
         } else {
             view?.let { view ->
-                if (codValue) Toaster.build(view, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL).show()
-                else Toaster.build(view, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL).show()
+                if (codValue) Toaster.build(view, COD_INACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                else Toaster.build(view, COD_ACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
             }
             getShopFeature()
         }
