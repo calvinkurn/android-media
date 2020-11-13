@@ -1,4 +1,4 @@
-package com.tokopedia.dropoff.di
+package com.tokopedia.logisticdata.data.module
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticdata.data.autocomplete
+package com.tokopedia.logisticdata.domain.model
 
 sealed class AutoCompleteVisitable
 
