@@ -2155,7 +2155,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         navToolbar?.apply {
             setIcon(
                     IconBuilder()
-                            .addIcon(IconList.ID_MESSAGE) {}
                             .addIcon(IconList.ID_CART) {}
                             .addIcon(IconList.ID_NAV_GLOBAL) {}
             )
