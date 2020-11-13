@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.estimasiongkir.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.R
@@ -11,8 +13,6 @@ import com.tokopedia.user.session.UserSessionInterface
 
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @Module
@@ -32,8 +32,7 @@ class RatesEstimationModule {
 
     @RatesEstimationScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @RatesEstimationScope
     @Provides

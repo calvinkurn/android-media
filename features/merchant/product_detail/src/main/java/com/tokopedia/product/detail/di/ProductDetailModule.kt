@@ -23,9 +23,6 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 @ProductDetailScope
 @Module (includes = [ProductRestModule::class, AffiliateCommonModule::class])
@@ -42,11 +39,6 @@ class ProductDetailModule {
     @Provides
     fun provideDiscussionMostHelpfulUseCase(rawQueries: Map<String, String>, graphqlRepository: GraphqlRepository): DiscussionMostHelpfulUseCase =
             DiscussionMostHelpfulUseCase(rawQueries[QUERY_DISCUSSION_MOST_HELPFUL]?:"", graphqlRepository)
-
-    @ProductDetailScope
-    @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @ProductDetailScope
     @Provides

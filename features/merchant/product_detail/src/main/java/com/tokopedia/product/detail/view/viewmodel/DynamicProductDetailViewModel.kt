@@ -493,7 +493,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun toggleFavorite(shopID: String, isNplFollowerType: Boolean = false) {
-        launchCatchError(dispatcher.io(), block = {
+        launchCatchError(dispatcher.io, block = {
             val requestParams = ToggleFavoriteUseCase.createParams(shopID, if (isNplFollowerType) ToggleFavoriteUseCase.FOLLOW_ACTION else null)
             val favoriteData = toggleFavoriteUseCase.get().executeOnBackground(requestParams).followShop
             if (favoriteData.isSuccess) {
