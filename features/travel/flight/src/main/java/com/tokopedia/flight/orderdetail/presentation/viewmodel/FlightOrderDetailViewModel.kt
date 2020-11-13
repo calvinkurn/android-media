@@ -3,6 +3,9 @@ package com.tokopedia.flight.orderdetail.presentation.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling
+import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
@@ -14,6 +17,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -22,10 +26,16 @@ import javax.inject.Inject
 class FlightOrderDetailViewModel @Inject constructor(private val userSession: UserSessionInterface,
                                                      private val orderDetailUseCase: FlightOrderDetailUseCase,
                                                      private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
+                                                     private val crossSellUseCase: TravelCrossSellingUseCase,
                                                      private val dispatcherProvider: TravelDispatcherProvider)
     : BaseViewModel(dispatcherProvider.io()) {
 
-    var invoiceId: String = ""
+    var orderId: String = ""
+
+
+    private val mutableCrossSell = MutableLiveData<Result<TravelCrossSelling>>()
+    val crossSell: LiveData<Result<TravelCrossSelling>>
+        get() = mutableCrossSell
 
     private val mutableOrderDetailData = MutableLiveData<Result<FlightOrderDetailDataModel>>()
     val orderDetailData: LiveData<Result<FlightOrderDetailDataModel>>
@@ -39,7 +49,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     fun fetchOrderDetailData() {
         launchCatchError(dispatcherProvider.ui(), block = {
-            val orderDetailData = orderDetailUseCase.execute(invoiceId)
+            val orderDetailData = orderDetailUseCase.execute(orderId)
             orderDetailData.let {
                 it.journeys.map { journey ->
                     journey.airlineLogo = getAirlineLogo(journey)
@@ -57,11 +67,18 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     fun fetchETicketData() {
         launchCatchError(dispatcherProvider.ui(), block = {
-            val eticketData = getInvoiceEticketUseCase.executeGetETicket(invoiceId)
+            val eticketData = getInvoiceEticketUseCase.executeGetETicket(orderId)
             if (eticketData.isNotEmpty()) mutableETicketData.postValue(Success(eticketData))
         }) {
             it.printStackTrace()
             mutableETicketData.postValue(Fail(it))
+        }
+    }
+
+    fun fetchCrossSellData() {
+        launch(dispatcherProvider.ui()) {
+            mutableCrossSell.postValue(crossSellUseCase.execute(TravelCrossSellingGQLQuery.QUERY_CROSS_SELLING,
+                    orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT))
         }
     }
 

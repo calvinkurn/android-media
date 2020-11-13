@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderdetail.presentation.adapter.viewholder
 
+import android.graphics.Paint
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -10,6 +11,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmen
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerCancelStatusModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
+import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus
 import kotlinx.android.synthetic.main.item_flight_order_detail_passenger_detail.view.*
 
 /**
@@ -45,10 +47,24 @@ class FlightOrderDetailPassengerViewHolder(view: View)
             rvFlightOrderPassengerCancelStatus.setHasFixedSize(true)
             rvFlightOrderPassengerCancelStatus.adapter = adapter
         }
+        setupStrikeThroughPassenger(isPassengerFullyCancelled(cancelStatusList))
+    }
+
+    private fun setupStrikeThroughPassenger(isFullCancelled: Boolean) {
+        with(itemView) {
+            if (isFullCancelled) {
+                tgFlightOrderPassengerNumber.paintFlags = tgFlightOrderPassengerNumber.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                tgFlightOrderPassengerName.paintFlags = tgFlightOrderPassengerName.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                tgFlightOrderPassengerNumber.paintFlags = tgFlightOrderPassengerNumber.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                tgFlightOrderPassengerName.paintFlags = tgFlightOrderPassengerName.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+        }
     }
 
     private fun renderAmenities(passengerModel: FlightOrderDetailPassengerModel) {
         with(itemView) {
+            val isFullyCancelled = isPassengerFullyCancelled(passengerModel.cancelStatus)
             val luggageAmenities = ArrayList<FlightOrderDetailSimpleModel>()
             val mealAmenities = ArrayList<FlightOrderDetailSimpleModel>()
             passengerModel.amenities.map {
@@ -64,7 +80,9 @@ class FlightOrderDetailPassengerViewHolder(view: View)
                                         ),
                                         it.detail,
                                         false,
-                                        true
+                                        true,
+                                        isFullyCancelled,
+                                        isFullyCancelled
                                 )
                         )
                     }
@@ -79,7 +97,9 @@ class FlightOrderDetailPassengerViewHolder(view: View)
                                         ),
                                         it.detail,
                                         false,
-                                        true
+                                        true,
+                                        isFullyCancelled,
+                                        isFullyCancelled
                                 )
                         )
                     }
@@ -97,6 +117,14 @@ class FlightOrderDetailPassengerViewHolder(view: View)
             rvFlightOrderPassengerAmenity.setHasFixedSize(true)
             rvFlightOrderPassengerAmenity.adapter = adapter
         }
+    }
+
+    private fun isPassengerFullyCancelled(cancelStatusList: List<FlightOrderDetailPassengerCancelStatusModel>): Boolean {
+        var isFullyCancelled: Boolean = false
+        for (cancelStatus in cancelStatusList) {
+            isFullyCancelled = cancelStatus.status == FlightCancellationStatus.REFUNDED
+        }
+        return isFullyCancelled
     }
 
     companion object {

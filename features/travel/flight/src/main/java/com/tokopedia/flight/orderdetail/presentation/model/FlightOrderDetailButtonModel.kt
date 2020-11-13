@@ -9,5 +9,6 @@ class FlightOrderDetailButtonModel(
         val leftIcon: Drawable?,
         val topText: String,
         val bottomText: String,
-        val isVisible: Boolean
+        val isVisible: Boolean,
+        val isActionAvailable: Boolean
 )

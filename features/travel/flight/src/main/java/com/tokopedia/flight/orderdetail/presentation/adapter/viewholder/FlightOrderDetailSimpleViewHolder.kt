@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderdetail.presentation.adapter.viewholder
 
+import android.graphics.Paint
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.flight.R
@@ -17,6 +18,9 @@ class FlightOrderDetailSimpleViewHolder(view: View) : RecyclerView.ViewHolder(vi
             tgFlightOrderSimpleLeft.text = element.leftValue
             tgFlightOrderSimpleRight.text = element.rightValue
 
+            setupStrikeThrough(tgFlightOrderSimpleLeft, element.isLeftStriked)
+            setupStrikeThrough(tgFlightOrderSimpleRight, element.isRightStriked)
+
             if (element.isLeftBold) {
                 tgFlightOrderSimpleLeft.setWeight(Typography.BOLD)
             } else {
@@ -28,6 +32,15 @@ class FlightOrderDetailSimpleViewHolder(view: View) : RecyclerView.ViewHolder(vi
             } else {
                 tgFlightOrderSimpleRight.setWeight(Typography.REGULAR)
             }
+
+        }
+    }
+
+    private fun setupStrikeThrough(textView: Typography, isStriked: Boolean) {
+        if (isStriked) {
+            textView.paintFlags = textView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            textView.paintFlags = textView.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
         }
     }
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -43,6 +44,42 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
+            <LinearLayout
+                android:id="@+id/containerFlightOrderDetailCancellationDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:background="@color/Unify_N0"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_lvl4">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    app:srcCompat="@drawable/ic_flight_order_detail_cancel_detail" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_weight="1"
+                    android:text="@string/flight_order_detail_cancellation_detail_label"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="heading_4" />
+
+                <View
+                    android:layout_width="@dimen/layout_lvl1"
+                    android:layout_height="@dimen/layout_lvl1"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/flight_circle_red_fill" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/layout_lvl3"
+                    android:layout_height="@dimen/layout_lvl3"
+                    app:srcCompat="@drawable/ic_system_action_arrow_right_grayscale_24" />
+
+            </LinearLayout>
+
             <com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
                 android:id="@+id/flightOrderDetailInsurance"
                 android:layout_width="match_parent"
@@ -54,6 +91,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+            <com.tokopedia.common.travel.widget.TravelCrossSellWidget
+                android:id="@+id/flightOrderDetailCrossSell"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/spacing_lvl3"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/Unify_N0"
+                android:orientation="vertical"
+                android:padding="@dimen/spacing_lvl4">
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/tgFlightOrderContactUs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/flight_search_airport_arrival_title"
+                    android:textAlignment="center"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3"
+                    tools:text="Butuh bantuan? Kami siap membantu 24/7. Hubungi Tokopedia Care " />
+
+            </LinearLayout>
 
         </LinearLayout>
 

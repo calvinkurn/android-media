@@ -52,6 +52,11 @@ class FlightOrderDetailButtonsView @JvmOverloads constructor(context: Context, a
             cvFlightOrderTopButton.setOnClickListener {
                 listener?.onTopButtonClicked()
             }
+            if (topButtonData.isActionAvailable) {
+                ivFlightOrderTopButtonRightIcon.visibility = View.VISIBLE
+            } else {
+                ivFlightOrderTopButtonRightIcon.visibility = View.GONE
+            }
         } else {
             cvFlightOrderTopButton.visibility = View.GONE
         }
@@ -63,13 +68,18 @@ class FlightOrderDetailButtonsView @JvmOverloads constructor(context: Context, a
             ivFlightOrderBottomButtonLeftIcon.setImageDrawable(bottomButtonData.leftIcon)
             tgFlightOrderBottomButtonTopText.text = bottomButtonData.topText
             if (bottomButtonData.bottomText.isNotEmpty()) {
-                tgFlightOrderBottomButtonBottomText.text = topButtonData.bottomText
+                tgFlightOrderBottomButtonBottomText.text = bottomButtonData.bottomText
                 tgFlightOrderBottomButtonBottomText.visibility = View.VISIBLE
             } else {
                 tgFlightOrderBottomButtonBottomText.visibility = View.GONE
             }
             cvFlightOrderBottomButton.setOnClickListener {
                 listener?.onBottomButtonClicked()
+            }
+            if (bottomButtonData.isActionAvailable) {
+                ivFlightOrderBottomButtonRightIcon.visibility = View.VISIBLE
+            } else {
+                ivFlightOrderBottomButtonRightIcon.visibility = View.GONE
             }
         } else {
             cvFlightOrderBottomButton.visibility = View.GONE

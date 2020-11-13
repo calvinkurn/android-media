@@ -15,7 +15,11 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling
+import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
+import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
@@ -24,6 +28,9 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailButt
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -40,6 +47,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var flightOrderDetailViewModel: FlightOrderDetailViewModel
+    private lateinit var remoteConfig: RemoteConfig
 
     private var isCancellation: Boolean = false
     private var isRequestCancel: Boolean = false
@@ -53,13 +61,19 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        context?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
+        }
+
         isCancellation = arguments?.getBoolean(EXTRA_IS_CANCELLATION) ?: false
         isRequestCancel = arguments?.getBoolean(EXTRA_REQUEST_CANCEL) ?: false
 
         val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
         flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
-        flightOrderDetailViewModel.invoiceId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
+        flightOrderDetailViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
         flightOrderDetailViewModel.fetchOrderDetailData()
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+            flightOrderDetailViewModel.fetchCrossSellData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -75,7 +89,16 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     renderView(it.data)
                 }
                 is Fail -> {
+                }
+            }
+        })
 
+        flightOrderDetailViewModel.crossSell.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    renderCrossSell(it.data)
+                }
+                is Fail -> {
                 }
             }
         })
@@ -110,7 +133,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     override fun onSendETicketClicked() {
         val bottomSheet = FlightOrderResendEmailBottomSheet.getInstance(
                 flightOrderDetailViewModel.getUserEmail(),
-                flightOrderDetailViewModel.invoiceId
+                flightOrderDetailViewModel.orderId
         )
         bottomSheet.setTargetFragment(this, REQUEST_CODE_SEND_E_TICKET)
         bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
@@ -145,7 +168,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailHeaderStatus.setData(
                 data.status,
                 data.statusString,
-                flightOrderDetailViewModel.invoiceId,
+                flightOrderDetailViewModel.orderId,
                 data.createTime,
                 data.payment.gatewayName,
                 data.payment.totalAmountStr
@@ -164,15 +187,21 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailPassenger.setData(data.passengers)
         flightOrderDetailPassenger.buildView()
 
+        /* Setup Cancellation Detail View */
+        if (data.cancellations.isNotEmpty()) {
+            containerFlightOrderDetailCancellationDetail.visibility = View.VISIBLE
+            containerFlightOrderDetailCancellationDetail.setOnClickListener {
+                navigateToCancellationDetailPage()
+            }
+        } else {
+            containerFlightOrderDetailCancellationDetail.visibility = View.GONE
+        }
+
         /* Render Insurance View */
         flightOrderDetailInsurance.listener = object : FlightOrderDetailButtonsView.Listener {
-            override fun onTopButtonClicked() {
-//                TODO("Not yet implemented")
-            }
+            override fun onTopButtonClicked() {}
 
-            override fun onBottomButtonClicked() {
-//                TODO("Not yet implemented")
-            }
+            override fun onBottomButtonClicked() {}
 
         }
         flightOrderDetailInsurance.setData(
@@ -180,13 +209,15 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 FlightOrderDetailButtonModel(
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
                         getString(R.string.flight_order_detail_insurance_trip_label),
-                        "",
-                        true
+                        getString(R.string.flight_order_detail_insurance_trip_description),
+                        true,
+                        false
                 ),
                 FlightOrderDetailButtonModel(
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_insurance),
                         getString(R.string.flight_order_detail_insurance_cancel_label),
-                        "",
+                        getString(R.string.flight_order_detail_insurance_trip_description),
+                        true,
                         false
                 )
         )
@@ -210,19 +241,41 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_web_check_in),
                         getString(R.string.flight_order_detail_check_in_label),
                         getString(R.string.flight_order_detail_check_in_description),
+                        true,
                         true
                 ),
                 FlightOrderDetailButtonModel(
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_cancellation),
                         getString(R.string.flight_label_cancel_ticket),
                         getString(R.string.flight_order_detail_cancel_description),
+                        true,
                         true
                 )
         )
         flightOrderDetailCheckIn.buildView()
 
+        /* Render Contact Us */
+        tgFlightOrderContactUs.text = MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
+        tgFlightOrderContactUs.setOnClickListener {
+            RouteManager.route(requireContext(), data.contactUsURL)
+        }
 
         hideLoading()
+    }
+
+    private fun renderCrossSell(crossSellData: TravelCrossSelling) {
+        if (crossSellData.items.isNotEmpty()) {
+            flightOrderDetailCrossSell.visibility = View.VISIBLE
+            flightOrderDetailCrossSell.buildView(crossSellData)
+            flightOrderDetailCrossSell.setListener(object : TravelCrossSellAdapter.OnItemClickListener {
+                override fun onItemClickListener(item: TravelCrossSelling.Item, position: Int) {
+                    RouteManager.route(context, item.uri)
+                }
+
+            })
+        } else {
+            flightOrderDetailCrossSell.visibility = View.GONE
+        }
     }
 
     private fun copyToClipboard(label: String, textToCopy: String) {
@@ -239,6 +292,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun showSnackbarSuccess(message: String) {
         Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+    }
+
+    private fun navigateToCancellationDetailPage() {
+        startActivity(FlightCancellationListActivity.createIntent(context, flightOrderDetailViewModel.orderId))
     }
 
     companion object {

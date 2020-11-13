@@ -7,6 +7,7 @@ import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.utils.OrderDetailUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_flight_order_detail_journey.view.*
 
@@ -76,6 +77,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
 
             if (onwardJourney.refundableInfo) {
                 tgFlightOrderDepartureTicketRefundableStatus.visibility = View.VISIBLE
+                OrderDetailUtils.changeShapeColor(tgFlightOrderDepartureTicketRefundableStatus.background, REFUNDABLE_BACKGROUND_COLOR)
             } else {
                 tgFlightOrderDepartureTicketRefundableStatus.visibility = View.GONE
             }
@@ -197,6 +199,10 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
         fun onPnrCopyClicked(pnr: String, isReturn: Boolean)
         fun onSendETicketClicked()
         fun onViewETicketClicked()
+    }
+
+    companion object {
+        private const val REFUNDABLE_BACKGROUND_COLOR = "#f3f4f5"
     }
 
 }

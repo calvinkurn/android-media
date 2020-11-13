@@ -11,5 +11,7 @@ class FlightOrderDetailSimpleModel(
         val leftValue: String,
         val rightValue: String,
         val isLeftBold: Boolean,
-        val isRightBold: Boolean
+        val isRightBold: Boolean,
+        val isLeftStriked: Boolean,
+        val isRightStriked: Boolean
 ) : Parcelable

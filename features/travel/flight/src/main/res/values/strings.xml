@@ -380,6 +380,7 @@ di tempatmu.</string>
 
     <string name="flight_order_detail_insurance_title_label">Terlindungi asuransi</string>
     <string name="flight_order_detail_insurance_trip_label">Asuransi Perjalanan</string>
+    <string name="flight_order_detail_insurance_trip_description">Cek e-mail untuk melihat polis asuransimu</string>
     <string name="flight_order_detail_insurance_cancel_label">Asuransi Bebas Pembatalan</string>
 
     <string name="flight_order_detail_check_in_title_label">Tentang pesananmu</string>
@@ -388,5 +389,7 @@ di tempatmu.</string>
 
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
     <string name="flight_order_detail_cancel_description">Cek ketentuan pembatalan di sini.</string>
+    <string name="flight_order_detail_cancellation_detail_label">Detail Pembatalan</string>
 
+    <string name="flight_order_detail_contact_us"><![CDATA[Butuh bantuan? Kami siap membantu 24/7.<br />Hubungi <strong><span style="color:#03AC0E">Tokopedia Care</span></strong>]]></string>
 </resources>
