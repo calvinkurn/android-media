@@ -10,7 +10,7 @@
     android:background="?attr/selectableItemBackground"
     android:orientation="vertical">
 
-    <com.tokopedia.feedplus.view.customview.RoundedCornerImageView
+    <com.tokopedia.recentview.view.custom.RoundedCornerImageView
         android:id="@+id/product_image"
         android:layout_width="@dimen/recentview_detail_product"
         android:layout_height="@dimen/recentview_detail_product"
