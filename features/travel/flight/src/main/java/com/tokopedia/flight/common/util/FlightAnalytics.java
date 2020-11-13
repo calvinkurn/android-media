@@ -920,12 +920,26 @@ public class FlightAnalytics {
     public void eventClickOnWebCheckIn(String eventLabel,
                                        String userId,
                                        boolean isDeparture) {
+        String action = isDeparture ? Category.CLICK_CHECKIN_DEPARTURE : Category.CLICK_CHECKIN_RETURN;
         Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
                 GENERIC_CATEGORY,
-                Category.CLICK_CANCEL_TICKET,
+                action,
                 String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
         params.put(USER_ID, userId);
         params.put(SCREEN_NAME, Screen.WEB_CHECKIN);
+        buildGeneralFlightParams(params);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(params);
+    }
+
+    public void eventClickNextOnCancellationPassenger(String eventLabel,
+                                                      String userId) {
+        Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_NEXT_CANCELLATION_PASSENGER,
+                String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
+        params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.CANCELLATION_PASSENGER);
         buildGeneralFlightParams(params);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
@@ -948,6 +962,7 @@ public class FlightAnalytics {
         public static String BOOKING = "/flight/booking";
         public static String ORDER_DETAIL = "/flight/orderdetail";
         public static String WEB_CHECKIN = "/flight/webcheckindetail";
+        public static String CANCELLATION_PASSENGER = "/flight/cancellationpassenger";
     }
 
     private static class Category {
@@ -985,8 +1000,9 @@ public class FlightAnalytics {
         static String CLICK_SEND_ETICKET = "click send eticket";
         static String CLICK_WEB_CHECKIN = "click web checkin";
         static String CLICK_CANCEL_TICKET = "click cancel ticket";
-        static String CLICK_CHECKNI_DEPARTURE = "click checkin on depart route";
-        static String CLICK_CHECKNI_RETURN = "click checkin on return route";
+        static String CLICK_CHECKIN_DEPARTURE = "click checkin on depart route";
+        static String CLICK_CHECKIN_RETURN = "click checkin on return route";
+        static String CLICK_NEXT_CANCELLATION_PASSENGER = "click next on cancellation passenger";
     }
 
     private static class Action {
