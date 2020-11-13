@@ -105,7 +105,7 @@ object GlideBuilder {
                         source = glideUrl
                         signatureKey = signatureKey.mediaSignature(glideUrl)
                     }.apply {
-                        val imageUrl = it.toStringUrl()
+                        val imageUrl = this.toStringUrl()
                         performanceMonitoring = getPerformanceMonitoring(imageUrl, context)
                     }
                 }
@@ -147,7 +147,7 @@ object GlideBuilder {
                         transform(MultiTransformation(localTransform))
                     }
 
-                    listener(glideListener(loaderListener))
+                    listener(glideListener(loaderListener, performanceMonitoring))
 
                 }.into(imageView)
             }
