@@ -61,10 +61,10 @@ object GratificationAnalyticsHelper {
         }
         couponDetailResponse?.coupon?.couponStatus?.let {
             when (it) {
-                CouponStatusType.ACTIVE -> PopupType.ACTIVE
-                CouponStatusType.EXPIRED -> PopupType.EXPIRED
-                CouponStatusType.USED -> PopupType.USED
-                else -> PopupType.UNKNOWN
+                CouponStatusType.ACTIVE -> return PopupType.ACTIVE
+                CouponStatusType.EXPIRED -> return PopupType.EXPIRED
+                CouponStatusType.USED -> return PopupType.USED
+                else -> return PopupType.UNKNOWN
             }
         }
         return PopupType.UNKNOWN

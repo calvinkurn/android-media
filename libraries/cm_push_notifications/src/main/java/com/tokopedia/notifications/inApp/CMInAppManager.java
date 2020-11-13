@@ -2,17 +2,15 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
-import com.tokopedia.notifications.CMRouter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.notifications.FragmentObserver;
-import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
@@ -33,8 +31,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.WeakHashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import timber.log.Timber;
 
@@ -176,7 +174,8 @@ public class CMInAppManager implements CmInAppListener,
                     showInterstitialDialog(currentActivity, data);
                     break;
                 case TYPE_SILENT:
-                break;default:
+                    break;
+                default:
                     showLegacyDialog(currentActivity, data);
                     break;
             }
