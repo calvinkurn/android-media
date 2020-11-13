@@ -107,9 +107,13 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     private fun setupView(view: View) {
         summaryInfoView.entranceAnimation(view as ViewGroup)
         btnSaveVideo.setOnClickListener {
+            analytic.clickSaveVodOnReportPage(parentViewModel.channelId)
             viewModel.saveVideo()
         }
-        btnDeleteVideo.setOnClickListener { showConfirmDeleteVideoDialog() }
+        btnDeleteVideo.setOnClickListener {
+            analytic.clickDeleteVodOnReportPage(parentViewModel.channelId)
+            showConfirmDeleteVideoDialog()
+        }
     }
 
     private fun setupInsets(view: View) {
@@ -153,6 +157,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     primaryCta = getString(R.string.play_summary_delete_dialog_action_delete),
                     primaryListener = { dialog ->
                         dialog.dismiss()
+                        analytic.clickDeleteOnPopupOnReportPage(parentViewModel.channelId)
                         viewModel.deleteVideo()
                     },
                     secondaryCta = getString(R.string.play_summary_delete_dialog_action_back),
@@ -160,7 +165,10 @@ class PlayBroadcastSummaryFragment @Inject constructor(
                     cancelable = true
             )
         }
-        if (!deleteVideoDialog.isShowing) deleteVideoDialog.show()
+        if (!deleteVideoDialog.isShowing) {
+            analytic.viewConfirmDeleteOnReportPage(parentViewModel.channelId)
+            deleteVideoDialog.show()
+        }
     }
 
     /**
