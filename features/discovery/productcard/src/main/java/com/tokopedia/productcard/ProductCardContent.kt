@@ -9,6 +9,7 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -76,20 +77,26 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.let {
+        val constraintSet = ConstraintSet()
+
+        constraintSet.clone(it)
+
+        val constrainedId = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
+
+        constraintSet.clear(R.id.labelPrice)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, constrainedId, ConstraintSet.BOTTOM)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
+
+        constraintSet.applyTo(it)
+    }
+
     if (productCardModel.isShowDiscountOrSlashPrice())
         labelPrice?.initLabelGroup(null)
     else
         labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
-
-    constraintLayoutProductCardContent?.let { constraintLayout ->
-        val constraintSet = ConstraintSet().also { it.clone(constraintLayout) }
-
-        val connectedId = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
-
-        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, connectedId, ConstraintSet.BOTTOM, 0)
-
-        constraintSet.applyTo(constraintLayout)
-    }
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
