@@ -137,7 +137,7 @@ open class PageLoadTimePerformanceCallback(
         if (customMetric[tag] == null || customMetric[tag] == 0L) {
             customMetric[tag] = System.currentTimeMillis()
             isCustomMetricDone[tag] = false
-            Log.d("SHOP_TEST_START", "startCustomMetric")
+            Log.d("SHOP_TEST_START", "startCustomMetric $tag")
         }
     }
 
