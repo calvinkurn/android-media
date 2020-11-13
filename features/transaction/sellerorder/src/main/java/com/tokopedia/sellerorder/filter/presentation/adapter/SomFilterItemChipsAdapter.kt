@@ -8,7 +8,7 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.unifycomponents.ChipsUnify
-import kotlinx.android.synthetic.main.item_chips.view.*
+import kotlinx.android.synthetic.main.item_chips_som_filter.view.*
 
 class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener) : RecyclerView.Adapter<SomFilterItemChipsAdapter.ChipsListViewHolder>() {
 
@@ -27,7 +27,7 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChipsListViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chips, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_chips_som_filter, parent, false)
         return ChipsListViewHolder(view)
     }
 
