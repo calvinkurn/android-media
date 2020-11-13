@@ -34,5 +34,8 @@ data class VerifyPushNotifData(
         var messageBody: String = "",
         @SerializedName("CtaType")
         @Expose
-        var ctaType: String = ""
+        var ctaType: String = "",
+        @SerializedName("Status")
+        @Expose
+        var status: String = ""
 )
