@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.listener
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -30,11 +31,17 @@ class NavRecyclerViewScrollListener(
         }
         if (offsetAlpha >= 150) {
             navToolbar.switchToLightToolbar()
-            statusBarUtil?.requestStatusBarLight()
+            darkModeCondition(
+                    lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                    nightCondition = { statusBarUtil?.requestStatusBarDark() }
+            )
             navScrollCallback?.onSwitchToLightToolbar()
         } else {
             navToolbar.switchToDarkToolbar()
-            statusBarUtil?.requestStatusBarDark()
+            darkModeCondition(
+                    lightCondition = { statusBarUtil?.requestStatusBarDark() },
+                    nightCondition = { statusBarUtil?.requestStatusBarLight() }
+            )
             navScrollCallback?.onSwitchToDarkToolbar()
         }
         if (offsetAlpha >= 255) {
@@ -44,6 +51,12 @@ class NavRecyclerViewScrollListener(
             navToolbar.setBackgroundAlpha(offsetAlpha)
             navScrollCallback?.onAlphaChanged(offsetAlpha)
         }
+    }
+
+    private fun darkModeCondition(lightCondition: () -> Unit = {}, nightCondition:() -> Unit = {}) {
+        val isNightMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        if (!isNightMode) lightCondition.invoke()
+        if (isNightMode) nightCondition.invoke()
     }
 
     interface NavScrollCallback {
