@@ -149,7 +149,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     fun hideShadow() {
         if(shadowApplied){
             shadowApplied = false
-            val pB = 0
+            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
             navToolbar?.background = ColorDrawable(getLightIconColor())
             navToolbar?.updatePadding(bottom = pB)
         }
