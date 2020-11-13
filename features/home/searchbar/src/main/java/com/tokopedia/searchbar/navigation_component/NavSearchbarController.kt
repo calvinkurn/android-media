@@ -103,15 +103,6 @@ class NavSearchbarController(val view: View,
         RouteManager.route(context, applink)
     }
 
-    private fun safeEncodeUTF8(value: String): String {
-        return try {
-            URLEncoder.encode(value, Charsets.UTF_8.toString())
-        }
-        catch (e: Throwable) {
-            value
-        }
-    }
-
     fun startHintAnimation() {
         if (::animationJob.isInitialized) {
             animationJob.start()
