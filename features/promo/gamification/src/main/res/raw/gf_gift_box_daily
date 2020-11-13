@@ -36,5 +36,6 @@ query GamiLuckyHome($campaignSlug: String!, $page: String!) {
       enableText
       disableText
     }
+    infoURL
   }
 }

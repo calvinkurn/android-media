@@ -22,10 +22,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iris.Iris
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -41,12 +43,17 @@ import com.tokopedia.loginphone.chooseaccount.viewmodel.ChooseAccountViewModel
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics
 import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
+import com.tokopedia.otp.verification.domain.data.OtpConstant
+import com.tokopedia.sessioncommon.data.LoginToken
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -187,7 +194,7 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         })
         chooseAccountViewModel.loginPhoneNumberResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
-                is Success -> onSuccessLoginToken()
+                is Success -> onSuccessLoginToken(it.data)
                 is Fail -> {
                     dismissLoadingProgress()
                     onErrorLoginToken(it.throwable)
@@ -201,6 +208,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
                     dismissLoadingProgress()
                     onErrorGetUserInfo(it.throwable)
                 }
+            }
+        })
+        chooseAccountViewModel.showPopup.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+            if (it != null) {
+                showPopupError(it.header, it.body, it.action)
             }
         })
         chooseAccountViewModel.goToActivationPage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
@@ -330,12 +342,16 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         TrackApp.getInstance().appsFlyer.sendTrackEvent("Login Successful", dataMap)
     }
 
-    private fun onSuccessLoginToken() {
+    private fun onSuccessLoginToken(loginToken: LoginToken) {
         chooseAccountViewModel.getUserInfo()
     }
 
     private fun onErrorLoginToken(throwable: Throwable) {
-        onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            onErrorLogin(ErrorHandler.getErrorMessage(context, throwable))
+        }
         logUnknownError(Throwable("Login Phone Number Login Token is not success"))
     }
 
@@ -416,6 +432,31 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showPopupError(header: String, body: String, url: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(header)
+            dialog.setDescription(body)
+            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
+            dialog.setSecondaryCTAText(getString(R.string.close_popup))
+            dialog.setPrimaryCTAClickListener {
+                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.hide()
+            }
+            dialog.show()
+        }
+    }
+
+    private fun showPopupErrorAkamai() {
+        showPopupError(
+                getString(R.string.popup_error_title),
+                getString(R.string.popup_error_desc),
+                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+        )
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin(userSessionInterface.temporaryUserId)
@@ -457,6 +498,8 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
         private const val OTP_TYPE_AFTER_LOGIN_PHONE = 148
         private const val OTP_MODE_PIN = "PIN"
+
+        private const val TOKOPEDIA_CARE_PATH = "help"
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ChooseAccountFragment()

@@ -10,10 +10,10 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
+import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -51,6 +51,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
     private List<String> excludeScreenList;
+    private CMRemoteConfigUtils cmRemoteConfigUtils;
 
     /*
      * This flag is used for validation of the dialog to be displayed.
@@ -63,7 +64,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     }
 
     public long getCmInAppEndTimeInterval() {
-        return ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
+        return cmRemoteConfigUtils.getLongRemoteConfig(
                 KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
     }
 
@@ -74,6 +75,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
+        cmRemoteConfigUtils = new CMRemoteConfigUtils(application);
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }

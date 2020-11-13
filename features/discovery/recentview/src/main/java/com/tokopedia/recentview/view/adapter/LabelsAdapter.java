@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.recentview.R;
-import com.tokopedia.recentview.view.viewmodel.LabelsViewModel;
+import com.tokopedia.recentview.view.viewmodel.LabelsDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
 
     private static final String DEFAULT_WHITE = "#ffffff";
     private static final double MEDIAN_VALUE = 135;
-    private List<LabelsViewModel> listLabel;
+    private List<LabelsDataModel> listLabel;
 
     public LabelsAdapter() {
         this.listLabel = new ArrayList<>();
@@ -67,7 +67,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
         return listLabel.size();
     }
 
-    public void setList(List<LabelsViewModel> list) {
+    public void setList(List<LabelsDataModel> list) {
         this.listLabel = list;
         notifyDataSetChanged();
     }

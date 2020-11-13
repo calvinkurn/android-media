@@ -13,7 +13,7 @@ import com.tokopedia.home_component.viewholders.FeaturedShopViewHolder
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.officialstore.common.listener.FeaturedShopListener
 import com.tokopedia.officialstore.official.presentation.adapter.viewholder.*
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.*
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.*
 
 class OfficialHomeAdapterTypeFactory(
@@ -23,43 +23,43 @@ class OfficialHomeAdapterTypeFactory(
         private val legoBannerListener: DynamicLegoBannerListener
 ) : OfficialHomeTypeFactory, BaseAdapterTypeFactory() {
 
-    override fun type(officialLoadingViewModel: OfficialLoadingViewModel): Int {
+    override fun type(officialLoadingDataModel: OfficialLoadingDataModel): Int {
         return OfficialLoadingContentViewHolder.LAYOUT
     }
 
-    override fun type(officialLoadingMoreViewModel: OfficialLoadingMoreViewModel): Int {
+    override fun type(officialLoadingMoreDataModel: OfficialLoadingMoreDataModel): Int {
         return OfficialLoadingMoreViewHolder.LAYOUT
     }
 
-    override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
-        return if (officialBannerViewModel.banner.isEmpty())
+    override fun type(officialBannerDataModel: OfficialBannerDataModel): Int {
+        return if (officialBannerDataModel.banner.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialBannerViewHolder.LAYOUT
     }
-    override fun type(officialBenefitViewModel: OfficialBenefitViewModel): Int {
-        return if (officialBenefitViewModel.benefit.isEmpty())
+    override fun type(officialBenefitDataModel: OfficialBenefitDataModel): Int {
+        return if (officialBenefitDataModel.benefit.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialBenefitViewHolder.LAYOUT
     }
 
-    override fun type(officialFeaturedShopViewModel: OfficialFeaturedShopViewModel): Int {
-        return if (officialFeaturedShopViewModel.featuredShop.isEmpty())
+    override fun type(officialFeaturedShopDataModel: OfficialFeaturedShopDataModel): Int {
+        return if (officialFeaturedShopDataModel.featuredShop.isEmpty())
             HideViewHolder.LAYOUT
         else
             OfficialFeaturedShopViewHolder.LAYOUT
     }
 
-    override fun type(dynamicChannelViewModel: DynamicChannelViewModel): Int {
-        return dynamicChannelViewModel.getLayoutType()
+    override fun type(dynamicChannelDataModel: DynamicChannelDataModel): Int {
+        return dynamicChannelDataModel.getLayoutType()
     }
 
-    override fun type(productRecommendationTitleViewModel: ProductRecommendationTitleViewModel): Int {
+    override fun type(productRecommendationTitleDataModel: ProductRecommendationTitleDataModel): Int {
         return OfficialProductRecommendationTitleViewHolder.LAYOUT
     }
 
-    override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
+    override fun type(productRecommendationDataModel: ProductRecommendationDataModel): Int {
         return OfficialProductRecommendationViewHolder.LAYOUT
     }
 
