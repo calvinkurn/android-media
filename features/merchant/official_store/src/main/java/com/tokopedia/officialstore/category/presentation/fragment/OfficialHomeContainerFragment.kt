@@ -12,6 +12,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.visible
@@ -236,10 +239,18 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
                 IconBuilder()
-                        .addIcon(IconList.ID_MESSAGE) {}
-                        .addIcon(IconList.ID_NOTIFICATION) {}
-                        .addIcon(IconList.ID_CART) {}
-                        .addIcon(IconList.ID_NAV_GLOBAL) {}
+                        .addIcon(IconList.ID_MESSAGE) {
+                            RouteManager.route(activity, ApplinkConst.MESSAGE)
+                        }
+                        .addIcon(IconList.ID_NOTIFICATION) {
+                            RouteManager.route(activity, ApplinkConst.NOTIFICATION)
+                        }
+                        .addIcon(IconList.ID_CART) {
+                            RouteManager.route(activity, ApplinkConst.CART)
+                        }
+                        .addIcon(IconList.ID_NAV_GLOBAL) {
+                            startActivity(RouteManager.getIntent(context, ApplinkConsInternalNavigation.MAIN_NAVIGATION))
+                        }
             )
             setupSearchbar(
                     listOf(HintData(placeholder = getString(R.string.os_query_search))),
