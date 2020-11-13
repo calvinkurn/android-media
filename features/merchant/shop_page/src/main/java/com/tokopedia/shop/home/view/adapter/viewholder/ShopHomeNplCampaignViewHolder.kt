@@ -209,7 +209,7 @@ class ShopHomeNplCampaignViewHolder(
         val totalNotifyWording = model.data?.firstOrNull()?.totalNotifyWording.orEmpty()
         itemView.text_remind_me?.apply {
             val colorText = if(isRemindMe){
-                R.color.white
+                com.tokopedia.design.R.color.white
             }else{
                 R.color.clr_AD31353B
             }
