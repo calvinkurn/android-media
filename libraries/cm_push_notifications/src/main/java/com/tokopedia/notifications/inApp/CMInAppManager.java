@@ -12,8 +12,10 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.FragmentObserver;
+import com.tokopedia.notifications.R;
 import com.tokopedia.notifications.common.CMConstant;
 import com.tokopedia.notifications.common.CMNotificationUtils;
+import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
@@ -56,6 +58,7 @@ public class CMInAppManager implements CmInAppListener,
     private CmInAppListener cmInAppListener;
     private final Object lock = new Object();
     private List<String> excludeScreenList;
+    private CMRemoteConfigUtils cmRemoteConfigUtils;
     private PushIntentHandler pushIntentHandler;
 
     //map  - which will tell whether this activity has pop-up or not
@@ -71,7 +74,7 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     public long getCmInAppEndTimeInterval() {
-        return ((CMRouter) application.getApplicationContext()).getLongRemoteConfig(
+        return cmRemoteConfigUtils.getLongRemoteConfig(
                 KEY_CM_INAPP_END_TIME_INTERVAL, HOURS_24_IN_MILLIS * 7);
     }
 
@@ -82,6 +85,7 @@ public class CMInAppManager implements CmInAppListener,
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
+        cmRemoteConfigUtils = new CMRemoteConfigUtils(application);
         cmDataConsumer = new CmDataConsumer(this);
 
         cmDialogHandler = new CmDialogHandler();

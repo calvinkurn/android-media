@@ -24,6 +24,12 @@ import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.shopwidget.shopcard.ShopCardListener
+import com.tokopedia.shopwidget.shopcard.ShopCardModel
+import com.tokopedia.shopwidget.shopcard.ShopCardView
 import com.tokopedia.topads.sdk.R
 import com.tokopedia.topads.sdk.base.Config
 import com.tokopedia.topads.sdk.base.adapter.Item
@@ -38,6 +44,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener
 import com.tokopedia.topads.sdk.presenter.BannerAdsPresenter
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
 import com.tokopedia.topads.sdk.view.adapter.factory.BannerAdsAdapterTypeFactory
@@ -67,6 +74,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val NO_TEMPLATE = 0
     private val SHOP_TEMPLATE = 1
     private val DIGITAL_TEMPLATE = 2
+    private val LAYOUT_2 = 2
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
 
     @Inject
@@ -118,53 +126,137 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun setHeadlineShopData(cpmData: CpmData?, appLink: String, adsClickUrl: String) {
         if (isEligible(cpmData)) {
-            var shop_badge = findViewById<ImageView>(R.id.shop_badge)
-            shop_badge?.let {
-                if (cpmData?.cpm?.badges!!.size > 0) {
-                    shop_badge.visibility = View.VISIBLE
-                    Glide.with(shop_badge).load(cpmData?.cpm.badges[0].imageUrl).into(shop_badge)
-                } else {
-                    shop_badge.visibility = View.GONE
-                }
+            val list = findViewById<RecyclerView?>(R.id.list)
+            val shopDetail = findViewById<View?>(R.id.shop_detail)
+            val adsBannerShopCardView = findViewById<ShopCardView?>(R.id.adsBannerShopCardView)
+
+            if (cpmData != null && cpmData.cpm.layout == LAYOUT_2) {
+                list?.gone()
+                shopDetail?.gone()
+                adsBannerShopCardView?.visible()
+
+                setHeadlineShopDataCardWidget(cpmData, adsBannerShopCardView, appLink, adsClickUrl)
             }
-            shop_name?.text = MethodChecker.fromHtml(cpmData?.cpm?.cpmShop?.name)
-            description?.text = cpmData?.cpm?.cpmShop?.slogan
+            else {
+                list?.visible()
+                shopDetail?.visible()
+                adsBannerShopCardView?.gone()
 
-            val shopdetail = findViewById<View>(R.id.shop_detail)
-
-            shopdetail.setOnClickListener {
-                if (topAdsBannerClickListener != null) {
-                    topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
-                    ImpresionTask(className).execute(cpmData?.adClickUrl)
+                var shop_badge = findViewById<ImageView>(R.id.shop_badge)
+                shop_badge?.let {
+                    if (cpmData?.cpm?.badges!!.size > 0) {
+                        shop_badge.visibility = View.VISIBLE
+                        Glide.with(shop_badge).load(cpmData?.cpm.badges[0].imageUrl).into(shop_badge)
+                    } else {
+                        shop_badge.visibility = View.GONE
+                    }
                 }
-            }
+                shop_name?.text = MethodChecker.fromHtml(cpmData?.cpm?.cpmShop?.name)
+                description?.text = cpmData?.cpm?.cpmShop?.slogan
 
-            val shop_image = findViewById<ImageView>(R.id.shop_image)
-            shop_image?.let {
-                Glide.with(context).load(cpmData?.cpm?.cpmImage?.fullEcs).into(shop_image)
-                cpmData?.cpm?.cpmShop?.imageShop?.let { it1 ->
-                    shop_image.addOnImpressionListener(it1) {
-                        impressionListener?.let {
-                            it.onImpressionHeadlineAdsItem(0, cpmData)
-                            ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
+                val shopdetail = findViewById<View>(R.id.shop_detail)
+
+                shopdetail.setOnClickListener {
+                    if (topAdsBannerClickListener != null) {
+                        topAdsBannerClickListener!!.onBannerAdsClicked(1, cpmData?.applinks, cpmData)
+                        ImpresionTask(className).execute(cpmData?.adClickUrl)
+                    }
+                }
+
+                val shop_image = findViewById<ImageView>(R.id.shop_image)
+                shop_image?.let {
+                    Glide.with(context).load(cpmData?.cpm?.cpmImage?.fullEcs).into(shop_image)
+                    cpmData?.cpm?.cpmShop?.imageShop?.let { it1 ->
+                        shop_image.addOnImpressionListener(it1) {
+                            impressionListener?.let {
+                                it.onImpressionHeadlineAdsItem(0, cpmData)
+                                ImpresionTask(className).execute(cpmData.cpm.cpmImage.fullUrl)
+                            }
                         }
                     }
                 }
-            }
 
-            val items = ArrayList<Item<*>>()
-            items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
-            for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
-                if (i < 3) {
-                    items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
-                            appLink, adsClickUrl))
+                val items = ArrayList<Item<*>>()
+                items.add(BannerShopViewModel(cpmData, appLink, adsClickUrl))
+                for (i in 0 until cpmData?.cpm?.cpmShop?.products!!.size) {
+                    if (i < 3) {
+                        items.add(BannerShopProductViewModel(cpmData, cpmData.cpm.cpmShop.products[i],
+                                appLink, adsClickUrl))
+                    }
                 }
+                if (cpmData.cpm.cpmShop.products.size < 3) {
+                    items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
+                }
+                bannerAdsAdapter!!.setList(items)
             }
-            if (cpmData.cpm.cpmShop.products.size < 3) {
-                items.add(BannerShopViewMoreModel(cpmData, appLink, adsClickUrl))
-            }
-            bannerAdsAdapter!!.setList(items)
         }
+    }
+
+    private fun setHeadlineShopDataCardWidget(cpmData: CpmData, adsBannerShopCardView: ShopCardView?, appLink: String, adsClickUrl: String) {
+        val productList = cpmData.cpm?.cpmShop?.products ?: listOf()
+
+        adsBannerShopCardView?.setShopCardModel(
+                ShopCardModel(
+                        id = cpmData.cpm?.cpmShop?.id ?: "",
+                        name = cpmData.cpm?.cpmShop?.name ?: "",
+                        image = cpmData.cpm?.cpmImage?.fullEcs ?: "",
+                        location = context.getString(R.string.title_promote_by),
+                        goldShop = if (cpmData.cpm?.cpmShop?.isPowerMerchant == true) 1 else 0,
+                        productList = productList.map {
+                            ShopCardModel.ShopItemProduct(
+                                    id = it.id.toIntOrZero(),
+                                    name = it.name,
+                                    priceFormat = it.priceFormat,
+                                    imageUrl = it.imageProduct?.imageUrl ?: ""
+                            )
+                        },
+                        isOfficial = cpmData.cpm?.cpmShop?.isOfficial ?: false,
+                        impressHolder = cpmData.cpm?.cpmShop?.imageShop
+                ),
+                object : ShopCardListener {
+                    override fun onItemImpressed() {
+                        impressionListener?.onImpressionHeadlineAdsItem(0, cpmData)
+
+                        TopAdsUrlHitter(context).hitImpressionUrl(
+                                className,
+                                cpmData.cpm.cpmImage.fullUrl,
+                                cpmData.cpm.cpmShop.id,
+                                cpmData.cpm.uri,
+                                cpmData.cpm?.cpmImage?.fullEcs
+                        )
+                    }
+
+                    override fun onItemClicked() {
+                        topAdsBannerClickListener?.onBannerAdsClicked(0, appLink, cpmData)
+
+                        TopAdsUrlHitter(context).hitClickUrl(
+                                className,
+                                adsClickUrl,
+                                cpmData.cpm.cpmShop.id,
+                                cpmData.cpm.uri,
+                                cpmData.cpm?.cpmImage?.fullEcs
+                        )
+                    }
+
+                    override fun onProductItemImpressed(productPreviewIndex: Int) {
+                        impressionListener?.onImpressionHeadlineAdsItem(productPreviewIndex, cpmData)
+                    }
+
+                    override fun onProductItemClicked(productPreviewIndex: Int) {
+                        val product = productList.getOrNull(productPreviewIndex) ?: return
+
+                        topAdsBannerClickListener?.onBannerAdsClicked(productPreviewIndex, product.applinks, cpmData)
+
+                        TopAdsUrlHitter(context).hitClickUrl(
+                                className,
+                                product.imageProduct.imageClickUrl,
+                                product.id,
+                                product.uri,
+                                product.imageProduct.imageUrl
+                        )
+                    }
+                }
+        )
     }
 
     private fun isEligible(cpmData: CpmData?) =

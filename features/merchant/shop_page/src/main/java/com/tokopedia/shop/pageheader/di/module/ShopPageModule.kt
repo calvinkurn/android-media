@@ -10,6 +10,8 @@ import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.GqlQueryConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.pageheader.ShopPageHeaderConstant
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
@@ -205,5 +207,11 @@ class ShopPageModule {
                 ShopPageHeaderConstant.SHOP_PAGE_FEED_WHITELIST to queryShopFeedWhitelist,
                 GQLQueryConstant.SHOP_PRODUCT to queryShopProduct
         )
+    }
+
+    @ShopPageScope
+    @Provides
+    fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
+        return CoroutineDispatcherProviderImpl
     }
 }
