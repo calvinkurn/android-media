@@ -30,6 +30,7 @@ val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         false,
         "Ekonomi",
         "dummy contact us URL",
+        false,
         FlightOrderDetailPaymentModel(
                 1,
                 1,
