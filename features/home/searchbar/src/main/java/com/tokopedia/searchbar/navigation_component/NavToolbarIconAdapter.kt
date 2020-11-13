@@ -198,7 +198,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
         }
 
         if (iconToolbar.paddingEndRes != 0) {
-            iconImage.setPadding(0, 0, iconToolbar.paddingEndRes, 0)
+            iconImage.setPadding(0, 0, itemView.resources.getDimensionPixelOffset(iconToolbar.paddingEndRes), 0)
         }
     }
 
