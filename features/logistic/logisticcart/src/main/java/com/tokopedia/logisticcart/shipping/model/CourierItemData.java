@@ -58,6 +58,9 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String priorityPdpMessage;
     private OntimeDelivery ontimeDelivery;
     private CashOnDeliveryProduct codProductData;
+    private String etaText;
+    private int etaErrorCode;
+    private String shipperName;
 
     public CourierItemData() {
     }
@@ -540,5 +543,29 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setCodProductData(CashOnDeliveryProduct codProductData) {
         this.codProductData = codProductData;
+    }
+
+    public int getEtaErrorCode() {
+        return etaErrorCode;
+    }
+
+    public void setEtaErrorCode(int etaErrorCode) {
+        this.etaErrorCode = etaErrorCode;
+    }
+
+    public String getEtaText() {
+        return etaText;
+    }
+
+    public void setEtaText(String etaText) {
+        this.etaText = etaText;
+    }
+
+    public String getShipperName() {
+        return shipperName;
+    }
+
+    public void setShipperName(String shipperName) {
+        this.shipperName = shipperName;
     }
 }

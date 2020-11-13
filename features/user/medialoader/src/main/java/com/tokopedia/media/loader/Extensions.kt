@@ -4,14 +4,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.widget.ImageView
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.GlideBuilder.loadGifImage
 import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.utils.DEFAULT_ROUNDED
-import com.tokopedia.media.loader.utils.HEADER_ECT
-import com.tokopedia.media.loader.utils.mediaSignature
+import com.tokopedia.media.loader.GlideBuilder.loadImage as glideLoadImage
 
 fun ImageView.loadImage(bitmap: Bitmap?) = call(bitmap, Properties())
 
@@ -53,54 +50,6 @@ fun ImageView?.clearImage() {
 }
 
 @PublishedApi
-internal fun ImageView.call(url: Any?, properties: Properties) {
-    val imageView = this
-
-    with(properties) {
-        if (url is String) {
-            if (url.toEmptyStringIfNull().isEmpty()) {
-                // if there's no url found, then show the placeholder
-                imageView.loadImage(properties.placeHolder)
-                return
-            }
-
-            val glideUrl = Loader.glideUrl(url)
-
-            GlideBuilder.loadImage(
-                    signatureKey = signature.mediaSignature(glideUrl),
-                    stateListener = loaderListener,
-                    cacheStrategy = cacheStrategy,
-                    thumbnailUrl = thumbnailUrl,
-                    overrideSize = overrideSize,
-                    decodeFormat = decodeFormat,
-                    placeHolder = placeHolder,
-                    isCircular = isCircular,
-                    transforms = transforms,
-                    radius = roundedRadius,
-                    isAnimate = isAnimate,
-                    transform = transform,
-                    imageView = imageView,
-                    resOnError = error,
-                    url = glideUrl
-            )
-        } else {
-            GlideBuilder.loadImage(
-                    stateListener = loaderListener,
-                    cacheStrategy = cacheStrategy,
-                    thumbnailUrl = thumbnailUrl,
-                    overrideSize = overrideSize,
-                    decodeFormat = decodeFormat,
-                    placeHolder = placeHolder,
-                    signatureKey = signature,
-                    isCircular = isCircular,
-                    transforms = transforms,
-                    radius = roundedRadius,
-                    isAnimate = isAnimate,
-                    transform = transform,
-                    imageView = imageView,
-                    resOnError = error,
-                    url = url
-            )
-        }
-    }
+internal fun ImageView.call(source: Any?, properties: Properties) {
+    glideLoadImage(source, this, properties)
 }

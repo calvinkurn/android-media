@@ -13,9 +13,9 @@ open class Properties(
         var isAnimate: Boolean = false,
         var isCircular: Boolean = false,
         var roundedRadius: Float = 0f,
-        var signature: Key? = null,
+        var signatureKey: Key? = null,
         var error: Int = R.drawable.ic_media_default_error,
-        var placeHolder: Int = R.drawable.ic_media_default_placeholder,
+        var placeHolder: Int = 0, // R.drawable.ic_media_default_placeholder
         var cacheStrategy: MediaCacheStrategy? = MediaCacheStrategy.ALL,
         var overrideSize: Resize? = null,
         var decodeFormat: MediaDecodeFormat? = MediaDecodeFormat.DEFAULT,
@@ -31,7 +31,7 @@ open class Properties(
                 isAnimate == other.isAnimate &&
                 isCircular == other.isCircular &&
                 roundedRadius == other.roundedRadius &&
-                signature == other.signature &&
+                signatureKey == other.signatureKey &&
                 error == other.error &&
                 placeHolder == other.placeHolder &&
                 cacheStrategy == other.cacheStrategy &&
@@ -47,7 +47,7 @@ open class Properties(
         result = 31 * result + isAnimate.hashCode()
         result = 31 * result + isCircular.hashCode()
         result = 31 * result + roundedRadius.hashCode()
-        result = 31 * result + signature.hashCode()
+        result = 31 * result + signatureKey.hashCode()
         result = 31 * result + error.hashCode()
         result = 31 * result + placeHolder.hashCode()
         result = 31 * result + cacheStrategy.hashCode()

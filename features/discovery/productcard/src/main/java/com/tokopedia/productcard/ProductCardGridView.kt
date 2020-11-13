@@ -33,6 +33,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
+        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+
         renderOutOfStockView(productCardModel)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
@@ -85,8 +87,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     override fun recycle() {
-        imageProduct?.glideClear(context)
-        imageFreeOngkirPromo?.glideClear(context)
+        imageProduct?.glideClear()
+        imageFreeOngkirPromo?.glideClear()
+        labelCampaignBackground?.glideClear()
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -110,4 +113,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
             outOfStockOverlay?.gone()
         }
     }
+
+    override fun getThreeDotsButton(): View? = imageThreeDots
 }

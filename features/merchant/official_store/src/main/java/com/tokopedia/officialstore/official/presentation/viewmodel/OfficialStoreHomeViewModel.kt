@@ -8,8 +8,8 @@ import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -62,7 +62,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
     val officialStoreFeaturedShopResult: LiveData<Result<OfficialStoreFeaturedShop>>
         get() = _officialStoreFeaturedShopResult
 
-    val officialStoreDynamicChannelResult: LiveData<Result<DynamicChannel>>
+    val officialStoreDynamicChannelResult: LiveData<Result<List<OfficialStoreChannel>>>
         get() = _officialStoreDynamicChannelResult
 
     val topAdsWishlistResult: LiveData<Result<WishlistModel>>
@@ -80,7 +80,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     }
 
-    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<DynamicChannel>>()
+    private val _officialStoreDynamicChannelResult = MutableLiveData<Result<List<OfficialStoreChannel>>>()
 
     private val _productRecommendation = MutableLiveData<Result<RecommendationWidget>>()
     val productRecommendation: LiveData<Result<RecommendationWidget>>
@@ -95,7 +95,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
 
-            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
@@ -158,11 +157,12 @@ class OfficialStoreHomeViewModel @Inject constructor(
     }
 
     private fun getOfficialStoreDynamicChannel(channelType: String) {
-        getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
-        getOfficialStoreDynamicChannelUseCase.execute(
-                { dynamicChannel -> _officialStoreDynamicChannelResult.value = Success(dynamicChannel) },
-                { throwable -> _officialStoreDynamicChannelResult.value = Fail(throwable) }
-        )
+        launchCatchError(coroutineContext, block = {
+            getOfficialStoreDynamicChannelUseCase.setupParams(channelType)
+            _officialStoreDynamicChannelResult.postValue(Success(getOfficialStoreDynamicChannelUseCase.executeOnBackground()))
+        }){
+            _officialStoreDynamicChannelResult.postValue(Fail(it))
+        }
     }
 
     private suspend fun addTopAdsWishlist(model: RecommendationItem): Result<WishlistModel> {

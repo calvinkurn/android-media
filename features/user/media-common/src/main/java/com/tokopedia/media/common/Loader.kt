@@ -21,7 +21,7 @@ object Loader {
 
     fun glideUrl(url: String?): GlideUrl {
         val networkState = networkManagerState(context)
-        return urlBuilder(networkState, settings, url)
+        return urlBuilder(networkState, settings.qualitySettings(), url)
     }
 
 }

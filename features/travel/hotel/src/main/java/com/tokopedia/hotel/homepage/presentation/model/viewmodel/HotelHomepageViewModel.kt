@@ -13,6 +13,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.destination.data.model.PopularSearch
+import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
@@ -31,6 +33,7 @@ class HotelHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val bannerUseCase: GetTravelCollectiveBannerUseCase,
         private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
+        private val getPropertyPopularUseCase: GetPropertyPopularUseCase,
         val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
@@ -47,9 +50,33 @@ class HotelHomepageViewModel @Inject constructor(
     val deleteRecentSearch: LiveData<Result<Boolean>>
         get() = mutableDeleteRecentSearch
 
-    fun getHotelPromo(rawQuery: String) {
-        launch {
-            promoData.postValue(bannerUseCase.execute(rawQuery, TravelType.HOTEL, true))
+    private val mutablePopularCitiesLiveData = MutableLiveData<Result<List<PopularSearch>>>()
+    val popularCitiesLiveData: LiveData<Result<List<PopularSearch>>>
+        get() = mutablePopularCitiesLiveData
+
+    private val mutableVideoBannerLiveData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
+    val videoBannerLiveData: LiveData<Result<TravelCollectiveBannerModel>>
+        get() = mutableVideoBannerLiveData
+
+    fun fetchVideoBannerData() {
+        launch(dispatcher.ui()) {
+            val bannerList = bannerUseCase.execute(TravelType.HOTEL_VIDEO_BANNER, true)
+            mutableVideoBannerLiveData.postValue(bannerList)
+        }
+    }
+
+    fun getHotelPromo() {
+        launch(dispatcher.ui()) {
+            promoData.postValue(bannerUseCase.execute(TravelType.HOTEL, true))
+        }
+    }
+
+    fun getPopularCitiesData() {
+        launchCatchError(context = dispatcher.ui(), block = {
+            val response = getPropertyPopularUseCase.executeOnBackground()
+            mutablePopularCitiesLiveData.postValue(Success(response))
+        }) {
+            mutablePopularCitiesLiveData.postValue(Fail(it))
         }
     }
 

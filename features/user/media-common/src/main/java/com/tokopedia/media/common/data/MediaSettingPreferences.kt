@@ -10,15 +10,23 @@ class MediaSettingPreferences constructor(val context: Context) {
     }
 
     fun qualitySettings(): Int {
-        return if (isExist()) pref().getInt(KEY_QUALITY_SETTING, 0) else 0
+        return if (isExist(KEY_QUALITY_SETTING)) pref().getInt(KEY_QUALITY_SETTING, 0) else 0
+    }
+
+    fun toasterVisibility(): Boolean {
+        return if (isExist(KEY_MEDIA_TOASTER)) pref().getBoolean(KEY_MEDIA_TOASTER, false) else false
     }
 
     fun setQualitySettings(value: Int) {
         pref().edit().putInt(KEY_QUALITY_SETTING, value).apply()
     }
 
-    private fun isExist(): Boolean {
-        return pref().contains(KEY_QUALITY_SETTING)
+    fun setToasterVisibilityFlag(value: Boolean) {
+        pref().edit().putBoolean(KEY_MEDIA_TOASTER, value).apply()
+    }
+
+    private fun isExist(key: String): Boolean {
+        return pref().contains(key)
     }
 
     fun getQualitySetting(index: Int): String {
@@ -33,6 +41,7 @@ class MediaSettingPreferences constructor(val context: Context) {
     companion object {
         private const val MEDIA_QUALITY_PREF = "media_image_quality"
         private const val KEY_QUALITY_SETTING = "index_image_quality_setting"
+        private const val KEY_MEDIA_TOASTER = "index_media_toaster_visibility"
     }
 
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.additional_check.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.additional_check.R
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants

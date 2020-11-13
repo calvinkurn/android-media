@@ -525,7 +525,6 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
 
-
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
@@ -534,4 +533,8 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/image-quality-setting
     @JvmField
     val IMAGE_QUALITY_SETTING = "${INTERNAL_GLOBAL}/image-quality-setting"
+
+    //FeedbackPageActivity
+    @JvmField
+    val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 }

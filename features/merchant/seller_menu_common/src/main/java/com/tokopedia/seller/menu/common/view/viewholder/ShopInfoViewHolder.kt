@@ -122,7 +122,7 @@ class ShopInfoViewHolder(
 
     private fun showShopScore(uiModel: ShopInfoUiModel) {
         itemView.shopScore.text = uiModel.shopScore.toString()
-        itemView.shopScoreChevronRight.setOnClickListener {
+        itemView.shopScoreLayout.setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.SHOP_SCORE_DETAIL, userSession?.shopId)
             sellerMenuTracker?.sendEventClickShopScore()
         }

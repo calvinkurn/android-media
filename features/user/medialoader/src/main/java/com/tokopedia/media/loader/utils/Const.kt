@@ -27,7 +27,9 @@ const val DEFAULT_ROUNDED = 5.0f
 // custom signature
 fun Key?.mediaSignature(glideUrl: GlideUrl): Key {
     if (this != null) return this
-    return ObjectKey("${glideUrl.toStringUrl()}&connection=${glideUrl.headers[HEADER_ECT].toString()}")
+    val imageUrl = glideUrl.toStringUrl()
+    val connectionType = glideUrl.headers[HEADER_ECT].toString()
+    return ObjectKey("$imageUrl&connection=$connectionType")
 }
 
 fun String.toUri(): Uri? {

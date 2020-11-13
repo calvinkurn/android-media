@@ -78,6 +78,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -92,7 +93,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     @Inject
-    lateinit var userSession: UserSessionInterface
+    lateinit var userSession: Lazy<UserSessionInterface>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -124,7 +125,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val imageEmptyProfile by lazy { view?.findViewById<ImageUnify>(R.id.image_empty_profile) }
     private val buttonAturPilihan by lazy { view?.findViewById<UnifyButton>(R.id.button_atur_pilihan) }
 
-    private lateinit var orderProductCard: OrderProductCard
+    private var orderProductCard: OrderProductCard? = null
     private lateinit var orderPreferenceCard: OrderPreferenceCard
     private lateinit var orderInsuranceCard: OrderInsuranceCard
     private lateinit var orderTotalPaymentCard: OrderTotalPaymentCard
@@ -189,6 +190,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 viewModel.updatePromoState(PromoUiModel().apply {
                     titleDescription = clearPromoUiModel.successDataModel.defaultEmptyPromoMessage
                 })
+                // trigger validate to reset BBO benefit
                 viewModel.validateUsePromo()
             }
         }
@@ -259,9 +261,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     globalError?.gone()
                     mainContent?.visible()
                     view?.let { _ ->
-                        orderProductCard.setProduct(viewModel.orderProduct)
-                        orderProductCard.setShop(viewModel.orderShop)
-                        orderProductCard.initView()
+                        orderProductCard?.setProduct(viewModel.orderProduct)
+                        orderProductCard?.setShop(viewModel.orderShop)
+                        orderProductCard?.initView()
                         showMessage(it.data)
                         if (it.data.preference.profileId > 0 &&
                                 it.data.preference.address.addressId > 0 &&
@@ -280,10 +282,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     globalError?.gone()
                     mainContent?.visible()
                     view?.let { _ ->
-                        if (!orderProductCard.isProductInitialized()) {
-                            orderProductCard.setProduct(viewModel.orderProduct)
-                            orderProductCard.setShop(viewModel.orderShop)
-                            orderProductCard.initView()
+                        if (orderProductCard?.isProductInitialized() == false) {
+                            orderProductCard?.setProduct(viewModel.orderProduct)
+                            orderProductCard?.setShop(viewModel.orderShop)
+                            orderProductCard?.initView()
                             showMessage(it.data)
                             if (it.data.preference.profileId > 0 &&
                                     it.data.preference.address.addressId > 0 &&
@@ -518,9 +520,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (orderPreference.onboarding.isShowOnboardingTicker) {
             lblOnboardingHeader?.text = orderPreference.onboarding.onboardingTicker.title
             lblOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
-            ivOnboarding?.let {
-                ImageHandler.LoadImage(it, orderPreference.onboarding.onboardingTicker.image)
-            }
+            ivOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
             if (orderPreference.onboarding.onboardingTicker.showActionButton) {
                 btnOnboardingAction?.text = orderPreference.onboarding.onboardingTicker.actionText
                 btnOnboardingAction?.setOnClickListener {
@@ -599,7 +599,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         orderInsuranceCard.setGroupInsuranceVisible(false)
 
         buttonAturPilihan?.setOnClickListener {
-            orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.userId)
+            orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
@@ -720,7 +720,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.userId)
+            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.get().userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
 
@@ -738,7 +738,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun chooseDuration(isDurationError: Boolean) {
             if (isDurationError) {
-                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.userId)
+                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
             }
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
@@ -785,7 +785,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (profileId > 0 && updateCartParam != null) {
             PreferenceListBottomSheet(
                     paymentProfile = viewModel.getPaymentProfile(),
-                    getPreferenceListUseCase = viewModel.getPreferenceListUseCase,
+                    getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
                             viewModel.updatePreference(preference)
@@ -1080,6 +1080,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             progressDialog?.dismiss()
             viewModel.globalEvent.value = OccGlobalEvent.Normal
         }
+    }
+
+    override fun onDestroyView() {
+        orderProductCard?.clearJob()
+        super.onDestroyView()
     }
 
     private fun setSourceFromPDP() {

@@ -41,7 +41,6 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.features.topAdsSdk)
@@ -50,7 +49,6 @@ dependencies {
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.track)
@@ -61,7 +59,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
-    implementation project(rootProject.ext.features.seamlesslogin)
+    implementation project(rootProject.ext.features.seamlessLoginCommon)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.features.carouselProductCard)

@@ -14,7 +14,6 @@ import android.os.Build;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
-import com.google.android.material.internal.CheckableImageButton;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
@@ -568,7 +567,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
         if (shouldShowPasswordIcon()) {
             if (mPasswordToggleView == null) {
                 mPasswordToggleView = (CheckableImageButton) LayoutInflater.from(getContext())
-                        .inflate(com.google.android.material.R.layout.design_text_input_password_icon,
+                        .inflate(R.layout.design_text_input_password_icon,
                                 mFrameLayout, false);
                 mPasswordToggleView.setImageDrawable(mPasswordToggleDrawable);
                 mPasswordToggleView.setContentDescription(mPasswordToggleContentDesc);
@@ -638,7 +637,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     void passwordVisibilityToggleRequested() {
         if (mPasswordToggleEnabled) {
             // Store the current cursor position
-            final int selection = mEditText.getSelectionEnd();
+            int selection = mEditText.getSelectionEnd();
 
             if (hasPasswordTransformation()) {
                 mEditText.setTransformationMethod(null);
@@ -650,6 +649,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
 
             mPasswordToggleView.setChecked(mPasswordToggledVisible);
 
+            if(selection < 0) selection = 0;
             // And restore the cursor position
             mEditText.setSelection(selection);
         }

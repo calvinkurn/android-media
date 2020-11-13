@@ -52,7 +52,7 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                                 carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
                             TopAdsUrlHitter(itemView.context).hitClickUrl(
-                                    this.javaClass.simpleName,
+                                    className,
                                     productRecommendation.productItem.clickUrl,
                                     productRecommendation.productItem.productId.toString(),
                                     productRecommendation.productItem.name,
@@ -70,7 +70,7 @@ class RecommendationCarouselViewHolder(val view: View, val listener: Recommendat
                         val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
                             TopAdsUrlHitter(itemView.context).hitImpressionUrl(
-                                    this.javaClass.simpleName,
+                                    className,
                                     productRecommendation.productItem.trackerImageUrl,
                                     productRecommendation.productItem.productId.toString(),
                                     productRecommendation.productItem.name,
