@@ -1,6 +1,7 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -8,6 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.model.RechargeProductCardCustomBannerModel
@@ -15,8 +18,11 @@ import com.tokopedia.digital.home.presentation.adapter.RechargeCustomBannerProdu
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner.view.*
+import kotlinx.android.synthetic.main.view_recharge_home_product_card_custom_banner_item.view.*
 import kotlin.math.abs
 
 /**
@@ -37,17 +43,54 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
 
     override fun bind(element: RechargeProductCardCustomBannerModel) {
         val section = element.section
-        if (section.items.isNotEmpty()) {
-            setUpList(section)
-            setUpBackground(section)
-            setSnapEffect()
-            showItemView()
-            itemView.addOnImpressionListener(section) {
-                listener.onRechargeSectionItemImpression(section)
+        when {
+            section.items.size == 1 -> {
+                setUpBackground(section)
+                setUpSingleItemView(section)
+                showItemView()
             }
-        } else {
-            hideItemView()
-            listener.loadRechargeSectionData(element.visitableId())
+            section.items.isNotEmpty() -> {
+                setUpList(section)
+                setUpBackground(section)
+                setSnapEffect()
+                showItemView()
+                itemView.addOnImpressionListener(section) {
+                    listener.onRechargeSectionItemImpression(section)
+                }
+            }
+            else -> {
+                hideItemView()
+                listener.loadRechargeSectionData(element.visitableId())
+            }
+        }
+    }
+
+    private fun setUpSingleItemView(section: RechargeHomepageSections.Section) {
+        val item = section.items.firstOrNull()
+        item?.let { element ->
+            with(itemView) {
+                rv_recharge_product.hide()
+                layout_single_item.show()
+
+                layout_single_item.run {
+                    tv_recharge_product_title.text = element.title
+                    tv_recharge_product_content.text = MethodChecker.fromHtml(element.subtitle)
+                    tv_recharge_product_ori_price.text = MethodChecker.fromHtml(element.label1)
+                    tv_recharge_product_ori_price.paintFlags = tv_recharge_product_discount_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    tv_recharge_product_discount_price.text = MethodChecker.fromHtml(element.label2)
+                    iv_recharge_product_image.loadImage(element.mediaUrl)
+                    if (element.label3.isNotEmpty()) {
+                        tv_recharge_product_tag.text = element.label3
+                        tv_recharge_product_tag.show()
+                    } else {
+                        tv_recharge_product_tag.hide()
+                    }
+                    setOnClickListener {
+                        listener.onRechargeSectionItemClicked(element)
+                        RouteManager.route(context, element.applink)
+                    }
+                }
+            }
         }
     }
 
@@ -75,6 +118,9 @@ class RechargeHomepageProductCardCustomBannerViewHolder(
 
     private fun setUpList(section: RechargeHomepageSections.Section) {
         with(itemView) {
+            rv_recharge_product.show()
+            layout_single_item.hide()
+
             parallax_image.alpha = 1f
             rv_recharge_product.resetLayout()
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)

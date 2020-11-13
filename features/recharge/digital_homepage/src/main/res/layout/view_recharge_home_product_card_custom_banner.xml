@@ -63,7 +63,21 @@
             tools:itemCount="10"
             tools:spanCount="3"
             tools:orientation="horizontal"
-            tools:listitem="@layout/view_recharge_home_product_card_custom_banner_item"/>
+            tools:listitem="@layout/view_recharge_home_product_card_custom_banner_item"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <include
+            android:id="@+id/layout_single_item"
+            layout="@layout/view_recharge_home_product_card_custom_banner_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/product_card_flashsale_width"
+            android:layout_marginStart="@dimen/product_card_flashsale_width"
+            android:layout_marginVertical="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:visibility="gone"
+            />
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
