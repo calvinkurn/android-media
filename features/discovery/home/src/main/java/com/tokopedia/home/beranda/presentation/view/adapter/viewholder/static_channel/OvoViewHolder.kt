@@ -318,14 +318,14 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         itemView.findViewById<View>(R.id.ovo_divider_2).gone()
         itemView.findViewById<View>(R.id.container_action_scan).gone()
 
-        val bebasOngkirContainer = itemView.findViewById<View>(R.id.container_tokopoint)
+        val bebasOngkirContainer = itemView.findViewById<View>(R.id.container_bebasongkir)
         val tvBalanceTokoPoint = itemView.findViewById<TextView>(R.id.tv_balance_bebasongkir)
         val tvActionTokopoint = itemView.findViewById<TextView>(R.id.tv_btn_action_bebasongkir)
         val ivLogoTokoPoint = itemView.findViewById<ImageView>(R.id.iv_logo_bebasongkir)
         val tokopointProgressBarLayout = itemView.findViewById<View>(R.id.progress_bar_bebasongkir_layout)
         val tokopointActionContainer = itemView.findViewById<View>(R.id.container_action_bebasongkir)
         val mTextCouponCount = itemView.findViewById<TextView>(R.id.text_coupon_bebasongkir)
-        ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_green_24)
+        ivLogoTokoPoint.setImageResource(R.drawable.ic_bbo)
         mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
         if (element.tokopointsDrawerBBOHomeData == null && element.isTokoPointDataError) {
             bebasOngkirContainer.setOnClickListener {
@@ -342,7 +342,6 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             mTextCouponCount.setTextColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
             tokopointProgressBarLayout.visibility = View.GONE
             tokopointActionContainer.visibility = View.VISIBLE
-            ivLogoTokoPoint.setImageResource(R.drawable.ic_product_fintech_tokopoint_normal_24)
             tvBalanceTokoPoint.visibility = View.GONE
         } else if (element.tokopointsDrawerBBOHomeData == null && !element.isTokoPointDataError) {
             bebasOngkirContainer.setOnClickListener(null)

@@ -10,6 +10,8 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.common.util.animateProfileBadge
 import com.tokopedia.homenav.common.util.animateProfileName
@@ -119,9 +121,13 @@ class AccountHeaderViewHolder(itemView: View,
                             if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT)) element.shopName
                             else itemView.context.getString(R.string.account_home_shop_name_card, element.shopName)),
                     tvShopInfo,
-                    if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT))
-                        View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
-                    else null)
+                    View.OnClickListener {
+                        if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT))
+                             mainNavListener.onErrorProfileOVOClicked(element)
+                        else
+                            onShopClicked(element.shopId)
+                    }
+            )
         }
 
         if (element.ovoSaldo.isNotEmpty()) {
@@ -201,6 +207,11 @@ class AccountHeaderViewHolder(itemView: View,
             in 18..23 -> "https://ecs7.tokopedia.net/home-img/greet-moon.png"
             else -> "https://ecs7.tokopedia.net/home-img/greet-sun.png"
         }
+    }
+
+    private fun onShopClicked(shopId: String) {
+        TrackingProfileSection.onClickShopProfileSection(userSession.userId)
+        RouteManager.route(itemView.context, ApplinkConst.SHOP.replace("{shop_id}", shopId))
     }
 
     private var needToSwitchText: Boolean = isFirstTimeUserSeeNameAnimationOnSession()
