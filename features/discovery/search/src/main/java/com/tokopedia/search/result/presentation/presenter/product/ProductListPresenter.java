@@ -178,6 +178,7 @@ final class ProductListPresenter
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
     private int firstProductPosition = 0;
     private boolean hasFullThreeDotsOptions = false;
+    private boolean isABTestNavigationRevamp = false;
 
     @Inject
     ProductListPresenter(
@@ -223,6 +224,7 @@ final class ProductListPresenter
         useRatingString = getIsUseRatingString();
         shopRatingABTestStrategy = getShopRatingABTestStrategy();
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
+        isABTestNavigationRevamp = isABTestNavigationRevamp();
     }
 
     private boolean isABTestNavigationRevamp() {
@@ -1114,7 +1116,7 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        if (isABTestNavigationRevamp()) {
+        if (isABTestNavigationRevamp) {
             list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
         }
 
