@@ -17,7 +17,7 @@ import java.net.URLEncoder
 import kotlin.coroutines.CoroutineContext
 
 class NavSearchbarController(val view: View,
-                             val applinkParam: String = "",
+                             val applink: String = "",
                              val searchbarClickCallback: ((hint: String)-> Unit)?,
                              val searchbarImpressionCallback: ((hint: String)-> Unit)?) : CoroutineScope {
     init {
@@ -100,24 +100,7 @@ class NavSearchbarController(val view: View,
 
     private fun onClickHint(keyword: String) {
         searchbarClickCallback?.invoke(keyword)
-        if (keyword.isEmpty()) {
-            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-        } else {
-            RouteManager.route(
-                    context,
-                    ApplinkConstInternalDiscovery.AUTOCOMPLETE + applinkParam,
-                    applinkParam,
-                    safeEncodeUTF8(keyword))
-        }
-    }
-
-    private fun safeEncodeUTF8(value: String): String {
-        return try {
-            URLEncoder.encode(value, Charsets.UTF_8.toString())
-        }
-        catch (e: Throwable) {
-            value
-        }
+        RouteManager.route(context, applink)
     }
 
     fun startHintAnimation() {
