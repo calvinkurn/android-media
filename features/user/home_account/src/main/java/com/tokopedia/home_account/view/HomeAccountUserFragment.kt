@@ -434,16 +434,11 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
         when (item.id) {
             AccountConstants.SettingCode.SETTING_ACCOUNT_PERSONAL_DATA_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(PERSONAL_DATA)
-//                goToApplink(item.applink)
-//                intent = RouteManager.getIntent(activity, ApplinkConst.SETTING_PROFILE)
-//                activity!!.startActivityForResult(intent, 0)
             }
             AccountConstants.SettingCode.SETTING_ACCOUNT_ADDRESS_ID -> {
                 homeAccountAnalytic.eventClickAccountSetting(ADDRESS_LIST)
                 goToApplink(item.applink)
             }
-//            AccountConstants.SettingCode.SETTING_ACCOUNT_KYC_ID -> onKycMenuClicked()
-//            AccountConstants.SettingCode.SETTING_ACCOUNT_SAMPAI_ID -> goToTokopediaCorner()
             AccountConstants.SettingCode.SETTING_BANK_ACCOUNT_ID -> {
                 homeAccountAnalytic.eventClickPaymentSetting(ACCOUNT_BANK)
                 if (userSession.hasPassword()) {

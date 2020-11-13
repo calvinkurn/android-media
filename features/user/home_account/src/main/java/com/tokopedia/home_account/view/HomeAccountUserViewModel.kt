@@ -78,7 +78,6 @@ class HomeAccountUserViewModel @Inject constructor(
         get() = _firstRecommendationData
 
     fun setSafeMode(isActive: Boolean){
-//        val savedValue: Boolean = !accountPref.getSafeMode()
         setUserProfileSafeModeUseCase.executeQuerySetSafeMode(
                 { (userProfileSettingUpdate) ->
                     if (userProfileSettingUpdate.isSuccess) {
@@ -95,15 +94,12 @@ class HomeAccountUserViewModel @Inject constructor(
         launchCatchError(block = {
             val accountModel = getHomeAccountUserUseCase.executeOnBackground()
             val walletModel = getBuyerWalletBalance()
-//            val isAffiliate = checkIsAffiliate()
             val shortcutResponse = getUserShortcutUseCase.executeOnBackground()
             withContext(dispatcher) {
                 accountModel.wallet = walletModel
-//                accountModel.isAffiliate = isAffiliate
                 accountModel.shortcutResponse = shortcutResponse
                 saveLocallyAttributes(accountModel)
                 _buyerAccountData.value = Success(accountModel)
-//                _profileLiveData.value =
             }
         }, onError = {
             _buyerAccountData.postValue(Fail(it))
@@ -112,25 +108,6 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private fun getBuyerWalletBalance(): WalletModel {
         return getBuyerWalletBalanceUseCase.createObservable(RequestParams.EMPTY).toBlocking().single()
-    }
-
-//    private fun getSettingData() {
-//        _settingData.value = menuGenerator.generateUserSettingMenu()
-//    }
-//
-//    private fun getSettingApp(){
-//        _settingApplication.value = menuGenerator.generateApplicationSettingMenu(accountPref, permissionChecker)
-//    }
-//
-//
-//    private fun getAboutTokopediaData() {
-//        _aboutTokopedia.value = menuGenerator.generateAboutTokopediaSettingMenu()
-//    }
-
-    fun getInitialData() {
-//        getSettingData()
-//        getSettingApp()
-//        getAboutTokopediaData()
     }
 
     fun getFirstRecommendation() {
