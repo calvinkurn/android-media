@@ -3,6 +3,7 @@ package com.tokopedia.shop.product.view.fragment
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -37,10 +38,7 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -138,6 +136,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopProductSortFilterUiModel: ShopProductSortFilterUiModel? = null
     private var keywordEmptyState = ""
     private var isEmptyState = false
+    private var isAlreadyCheckRestrictionInfo = false
     private var remoteConfig: RemoteConfig? = null
     private var shopProductFilterParameter: ShopProductFilterParameter? = ShopProductFilterParameter()
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -421,6 +420,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 }
             }
         })
+
         viewModel.productData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -428,13 +428,16 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     val hasNextPage = it.data.hasNextPage
                     val totalProductData =  it.data.totalProductData
                     renderProductList(productList, hasNextPage, totalProductData)
-                    loadShopRestrictionInfo()
+                    if(!isAlreadyCheckRestrictionInfo) {
+                        loadShopRestrictionInfo()
+                    }
                     isNeedToReloadData = false
                     productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
                 is Fail -> showGetListError(it.throwable)
             }
         })
+
         viewModel.productDataEmpty.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderProductListEmptyState(it.data)
@@ -519,9 +522,22 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
     }
 
-    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean) {
+    private fun prepareShopFollowersView() {
         partialShopNplFollowersViewLayout = view?.findViewById(R.id.npl_follow_view)
         partialShopNplFollowersViewLayout?.visible()
+        view?.let {
+            recyclerView?.setPadding(
+                    toDp(12),
+                    toDp(0),
+                    toDp(12),
+                    toDp(82)
+            )
+            partialShopNplFollowersViewLayout?.translationY = it.height.toFloat()
+        }
+    }
+
+    private fun showShopFollowersView(title: String, desc: String, isFollowShop: Boolean) {
+        prepareShopFollowersView()
         partialShopNplFollowersViewLayout?.let {
             partialShopNplFollowersView = PartialButtonShopFollowersView.build(it, object: PartialButtonShopFollowersListener {
                 override fun onButtonFollowNplClick() {
@@ -538,7 +554,18 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun hideShopFollowersView() {
+        recyclerView?.setPadding(
+                toDp(12),
+                toDp(0),
+                toDp(12),
+                toDp(8)
+        )
         partialShopNplFollowersView?.setupVisibility = false
+        partialShopNplFollowersViewLayout?.invisible()
+    }
+
+    private fun toDp(number: Int): Int {
+        return (number * Resources.getSystem().displayMetrics.density + 0.5f).toInt()
     }
 
     private fun renderProductListEmptyState(productList: List<ShopProductViewModel>) {
@@ -922,8 +949,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     override fun onResume() {
         super.onResume()
-        // check RE for showcase type campaign eligibility
-        loadShopRestrictionInfo()
+        if(selectedEtalaseRules != null) {
+            // check RE for showcase type campaign eligibility
+            isAlreadyCheckRestrictionInfo = true
+            loadShopRestrictionInfo()
+        }
     }
 
     override fun initInjector() {

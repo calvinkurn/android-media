@@ -30,7 +30,7 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
             val totalNotifyWording: String = "",
             val dynamicRule: DynamicRule = DynamicRule(),
             val bannerList: List<BannerItem> = listOf(),
-            val productList: List<ShopHomeProductViewModel> = listOf(),
+            val productList: List<ShopHomeProductUiModel> = listOf(),
             var isRemindMe: Boolean? = null,
             var rvState: Parcelable? = null,
             var showRemindMeLoading : Boolean = false,
