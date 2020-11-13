@@ -44,6 +44,7 @@
             app:toolbarAlwaysShowShadow="false"
             app:toolbarInitialTheme="light"
             app:toolbarTitle="@string/cart"
+            app:toolbarPageName="@string/toolbar_page_name_cart"
             app:toolbarContentType="typeTitle" />
 
     </com.google.android.material.appbar.AppBarLayout>
