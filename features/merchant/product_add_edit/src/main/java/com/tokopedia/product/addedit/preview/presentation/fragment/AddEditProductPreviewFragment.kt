@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
@@ -340,6 +339,7 @@ class AddEditProductPreviewFragment:
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
+            viewModel.setIsDataChanged(true)
             // track switch status on click
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
@@ -549,6 +549,7 @@ class AddEditProductPreviewFragment:
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        viewModel.setIsDataChanged(true)
         if (isAdding()) {
             ProductAddStepperTracking.trackRemoveProductImage(shopId)
         } else {
