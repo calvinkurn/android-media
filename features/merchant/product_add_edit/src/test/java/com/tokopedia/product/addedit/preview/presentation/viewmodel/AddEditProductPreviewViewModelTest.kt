@@ -184,21 +184,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When get status stock variant Expect status stock variant`() {
-        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.stock = 0 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(1, viewModel.getStatusStockViewVariant())
-
-        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.stock = 4 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(2, viewModel.getStatusStockViewVariant())
-
-        viewModel.productInputModel.value = ProductInputModel().apply { detailInputModel.status = 0 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(3, viewModel.getStatusStockViewVariant())
-    }
-
-    @Test
     fun `When productInputModel data changed Expect `() {
         viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
@@ -208,7 +193,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.setIsDataChanged(false)
         assertFalse(viewModel.getIsDataChanged())
-
     }
 
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
