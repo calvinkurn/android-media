@@ -73,8 +73,6 @@ class SearchEventActivityTest {
 
     fun click_city(){
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-
-        onView(withText("Coba Lagi")).perform(click())
         Thread.sleep(5000)
         onView(withId(R.id.recycler_view_location)).perform(RecyclerViewActions.actionOnItemAtPosition<SearchLocationListViewHolder>(0, click()))
         Thread.sleep(3000)

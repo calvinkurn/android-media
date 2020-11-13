@@ -82,9 +82,9 @@ class PDPEventActivityTest {
     fun click_check_ticket() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
         Thread.sleep(3000)
-        onView(getElementFromMatchAtPosition(withText("23"), 0)).check(matches(isDisplayed()))
+        onView(getElementFromMatchAtPosition(withText("12"), 0)).check(matches(isDisplayed()))
         Thread.sleep(3000)
-        onView(getElementFromMatchAtPosition(withText("23"), 0)).perform(click())
+        onView(getElementFromMatchAtPosition(withText("12"), 0)).perform(click())
     }
 
     @After
