@@ -61,6 +61,7 @@ import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
+import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
