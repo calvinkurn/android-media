@@ -21,7 +21,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -631,21 +630,21 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void showSuccessMessage(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
         }
     }
 
     @Override
     public void showFailureMessage(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
         }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
         }
     }
 
@@ -1033,7 +1032,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             if (presenter.shouldShowTimeForCancellation() && getView() != null) {
                 Toaster.build(getView(),
                         presenter.getCancelTime(),
-                        Snackbar.LENGTH_LONG,
+                        Toaster.LENGTH_LONG,
                         Toaster.TYPE_ERROR,
                         getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
                         }).show();

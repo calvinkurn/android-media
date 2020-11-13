@@ -2,7 +2,6 @@ package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -30,12 +29,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -573,7 +570,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void showSuccessMessageWithAction(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Toast.LENGTH_LONG, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_INDEFINITE, Toaster.TYPE_NORMAL, "Oke", v1 -> { }).show();
         }
     }
 

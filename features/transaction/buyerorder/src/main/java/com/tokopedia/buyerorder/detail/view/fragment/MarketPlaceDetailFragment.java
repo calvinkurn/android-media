@@ -42,7 +42,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -432,7 +431,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             myClipboard.setPrimaryClip(myClip);
                             if (getView() != null && getContext() != null) {
                                 Toaster.build(getView(), getContext().getResources().getString(R.string.awb_number_copied),
-                                        Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+                                        Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -629,14 +628,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void showSuccessMessage(String message) {
         if (getView() != null) {
             Toaster.build(getView(), message,
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{}).show();
+                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{}).show();
         }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                 getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
         }
     }
@@ -644,7 +643,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void showErrorMessage(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {}).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {}).show();
         }
     }
 
