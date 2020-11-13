@@ -690,7 +690,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation(int requestCode) {
-        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1);
+        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "");
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
@@ -755,7 +755,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (index > 0) {
             notifyItemChanged(getShipmentCostPosition());
             notifyItemChanged(index);
-            checkHasSelectAllCourier(false, index);
+            checkHasSelectAllCourier(false, index, shipmentCartItemModel.getCartString());
             if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
                 updateShippingCompletionTickerVisibility();
             }
@@ -793,8 +793,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         int tmpPosition = isForceReload ? position : -1;
-        checkHasSelectAllCourier(false, tmpPosition);
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience()) {
+            checkHasSelectAllCourier(false, tmpPosition, shipmentCartItemModel.getCartString());
             updateShippingCompletionTickerVisibility();
         }
 
@@ -874,7 +874,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick, int lastSelectedCourierOrder) {
+    public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick,
+                                            int lastSelectedCourierOrderIndex,
+                                            String lastSelectedCourierOrdercartString) {
         int cartItemCounter = 0;
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -888,7 +890,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null, false);
                 if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrder);
+                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString);
                 }
                 shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;

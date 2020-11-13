@@ -1175,7 +1175,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
                 doUpdateButtonPromoCheckout(promoUiModel);
                 shipmentPresenter.setValidateUsePromoRevampUiModel(null);
-                shipmentAdapter.checkHasSelectAllCourier(false, -1);
+                shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
             }
         }
     }
@@ -1452,7 +1452,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onFinishChoosingShipment(int lastSelectedCourierOrder) {
+    public void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrderCartString) {
         ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
         boolean stillHasPromo = false;
         if (validateUsePromoRequest != null) {
@@ -1482,12 +1482,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
 
         if (stillHasPromo) {
-            String cartString = "";
-            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
-            if (shipmentCartItemModel != null) {
-                cartString = shipmentCartItemModel.getCartString();
-            }
-            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, cartString);
+            shipmentPresenter.checkPromoCheckoutFinalShipment(generateValidateUsePromoRequest(), lastSelectedCourierOrder, lastSelectedCourierOrderCartString);
         } else {
             clearPromoTrackingData();
             sendEEStep3();
@@ -1768,7 +1763,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onNeedUpdateRequestData() {
-        shipmentAdapter.checkHasSelectAllCourier(true, -1);
+        shipmentAdapter.checkHasSelectAllCourier(true, -1, "");
     }
 
     @Override
@@ -2459,7 +2454,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isLastAppliedPromo) {
             doResetButtonPromoCheckout();
         } else {
-            shipmentAdapter.checkHasSelectAllCourier(false, -1);
+            shipmentAdapter.checkHasSelectAllCourier(false, -1, "");
         }
     }
 

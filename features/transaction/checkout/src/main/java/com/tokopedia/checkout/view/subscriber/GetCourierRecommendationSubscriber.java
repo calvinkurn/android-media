@@ -82,7 +82,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                             shippingCourierUiModel.setSelected(false);
                         }
                         for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
-                            if (isForceReloadRates || isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
+                            if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
                                     shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
                                 if (shippingCourierUiModel.getProductData().getError() != null &&
                                         !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
