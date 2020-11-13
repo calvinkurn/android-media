@@ -71,6 +71,7 @@ import javax.inject.Inject
 private const val EXP_NAME = "Navigation Revamp"
 private const val VARIANT_OLD = "existing navigation"
 private const val VARIANT_REVAMP = "navigation revamp"
+private const val FEED_PAGE = "feed page"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
@@ -195,6 +196,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
                 it.switchToLightToolbar()
                 it.setContentInsetsAbsolute(0,0)
+                it.setToolbarPageName(FEED_PAGE)
                 viewLifecycleOwner.lifecycle.addObserver(it)
                 it.setIcon(
                         IconBuilder()
