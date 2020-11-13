@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -297,15 +296,15 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showErrorSnackbar(String message) {
+    public void showErrorToaster(String message) {
         if (getActivity() == null) return;
         if (message == null || TextUtils.isEmpty(message)) {
             Toaster.build(getView(),
                     getActivity().getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
+                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
                     }).show();
         } else {
-            Toaster.build(getView(),message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
+            Toaster.build(getView(),message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
                     "", v -> {}).show();
         }
     }
