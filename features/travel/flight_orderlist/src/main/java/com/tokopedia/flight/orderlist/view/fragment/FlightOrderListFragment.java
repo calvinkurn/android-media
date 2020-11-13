@@ -29,9 +29,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
-import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -51,6 +51,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_AFTER_CANCELLATION;
@@ -279,49 +281,41 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final List<FlightOrderJourney> orderJourneyList) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(
+        dialog.setDescription(
                 MethodChecker.fromHtml(getString(
                         R.string.flight_cancellation_dialog_non_refundable_description)));
-        dialog.setBtnOk("Lanjut");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToCancellationPage(invoiceId, item);
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText("Lanjut");
+        dialog.setPrimaryCTAClickListener(() -> {
+            goToCancellationPage(invoiceId, item);
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setSecondaryCTAText(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }
 
     @Override
     public void showRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final List<FlightOrderJourney> orderJourneyList) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(
+        dialog.setDescription(
                 MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
-        dialog.setBtnOk("Lanjut");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToCancellationPage(invoiceId, item);
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText("Lanjut");
+        dialog.setPrimaryCTAClickListener(() -> {
+            goToCancellationPage(invoiceId, item);
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
-        dialog.setBtnCancel(getString(R.string.flight_cancellation_dialog_back_button_text));
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setSecondaryCTAText(getString(R.string.flight_cancellation_dialog_back_button_text));
+        dialog.setSecondaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }

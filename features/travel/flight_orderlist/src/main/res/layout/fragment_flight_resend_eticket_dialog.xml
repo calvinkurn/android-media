@@ -2,28 +2,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_20"
+    android:layout_margin="@dimen/flight_orderlist_20dp"
     android:orientation="vertical"
-    android:padding="@dimen/dp_20">
+    android:padding="@dimen/flight_orderlist_20dp">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.TitleBig"
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/flight_resend_eticket_dialog_title" />
+        android:text="@string/flight_resend_eticket_dialog_title"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="heading_2" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.Small"
+    <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/flight_resend_eticket_dialog_description" />
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/flight_resend_eticket_dialog_description"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_2" />
 
-    <com.tokopedia.design.text.TkpdTextInputLayout
+    <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
         android:id="@+id/container_email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:errorEnabled="true"
         app:hintEnabled="false">
 
@@ -41,37 +43,40 @@
             android:textAppearance="@style/TextView.Small"
             android:textColor="@color/Unify_N700_44" />
 
-    </com.tokopedia.design.text.TkpdTextInputLayout>
+    </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:gravity="end|right"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_resend_eticket_cancel"
-            style="@style/TextView.Small.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
-            android:layout_marginRight="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/flight_orderlist_10dp"
+            android:layout_marginTop="@dimen/flight_orderlist_10dp"
+            android:layout_marginRight="@dimen/flight_orderlist_20dp"
+            android:layout_marginBottom="@dimen/flight_orderlist_10dp"
             android:text="@string/flight_resend_eticket_dialog_abort"
-            android:textColor="@color/Unify_N700_44" />
+            android:textColor="@color/Unify_N700_44"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_resend_eticket_send"
-            style="@style/TextView.Small.Green.Bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_20"
-            android:layout_marginRight="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_10"
-            android:text="@string/flight_resend_eticket_dialog_send" />
+            android:layout_marginLeft="@dimen/flight_orderlist_20dp"
+            android:layout_marginTop="@dimen/flight_orderlist_10dp"
+            android:layout_marginRight="@dimen/flight_orderlist_10dp"
+            android:layout_marginBottom="@dimen/flight_orderlist_10dp"
+            android:text="@string/flight_resend_eticket_dialog_send"
+            android:textColor="@color/Unify_G500"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
 
     </LinearLayout>
 

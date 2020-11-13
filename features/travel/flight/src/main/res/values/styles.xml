@@ -133,21 +133,4 @@
         <item name="android:textColor">@color/Unify_G500</item>
     </style>
 
-    <style name="TextInputLayouts">
-        <item name="colorControlNormal">@color/Unify_N50</item>
-        <item name="colorControlActivated">@color/Unify_G500</item>
-    </style>
-    <style name="TextInputLayoutHintText" parent="TextAppearance.Design.Hint">
-        <item name="android:textSize">1sp</item>
-    </style>
-
-    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_N700_44</item>
-        <item name="android:lineSpacingExtra">5sp</item>
-    </style>
-
-    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
-        <item name="android:textColor">@color/Unify_G500</item>
-    </style>
-
 </resources>
