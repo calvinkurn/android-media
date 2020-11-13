@@ -3,6 +3,7 @@
     <dimen name="dp_32">32dp</dimen>
 
     <dimen name="sp_16">16sp</dimen>
+    <dimen name="card_view_padding_normalizer">-4dp</dimen>
 
     <dimen name="padding_dp_16">16dp</dimen>
 

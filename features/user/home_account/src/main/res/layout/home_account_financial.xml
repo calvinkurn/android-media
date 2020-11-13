@@ -19,6 +19,8 @@
         tools:text="Title" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginLeft="@dimen/card_view_padding_normalizer"
+            android:layout_marginStart="@dimen/card_view_padding_normalizer"
             android:layout_marginTop="@dimen/home_account_dp_8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
