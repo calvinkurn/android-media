@@ -19,7 +19,11 @@ class FinancialItemViewHolder(itemView: View, val listener: HomeAccountUserListe
         with(itemView) {
             account_user_item_financial_body?.text = financial.body
             account_user_item_financial_title?.text = financial.title
-            if(financial.urlIcon.isNotEmpty()){
+
+            if(financial.icon != 0) {
+                account_user_item_financial_icon?.setImageResource(financial.icon)
+            }
+            else if(financial.urlIcon.isNotEmpty()){
                 ImageHandler.loadImageFit2(account_user_item_financial_icon.context, account_user_item_financial_icon, financial.urlIcon)
             }
             itemView.setOnClickListener {

@@ -20,6 +20,7 @@
         app:unify_image_corner_radius="4" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl4"
         android:id="@+id/account_user_item_profile_name"
         android:layout_width="wrap_content"
@@ -32,11 +33,13 @@
         tools:text="Babang Nico" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl2"
         android:id="@+id/account_user_item_profile_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_2"
+        app:typographyType="body_3"
         android:lineHeight="18dp"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_name"
@@ -44,12 +47,14 @@
         tools:text="082242454504" />
 
     <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/fontSize_lvl2"
         android:id="@+id/account_user_item_profile_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/home_account_dp_2"
         android:lineHeight="18dp"
+        app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="@+id/account_user_item_profile_phone"
         app:layout_constraintTop_toBottomOf="@+id/account_user_item_profile_phone"
         tools:text="yoris.prayogo@tokopedia.com" />
@@ -82,7 +87,7 @@
         layout="@layout/home_account_member"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginTop="@dimen/unify_space_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/home_account_profile_financial_section" />

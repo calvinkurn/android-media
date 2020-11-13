@@ -43,6 +43,7 @@
     <dimen name="home_account_dp_22">22dp</dimen>
     <dimen name="home_account_dp_26">26dp</dimen>
     <dimen name="home_account_dp_28">28dp</dimen>
+    <dimen name="home_account_dp_30">30dp</dimen>
     <dimen name="home_account_dp_38">38dp</dimen>
     <dimen name="home_account_dp_46">46dp</dimen>
     <dimen name="home_account_dp_54">54dp</dimen>
@@ -53,5 +54,5 @@
     <dimen name="home_account_dp_200">200dp</dimen>
     <dimen name="home_account_dp_230">230dp</dimen>
     <dimen name="home_account_dp_160">160dp</dimen>
-
+    <dimen name="home_account_dp_185">185dp</dimen>
 </resources>

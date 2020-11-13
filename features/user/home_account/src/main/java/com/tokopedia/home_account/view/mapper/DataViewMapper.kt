@@ -56,11 +56,6 @@ class DataViewMapper @Inject constructor(
         val cdnUrl = remoteConfig.getString(AccountConstants.Url.KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL)
 
         val dataView = SettingDataView("Dana & Investasi")
-//        listOf(
-//                CommonDataView(title = "Rp 20.000.000", body = "Points 10.000", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_ovo),
-//                CommonDataView(title = "Rp 20.000.000", body = "Saldo", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_balance),
-//                CommonDataView(title = "Rp 20.000.000", body = "Emas", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_emas)
-//        )
         if(accountDataModel.wallet.walletType != null && accountDataModel.wallet.walletType == OVO) {
             if(!accountDataModel.wallet.isLinked) {
                 val body =  if (accountDataModel.wallet.amountPendingCashback > 0) {
@@ -72,7 +67,9 @@ class DataViewMapper @Inject constructor(
                 val item = CommonDataView(
                         title = accountDataModel.wallet.action?.text.toEmptyStringIfNull(),
                         body = body,
-                        applink = accountDataModel.wallet.action?.applink.toEmptyStringIfNull()
+                        urlIcon = cdnUrl + AccountConstants.Url.OVO_IMG,
+                        applink = accountDataModel.wallet.action?.applink.toEmptyStringIfNull(),
+                        icon = R.drawable.ic_account_ovo
                 )
                 dataView.items.add(item)
             } else {
@@ -80,8 +77,8 @@ class DataViewMapper @Inject constructor(
                     title = accountDataModel.wallet.cashBalance.toEmptyStringIfNull(),
                     body = "Points " + accountDataModel.wallet.pointBalance.toEmptyStringIfNull(),
                     type = CommonViewHolder.TYPE_DEFAULT,
-                    urlIcon = cdnUrl + AccountConstants.Url.OVO_IMG,
-                    applink = accountDataModel.wallet.applink.toEmptyStringIfNull()
+                    applink = accountDataModel.wallet.applink.toEmptyStringIfNull(),
+                    icon = R.drawable.ic_account_ovo
                 )
                 dataView.items.add(item)
             }
@@ -90,13 +87,13 @@ class DataViewMapper @Inject constructor(
                     title = CurrencyFormatUtil.convertPriceValueToIdrFormat(accountDataModel.saldo.deposit, false),
                     body = "Saldo",
                     type = CommonViewHolder.TYPE_DEFAULT,
-                    urlIcon = cdnUrl + AccountConstants.Url.SALDO_IMG,
+//                    urlIcon = cdnUrl + AccountConstants.Url.SALDO_IMG,
+                    icon = R.drawable.ic_account_balance,
                     applink = ApplinkConstInternalGlobal.SALDO_DEPOSIT
             )
-
             val goldItem = CommonDataView(title = "Rp 20.000.000", body = "Emas", type = CommonViewHolder.TYPE_DEFAULT, icon = R.drawable.ic_account_emas)
             dataView.items.add(saldoItem)
-            dataView.items.add(goldItem)
+//            dataView.items.add(goldItem)
         }
         return dataView
     }
