@@ -226,9 +226,9 @@ class SellerHomeViewModel @Inject constructor(
                 getAnnouncementUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
                 return@withContext getAnnouncementUseCase.get().executeOnBackground()
             })
-            _announcementWidgetData.postValue(result)
+            _announcementWidgetData.value = result
         }, onError = {
-            _announcementWidgetData.postValue(Fail(it))
+            _announcementWidgetData.value = Fail(it)
         })
     }
 
@@ -238,9 +238,9 @@ class SellerHomeViewModel @Inject constructor(
                 getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.get().executeOnBackground()
             })
-            _shopLocation.postValue(result)
+            _shopLocation.value = result
         }, onError = {
-            _shopLocation.postValue(Fail(it))
+            _shopLocation.value = Fail(it)
         })
     }
 }
