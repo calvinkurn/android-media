@@ -8,9 +8,9 @@ data class AutoCompleteResponse(
 )
 
 data class KeroMapsAutocomplete(
-		@SerializedName("data")
+    @SerializedName("data")
     var AData: AData = AData(),
-		@SerializedName("error_code")
+    @SerializedName("error_code")
     var errorCode: Int = 0
 )
 
@@ -20,17 +20,17 @@ data class AData(
 )
 
 data class Prediction(
-		@SerializedName("description")
+    @SerializedName("description")
     var description: String = "",
-		@SerializedName("matched_substrings")
+    @SerializedName("matched_substrings")
     var matchedSubstrings: List<MatchedSubstring> = listOf(),
-		@SerializedName("place_id")
+    @SerializedName("place_id")
     var placeId: String = "",
-		@SerializedName("structured_formatting")
+    @SerializedName("structured_formatting")
     var structuredFormatting: StructuredFormatting = StructuredFormatting(),
-		@SerializedName("terms")
+    @SerializedName("terms")
     var terms: List<Term> = listOf(),
-		@SerializedName("types")
+    @SerializedName("types")
     var types: List<String> = listOf()
 )
 
@@ -42,11 +42,11 @@ data class MatchedSubstring(
 )
 
 data class StructuredFormatting(
-		@SerializedName("main_text")
+    @SerializedName("main_text")
     var mainText: String = "",
-		@SerializedName("main_text_matched_substrings")
+    @SerializedName("main_text_matched_substrings")
     var mainTextMatchedSubstrings: List<MainTextMatchedSubstring> = listOf(),
-		@SerializedName("secondary_text")
+    @SerializedName("secondary_text")
     var secondaryText: String = ""
 )
 
