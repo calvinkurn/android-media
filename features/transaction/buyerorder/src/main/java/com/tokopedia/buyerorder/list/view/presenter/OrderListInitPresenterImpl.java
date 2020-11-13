@@ -31,35 +31,37 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
     @Override
     public void getInitData(String orderCategory) {
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                R.raw.initorderlist), TabData.class, false);
-        initUseCase.addRequest(graphqlRequest);
+        if (getView() != null && getView().getActivity() != null) {
+            GraphqlRequest graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.initorderlist), TabData.class, false);
+            initUseCase.addRequest(graphqlRequest);
 
-        initUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-            }
+            initUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
+                }
 
-            @Override
-            public void onError(Throwable e) {
-                Timber.d(e.toString());
-                view.removeProgressBarView();
-                view.showErrorNetwork(
-                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
-            }
+                @Override
+                public void onError(Throwable e) {
+                    Timber.d(e.toString());
+                    view.removeProgressBarView();
+                    view.showErrorNetwork(
+                            ErrorHandler.getErrorMessage(getView().getActivity(), e));
+                }
 
-            @Override
-            public void onNext(GraphqlResponse response) {
-                view.removeProgressBarView();
-                if (response != null) {
-                    TabData data = response.getData(TabData.class);
-                    if (data != null && !data.getOrderLabelList().isEmpty()) {
-                        view.renderTabs(data.getOrderLabelList(), orderCategory);
+                @Override
+                public void onNext(GraphqlResponse response) {
+                    view.removeProgressBarView();
+                    if (response != null) {
+                        TabData data = response.getData(TabData.class);
+                        if (data != null && !data.getOrderLabelList().isEmpty()) {
+                            view.renderTabs(data.getOrderLabelList(), orderCategory);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -71,40 +73,42 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
     @Override
     public void getTickerInfo() {
-        Map<String, Object> requestInfo = new HashMap<>();
-        Input input = new Input();
-        UserSession userSession = new UserSession(getView().getActivity());
-        input.setRequest_by("buyer");
-        input.setUser_id(userSession.getUserId());
-        input.setClient("mobile");
+        if (getView() != null && getView().getActivity() != null) {
+            Map<String, Object> requestInfo = new HashMap<>();
+            Input input = new Input();
+            UserSession userSession = new UserSession(getView().getActivity());
+            input.setRequest_by("buyer");
+            input.setUser_id(userSession.getUserId());
+            input.setClient("mobile");
 
-        requestInfo.put("input", input);
-        tickerUseCase = new GraphqlUseCase();
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.tickerinfo), TickerResponse.class, requestInfo, false);
-        tickerUseCase.addRequest(graphqlRequest);
-        tickerUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+            requestInfo.put("input", input);
+            tickerUseCase = new GraphqlUseCase();
+            GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.tickerinfo), TickerResponse.class, requestInfo, false);
+            tickerUseCase.addRequest(graphqlRequest);
+            tickerUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                view.showErrorNetwork(
-                        ErrorHandler.getErrorMessage(getView().getActivity(), e));
-
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                // Show ticker
-                if (graphqlResponse != null) {
-                    TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
-                    if(view != null)
-                        view.updateTicker(tickerResponse);
                 }
-            }
-        });
+
+                @Override
+                public void onError(Throwable e) {
+                    e.printStackTrace();
+                    view.showErrorNetwork(
+                            ErrorHandler.getErrorMessage(getView().getActivity(), e));
+
+                }
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+                    // Show ticker
+                    if (graphqlResponse != null) {
+                        TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
+                        if(view != null)
+                            view.updateTicker(tickerResponse);
+                    }
+                }
+            });
+        }
     }
 }
