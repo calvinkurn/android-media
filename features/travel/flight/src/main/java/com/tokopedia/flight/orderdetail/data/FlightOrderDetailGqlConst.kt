@@ -150,6 +150,15 @@ object FlightOrderDetailGqlConst {
                       }
                     }
                   }
+                  webCheckIn{
+                    title
+                    subTitle
+                    startTime
+                    endTime
+                    iconURL
+                    appURL
+                    webURL
+                  }
                 }
                 passengers{
                   id
