@@ -388,6 +388,7 @@ class PlayBroadcastViewModel @Inject constructor(
     fun stopPushStream(shouldNavigate: Boolean = false) {
         scope.launchCatchError(block = {
             withContext(dispatcher.io) {
+                playSocket.destroy()
                 playPusher.stopTimer()
                 playPusher.stopPush()
                 playPusher.stopPreview()

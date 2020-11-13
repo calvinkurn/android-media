@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReorderFragment
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
@@ -76,7 +76,7 @@ class ShopSettingsEtalaseActivity : BaseSimpleActivity(),
         return R.layout.activity_shop_setting_etalase
     }
 
-    override fun goToReorderFragment(shopEtalaseViewModelsDefault: ArrayList<ShopEtalaseViewModel>, shopEtalaseViewModels: ArrayList<ShopEtalaseViewModel>) {
+    override fun goToReorderFragment(shopEtalaseViewModelsDefault: ArrayList<ShopEtalaseUiModel>, shopEtalaseViewModels: ArrayList<ShopEtalaseUiModel>) {
         val fragment = ShopSettingsEtalaseReorderFragment.newInstance(shopEtalaseViewModelsDefault, shopEtalaseViewModels)
         replaceAndHideOldFragment(fragment, true, ShopSettingsEtalaseReorderFragment.TAG)
         invalidateOptionsMenu()

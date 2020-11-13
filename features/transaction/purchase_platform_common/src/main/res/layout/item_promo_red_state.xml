@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="-4dp"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_8"
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="horizontal">
 
         <ImageView
@@ -61,7 +61,7 @@
                 android:id="@+id/label_promo_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="@color/n_700_44"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_2"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_12"
-                android:textColor="@color/n_700_44"
+                android:textColor="@color/Unify_N700_44"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_promo_title"
                 app:typographyType="body_3"

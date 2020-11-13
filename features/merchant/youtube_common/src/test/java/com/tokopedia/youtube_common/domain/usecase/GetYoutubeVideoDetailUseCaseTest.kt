@@ -3,6 +3,7 @@ package com.tokopedia.youtube_common.domain.usecase
 import android.webkit.URLUtil
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.youtube_common.YoutubeCommonConstant.ENDPOINT_URL
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.runBlocking
@@ -31,10 +32,10 @@ class GetYoutubeVideoDetailUseCaseTest {
 
     @Test
     fun `check restRepository getResponses success`() {
-        /*runBlocking {
+        runBlocking {
             mockkStatic(URLUtil::class)
             every {
-                URLUtil.isValidUrl(GetYoutubeVideoDetailUseCase.ENDPOINT_URL)
+                URLUtil.isValidUrl(ENDPOINT_URL)
             } returns true
             coEvery {
                 restRepository.getResponses(getYoutubeVideoDetailUseCase.restRequestList)
@@ -44,6 +45,6 @@ class GetYoutubeVideoDetailUseCaseTest {
                 restRepository.getResponses(getYoutubeVideoDetailUseCase.restRequestList)
             }
             assertNotNull(response)
-        }*/
+        }
     }
 }
