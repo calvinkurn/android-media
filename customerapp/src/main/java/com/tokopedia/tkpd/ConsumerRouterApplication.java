@@ -70,7 +70,6 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
@@ -147,7 +146,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter,
-        CMRouter,
         KYCRouter {
 
     @Inject
@@ -565,11 +563,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public long getLongRemoteConfig(String key, long defaultValue) {
-        return remoteConfig.getLong(key, defaultValue);
     }
 
     @Override
