@@ -958,6 +958,19 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
+    public void eventClickNextOnCancellationSubmit(String eventLabel,
+                                                   String userId) {
+        Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_SUBMIT_CANCELLATION,
+                String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
+        params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.CANCELLATION_SUMMARY);
+        buildGeneralFlightParams(params);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(params);
+    }
+
     private void buildGeneralFlightParams(Map<String, Object> params) {
         params.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
         params.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
@@ -977,6 +990,7 @@ public class FlightAnalytics {
         public static String WEB_CHECKIN = "/flight/webcheckindetail";
         public static String CANCELLATION_PASSENGER = "/flight/cancellationpassenger";
         public static String CANCELLATION_REASON = "/flight/cancellationreason";
+        public static String CANCELLATION_SUMMARY = "/flight/cancellationsummary";
     }
 
     private static class Category {
@@ -1018,6 +1032,7 @@ public class FlightAnalytics {
         static String CLICK_CHECKIN_RETURN = "click checkin on return route";
         static String CLICK_NEXT_CANCELLATION_PASSENGER = "click next on cancellation passenger";
         static String CLICK_NEXT_CANCELLATION_REASON = "click next on cancellation reason";
+        static String CLICK_SUBMIT_CANCELLATION = "click submit cancellation";
     }
 
     private static class Action {
