@@ -140,6 +140,8 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
+    androidTestImplementation project(rootProject.ext.libraries.utils)
 }
 
 project.ext {

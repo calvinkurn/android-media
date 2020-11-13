@@ -33,6 +33,12 @@ class FlightOrderDetailSimpleViewHolder(view: View) : RecyclerView.ViewHolder(vi
                 tgFlightOrderSimpleRight.setWeight(Typography.REGULAR)
             }
 
+            if (element.isRightAlign) {
+                tgFlightOrderSimpleRight.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
+            } else {
+                tgFlightOrderSimpleRight.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+            }
+
         }
     }
 

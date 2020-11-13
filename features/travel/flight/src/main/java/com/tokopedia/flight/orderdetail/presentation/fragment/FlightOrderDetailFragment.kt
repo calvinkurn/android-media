@@ -23,6 +23,7 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListAct
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
+import com.tokopedia.flight.orderdetail.presentation.bottomsheet.FlightOrderDetailPaymentDetailBottomSheet
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
@@ -324,7 +325,13 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun openDetailPaymentBottomSheet() {
-
+        val bottomSheet = FlightOrderDetailPaymentDetailBottomSheet.getInstance(
+                flightOrderDetailViewModel.buildPaymentDetailData(),
+                flightOrderDetailViewModel.buildAmenitiesPaymentDetailData(),
+                flightOrderDetailViewModel.getTotalAmount()
+        )
+        bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+        bottomSheet.show(requireFragmentManager(), FlightOrderDetailPaymentDetailBottomSheet.TAG)
     }
 
     private fun showSnackbarSuccess(message: String) {

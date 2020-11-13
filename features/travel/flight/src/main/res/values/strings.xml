@@ -392,4 +392,7 @@ di tempatmu.</string>
     <string name="flight_order_detail_cancellation_detail_label">Detail Pembatalan</string>
 
     <string name="flight_order_detail_contact_us"><![CDATA[Butuh bantuan? Kami siap membantu 24/7.<br />Hubungi <strong><span style="color:#03AC0E">Tokopedia Care</span></strong>]]></string>
+
+    <string name="flight_order_detail_payment_detail_title_label">Detail pembayaran</string>
+    <string name="flight_order_detail_payment_detail_total_label">Total Bayar</string>
 </resources>

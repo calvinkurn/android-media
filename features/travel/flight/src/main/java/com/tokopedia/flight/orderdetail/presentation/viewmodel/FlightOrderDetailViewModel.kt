@@ -8,10 +8,13 @@ import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmenityEnum
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -19,6 +22,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -35,6 +39,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     var orderId: String = ""
 
+    private val paymentDetailData: MutableList<FlightOrderDetailSimpleModel> = arrayListOf()
 
     private val mutableCrossSell = MutableLiveData<Result<TravelCrossSelling>>()
     val crossSell: LiveData<Result<TravelCrossSelling>>
@@ -91,6 +96,126 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     fun onNavigateToCancellationClicked(journeyList: List<FlightOrderDetailJourneyModel>) {
         mutableCancellationData.value = orderDetailCancellationMapper.transform(journeyList)
+    }
+
+    fun buildPaymentDetailData(): List<FlightOrderDetailSimpleModel> {
+        val returnData = arrayListOf<FlightOrderDetailSimpleModel>()
+        val orderDetailData = orderDetailData.value
+        if (orderDetailData != null && orderDetailData is Success) {
+            val passengers = hashMapOf<Int, Int>()
+            for (passenger in orderDetailData.data.passengers) {
+                var count = passengers[passenger.type] ?: 0
+                passengers[passenger.type] = count + 1
+            }
+
+            val journeyFare = hashMapOf<String, HashMap<Int, Int>>()
+            for (journey in orderDetailData.data.journeys) {
+                val journeyRoute = "${journey.departureId} - ${journey.arrivalId}"
+                var priceMap: HashMap<Int, Int> = hashMapOf()
+
+                if (journey.fare.adultNumeric > 0) {
+                    priceMap[FlightPassengerType.ADULT.id] = journey.fare.adultNumeric.toInt()
+                }
+                if (journey.fare.childNumeric > 0) {
+                    priceMap[FlightPassengerType.CHILDREN.id] = journey.fare.childNumeric.toInt()
+                }
+                if (journey.fare.infantNumeric > 0) {
+                    priceMap[FlightPassengerType.INFANT.id] = journey.fare.infantNumeric.toInt()
+                }
+
+                journeyFare[journeyRoute] = priceMap
+            }
+
+            for ((key, value) in journeyFare) {
+                returnData.add(
+                        FlightOrderDetailSimpleModel(
+                                "$key ${FlightPassengerType.ADULT.type} x${passengers[FlightPassengerType.ADULT.id]}",
+                                "Rp${CurrencyFormatHelper.convertToRupiah(value[FlightPassengerType.ADULT.id].toString())}",
+                                false,
+                                false,
+                                false,
+                                false,
+                                true
+                        )
+                )
+
+                if (value.containsKey(FlightPassengerType.CHILDREN.id)) {
+                    returnData.add(
+                            FlightOrderDetailSimpleModel(
+                                    "$key ${FlightPassengerType.CHILDREN.type} x${passengers[FlightPassengerType.CHILDREN.id]}",
+                                    "Rp${CurrencyFormatHelper.convertToRupiah(value[FlightPassengerType.CHILDREN.id].toString())}",
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                    true
+                            )
+                    )
+                }
+
+                if (value.containsKey(FlightPassengerType.INFANT.id)) {
+                    val leftValue = "$key ${FlightPassengerType.INFANT.type} x${passengers[FlightPassengerType.INFANT.id]}"
+                    val rightValue = "Rp${CurrencyFormatHelper.convertToRupiah(value[FlightPassengerType.INFANT.id].toString())}"
+                    returnData.add(
+                            FlightOrderDetailSimpleModel(
+                                    leftValue,
+                                    rightValue,
+                                    false,
+                                    false,
+                                    false,
+                                    false,
+                                    true
+                            )
+                    )
+                }
+            }
+        }
+
+        return returnData
+    }
+
+    fun buildAmenitiesPaymentDetailData(): List<FlightOrderDetailSimpleModel> {
+        val returnData = arrayListOf<FlightOrderDetailSimpleModel>()
+        val orderDetailData = orderDetailData.value
+
+        if (orderDetailData != null && orderDetailData is Success) {
+            for (passenger in orderDetailData.data.passengers) {
+                for (amenity in passenger.amenities) {
+                    if (amenity.priceNumeric > 0) {
+                        val leftValue = when (amenity.type) {
+                            FlightOrderDetailAmenityEnum.LUGGAGE.type -> "${FlightOrderDetailAmenityEnum.LUGGAGE.text} ${amenity.departureId} - ${amenity.arrivalId}"
+                            FlightOrderDetailAmenityEnum.MEAL.type -> "${FlightOrderDetailAmenityEnum.MEAL.text} ${amenity.departureId} - ${amenity.arrivalId}"
+                            else -> ""
+                        }
+                        val rightValue = "Rp${CurrencyFormatHelper.convertToRupiah(amenity.priceNumeric.toString())}"
+                        returnData.add(
+                                FlightOrderDetailSimpleModel(
+                                        leftValue,
+                                        rightValue,
+                                        false,
+                                        false,
+                                        false,
+                                        false,
+                                        true
+                                )
+                        )
+                    }
+                }
+            }
+        }
+
+        return returnData
+    }
+
+    fun getTotalAmount(): String {
+        var totalAmount = ""
+        val orderDetailData = orderDetailData.value
+
+        if (orderDetailData != null && orderDetailData is Success) {
+            totalAmount = "Rp${CurrencyFormatHelper.convertToRupiah(orderDetailData.data.totalPriceNumeric.toString())}"
+        }
+
+        return totalAmount
     }
 
     private fun getAirlineLogo(journey: FlightOrderDetailJourneyModel): String? {
