@@ -14,6 +14,7 @@ class PushIntentHandler {
             if (tempIsHandled) {
                 isHandled = tempIsHandled
             }
+            break
         }
         return isHandled
     }

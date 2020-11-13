@@ -11,17 +11,22 @@ import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter.GratifPopupCallback
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import kotlinx.coroutines.Job
 import org.json.JSONObject
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+
+const val IS_GRATIF_DISABLED = "android_disable_gratif_cm"
 
 class GratificationDialogHandler(val gratificationPresenter: GratificationPresenter,
                                  val mapOfGratifJobs: ConcurrentHashMap<Int, Job>,
                                  val mapOfPendingInApp: ConcurrentHashMap<Int, PendingData>,
                                  val broadcastScreenNames: ArrayList<String>,
                                  val activityProvider: ActivityProvider,
+                                 val remoteConfigImpl: FirebaseRemoteConfigImpl?,
                                  val dialogIsShownMap: WeakHashMap<Activity, Boolean>? = null
 ) : InAppPopupContract {
 
@@ -51,24 +56,28 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
     }
 
     override fun handleInAppPopup(data: CMInApp, entityHashCode: Int, screenName: String) {
-        activityProvider.getActivity()?.get()?.let { currentActivity ->
+        if (isGratifDisabled()) {
+            cmInflateException(data)
+        } else {
+            activityProvider.getActivity()?.get()?.let { currentActivity ->
 
-            /*
+                /*
             * Check if any pending data is present or not
             * if present -> show the organic pop-up
             * else -> store it
             * */
 
-            if (broadcastScreenNames.contains(currentActivity.javaClass.name) && currentActivity.hashCode() == entityHashCode) {
-                val pendingData = mapOfPendingInApp[entityHashCode]
-                if (pendingData != null && pendingData.isBroadcastCompleted) {
-                    mapOfPendingInApp.remove(entityHashCode)
-                    handleShowOrganic(currentActivity, data, entityHashCode, screenName)
+                if (broadcastScreenNames.contains(currentActivity.javaClass.name) && currentActivity.hashCode() == entityHashCode) {
+                    val pendingData = mapOfPendingInApp[entityHashCode]
+                    if (pendingData != null && pendingData.isBroadcastCompleted) {
+                        mapOfPendingInApp.remove(entityHashCode)
+                        handleShowOrganic(currentActivity, data, entityHashCode, screenName)
+                    } else {
+                        mapOfPendingInApp[entityHashCode] = PendingData(false, data)
+                    }
                 } else {
-                    mapOfPendingInApp[entityHashCode] = PendingData(false, data)
+                    handleShowOrganic(currentActivity, data, entityHashCode, screenName)
                 }
-            } else {
-                handleShowOrganic(currentActivity, data, entityHashCode, screenName)
             }
         }
     }
@@ -116,5 +125,14 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
 
     private fun cmInflateException(data: CMInApp) {
         CMInAppManager.getInstance().onCMInAppInflateException(data)
+    }
+
+    fun isGratifDisabled(): Boolean {
+        try {
+            return remoteConfigImpl?.getBoolean(IS_GRATIF_DISABLED, false) ?: false
+        } catch (ex: Exception) {
+            Timber.e(ex)
+            return false
+        }
     }
 }

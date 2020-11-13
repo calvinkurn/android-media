@@ -12,6 +12,9 @@ const val GRATIFICATION_ID = "gratificationId"
 class GratifCmPushHandler(private val gratificationDialogHandler: GratificationDialogHandler) : PushIntentContract {
 
     override fun processPushIntent(activity: Activity, bundle: Bundle?): Boolean {
+        if (gratificationDialogHandler.isGratifDisabled()) {
+            return false
+        }
         val isIntentHandled = isPushIntentHandled(bundle)
         if (isIntentHandled) {
             gratificationDialogHandler.showPushDialog(activity, getGratificationId(bundle), activity.javaClass.name)
