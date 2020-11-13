@@ -24,10 +24,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
 import com.tokopedia.homenav.mainnav.domain.usecases.*
-import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.SeparatorViewModel
-import com.tokopedia.homenav.mainnav.view.viewmodel.TransactionListItemViewModel
+import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.usecase.coroutines.Fail
@@ -98,6 +95,7 @@ class MainNavViewModel @Inject constructor(
     )
 
     init {
+        setInitialState()
         getMainNavData()
     }
 
@@ -127,14 +125,22 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
-    fun deleteWidget(visitable: HomeNavVisitable, position: Int) {
+    fun deleteWidget(visitable: Visitable<*>, position: Int) {
         val newMainNavList = _mainNavListVisitable
         newMainNavList.removeAt(position)
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
+    fun deleteWidget(visitable: Visitable<*>) {
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.remove(visitable)
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+    }
+
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
+            removeInitialStateAccount()
+            removeInitialStateBuList()
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
             _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
         } catch (e: Exception) {
@@ -146,6 +152,51 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
     // ================================ Live Data Controller ======================================
     // ============================================================================================
+
+    private fun setInitialState() {
+        addWidgetList(listOf(
+                InitialShimmerAccountDataModel(),
+                InitialShimmerBuListDataModel(),
+                InitialShimmerTransactionDataModel(),
+                InitialShimmerMenuDataModel()
+        ))
+    }
+
+    private fun removeInitialStateAccount() {
+        launch{
+            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
+            mainNavigationDataModel?.dataList?.find { it is InitialShimmerAccountDataModel }?.let {
+                deleteWidget(it)
+            }
+        }
+    }
+
+    private fun removeInitialStateBuList() {
+        launch{
+            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
+            mainNavigationDataModel?.dataList?.find { it is InitialShimmerBuListDataModel }?.let {
+                deleteWidget(it)
+            }
+        }
+    }
+    private fun removeInitialStateTransaction() {
+        launch{
+            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
+            mainNavigationDataModel?.dataList?.find { it is InitialShimmerTransactionDataModel }?.let {
+                deleteWidget(it)
+            }
+        }
+    }
+
+    private fun removeInitialStateUserMenu() {
+        launch{
+            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
+            mainNavigationDataModel?.dataList?.find { it is InitialShimmerMenuDataModel }?.let {
+                deleteWidget(it)
+            }
+        }
+    }
+
 
     private fun getMainNavData() {
         launch {
@@ -179,6 +230,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getUserMenu() {
+        removeInitialStateUserMenu()
         addWidgetList(buildUserMenuList())
     }
 
@@ -200,6 +252,7 @@ class MainNavViewModel @Inject constructor(
                 val firstTransactionMenu = _mainNavListVisitable.find {
                     it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
                 }
+                removeInitialStateTransaction()
                 val indexOfFirstTransactionMenu = _mainNavListVisitable.indexOf(firstTransactionMenu)
                 addWidget(transactionListItemViewModel, indexOfFirstTransactionMenu)
             }

@@ -17,7 +17,7 @@ import java.net.URLEncoder
 import kotlin.coroutines.CoroutineContext
 
 class NavSearchbarController(val view: View,
-                             val applinkParam: String = "",
+                             val applink: String = "",
                              val searchbarClickCallback: ((hint: String)-> Unit)?,
                              val searchbarImpressionCallback: ((hint: String)-> Unit)?) : CoroutineScope {
     init {
@@ -51,7 +51,11 @@ class NavSearchbarController(val view: View,
     private fun setHintSingle(hint: HintData) {
         etSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         etSearch.setOnClickListener {
-            onClickHint(hint.keyword)
+            if (searchbarClickCallback == null) {
+                onClickHint()
+            } else {
+                searchbarClickCallback.invoke(hint.keyword)
+            }
         }
     }
 
@@ -91,33 +95,19 @@ class NavSearchbarController(val view: View,
                 })
                 etSearch.startAnimation(slideOutUp)
                 etSearch.setOnClickListener {
-                    onClickHint(keyword)
+                    if (searchbarClickCallback == null) {
+                        onClickHint()
+                    } else {
+                        searchbarClickCallback.invoke(keyword)
+                    }
                 }
                 delay(durationAutoTransition)
             }
         }
     }
 
-    private fun onClickHint(keyword: String) {
-        searchbarClickCallback?.invoke(keyword)
-        if (keyword.isEmpty()) {
-            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
-        } else {
-            RouteManager.route(
-                    context,
-                    ApplinkConstInternalDiscovery.AUTOCOMPLETE + applinkParam,
-                    applinkParam,
-                    safeEncodeUTF8(keyword))
-        }
-    }
-
-    private fun safeEncodeUTF8(value: String): String {
-        return try {
-            URLEncoder.encode(value, Charsets.UTF_8.toString())
-        }
-        catch (e: Throwable) {
-            value
-        }
+    private fun onClickHint() {
+        RouteManager.route(context, applink)
     }
 
     fun startHintAnimation() {
