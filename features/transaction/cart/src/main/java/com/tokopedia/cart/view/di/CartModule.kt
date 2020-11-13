@@ -154,9 +154,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named("FollowShopUseCase")
     fun provideFollowShopUseCase(@Named(FollowShopUseCase.MUTATION_NAME) mutation: String):
-            FollowShopUseCase = FollowShopUseCase(mutation, GraphqlUseCase(), IOSchedulers)
+            FollowShopUseCase = FollowShopUseCase(mutation, GraphqlUseCase(), DefaultSchedulers)
 
     @Provides
     @CartScope
