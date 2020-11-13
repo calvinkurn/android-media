@@ -69,7 +69,6 @@ open class PageLoadTimePerformanceCallback(
         if (preparePageDuration == 0L) {
             beginAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
             preparePageDuration = System.currentTimeMillis()
-            Log.d("SHOP_TEST_START", "startPreparePagePerformanceMonitoring")
         }
     }
 
@@ -79,7 +78,6 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagPrepareDuration, preparePageDuration)
             isPrepareDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncPreparePage$traceName",11)
-            Log.d("SHOP_TEST_STOP", "stopPreparePagePerformanceMonitoring $preparePageDuration")
         }
     }
 
@@ -87,7 +85,6 @@ open class PageLoadTimePerformanceCallback(
         if (requestNetworkDuration == 0L) {
             beginAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
             requestNetworkDuration = System.currentTimeMillis()
-            Log.d("SHOP_TEST_START", "startNetworkRequestPerformanceMonitoring")
         }
 
         /**
@@ -104,7 +101,6 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagNetworkRequestDuration, requestNetworkDuration)
             isNetworkDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncNetworkRequest$traceName",22)
-            Log.d("SHOP_TEST_STOP", "stopNetworkRequestPerformanceMonitoring $requestNetworkDuration")
         }
     }
 
@@ -112,7 +108,6 @@ open class PageLoadTimePerformanceCallback(
         if (renderDuration == 0L) {
             beginAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
             renderDuration = System.currentTimeMillis()
-            Log.d("SHOP_TEST_START", "startRenderPerformanceMonitoring")
         }
 
         /**
@@ -129,7 +124,6 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
-            Log.d("SHOP_TEST_STOP", "stopRenderPerformanceMonitoring : $renderDuration")
         }
     }
 
@@ -137,7 +131,6 @@ open class PageLoadTimePerformanceCallback(
         if (customMetric[tag] == null || customMetric[tag] == 0L) {
             customMetric[tag] = System.currentTimeMillis()
             isCustomMetricDone[tag] = false
-            Log.d("SHOP_TEST_START", "startCustomMetric $tag")
         }
     }
 
@@ -148,7 +141,6 @@ open class PageLoadTimePerformanceCallback(
             customMetric[tag] = duration
             isCustomMetricDone[tag] = true
             performanceMonitoring?.putMetric(tag, duration)
-            Log.d("SHOP_TEST_STOP", "stopCustomMetric: $tag : $duration")
         }
     }
 
