@@ -31,7 +31,6 @@ public class LoggerActivityLifecycleCallbacks implements Application.ActivityLif
         @NotNull
         @Override
         public Object execute() {
-            UserSession userSession = new UserSession(appContext);
             if (!userId.equals(userSession.getUserId())) {
                 userId = userSession.getUserId();
                 TimberWrapper.initConfig(appContext);
