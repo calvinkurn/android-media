@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_container"
-    android:layout_width="166dp"
+    android:layout_width="@dimen/recharge_custom_product_card_item_width"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -13,7 +13,6 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingRight="@dimen/spacing_lvl3"
             android:paddingEnd="8dp"
             >
 
@@ -96,7 +95,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/spacing_lvl2"
-
                     android:gravity="center_vertical"
                     android:paddingTop="@dimen/spacing_lvl1"
                     android:paddingBottom="@dimen/spacing_lvl1"

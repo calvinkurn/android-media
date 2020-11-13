@@ -15,4 +15,8 @@
     <dimen name="dual_banners_shimmering_height">320dp</dimen>
     <dimen name="product_card_title_min_height">54dp</dimen>
     <dimen name="card_image_margin">12dp</dimen>
+
+    <dimen name="recharge_custom_product_card_iv_margin">40dp</dimen>
+    <dimen name="recharge_custom_product_card_parallax_margin">-40dp</dimen>
+    <dimen name="recharge_custom_product_card_item_width">166dp</dimen>
 </resources>
