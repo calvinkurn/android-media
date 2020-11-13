@@ -199,11 +199,11 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             groupId = arguments?.getString(GROUP_ID)?.toInt()
             sharedViewModel.setGroupId(arguments?.getString(GROUP_ID)?.toInt() ?: 0)
         }
-        if (btnUnlimitedBudget.isChecked) {
+        if (btnUnlimitedBudget?.isChecked != false) {
             daily_budget?.visibility = View.GONE
         }
         radio_group.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked == btnUnlimitedBudget.id) {
+            if (isChecked == btnUnlimitedBudget?.id) {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendEditFormEvent(CLICK_RADIO_BUTTON_1, "")
                 daily_budget?.visibility = View.GONE
                 validation3 = true
@@ -307,7 +307,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
             dataMap[PRICE_BID] = getCurrentBid()
             dataMap[DAILY_BUDGET] = getCurrentDailyBudget()
             dataMap[GROUP_ID] = groupId
-            dataMap[BUDGET_LIMITED] = btnUnlimitedBudget.isChecked
+            dataMap[BUDGET_LIMITED] = btnUnlimitedBudget?.isChecked
             dataMap[NAME_EDIT] = getCurrentTitle() != groupName
         } catch (e: NumberFormatException) {
         }
@@ -315,7 +315,7 @@ class EditGroupAdFragment : BaseDaggerFragment() {
     }
 
     private fun checkDataChanged(): Boolean {
-        return initialBudgetChoice != btnUnlimitedBudget.isChecked || initialDailyBudget != getCurrentDailyBudget() ||
+        return initialBudgetChoice != btnUnlimitedBudget?.isChecked || initialDailyBudget != getCurrentDailyBudget() ||
                 initialPriceBid != getCurrentBid() || groupName != getCurrentTitle()
     }
 

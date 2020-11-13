@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -244,6 +245,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
+        stopPerformanceMonitor()
+    }
+
+    private fun invalidateMonitoringPlt() {
+        (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -311,6 +317,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         super.onPause()
         shopPageHomeTracking.sendAllTrackingQueue()
         shopHomeAdapter.pauseSliderBannerAutoScroll()
+        invalidateMonitoringPlt()
     }
 
     override fun onDestroyView() {
@@ -367,12 +374,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
-                    stopMonitoringPltRenderPage()
                     viewModel?.getMerchantVoucherList(shopId, NUM_VOUCHER_DISPLAY)
                 }
                 is Fail -> {
                     onErrorGetShopHomeLayoutData(it.throwable)
-                    stopPerformanceMonitor()
                     val throwable = it.throwable
                     ShopUtil.logTimberWarning(
                             "SHOP_PAGE_HOME_TAB_WIDGET_ERROR",
@@ -380,9 +385,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                                     "error_message='${ErrorHandler.getErrorMessage(context, throwable)}'" +
                                     ";error_trace='${Log.getStackTraceString(throwable)}'"
                     )
-                    stopMonitoringPltRenderPage()
                 }
             }
+            getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    stopMonitoringPltRenderPage()
+                    getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                }
+            })
         })
 
         viewModel?.initialProductListData?.observe(viewLifecycleOwner, Observer {
@@ -394,7 +404,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     productListName = it.data.listShopProductUiModel.joinToString(","){ product -> product.name.orEmpty() }
                 }
             }
-            stopPerformanceMonitor()
         })
 
         viewModel?.newProductListData?.observe(viewLifecycleOwner, Observer {

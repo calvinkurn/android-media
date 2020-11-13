@@ -49,7 +49,7 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <View
-        android:background="@color/Neutral_N700"
+        android:background="@color/Unify_N700"
         android:alpha="0.06"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
