@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
@@ -24,6 +23,7 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListAct
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
+import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity
 import com.tokopedia.flight.orderdetail.presentation.bottomsheet.FlightOrderDetailPaymentDetailBottomSheet
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailHeaderStatusView
@@ -39,7 +39,6 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
 import java.util.*
 import javax.inject.Inject
@@ -50,9 +49,6 @@ import javax.inject.Inject
 class FlightOrderDetailFragment : BaseDaggerFragment(),
         FlightOrderDetailJourneyView.Listener,
         FlightOrderDetailHeaderStatusView.Listener {
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -72,26 +68,19 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (userSession.isLoggedIn) {
-            context?.let {
-                remoteConfig = FirebaseRemoteConfigImpl(it)
-            }
-
-            isCancellation = arguments?.getBoolean(EXTRA_IS_CANCELLATION) ?: false
-            isRequestCancel = arguments?.getBoolean(EXTRA_REQUEST_CANCEL) ?: false
-
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
-            flightOrderDetailViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
-            flightOrderDetailViewModel.fetchOrderDetailData()
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
-                flightOrderDetailViewModel.fetchCrossSellData()
-        } else {
-            context?.let {
-                RouteManager.route(it, ApplinkConst.LOGIN)
-                activity?.finish()
-            }
+        context?.let {
+            remoteConfig = FirebaseRemoteConfigImpl(it)
         }
+
+        isCancellation = arguments?.getBoolean(EXTRA_IS_CANCELLATION) ?: false
+        isRequestCancel = arguments?.getBoolean(EXTRA_REQUEST_CANCEL) ?: false
+
+        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        flightOrderDetailViewModel = viewModelProvider.get(FlightOrderDetailViewModel::class.java)
+        flightOrderDetailViewModel.orderId = arguments?.getString(EXTRA_INVOICE_ID) ?: ""
+        flightOrderDetailViewModel.fetchOrderDetailData()
+        if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
+            flightOrderDetailViewModel.fetchCrossSellData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -105,10 +94,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> {
                     if (!isOpenTrackSent) {
-                        flightOrderDetailViewModel.trackOpenOrderDetail(
-                                userSession.userId,
-                                it.data.statusString
-                        )
+                        flightOrderDetailViewModel.trackOpenOrderDetail(it.data.statusString)
                         isOpenTrackSent = true
                     }
                     renderView(it.data)
@@ -172,7 +158,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     override fun onSendETicketClicked() {
-        flightOrderDetailViewModel.trackSendETicketClicked(userSession.userId)
+        flightOrderDetailViewModel.trackSendETicketClicked()
         val bottomSheet = FlightOrderResendEmailBottomSheet.getInstance(
                 flightOrderDetailViewModel.getUserEmail(),
                 flightOrderDetailViewModel.orderId
@@ -286,12 +272,15 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 }
         flightOrderDetailCheckIn.listener = object : FlightOrderDetailButtonsView.Listener {
             override fun onTopButtonClicked() {
-                flightOrderDetailViewModel.trackClickWebCheckIn(userSession.userId)
-//                TODO("Not yet implemented")
+                flightOrderDetailViewModel.trackClickWebCheckIn()
+                context?.let {
+                    startActivity(FlightOrderDetailWebCheckInActivity
+                            .getIntent(it, flightOrderDetailViewModel.orderId))
+                }
             }
 
             override fun onBottomButtonClicked() {
-                flightOrderDetailViewModel.trackClickCancel(userSession.userId)
+                flightOrderDetailViewModel.trackClickCancel()
                 flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
             }
 

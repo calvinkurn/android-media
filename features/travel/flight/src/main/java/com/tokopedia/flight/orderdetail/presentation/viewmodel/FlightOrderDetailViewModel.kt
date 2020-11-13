@@ -220,39 +220,39 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         return totalAmount
     }
 
-    fun trackOpenOrderDetail(userId: String, statusString: String) {
+    fun trackOpenOrderDetail(statusString: String) {
         flightAnalytics.openOrderDetail(
                 "$statusString - $orderId",
-                userId
+                userSession.userId
         )
     }
 
-    fun trackSendETicketClicked(userId: String) {
+    fun trackSendETicketClicked() {
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
             flightAnalytics.eventSendETicketOrderDetail(
                     "${orderDetailData.data.statusString} - $orderId",
-                    userId
+                    userSession.userId
             )
         }
     }
 
-    fun trackClickWebCheckIn(userId: String) {
+    fun trackClickWebCheckIn() {
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
             flightAnalytics.eventWebCheckInOrderDetail(
                     "${orderDetailData.data.statusString} - $orderId",
-                    userId
+                    userSession.userId
             )
         }
     }
 
-    fun trackClickCancel(userId: String) {
+    fun trackClickCancel() {
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
             flightAnalytics.eventWebCheckInOrderDetail(
                     "${orderDetailData.data.statusString} - $orderId",
-                    userId
+                    userSession.userId
             )
         }
     }

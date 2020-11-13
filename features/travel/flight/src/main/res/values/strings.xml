@@ -385,6 +385,7 @@ di tempatmu.</string>
 
     <string name="flight_order_detail_check_in_title_label">Tentang pesananmu</string>
     <string name="flight_order_detail_check_in_label">Web Check-in</string>
+    <string name="flight_order_detail_web_check_in_button">Check-in</string>
     <string name="flight_order_detail_check_in_description">Check-in lebih awal lewat website.</string>
 
     <string name="flight_label_cancel_ticket">Batalkan Tiket</string>
@@ -395,4 +396,9 @@ di tempatmu.</string>
 
     <string name="flight_order_detail_payment_detail_title_label">Detail pembayaran</string>
     <string name="flight_order_detail_payment_detail_total_label">Total Bayar</string>
+
+    <string name="flight_order_detaiil_web_checkin_not_available">Tidak Tersedia</string>
+    <string name="flight_order_detaiil_web_checkin_not_open">Belum Dibuka</string>
+    <string name="flight_order_detaiil_web_checkin_closed">Sudah Lewat</string>
+    <string name="flight_order_detaiil_web_checkin_available">Bisa Check-in</string>
 </resources>
