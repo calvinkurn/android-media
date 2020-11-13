@@ -114,15 +114,21 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
     }
 
     private fun renderDefaultData(element: UmrahSearchParameterEntity){
-        tvLocation.text  = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].displayText
-        departureCityId = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].query
+        if(element.umrahSearchParameter.depatureCities.options.isNotEmpty()) {
+            tvLocation.text = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].displayText
+            departureCityId = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].query
+        }
 
-        tvPeriod.text = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].displayText
-        departurePeriod = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].query
+        if(element.umrahSearchParameter.departurePeriods.options.isNotEmpty()) {
+            tvPeriod.text = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].displayText
+            departurePeriod = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].query
+        }
 
-        tvPrice.text = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].rangeDisplayText
-        priceMin = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].minimum
-        priceMax = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].maximum
+        if(element.umrahSearchParameter.priceRangeOptions.options.isNotEmpty()) {
+            tvPrice.text = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].rangeDisplayText
+            priceMin = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].minimum
+            priceMax = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].maximum
+        }
     }
 
     override fun getDatafromBottomSheet(data: UmrohHomepageBottomSheetwithType) {
