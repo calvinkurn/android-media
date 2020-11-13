@@ -954,7 +954,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff) {
+    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
         if (shipmentCartItemModel == null) return;
 
@@ -962,7 +962,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isTradeInDropOff) {
             shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
         } else {
-            if (courierItemData.getLogPromoCode() != null) {
+            if (!isForceReloadRates && courierItemData.getLogPromoCode() != null) {
                 String cartString = shipmentCartItemModel.getCartString();
 
                 ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();

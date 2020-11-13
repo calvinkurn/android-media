@@ -92,7 +92,7 @@ public interface ShipmentContract {
 
         void renderChangeAddressFailed();
 
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates);
 
         void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff);
 
