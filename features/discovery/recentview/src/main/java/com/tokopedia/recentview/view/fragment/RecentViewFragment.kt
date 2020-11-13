@@ -21,10 +21,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.recentview.R
 import com.tokopedia.recentview.analytics.RecentViewTracking
 import com.tokopedia.recentview.di.DaggerRecentViewComponent
+import com.tokopedia.recentview.ext.convertRupiahToInt
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl
@@ -197,7 +197,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
                 DataLayer.mapOf(
                         "name", element.name,
                         "id", element.productId,
-                        "price", CurrencyFormatHelper.convertRupiahToInt(element.price).toString(),
+                        "price", element.price.convertRupiahToInt().toString(),
                         "brand", "none / other",
                         "category", "",
                         "position", element.positionForRecentViewTracking.toString()
@@ -216,7 +216,7 @@ class RecentViewFragment : BaseDaggerFragment(), RecentView.View {
             objects.add(DataLayer.mapOf(
                     "name", model.name,
                     "id", model.productId,
-                    "price", CurrencyFormatHelper.convertRupiahToInt(model.price).toString(),
+                    "price", model.price.convertRupiahToInt().toString(),
                     "list", "/recent",
                     "brand", DEFAULT_VALUE_NONE_OTHER,
                     "category", "",
