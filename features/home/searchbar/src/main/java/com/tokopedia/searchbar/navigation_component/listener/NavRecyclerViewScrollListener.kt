@@ -1,5 +1,6 @@
 package com.tokopedia.searchbar.navigation_component.listener
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -11,11 +12,11 @@ class NavRecyclerViewScrollListener(
         val navScrollCallback: NavScrollCallback? = null
 ): RecyclerView.OnScrollListener() {
     private val statusBarUtil = navToolbar.statusBarUtil
+
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
         if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
-
         calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
     }
 
@@ -30,11 +31,17 @@ class NavRecyclerViewScrollListener(
         }
         if (offsetAlpha >= 150) {
             navToolbar.switchToLightToolbar()
-            statusBarUtil?.requestStatusBarLight()
+            darkModeCondition(
+                    lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                    nightCondition = { statusBarUtil?.requestStatusBarDark() }
+            )
             navScrollCallback?.onSwitchToLightToolbar()
         } else {
             navToolbar.switchToDarkToolbar()
-            statusBarUtil?.requestStatusBarDark()
+            darkModeCondition(
+                    lightCondition = { statusBarUtil?.requestStatusBarDark() },
+                    nightCondition = { statusBarUtil?.requestStatusBarLight() }
+            )
             navScrollCallback?.onSwitchToDarkToolbar()
         }
         if (offsetAlpha >= 255) {
@@ -44,6 +51,12 @@ class NavRecyclerViewScrollListener(
             navToolbar.setBackgroundAlpha(offsetAlpha)
             navScrollCallback?.onAlphaChanged(offsetAlpha)
         }
+    }
+
+    private fun darkModeCondition(lightCondition: () -> Unit = {}, nightCondition:() -> Unit = {}) {
+        val isNightMode = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
+        if (!isNightMode) lightCondition.invoke()
+        if (isNightMode) nightCondition.invoke()
     }
 
     interface NavScrollCallback {

@@ -5,7 +5,7 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -112,14 +112,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         assertEquals(expectedShopInfo, actualShopInfo)
     }
 
-    private fun verifyShopNotesEquals(expectedShopNotes: Success<List<ShopNoteViewModel>>) {
-        val actualShopNotes = (viewModel.shopNotesResp.value as Success<List<ShopNoteViewModel>>)
+    private fun verifyShopNotesEquals(expectedShopNotes: Success<List<ShopNoteUiModel>>) {
+        val actualShopNotes = (viewModel.shopNotesResp.value as Success<List<ShopNoteUiModel>>)
         assertShopNoteEquals(expectedShopNotes, actualShopNotes)
     }
 
     private fun assertShopNoteEquals(
-            expectedShopNotes: Success<List<ShopNoteViewModel>>,
-            actualShopNotes: Success<List<ShopNoteViewModel>>
+            expectedShopNotes: Success<List<ShopNoteUiModel>>,
+            actualShopNotes: Success<List<ShopNoteUiModel>>
     ) {
         expectedShopNotes.data.forEachIndexed { index, expectedShopNote ->
             val actualShopNote = actualShopNotes.data[index]
@@ -155,9 +155,9 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
         )
     }
 
-    private fun List<ShopNoteModel>.toViewModel(): List<ShopNoteViewModel> {
+    private fun List<ShopNoteModel>.toViewModel(): List<ShopNoteUiModel> {
         return map {
-            ShopNoteViewModel().apply {
+            ShopNoteUiModel().apply {
                 shopNoteId = it.id?.toLongOrNull() ?: 0
                 title = it.title
                 position = it.position.toLong()

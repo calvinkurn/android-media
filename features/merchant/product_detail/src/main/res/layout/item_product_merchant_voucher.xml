@@ -33,7 +33,7 @@
         app:layout_constraintStart_toEndOf="@+id/ic_merchant_voucher"
         app:layout_constraintTop_toBottomOf="@+id/merchant_voucher_title"
         app:typographyType="small"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         tools:text="min. pembelian 100rb" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

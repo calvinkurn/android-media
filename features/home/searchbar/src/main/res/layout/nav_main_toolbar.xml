@@ -2,10 +2,9 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/toolbar"
+    android:id="@+id/navToolbar"
     android:layout_width="match_parent"
-    android:layout_height="?actionBarSize"
-    tools:layout_height="100dp"
+    android:layout_height="wrap_content"
     app:contentInsetStart="0dp"
     app:contentInsetEnd="0dp"
     app:contentInsetLeft="0dp"
@@ -31,14 +30,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
-        <ImageView
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/nav_icon_back"
             android:layout_marginStart="4dp"
             android:visibility="gone"
-            tools:visibility="gone"
+            tools:visibility="visible"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
             app:layout_constraintTop_toTopOf="@id/layout_search"
             app:layout_constraintBottom_toBottomOf="@id/layout_search"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +63,7 @@
 
         <LinearLayout
             android:id="@+id/layout_search"
-            tools:visibility="gone"
+            tools:visibility="visible"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/rv_icon_list"
             app:layout_constraintStart_toEndOf="@id/nav_icon_back"
@@ -77,13 +76,15 @@
             android:paddingLeft="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl2">
 
-            <ImageView
+            <com.tokopedia.iconunify.IconUnify
                 android:id="@+id/search_magnify_icon"
+                app:icon_name="SEARCH"
+                app:icon_color_light_enable="@color/Neutral_N700_68"
+                app:icon_color_night_enable="@color/Neutral_N700_68"
                 android:layout_marginStart="4dp"
-                app:srcCompat="@drawable/ic_search_bar"
                 android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="@dimen/dp_14"
+                android:layout_height="@dimen/dp_14"/>
 
             <TextView
                 android:id="@+id/et_search"
@@ -98,7 +99,7 @@
                 android:enabled="true"
                 android:textSize="@dimen/sp_16"
                 android:maxLines="1"
-                android:textColorHint="@color/Unify_N700_96"
+                android:textColorHint="@color/Neutral_N700_68"
                 android:background="@null"
                 android:layout_weight="1"/>
 

@@ -215,7 +215,6 @@ include "features:user:profilecommon"
 include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
-include "features:user:seamless_login"
 include "features:user:additional_check"
 
 include "features:user:stickylogin"
@@ -224,7 +223,8 @@ include "features:user:orderhistory"
 include "features:user:updateinactivephone"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
-include "features:user:seamless_login"
+include "features:user:home_account"
+include "features:user:seamless_login_common"
 
 include "features:user:vote"
 

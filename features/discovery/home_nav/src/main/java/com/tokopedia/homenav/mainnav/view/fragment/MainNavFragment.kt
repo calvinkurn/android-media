@@ -17,11 +17,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
+import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
@@ -51,7 +53,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
     lateinit var recyclerView: RecyclerView
-    lateinit var layoutManager: LinearLayoutManager
+    lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
     private lateinit var userSession: UserSessionInterface
@@ -136,6 +138,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onRefresh() {
     }
 
+    override fun onProfileSectionClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
+        startActivity(intent)
+    }
+
     override fun onProfileLoginClicked() {
         startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_LOGIN)
     }
@@ -197,7 +204,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     private fun initAdapter() {
         val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
         adapter = MainNavListAdapter(mainNavFactory)
-        layoutManager = LinearLayoutManager(activity)
+        layoutManager = NpaLayoutManager(activity)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }

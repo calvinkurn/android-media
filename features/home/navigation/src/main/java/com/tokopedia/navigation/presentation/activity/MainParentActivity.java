@@ -45,6 +45,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback;
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface;
@@ -56,14 +57,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.cart.view.CartFragment;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.dynamicfeatures.DFInstaller;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
+import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
+import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;
@@ -81,6 +85,7 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -88,7 +93,9 @@ import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -97,6 +104,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -158,17 +166,17 @@ public class MainParentActivity extends BaseActivity implements
     private static final String MAIN_PARENT_PERFORMANCE_MONITORING_KEY = "mp_slow_rendering_perf";
 
     private static final String ROLLANCE_EXP_NAME = "Navigation Revamp";
-    private static final String ROLLANCE_VARIANT_OLD = "existing navigation";
-    private static final String ROLLANCE_VARIANT_REVAMP = "navigation revamp";
+    private static final String ROLLANCE_VARIANT_OLD = "Existing Navigation";
+    private static final String ROLLANCE_VARIANT_REVAMP = "Navigation Revamp";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
     @Inject Lazy<UserSessionInterface> userSession;
     @Inject Lazy<MainParentPresenter> presenter;
     @Inject Lazy<GlobalNavAnalytics> globalNavAnalytics;
-    @Inject Lazy<ApplicationUpdate> appUpdate;
     @Inject Lazy<RemoteConfig> remoteConfig;
 
+    private ApplicationUpdate appUpdate;
     private LottieBottomNavbar bottomNavigation;
     private ShowCaseDialog showCaseDialog;
     List<Fragment> fragmentList;
@@ -226,6 +234,7 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
+        appUpdate = new FirebaseRemoteAppUpdate(this);
         createView(savedInstanceState);
         WeaveInterface executeEventsWeave = new WeaveInterface() {
             @NotNull
@@ -258,7 +267,11 @@ public class MainParentActivity extends BaseActivity implements
 
     @NotNull
     private boolean sendOpenHomeEvent() {
-        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        UserSessionInterface userSession = new UserSession(this);
+        Map<String, Object> value = DataLayer.mapOf(
+                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
+        );
+        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
         return true;
     }
 
@@ -656,13 +669,13 @@ public class MainParentActivity extends BaseActivity implements
 
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
-        if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getOfficialStoreFragment(getIntent().getExtras()));
-            fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
-            fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
-        }
+
+        fragmentList.add(HomeInternalRouter.getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST, false)));
+        fragmentList.add(FeedPlusContainerFragment.newInstance(getIntent().getExtras()));
+        fragmentList.add(OfficialHomeContainerFragment.newInstance(getIntent().getExtras()));
+        fragmentList.add(CartFragment.newInstance(getIntent().getExtras(), MainParentActivity.class.getSimpleName()));
+        fragmentList.add(AccountHomeFragment.newInstance(getIntent().getExtras()));
+
         return fragmentList;
     }
 
@@ -830,7 +843,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void checkAppUpdateRemoteConfig() {
-        appUpdate.get().checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
             @Override
             public void onNeedUpdate(DetailUpdate detail) {
                 if (!isFinishing()) {
@@ -1168,7 +1181,7 @@ public class MainParentActivity extends BaseActivity implements
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
-        if (!rollenceNavType.equals(ROLLANCE_VARIANT_REVAMP)) {
+        if (!rollenceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP)) {
             menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
             if (userSession.get().isLoggedIn()) {
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));

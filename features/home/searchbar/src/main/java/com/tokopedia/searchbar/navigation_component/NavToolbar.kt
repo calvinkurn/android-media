@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -29,13 +30,16 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.layout_search
-import kotlinx.android.synthetic.main.nav_main_toolbar.view.toolbar
+import kotlinx.android.synthetic.main.nav_main_toolbar.view.navToolbar
 import java.lang.ref.WeakReference
 
-class NavToolbar: Toolbar, LifecycleObserver {
+class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     companion object {
         object Theme {
             const val TOOLBAR_DARK_TYPE = 0
@@ -60,6 +64,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private set
 
     //attribution variable
+    private val DEFAULT_PAGE_NAME = "Unknown page"
     private var backType = BACK_TYPE_NONE
     private var initialTheme = TOOLBAR_DARK_TYPE
     private var toolbarFillColor = getLightIconColor()
@@ -70,9 +75,11 @@ class NavToolbar: Toolbar, LifecycleObserver {
     private var toolbarDefaultHint = ""
     private var toolbarCustomReference: Int? = null
     private var toolbarCustomViewContent: View? = null
+    private var toolbarPageName: String = DEFAULT_PAGE_NAME
 
     //helper variable
     private var shadowApplied: Boolean = false
+    private var userSessionInterface: UserSessionInterface? = null
 
     //controller variable
     internal var statusBarUtil: StatusBarUtil? = null
@@ -96,13 +103,15 @@ class NavToolbar: Toolbar, LifecycleObserver {
                 toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
                 toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
                 toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
+                toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName)?:DEFAULT_PAGE_NAME
             } catch (e: IllegalArgumentException) {
 
             } finally {
                 ta.recycle()
             }
         }
-        toolbar?.background = ColorDrawable(toolbarFillColor)
+        navToolbar?.background = ColorDrawable(toolbarFillColor)
+        userSessionInterface = UserSession(context)
         configureThemeBasedOnAttribute()
         configureBackButtonBasedOnAttribute()
         configureShadowBasedOnAttribute()
@@ -115,16 +124,15 @@ class NavToolbar: Toolbar, LifecycleObserver {
      * IconList.kt
      */
     fun setIcon(iconBuilder: IconBuilder) {
-        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build())
+        navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), this)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        if (toolbarThemeType == TOOLBAR_DARK_TYPE) {
-            navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
-        } else {
-            navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
-        }
+        toolbarThemeCondition(
+                lightCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT) },
+                darkCondition = { navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK) }
+        )
     }
 
     /**
@@ -141,9 +149,9 @@ class NavToolbar: Toolbar, LifecycleObserver {
     fun hideShadow() {
         if(shadowApplied){
             shadowApplied = false
-            val pB = 0
-            toolbar?.background = ColorDrawable(getLightIconColor())
-            toolbar?.updatePadding(bottom = pB)
+            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+            navToolbar?.background = ColorDrawable(getLightIconColor())
+            navToolbar?.updatePadding(bottom = pB)
         }
     }
 
@@ -154,8 +162,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if(!shadowApplied && toolbarAlwaysShowShadow){
             shadowApplied = true
             val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
-            toolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-            toolbar?.updatePadding(bottom = pB)
+            navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+            navToolbar?.updatePadding(bottom = pB)
         }
     }
 
@@ -168,7 +176,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if (toolbarThemeType != TOOLBAR_DARK_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_DARK)
             toolbarThemeType = TOOLBAR_DARK_TYPE
-            setBackButtonColor(getLightIconColor())
+            setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
     }
@@ -182,8 +190,8 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            setBackButtonColor(getDarkIconColor())
             toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+            setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
     }
@@ -244,22 +252,12 @@ class NavToolbar: Toolbar, LifecycleObserver {
         newBackType?.let { backType = newBackType }
 
         if (backType != BACK_TYPE_NONE) {
-            when (backType) {
-                BACK_TYPE_CLOSE -> {
-                    backDrawable = ContextCompat.getDrawable(context, R.drawable.ic_home_nav_close_dark)
-                }
-                BACK_TYPE_BACK -> {
-                    backDrawable = ContextCompat.getDrawable(context, R.drawable.ic_home_nav_back_dark)
-                }
-            }
-            backDrawable?.let {
-                setBackButtonColorBasedOnTheme()
-                nav_icon_back.visibility = VISIBLE
-                nav_icon_back.tag = backType
-                if (context is Activity) {
-                    nav_icon_back.setOnClickListener {
-                        (context as? Activity)?.onBackPressed()
-                    }
+            setBackButtonColorBasedOnTheme()
+            nav_icon_back.visibility = VISIBLE
+            nav_icon_back.tag = backType
+            if (context is Activity) {
+                nav_icon_back.setOnClickListener {
+                    (context as? Activity)?.onBackPressed()
                 }
             }
         } else {
@@ -281,8 +279,12 @@ class NavToolbar: Toolbar, LifecycleObserver {
         toolbarCustomReference = null
     }
 
+    fun setToolbarPageName(pageName: String) {
+        toolbarPageName = pageName
+    }
+
     internal fun setBackgroundAlpha(alpha: Float) {
-        toolbar?.let {
+        navToolbar?.let {
             val drawable = it.background
             drawable.alpha = alpha.toInt()
             it.background = drawable
@@ -294,7 +296,7 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             pT = ViewHelper.getStatusBarHeight(context)
         }
-        toolbar?.updatePadding(top = pT)
+        navToolbar?.updatePadding(top = pT)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -375,15 +377,19 @@ class NavToolbar: Toolbar, LifecycleObserver {
     }
 
     private fun setBackButtonColorBasedOnTheme() {
-        backDrawable?.let {
-            val unwrappedDrawable: Drawable = it
-            val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
-            if (toolbarThemeType == TOOLBAR_DARK_TYPE) {
-                DrawableCompat.setTint(wrappedDrawable, getLightIconColor())
-            } else {
-                DrawableCompat.setTint(wrappedDrawable, getDarkIconColor())
+        when (backType) {
+            BACK_TYPE_CLOSE -> {
+                toolbarThemeCondition(
+                        lightCondition = { nav_icon_back.setImage(newIconId = IconUnify.CLOSE, newLightEnable = getDarkIconColor()) },
+                        darkCondition = { nav_icon_back.setImage(newIconId = IconUnify.CLOSE, newLightEnable = getLightIconColor()) }
+                )
             }
-            nav_icon_back.setImageDrawable(it)
+            BACK_TYPE_BACK -> {
+                toolbarThemeCondition(
+                        lightCondition = { nav_icon_back.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getDarkIconColor()) },
+                        darkCondition = { nav_icon_back.setImage(newIconId = IconUnify.ARROW_BACK, newLightEnable = getLightIconColor()) }
+                )
+            }
         }
     }
 
@@ -407,19 +413,15 @@ class NavToolbar: Toolbar, LifecycleObserver {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Neutral_N700)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Unify_N700)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, R.color.white)
+    private fun getLightIconColor() = ContextCompat.getColor(context, R.color.Unify_N0)
 
     private fun setTitleTextColorBasedOnTheme() {
-        when(toolbarThemeType) {
-            TOOLBAR_DARK_TYPE -> {
-                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N0))
-            }
-            TOOLBAR_LIGHT_TYPE -> {
-                toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
-            }
-        }
+        toolbarThemeCondition(
+                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96)) },
+                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N0)) }
+        )
     }
 
     private fun hideToolbarContent(hideTitle: Boolean = true, hideSearchbar: Boolean = true, hideCustomContent: Boolean = true) {
@@ -433,4 +435,15 @@ class NavToolbar: Toolbar, LifecycleObserver {
         if (showSearchbar) layout_search.visibility = View.VISIBLE
         if (showCustomContent) layout_custom_view.visibility = View.VISIBLE
     }
+
+    private fun toolbarThemeCondition(lightCondition: () -> Unit = {}, darkCondition: () -> Unit = {}) {
+        if (toolbarThemeType == TOOLBAR_LIGHT_TYPE) lightCondition.invoke()
+        if (toolbarThemeType == TOOLBAR_DARK_TYPE) darkCondition.invoke()
+    }
+
+    override fun getUserId(): String = userSessionInterface?.userId?:""
+
+    override fun isLoggedIn(): Boolean = userSessionInterface?.isLoggedIn?:false
+
+    override fun getPageName(): String = toolbarPageName
 }

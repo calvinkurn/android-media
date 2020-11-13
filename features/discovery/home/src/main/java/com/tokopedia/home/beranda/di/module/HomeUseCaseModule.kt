@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
@@ -42,6 +43,7 @@ import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
@@ -142,6 +144,29 @@ class HomeUseCaseModule {
             "                text\n" +
             "                backgroundColor\n" +
             "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}"
+
+    val tokopointsListQuery: String = "query{\n" +
+            "    tokopointsDrawerList{\n" +
+            "        offFlag\n" +
+            "        drawerList{" +
+            "           iconImageURL\n" +
+            "           redirectURL\n" +
+            "           redirectAppLink\n" +
+            "           sectionContent{\n" +
+            "               type\n" +
+            "               textAttributes{\n" +
+            "                    text\n" +
+            "                 color\n" +
+            "                 isBold\n" +
+            "               }\n" +
+            "               tagAttributes{\n" +
+            "                   text\n" +
+            "                   backgroundColor\n" +
+            "               }\n" +
+            "           }\n" +
             "        }\n" +
             "    }\n" +
             "}"
@@ -450,6 +475,14 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
+    fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(tokopointsListQuery)
+        return GetHomeTokopointsListDataUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
     fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
         return GetPlayLiveDynamicUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
@@ -557,7 +590,7 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
-                          playWidgetReminderUseCase: PlayWidgetReminderUseCase,
+                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
         return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
     }
