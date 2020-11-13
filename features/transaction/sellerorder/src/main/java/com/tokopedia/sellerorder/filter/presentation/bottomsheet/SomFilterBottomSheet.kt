@@ -3,12 +3,12 @@ package com.tokopedia.sellerorder.filter.presentation.bottomsheet
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -48,7 +48,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomSheetUnify(),
+class SomFilterBottomSheet : BottomSheetUnify(),
         SomFilterListener, SomFilterDateBottomSheet.CalenderListener,
         HasComponent<SomFilterComponent> {
 
@@ -71,6 +71,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     private var somFilterUiModelListCopy = listOf<SomFilterUiModel>()
     private var statusBarColorHelper: StatusBarColorUtil? = null
 
+    private var fm: FragmentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,6 +84,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somFilterUiModelListCopy = somFilterUiModelList.copyListParcelable()
         val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
         statusList = statusListFilter?.copyInt() ?: listOf()
+        somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
         somListOrderParam?.statusList = statusListFilter ?: listOf()
         somFilterViewModel.setSomFilterUiModel(somFilterUiModelList)
         somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
@@ -105,7 +107,6 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        undoStatusBarColorOverlay()
         super.onDismiss(dialog)
         if(!isApplyFilter) {
             val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate)
@@ -117,6 +118,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         val view = inflater.inflate(R.layout.bottomsheet_som_filter_list, container, false)
         rvSomFilter = view.findViewById(R.id.rvSomFilter)
         btnShowOrder = view.findViewById(R.id.btnShowOrder)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDialogStyle)
         setChild(view)
         isFullpage = true
         isDragable = true
@@ -126,6 +128,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         isHideable = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
     }
+
 
     private fun setStatusBarColorOverlay() {
         statusBarColorHelper = StatusBarColorUtil(requireActivity())
@@ -223,14 +226,15 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     }
 
     private fun adjustBottomSheetPadding() {
-        bottomSheetWrapper.setPadding(0, bottomSheetWrapper.paddingTop, 0, bottomSheetWrapper.paddingBottom)
-        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(), bottomSheetHeader.top,
+        bottomSheetWrapper.setPadding(0, 16.toPx(), 0, bottomSheetWrapper.paddingBottom)
+        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(), 0,
                 16.toPx(), 16.toPx())
     }
 
-    fun show() {
+    fun show(fm: FragmentManager?) {
+        this.fm = fm
         isApplyFilter = false
-        mActivity?.supportFragmentManager?.let {
+        fm?.let {
             show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
         }
     }
@@ -269,7 +273,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
             somListOrderParam?.let {
                 somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate, somFilterViewModel.isRequestCancelFilterApplied())
             }
-            dismissAllowingStateLoss()
+            dismiss()
         }
     }
 
@@ -385,18 +389,16 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val KEY_SOM_LIST_GET_ORDER_PARAM = "key_som_list_get_order_param"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
         const val KEY_IS_REQUEST_CANCEL_FILTER_APPLIED = "key_is_request_cancel_filter_applied"
-        const val SIZE_ACTION_RESET = 14f
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
         fun createInstance(orderStatus: String,
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
-                           mActivity: FragmentActivity?,
                            filterDate: String,
                            isRequestCancelFilterApplied: Boolean
         ): SomFilterBottomSheet {
-            val fragment = SomFilterBottomSheet(mActivity)
+            val fragment = SomFilterBottomSheet()
             val args = Bundle()
             args.putString(KEY_ORDER_STATUS, orderStatus)
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))

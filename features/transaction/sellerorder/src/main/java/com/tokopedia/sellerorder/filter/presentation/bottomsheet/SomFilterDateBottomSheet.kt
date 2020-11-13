@@ -59,7 +59,7 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         setTitle(TITLE_FILTER_DATE)
         clearContentPadding = true
         isFullpage = true
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDateDialogStyle)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.SomFilterDialogStyle)
         setChild(child)
     }
 

@@ -118,19 +118,6 @@ object Utils {
         return Calendar.getInstance(getLocale()).timeInMillis.plus(TimeUnit.DAYS.toMillis(daysNext))
     }
 
-    fun getNowDaysTimestamp(): Date  {
-        return Calendar.getInstance(getLocale()).time
-    }
-
-    fun List<SomFilterUiModel>.copy(): List<SomFilterUiModel> {
-        return this.map { SomFilterUiModel(nameFilter = it.nameFilter,
-                                            canSelectMany = it.canSelectMany,
-                                            isDividerVisible = it.isDividerVisible,
-                                            somFilterData = it.somFilterData.onEach { somFilter -> somFilter.copy() }
-                                            )
-        }
-    }
-
     fun List<SomFilterUiModel>.copyListParcelable(): List<SomFilterUiModel> {
         return this.mapNotNull { it.copyParcelable() }
     }

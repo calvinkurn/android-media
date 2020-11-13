@@ -77,7 +77,6 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
                 label_radio.text = item.name
                 rb_filter.setOnCheckedChangeListener(null)
                 rb_filter.isChecked = item.isSelected
-                rb_filter.skipAnimation()
                 setChildStatusList()
                 toggleChildStatus(item, rb_filter.isChecked)
 
