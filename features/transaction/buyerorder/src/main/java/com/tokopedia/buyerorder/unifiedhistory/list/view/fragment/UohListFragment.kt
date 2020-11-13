@@ -16,8 +16,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -930,10 +932,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun initInjector() {
         activity?.let {
             DaggerUohListComponent.builder()
+                    .baseAppComponent(getBaseAppComponent())
                     .uohListModule(context?.let { UohListModule(it)})
                     .build()
                     .inject(this)
         }
+    }
+
+    private fun getBaseAppComponent(): BaseAppComponent {
+        return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
     private fun showBottomSheetFilterOptions(title: String) {
