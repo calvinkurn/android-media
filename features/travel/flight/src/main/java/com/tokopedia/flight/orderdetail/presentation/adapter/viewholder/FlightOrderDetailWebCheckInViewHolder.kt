@@ -5,7 +5,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailSimpleAdapter
@@ -19,9 +18,13 @@ import kotlinx.android.synthetic.main.item_flight_order_detail_web_checkin.view.
 /**
  * @author by furqan on 13/11/2020
  */
-class FlightOrderDetailWebCheckInViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class FlightOrderDetailWebCheckInViewHolder(view: View,
+                                            private val listener: Listener)
+    : RecyclerView.ViewHolder(view) {
 
-    fun bind(element: FlightOrderDetailJourneyModel, passengers: List<FlightOrderDetailPassengerModel>, isDeparture: Boolean) {
+    fun bind(element: FlightOrderDetailJourneyModel,
+             passengers: List<FlightOrderDetailPassengerModel>,
+             isDeparture: Boolean) {
         with(itemView) {
             renderCheckInStatus(element)
 
@@ -78,7 +81,7 @@ class FlightOrderDetailWebCheckInViewHolder(view: View) : RecyclerView.ViewHolde
             renderPassenger(passengers)
 
             btnFlightOrderDetailWebCheckIn.setOnClickListener {
-                RouteManager.route(context, element.webCheckIn.webUrl)
+                listener.onCheckInClicked(element, isDeparture)
             }
         }
     }
@@ -191,6 +194,11 @@ class FlightOrderDetailWebCheckInViewHolder(view: View) : RecyclerView.ViewHolde
             rvFlightOrderWebCheckInPassengerDetail.isEnabled = false
             btnFlightOrderDetailWebCheckIn.isEnabled = false
         }
+    }
+
+
+    interface Listener {
+        fun onCheckInClicked(journey: FlightOrderDetailJourneyModel, isDeparture: Boolean)
     }
 
     companion object {

@@ -250,7 +250,7 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
     fun trackClickCancel() {
         val orderDetailData = mutableOrderDetailData.value
         if (orderDetailData != null && orderDetailData is Success) {
-            flightAnalytics.eventWebCheckInOrderDetail(
+            flightAnalytics.eventCancelTicketOrderDetail(
                     "${orderDetailData.data.statusString} - $orderId",
                     userSession.userId
             )

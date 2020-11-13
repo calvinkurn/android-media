@@ -10,9 +10,11 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.adapter.FlightOrderDetailWebCheckInAdapter
+import com.tokopedia.flight.orderdetail.presentation.adapter.viewholder.FlightOrderDetailWebCheckInViewHolder
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailWebCheckInViewModel
@@ -24,7 +26,8 @@ import javax.inject.Inject
 /**
  * @author by furqan on 13/11/2020
  */
-class FlightOrderDetailWebCheckInFragment : BaseDaggerFragment() {
+class FlightOrderDetailWebCheckInFragment : BaseDaggerFragment(),
+        FlightOrderDetailWebCheckInViewHolder.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -58,9 +61,16 @@ class FlightOrderDetailWebCheckInFragment : BaseDaggerFragment() {
         })
     }
 
+    override fun onCheckInClicked(journey: FlightOrderDetailJourneyModel, isDeparture: Boolean) {
+        context?.let {
+            flightOrderDetailWebCheckInViewModel.trackOnCheckInDeparture(journey, isDeparture)
+            RouteManager.route(it, journey.webCheckIn.webUrl)
+        }
+    }
+
     private fun renderView(journeyList: List<FlightOrderDetailJourneyModel>, passengerList: List<FlightOrderDetailPassengerModel>) {
         context?.let {
-            val adapter = FlightOrderDetailWebCheckInAdapter(journeyList, passengerList)
+            val adapter = FlightOrderDetailWebCheckInAdapter(journeyList, passengerList, this)
             rvFlightOrderDetailWebCheckIn.layoutManager = LinearLayoutManager(it, RecyclerView.VERTICAL, false)
             rvFlightOrderDetailWebCheckIn.setHasFixedSize(true)
             rvFlightOrderDetailWebCheckIn.adapter = adapter

@@ -872,49 +872,66 @@ public class FlightAnalytics {
                 Category.VIEW_ORDER_DETAIL,
                 String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
         params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.ORDER_DETAIL);
         buildGeneralFlightParams(params);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
     public void eventSendETicketOrderDetail(String eventLabel,
-                                String userId) {
+                                            String userId) {
         Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEND_ETICKET,
                 String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
         params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.ORDER_DETAIL);
         buildGeneralFlightParams(params);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
     public void eventWebCheckInOrderDetail(String eventLabel,
-                                String userId) {
+                                           String userId) {
         Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_WEB_CHECKIN,
                 String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
         params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.ORDER_DETAIL);
         buildGeneralFlightParams(params);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
     public void eventCancelTicketOrderDetail(String eventLabel,
-                                String userId) {
+                                             String userId) {
         Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_CANCEL_TICKET,
                 String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
         params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.ORDER_DETAIL);
+        buildGeneralFlightParams(params);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(params);
+    }
+
+    public void eventClickOnWebCheckIn(String eventLabel,
+                                       String userId,
+                                       boolean isDeparture) {
+        Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_CANCEL_TICKET,
+                String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
+        params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.WEB_CHECKIN);
         buildGeneralFlightParams(params);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
     private void buildGeneralFlightParams(Map<String, Object> params) {
-        params.put(SCREEN_NAME, Screen.ORDER_DETAIL);
         params.put(CURRENT_SITE, FLIGHT_CURRENT_SITE);
         params.put(CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString());
         params.put(BUSSINESS_UNIT, FLIGHT_BU);
@@ -930,6 +947,7 @@ public class FlightAnalytics {
         public static String REVIEW = "/flight/summary";
         public static String BOOKING = "/flight/booking";
         public static String ORDER_DETAIL = "/flight/orderdetail";
+        public static String WEB_CHECKIN = "/flight/webcheckindetail";
     }
 
     private static class Category {
@@ -967,7 +985,8 @@ public class FlightAnalytics {
         static String CLICK_SEND_ETICKET = "click send eticket";
         static String CLICK_WEB_CHECKIN = "click web checkin";
         static String CLICK_CANCEL_TICKET = "click cancel ticket";
-
+        static String CLICK_CHECKNI_DEPARTURE = "click checkin on depart route";
+        static String CLICK_CHECKNI_RETURN = "click checkin on return route";
     }
 
     private static class Action {
