@@ -78,7 +78,7 @@ class NotificationViewModel @Inject constructor(
     /**
      * Load notification on first page
      */
-    fun loadNotification(
+    fun loadFirstPageNotification(
             @RoleType
             role: Int?
     ) {
