@@ -387,7 +387,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SUBMIT_SURVEY_REQUEST) {
-                presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
+                presenter.insertSurveyRequest(getContext(), data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3),
+                        data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
         } else if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
@@ -395,11 +396,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
             if (resultCode == REJECT_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, selectedOrderId, reasonCode, actionButtonUri);
+                presenter.updateOrderCancelReason(getContext(), reason, selectedOrderId, reasonCode, actionButtonUri);
             } else if (resultCode == CANCEL_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, selectedOrderId, reasonCode, actionButtonUri);
+                presenter.updateOrderCancelReason(getContext(), reason, selectedOrderId, reasonCode, actionButtonUri);
             }
         }
     }
@@ -432,7 +433,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isRecommendation) {
-                    presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), false);
+                    presenter.processGetRecommendationData(getContext(), endlessRecyclerViewScrollListener.getCurrentPage(), false);
                 } else {
                     page_num++;
                     if (!isLoading) {
@@ -516,7 +517,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
                 orderListAdapter.setEmptyMarketplaceFilter();
-                presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
+                presenter.processGetRecommendationData(getContext(), endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
             }
@@ -945,13 +946,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
                 if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
-                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                    presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
                 break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
-                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();
@@ -993,7 +994,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             btnOk.setText(getString(R.string.popup_selesai_ok_btn));
             btnOk.setOnClickListener(view1 -> {
                 dialogUnify.dismiss();
-                presenter.finishOrder(selectedOrderId, actionButtonUri);
+                presenter.finishOrder(getContext(), selectedOrderId, actionButtonUri);
             });
 
             TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);

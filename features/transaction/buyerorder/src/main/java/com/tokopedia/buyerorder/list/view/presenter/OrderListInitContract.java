@@ -11,11 +11,11 @@ import java.util.List;
 public class OrderListInitContract {
      public interface Presenter {
 
-         void getInitData(String orderCategory);
+         void getInitData(String query, String orderCategory);
 
          void destroyView();
 
-         void getTickerInfo();
+         void getTickerInfo(Context context);
      }
 
     public interface View extends CustomerView {
