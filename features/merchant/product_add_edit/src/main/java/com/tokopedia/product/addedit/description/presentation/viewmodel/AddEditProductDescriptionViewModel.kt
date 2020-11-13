@@ -152,4 +152,8 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }
         return ""
     }
+
+    fun getIsAddMode(): Boolean {
+        return isAddMode && !isDraftMode
+    }
 }

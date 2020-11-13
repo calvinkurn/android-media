@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.shipment.presentation.viewmodel
 
+import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -19,7 +20,7 @@ class AddEditProductShipmentViewModelTest {
 
     @Test
     fun `isWeightValid should valid when unit is gram and weight is in allowed range`() {
-        val isValid = viewModel.isWeightValid(AddEditProductShipmentConstants.MIN_WEIGHT.toString(), AddEditProductShipmentConstants.MAX_WEIGHT_GRAM)
+        val isValid = viewModel.isWeightValid(AddEditProductShipmentConstants.MIN_WEIGHT.toString(), AddEditProductShipmentConstants.UNIT_GRAM)
         Assert.assertTrue(isValid)
     }
 
