@@ -394,6 +394,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onParentSortFilterClicked() {
         val somFilterList = somListSortFilterTab.getSomFilterUi()
         somFilterBottomSheet = SomFilterBottomSheet.createInstance(
+                this.activity,
                 somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
                 viewModel.getDataOrderListParams().statusList,
                 somFilterList,

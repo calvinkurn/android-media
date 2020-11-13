@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -48,7 +49,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class SomFilterBottomSheet : BottomSheetUnify(),
+class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomSheetUnify(),
         SomFilterListener, SomFilterDateBottomSheet.CalenderListener,
         HasComponent<SomFilterComponent> {
 
@@ -69,7 +70,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var somFilterFinishListener: SomFilterFinishListener? = null
     private var somListOrderParam: SomListGetOrderListParam? = null
     private var somFilterUiModelListCopy = listOf<SomFilterUiModel>()
-    private var statusBarColorHelper: StatusBarColorUtil? = null
 
     private var fm: FragmentManager? = null
 
@@ -80,7 +80,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 ?: arrayListOf()
         orderStatus = arguments?.getString(KEY_ORDER_STATUS).orEmpty()
         filterDate = arguments?.getString(KEY_FILTER_DATE).orEmpty()
-        somFilterViewModel.setIsRequestCancelFilterApplied(arguments?.getBoolean(KEY_IS_REQUEST_CANCEL_FILTER_APPLIED, false) ?: false)
+        somFilterViewModel.setIsRequestCancelFilterApplied(arguments?.getBoolean(KEY_IS_REQUEST_CANCEL_FILTER_APPLIED, false)
+                ?: false)
         somFilterUiModelListCopy = somFilterUiModelList.copyListParcelable()
         val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
         statusList = statusListFilter?.copyInt() ?: listOf()
@@ -108,7 +109,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        if(!isApplyFilter) {
+        if (!isApplyFilter) {
             val cancelWrapper = SomFilterCancelWrapper(orderStatus, statusList, somFilterUiModelListCopy, filterDate)
             somFilterFinishListener?.onClickOverlayBottomSheet(cancelWrapper)
         }
@@ -127,17 +128,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         showCloseIcon = false
         isHideable = true
         customPeekHeight = (getScreenHeight() / 2).toDp()
-    }
-
-
-    private fun setStatusBarColorOverlay() {
-        statusBarColorHelper = StatusBarColorUtil(requireActivity())
-        statusBarColorHelper?.setStatusBarColor()
-    }
-
-    private fun undoStatusBarColorOverlay() {
-        statusBarColorHelper?.undoSetStatusBarColor()
-        statusBarColorHelper = null
     }
 
     override fun onDateClicked(position: Int) {
@@ -234,7 +224,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     fun show(fm: FragmentManager?) {
         this.fm = fm
         isApplyFilter = false
-        fm?.let {
+        mActivity?.supportFragmentManager?.let {
             show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
         }
     }
@@ -296,7 +286,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         val somFilterDateBottomSheet = SomFilterDateBottomSheet.newInstance()
         somFilterDateBottomSheet.setCalendarListener(this)
         somFilterDateBottomSheet.setFragmentManager(childFragmentManager)
-        if(!somFilterDateBottomSheet.isAdded) {
+        if (!somFilterDateBottomSheet.isAdded) {
             somFilterDateBottomSheet.show()
         }
     }
@@ -313,7 +303,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                         showHideBottomSheetReset()
                     }
                 }
-                is Fail -> { }
+                is Fail -> {
+                }
             }
         }
         observe(somFilterViewModel.updateFilterSelected) {
@@ -322,7 +313,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                     somFilterAdapter?.updateData(it.data)
                     showHideBottomSheetReset()
                 }
-                is Fail -> { }
+                is Fail -> {
+                }
             }
         }
         observe(somFilterViewModel.somFilterOrderListParam) {
@@ -330,7 +322,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 is Success -> {
                     somListOrderParam = it.data
                 }
-                is Fail -> { }
+                is Fail -> {
+                }
             }
         }
     }
@@ -392,13 +385,14 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
-        fun createInstance(orderStatus: String,
+        fun createInstance(mActivity: FragmentActivity?,
+                           orderStatus: String,
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
                            filterDate: String,
                            isRequestCancelFilterApplied: Boolean
         ): SomFilterBottomSheet {
-            val fragment = SomFilterBottomSheet()
+            val fragment = SomFilterBottomSheet(mActivity)
             val args = Bundle()
             args.putString(KEY_ORDER_STATUS, orderStatus)
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))
