@@ -251,6 +251,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun onRoleChanged(role: Int) {
+        viewModel.cancelAllUseCase()
         loadInitialData()
     }
 

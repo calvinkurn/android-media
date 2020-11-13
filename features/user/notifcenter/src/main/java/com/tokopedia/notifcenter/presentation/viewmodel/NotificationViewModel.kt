@@ -86,13 +86,13 @@ class NotificationViewModel @Inject constructor(
         notifcenterDetailUseCase.getFirstPageNotification(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
-                    if (!hasFilter()) {
+                    if (!hasFilter() && role == RoleType.BUYER) {
                         loadTopAdsBannerData()
                     }
                 },
                 {
                     _mutateNotificationItems.value = Fail(it)
-                    if (!hasFilter()) {
+                    if (!hasFilter() && role == RoleType.BUYER) {
                         loadTopAdsBannerData()
                     }
                 }
