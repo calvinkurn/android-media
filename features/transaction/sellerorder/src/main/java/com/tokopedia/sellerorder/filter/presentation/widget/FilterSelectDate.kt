@@ -28,11 +28,11 @@ class FilterSelectDate: RelativeLayout {
 
     fun setDateLabel(date: String) {
         tvSelectDateText?.text = date
-        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700))
+        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
     }
 
     fun setDateLabelEmpty(date: String) {
         tvSelectDateText?.text = date
-        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_44))
+        tvSelectDateText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
     }
 }

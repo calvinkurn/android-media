@@ -48,7 +48,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                     warehouseLabel?.apply {
                         show()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     }
                 } else {
                     warehouseLabel.hide()
@@ -84,7 +84,7 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
                     label_due_response_day_count?.text = item.dataObject.deadlineText
                     ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
-                    itemView.ic_time?.setColorFilter(Color.WHITE)
+                    itemView.ic_time?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
                     if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
                         itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))

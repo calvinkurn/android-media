@@ -29,7 +29,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                         show()
                         layoutParamsReceiverName?.topMargin = 6.toPx()
                         unlockFeature = true
-                        setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_68))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                     }
                 } else {
                     layoutParamsReceiverName?.topMargin = 0.toPx()
@@ -38,7 +38,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                 if (item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
                     tv_shipping_name.apply {
-                        setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
+                        setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
                         setOnClickListener {
                             actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
                         }
@@ -46,7 +46,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     }
                 } else {
                     tv_shipping_name.text = item.dataObject.shippingName
-                    tv_shipping_name.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700))
+                    tv_shipping_name.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
                     item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
