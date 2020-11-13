@@ -6,6 +6,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
@@ -21,17 +22,15 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
-        coroutineDispatcher: CoroutineDispatcher,
-        private val resource: ResourceProvider,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
-) : BaseViewModel(coroutineDispatcher) {
+    private val coroutineDispatcher: CoroutineDispatchers,
+    private val resource: ResourceProvider,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
+) : BaseViewModel(coroutineDispatcher.main) {
 
     private var _productInputModel = MutableLiveData(ProductInputModel())
     val productInputModel: LiveData<ProductInputModel> get() = _productInputModel
@@ -79,7 +78,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         launchCatchError( block = {
             getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(coroutineDispatcher.io) {
                     convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
                 }
                 _videoYoutubeNew.value = Pair(position, Success(result))
