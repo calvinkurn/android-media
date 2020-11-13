@@ -42,7 +42,7 @@
     <string name="flight_resend_eticket_dialog_email_invalid_error">Alamat Email tidak valid</string>
     <string name="flight_resend_eticket_dialog_email_invalid_symbol_error">Alamat Email tidak boleh terdiri dari symbol +</string>
 
-    <string name="flight_order_detail_applink_pattern" formatted="false">%s/%s</string>
+    <string name="flight_order_detail_applink_pattern" formatted="false">%1$s/%2$s</string>
 
     <string name="flight_resend_eticket_dialog_title">Kirim E-Ticket</string>
     <string name="flight_resend_eticket_dialog_description">Masukkan alamat Email tujuan Anda.</string>

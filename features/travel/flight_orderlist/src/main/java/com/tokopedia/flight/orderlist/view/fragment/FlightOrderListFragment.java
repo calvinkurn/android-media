@@ -171,14 +171,14 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onDetailOrderClicked(FlightOrderDetailPassData viewModel) {
         startActivityForResult(RouteManager.getIntent(getContext(),
-                getString(R.string.flight_order_detail_applink_pattern, ApplinkConst.FLIGHT_ORDER, viewModel.getOrderId())),
+                String.format(getString(R.string.flight_order_detail_applink_pattern), ApplinkConst.FLIGHT_ORDER, viewModel.getOrderId())),
                 REQUEST_CODE_ORDER_DETAIL);
     }
 
     @Override
     public void onDetailOrderClicked(String orderId) {
         startActivityForResult(RouteManager.getIntent(getContext(),
-                getString(R.string.flight_order_detail_applink_pattern, ApplinkConst.FLIGHT_ORDER, orderId)),
+                String.format(getString(R.string.flight_order_detail_applink_pattern), ApplinkConst.FLIGHT_ORDER, orderId)),
                 REQUEST_CODE_ORDER_DETAIL);
     }
 
