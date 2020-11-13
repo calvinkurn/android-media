@@ -9,6 +9,7 @@ import com.tokopedia.notifcenter.data.uimodel.*
 
 interface NotificationTypeFactory : AdapterTypeFactory {
     fun type(sectionTitleUiModel: SectionTitleUiModel): Int
+    fun type(recommendationTitleUiModel: RecommendationTitleUiModel): Int
     fun type(bigDividerUiModel: BigDividerUiModel): Int
     fun type(notificationUiModel: NotificationUiModel): Int
     fun type(loadMoreUiModel: LoadMoreUiModel): Int

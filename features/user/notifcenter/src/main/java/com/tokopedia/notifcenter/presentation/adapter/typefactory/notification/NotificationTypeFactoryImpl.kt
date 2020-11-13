@@ -28,6 +28,10 @@ class NotificationTypeFactoryImpl constructor(
         return SectionTitleViewHolder.LAYOUT
     }
 
+    override fun type(recommendationTitleUiModel: RecommendationTitleUiModel): Int {
+        return RecommendationTitleViewHolder.LAYOUT
+    }
+
     override fun type(bigDividerUiModel: BigDividerUiModel): Int {
         return BigDividerViewHolder.LAYOUT
     }
@@ -97,6 +101,7 @@ class NotificationTypeFactoryImpl constructor(
     override fun createViewHolder(view: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
+            RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
             BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
             NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)

@@ -28,9 +28,9 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
-import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
@@ -95,7 +95,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         if (!viewModel.hasFilter()) {
-            viewModel.loadMoreRecom(page)
+            viewModel.loadRecommendations(page)
         } else {
             viewModel.loadMoreEarlier(containerListener?.role)
         }
@@ -179,16 +179,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         return data.hasNext && viewModel.hasFilter()
     }
 
-    private fun renderRecomList(recoms: List<RecommendationUiModel>) {
+    private fun renderRecomList(recoms: RecommendationDataModel) {
         hideLoading()
-        rvAdapter?.addRecomProducts(recoms)
+        rvAdapter?.addRecomProducts(recoms.item)
         updateScrollListenerState(recoms)
     }
 
-    private fun updateScrollListenerState(recoms: List<RecommendationUiModel>) {
-        val recom = recoms.getOrNull(0) ?: return
-        updateScrollListenerState(recom.hasNext)
-        if (recom.hasNext) {
+    private fun updateScrollListenerState(recoms: RecommendationDataModel) {
+        updateScrollListenerState(recoms.hasNext)
+        if (recoms.hasNext) {
             showLoading()
         }
     }

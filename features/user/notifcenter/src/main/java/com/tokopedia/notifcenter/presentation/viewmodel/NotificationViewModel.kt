@@ -2,12 +2,15 @@ package com.tokopedia.notifcenter.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
@@ -59,8 +62,8 @@ class NotificationViewModel @Inject constructor(
     val topAdsBanner: LiveData<NotificationTopAdsBannerUiModel>
         get() = _topAdsBanner
 
-    private val _recommendations = MutableLiveData<List<RecommendationUiModel>>()
-    val recommendations: LiveData<List<RecommendationUiModel>>
+    private val _recommendations = MutableLiveData<RecommendationDataModel>()
+    val recommendations: LiveData<RecommendationDataModel>
         get() = _recommendations
 
     fun hasFilter(): Boolean {
@@ -137,34 +140,34 @@ class NotificationViewModel @Inject constructor(
     }
 
     /**
-     * TODO: combine with [loadMoreRecom]
+     * TODO: combine with [loadRecommendations]
      */
-    private fun getFirstRecommendationData() {
-        launchCatchError(dispatcher.io(),
-                {
-                    val params = getRecommendationUseCase.getRecomParams(
-                            0,
-                            RECOM_WIDGET,
-                            RECOM_SOURCE_INBOX_PAGE,
-                            emptyList()
-                    )
-                    val recommendationWidget = getRecommendationUseCase.createObservable(params)
-                            .toBlocking()
-                            .single()[0]
-//                        visitables.add(RecomTitle(recommendationWidget?.title))
-                    withContext(dispatcher.ui()) {
-                        _recommendations.value = getRecommendationVisitables(recommendationWidget)
-                    }
-//                        inboxView?.hideLoadMoreLoading()
-//                        inboxView?.onRenderRecomInbox(visitables)
-                },
-                {
+//    private fun getFirstRecommendationData() {
+//        launchCatchError(dispatcher.io(),
+//                {
+//                    val params = getRecommendationUseCase.getRecomParams(
+//                            0,
+//                            RECOM_WIDGET,
+//                            RECOM_SOURCE_INBOX_PAGE,
+//                            emptyList()
+//                    )
+//                    val recommendationWidget = getRecommendationUseCase.createObservable(params)
+//                            .toBlocking()
+//                            .single()[0]
+////                        visitables.add(RecomTitle(recommendationWidget?.title))
+//                    withContext(dispatcher.ui()) {
+//                        _recommendations.value = getRecommendationVisitables(recommendationWidget)
+//                    }
+////                        inboxView?.hideLoadMoreLoading()
+////                        inboxView?.onRenderRecomInbox(visitables)
+//                },
+//                {
+//
+//                }
+//        )
+//    }
 
-                }
-        )
-    }
-
-    fun loadMoreRecom(page: Int) {
+    fun loadRecommendations(page: Int) {
         launchCatchError(dispatcher.io(),
                 {
                     val params = getRecommendationUseCase.getRecomParams(
@@ -178,7 +181,9 @@ class NotificationViewModel @Inject constructor(
                             .single()[0]
 //                        visitables.add(RecomTitle(recommendationWidget?.title))
                     withContext(dispatcher.ui()) {
-                        _recommendations.value = getRecommendationVisitables(recommendationWidget)
+                        _recommendations.value = getRecommendationVisitables(
+                                page, recommendationWidget
+                        )
                     }
 //                        inboxView?.hideLoadMoreLoading()
 //                        inboxView?.onRenderRecomInbox(visitables)
@@ -268,11 +273,21 @@ class NotificationViewModel @Inject constructor(
 
 
     private fun getRecommendationVisitables(
+            page: Int,
             recommendationWidget: RecommendationWidget
-    ): List<RecommendationUiModel> {
-        return recommendationWidget.recommendationItemList.map {
-            RecommendationUiModel(it, recommendationWidget.hasNext)
+    ): RecommendationDataModel {
+        var items: List<Visitable<*>> = recommendationWidget.recommendationItemList.map {
+            RecommendationUiModel(it)
         }
+        if (isFirstPage(page)) {
+            items = items.toMutableList()
+            items.add(0, RecommendationTitleUiModel(recommendationWidget.title))
+        }
+        return RecommendationDataModel(items, recommendationWidget.hasNext)
+    }
+
+    private fun isFirstPage(page: Int): Boolean {
+        return page == 1
     }
 
     private fun loadTopAdsBannerData() {
@@ -292,11 +307,11 @@ class NotificationViewModel @Inject constructor(
                     if (results.isNotEmpty()) {
                         _topAdsBanner.postValue(NotificationTopAdsBannerUiModel(results.first()))
                     }
-                    getFirstRecommendationData()
+                    loadRecommendations(1)
                 },
                 {
                     it.printStackTrace()
-                    getFirstRecommendationData()
+                    loadRecommendations(1)
                 }
         )
 
