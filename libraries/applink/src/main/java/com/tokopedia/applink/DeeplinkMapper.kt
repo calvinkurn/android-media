@@ -517,6 +517,8 @@ object DeeplinkMapper {
             ApplinkConst.SELLER_SHIPMENT -> getSomReadyToShipAppLink(trimDeeplink)
             ApplinkConst.TOP_CHAT -> AppLinkMapperSellerHome.getTopChatAppLink(deeplink)
             ApplinkConst.SellerApp.PLAY_BROADCASTER -> ApplinkConstInternalContent.INTERNAL_PLAY_BROADCASTER
+            ApplinkConst.SellerApp.SHOP_FEED -> DeeplinkMapperMerchant.getRegisteredNavigationShopFeed(deeplink)
+            ApplinkConst.SellerApp.CONTENT_CREATE_POST -> ApplinkConstInternalContent.INTERNAL_CONTENT_CREATE_POST
             else -> ""
         }
     }
