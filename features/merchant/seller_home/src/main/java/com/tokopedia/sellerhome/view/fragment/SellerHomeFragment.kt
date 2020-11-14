@@ -520,10 +520,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
 
-    private fun stopPerformanceMonitoringSellerHomeLayout() {
-        (activity as? SellerHomeActivity)?.stopPerformanceMonitoringSellerHomeLayout()
-    }
-
     @Suppress("UNCHECKED_CAST")
     private fun setOnSuccessGetLayout(widgets: List<BaseWidgetUiModel<*>>) {
         view?.sahGlobalError?.gone()
@@ -789,7 +785,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         if (!performanceMonitoringSellerHomePltCompleted) {
             performanceMonitoringSellerHomePltCompleted = true
             recyclerView.addOneTimeGlobalLayoutListener {
-                stopPerformanceMonitoringSellerHomeLayout()
                 stopHomeLayoutRenderMonitoring()
             }
         }

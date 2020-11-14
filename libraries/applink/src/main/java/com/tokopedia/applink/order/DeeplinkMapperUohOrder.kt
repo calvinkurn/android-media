@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_PROC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.MP_INTERNAL_SHIPPED
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.OMS_INTERNAL_ORDER
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.ORDER_LIST_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PESAWAT_INTERNAL_ORDER
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -82,7 +83,12 @@ object DeeplinkMapperUohOrder {
                 || deeplink.startsWith(FLIGHT_ORDER) || deeplink.startsWith(HOTEL_ORDER)
                 || deeplink.startsWith(OMS_ORDER_DETAIL)) {
             returnedDeeplink = getInternalDeeplink(context, deeplink)
+
+        } else if (deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true)) {
+            returnedDeeplink = if (useUoh(context)) ApplinkConstInternalOrder.UNIFY_ORDER_TRAVEL_ENTERTAINMENT
+            else getInternalDeeplink(context, deeplink)
         }
+
         return returnedDeeplink
     }
 
@@ -139,6 +145,9 @@ object DeeplinkMapperUohOrder {
             }
             deeplink.startsWith(OMS_ORDER_DETAIL) -> {
                 return getOmsOrderDetailInternalAppLink(deeplink)
+            }
+            deeplink.equals(TRAVEL_AND_ENTERTAINMENT_ORDER, true) -> {
+                return PESAWAT_INTERNAL_ORDER
             }
             else -> {
                 return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)

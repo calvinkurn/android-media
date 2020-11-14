@@ -6,8 +6,8 @@ import com.tokopedia.officialstore.TestDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.data.model.dynamic_channel.DynamicChannel
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
@@ -17,7 +17,6 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.WishlistModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -99,7 +98,7 @@ class OfficialStoreHomeViewModelTest {
             val osBanners = OfficialStoreBanners()
             val osBenefits = OfficialStoreBenefits()
             val osFeatured = OfficialStoreFeaturedShop()
-            val osDynamicChannel = DynamicChannel()
+            val osDynamicChannel = mutableListOf<OfficialStoreChannel>()
 
             onGetOfficialStoreBanners_thenReturn(osBanners)
             onGetOfficialStoreBenefits_thenReturn(osBenefits)
@@ -187,12 +186,15 @@ class OfficialStoreHomeViewModelTest {
             val recommendation = RecommendationItem(isTopAds = isTopAds)
             val callback = mockk<((Boolean, Throwable?) -> Unit)>()
 
+
             coEvery {
                 topAdsWishlishedUseCase.createObservable(any())
             } returns mockObservable(wishList)
 
             viewModel.addWishlist(recommendation, callback)
             coVerify { topAdsWishlishedUseCase.createObservable(any()) }
+
+            verify { callback.invoke(any(), any()) }
 
             print(viewModel.topAdsWishlistResult)
             Assert.assertTrue(viewModel.topAdsWishlistResult.value is Success)
@@ -358,13 +360,8 @@ class OfficialStoreHomeViewModelTest {
         coEvery { getOfficialStoreFeaturedShopUseCase.executeOnBackground() } returns osFeatured
     }
 
-    private fun onGetDynamicChannel_thenReturn(channel: DynamicChannel) {
-        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns channel
-    }
-
-    private fun onGetOfficialStoreProductRecommendation_thenReturn(recommendations: List<RecommendationWidget>) {
-        coEvery { getRecommendationUseCase.getOfficialStoreRecomParams(any(), any(), any()) } returns RequestParams()
-        coEvery { getRecommendationUseCase.createObservable(any()) } returns mockObservable(recommendations)
+    private fun onGetDynamicChannel_thenReturn(list: List<OfficialStoreChannel>) {
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns list
     }
 
     private fun onAddWishList_thenCompleteWith(productId: String, userId: String) {
@@ -431,7 +428,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun verifyOfficialStoreDynamicChannelEquals(
-            expectedDynamicChannel: Success<DynamicChannel>
+            expectedDynamicChannel: Success<List<OfficialStoreChannel>>
     ) {
         verifyGetOfficialDynamicChannelCalled()
 
