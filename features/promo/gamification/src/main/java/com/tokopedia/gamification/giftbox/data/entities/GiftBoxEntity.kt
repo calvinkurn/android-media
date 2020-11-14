@@ -19,7 +19,8 @@ data class GamiLuckyHome(
         @SerializedName("tokenAsset") val tokenAsset: TokenAsset,
         @SerializedName("actionButton") val actionButton: List<ActionButton>?,
         @SerializedName("prizeList") val prizeList: List<PrizeList>?,
-        @SerializedName("reminder") val reminder: Reminder?
+        @SerializedName("reminder") val reminder: Reminder?,
+        @SerializedName("infoURL") val infoUrl: String?
 )
 
 data class TokensUser(

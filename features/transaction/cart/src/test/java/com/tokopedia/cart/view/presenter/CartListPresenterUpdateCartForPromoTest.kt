@@ -16,7 +16,7 @@ import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateIn
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
@@ -54,6 +54,7 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
     val seamlessLoginUsecase: SeamlessLoginUsecase = mockk()
     val updateCartCounterUseCase: UpdateCartCounterUseCase = mockk()
+    val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
     Feature("update cart list for promo action") {
@@ -67,7 +68,8 @@ object CartListPresenterUpdateCartForPromoTest : Spek({
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                     addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
                     updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
-                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, setCartlistCheckboxStateUseCase,
+                    TestSchedulers
             )
         }
 

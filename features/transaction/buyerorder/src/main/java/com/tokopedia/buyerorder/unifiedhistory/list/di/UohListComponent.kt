@@ -9,7 +9,7 @@ import dagger.Component
  */
 
 @UohListScope
-@Component(modules = [UohListViewModelModule::class], dependencies = [UohComponent::class])
+@Component(modules = [UohListModule::class, UohListViewModelModule::class], dependencies = [UohComponent::class])
 interface UohListComponent {
 
     fun inject(uohListFragment: UohListFragment)

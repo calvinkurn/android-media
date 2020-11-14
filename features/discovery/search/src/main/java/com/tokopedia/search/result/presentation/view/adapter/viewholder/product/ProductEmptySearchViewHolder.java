@@ -35,6 +35,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +55,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
     protected final EmptyStateListener emptyStateListener;
     private final BannerAdsListener bannerAdsListener;
     private TopAdsBannerView topAdsBannerView;
+    private UnifyButton buttonEmptySearchToGlobalSearch;
     protected RecyclerView selectedFilterRecyclerView;
     private ProductSelectedFilterAdapter productSelectedFilterAdapter;
     private EmptySearchProductViewModel boundedEmptySearchModel;
@@ -64,6 +66,7 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         emptyTitleTextView = view.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = view.findViewById(R.id.text_view_empty_content_text);
         emptyButtonItemButton = view.findViewById(R.id.button_add_promo);
+        buttonEmptySearchToGlobalSearch = view.findViewById(R.id.buttonEmptySearchToGlobalSearch);
         this.emptyStateListener = emptyStateListener;
         this.bannerAdsListener = bannerAdsListener;
         context = itemView.getContext();
@@ -148,30 +151,47 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         bindNewSearchButton();
         bindRecylerView();
         bindBannerAds();
+        bindGlobalSearchButton();
     }
 
     private void bindNoResultImage() {
-        noResultImage.setImageResource(boundedEmptySearchModel.getImageRes());
+        noResultImage.setImageResource(com.tokopedia.resources.common.R.drawable.ic_product_search_not_found);
     }
 
     private void bindTitleTextView() {
-        emptyTitleTextView.setText(boundedEmptySearchModel.getTitle());
+        if (emptyTitleTextView == null) return;
+
+        if (boundedEmptySearchModel.isLocalSearch())
+            emptyTitleTextView.setText(getString(R.string.msg_empty_search_product_title_local));
+        else
+            emptyTitleTextView.setText(getString(R.string.msg_empty_search_product_title));
     }
 
     private void bindContentTextView() {
-        if (!TextUtils.isEmpty(boundedEmptySearchModel.getContent())) {
-            emptyContentTextView.setText(boldTextBetweenQuotes(boundedEmptySearchModel.getContent()));
-            emptyContentTextView.setVisibility(View.VISIBLE);
-        } else {
-            emptyContentTextView.setVisibility(View.GONE);
-        }
+        if (emptyContentTextView == null) return;
+
+        if (boundedEmptySearchModel.isLocalSearch())
+            emptyContentTextView.setText(getLocalSearchEmptyMessage());
+        else if (boundedEmptySearchModel.getIsFilterActive())
+            emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content_with_filter));
+        else
+            emptyContentTextView.setText(getString(R.string.msg_empty_search_product_content));
+    }
+
+    private String getLocalSearchEmptyMessage() {
+        if (itemView.getContext() == null) return "";
+
+        return itemView.getContext().getString(
+                R.string.msg_empty_search_product_content_local,
+                boundedEmptySearchModel.getKeyword(),
+                boundedEmptySearchModel.getPageTitle()
+        );
     }
 
     private void bindNewSearchButton() {
-        if (TextUtils.isEmpty(boundedEmptySearchModel.getButtonText())) {
+        if (boundedEmptySearchModel.getIsFilterActive()) {
             emptyButtonItemButton.setVisibility(View.GONE);
         } else {
-            emptyButtonItemButton.setText(boundedEmptySearchModel.getButtonText());
             emptyButtonItemButton.setOnClickListener(this::newSearchButtonOnClick);
             emptyButtonItemButton.setVisibility(View.VISIBLE);
         }
@@ -204,18 +224,22 @@ public class ProductEmptySearchViewHolder extends AbstractViewHolder<EmptySearch
         }
     }
 
-    private CharSequence boldTextBetweenQuotes(String text) {
-        String quoteSymbol = "\"";
-        int firstQuotePos = text.indexOf(quoteSymbol);
-        int lastQuotePos = text.lastIndexOf(quoteSymbol);
+    private void bindGlobalSearchButton() {
+        if (buttonEmptySearchToGlobalSearch == null) return;
 
-        if (firstQuotePos < 0) {
-            return text;
+        if (boundedEmptySearchModel.isLocalSearch()) {
+            buttonEmptySearchToGlobalSearch.setVisibility(View.VISIBLE);
+            buttonEmptySearchToGlobalSearch.setOnClickListener(this::onEmptySearchToGlobalSearchClicked);
         }
+        else {
+            buttonEmptySearchToGlobalSearch.setVisibility(View.GONE);
+        }
+    }
 
-        SpannableStringBuilder str = new SpannableStringBuilder(text);
-        str.setSpan(new StyleSpan(Typeface.BOLD), firstQuotePos, lastQuotePos + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return str;
+    private void onEmptySearchToGlobalSearchClicked(View view) {
+        if (emptyStateListener == null) return;
+
+        emptyStateListener.onEmptySearchToGlobalSearchClicked(boundedEmptySearchModel.getGlobalSearchApplink());
     }
 
     private static class ProductSelectedFilterAdapter extends RecyclerView.Adapter<ProductSelectedFilterItemViewHolder> {

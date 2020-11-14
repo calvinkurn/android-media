@@ -10,7 +10,10 @@ import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.destination.data.model.PopularSearch
+import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
+import com.tokopedia.hotel.homepage.data.cloud.entity.HotelPropertyDefaultHome
 import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -41,6 +44,9 @@ class HotelHomepageViewModelTest {
     @RelaxedMockK
     lateinit var travelRecentSearchUseCase: TravelRecentSearchUseCase
 
+    @RelaxedMockK
+    lateinit var getPropertyPopularUseCase: GetPropertyPopularUseCase
+
     private val dispatcher = TravelTestDispatcherProvider()
     private lateinit var hotelHomepageViewModel: HotelHomepageViewModel
 
@@ -49,22 +55,25 @@ class HotelHomepageViewModelTest {
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelHomepageViewModel = HotelHomepageViewModel(this.graphqlRepository, getTravelCollectiveBannerUseCase, travelRecentSearchUseCase, dispatcher)
+        hotelHomepageViewModel = HotelHomepageViewModel(this.graphqlRepository, getTravelCollectiveBannerUseCase,
+                travelRecentSearchUseCase, getPropertyPopularUseCase, dispatcher)
     }
 
     @Test
     fun getHotelPromo_shouldReturnNoBanner() {
         //given
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel())
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
+        hotelHomepageViewModel.fetchVideoBannerData()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
         assert(actual is Success)
+        assert(hotelHomepageViewModel.videoBannerLiveData.value is Success)
     }
 
     @Test
@@ -73,17 +82,23 @@ class HotelHomepageViewModelTest {
         val listOfBanner = mutableListOf<TravelCollectiveBannerModel.Banner>()
         listOfBanner.add(TravelCollectiveBannerModel.Banner(id = "1"))
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel(banners = listOfBanner))
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
+        hotelHomepageViewModel.fetchVideoBannerData()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
         assert(actual is Success)
         assert((actual as Success).data.banners.size == 1)
         assert(actual.data.banners[0].id.equals("1"))
+
+        val videoData = hotelHomepageViewModel.videoBannerLiveData.value
+        assert(videoData is Success)
+        assert((videoData as Success).data.banners.size == 1)
+        assert(videoData.data.banners[0].id.equals("1"))
     }
 
     @Test
@@ -93,17 +108,23 @@ class HotelHomepageViewModelTest {
         val listOfBanner = mutableListOf<TravelCollectiveBannerModel.Banner>()
         for (i in 1..5) listOfBanner.add(TravelCollectiveBannerModel.Banner(i.toString()))
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Success(TravelCollectiveBannerModel(banners = listOfBanner))
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
+        hotelHomepageViewModel.fetchVideoBannerData()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
         assert(actual is Success)
         assert((actual as Success).data.banners.size == 5)
         assert(actual.data.banners[2].id.equals("3"))
+
+        val videoData = hotelHomepageViewModel.videoBannerLiveData.value
+        assert(videoData is Success)
+        assert((videoData as Success).data.banners.size == 5)
+        assert(videoData.data.banners[2].id.equals("3"))
     }
 
     @Test
@@ -111,16 +132,86 @@ class HotelHomepageViewModelTest {
 
         //given
         coEvery {
-            getTravelCollectiveBannerUseCase.execute(any(), any(), any())
+            getTravelCollectiveBannerUseCase.execute(any(), any())
         } returns Fail(Throwable("Failing"))
 
         //when
-        hotelHomepageViewModel.getHotelPromo("")
+        hotelHomepageViewModel.getHotelPromo()
+        hotelHomepageViewModel.fetchVideoBannerData()
 
         //then
         val actual = hotelHomepageViewModel.promoData.value
         assert(actual is Fail)
         assert((actual as Fail).throwable.message.equals("Failing"))
+
+        val videoData = hotelHomepageViewModel.videoBannerLiveData.value
+        assert(videoData is Fail)
+        assert((videoData as Fail).throwable.message.equals("Failing"))
+    }
+
+    @Test
+    fun getPropertyPopular_shouldReturnPropertyPopular() {
+        //given
+        val popularSearches = mutableListOf<PopularSearch>()
+        for (i in 0..3) {
+            popularSearches.add(PopularSearch(i.toLong()))
+        }
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } returns popularSearches
+
+        //when
+        hotelHomepageViewModel.getPopularCitiesData()
+
+        //then
+        assert(hotelHomepageViewModel.popularCitiesLiveData.value is Success)
+        assert((hotelHomepageViewModel.popularCitiesLiveData.value as Success).data.size == 4)
+        assert((hotelHomepageViewModel.popularCitiesLiveData.value as Success).data[1].destinationId == 1L)
+    }
+
+    @Test
+    fun getPropertyPopular_shouldReturnFailed() {
+        //given
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } throws Throwable()
+
+        //when
+        hotelHomepageViewModel.getPopularCitiesData()
+
+        //then
+        assert(hotelHomepageViewModel.popularCitiesLiveData.value is Fail)
+    }
+
+    @Test
+    fun getDefaultHomeParameter_shouldReturnData() {
+        //given
+        val defaultHomeData = HotelPropertyDefaultHome(label = "Jakarta", searchId = "538")
+        val data = HotelPropertyDefaultHome.Response(
+                HotelPropertyDefaultHome.PropertyDefaultHomeMetaAndData(
+                        data = defaultHomeData
+                ))
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+                GraphqlResponse(mapOf<Type, Any>(HotelPropertyDefaultHome.Response::class.java to data),
+                        mapOf<Type, List<GraphqlError>>(), false)
+
+        //when
+        hotelHomepageViewModel.getDefaultHomepageParameter("")
+
+        //then
+        assert(hotelHomepageViewModel.homepageDefaultParam.value != null)
+        assert((hotelHomepageViewModel.homepageDefaultParam.value as HotelPropertyDefaultHome).label == "Jakarta")
+        assert((hotelHomepageViewModel.homepageDefaultParam.value as HotelPropertyDefaultHome).searchId == "538")
+    }
+
+    @Test
+    fun getDefaultHomeParameter_shouldReturnEmptyAndNull() {
+        //given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns
+                GraphqlResponse(mapOf<Type, Any>(),
+                        mapOf<Type, List<GraphqlError>>(), false)
+
+        //when
+        hotelHomepageViewModel.getDefaultHomepageParameter("")
+
+        //then
+        assert(hotelHomepageViewModel.homepageDefaultParam.value == null)
     }
 
     @Test
