@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.flight.FlightComponentInstance
+import com.tokopedia.flight.R
 import com.tokopedia.flight.orderdetail.di.DaggerFlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.fragment.FlightOrderDetailWebCheckInFragment
@@ -19,6 +20,7 @@ class FlightOrderDetailWebCheckInActivity : BaseSimpleActivity(), HasComponent<F
         invoiceId = intent.getStringExtra(EXTRA_INVOICE_ID) ?: ""
 
         super.onCreate(savedInstanceState)
+        setTitle(R.string.flight_order_detail_check_in_label)
     }
 
     override fun getNewFragment(): Fragment = FlightOrderDetailWebCheckInFragment.getInstance(invoiceId)

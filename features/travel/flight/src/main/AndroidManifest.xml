@@ -161,7 +161,7 @@
         </activity>
         <activity
             android:name=".orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity"
-            android:label="@string/flight_order_detail_check_in_label"
+            android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
