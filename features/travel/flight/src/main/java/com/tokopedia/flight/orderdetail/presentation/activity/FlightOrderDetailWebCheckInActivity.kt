@@ -20,7 +20,7 @@ class FlightOrderDetailWebCheckInActivity : BaseSimpleActivity(), HasComponent<F
         invoiceId = intent.getStringExtra(EXTRA_INVOICE_ID) ?: ""
 
         super.onCreate(savedInstanceState)
-        setTitle(R.string.flight_order_detail_check_in_label)
+        toolbar?.title = getString(R.string.flight_order_detail_check_in_label)
     }
 
     override fun getNewFragment(): Fragment = FlightOrderDetailWebCheckInFragment.getInstance(invoiceId)
