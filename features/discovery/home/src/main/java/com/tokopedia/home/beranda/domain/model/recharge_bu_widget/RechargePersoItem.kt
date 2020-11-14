@@ -20,6 +20,9 @@ data class RechargePersoItem(
         @SerializedName("label_1")
         val label1: String = "",
         @Expose
+        @SerializedName("label_1_mode")
+        val label1Mode: String = "",
+        @Expose
         @SerializedName("label_2")
         val label2: String = "",
         @Expose

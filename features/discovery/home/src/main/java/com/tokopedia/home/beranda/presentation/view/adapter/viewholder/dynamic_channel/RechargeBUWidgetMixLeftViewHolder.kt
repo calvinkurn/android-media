@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
 import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
 import com.tokopedia.home.beranda.listener.RechargeBUWidgetListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.RechargeBUWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelGrid
@@ -158,20 +160,20 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         recyclerView.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(defaultChannelModel)
+        val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(defaultChannelModel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(CarouselEmptyCardDataModel(defaultChannelModel, adapterPosition, this))
         val productDataList = convertDataToProductData(data)
         listData.addAll(productDataList)
 
-        launch {
-            try {
-                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
-                parentRecycledViewPool?.let { recyclerView.setRecycledViewPool(it) }
-            } catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            }
-        }
+//        launch {
+//            try {
+//                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map { it.productModel })
+//                parentRecycledViewPool?.let { recyclerView.setRecycledViewPool(it) }
+//            } catch (throwable: Throwable) {
+//                throwable.printStackTrace()
+//            }
+//        }
 
 //        if (channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
 //            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
@@ -207,26 +209,20 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         }
     }
 
-    private fun convertDataToProductData(data: RechargePerso): List<CarouselProductCardDataModel> {
-        val list: MutableList<CarouselProductCardDataModel> = mutableListOf()
+    private fun convertDataToProductData(data: RechargePerso): List<RechargeBUWidgetProductCardModel> {
+        val list: MutableList<RechargeBUWidgetProductCardModel> = mutableListOf()
         for (element in data.items) {
-            list.add(CarouselProductCardDataModel(
-                    ProductCardModel(
-                            slashedPrice = element.label2,
-                            productName = element.subtitle,
-                            formattedPrice = element.label3,
-                            productImageUrl = element.mediaUrl,
-                            discountPercentage = element.label1,
-                            labelGroupList = listOf(ProductCardModel.LabelGroup(
-                                    position = "gimmick",
-                                    title = element.title.toUpperCase()
-                            ))
-                    ),
-                    blankSpaceConfig = BlankSpaceConfig(),
-                    grid = ChannelGrid(),
-                    applink = element.applink,
-                    listener = this,
-                    componentName = FPM_MIX_LEFT
+            list.add(RechargeBUWidgetProductCardModel(
+                    data.mediaUrl,
+                    "",
+                    element.label1Mode,
+                    element.title.toUpperCase(),
+                    data.option2,
+                    element.subtitle,
+                    "",
+                    element.label1,
+                    element.label2,
+                    element.label3
             ))
         }
         return list

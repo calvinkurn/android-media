@@ -13,9 +13,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
 import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
 import com.tokopedia.home.beranda.listener.RechargeBUWidgetListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.RechargeBUWidgetDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.factory.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
@@ -122,16 +124,16 @@ class RechargeBUWidgetMixTopViewHolder(
 
     }
 
-    private fun setRecyclerViewAndCardHeight(productDataList: List<CarouselProductCardDataModel>) {
-        launch {
-            try {
-                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-            }
-            catch (throwable: Throwable) {
-                throwable.printStackTrace()
-            }
-        }
-    }
+//    private fun setRecyclerViewAndCardHeight(productDataList: List<CarouselProductCardDataModel>) {
+//        launch {
+//            try {
+//                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+//            }
+//            catch (throwable: Throwable) {
+//                throwable.printStackTrace()
+//            }
+//        }
+//    }
 
     private fun mappingHeader(data: RechargePerso){
         bannerTitle.text = data.title
@@ -148,7 +150,7 @@ class RechargeBUWidgetMixTopViewHolder(
     private fun mappingItem(data: RechargePerso) {
         startSnapHelper.attachToRecyclerView(recyclerView)
         val defaultChannelModel = ChannelModel(data.title, data.title)
-        val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(defaultChannelModel)
+        val typeFactoryImpl = RechargeBUWidgetProductCardTypeFactoryImpl(defaultChannelModel)
         val visitables = mappingVisitablesFromChannel(data)
         adapter = MixTopComponentAdapter(visitables, typeFactoryImpl)
         recyclerView.adapter = adapter
@@ -204,31 +206,25 @@ class RechargeBUWidgetMixTopViewHolder(
     private fun mappingVisitablesFromChannel(data: RechargePerso): MutableList<Visitable<*>> {
         val visitables: MutableList<Visitable<*>> = mutableListOf()
         val channelProductData = convertDataToProductData(data)
-        setRecyclerViewAndCardHeight(channelProductData)
+//        setRecyclerViewAndCardHeight(channelProductData)
         visitables.addAll(channelProductData)
         return visitables
     }
 
-    private fun convertDataToProductData(data: RechargePerso): List<CarouselProductCardDataModel> {
-        val list: MutableList<CarouselProductCardDataModel> = mutableListOf()
+    private fun convertDataToProductData(data: RechargePerso): List<RechargeBUWidgetProductCardModel> {
+        val list: MutableList<RechargeBUWidgetProductCardModel> = mutableListOf()
         for (element in data.items) {
-            list.add(CarouselProductCardDataModel(
-                    ProductCardModel(
-                            slashedPrice = element.label2,
-                            productName = element.subtitle,
-                            formattedPrice = element.label3,
-                            productImageUrl = element.mediaUrl,
-                            discountPercentage = element.label1,
-                            labelGroupList = listOf(ProductCardModel.LabelGroup(
-                                    position = "gimmick",
-                                    title = element.title.toUpperCase()
-                            ))
-                    ),
-                    blankSpaceConfig = BlankSpaceConfig(),
-                    grid = ChannelGrid(),
-                    applink = element.applink,
-                    listener = this,
-                    componentName = HOME_MIX_TOP
+            list.add(RechargeBUWidgetProductCardModel(
+                    data.mediaUrl,
+                    "",
+                    element.label1Mode,
+                    element.title.toUpperCase(),
+                    data.option2,
+                    element.subtitle,
+                    "",
+                    element.label1,
+                    element.label2,
+                    element.label3
             ))
         }
         return list
