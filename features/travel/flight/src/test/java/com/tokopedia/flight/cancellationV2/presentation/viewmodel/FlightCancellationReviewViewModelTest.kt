@@ -149,17 +149,17 @@ class FlightCancellationReviewViewModelTest {
         showAttachment shouldBe false
     }
 
-    @Test
-    fun showAttachment_defaultRefundableWrapper_shouldBeTrue() {
-        // given
-        viewmodel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER
-
-        // when
-        val showAttachment = viewmodel.shouldShowAttachments()
-
-        // then
-        showAttachment shouldBe true
-    }
+//    @Test
+//    fun showAttachment_defaultRefundableWrapper_shouldBeTrue() {
+//        // given
+//        viewmodel.cancellationWrapperModel = DUMMY_CANCELLATION_WRAPPER
+//
+//        // when
+//        val showAttachment = viewmodel.shouldShowAttachments()
+//
+//        // then
+//        showAttachment shouldBe true
+//    }
 
     @Test
     fun requestCancellation_failRequest_shouldBeFail() {
