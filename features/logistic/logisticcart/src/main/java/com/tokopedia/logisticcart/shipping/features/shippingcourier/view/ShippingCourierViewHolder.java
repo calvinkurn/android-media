@@ -25,12 +25,13 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private static final int COD_ENABLE_VALUE = 1;
 
     private TextView tvCourier;
-    private TextView tvPrice;
+    private TextView tvPriceOrDuration;
     private ImageView imgCheck;
     private TextView tvPromoPotency;
     private View separator;
     private Label codLabel;
     private Label otdLabel;
+    private Label codLabelEta;
 
     private int cartPosition;
 
@@ -39,12 +40,13 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
         this.cartPosition = cartPosition;
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
-        tvPrice = itemView.findViewById(R.id.tv_price);
+        tvPriceOrDuration = itemView.findViewById(R.id.tv_price_or_duration);
         imgCheck = itemView.findViewById(R.id.img_check);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         separator = itemView.findViewById(R.id.separator);
         codLabel = itemView.findViewById(R.id.lbl_cod_available);
         otdLabel = itemView.findViewById(R.id.lbl_otd_available);
+        codLabelEta = itemView.findViewById(R.id.lbl_cod_available_eta);
     }
 
     public void bindData(ShippingCourierUiModel shippingCourierUiModel,
@@ -78,23 +80,43 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             otdLabel.setVisibility(otd.getAvailable()? View.VISIBLE : View.GONE);
         }
 
-        TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
         if (shippingCourierUiModel.getProductData().getError() != null &&
                 shippingCourierUiModel.getProductData().getError().getErrorMessage().length() > 0) {
+            TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
             if (shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
-                tvPrice.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
-                tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
+                tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
+                tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
                 tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
                 itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(shippingCourierUiModel, cartPosition, true));
             } else {
-                tvPrice.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
-                tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.text_courier_error_red));
+                tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getError().getErrorMessage());
+                tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.text_courier_error_red));
                 tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.font_disabled));
                 itemView.setOnClickListener(null);
             }
         } else {
-            tvPrice.setText(shippingCourierUiModel.getProductData().getPrice().getFormattedPrice());
-            tvPrice.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
+            /*ETA*/
+            if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null && shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode() == 0) {
+                if (!shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta().isEmpty()) {
+                    tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta());
+                } else {
+                    tvPriceOrDuration.setText(R.string.estimasi_tidak_tersedia);
+                }
+                String shipperNameEta = shippingCourierUiModel.getProductData().getShipperName() + " " + "(" + shippingCourierUiModel.getProductData().getPrice().getFormattedPrice() + ")";
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shipperNameEta, tvCourier.getContext().getString(R.string.content_desc_tv_courier));
+                codLabel.setVisibility(View.GONE);
+                codLabelEta.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
+                codLabelEta.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
+                        getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
+            } else {
+                TextAndContentDescriptionUtil.setTextAndContentDescription(tvCourier, shippingCourierUiModel.getProductData().getShipperName(), tvCourier.getContext().getString(R.string.content_desc_tv_courier));
+                tvPriceOrDuration.setText(shippingCourierUiModel.getProductData().getPrice().getFormattedPrice());
+                codLabelEta.setVisibility(View.GONE);
+                codLabel.setText(shippingCourierUiModel.getProductData().getCodProductData().getCodText());
+                codLabel.setVisibility(shippingCourierUiModel.getProductData().getCodProductData().
+                        getIsCodAvailable() == COD_ENABLE_VALUE? View.VISIBLE : View.GONE );
+            }
+            tvPriceOrDuration.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_54));
             tvCourier.setTextColor(ContextCompat.getColor(tvCourier.getContext(), R.color.black_70));
             itemView.setOnClickListener(v -> shippingCourierAdapterListener.onCourierChoosen(
                     shippingCourierUiModel, cartPosition, false));

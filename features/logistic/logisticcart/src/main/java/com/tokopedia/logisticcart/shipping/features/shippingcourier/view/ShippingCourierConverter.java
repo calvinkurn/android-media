@@ -101,7 +101,12 @@ public class ShippingCourierConverter {
             );
             courierItemData.setCodProductData(codProduct);
         }
+        if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null) {
+            courierItemData.setEtaText(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta());
+            courierItemData.setEtaErrorCode(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode());
+        }
         return courierItemData;
+
     }
 
 }

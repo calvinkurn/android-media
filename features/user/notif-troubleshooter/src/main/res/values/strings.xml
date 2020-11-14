@@ -77,4 +77,7 @@
 
     <string name="notif_network_issue">Ada gangguan dalam proses pemeriksaan, coba restart aplikasimu dan lakukan pemeriksaan ulang.</string>
 
+    <string name="notif_footer_care">Butuh bantuan lebih lanjut? Kunjungi Tokopedia Care</string>
+    <string name="notif_footer_visit_care">Kunjungi Tokopedia Care</string>
+
 </resources>

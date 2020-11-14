@@ -121,7 +121,7 @@ import kotlin.math.abs
  * @author : Steven 29/11/18
  */
 
-class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
+open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingListener,
         SendButtonListener, ImagePickerListener, ChatTemplateListener,
         HeaderMenuListener, DualAnnouncementListener, TopChatVoucherListener,
         InvoiceThumbnailListener, QuotationViewHolder.QuotationListener,
@@ -1263,7 +1263,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, TypingList
             analytics.eventSeenProductAttachment(requireContext(), element, session)
 
             // this for experimentation of DATA
-            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) ?: false) {
+            if (remoteConfig?.getBoolean(RemoteConfigKey.CHAT_EVER_SEEN_PRODUCT, false) == true) {
                 analytics.eventSeenProductAttachmentBeta(requireContext(), element, session)
             }
         }

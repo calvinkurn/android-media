@@ -17,8 +17,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST
 import com.tokopedia.discovery.common.manager.PRODUCT_CARD_OPTION_RESULT_PRODUCT
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analyticvalidator.util.ShopUiTestUtil
@@ -33,6 +35,7 @@ import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.trackingoptimizer.constant.Constant
+import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.core.AllOf
 import org.junit.After
@@ -163,18 +166,18 @@ class ShopPageBuyerAnalyticTest {
         )).perform(ShopUiTestUtil.rvScrollToPositionWithOffset(playWidgetPosition))
         waitForData(200)
         Espresso.onView(AllOf.allOf(
-                withId(R.id.recycler_view),
-                isDescendantOfA(withId(R.id.content_container)))
+                instanceOf(RecyclerView::class.java),
+                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(0, click()))
 
         Espresso.onView(AllOf.allOf(
-                withId(R.id.recycler_view),
-                isDescendantOfA(withId(R.id.content_container)))
+                instanceOf(RecyclerView::class.java),
+                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, click()))
 
         Espresso.onView(AllOf.allOf(
-                withId(R.id.recycler_view),
-                isDescendantOfA(withId(R.id.content_container)))
+                instanceOf(RecyclerView::class.java),
+                isDescendantOfA(instanceOf(PlayWidgetView::class.java)))
         ).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(2, click()))
     }
 
@@ -193,7 +196,7 @@ class ShopPageBuyerAnalyticTest {
                 )
             })
         }
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         val recyclerViewHomeWidgetInteraction = Espresso.onView(firstView(AllOf.allOf(
                 withId(R.id.recycler_view),
                 isDisplayed())
@@ -254,7 +257,7 @@ class ShopPageBuyerAnalyticTest {
                 )
             })
         }
-        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, mockIntentData))
+        Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(PRODUCT_CARD_OPTIONS_RESULT_CODE_WISHLIST, mockIntentData))
         Espresso.onView(AllOf.allOf(
                 withId(R.id.recycler_view),
                 isDisplayed())
