@@ -13,9 +13,13 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
     }
 
     fun updateData(dataList: List<BaseSomFilter>) {
+        val visitableBaseSomFilter = visitables.filterIsInstance<BaseSomFilter>()
+        val callBack = SomFilterDiffUtil(visitableBaseSomFilter, dataList)
+        val diffResult = DiffUtil.calculateDiff(callBack)
         visitables.clear()
         visitables.addAll(dataList)
         notifyDataSetChanged()
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun setEmptyState(emptyData: EmptyModel) {
