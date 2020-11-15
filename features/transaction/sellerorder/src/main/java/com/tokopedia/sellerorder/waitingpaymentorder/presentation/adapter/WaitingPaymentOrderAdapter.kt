@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.diffcallback.WaitingPaymentOrderDiffCallback
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.adapter.typefactory.WaitingPaymentOrderAdapterTypeFactory
 import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderErrorNetworkUiModel
-import com.tokopedia.sellerorder.waitingpaymentorder.presentation.model.WaitingPaymentOrderUiModel
 
 /**
  * Created by yusuf.hendrawan on 2020-09-07.
@@ -20,7 +19,6 @@ class WaitingPaymentOrderAdapter(
 ) : BaseListAdapter<Visitable<WaitingPaymentOrderAdapterTypeFactory>, WaitingPaymentOrderAdapterTypeFactory>(adapterTypeFactory) {
 
     private var recyclerView: RecyclerView? = null
-    private val emptyState by lazy { listOf(EmptyModel()) }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -42,15 +40,6 @@ class WaitingPaymentOrderAdapter(
     }
 
     fun showEmpty() {
-        updateProducts(emptyState)
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    fun toggleCollapse(position: Int, isExpanded: Boolean) {
-        val newItems = (visitables.toMutableList() as ArrayList<Visitable<WaitingPaymentOrderAdapterTypeFactory>>)
-        (newItems.getOrNull(position) as? WaitingPaymentOrderUiModel)?.copy(isExpanded = isExpanded)?.let { it ->
-            newItems[position] = it
-            updateProducts(newItems)
-        }
+        updateProducts(listOf(EmptyModel()))
     }
 }
