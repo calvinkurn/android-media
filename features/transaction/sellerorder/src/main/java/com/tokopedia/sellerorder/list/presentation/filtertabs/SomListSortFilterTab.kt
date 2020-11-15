@@ -35,20 +35,37 @@ class SomListSortFilterTab(
         selectedTab = null
     }
 
-    fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
-        // use old filter items if any
-        val filters = statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }
-                .map { statusFilter ->
-                    filterItems.find {
-                        it.title.contains(statusFilter.status)
-                    }?.apply {
-                        title = composeTabTitle(statusFilter.status, statusFilter.amount)
-                        type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
-                    } ?: createNewTabs(statusFilter)
-                }
-        filterItems = ArrayList(filters)
+    private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
+        val isAnyDifference = checkDiff(statusList)
+        if (isAnyDifference) {
+            recreateTabs(statusList)
+        } else {
+            statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }
+                    .forEach { statusFilter ->
+                        filterItems.find {
+                            it.title.contains(statusFilter.status)
+                        }?.apply {
+                            title = composeTabTitle(statusFilter.status, statusFilter.amount)
+                            type = if (statusFilter.isChecked) ChipsUnify.TYPE_SELECTED else ChipsUnify.TYPE_NORMAL
+                        }
+                    }
+        }
+    }
+
+    private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
+        filterItems = ArrayList(statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }.map { createNewTabs(it) })
         sortFilter.chipItems.clear()
         sortFilter.addItem(filterItems)
+    }
+
+    private fun checkDiff(statusList: List<SomListFilterUiModel.Status>): Boolean {
+        statusList.filter { it.key != SomConsts.STATUS_ALL_ORDER }
+                .forEach { statusFilter ->
+                    filterItems.find {
+                        it.title.contains(statusFilter.status)
+                    } ?: return true
+                }
+        return false
     }
 
     private fun createNewTabs(statusFilter: SomListFilterUiModel.Status): SortFilterItem {
@@ -82,13 +99,13 @@ class SomListSortFilterTab(
     fun updateCounterSortFilter(filterDate: String = "") {
         var count = 0
         somFilterUiModelList.forEach {
-            if(it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
+            if (it.nameFilter != SomConsts.FILTER_STATUS_ORDER) {
                 it.somFilterData.forEach { somFilter ->
                     if (somFilter.isSelected) count++
                 }
             }
         }
-        if(filterDate.isNotBlank()) count += 1
+        if (filterDate.isNotBlank()) count += 1
         selectedCount = count
     }
 
@@ -152,6 +169,31 @@ class SomListSortFilterTab(
     fun updateSomListFilterUi(somFilterUiModelList: List<SomFilterUiModel>) {
         this.somFilterUiModelList.clear()
         this.somFilterUiModelList.addAll(somFilterUiModelList)
+    }
+
+    fun isSortByAppliedManually(): Boolean {
+        return this.somFilterUiModelList.any {
+            it.nameFilter == SomConsts.FILTER_SORT && it.somFilterData.any {
+                it.isSelected
+            }
+        }
+    }
+
+    fun isFilterApplied(): Boolean {
+        return sortFilter.indicatorCounter != 0
+    }
+
+    fun clear() {
+        updateSomListFilterUi(emptyList())
+    }
+
+    fun unselectCurrentStatusFilter() {
+        val currentSelectedTab = selectedTab
+        if (currentSelectedTab != null) {
+            filterItems.find { it.title.contains(currentSelectedTab.status) }?.let {
+                onTabClicked(it, currentSelectedTab)
+            }
+        }
     }
 
     interface SomListSortFilterTabClickListener {

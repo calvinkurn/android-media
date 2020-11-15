@@ -240,6 +240,4 @@ public class RemoteConfigKey {
     public static final String ENABLE_UOH = "android_enable_uoh";
 
     public static final String SELLER_HOME_DASHBOARD_ENABLE_CACHE = "seller_home_dashboard_enable_cache";
-
-    public static final String ENABLE_NEW_SOM = "enable_new_som";
 }

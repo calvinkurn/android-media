@@ -10,9 +10,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.list.presentation.activities.SomListActivity
 import com.tokopedia.sellerorder.oldlist.di.DaggerSomListComponent
@@ -46,7 +46,7 @@ class SomListActivity : BaseSimpleActivity(), HasComponent<SomListComponent> {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SOM, false)) {
+        if (remoteConfig.getBoolean(SomConsts.ENABLE_NEW_SOM, false)) {
             Intent(this, SomListActivity::class.java).apply {
                 intent.extras?.let {
                     putExtras(it)
