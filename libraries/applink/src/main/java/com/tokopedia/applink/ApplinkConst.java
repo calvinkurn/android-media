@@ -402,7 +402,7 @@ public interface ApplinkConst {
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
         String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
-        String CONTENT_CREATE_POST = "sellerapp://content/create_post/";
+        String CONTENT_CREATE_POST = "sellerapp://content/create_post";
     }
 
     interface Query {
