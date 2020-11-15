@@ -72,7 +72,7 @@ class SomSubFilterCheckboxAdapter(private val somSubFilterListener: SomSubCheckb
                 cb_filter.isChecked = item.isSelected
 
                 setOnClickListener {
-                    cb_filter.isChecked = cb_filter.isChecked != true
+                    cb_filter.isChecked = !cb_filter.isChecked
                 }
                 cb_filter.setOnCheckedChangeListener { _, isChecked ->
                     checkBoxClicked(isChecked)

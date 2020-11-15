@@ -28,19 +28,23 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
 
     fun setSubFilterList(newSubFilterList: List<SomFilterChipsUiModel>, idFilter: String) {
         this.idFilter = idFilter
-        val callBack = SomSubFilterDiffUtil(listSubFilter, newSubFilterList)
-        val diffResult = DiffUtil.calculateDiff(callBack)
+        val callback = SomSubFilterDiffUtil(listSubFilter, newSubFilterList)
+        val diffResult = DiffUtil.calculateDiff(callback)
         this.listSubFilter.clear()
         this.listSubFilter.addAll(newSubFilterList)
         diffResult.dispatchUpdatesTo(this)
     }
 
     private fun clickHandlerRadio(item: SomFilterChipsUiModel) {
-        listSubFilter.filter { it.idFilter == SomConsts.FILTER_STATUS_ORDER }.map { it.isSelected = false }
+        listSubFilter.filter {
+            it.idFilter == SomConsts.FILTER_STATUS_ORDER
+        }.map {
+            it.isSelected = false
+        }
         item.isSelected = true
         notifyDataSetChanged()
         if (item.isSelected) {
-            idList = ArrayList(item.idList)
+            this.idList = ArrayList(idList)
         }
     }
 
@@ -74,21 +78,20 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
 
         fun bind(item: SomFilterChipsUiModel) {
             with(itemView) {
+                setChildStatusList()
                 label_radio.text = item.name
                 rb_filter.setOnCheckedChangeListener(null)
                 rb_filter.isChecked = item.isSelected
-                setChildStatusList()
+                rb_filter.skipAnimation()
                 toggleChildStatus(item, rb_filter.isChecked)
 
                 rb_filter.setOnCheckedChangeListener { _, isChecked ->
-                    toggleChildStatus(item, isChecked)
                     clickHandlerRadio(item)
+                    toggleChildStatus(item, isChecked)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
                 }
                 setOnClickListener {
-                    toggleChildStatus(item, rb_filter.isChecked)
-                    clickHandlerRadio(item)
-                    somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
+                    rb_filter.isChecked = !rb_filter.isChecked
                 }
             }
         }
@@ -116,11 +119,10 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
             }
         }
 
-        override fun onCheckboxChildItemClicked(childIdList: List<Int>, childPosition: Int, keyFilter: String) {
+        override fun onCheckboxChildItemClicked(childIdList: List<Int>, childPosition: Int, keyFilter: String, subChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>) {
             idList = childIdList.toMutableList()
             keyChildFilter = keyFilter
-            listSubFilter.find { it.key == keyFilter }?.childStatus = somSubFilterChildCheckBoxAdapter?.getSubChildFilterList()
-                    ?: listOf()
+            listSubFilter.find { it.key == keyFilter }?.childStatus = subChildFilterList
             somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
         }
     }
