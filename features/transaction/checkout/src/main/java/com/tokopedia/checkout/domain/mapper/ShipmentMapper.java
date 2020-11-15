@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.domain.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
@@ -615,7 +613,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                     }
 
                                     if (product.getFreeShipping() != null && product.getFreeShipping().getEligible() &&
-                                            !TextUtils.isEmpty(product.getFreeShipping().getBadgeUrl())) {
+                                            !UtilsKt.isNullOrEmpty(product.getFreeShipping().getBadgeUrl())) {
                                         productResult.setFreeShipping(true);
                                         productResult.setFreeShippingBadgeUrl(product.getFreeShipping().getBadgeUrl());
                                     }
@@ -751,7 +749,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
         // Get trade in address if available
         Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
-        if (addresses != null && !TextUtils.isEmpty(addresses.getActive()) && addresses.getData() != null) {
+        if (addresses != null && !UtilsKt.isNullOrEmpty(addresses.getActive()) && addresses.getData() != null) {
             com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDefaultAddress = null;
             com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress tradeInDropOffAddress = null;
 
@@ -821,10 +819,10 @@ public class ShipmentMapper implements IShipmentMapper {
                 int totalProductError = 0;
                 String defaultErrorMessage = "";
                 for (Product product : groupShop.getProducts()) {
-                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                    if (product.isError() || !UtilsKt.isNullOrEmpty(product.getErrorMessage())) {
                         hasError = true;
                         totalProductError++;
-                        if (TextUtils.isEmpty(defaultErrorMessage)) {
+                        if (UtilsKt.isNullOrEmpty(defaultErrorMessage)) {
                             defaultErrorMessage = product.getErrorMessage();
                         }
                     }

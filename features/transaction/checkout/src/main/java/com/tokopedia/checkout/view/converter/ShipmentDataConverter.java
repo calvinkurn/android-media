@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.converter;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
@@ -16,6 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticdata.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.UserAddress;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,9 +112,9 @@ public class ShipmentDataConverter {
 
             recipientAddress.setRecipientName(defaultAddress.getReceiverName());
             recipientAddress.setRecipientPhoneNumber(defaultAddress.getPhone());
-            recipientAddress.setLatitude(!TextUtils.isEmpty(defaultAddress.getLatitude()) ?
+            recipientAddress.setLatitude(!UtilsKt.isNullOrEmpty(defaultAddress.getLatitude()) ?
                     defaultAddress.getLatitude() : null);
-            recipientAddress.setLongitude(!TextUtils.isEmpty(defaultAddress.getLongitude()) ?
+            recipientAddress.setLongitude(!UtilsKt.isNullOrEmpty(defaultAddress.getLongitude()) ?
                     defaultAddress.getLongitude() : null);
 
             recipientAddress.setSelected(defaultAddress.getStatus() == PRIME_ADDRESS);
@@ -290,7 +289,7 @@ public class ShipmentDataConverter {
         cartItemModel.setPreOrderDurationDay(product.getPreOrderDurationDay());
         cartItemModel.setFreeReturn(product.isProductIsFreeReturns());
         cartItemModel.setCashback(product.getProductCashback());
-        cartItemModel.setCashback(!TextUtils.isEmpty(product.getProductCashback()));
+        cartItemModel.setCashback(!UtilsKt.isNullOrEmpty(product.getProductCashback()));
         cartItemModel.setFreeReturnLogo(product.getFreeReturnLogo());
         cartItemModel.setfInsurance(product.isProductFcancelPartial());
         cartItemModel.setfCancelPartial(product.isProductFinsurance());
