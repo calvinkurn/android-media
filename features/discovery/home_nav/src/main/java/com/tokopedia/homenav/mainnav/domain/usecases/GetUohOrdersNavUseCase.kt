@@ -71,7 +71,8 @@ class GetUohOrdersNavUseCase (
                             descriptionTextColor = product.inline1.textColor,
                             additionalProductCount = additionalProductCount,
                             imageUrl = product.imageURL,
-                            id = it.orderUUID
+                            id = it.orderUUID,
+                            applink = it.metadata.detailURL.appURL
                     ))
                 }
             }

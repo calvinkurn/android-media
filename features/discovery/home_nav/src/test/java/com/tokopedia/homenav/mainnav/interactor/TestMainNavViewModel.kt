@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.interactor
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.base.viewmodel.HomeNavTickerViewModel
@@ -46,6 +47,41 @@ class TestMainNavViewModel {
     @Before
     fun setup(){
         MockKAnnotations.init(this, relaxUnitFun = true)
+    }
+    @Test
+    fun `test when nav page launched from page others than homepage then show back to home icon`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val pageSource = "Other page"
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuViewModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerViewModel() }
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageSource)
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val backToHomeMenu = visitableList.find { it is HomeNavMenuViewModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuViewModel
+
+        Assert.assertNotNull(backToHomeMenu)
+    }
+
+    @Test
+    fun `test when nav page launched from homepage then do notshow back to home icon`() {
+        val clientMenuGenerator = mockk<ClientMenuGenerator>()
+        val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME
+        every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
+                .answers { HomeNavMenuViewModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+        every { clientMenuGenerator.getTicker(menuId = any()) }
+                .answers { HomeNavTickerViewModel() }
+
+        viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
+        viewModel.setPageSource(pageSource)
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
+        val backToHomeMenu = visitableList.find { it is HomeNavMenuViewModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuViewModel?
+
+        Assert.assertNull(backToHomeMenu)
     }
 
     //user menu section

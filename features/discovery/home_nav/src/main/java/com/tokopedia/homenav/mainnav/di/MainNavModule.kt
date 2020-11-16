@@ -44,5 +44,5 @@ class MainNavModule {
 
     @MainNavScope
     @Provides
-    fun provideClientMenuGenerator(@ApplicationContext context: Context) = ClientMenuGenerator(context)
+    fun provideClientMenuGenerator(@ApplicationContext context: Context, userSession: UserSessionInterface) = ClientMenuGenerator(context, userSession)
 }

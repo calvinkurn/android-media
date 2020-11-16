@@ -5,8 +5,8 @@ import com.tokopedia.common_wallet.balance.data.entity.WalletBalanceResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.homenav.mainnav.data.mapper.MainNavMapper
-import com.tokopedia.homenav.mainnav.data.payment.PaymentTransactionData
 import com.tokopedia.homenav.mainnav.data.pojo.order.UohData
+import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
@@ -80,7 +80,7 @@ class MainNavUseCaseModule {
     @MainNavScope
     @Provides
     fun provideGetPaymentOrdersNavUseCase(graphqlRepository: GraphqlRepository): GetPaymentOrdersNavUseCase {
-        val useCase = GraphqlUseCase<PaymentTransactionData>(graphqlRepository)
+        val useCase = GraphqlUseCase<Payment>(graphqlRepository)
         return GetPaymentOrdersNavUseCase(useCase)
     }
 

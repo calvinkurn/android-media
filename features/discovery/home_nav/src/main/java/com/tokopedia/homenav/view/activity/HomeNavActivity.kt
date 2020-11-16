@@ -7,6 +7,7 @@ import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.R
+import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import kotlinx.android.synthetic.main.activity_main_nav.*
@@ -22,12 +23,12 @@ class HomeNavActivity: AppCompatActivity() {
         setContentView(R.layout.activity_main_nav)
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_R500))
+            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
 
         findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
-            it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK, true)
+            it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT, true)
         }
         setupNavigation()
     }
@@ -42,7 +43,8 @@ class HomeNavActivity: AppCompatActivity() {
         toolbar.setOnBackButtonClickListener {
             navController.navigateUp()
         }
-        navController.setGraph(R.navigation.nav_graph, intent.extras)
+        navController.setGraph(R.navigation.nav_graph,
+                MainNavFragmentArgs(StringMainNavArgsSourceKey = pageSource).toBundle())
     }
 
     override fun onSupportNavigateUp(): Boolean {

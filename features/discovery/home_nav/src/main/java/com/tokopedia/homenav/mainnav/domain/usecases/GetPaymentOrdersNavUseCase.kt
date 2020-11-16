@@ -3,7 +3,7 @@ package com.tokopedia.homenav.mainnav.domain.usecases
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.homenav.mainnav.data.payment.PaymentTransactionData
+import com.tokopedia.homenav.mainnav.data.pojo.payment.Payment
 import com.tokopedia.homenav.mainnav.domain.model.NavPaymentOrder
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
@@ -12,65 +12,46 @@ import com.tokopedia.usecase.coroutines.UseCase
  * Created by Fikry on 03/11/20.
  */
 class GetPaymentOrdersNavUseCase (
-        private val graphqlUseCase: GraphqlUseCase<PaymentTransactionData>
+        private val graphqlUseCase: GraphqlUseCase<Payment>
 ): UseCase<List<NavPaymentOrder>>(){
 
     private var params : Map<String, Any> = mapOf()
 
     init {
         val query = """
-            query GetOrderHistory(${'$'}input:UOHOrdersRequest!){
-              uohOrders(input:${'$'}input) {
-                orders {
-                  orderUUID
-                  status
-                  metadata {
-                    detailURL {
-                      appURL
-                    }
-                    status {
-                      label
-                      textColor
-                      bgColor
-                    }
-                    products {
-                      title
-                      imageURL
-                      inline1 {
-                        label
-                        textColor
-                        bgColor
-                      }
-                      inline2 {
-                        label
-                        textColor
-                        bgColor
-                      }
-                    }
-                  }
+            query PaymentQuery {
+              paymentQuery: paymentList(lang: "ID", cursor:"") {
+                paymentList: payment_list {
+                  merchantCode: merchant_code
+                  transactionID: transaction_id
+                  paymentAmount: payment_amount
+                  tickerMessage: ticker_message
+                  gatewayImg: gateway_img
+                  applink: app_link
                 }
+              }
             }
         """.trimIndent()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(generateParam())
-        graphqlUseCase.setTypeClass(PaymentTransactionData::class.java)
+        graphqlUseCase.setTypeClass(Payment::class.java)
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
     }
 
     override suspend fun executeOnBackground(): List<NavPaymentOrder> {
         return try {
-            val responseData = Success(graphqlUseCase.executeOnBackground().paymentList)
-            responseData.data.payment_list.map {
+            val responseData = Success(graphqlUseCase.executeOnBackground().paymentQuery)
+            return responseData.data.paymentList.map {
                 NavPaymentOrder(
                         statusText = "",
                         statusTextColor = "",
-                        paymentAmountText = it.payment_amount.toString(),
-                        descriptionText = it.ticker_message,
-                        imageUrl = it.gateway_img,
-                        id = it.transaction_id
+                        paymentAmountText = it.paymentAmount.toString(),
+                        descriptionText = it.tickerMessage,
+                        imageUrl = it.gatewayImg,
+                        id = it.transactionID,
+                        applink = it.applink
                 )
             }
-            listOf()
         } catch (e: Throwable){
             listOf()
         }
