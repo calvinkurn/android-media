@@ -15,17 +15,17 @@ import java.util.HashMap
 class FeaturedShopComponentCallback(val context: Context?, private val homeCategoryListener: HomeCategoryListener) : FeaturedShopListener{
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
         FeaturedShopTracking.sendFeaturedShopViewAllClick(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context, "${channelModel.channelHeader.applink}?source=homepage.dc_shop.0.${channelModel.id}")
+        RouteManager.route(context, "${channelModel.channelHeader.applink}?source=homepage.${channelModel.type}.0.${channelModel.id}")
     }
 
     override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
         FeaturedShopTracking.sendFeaturedShopViewAllCardClick(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context, "$applink?source=homepage.dc_shop.0.${channelModel.id}")
+        RouteManager.route(context, "$applink?source=homepage.${channelModel.type}.0.${channelModel.id}")
     }
 
     override fun onFeaturedShopBannerBackgroundClicked(channelModel: ChannelModel) {
         FeaturedShopTracking.sendFeaturedShopBackgroundClick(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context, "${channelModel.channelBanner.applink}?source=homepage.dc_shop.0.${channelModel.id}")
+        RouteManager.route(context, "${channelModel.channelBanner.applink}?source=homepage.${channelModel.type}.0.${channelModel.id}")
     }
 
     override fun onFeaturedShopItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
