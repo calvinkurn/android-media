@@ -117,7 +117,7 @@
                 },
                 "product_all_images": "[{\"file_name\":\"5513284_cb4a8c33-3854-41d8-be67-2504669ef2e7_850_850.jpg\",\"file_path\":\"product-1/2017/11/30/5513284\",\"status\":2}]",
                 "product_notes": "",
-                "product_quantity": 1,
+                "product_quantity": 2,
                 "product_weight_unit_code": 1,
                 "product_weight_unit_text": "gr",
                 "last_update_price": "1512021695",
@@ -478,7 +478,7 @@
               "flags": {
                 "pin": false
               },
-              "wallet_amount": 200000,
+              "wallet_amount": 0,
               "metadata": "",
               "mdr": 0,
               "credit_card": {
@@ -506,7 +506,7 @@
               "is_ovo_only_campaign": true,
               "ovo_additional_data": {
                 "ovo_activation": {
-                  "is_required": false,
+                  "is_required": true,
                   "button_title": "Aktivasi",
                   "error_message": "",
                   "error_ticker": "OVO kamu belum aktif. Silahkan aktifkan atau pilih pembayaran lain."
@@ -514,9 +514,8 @@
                 "ovo_top_up": {
                   "is_required": false,
                   "button_title": "Top-Up",
-                  "error_message": "Rp200.000. OVO Cash kamu tidak cukup.",
-                  "error_ticker": "OVO cash kamu tidak cukup. Silakan top up atau pilih pembayaran lain.",
-                  "is_hide_digital": 0
+                  "error_message": "Rp300.000. OVO Cash kamu tidak cukup.",
+                  "error_ticker": "OVO cash kamu tidak cukup. Silakan top up atau pilih pembayaran lain."
                 }
               }
             },
@@ -607,7 +606,8 @@
             "merchant_code": "tokopedia",
             "profile_code": "TKPD_DEFAULT",
             "signature": "f80ab707425ad0a0ca67d58a62f47ef5470d2ff1",
-            "change_cc_link": ""
+            "change_cc_link": "",
+            "callback_url": "https://api-staging.tokopedia.com/cart/v2/receiver"
           },
           "error_ticker": "",
           "prompt": {
