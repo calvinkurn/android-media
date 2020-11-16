@@ -36,6 +36,7 @@ include "features:discovery:wishlist_common"
 include "features:discovery:carousel_productcard"
 include "features:discovery:productcard_options"
 include "features:discovery:filter"
+include "features:home:searchbar"
 
 include "features:fintech:home_credit"
 include "features:fintech:saldo_details"

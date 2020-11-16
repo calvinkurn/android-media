@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/shop_page_main_profile_badge"
+            android:id="@+id/shop_page_main_profile_badge_old"
             android:contentDescription="@string/content_desc_shop_page_main_profile_badge"
             android:layout_width="@dimen/layout_lvl3"
             android:layout_height="@dimen/layout_lvl3"
@@ -51,25 +51,49 @@
             app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_image"
             app:layout_constraintEnd_toEndOf="@id/shop_page_main_profile_image" />
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/shop_page_main_profile_badge"
+            android:layout_width="@dimen/dp_16"
+            android:layout_height="@dimen/dp_16"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+            app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_name"
+            app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_name"
+            android:visibility="gone"
+            tools:visibility="visible"
+            tools:srcCompat="@drawable/ic_badge_shop_official"
+            />
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginLeft="@dimen/dp_12"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:layout_goneMarginLeft="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_16"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/clr_f531353b"
             app:layout_constrainedWidth="true"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
+            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_badge"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_4" />
-
+            app:typographyType="heading_4"
+            tools:text="Shop name"
+            />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/shop_page_chevron_shop_info"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_name"
+            app:layout_constraintTop_toTopOf="@id/shop_page_main_profile_name"
+            android:layout_marginTop="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="@id/shop_page_main_profile_name"
+            android:visibility="gone"
+            app:srcCompat="@drawable/ic_shop_page_chevron_shop_info"
+            tools:visibility="visible"
+            />
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/shop_page_main_profile_location_icon"
             android:layout_width="wrap_content"
@@ -79,8 +103,9 @@
             android:layout_marginTop="@dimen/dp_6"
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
             app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_name"
-            app:srcCompat="@drawable/ic_shop_location"
+            app:srcCompat="@drawable/ic_shop_location_old"
             android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -102,6 +127,7 @@
             app:typographyType="small"
             tools:text="Kab. Aceh Barat Daya"
             android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -114,7 +140,8 @@
             app:layout_constraintStart_toEndOf="@id/shop_page_main_profile_image"
             app:layout_constraintTop_toBottomOf="@id/shop_page_main_profile_location_icon"
             android:visibility="gone"
-            app:srcCompat="@drawable/ic_shop_follower" />
+            tools:visibility="visible"
+            app:srcCompat="@drawable/ic_shop_follower_old" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/shop_page_main_profile_follower"
@@ -135,6 +162,7 @@
             app:typographyType="small"
             tools:text="100rb Followers"
             android:visibility="gone"
+            tools:visibility="visible"
             />
 
         <com.tokopedia.unifycomponents.Label
