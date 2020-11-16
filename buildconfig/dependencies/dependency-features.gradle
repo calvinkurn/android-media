@@ -1,6 +1,5 @@
 ext {
 
-    // Sort and categorize alphabetically by folder name
     features = [
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
@@ -52,6 +51,7 @@ ext {
             rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             smartBills                      : ":features:recharge:smart_bills",
             voucherGame                     : ":features:recharge:voucher_game",
+            rechargeComponent               : ":features:recharge:recharge_component",
 
             commonTravel                    : ":features:travel:common_travel",
             flight                          : ":features:travel:flight",
@@ -241,4 +241,5 @@ ext {
             recharge_slice                  : ":features:recharge:recharge_slice",
             logintestapp                    : ":testapp-features:user:logintestapp"
     ]
+    // Sort and categorize alphabetically by folder name
 }

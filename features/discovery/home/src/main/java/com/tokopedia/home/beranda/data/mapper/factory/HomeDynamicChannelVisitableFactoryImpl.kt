@@ -10,12 +10,13 @@ import com.tokopedia.home.analytics.v2.RecommendationListTracking
 import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
-import com.tokopedia.home.beranda.domain.interactor.GetRechargeBUWidgetUseCase.WidgetSource
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.visitable.*
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -78,97 +79,101 @@ class HomeDynamicChannelVisitableFactoryImpl(
         dynamicChannelList.forEachIndexed { index, channel ->
             val position = index+1
             setDynamicChannelPromoName(position, channel)
-            when (channel.layout) {
-                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
-                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-                            isCombined = true)
-                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-                    createDynamicLegoBannerComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
-                    createDynamicChannel(channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
-                            isCombined = true)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
-                    )
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
-                    )
-                }
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
-                    createDynamicChannel(channel = channel)
-                    if (!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
-                }
-                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
-                    createRecommendationListCarouselComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    createMixLeftComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
-                    createProductHighlightComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {
-                    createPopularKeywordChannel(channel = channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> {
-                    createDynamicChannel(channel = channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> {
-                    createReviewWidget(channel = channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> {
-                    createPlayWidget(channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
-                    createMixTopComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> {
-                    createReminderWidget(ReminderEnum.RECHARGE)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
-                    createReminderWidget(ReminderEnum.SALAM)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_BU_WIDGET -> {
-                    createRechargeBUWidget(WidgetSource.TOPUP_BILLS, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
-                    createDynamicChannel(
-                            channel,
-                            trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
-                                    channel.grids.toList(),
-                                    userSessionInterface?.userId ?: "",
-                                    false,
-                                    channel
-                            ),
-                            isCombined = false
-                    )
-                }
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
-                    createTopAdsBannerModel(channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
-                    createLego4AutoComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> {
-                    createFeaturedShopComponent(channel, position, isCache)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> {
-                    createCarouselPlayWidget(channel, position)
+            if (position == 1) {
+                createRechargeBUWidget(WidgetSource.TOPUP_BILLS, position, isCache)
+            } else {
+                when (channel.layout) {
+                    DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
+                    DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
+                                isCombined = true)
+                    DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+                        createDynamicLegoBannerComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
+                        createDynamicChannel(channel)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
+                                isCombined = true)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
+                        )
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
+                        createDynamicChannel(
+                                channel = channel,
+                                trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
+                        )
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
+                        createDynamicChannel(channel = channel)
+                        if (!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
+                        createRecommendationListCarouselComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
+                        createMixLeftComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
+                        createProductHighlightComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {
+                        createPopularKeywordChannel(channel = channel)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> {
+                        createDynamicChannel(channel = channel)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_REVIEW -> {
+                        createReviewWidget(channel = channel)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> {
+                        createPlayWidget(channel)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> {
+                        createMixTopComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> {
+                        createReminderWidget(ReminderEnum.RECHARGE)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_SALAM_WIDGET -> {
+                        createReminderWidget(ReminderEnum.SALAM)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_RECHARGE_BU_WIDGET -> {
+                        createRechargeBUWidget(WidgetSource.TOPUP_BILLS, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
+                        createDynamicChannel(
+                                channel,
+                                trackingData = CategoryWidgetTracking.getCategoryWidgetBannerImpression(
+                                        channel.grids.toList(),
+                                        userSessionInterface?.userId ?: "",
+                                        false,
+                                        channel
+                                ),
+                                isCombined = false
+                        )
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> {
+                        createTopAdsBannerModel(channel)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_LEGO_4_AUTO -> {
+                        createLego4AutoComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_FEATURED_SHOP -> {
+                        createFeaturedShopComponent(channel, position, isCache)
+                    }
+                    DynamicHomeChannel.Channels.LAYOUT_PLAY_CAROUSEL_BANNER -> {
+                        createCarouselPlayWidget(channel, position)
+                    }
                 }
             }
         }

@@ -1,10 +1,8 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.factory
+package com.tokopedia.recharge_component.presentation.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeBUWidgetProductCardViewHolder
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselFeaturedShopCardDataModel
@@ -14,6 +12,8 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselE
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselFeaturedShopViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselProductCardViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselSeeMorePdpViewHolder
+import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetProductCardViewHolder
 
 /**
  * @author by resakemal on 12/11/20

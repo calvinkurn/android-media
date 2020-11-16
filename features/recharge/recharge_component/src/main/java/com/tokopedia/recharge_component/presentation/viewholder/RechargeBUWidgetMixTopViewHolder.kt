@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
+package com.tokopedia.recharge_component.presentation.viewholder
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -12,12 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
-import com.tokopedia.home.beranda.listener.RechargeBUWidgetListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.RechargeBUWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
@@ -35,6 +29,12 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
+import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -81,7 +81,7 @@ class RechargeBUWidgetMixTopViewHolder(
     override fun bind(element: RechargeBUWidgetDataModel) {
         data = element.data
         if (data.items.isNotEmpty()) {
-            isCacheData = element.isCache
+            isCacheData = element.isDataCache
             mappingView(data)
 
             if (!isCacheData) {

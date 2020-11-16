@@ -3,8 +3,9 @@ package com.tokopedia.home.beranda.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -80,19 +81,5 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
     fun setParams(widgetSource: WidgetSource) {
         params.parameters.clear()
         params.putString(PARAM_WIDGET_SOURCE, widgetSource.source)
-    }
-
-    enum class WidgetSource(val source: String) {
-        TOPUP_BILLS("topup_dan_tagihan"),
-        FINANCE("keuangan"),
-        TRAVEL_ENTERTAINMENT("travel_dan_entertainment");
-
-//        companion object {
-//            val values = values()
-//
-//            fun findSourceByString(sourceString: String): WidgetSource? {
-//                return values.firstOrNull { it.source == sourceString }
-//            }
-//        }
     }
 }

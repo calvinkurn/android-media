@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
+package com.tokopedia.recharge_component.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -11,12 +11,12 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 

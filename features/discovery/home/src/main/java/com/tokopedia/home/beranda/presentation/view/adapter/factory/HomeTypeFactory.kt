@@ -57,6 +57,4 @@ interface HomeTypeFactory {
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
 
     fun type(dataModel: CarouselPlayWidgetDataModel): Int
-
-    fun type(rechargeBUWidgetDataModel: RechargeBUWidgetDataModel): Int
 }

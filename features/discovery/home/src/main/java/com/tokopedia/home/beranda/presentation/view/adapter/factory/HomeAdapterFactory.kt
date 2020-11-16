@@ -29,6 +29,11 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.recharge_component.RechargeComponentTypeFactory
+import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.presentation.viewholder.RechargeBUWidgetMixLeftViewHolder
+import com.tokopedia.recharge_component.presentation.viewholder.RechargeBUWidgetMixTopViewHolder
 import java.util.*
 
 /**
@@ -54,7 +59,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener
 ) :
         BaseAdapterTypeFactory(),
-        HomeTypeFactory, HomeComponentTypeFactory{
+        HomeTypeFactory, HomeComponentTypeFactory, RechargeComponentTypeFactory {
 
     private val productLayout = HashSet(
             listOf(

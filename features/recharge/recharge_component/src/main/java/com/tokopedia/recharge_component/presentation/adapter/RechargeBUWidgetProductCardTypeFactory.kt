@@ -1,7 +1,7 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.factory
+package com.tokopedia.recharge_component.presentation.adapter
 
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
 import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactory
+import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 
 interface RechargeBUWidgetProductCardTypeFactory: CommonCarouselProductCardTypeFactory {
     fun type(rechargeBUWidgetProductCardModel: RechargeBUWidgetProductCardModel) : Int

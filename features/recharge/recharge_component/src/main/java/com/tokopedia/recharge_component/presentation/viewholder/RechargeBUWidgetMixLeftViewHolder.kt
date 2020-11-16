@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
+package com.tokopedia.recharge_component.presentation.viewholder
 
 import android.annotation.SuppressLint
 import android.view.Gravity
@@ -10,21 +10,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.home.R
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargeBUWidgetProductCardModel
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
-import com.tokopedia.home.beranda.listener.RechargeBUWidgetListener
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.RechargeBUWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.factory.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
-import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselProductCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
-import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCarouselProductCardTypeFactoryImpl
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.ImageHandler
 import com.tokopedia.home_component.util.loadImage
@@ -36,16 +28,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.recharge_component.R
+import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
+import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlin.math.abs
-
-/**
- * @author by yoasfs on 2020-03-05
- */
 
 @SuppressLint("SyntheticAccessor")
 class RechargeBUWidgetMixLeftViewHolder(itemView: View,
@@ -82,7 +76,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     override fun bind(element: RechargeBUWidgetDataModel) {
         data = element.data
         if (data.items.isNotEmpty()) {
-            isCacheData = element.isCache
+            isCacheData = element.isDataCache
             initVar()
             setupBackground(data.mediaUrl, data.option2)
             setupList(data)

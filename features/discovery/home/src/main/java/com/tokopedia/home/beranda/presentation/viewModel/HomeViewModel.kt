@@ -22,7 +22,6 @@ import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
 import com.tokopedia.home.beranda.domain.model.InjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
-import com.tokopedia.home.beranda.domain.model.recharge_bu_widget.RechargePerso
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.domain.model.salam_widget.SalamWidget
@@ -51,6 +50,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
+import com.tokopedia.recharge_component.model.WidgetSource
+import com.tokopedia.recharge_component.model.RechargePerso
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -1024,7 +1026,7 @@ open class HomeViewModel @Inject constructor(
         }){}
     }
 
-    fun getRechargeBUWidget(source: GetRechargeBUWidgetUseCase.WidgetSource) {
+    fun getRechargeBUWidget(source: WidgetSource) {
         if(getRechargeBUWidgetJob?.isActive == true) return
         getRechargeBUWidgetJob = launchCatchError(coroutineContext, block = {
             getRechargeBUWidget.get().setParams(source)

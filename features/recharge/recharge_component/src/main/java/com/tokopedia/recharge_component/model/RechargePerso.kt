@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.domain.model.recharge_bu_widget
+package com.tokopedia.recharge_component.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
