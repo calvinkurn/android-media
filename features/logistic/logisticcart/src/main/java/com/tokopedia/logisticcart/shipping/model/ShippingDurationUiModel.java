@@ -21,6 +21,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
     private boolean isCodAvailable;
     private String codText;
     private boolean showShippingInformation;
+    private MerchantVoucherModel merchantVoucherModel;
     private int etaErrorCode;
 
     public ShippingDurationUiModel() {
@@ -126,6 +127,14 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
 
     public void setShowShippingInformation(boolean showShippingInformation) {
         this.showShippingInformation = showShippingInformation;
+    }
+
+    public MerchantVoucherModel getMerchantVoucherModel() {
+        return merchantVoucherModel;
+    }
+
+    public void setMerchantVoucherModel(MerchantVoucherModel merchantVoucherModel) {
+        this.merchantVoucherModel = merchantVoucherModel;
     }
 
     public int getEtaErrorCode() {

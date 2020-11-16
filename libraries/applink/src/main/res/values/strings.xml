@@ -60,6 +60,7 @@
 
     <string name="fingerprint_onboarding">Daftar Fingerprint</string>
     <string name="title_otp">Verifikasi</string>
+    <string name="title_loginphone">Login Phone</string>
 
     <!--Transaction-->
     <string name="title_one_click_checkout">Beli Langsung</string>
@@ -111,4 +112,9 @@
 
     <!-- Product Review -->
     <string name="title_product_review">Product Review</string>
+
+    <!-- Review -->
+    <string name="title_review_inbox">Review Inbox</string>
+    <string name="title_review_detail">Review Detail</string>
+    <string name="title_create_review">Create Review</string>
 </resources>

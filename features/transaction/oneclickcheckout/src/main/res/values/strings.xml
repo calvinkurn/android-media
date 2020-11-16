@@ -90,4 +90,11 @@
     <string name="lbl_installment_payment_minimum_before_fee">Min. %1$s sebelum biaya layanan</string>
     <string name="lbl_installment_payment_monthly">%1$s/bulan</string>
     <string name="lbl_choose_installment_type">Pilih Jenis Pembayaran</string>
+
+    <string name="lbl_activate_ovo_now">Aktivasi OVO Sekarang</string>
+    <string name="message_ovo_activation_success">Yay, aktivasi OVO berhasil. Sekarang kamu bisa bayar pakai OVO.</string>
+
+    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
+    <string name="message_ovo_activation_failed">Yaah, aktivasi OVO gagal. Coba lagi dalam beberapa saat.</string>
+    <string name="button_ok_message_ovo_activation">Oke</string>
 </resources>
