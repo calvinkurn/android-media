@@ -92,9 +92,6 @@ class NotificationViewModel @Inject constructor(
                 },
                 {
                     _mutateNotificationItems.value = Fail(it)
-                    if (!hasFilter() && role == RoleType.BUYER) {
-                        loadTopAdsBannerData()
-                    }
                 }
         )
     }

@@ -34,8 +34,13 @@ class NotifcenterDetailUseCase @Inject constructor(
             onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
+        val fields = if (filter == NotificationFilterType.NONE) {
+            arrayOf("new")
+        } else {
+            emptyArray()
+        }
         val params = generateParam(
-                filter, role, "", arrayOf("new")
+                filter, role, "", fields
         )
         val needSectionTitle = !hasFilter(filter)
         val needLoadMoreButton = needSectionTitle

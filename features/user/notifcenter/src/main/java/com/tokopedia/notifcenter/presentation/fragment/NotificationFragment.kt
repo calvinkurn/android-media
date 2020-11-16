@@ -51,6 +51,7 @@ import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -162,8 +163,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                renderNotifications(it.data)
+            when (it) {
+                is Success -> renderNotifications(it.data)
+                is Fail -> showGetListError(it.throwable)
+                else -> {
+                }
             }
         })
 
