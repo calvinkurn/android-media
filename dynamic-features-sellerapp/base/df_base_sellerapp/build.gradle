@@ -63,7 +63,6 @@ dependencies {
     implementation project(rootProject.ext.features.layanan)
 
     //Content
-//    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.playBroadcaster)
 
     //Discovery
@@ -75,6 +74,7 @@ dependencies {
     //Merchant
 //    implementation project(rootProject.ext.features.report)
 //    implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
 
     //User
