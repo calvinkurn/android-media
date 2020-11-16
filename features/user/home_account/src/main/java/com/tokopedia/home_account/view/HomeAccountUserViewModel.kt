@@ -134,7 +134,7 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private fun saveLocallyWallet(accountDataModel: UserAccountDataModel) {
         walletPref.saveWallet(accountDataModel.wallet)
-        accountDataModel.vccUserStatus.let{
+        accountDataModel?.vccUserStatus?.let{
             walletPref.tokoSwipeUrl = it.redirectionUrl
         }
     }
