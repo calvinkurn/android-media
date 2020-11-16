@@ -214,9 +214,9 @@ class SellerHomeViewModel @Inject constructor(
                 getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
             })
-            _multiLineGraphWidgetData.postValue(result)
+            _multiLineGraphWidgetData.value = result
         }, onError = {
-            _multiLineGraphWidgetData.postValue(Fail(it))
+            _multiLineGraphWidgetData.value = Fail(it)
         })
     }
 
@@ -238,9 +238,9 @@ class SellerHomeViewModel @Inject constructor(
                 getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.get().executeOnBackground()
             })
-            _shopLocation.value = result
+            _shopLocation.postValue(result)
         }, onError = {
-            _shopLocation.value = Fail(it)
+            _shopLocation.postValue(Fail(it))
         })
     }
 }
