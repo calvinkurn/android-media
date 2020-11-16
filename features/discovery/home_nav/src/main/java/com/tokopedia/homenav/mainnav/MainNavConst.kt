@@ -6,6 +6,7 @@ object MainNavConst {
         const val BU_ICON = 1
         const val ORDER = 2
         const val USER_MENU = 3
+        const val HOME = 4
     }
 
     object MainNavState{

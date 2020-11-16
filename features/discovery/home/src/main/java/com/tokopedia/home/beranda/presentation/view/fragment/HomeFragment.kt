@@ -354,6 +354,8 @@ open class HomeFragment : BaseDaggerFragment(),
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
+        getAbTestPlatform().fetch(null)
+        registerBroadcastReceiverTokoCash()
     }
 
     fun callSubordinateTasks() {
@@ -623,7 +625,6 @@ open class HomeFragment : BaseDaggerFragment(),
         initRefreshLayout()
         subscribeHome()
         initEggTokenScrollListener()
-        registerBroadcastReceiverTokoCash()
         floatingTextButton.setOnClickListener { view: View? ->
             scrollToRecommendList()
             HomePageTracking.eventClickJumpRecomendation()

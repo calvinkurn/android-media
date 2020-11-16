@@ -13,6 +13,7 @@
     <string name="content_desc_btn_notification">button notification</string>
 
     <string name="title_category">Kategori</string>
+    <string name="title_main_nav">Menu Utama</string>
 
     <string name="btn_login">Masuk</string>
     <string name="btn_register">Daftar</string>
@@ -21,6 +22,9 @@
     <string name="account_home_shop_name_card">Toko Saya: <![CDATA[<b><font color=#03AC0E>%1$s<font></b>]]></string>
 
     <string name="host_navigation">navigation</string>
+
+    <string name="menu_home_back_to_home">Kembali ke Home</string>
+
     <string name="menu_user_menu_wishlist">Wishlist</string>
     <string name="menu_user_menu_favorite_shop">Toko Favorit</string>
     <string name="menu_user_menu_recent_view">Terakhir Dilihat</string>

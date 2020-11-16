@@ -20,6 +20,7 @@ class ClientMenuGenerator(val context: Context, val isLoggedIn: Boolean = false)
         val ID_ALL_TRANSACTION = 908
         val ID_TICKET = 909
         val ID_REVIEW = 910
+        val ID_HOME = 911
 
         val ID_OPEN_SHOP_TICKER = 801
     }
@@ -40,6 +41,7 @@ class ClientMenuGenerator(val context: Context, val isLoggedIn: Boolean = false)
             ID_ALL_TRANSACTION -> return getAllTransactionMenu(notifCount, sectionId)
             ID_TICKET -> return getTicketMenu(notifCount, sectionId)
             ID_REVIEW -> return getReviewMenu(notifCount, sectionId)
+            ID_HOME -> return getHomeMenu(notifCount, sectionId)
         }
         return HomeNavMenuViewModel()
     }
@@ -156,6 +158,17 @@ class ClientMenuGenerator(val context: Context, val isLoggedIn: Boolean = false)
                 srcIconId = IconUnify.STAR,
                 itemTitle = context.getString(R.string.menu_transaction_menu_review),
                 applink = ApplinkConst.REPUTATION.needLoginValidation(),
+                notifCount = notifCount,
+                sectionId = sectionId
+        )
+    }
+
+    private fun getHomeMenu(notifCount: String, sectionId: Int): HomeNavMenuViewModel {
+        return HomeNavMenuViewModel(
+                id = ID_HOME,
+                srcIconId = IconUnify.HOME,
+                itemTitle = context.getString(R.string.menu_home_back_to_home),
+                applink = ApplinkConst.HOME,
                 notifCount = notifCount,
                 sectionId = sectionId
         )

@@ -281,6 +281,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun setToolbarTitle(title: String) {
         toolbarTitle = title
+        showTitle()
     }
 
     fun setCustomViewContentRef(viewRef: Int) {

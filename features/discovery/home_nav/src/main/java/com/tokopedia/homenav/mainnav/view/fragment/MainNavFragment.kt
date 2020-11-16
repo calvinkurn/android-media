@@ -37,9 +37,11 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.activity_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -84,6 +86,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
+            it.setToolbarTitle(getString(R.string.title_main_nav))
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE)
+        }
         return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
 
