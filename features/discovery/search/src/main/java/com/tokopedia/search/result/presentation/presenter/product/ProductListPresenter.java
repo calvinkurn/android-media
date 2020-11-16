@@ -5,7 +5,6 @@ import android.net.Uri;
 import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
@@ -22,8 +21,8 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
@@ -62,6 +61,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
@@ -161,6 +161,8 @@ final class ProductListPresenter
     private String pageId = "";
     private String pageTitle = "";
     private String autoCompleteApplink = "";
+    private boolean isGlobalNavWidgetAvailable = false;
+    private boolean isShowHeadlineAdsBasedOnGlobalNav = false;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -172,6 +174,8 @@ final class ProductListPresenter
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
     private int firstProductPosition = 0;
     private boolean hasFullThreeDotsOptions = false;
+    @Nullable private CpmModel cpmModel = null;
+    @Nullable private List<CpmData> cpmDataList = null;
 
     @Inject
     ProductListPresenter(
@@ -537,6 +541,7 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productViewModel));
         productList.addAll(list);
 
+        processHeadlineAds(searchParameter, list);
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
         processBroadMatch(searchProductModel.getSearchProduct(), list);
@@ -1098,11 +1103,13 @@ final class ProductListPresenter
 
         addPageTitle(list);
 
-        boolean isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
+        isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
 
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
+
+            isShowHeadlineAdsBasedOnGlobalNav = productViewModel.getGlobalNavViewModel().getIsShowTopAds();
         }
 
         if (!isTickerHasDismissed
@@ -1121,18 +1128,16 @@ final class ProductListPresenter
             getView().trackEventImpressionBannedProducts(false);
         }
 
-        if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel) && !isLocalSearch()) {
-            if (!isGlobalNavWidgetAvailable || productViewModel.getGlobalNavViewModel().getIsShowTopAds()) {
-                CpmViewModel cpmViewModel = new CpmViewModel();
-                cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-                list.add(cpmViewModel);
-            }
+        if(productViewModel.getCpmModel() != null) {
+            cpmModel = productViewModel.getCpmModel();
+            cpmDataList = productViewModel.getCpmModel().getData();
         }
 
         topAdsCount = 1;
         productList = createProductItemVisitableList(productViewModel);
-        firstProductPosition = list.size();
         list.addAll(productList);
+
+        processHeadlineAds(searchParameter, list);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
             additionalParams = productViewModel.getAdditionalParams();
@@ -1148,6 +1153,8 @@ final class ProductListPresenter
 
         addSearchInTokopedia(searchProduct, list);
 
+        firstProductPosition = getFirstProductPosition(list);
+
         getView().removeLoading();
         getView().setProductList(list);
         getView().backToTop();
@@ -1158,6 +1165,14 @@ final class ProductListPresenter
         }
 
         getView().stopTracePerformanceMonitoring();
+    }
+
+    private int getFirstProductPosition(List<Visitable> list) {
+        if (productList.isEmpty()) return 0;
+
+        int firstProductPosition = list.indexOf(productList.get(0));
+
+        return Math.max(firstProductPosition, 0);
     }
 
     private void addPageTitle(List<Visitable> list) {
@@ -1199,13 +1214,44 @@ final class ProductListPresenter
                 && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText());
     }
 
-    private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
-        if (productViewModel.getCpmModel().getData().isEmpty()) {
-            return false;
+    private void processHeadlineAds(Map<String, Object> searchParameter, List<Visitable> visitableList) {
+        boolean canProcessHeadlineAds = isHeadlineAdsAllowed() && cpmDataList != null && cpmDataList.size() > 0;
+
+        if (!canProcessHeadlineAds) return;
+
+        Iterator<CpmData> cpmDataIterator = cpmDataList.iterator();
+
+        while(cpmDataIterator.hasNext()) {
+            CpmData data = cpmDataIterator.next();
+            int position = data.getCpm() == null ? -1 : data.getCpm().getPosition();
+
+            if (position < 0 || !shouldShowCpmShop(data)) {
+                cpmDataIterator.remove();
+                continue;
+            }
+
+            if (position > productList.size()) continue;
+
+            try {
+                CpmViewModel cpmViewModel = createCpmViewModel(data);
+
+                if (position == 0 || position == 1) processHeadlineAdsAtTop(visitableList, cpmViewModel);
+                else processHeadlineAdsAtPosition(visitableList, position, cpmViewModel);
+
+                cpmDataIterator.remove();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), exception);
+            }
         }
+    }
 
-        CpmData cpmData = productViewModel.getCpmModel().getData().get(0);
+    private boolean isHeadlineAdsAllowed() {
+        return !isLocalSearch()
+                && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav);
+    }
 
+    private boolean shouldShowCpmShop(CpmData cpmData) {
         if (cpmData == null) {
             return false;
         }
@@ -1231,6 +1277,46 @@ final class ProductListPresenter
 
     private boolean isViewWillRenderCpmDigital(Cpm cpm) {
         return cpm.getTemplateId() == 4;
+    }
+
+    @Nullable
+    private CpmViewModel createCpmViewModel(CpmData cpmData) {
+        if (cpmModel == null) return null;
+
+        CpmModel cpmForViewModel = createCpmForViewModel(cpmData);
+
+        if (cpmForViewModel == null) return null;
+
+        CpmViewModel cpmViewModel = new CpmViewModel();
+        cpmViewModel.setCpmModel(cpmForViewModel);
+
+        return cpmViewModel;
+    }
+
+    @Nullable
+    private CpmModel createCpmForViewModel(CpmData cpmData) {
+        if (cpmModel == null) return null;
+
+        CpmModel cpmForViewModel = new CpmModel();
+        cpmForViewModel.setHeader(cpmModel.getHeader());
+        cpmForViewModel.setStatus(cpmModel.getStatus());
+        cpmForViewModel.setError(cpmModel.getError());
+
+        List<CpmData> cpmList = new ArrayList<>();
+        cpmList.add(cpmData);
+        cpmForViewModel.setData(cpmList);
+
+        return cpmForViewModel;
+    }
+
+    private void processHeadlineAdsAtTop(List<Visitable> visitableList, CpmViewModel cpmViewModel) {
+        Visitable product = productList.get(0);
+        visitableList.add(visitableList.indexOf(product), cpmViewModel);
+    }
+
+    private void processHeadlineAdsAtPosition(List<Visitable> visitableList, int position, CpmViewModel cpmViewModel) {
+        Visitable product = productList.get(position - 1);
+        visitableList.add(visitableList.indexOf(product) + 1, cpmViewModel);
     }
 
     private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage, String liteUrl) {

@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,10 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -143,6 +141,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: UnifyButton
+    lateinit var vDisabledBtnToShipment: View
     lateinit var tvTotalPrice: TextView
     lateinit var rlContent: RelativeLayout
     lateinit var bottomLayout: LinearLayout
@@ -499,6 +498,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         appBarLayout = view.findViewById(R.id.app_bar_layout)
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
+        vDisabledBtnToShipment = view.findViewById(R.id.v_disabled_go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
         rlContent = view.findViewById(R.id.rl_content)
         layoutGlobalError = view.findViewById(R.id.layout_global_error)
@@ -1003,14 +1003,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+                ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
     }
 
     override fun onDisabledCartItemProductClicked(cartItemData: CartItemData) {
-        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName ?: "")
+        cartPageAnalytics.eventClickAtcCartClickProductName(cartItemData.originData?.productName
+                ?: "")
         cartItemData.originData?.productId?.let {
             routeToProductDetailPage(it)
         }
@@ -1383,6 +1385,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickMoreLikeThis()
     }
 
+    override fun onFollowShopClicked(shopId: String, errorType: String) {
+        cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
+        dPresenter.followShop(shopId)
+    }
+
     override fun onSeeErrorProductsClicked() {
         cartRecyclerView.layoutManager?.let {
             val linearSmoothScroller = object : LinearSmoothScroller(cartRecyclerView.context) {
@@ -1421,10 +1428,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
         cartAdapter.checkForShipmentForm()
         dPresenter.saveCheckboxState(cartAdapter.allCartItemHolderData)
+
+        val params = generateParamValidateUsePromoRevamp(checked, -1, -1, false)
+        if (isNeedHitUpdateCartAndValidateUse(params)) {
+            renderPromoCheckoutLoading()
+            dPresenter.doUpdateCartAndValidateUse(params)
+        } else {
+            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
+        }
     }
 
     override fun onCartDataEnableToCheckout() {
         if (isAdded) {
+            vDisabledBtnToShipment.gone()
             btnToShipment.isEnabled = true
             btnToShipment.setOnClickListener { checkGoToShipment("") }
         }
@@ -1433,6 +1449,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartDataDisableToCheckout() {
         if (isAdded) {
             btnToShipment.isEnabled = false
+            vDisabledBtnToShipment.show()
+            vDisabledBtnToShipment.setOnClickListener {
+                if (cartAdapter.allAvailableCartItemData.isNotEmpty()) {
+                    showToastMessageGreen(getString(R.string.message_no_cart_item_selected))
+                }
+            }
         }
     }
 
@@ -1477,14 +1499,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun setProductImageAnimationData(imageView: ImageView, isUnavailableItem: Boolean) {
-        val imageSource = imageView.drawable.toBitmap()
+        val imageSource: Bitmap? = imageView.drawable?.toBitmap()
         val location = IntArray(2)
         imageView.getLocationOnScreen(location)
         val xCoordinate = location[0]
         val yCoordinate = location[1]
 
         tmpAnimatedImage.apply {
-            setImageBitmap(imageSource)
+            imageSource?.let {
+                setImageBitmap(imageSource)
+            }
             if (isUnavailableItem) {
                 val size = resources.getDimensionPixelOffset(R.dimen.dp_56)
                 layoutParams.width = size
@@ -2487,6 +2511,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun showToastMessageRed(throwable: Throwable, ctaText: String, ctaClickListener: View.OnClickListener?) {
+        var errorMessage = throwable.message ?: ""
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        showToastMessageRed(errorMessage, ctaText, ctaClickListener)
+    }
+
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
         if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
@@ -2509,12 +2542,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener) {
+    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener?) {
         val toasterInfo = Toaster
         view?.let { v ->
             if (action.isNotBlank()) {
+                var tmpCtaClickListener = View.OnClickListener { }
+
+                if (onClickListener != null) {
+                    tmpCtaClickListener = onClickListener
+                }
+
                 toasterInfo.toasterCustomCtaWidth = v.resources.getDimensionPixelOffset(R.dimen.dp_100)
-                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, onClickListener)
+                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, tmpCtaClickListener)
             } else {
                 toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
             }
@@ -3073,16 +3112,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (isNeedHitUpdateCartAndValidateUse(params)) {
             renderPromoCheckoutLoading()
             dPresenter.doUpdateCartAndValidateUse(params)
-        }
-    }
-
-    override fun onCartShopNameChecked(isAllChecked: Boolean) {
-        val params = generateParamValidateUsePromoRevamp(isAllChecked, -1, -1, false)
-        if (isNeedHitUpdateCartAndValidateUse(params)) {
-            renderPromoCheckoutLoading()
-            dPresenter.doUpdateCartAndValidateUse(params)
-        } else {
-            updatePromoCheckoutManualIfNoSelected(getAllAppliedPromoCodes(params))
         }
     }
 

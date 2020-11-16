@@ -109,7 +109,8 @@ class ReceiverNotifFragment : BaseOtpFragment(), IOnBackPressed {
                     verifyPushNotifData.imglink,
                     verifyPushNotifData.messageTitle,
                     verifyPushNotifData.messageBody,
-                    verifyPushNotifData.ctaType
+                    verifyPushNotifData.ctaType,
+                    verifyPushNotifData.status
             )
         }
     }
@@ -164,12 +165,13 @@ class ReceiverNotifFragment : BaseOtpFragment(), IOnBackPressed {
         return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
     }
 
-    private fun goToResultNotif(imglink: String, messageTitle: String, messageBody: String, ctaType: String) {
+    private fun goToResultNotif(imglink: String, messageTitle: String, messageBody: String, ctaType: String, status: String) {
         val intent = Intent(context, ResultNotifActivity::class.java)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IMG_LINK, imglink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_TITLE, messageTitle)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MESSAGE_BODY, messageBody)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_CTA_TYPE, ctaType)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_STATUS, status)
         startActivity(intent)
         activity?.finish()
     }

@@ -74,5 +74,6 @@ object Constants {
     const val ITEM_POSITION = "pos"
     const val KEYWORD_ID = "keywordId"
     const val KEYWORD_TYPE = "keywordType"
+    const val IS_DATA_CHANGE = "dataChange"
 
 }

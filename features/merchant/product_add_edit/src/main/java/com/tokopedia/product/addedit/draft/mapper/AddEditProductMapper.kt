@@ -7,8 +7,10 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
+import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.feature.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.product.manage.common.feature.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
@@ -69,6 +71,9 @@ object AddEditProductMapper {
         productDraft.detailInputModel.wholesaleList = productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
             DraftWholeSaleInputModel(wholeSale.price, wholeSale.quantity)
         }
+        productDraft.detailInputModel.productShowCases = productInputModel.detailInputModel.productShowCases.map {showCaseItem ->
+            ShowCaseInputModel(showcaseId = showCaseItem.showcaseId, showcaseName = showCaseItem.showcaseName)
+        }
         productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
             productDescription = productInputModel.descriptionInputModel.productDescription
@@ -118,6 +123,9 @@ object AddEditProductMapper {
         }
         productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
             WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
+        }
+        productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
+            ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
         }
         productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {

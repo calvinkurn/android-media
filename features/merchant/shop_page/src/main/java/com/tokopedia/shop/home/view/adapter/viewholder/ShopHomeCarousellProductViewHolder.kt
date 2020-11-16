@@ -19,7 +19,7 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 
 /**
  * Created by normansyahputa on 2/22/18.
@@ -77,7 +77,7 @@ class ShopHomeCarousellProductViewHolder(
         }
     }
 
-    private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductViewModel>) {
+    private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
         recyclerView?.bindCarouselProductCardViewGrid(
                 productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(

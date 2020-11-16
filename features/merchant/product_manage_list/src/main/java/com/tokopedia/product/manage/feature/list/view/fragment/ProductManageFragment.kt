@@ -130,6 +130,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.*
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.Companion.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -1945,7 +1946,10 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
     }
 
     private fun goToCreateTopAds() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+        val intent = RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_CREATE_ADS).apply {
+            putExtra(DIRECTED_FROM_MANAGE_OR_PDP,true)
+        }
+        startActivity(intent)
     }
 
     private fun updateVariantStock(data: EditVariantResult) {

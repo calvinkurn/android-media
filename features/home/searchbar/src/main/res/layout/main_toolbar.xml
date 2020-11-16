@@ -52,7 +52,7 @@
                 android:maxLines="1"
                 android:singleLine="true"
                 android:ellipsize="end"
-                android:textColorHint="@android:color/darker_gray"
+                android:textColorHint="@color/Unify_N200"
                 android:background="@null"/>
 
         </LinearLayout>
