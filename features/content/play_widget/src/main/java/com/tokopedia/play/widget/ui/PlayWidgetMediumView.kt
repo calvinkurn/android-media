@@ -224,6 +224,7 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
 
     fun setData(data: PlayWidgetUiModel.Medium) {
         title.text = data.title
+        actionTitle.visibility = if (data.isActionVisible) View.VISIBLE else View.GONE
         actionTitle.text = data.actionTitle
         actionTitle.setOnClickListener {
             mAnalyticListener?.onClickViewAll(this)

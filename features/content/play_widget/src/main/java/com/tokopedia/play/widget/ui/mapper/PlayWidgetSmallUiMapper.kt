@@ -18,7 +18,7 @@ class PlayWidgetSmallUiMapper @Inject constructor(
             title = data.meta.widgetTitle,
             actionTitle = data.meta.buttonText,
             actionAppLink = data.meta.buttonApplink,
-            actionWebLink = data.meta.overlayImageWebLink,
+            isActionVisible = data.meta.isButtonVisible,
             config = configMapper.mapWidgetConfig(data),
             items = mapWidgetItem(data.data),
             useHeader = true

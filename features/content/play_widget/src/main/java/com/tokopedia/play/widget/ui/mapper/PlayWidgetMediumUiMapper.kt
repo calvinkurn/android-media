@@ -29,7 +29,7 @@ class PlayWidgetMediumUiMapper @Inject constructor(
                 title = data.meta.widgetTitle,
                 actionTitle = data.meta.buttonText,
                 actionAppLink = data.meta.buttonApplink,
-                actionWebLink = data.meta.overlayImageWebLink,
+                isActionVisible = data.meta.isButtonVisible,
                 background = widgetBackground,
                 config = configMapper.mapWidgetConfig(data),
                 items = mapWidgetItem(prevMediumModel?.items, data.data).toMutableList().apply {
