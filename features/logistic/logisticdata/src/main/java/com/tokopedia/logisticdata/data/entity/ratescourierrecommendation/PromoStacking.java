@@ -67,7 +67,10 @@ public class PromoStacking {
     private boolean hideShipperName;
     @SerializedName("cod")
     @Expose
-    private CodProductData cod;
+    private CodDataPromo cod;
+    @SerializedName("eta")
+    @Expose
+    private EstimatedTimeArrivalPromo eta;
 
     public Integer getIsPromo() {
         return isPromo;
@@ -221,11 +224,19 @@ public class PromoStacking {
         this.hideShipperName = hideShipperName;
     }
 
-    public CodProductData getCod() {
+    public CodDataPromo getCod() {
         return cod;
     }
 
-    public void setCod(CodProductData cod) {
+    public void setCod(CodDataPromo cod) {
         this.cod = cod;
+    }
+
+    public EstimatedTimeArrivalPromo getEta() {
+        return eta;
+    }
+
+    public void setEta(EstimatedTimeArrivalPromo eta) {
+        this.eta = eta;
     }
 }

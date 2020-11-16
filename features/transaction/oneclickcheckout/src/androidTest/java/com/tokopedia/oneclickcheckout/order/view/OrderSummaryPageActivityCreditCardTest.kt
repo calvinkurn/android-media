@@ -20,7 +20,7 @@ import org.junit.Test
 class OrderSummaryPageActivityCreditCardTest {
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -217,6 +217,9 @@ class OrderSummaryPageActivityCreditCardTest {
             assertInstallment("Bayar Penuh")
 
             assertPaymentButtonEnable(true)
+
+            // Temporary to prevent onClick not triggered
+            Thread.sleep(1000)
         } pay {
             assertGoToPayment(
                     redirectUrl = "https://www.tokopedia.com/payment",

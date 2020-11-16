@@ -5,7 +5,7 @@ apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 
 repositories {
-    maven { url 'https://hansel.io/maven' }
+    maven { url 'https://maven-hansel.tokopedia.com/maven' }
     mavenCentral()
     flatDir {
         dirs project(rootProject.ext.libraries.liveness_lib).file('libs')
@@ -15,7 +15,7 @@ repositories {
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
     }
     dependencies {

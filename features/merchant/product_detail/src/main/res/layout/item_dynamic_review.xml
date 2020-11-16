@@ -11,7 +11,7 @@
         android:id="@+id/review_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <include layout="@layout/partial_review_shimmering"
@@ -42,7 +42,7 @@
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl3"
         android:text="@string/label_see_all"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/txt_review_title"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/review_rating"
         app:layout_constraintLeft_toRightOf="@+id/review_rating"
@@ -124,7 +124,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:visibility="gone"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rating_review_pdp"
         app:typographyType="body_3"
@@ -142,7 +142,7 @@
         app:layout_goneMarginTop="@dimen/dp_8"
         app:layout_constraintTop_toBottomOf="@+id/txt_variant_review_pdp"
         app:typographyType="body_2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         tools:visibility="visible"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai headphone ini, saya dapat mendengarkan percakapan tetangga sebelah rumah.. Selengkapnya" />
 

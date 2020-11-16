@@ -198,6 +198,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return shopPageHomeTabLoadTimePerformanceCallback
     }
 
+    override fun invalidateMonitoringPlt() {
+        performanceMonitoringShop?.invalidate()
+    }
 
     override fun getShopPageProductTabLoadTimePerformanceCallback(): PageLoadTimePerformanceInterface? {
         return shopPageProductTabLoadTimePerformanceCallback

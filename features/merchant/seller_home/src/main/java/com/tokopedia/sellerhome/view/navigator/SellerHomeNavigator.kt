@@ -176,7 +176,11 @@ class SellerHomeNavigator(
                 transaction.add(R.id.sahContainer, it, tag)
 
                 if(it != selectedPage) {
-                    transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                    try {
+                        transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }
