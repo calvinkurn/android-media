@@ -1,8 +1,8 @@
-package com.tokopedia.entertainment.util
+package com.tokopedia.test.application.util
 
 import java.io.IOException
 
-object ResourceUtils {
+object ResourcePathUtil {
 
     fun getJsonFromResource(path: String): String {
         var json = ""

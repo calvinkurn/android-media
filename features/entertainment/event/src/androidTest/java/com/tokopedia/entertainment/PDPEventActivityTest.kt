@@ -15,12 +15,12 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.entertainment.pdp.activity.EventPDPActivity
-import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.test.application.espresso_component.CommonMatcher.getElementFromMatchAtPosition
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
+import com.tokopedia.test.application.util.ResourcePathUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -43,17 +43,17 @@ class PDPEventActivityTest {
         setupGraphqlMockResponse{
             addMockResponse(
                     KEY_QUERY_PDP_V3,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_PDP),
                     MockModelConfig.FIND_BY_CONTAINS)
 
             addMockResponse(
                     KEY_QUERY_CONTENT,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP_CONTENT),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_PDP_CONTENT),
                     MockModelConfig.FIND_BY_CONTAINS)
 
             addMockResponse(
                     KEY_TRAVEL_HOLIDAY,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_TRAVEL_HOLIDAY),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_TRAVEL_HOLIDAY),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
 

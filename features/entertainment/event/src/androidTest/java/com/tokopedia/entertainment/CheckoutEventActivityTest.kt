@@ -20,9 +20,9 @@ import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewH
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.entertainment.data.MockMetaData
-import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.ResourcePathUtil
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -48,12 +48,12 @@ class CheckoutEventActivityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_PDP_V3,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_CHECKOUT),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_CHECKOUT),
                     MockModelConfig.FIND_BY_CONTAINS)
 
             addMockResponse(
                     KEY_CONTENT,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_CHECKOUT_CONTENT),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_CHECKOUT_CONTENT),
                     MockModelConfig.FIND_BY_CONTAINS)
 
         }

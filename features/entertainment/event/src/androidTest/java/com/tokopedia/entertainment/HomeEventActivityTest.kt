@@ -25,9 +25,9 @@ import com.tokopedia.entertainment.home.adapter.viewholder.EventCarouselEventVie
 import com.tokopedia.entertainment.home.adapter.viewholder.EventGridEventViewHolder
 import com.tokopedia.entertainment.home.adapter.viewholder.EventLocationEventViewHolder
 import com.tokopedia.entertainment.home.fragment.EventHomeFragment
-import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.ResourcePathUtil
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import org.hamcrest.core.AllOf
 import org.hamcrest.core.IsNot
@@ -54,7 +54,7 @@ class HomeEventActivityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_HOME),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_HOME),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
         val targetContext = InstrumentationRegistry.getInstrumentation().targetContext

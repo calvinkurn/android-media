@@ -21,9 +21,9 @@ import com.tokopedia.entertainment.pdp.activity.EventPDPTicketActivity
 import com.tokopedia.entertainment.pdp.adapter.viewholder.PackageParentViewHolder
 import com.tokopedia.entertainment.pdp.fragment.EventPDPTicketFragment
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.ResourcePathUtil
 import org.hamcrest.core.AllOf
 import org.junit.After
 import org.junit.Before
@@ -47,17 +47,17 @@ class PDPTicketEventActivityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_QUERY_PDP_V3,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_PDP),
                     MockModelConfig.FIND_BY_CONTAINS)
 
             addMockResponse(
                     KEY_QUERY_CONTENT,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_PDP_CONTENT),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_PDP_CONTENT),
                     MockModelConfig.FIND_BY_CONTAINS)
 
             addMockResponse(
                     KEY_TRAVEL_HOLIDAY,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_TRAVEL_HOLIDAY),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_TRAVEL_HOLIDAY),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
 

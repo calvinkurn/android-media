@@ -24,6 +24,7 @@ import com.tokopedia.entertainment.search.adapter.viewholder.SearchLocationListV
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.ResourcePathUtil
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -45,7 +46,7 @@ class SearchEventActivityTest {
         setupGraphqlMockResponse{
             addMockResponse(
                     KEY_EVENT_CHILD,
-                    com.tokopedia.entertainment.util.ResourceUtils.getJsonFromResource(PATH_RESPONSE_SEARCH),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_SEARCH),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
 

@@ -19,9 +19,9 @@ import com.tokopedia.entertainment.search.activity.EventCategoryActivity
 import com.tokopedia.entertainment.search.adapter.viewholder.CategoryTextBubbleAdapter
 import com.tokopedia.entertainment.search.adapter.viewholder.EventGridAdapter
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.entertainment.util.ResourceUtils
 import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
+import com.tokopedia.test.application.util.ResourcePathUtil
 import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Before
@@ -44,7 +44,7 @@ class CategoryEventActivityTest {
         setupGraphqlMockResponse {
             addMockResponse(
                     KEY_EVENT_CHILD,
-                    ResourceUtils.getJsonFromResource(PATH_RESPONSE_CATEGORY),
+                    ResourcePathUtil.getJsonFromResource(PATH_RESPONSE_CATEGORY),
                     MockModelConfig.FIND_BY_CONTAINS)
         }
 
