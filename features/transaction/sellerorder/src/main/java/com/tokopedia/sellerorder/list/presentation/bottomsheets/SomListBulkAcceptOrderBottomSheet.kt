@@ -44,7 +44,7 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
                 adapter = this@SomListBulkAcceptOrderBottomSheet.adapter
                 layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
                 val divider = it.getResDrawable(R.drawable.waiting_payment_tips_divider)
-                addItemDecoration(SellerHomeTooltipItemDivider(divider ?: return))
+                addItemDecoration(SomListBulkAcceptItemDivider(divider ?: return))
             }
         }
     }
@@ -103,7 +103,7 @@ class SomListBulkAcceptOrderBottomSheet : BottomSheetUnify() {
         fun onBulkAcceptOrderButtonClicked()
     }
 
-    class SellerHomeTooltipItemDivider(private val mDivider: Drawable) : RecyclerView.ItemDecoration() {
+    class SomListBulkAcceptItemDivider(private val mDivider: Drawable) : RecyclerView.ItemDecoration() {
 
         override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
             val dividerLeft = parent.paddingLeft
