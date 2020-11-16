@@ -11,7 +11,7 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="0dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/som_list_empty_state_illustration"
+        app:srcCompat="@drawable/som_list_empty_state_with_no_filter_illustration"
         app:layout_constraintBottom_toTopOf="@id/tvEmptyStateTitle"
         app:layout_constraintDimensionRatio="1.334"
         app:layout_constraintEnd_toEndOf="parent"
