@@ -37,6 +37,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
@@ -114,6 +115,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -692,6 +694,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onSuccessLoginEmail() {
+        setPOCFingerprint()
         setSmartLock()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
@@ -871,7 +874,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
         partialRegisterInputView.showLoginEmailView(email)
         partialActionButton.setOnClickListener {
-            setPOCFingerprint()
             presenter.loginEmail(email, passwordEditText.text.toString())
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
@@ -1516,16 +1518,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private fun setPOCFingerprint() {
         val visorInstance = VisorFingerprintInstance()
-        var visorToken = ""
         visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
-                visorToken = token
+                presenter.submitVisorToken(token)
             }
 
             override fun onFailedInitToken(error: String) {
-
+                SnackbarManager.make(activity, error,Snackbar.LENGTH_SHORT)
             }
         })
+    }
+
+    override fun onSuccessSubmitVisorToken(message: String) {
+        SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
+    }
+
+    override fun onErrorSubmitVisorToken(message: String) {
+        SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
     }
 
     companion object {

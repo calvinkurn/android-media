@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.devicefingerprint.datavisor.usecase.SubmitDVTokenUseCase
 import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
@@ -55,7 +56,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
-                                                   private val userSession: UserSessionInterface)
+                                                   private val userSession: UserSessionInterface,
+                                                   private val submitDVTokenUseCase: SubmitDVTokenUseCase)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
@@ -332,6 +334,15 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             view.onGetDynamicBannerSuccess(it)
         }, onError = {
             view.onGetDynamicBannerError(it)
+        })
+    }
+
+    override fun submitVisorToken(token: String) {
+        submitDVTokenUseCase.setParams(token = token)
+        submitDVTokenUseCase.execute({
+            view.onSuccessSubmitVisorToken(it.deviceCrDetail.message)
+        },{
+            view.onSuccessSubmitVisorToken(it.localizedMessage)
         })
     }
 }

@@ -52,4 +52,5 @@ class DeviceFingerprintModule(val context: Context) {
     @DeviceFingerprintScope
     @Provides
     fun provideGraphqlRepository(): GraphqlRepository = Interactor.getInstance().graphqlRepository
+
 }
