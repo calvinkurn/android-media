@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.filter.presentation.activity
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.TypedValue
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +20,7 @@ import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottom
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import kotlinx.android.synthetic.main.activity_som_sub_filter.*
+import kotlinx.android.synthetic.main.item_widget_filter_date.view.*
 
 class SomSubFilterActivity : BaseSimpleActivity(),
         SomSubFilterCheckboxAdapter.SomSubCheckboxFilterListener, SomSubFilterRadioButtonAdapter.SomSubRadioButtonFilterListener {
@@ -32,7 +33,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         const val KEY_SOM_LIST_FILTER_CHIPS = "key_som_list_filter"
         const val KEY_CACHE_MANAGER_ID = "key_cache_manager_id"
         const val ALL_FILTER = "Semua"
-        const val SIZE_ACTION_RESET = 14f
 
         @JvmStatic
         fun newInstance(context: FragmentActivity?,
@@ -73,7 +73,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         somSubFilterList = intent?.getParcelableArrayListExtra(KEY_SOM_LIST_FILTER_CHIPS)
                 ?: arrayListOf()
         super.onCreate(savedInstanceState)
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         btnSaveSubFilter()
         setToolbarSubFilter()
         setToggleResetSubFilter()
@@ -86,7 +86,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun initAdapter() {
-        rvSomSubFilter.layoutManager = LinearLayoutManager(this@SomSubFilterActivity)
+        rvSomSubFilter.layoutManager = LinearLayoutManager(this)
         when (idFilter) {
             SomConsts.FILTER_STATUS_ORDER -> {
                 subFilterRadioButtonAdapter = SomSubFilterRadioButtonAdapter(this)
@@ -124,7 +124,8 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
                     som_sub_filter_toolbar.isShowShadow = newState != RecyclerView.SCROLL_STATE_IDLE
-                } catch (e: IndexOutOfBoundsException) { }
+                } catch (e: IndexOutOfBoundsException) {
+                }
             }
         })
     }
@@ -145,14 +146,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun isSelectedSubFilter(): Boolean {
-        when (idFilter) {
-            SomConsts.FILTER_STATUS_ORDER -> {
-                somSubFilterList = subFilterRadioButtonAdapter?.getSubFilterList()
-            }
-            SomConsts.FILTER_TYPE_ORDER, SomConsts.FILTER_COURIER -> {
-                somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
-            }
-        }
         somSubFilterList?.filter { it.idFilter == idFilter }?.forEach {
             if (it.isSelected) {
                 return true
@@ -167,29 +160,41 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                 btnSaveSubFilter.isEnabled = true
                 actionTextView?.show()
                 actionText = getString(R.string.reset)
-                actionTextView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, SIZE_ACTION_RESET)
                 actionTextView?.setOnClickListener {
-                    somSubFilterList?.find { it.idFilter == idFilter }?.let {
-                        when (it.idFilter) {
-                            SomConsts.FILTER_STATUS_ORDER -> {
-                                somListGetOrderListParam.statusList = emptyList()
-                                subFilterRadioButtonAdapter?.resetRadioButtonFilter()
-                            }
-                            SomConsts.FILTER_TYPE_ORDER -> {
-                                somListGetOrderListParam.orderTypeList = emptyList()
-                                subFilterCheckboxAdapter?.resetCheckboxFilter()
-                            }
-                            SomConsts.FILTER_COURIER -> {
-                                somListGetOrderListParam.shippingList = emptyList()
-                                subFilterCheckboxAdapter?.resetCheckboxFilter()
-                            }
-                            else -> { }
+                    when (idFilter) {
+                        SomConsts.FILTER_STATUS_ORDER -> {
+                            somListGetOrderListParam.statusList = emptyList()
+                            subFilterRadioButtonAdapter?.resetRadioButtonFilter()
+                            somSubFilterList = subFilterRadioButtonAdapter?.getSubFilterList()
                         }
+                        SomConsts.FILTER_TYPE_ORDER -> {
+                            somListGetOrderListParam.orderTypeList = emptyList()
+                            subFilterCheckboxAdapter?.resetCheckboxFilter()
+                            somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
+                        }
+                        SomConsts.FILTER_COURIER -> {
+                            somListGetOrderListParam.shippingList = emptyList()
+                            subFilterCheckboxAdapter?.resetCheckboxFilter()
+                            somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
+                        }
+                        else -> { }
                     }
+                    setToggleResetSubFilter()
                 }
             } else {
                 actionTextView?.hide()
                 btnSaveSubFilter.isEnabled = false
+            }
+        }
+    }
+
+    private fun setSelectedSomSubFilter() {
+        when (idFilter) {
+            SomConsts.FILTER_STATUS_ORDER -> {
+                somSubFilterList = subFilterRadioButtonAdapter?.getSubFilterList()
+            }
+            SomConsts.FILTER_TYPE_ORDER, SomConsts.FILTER_COURIER -> {
+                somSubFilterList = subFilterCheckboxAdapter?.getSubFilterList()
             }
         }
     }
@@ -204,6 +209,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
             }
         }
         setToggleResetSubFilter()
+        setSelectedSomSubFilter()
     }
 
     override fun onRadioButtonItemClicked(idList: List<Int>, position: Int) {
@@ -213,5 +219,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
             }
         }
         setToggleResetSubFilter()
+        setSelectedSomSubFilter()
     }
 }

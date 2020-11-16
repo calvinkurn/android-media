@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_11"
         android:layout_marginLeft="@dimen/dp_11"
-        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginEnd="@dimen/dp_11"
         android:layout_marginRight="@dimen/dp_11"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,11 +85,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_14"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Neutral_N700_96"
         android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_divider_1"
-        app:typographyType="heading_6"
+        app:typographyType="body_3"
         app:typographyWeight="reguler"
         tools:text="INV/20161025/XVI/X/55069657" />
 

@@ -3,10 +3,12 @@ package com.tokopedia.sellerorder.filter.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.*
+import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.cb_filter
+import kotlinx.android.synthetic.main.filter_child_checkbox_item.view.label_checkbox
 
 class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: SomSubChildFilterListener)
     : RecyclerView.Adapter<SomSubFilterChildCheckBoxAdapter.SomSubFilterChildCheckViewHolder>() {
@@ -15,14 +17,14 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
     private var idList = mutableSetOf<Int>()
     private var keyFilter = ""
 
-    fun getSubChildFilterList() = subChildFilterList
-
     fun setSubFilterList(newSubChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>,
                          keyFilter: String) {
         this.keyFilter = keyFilter
+        val callBack = SomSubChildFilterDiffUtil(subChildFilterList, newSubChildFilterList)
+        val diffResult = DiffUtil.calculateDiff(callBack)
         this.subChildFilterList.clear()
-        this.subChildFilterList.addAll(newSubChildFilterList.toMutableList())
-        notifyDataSetChanged()
+        this.subChildFilterList.addAll(newSubChildFilterList)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     fun updateCheckboxFilter(updatedState: Boolean, position: Int) {
@@ -56,14 +58,16 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
                 cb_filter.isChecked = data.isChecked
 
                 subChildFilterList.filter { it.isChecked }.forEach {
-                    idList.add(it.childId.firstOrNull() ?: 0)
+                    val id = it.childId.firstOrNull() ?: 0
+                    idList.add(id)
                 }
 
-                label_checkbox.setOnClickListener {
-                    checkBoxClicked(cb_filter.isChecked)
-                }
                 cb_filter.setOnCheckedChangeListener { _, isChecked ->
                     checkBoxClicked(isChecked)
+                }
+
+                setOnClickListener {
+                    cb_filter.isChecked = !cb_filter.isChecked
                 }
             }
         }
@@ -72,11 +76,12 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
             val id = subChildFilterList[adapterPosition].childId.firstOrNull() ?: 0
             if (isChecked) idList.add(id) else idList.remove(id)
             updateCheckboxFilter(isChecked, adapterPosition)
-            somSubChildFilterListener.onCheckboxChildItemClicked(idList.toList(), adapterPosition, keyFilter)
+            somSubChildFilterListener.onCheckboxChildItemClicked(idList.toList(), adapterPosition,
+                    keyFilter, subChildFilterList)
         }
     }
 
     interface SomSubChildFilterListener {
-        fun onCheckboxChildItemClicked(childIdList: List<Int>, childPosition: Int, keyFilter: String)
+        fun onCheckboxChildItemClicked(childIdList: List<Int>, childPosition: Int, keyFilter: String, subChildFilterList: List<SomFilterChipsUiModel.ChildStatusUiModel>)
     }
 }
