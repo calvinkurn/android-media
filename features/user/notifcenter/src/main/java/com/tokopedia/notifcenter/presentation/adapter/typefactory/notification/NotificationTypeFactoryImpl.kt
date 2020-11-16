@@ -53,6 +53,10 @@ class NotificationTypeFactoryImpl constructor(
         return RecommendationViewHolder.LAYOUT
     }
 
+    override fun type(emptyNotificationUiModel: EmptyNotificationUiModel): Int {
+        return EmptyNotificationViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel?): Int {
         return NotificationLoadingViewHolder.LAYOUT
     }
@@ -111,6 +115,7 @@ class NotificationTypeFactoryImpl constructor(
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
             NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)
             NotificationLoadingViewHolder.LAYOUT -> NotificationLoadingViewHolder(view)
+            EmptyNotificationViewHolder.LAYOUT -> EmptyNotificationViewHolder(view)
             EmptyNotificationWithRecomViewHolder.LAYOUT -> EmptyNotificationWithRecomViewHolder(
                     view
             )

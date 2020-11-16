@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
@@ -29,6 +30,7 @@ import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -144,6 +146,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         rvScrollListener = NotificationEndlessRecyclerViewScrollListener(rvLm, this)
         return rvScrollListener!!
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        if (viewModel.hasFilter() || containerListener?.role == RoleType.SELLER) {
+            return EmptyNotificationUiModel()
+        }
+        return super.getEmptyDataViewModel()
     }
 
     private fun initView(view: View) {
