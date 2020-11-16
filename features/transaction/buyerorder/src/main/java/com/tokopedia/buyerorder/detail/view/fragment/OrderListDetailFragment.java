@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -37,6 +36,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
@@ -280,6 +280,16 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setDiscount(Discount discount) {
+        // no-op
+    }
+
+    @Override
+    public void setDiscountVisibility(int visibility) {
+        // no-op
+    }
+
+    @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
@@ -344,7 +354,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void showSuccessMessage(String message) {
-        Toast.makeText(getAppContext(), message, Toast.LENGTH_SHORT).show();
+        Toaster.build(getView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
     }
 
     @Override
@@ -491,14 +501,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setItems(List<Items> items, boolean isTradeIn, OrderDetails orderDetails) {
         // no-op
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
     }
 
     @Override
