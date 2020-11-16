@@ -20,6 +20,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -260,8 +261,11 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun initErrorPage() {
-        inboxPageError.talkConnectionErrorRetryButton.setOnClickListener {
-            loadInitialData()
+        inboxPageError.apply {
+            talkConnectionErrorRetryButton.setOnClickListener {
+                loadInitialData()
+            }
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 

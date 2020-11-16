@@ -23,10 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GENERAL_SETTING
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.removeObservers
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -318,6 +315,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     private fun showPageError() {
         addFloatingActionButton.hide()
         pageError.show()
+        reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
             getHeaderData()
         }
