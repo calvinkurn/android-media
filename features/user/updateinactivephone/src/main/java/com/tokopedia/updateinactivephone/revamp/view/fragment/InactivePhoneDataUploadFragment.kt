@@ -57,8 +57,12 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initObserver()
         return inflater.inflate(R.layout.fragment_inactive_phone_data_upload, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initObserver()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,7 +74,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             }
 
             showLoading()
-            viewModel.userValidation(userDataTemp.getOldPhone(), userDataTemp.getIndex())
+            viewModel.userValidation(userDataTemp.getOldPhone(), userDataTemp.getEmail(), userDataTemp.getIndex())
         }
 
         imgIdCard?.setOnClickListener {
@@ -88,10 +92,11 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
+        viewModel.phoneValidation.observe(this, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.validation.status == 1) {
+                        userDataTemp.setUserId(it.data.validation.userId)
                         viewModel.getUploadHost()
                     }
                 }
@@ -105,7 +110,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.uploadHost.observe(viewLifecycleOwner, Observer {
+        viewModel.uploadHost.observe(this, Observer {
             when (it) {
                 is Success -> {
                     uploadHost = it.data.data.generatedHost.uploadHost
@@ -121,14 +126,14 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.imageUpload.observe(viewLifecycleOwner, Observer {
+        viewModel.imageUpload.observe(this, Observer {
             when (it) {
                 is Success -> {
                     if (it.data.source == ID_CARD) {
-                        idCardObj = it.data.picObj
+                        idCardObj = it.data.data.pictureObject
                         doUploadImage(FileType.SELFIE, SELFIE)
                     } else if (it.data.source == SELFIE) {
-                        selfieObj = it.data.picObj
+                        selfieObj = it.data.data.pictureObject
                         textPhoneNumber?.let { newPhone ->
                             viewModel.submitForm(userDataTemp.getEmail(), newPhone.text, userDataTemp.getIndex(), idCardObj, selfieObj)
                         }
@@ -144,7 +149,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.submitData.observe(viewLifecycleOwner, Observer {
+        viewModel.submitData.observe(this, Observer {
             hideLoading()
             when(it) {
                 is Success -> {
@@ -165,7 +170,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
 
     private fun doUploadImage(fileType: FileType, source: String) {
         context?.let {
-            viewModel.uploadImage(uploadHost, userDataTemp.getUserId(), filePath(it, fileType.id), source)
+            viewModel.uploadImage(uploadHost, userDataTemp.getEmail(), userDataTemp.getOldPhone(), userDataTemp.getIndex(), filePath(it, fileType.id), source)
         }
     }
 
@@ -230,5 +235,14 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         imgSelfie?.isEnabled = true
         textPhoneNumber?.isEnabled = true
         loader?.hide()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onCleared()
+        viewModel.phoneValidation.removeObservers(this)
+        viewModel.uploadHost.removeObservers(this)
+        viewModel.imageUpload.removeObservers(this)
+        viewModel.submitData.removeObservers(this)
     }
 }

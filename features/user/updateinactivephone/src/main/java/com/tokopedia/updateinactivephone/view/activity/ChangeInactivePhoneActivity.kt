@@ -72,14 +72,4 @@ class ChangeInactivePhoneActivity : BaseSimpleActivity() {
             return Intent(context, ChangeInactivePhoneActivity::class.java)
         }
     }
-
-    object DeeplinkIntent{
-        @JvmStatic
-        @DeepLink(ApplinkConst.CHANGE_INACTIVE_PHONE)
-        fun getCallingApplinkIntent(context: Context, bundle: Bundle): Intent {
-            val uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon()
-            val intent = getChangeInactivePhoneIntent(context)
-            return intent.setData(uri.build())
-        }
-    }
 }

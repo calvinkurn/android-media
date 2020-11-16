@@ -142,6 +142,12 @@ class InactivePhoneAccountListActivity : BaseSimpleActivity(), HasComponent<Inac
         loader?.hide()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onCleared()
+        viewModel.accountList.removeObservers(this)
+    }
+
     companion object {
         fun createIntent(context: Context, phoneNumber: String): Intent {
             val intent = Intent(context, InactivePhoneAccountListActivity::class.java)

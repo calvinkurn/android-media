@@ -25,13 +25,12 @@ class InactivePhoneOnboardingViewModel @Inject constructor(
     val phoneValidation: LiveData<Result<PhoneValidationDataModel>>
         get() = _phoneValidation
 
-    fun phoneValidation(phone: String) {
-        if (!isValidPhoneNumber(phone)) {
-            return
-        }
-
+    fun phoneValidation(phone: String, email: String) {
         launchCatchError(coroutineContext, {
-            phoneValidationUseCase.setParam(phone)
+
+            isValidPhoneNumber(phone)
+
+            phoneValidationUseCase.setParam(phone, email)
             phoneValidationUseCase.execute(onSuccess = {
                 if (it.validation.isSuccess) {
                     _phoneValidation.postValue(Success(it))

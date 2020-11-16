@@ -22,9 +22,10 @@ object InactivePhoneConstant {
     const val PARAM_USER_DETAIL_DATA = "userData"
     const val PARAM_URL_UPLOAD_IMAGE = "image_upload_url"
     const val PARAM_FILE_TO_UPLOAD = "fileToUpload"
-    const val PARAM_USER_ID = "user_id"
-    const val PARAM_PHONE = "phone"
     const val PARAM_EMAIL = "email"
+    const val PARAM_OLD_PHONE = "oldMsisdn"
+    const val PARAM_USER_INDEX = "index"
+    const val PARAM_PHONE = "phone"
     const val PARAM_NEW_ADD = "new_add"
 
     const val ERROR_FAILED_UPLOAD_IMAGE = "Gagal mengunggah gambar"

@@ -46,9 +46,10 @@ import javax.inject.Inject
 
 /**
  * For navigating to this class
- * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM]
+ * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE]
  * Please pass USER_ID and OLD_PHONE
  */
+@Deprecated("Deleted soon")
 class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
         HasComponent<BaseAppComponent>,
         ChangeInactiveFormRequest.View,

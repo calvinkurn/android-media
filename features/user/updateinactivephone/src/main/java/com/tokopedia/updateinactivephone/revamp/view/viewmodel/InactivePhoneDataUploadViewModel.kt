@@ -43,9 +43,9 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
     val submitData: LiveData<Result<InactivePhoneSubmitDataModel>>
         get() = _submitData
 
-    fun userValidation(phone: String, index: Int) {
+    fun userValidation(phone: String, email: String, index: Int) {
         launchCatchError(coroutineContext, {
-            phoneValidationUseCase.setParam(phone, index)
+            phoneValidationUseCase.setParam(phone, email, index)
             phoneValidationUseCase.execute(onSuccess = {
                 if (it.validation.isSuccess) {
                     _phoneValidation.postValue(Success(it))
@@ -76,11 +76,11 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         })
     }
 
-    fun uploadImage(url: String, userId: String, filePath: String, source: String) {
+    fun uploadImage(url: String, email: String, oldMsisdn: String, userIndex: Int, filePath: String, source: String) {
         launchCatchError(coroutineContext, {
-            imageUploadUseCase.setParam(url, userId, filePath)
+            imageUploadUseCase.setParam(url, email, oldMsisdn, userIndex, filePath)
             imageUploadUseCase.execute(onSuccess = {
-                if (it.picObj.isNotEmpty()) {
+                if (it.status == ImageUploadUseCase.STATUS_OK && it.data.pictureObject.isNotEmpty()) {
                     it.source = source
                     _imageUpload.postValue(Success(it))
                 } else {

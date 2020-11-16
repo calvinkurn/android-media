@@ -16,6 +16,9 @@ data class PhoneValidationDataModel (
             @SerializedName("status")
             @Expose
             var status: Int = 0,
+            @SerializedName("userId")
+            @Expose
+            var userId: String = "",
             @SerializedName("errorMessage")
             @Expose
             var error: String = ""

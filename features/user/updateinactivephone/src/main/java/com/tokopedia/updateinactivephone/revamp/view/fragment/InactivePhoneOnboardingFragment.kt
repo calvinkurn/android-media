@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_USER_ID
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -48,9 +49,6 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
     private lateinit var phoneNumber: String
     private lateinit var email: String
 
-    @Deprecated("Delet Soon")
-    private lateinit var userId: String
-
     override fun getScreenName(): String = ""
     override fun initInjector() {
         DaggerInactivePhoneComponent.builder()
@@ -60,25 +58,23 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        initObserver()
         return inflater.inflate(R.layout.fragment_inactive_phone_onboarding, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initObserver()
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
+        // check login method
+        // if null / empty / not (phone or email) -- > check argument from applink !!! add flag from where
+        // else check argument from intent
+
         arguments?.let {
-            /**- Test =========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
             if (it.isEmpty) return
 
             phoneNumber = it.getString(PARAM_PHONE, "")
             email = it.getString(PARAM_EMAIL, "")
-            userId = it.getString(PARAM_USER_ID, "")
-            if (userId.isEmpty()) {
-                userId = userSession.userId
-            }
-            /**-=========-==-=0-90909-=-0=-=-0=-0=-0=-0=0=-*/
         }
     }
 
@@ -89,8 +85,8 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
             showLoading()
             if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
                 userDataTemp.setOldPhone(phoneNumber)
-                viewModel.phoneValidation(userDataTemp.getOldPhone())
-            } else if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_EMAIL) {
+                viewModel.phoneValidation(userDataTemp.getOldPhone(), email)
+            } else if (email.isNotEmpty() || userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_EMAIL) {
                 userDataTemp.setEmail(email)
                 gotoOnboardingIdCardPage()
             }
@@ -98,7 +94,7 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun initObserver() {
-        viewModel.phoneValidation.observe(viewLifecycleOwner, Observer {
+        viewModel.phoneValidation.observe(this, Observer {
             hideLoading()
 
             when (it) {
@@ -139,10 +135,18 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
     private fun showLoading() {
         loader?.show()
+        btnNext.isEnabled = false
     }
 
     private fun hideLoading() {
         loader?.hide()
+        btnNext.isEnabled = true
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onCleared()
+        viewModel.phoneValidation.removeObservers(this)
     }
 
     companion object {

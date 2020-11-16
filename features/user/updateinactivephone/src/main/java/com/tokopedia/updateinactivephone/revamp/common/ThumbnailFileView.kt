@@ -13,6 +13,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.revamp.common.utils.convertToBitmap
 import com.tokopedia.utils.image.ImageUtils
 import java.io.File
 
@@ -57,27 +58,13 @@ class ThumbnailFileView @JvmOverloads constructor(
     }
 
     fun setImage(url: String) {
-        ImageUtils.loadImage(imageThumbnail, url)
-    }
-
-    fun setImage(file: File) {
-        imageThumbnail.clearImage()
-        imageThumbnail.setImage(file.absolutePath, IMAGE_RADIUS)
-        requestLayout()
+        imageThumbnail.scaleType = ImageView.ScaleType.CENTER_CROP
+        imageThumbnail.setImageBitmap(convertToBitmap(url))
     }
 
     fun setImage(@DrawableRes drawable: Int) {
         imageThumbnail.clearImage()
         imageThumbnail.setImage(drawable, IMAGE_RADIUS)
-        requestLayout()
-    }
-
-    private fun convertToBitmap(path: String): Bitmap {
-        return BitmapFactory.decodeFile(path)
-    }
-
-    private fun convertToBitmap(file: File): Bitmap {
-        return convertToBitmap(file.absolutePath)
     }
 
     companion object {

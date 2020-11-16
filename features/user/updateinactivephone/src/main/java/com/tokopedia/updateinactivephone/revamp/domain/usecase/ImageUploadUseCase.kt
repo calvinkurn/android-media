@@ -2,12 +2,15 @@ package com.tokopedia.updateinactivephone.revamp.domain.usecase
 
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERROR_FAILED_UPLOAD_IMAGE
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_EMAIL
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_FILE_TO_UPLOAD
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_OLD_PHONE
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_URL_UPLOAD_IMAGE
-import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_USER_ID
+import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.PARAM_USER_INDEX
 import com.tokopedia.updateinactivephone.revamp.domain.api.InactivePhoneApi
 import com.tokopedia.updateinactivephone.revamp.domain.api.InactivePhoneApiClient
 import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadDataModel
+import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadParamDataModel
 import com.tokopedia.usecase.coroutines.UseCase
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -26,16 +29,23 @@ class ImageUploadUseCase @Inject constructor(
         )
     }
 
-    fun setParam(url: String, userId: String, filePath: String) {
+    fun setParam(url: String, email: String, oldMsisdn: String, userIndex: Int, filePath: String) {
         useCaseRequestParams.putString(PARAM_URL_UPLOAD_IMAGE, "https://$url/kyc/upload")
-        useCaseRequestParams.putString(PARAM_USER_ID, userId)
+        useCaseRequestParams.putString(PARAM_OLD_PHONE, oldMsisdn)
+        useCaseRequestParams.putString(PARAM_EMAIL, email)
+        useCaseRequestParams.putInt(PARAM_USER_INDEX, userIndex)
         useCaseRequestParams.putString(PARAM_FILE_TO_UPLOAD, filePath)
     }
 
-    private fun generateParamUserId(): RequestBody {
-        return RequestBody.create(
-                MediaType.parse("text/plain"),
-                useCaseRequestParams.getString(PARAM_USER_ID, "")
+    private fun generateParamUserId(): ImageUploadParamDataModel {
+//        return RequestBody.create(
+//                MediaType.parse("text/plain"),
+//                useCaseRequestParams.getString(PARAM_USER_INDEX, "")
+//        )
+        return ImageUploadParamDataModel(
+                email = useCaseRequestParams.getString(PARAM_EMAIL, ""),
+                phoneNumber = useCaseRequestParams.getString(PARAM_OLD_PHONE, ""),
+                index = useCaseRequestParams.getInt(PARAM_USER_INDEX, 0)
         )
     }
 
@@ -48,5 +58,9 @@ class ImageUploadUseCase @Inject constructor(
         }
 
         return RequestBody.create(MediaType.parse("image/*"), file)
+    }
+
+    companion object {
+        const val STATUS_OK = "OK"
     }
 }
