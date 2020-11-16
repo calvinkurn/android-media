@@ -27,8 +27,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
-
 /**
  * @author ricoharisin .
  */
@@ -131,11 +129,6 @@ public abstract class BaseNotificationFactory {
             intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
         }
 
-        // to preventing DeadSystemException crash
-        // we must adding this flag on Intent
-        // source: https://stackoverflow.com/questions/14654414
-        // intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);
@@ -186,6 +179,20 @@ public abstract class BaseNotificationFactory {
     }
 
     protected long[] getVibratePattern() {
+        /*
+        * If you look carefully the `longArrayToString()` method on NotificationCompat, you can
+        * identify that the method can leads for ArrayOutOfBoundException if we are sending an array
+        * with a zero size at line 7, when this happens the system throws DeadSystemException and
+        * restart the phone.
+        *
+        * @solution:
+        * some of device isn't support vibration with {500,500}, to fix DeadSystemException,
+        * we can throw with try-catch and make `null` as silent/remove vibrate to unsupported
+        * {500,500} vibration pattern.
+        *
+        * #source:
+        * https://medium.com/p/ca122fa4d9cb
+        * */
         try {
             return new long[]{500, 500};
         } catch (Exception e) {
