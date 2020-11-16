@@ -92,7 +92,7 @@ public interface ShipmentContract {
 
         void renderChangeAddressFailed();
 
-        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff);
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates);
 
         void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff);
 
@@ -147,7 +147,7 @@ public interface ShipmentContract {
 
         void setHasRunningApiCall(boolean hasRunningApiCall);
 
-        void prepareReloadRates(int lastSelectedCourierOrder);
+        void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc);
     }
 
     interface AnalyticsActionListener {
@@ -241,7 +241,7 @@ public interface ShipmentContract {
                                              boolean isInitialLoad, ArrayList<Product> products,
                                              String cartString, boolean isTradeInDropOff,
                                              RecipientAddressModel recipientAddressModel,
-                                             boolean isForceReload);
+                                             boolean isForceReload, boolean skipMvc);
 
         RecipientAddressModel getRecipientAddressModel();
 

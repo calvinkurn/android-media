@@ -877,7 +877,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (promoSpids.size() > 0 && lastSelectedCourierOrderIndex > -1) {
             for (PromoSpIdUiModel promoSpId : promoSpids) {
                 if (promoSpId.getUniqueId().equalsIgnoreCase(cartString)) {
-                    getView().prepareReloadRates(lastSelectedCourierOrderIndex);
+                    getView().prepareReloadRates(lastSelectedCourierOrderIndex, false);
                     break;
                 }
             }
@@ -1751,7 +1751,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 boolean isInitialLoad, ArrayList<Product> products,
                                                 String cartString, boolean isTradeInDropOff,
                                                 RecipientAddressModel recipientAddressModel,
-                                                boolean isForceReload) {
+                                                boolean isForceReload, boolean skipMvc) {
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1768,8 +1768,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isCorner(cornerId)
                 .codHistory(counter)
                 .isLeasing(isLeasing)
-                .mvc(mvc)
-                .promoCode(pslCode);
+                .promoCode(pslCode)
+                .mvc("");
+
+        if (!skipMvc) {
+            ratesParamBuilder.mvc(mvc);
+        }
 
         RatesParam param = ratesParamBuilder.build();
 

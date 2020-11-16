@@ -97,8 +97,8 @@ class OrderSummaryPageModule(private val activity: Activity) {
     @OrderSummaryPageScope
     @Provides
     fun provideGetRatesUseCase(context: Context, converter: ShippingDurationConverter,
-                               graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, schedulerProvider: SchedulerProvider): GetRatesUseCase {
-        return GetRatesUseCase(context, converter, graphqlUseCase, schedulerProvider)
+                               schedulerProvider: SchedulerProvider): GetRatesUseCase {
+        return GetRatesUseCase(context, converter, schedulerProvider)
     }
 
     @OrderSummaryPageScope
