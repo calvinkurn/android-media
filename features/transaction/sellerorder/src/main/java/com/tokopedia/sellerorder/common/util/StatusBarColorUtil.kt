@@ -5,8 +5,9 @@ import android.os.Build
 import android.view.View
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.setWindowFlag
 
-internal class StatusBarColorUtil(private val activity: Activity) {
+class StatusBarColorUtil(private val activity: Activity) {
 
     private var color: Int = 0
 
@@ -20,19 +21,22 @@ internal class StatusBarColorUtil(private val activity: Activity) {
         checkBuildVersion {
             val window = activity.window ?: return@checkBuildVersion
 
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = ContextCompat.getColor(activity, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
+            with(window) {
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+                statusBarColor = ContextCompat.getColor(activity, com.tokopedia.unifycomponents.R.color.Unify_N700_68)
+            }
         }
     }
 
     fun undoSetStatusBarColor() {
         checkBuildVersion {
             val window = activity.window ?: return@checkBuildVersion
-
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = color
+            with(window) {
+                decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+                statusBarColor = color
+            }
         }
     }
 

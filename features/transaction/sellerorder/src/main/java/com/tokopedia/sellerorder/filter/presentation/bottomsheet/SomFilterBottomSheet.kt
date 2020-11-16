@@ -49,7 +49,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomSheetUnify(),
+class SomFilterBottomSheet : BottomSheetUnify(),
         SomFilterListener, SomFilterDateBottomSheet.CalenderListener,
         HasComponent<SomFilterComponent> {
 
@@ -73,6 +73,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private var fm: FragmentManager? = null
 
+    private var statusBarColorUtil: StatusBarColorUtil? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         activity?.overridePendingTransition(0,0)
         super.onCreate(savedInstanceState)
@@ -91,6 +93,10 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somFilterViewModel.setSomFilterUiModel(somFilterUiModelList)
         somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
                 ?: SomListGetOrderListParam())
+
+        setShowListener {
+            setStatusBarColor()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -213,6 +219,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         removeObservers(somFilterViewModel.filterResult)
         removeObservers(somFilterViewModel.updateFilterSelected)
         removeObservers(somFilterViewModel.somFilterOrderListParam)
+        undoStatusBarColor()
         super.onDestroy()
     }
 
@@ -225,7 +232,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     fun show(fm: FragmentManager?) {
         this.fm = fm
         isApplyFilter = false
-        mActivity?.supportFragmentManager?.let {
+        fm?.let {
             show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
         }
     }
@@ -253,6 +260,16 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun initInject() {
         component?.inject(this)
+    }
+
+    private fun setStatusBarColor() {
+        statusBarColorUtil = StatusBarColorUtil(requireActivity())
+        statusBarColorUtil?.setStatusBarColor()
+    }
+
+    private fun undoStatusBarColor() {
+        statusBarColorUtil?.undoSetStatusBarColor()
+        statusBarColorUtil = null
     }
 
     private fun clickShowOrder() {
@@ -393,7 +410,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                            filterDate: String,
                            isRequestCancelFilterApplied: Boolean
         ): SomFilterBottomSheet {
-            val fragment = SomFilterBottomSheet(mActivity)
+            val fragment = SomFilterBottomSheet()
             val args = Bundle()
             args.putString(KEY_ORDER_STATUS, orderStatus)
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))
