@@ -86,10 +86,11 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.math.abs
 
 class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomListAdapterTypeFactory>(), SomListSortFilterTab.SomListSortFilterTabClickListener,
-        TickerCallback, TickerPagerCallback, SearchInputView.Listener, SearchInputView.ResetListener,
+        TickerCallback, TickerPagerCallback, SearchInputView.Listener,
         SomListOrderViewHolder.SomListOrderItemListener, CoroutineScope,
         SomListBulkAcceptOrderBottomSheet.SomListBulkAcceptOrderBottomSheetListener,
         SomFilterBottomSheet.SomFilterFinishListener,
@@ -97,6 +98,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     companion object {
         private const val DELAY_SEARCH = 500L
+        private const val DELAY_COACHMARK = 500L
 
         private const val TAG_BOTTOM_SHEET_BULK_ACCEPT = "bulkAcceptBottomSheet"
 
@@ -137,26 +139,55 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         context?.let { CoachMark2(it) }
     }
 
-    // to handle coachmark (coachmark need to scroll along with the recyclerview)
-    private val recyclerViewScrollListener by lazy {
+    private val somListLayoutManager by lazy { rvSomList.layoutManager as? LinearLayoutManager }
+
+    private val recyclerViewScrollListener: RecyclerView.OnScrollListener by lazy {
         object : RecyclerView.OnScrollListener() {
+            // to handle new order card coachmark (coachmark need to scroll along with the recyclerview and gone when new order card gone off screen)
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (coachMark?.currentIndex == 0) {
-                    (recyclerView.layoutManager as LinearLayoutManager).run {
-                        val firstVisibleIndex = findFirstVisibleItemPosition()
-                        val lastVisibleIndex = findLastVisibleItemPosition()
-                        if (coachMark?.isDismissed == false &&
-                                firstNewOrderViewPosition !in firstVisibleIndex..lastVisibleIndex) {
-                            coachMark?.dismissCoachMark()
-                            coachMarkIndexToShow = 0
-                            shouldShowCoachMark = true
-                        } else if (shouldShowCoachMark && coachMark?.isDismissed == true &&
-                                firstNewOrderViewPosition in firstVisibleIndex..lastVisibleIndex) {
-                            findViewByPosition(firstNewOrderViewPosition)?.findViewById<View>(R.id.btnQuickAction)?.let {
-                                coachMark?.isDismissed = false
-                                shouldShowCoachMark = false
-                                coachMark?.showCoachMark(ArrayList(createCoachMarkItems(it)), index = coachMarkIndexToShow)
+                    if (coachMark?.isDismissed == true && abs(dy) <= 100) {
+                        reshowNewOrderCoachMark(dy < 0)
+                    } else if (coachMark?.isDismissed == false) {
+                        somListLayoutManager?.run {
+                            val firstVisibleIndex = findFirstVisibleItemPosition()
+                            val lastVisibleIndex = findLastVisibleItemPosition()
+                            val currentNewOrderQuickActionButton = findViewByPosition(currentNewOrderWithCoachMark)?.findViewById<View>(R.id.btnQuickAction)
+                            if (coachMark?.isDismissed == false && (currentNewOrderWithCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                            (currentNewOrderQuickActionButton != null && getVisiblePercent(currentNewOrderQuickActionButton) == -1))) {
+                                coachMark?.setOnDismissListener {
+                                    coachMark?.setOnDismissListener { }
+                                    reshowNewOrderCoachMark(dy < 0)
+                                }
+                                dismissCoachMark(false)
+                            }
+                        }
+                    }
+                }
+            }
+
+            private fun reshowNewOrderCoachMark(isReversed: Boolean) {
+                somListLayoutManager?.run {
+                    val firstVisibleIndex = findFirstVisibleItemPosition()
+                    val lastVisibleIndex = findLastVisibleItemPosition()
+                    val visibleRange = firstVisibleIndex..lastVisibleIndex
+                    (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
+                        val order = adapter.data.getOrNull(it)
+                        if (order is SomListOrderUiModel && order.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                                order.buttons.firstOrNull()?.key == SomConsts.KEY_ACCEPT_ORDER && order.cancelRequest == 0) {
+                            findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.takeIf {
+                                it.isVisible
+                            }?.let { quickActionButton ->
+                                if (getVisiblePercent(quickActionButton) == 0) {
+                                    quickActionButton.post {
+                                        currentNewOrderWithCoachMark = it
+                                        coachMark?.showCoachMark(ArrayList(createCoachMarkItems(quickActionButton)), index = coachMarkIndexToShow)
+                                        coachMark?.isDismissed = false
+                                        shouldShowCoachMark = false
+                                    }
+                                    return@reshowNewOrderCoachMark
+                                }
                             }
                         }
                     }
@@ -171,13 +202,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var currentNewOrderWithCoachMark: Int = -1
     private var isWaitingPaymentOrderPageOpened: Boolean = false
     private var isRefreshingSelectedOrder: Boolean = false
     private var shouldShowCoachMark: Boolean = false
     private var shouldScrollToTop: Boolean = false
-    private var firstNewOrderViewPosition: Int = 0
     private var filterOrderType: Int = 0
-    private var isJustRestored: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
+    private var skipSearch: Boolean = false // when restored, onSearchTextChanged is called which trigger unwanted refresh order list
     private var coachMarkIndexToShow: Int = 0
     private var selectedOrderId: String = ""
     private var tabActive: String = ""
@@ -210,7 +241,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             tabActive = arguments?.getString(TAB_ACTIVE).orEmpty()
             filterOrderType = arguments?.getInt(FILTER_ORDER_TYPE, 0).orZero()
         } else if (savedInstanceState != null) {
-            isJustRestored = true
+            skipSearch = true
             tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
             selectedOrderId = savedInstanceState.getString(KEY_LAST_SELECTED_ORDER_ID).orEmpty()
             if(savedInstanceState.getBoolean(IS_BOTTOM_SHEET_FILTER_OPENED)) {
@@ -247,7 +278,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         menu.clear()
         inflater.inflate(R.menu.menu_som_list, menu)
         this.menu = menu
-        view?.postDelayed({ reshowCoachMark() }, 500L)
+        view?.postDelayed({
+            reshowNewOrderCoachMark(adapter.data.filterIsInstance<SomListOrderUiModel>())
+            reshowStatusFilterCoachMark()
+            reshowWaitingPaymentOrderListCoachMark()
+            reshowBulkAcceptOrderCoachMark()
+        }, DELAY_COACHMARK)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -317,7 +353,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onResume() {
         super.onResume()
-        view?.postDelayed({ reshowCoachMark() }, 500L)
+        view?.postDelayed({
+            reshowNewOrderCoachMark(adapter.data.filterIsInstance<SomListOrderUiModel>())
+            reshowStatusFilterCoachMark()
+            reshowWaitingPaymentOrderListCoachMark()
+            reshowBulkAcceptOrderCoachMark()
+        }, DELAY_COACHMARK)
     }
 
     override fun onPause() {
@@ -329,7 +370,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
-        return EndlessLayoutManagerListener { rvSomList.layoutManager }
+        return EndlessLayoutManagerListener { somListLayoutManager }
     }
 
     override fun loadInitialData() {
@@ -353,6 +394,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onSwipeRefresh() {
         shouldScrollToTop = true
         loadInitialData()
+        dismissCoachMark()
     }
 
     override fun hideLoading() {
@@ -374,6 +416,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             SomAnalytics.eventClickStatusFilter(SomConsts.STATUS_ALL_ORDER, SomConsts.STATUS_NAME_ALL_ORDER)
             ""
         }
+        setDefaultSortByValue()
         if (viewModel.isMultiSelectEnabled) {
             viewModel.isMultiSelectEnabled = false
             resetOrderSelectedStatus()
@@ -429,15 +472,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         SomAnalytics.eventSubmitSearch(text.orEmpty())
     }
 
-    override fun onSearchReset() {/* no op, handled in onSearchTextChanged */
-    }
-
     override fun onSearchTextChanged(text: String?) {
         textChangeJob?.cancel()
         textChangeJob = launchCatchError(block = {
             delay(DELAY_SEARCH)
             viewModel.setSearchParam(text.orEmpty())
-            if (!isJustRestored) {
+            if (!skipSearch) {
                 shouldScrollToTop = true
                 loadFilters(false)
                 if (shouldReloadOrderListImmediately()) {
@@ -447,6 +487,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
                 SomAnalytics.eventSubmitSearch(text.orEmpty())
             }
+            skipSearch = false
         }, onError = {
             // TODO: Log to crashlytics
         })
@@ -548,17 +589,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onFinishBindNewOrder(view: View, itemIndex: Int) {
         context?.let { context ->
             if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK)) {
-                firstNewOrderViewPosition = itemIndex
                 rvSomList.addOnScrollListener(recyclerViewScrollListener)
-                CoachMarkPreference.setShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
                 setCoachMarkStepListener()
-                setCoachMarkFinishListener()
-                coachMark?.showCoachMark(ArrayList(createCoachMarkItems(view)))
-            } else if (shouldShowCoachMark) {
-                if (firstNewOrderViewPosition != -1 && coachMarkIndexToShow == 0 && firstNewOrderViewPosition != itemIndex) return
-                shouldShowCoachMark = false
-                coachMark?.isDismissed = false
-                coachMark?.showCoachMark(ArrayList(createCoachMarkItems(view)), index = coachMarkIndexToShow)
+                coachMark?.onFinishListener = { rvSomList.removeOnScrollListener(recyclerViewScrollListener) }
+                CoachMarkPreference.setShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK, true)
+                shouldShowCoachMark = true
+                reshowNewOrderCoachMark(adapter.data.filterIsInstance<SomListOrderUiModel>())
             }
             return@let
         }
@@ -566,23 +602,18 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun isMultiSelectEnabled(): Boolean = viewModel.isMultiSelectEnabled
 
-    private fun createCoachMarkItems(firstNewOrderView: View): ArrayList<CoachMark2Item> {
-        return arrayListOf<CoachMark2Item>().apply {
-            add(CoachMark2Item(firstNewOrderView, getString(R.string.som_list_coachmark_new_order_card_title), getString(R.string.som_list_coachmark_new_order_card_description)))
-            add(CoachMark2Item(sortFilterSomList, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
-            (menu as MenuBuilder).visibleItems.firstOrNull()?.let { visibleMenu ->
-                activity?.findViewById<View>(visibleMenu.itemId)?.let {
-                    add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
-                }
-            }
-            if (GlobalConfig.isSellerApp()) {
-                add(CoachMark2Item(tvSomListBulk, getString(R.string.som_list_coachmark_multi_select_title), getString(R.string.som_list_coachmark_multi_select_description)))
-            }
-        }
-    }
-
     override fun onBulkAcceptOrderButtonClicked() {
         viewModel.bulkAcceptOrder(getSelectedOrderIds())
+    }
+
+    private fun setDefaultSortByValue() {
+        if (!somListSortFilterTab.isSortByAppliedManually()) {
+            if (tabActive == SomConsts.KEY_CONFIRM_SHIPPING) {
+                viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_ASCENDING)
+            } else {
+                viewModel.setSortOrderBy(SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING)
+            }
+        }
     }
 
     private fun showBulkAcceptOrderDialog(orderCount: Int) {
@@ -621,6 +652,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun setupViews() {
         showWaitingPaymentOrderListMenuShimmer()
+        rvSomList.layoutManager = somListLayoutManager
         setupListeners()
     }
 
@@ -974,6 +1006,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun setupListeners() {
         tickerSomList.setDescriptionClickEvent(this)
+        searchBarSomList.setListener(this)
         globalErrorSomList.setActionClickListener {
             scrollViewErrorState.gone()
             loadInitialData()
@@ -1186,11 +1219,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             this.tickerPagerAdapter = tickerPagerAdapter
         }
         tickerSomList.addPagerView(tickerPagerAdapter, activeTickers)
-        tickerSomList.show()
+        tickerSomList.showWithCondition(data.isNotEmpty())
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
-        dismissCoachMark()
         hideLoading()
         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
         // show only if current order list is based on current search keyword
@@ -1199,13 +1231,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             multiEditViews.gone()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText.orEmpty()) {
             if (isLoadingInitialData) {
-                // when using diffutil and there is no changes, onBind is not called, onBind needed
-                // to trigger show coachmark so force adapter to rebind data
-                if (shouldShowCoachMark) {
-                    adapter.setElements(data)
-                } else {
-                    (adapter as SomListOrderAdapter).updateOrders(data)
-                }
+                (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
                 multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
                 toggleBulkActionCheckboxVisibility()
@@ -1215,11 +1241,21 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         rvSomList.smoothScrollToPosition(0)
                     }
                 }
-                scrollToFirstNewOrderToPrepareCoachMark()
+                if (coachMark?.currentIndex == 0) {
+                    dismissCoachMark(true)
+                } else if (coachMark?.currentIndex == 3 && !multiEditViews.isVisible) {
+                    dismissCoachMark(true)
+                }
             } else {
                 adapter.addMoreData(data)
                 updateBulkActionCheckboxStatus()
             }
+            rvSomList?.postDelayed({
+                reshowNewOrderCoachMark(data)
+                reshowStatusFilterCoachMark()
+                reshowWaitingPaymentOrderListCoachMark()
+                reshowBulkAcceptOrderCoachMark()
+            }, DELAY_COACHMARK)
         } else if (isRefreshingSelectedOrder) {
             isRefreshingSelectedOrder = false
             data.firstOrNull().let { newOrder ->
@@ -1240,30 +1276,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         updateScrollListenerState(viewModel.hasNextPage())
         isLoadingInitialData = false
-        isJustRestored = false
     }
 
-    private fun scrollToFirstNewOrderToPrepareCoachMark() {
-        context?.let { context ->
-            if (!CoachMarkPreference.hasShown(context, SHARED_PREF_NEW_SOM_LIST_COACH_MARK)) {
-                val firstNewOrderItem = getFirstNewOrder()
-                if (firstNewOrderItem != -1) {
-                    val layoutManager = rvSomList.layoutManager as LinearLayoutManager
-                    layoutManager.scrollToPositionWithOffset(firstNewOrderItem, 0)
-                }
-            }
-        }
-    }
-
-    private fun getFirstNewOrder(): Int {
-        return adapter.data.indexOfFirst {
-            it is SomListOrderUiModel && it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty()
+    private fun getFirstNewOrder(orders: List<SomListOrderUiModel>): Int {
+        return orders.indexOfFirst {
+            it.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && it.buttons.isNotEmpty() && it.cancelRequest == 0
         }
     }
 
     private fun checkLoadMore() {
-        rvSomList.layoutManager?.apply {
-            if (this is LinearLayoutManager && findLastVisibleItemPosition() == adapter.dataSize - 1) {
+        somListLayoutManager?.apply {
+            if (findLastVisibleItemPosition() == adapter.dataSize - 1) {
                 if (viewModel.hasNextPage()) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage()
                 }
@@ -1272,16 +1295,24 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun createSomListEmptyStateModel(isTopAdsActive: Boolean): Visitable<SomListAdapterTypeFactory> {
-        return if (!isTopAdsActive && somListSortFilterTab.isNewOrderFilterSelected()) {
+        return if (!isTopAdsActive && somListSortFilterTab.isNewOrderFilterSelected() &&
+                !somListSortFilterTab.isFilterApplied() && searchBarSomList.searchText.isEmpty()) {
             SomListEmptyStateUiModel(
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
                     title = getString(R.string.empty_peluang_title),
                     description = getString(R.string.empty_peluang_desc_non_topads_no_filter),
                     buttonText = getString(R.string.btn_cek_peluang_non_topads),
                     buttonAppLink = ApplinkConstInternalTopAds.TOPADS_CREATE_ADS,
                     showButton = true
             )
+        } else if (somListSortFilterTab.isFilterApplied() || searchBarSomList.searchText.isNotEmpty()) {
+            SomListEmptyStateUiModel(
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
+                    title = getString(R.string.som_list_empty_state_not_found_title)
+            )
         } else {
             SomListEmptyStateUiModel(
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
                     title = getString(R.string.empty_peluang_title),
                     description = getString(R.string.som_list_empty_state_description_no_topads_no_filter)
             )
@@ -1368,92 +1399,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
     }
 
-    private fun setCoachMarkStepListener() {
-        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
-            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                // scroll to the order item if user press "Balik" until new order coachmark
-                if (currentIndex == 0) {
-                    rvSomList.addOnScrollListener(recyclerViewScrollListener)
-                    shouldShowCoachMark = true
-                    coachMarkIndexToShow = 0
-                    coachMark?.isDismissed = true
-                    if (tabActive.isNotBlank() || tabActive != SomConsts.STATUS_ALL_ORDER) {
-                        viewModel.resetGetOrderListParam()
-                        viewModel.filterResult.value?.let {
-                            if (it is Success) {
-                                it.data.statusList.find { it.key == SomConsts.STATUS_ALL_ORDER }?.let {
-                                    somListSortFilterTab.selectTab(it)
-                                    it.isChecked = true
-                                    onTabClicked(it, true)
-                                }
-                            }
-                        }
-                    } else {
-                        (rvSomList.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(firstNewOrderViewPosition, 0)
-                        rvSomList.postDelayed({
-                            adapter.notifyItemChanged(firstNewOrderViewPosition)
-                        }, 250L)
-                    }
-                } else {
-                    rvSomList.removeOnScrollListener(recyclerViewScrollListener)
-                    // if user press "Lanjut" after waiting payment coachmark, auto select new order filter, if user press "Balik"
-                    // auto deselect new order to show all order
-                    val targetStatusFilter = if (currentIndex == 3 && tabActive != SomConsts.STATUS_NEW_ORDER) {
-                        coachMarkIndexToShow = 3
-                        SomConsts.STATUS_NEW_ORDER
-                    } else if (currentIndex == 2 && tabActive != SomConsts.STATUS_ALL_ORDER) {
-                        coachMarkIndexToShow = 2
-                        SomConsts.STATUS_ALL_ORDER
-                    } else ""
-                    if (targetStatusFilter.isNotBlank()) {
-                        shouldShowCoachMark = true
-                        coachMark?.isDismissed = true
-                        viewModel.filterResult.value?.let {
-                            if (it is Success) {
-                                it.data.statusList.find { it.key == targetStatusFilter }?.let {
-                                    somListSortFilterTab.selectTab(it)
-                                    it.isChecked = true
-                                    onTabClicked(it, true)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
-    }
-
-    private fun setCoachMarkFinishListener() {
-        coachMark?.onFinishListener = {
-            rvSomList.removeOnScrollListener(recyclerViewScrollListener)
-        }
-    }
-
-    private fun dismissCoachMark() {
-        if (coachMark?.currentIndex != -1 && coachMark?.isDismissed == false) {
-            shouldShowCoachMark = true
-            rvSomList.removeOnScrollListener(recyclerViewScrollListener)
-            coachMarkIndexToShow = coachMark?.currentIndex.orZero()
-            coachMark?.dismissCoachMark()
-        }
-    }
-
-    private fun reshowCoachMark() {
-        if (shouldShowCoachMark) {
-            shouldShowCoachMark = false
-            scrollToFirstNewOrderToPrepareCoachMark()
-            rvSomList?.run {
-                (layoutManager?.findViewByPosition(firstNewOrderViewPosition)?.findViewById<View>(R.id.btnQuickAction))?.let {
-                    if (coachMarkIndexToShow == 0) {
-                        addOnScrollListener(recyclerViewScrollListener)
-                    }
-                    coachMark?.isDismissed = false
-                    coachMark?.showCoachMark(ArrayList(createCoachMarkItems(it)), index = coachMarkIndexToShow)
-                }
-            }
-        }
-    }
-
     private fun setInitialOrderListParams() {
         val orderTypes = if (filterOrderType == 0) {
             emptyList()
@@ -1461,6 +1406,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             somListSortFilterTab.addCounter(1)
             listOf(filterOrderType)
         }
+        setDefaultSortByValue()
         viewModel.setOrderTypeFilter(orderTypes)
     }
 
@@ -1511,6 +1457,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             }
             refreshOrderList()
         }
+        setDefaultSortByValue()
     }
 
     override fun onClickOverlayBottomSheet(filterCancelWrapper: SomFilterCancelWrapper) {
@@ -1519,5 +1466,159 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         orderListParam.statusList = filterCancelWrapper.orderStatusIdList
         viewModel.updateGetOrderListParams(orderListParam)
         this.filterDate = filterCancelWrapper.filterDate
+    }
+
+    private fun setCoachMarkStepListener() {
+        coachMark?.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                when (currentIndex) {
+                    0 -> {
+                        shouldShowCoachMark = true
+                        coachMark?.isDismissed = true
+                        coachMarkIndexToShow = 0
+                        if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
+                            viewModel.resetGetOrderListParam()
+                            somListSortFilterTab.clear()
+                            skipSearch = true
+                            searchBarSomList.searchText = ""
+                            somListSortFilterTab.unselectCurrentStatusFilter()
+                        } else {
+                            rvSomList?.post {
+                                reshowNewOrderCoachMark(adapter.data.filterIsInstance<SomListOrderUiModel>())
+                            }
+                        }
+                    }
+                    2, 3 -> {
+                        if (currentIndex == 3 && tabActive == SomConsts.STATUS_NEW_ORDER) return
+                        if (currentIndex == 2 && tabActive == SomConsts.STATUS_ALL_ORDER) return
+                        viewModel.resetGetOrderListParam()
+                        somListSortFilterTab.clear()
+                        skipSearch = true
+                        searchBarSomList.searchText = ""
+                        coachMarkIndexToShow = currentIndex
+                        // if user press "Lanjut" after waiting payment coachmark, auto select new order filter, if user press "Balik"
+                        // auto deselect new order to show all order
+                        val targetStatusFilter = if (currentIndex == 3 && tabActive != SomConsts.STATUS_NEW_ORDER) {
+                            SomConsts.STATUS_NEW_ORDER
+                        } else ""
+                        if (targetStatusFilter.isNotBlank()) {
+                            shouldShowCoachMark = true
+                            coachMark?.isDismissed = true
+                            viewModel.filterResult.value?.let {
+                                if (it is Success) {
+                                    it.data.statusList.find { it.key == targetStatusFilter }?.let {
+                                        somListSortFilterTab.selectTab(it)
+                                        it.isChecked = true
+                                        onTabClicked(it, true)
+                                    }
+                                }
+                            }
+                        } else {
+                            somListSortFilterTab.unselectCurrentStatusFilter()
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun createCoachMarkItems(firstNewOrderView: View): ArrayList<CoachMark2Item> {
+        return arrayListOf<CoachMark2Item>().apply {
+            add(CoachMark2Item(firstNewOrderView, getString(R.string.som_list_coachmark_new_order_card_title), getString(R.string.som_list_coachmark_new_order_card_description)))
+            add(CoachMark2Item(sortFilterSomList, getString(R.string.som_list_coachmark_sort_filter_title), getString(R.string.som_list_coachmark_sort_filter_description)))
+            (menu as MenuBuilder).visibleItems.firstOrNull()?.let { visibleMenu ->
+                activity?.findViewById<View>(visibleMenu.itemId)?.let {
+                    add(CoachMark2Item(it, getString(R.string.som_list_coachmark_waiting_payment_title), getString(R.string.som_list_coachmark_waiting_payment_description)))
+                }
+            }
+            if (GlobalConfig.isSellerApp()) {
+                add(CoachMark2Item(tvSomListBulk, getString(R.string.som_list_coachmark_multi_select_title), getString(R.string.som_list_coachmark_multi_select_description)))
+            }
+        }
+    }
+
+    private fun dismissCoachMark(removeScrollListener: Boolean = true) {
+        if (coachMark?.currentIndex != -1 && coachMark?.isDismissed == false) {
+            shouldShowCoachMark = true
+            if (removeScrollListener)
+                rvSomList.removeOnScrollListener(recyclerViewScrollListener)
+            coachMarkIndexToShow = coachMark?.currentIndex.orZero()
+            coachMark?.dismissCoachMark()
+        }
+    }
+
+    // show new order coachmark if previously hidden and current condition is meet requirement
+    // the requirement to show new order coachmark is:
+    // 1. no filter applied & no search keyword applied
+    // 2. last coachmark index is 0
+    // 3. and there is any new order (we can tell by check get filter result, and we need to scroll through until new order card is showed)
+    // only call this method after rendering order list
+    private fun reshowNewOrderCoachMark(newOrders: List<SomListOrderUiModel>) {
+        if (shouldShowCoachMark && coachMarkIndexToShow == 0 &&
+                (tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER) &&
+                !somListSortFilterTab.isFilterApplied() && searchBarSomList.searchText.toString().isBlank()) {
+            // check whether the user has any new order
+            val filterResult = viewModel.filterResult.value
+            if (filterResult is Success) {
+                val hasNewOrder = filterResult.data.statusList.find {
+                    it.key == SomConsts.STATUS_NEW_ORDER
+                }?.amount.orZero() > 0
+                if (hasNewOrder) {
+                    val firstNewOrderViewPosition = getFirstNewOrder(newOrders)
+                    var firstNewOrderViewPositionInAdapter = getFirstNewOrder(adapter.data.filterIsInstance<SomListOrderUiModel>())
+                    if (firstNewOrderViewPosition != -1) {
+                        firstNewOrderViewPositionInAdapter = adapter.data.indexOf(newOrders[firstNewOrderViewPosition])
+                        if (firstNewOrderViewPositionInAdapter != -1) {
+                            rvSomList.stopScroll()
+                            somListLayoutManager?.scrollToPositionWithOffset(firstNewOrderViewPositionInAdapter, 0)
+                            rvSomList?.run {
+                                (layoutManager?.findViewByPosition(firstNewOrderViewPositionInAdapter)?.findViewById<View>(R.id.btnQuickAction))?.let {
+                                    it.post {
+                                        if (getVisiblePercent(it) == 0) {
+                                            currentNewOrderWithCoachMark = firstNewOrderViewPositionInAdapter
+                                            addOnScrollListener(recyclerViewScrollListener)
+                                            coachMark?.isDismissed = false
+                                            coachMark?.showCoachMark(ArrayList(createCoachMarkItems(it)), index = coachMarkIndexToShow)
+                                            shouldShowCoachMark = false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } else if (firstNewOrderViewPositionInAdapter == -1) {
+                        rvSomList.stopScroll()
+                        somListLayoutManager?.scrollToPositionWithOffset(adapter.dataSize - 1, 0)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun reshowStatusFilterCoachMark() {
+        if (shouldShowCoachMark && coachMarkIndexToShow == 1 && sortFilterSomList.isVisible) {
+            currentNewOrderWithCoachMark = -1
+            coachMark?.isDismissed = false
+            coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
+            shouldShowCoachMark = false
+        }
+    }
+
+    private fun reshowWaitingPaymentOrderListCoachMark() {
+        val waitingPaymentOrderListCountResult = viewModel.waitingPaymentCounterResult.value
+        if (shouldShowCoachMark && coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
+            currentNewOrderWithCoachMark = -1
+            coachMark?.isDismissed = false
+            coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
+            shouldShowCoachMark = false
+        }
+    }
+
+    private fun reshowBulkAcceptOrderCoachMark() {
+        if (shouldShowCoachMark && coachMarkIndexToShow == 3 && tvSomListBulk.isVisible) {
+            currentNewOrderWithCoachMark = -1
+            coachMark?.isDismissed = false
+            coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
+            shouldShowCoachMark = false
+        }
     }
 }

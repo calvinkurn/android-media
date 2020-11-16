@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.domain.model
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerorder.common.util.SomConsts
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -30,7 +31,7 @@ data class SomListGetOrderListParam(
         var orderTypeList: List<Int> = arrayListOf(),
         @SerializedName("sort_by")
         @Expose
-        var sortBy: Int = 0,
+        var sortBy: Int = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING,
         @SerializedName("is_mobile")
         @Expose
         var isMobile: Boolean = true,

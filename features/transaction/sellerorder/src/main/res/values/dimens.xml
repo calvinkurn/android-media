@@ -6,6 +6,7 @@
     <dimen name="dp_208">208dp</dimen>
     <dimen name="waiting_order_tips_icon_size">56dp</dimen>
     <dimen name="waiting_order_product_height">67dp</dimen>
+    <dimen name="waiting_order_recycler_margin_top">10dp</dimen>
 
     <!--  new som list  -->
     <dimen name="som_list_search_bar_margin_top">4dp</dimen>
