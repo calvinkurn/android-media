@@ -6,12 +6,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -27,6 +21,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
@@ -53,6 +52,7 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
 import com.tokopedia.buyerorder.detail.view.adapter.RechargeWidgetAdapter;
+import com.tokopedia.buyerorder.detail.view.customview.CopyableDetailItemView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
@@ -216,19 +216,27 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setDetail(Detail detail) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(detail.label());
-        doubleTextView.setBottomText(detail.value());
         if (VOUCHER_CODE.equalsIgnoreCase(detail.label())) {
-            doubleTextView.setOnClickListener(view -> {
-                if (getContext() != null) {
-                    Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
-                    Utils.vibrate(getContext());
-                    Toaster.build(view, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+            CopyableDetailItemView itemView = new CopyableDetailItemView(getActivity());
+            itemView.setTitle(detail.label());
+            itemView.setDescription(detail.value());
+            itemView.setListener(new CopyableDetailItemView.Listener() {
+                @Override
+                public void onCopyValue() {
+                    if (getContext() != null) {
+                        Utils.copyTextToClipBoard("voucher code", detail.value(), getContext());
+                        Utils.vibrate(getContext());
+                        Toaster.build(itemView, getString(R.string.title_voucher_code_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show();
+                    }
                 }
             });
+            detailContent.addView(itemView);
+        } else {
+            DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+            doubleTextView.setTopText(detail.label());
+            doubleTextView.setBottomText(detail.value());
+            detailContent.addView(doubleTextView);
         }
-        detailContent.addView(doubleTextView);
     }
 
     @Override

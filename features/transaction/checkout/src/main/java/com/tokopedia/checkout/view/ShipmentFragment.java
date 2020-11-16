@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -3036,14 +3037,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+<<<<<<<<< Temporary merge branch 1
     public void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc) {
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
         if (shipmentCartItemModel != null) {
             reloadCourier(shipmentCartItemModel, lastSelectedCourierOrder, skipMvc);
         }
     }
-
-    @Override
+=========
     public void onClickTradeInInfo() {
         checkoutTradeInAnalytics.eventTradeInClickInformation(isTradeInByDropOff());
         FragmentManager fragmentManager = getFragmentManager();
@@ -3062,4 +3063,5 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onSwapInUserAddress() {
         checkoutTradeInAnalytics.eventTradeInClickTukarDiAlamatmu();
     }
+>>>>>>>>> Temporary merge branch 2
 }
