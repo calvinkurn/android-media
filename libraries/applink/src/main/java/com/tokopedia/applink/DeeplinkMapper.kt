@@ -201,6 +201,9 @@ object DeeplinkMapper {
      */
     fun getRegisteredNavigationFromHttp(uri: Uri, deeplink: String): String {
 
+        if (uri.pathSegments.joinToString("/") == TOKOPOINTS || uri.pathSegments.joinToString("/") == ApplinkConst.RewardFallback.Reward.REWARDS) {
+            return ApplinkConstInternalPromo.TOKOPOINTS_HOME
+        }
         if (deeplink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTP) || deeplink.startsWithPattern(ApplinkConstInternalContent.TOKOPEDIA_BYME_HTTPS)) {
             return DeeplinkMapperContent.getRegisteredNavigationContentFromHttp(deeplink)
         }
