@@ -39,6 +39,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -238,7 +239,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
         maintoolbar?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
-                IconBuilder()
+                IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                         .addIcon(IconList.ID_MESSAGE) {
                             RouteManager.route(activity, ApplinkConst.MESSAGE)
                         }

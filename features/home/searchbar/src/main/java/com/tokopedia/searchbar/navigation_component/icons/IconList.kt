@@ -1,11 +1,16 @@
 package com.tokopedia.searchbar.navigation_component.icons
 
+import android.os.Bundle
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.searchbar.R
 
-internal interface IconConfigItem { fun get(disableRouteManager: Boolean = false, onClick: ()-> Unit = {}): IconToolbar }
+internal interface IconConfigItem { fun get(
+        pageSource: String = "",
+        disableRouteManager: Boolean = false,
+        onClick: ()-> Unit = {}): IconToolbar }
 
 object IconList {
     const val ID_MESSAGE = IconUnify.MESSAGE
@@ -28,7 +33,7 @@ object IconList {
 
     //Image icon
     internal object MessageIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_MESSAGE,
                     applink = ApplinkConst.INBOX,
@@ -42,7 +47,7 @@ object IconList {
     }
 
     internal object NotificationIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NOTIFICATION,
                     applink = ApplinkConst.NOTIFICATION,
@@ -56,7 +61,7 @@ object IconList {
     }
 
     internal object CartIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_CART,
                     applink = ApplinkConst.CART,
@@ -70,12 +75,16 @@ object IconList {
     }
 
     internal object NavGlobalIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_GLOBAL,
                     applink = ApplinkConst.HOME_NAVIGATION,
                     disableRouteManager = disableRouteManager,
-                    name = NAME_NAV_GLOBAL
+                    name = NAME_NAV_GLOBAL,
+                    bundle = Bundle().run {
+                        this.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, pageSource)
+                        this
+                    }
             ) {
                 onClick.invoke()
             }
@@ -83,7 +92,7 @@ object IconList {
     }
 
     internal object WishlistIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_WISHLIST,
                     applink = ApplinkConst.NEW_WISHLIST,
@@ -97,7 +106,7 @@ object IconList {
     }
 
     internal object ShareIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_SHARE,
                     applink = "",
@@ -110,7 +119,7 @@ object IconList {
     }
 
     internal object SettingIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_SETTING,
                     applink = ApplinkConstInternalGlobal.GENERAL_SETTING,
@@ -124,7 +133,7 @@ object IconList {
 
     //Lottie icon
     internal object LottieWishlistIcon: IconConfigItem {
-        override fun get(disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_LOTTIE_WISHLIST,
                     imageRes = R.raw.toolbar_lottie_wishlist,

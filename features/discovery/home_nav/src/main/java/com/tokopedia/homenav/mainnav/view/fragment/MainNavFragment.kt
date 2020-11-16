@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -37,9 +38,11 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.activity_main_nav.*
 import javax.inject.Inject
 
 class MainNavFragment : BaseDaggerFragment(), MainNavListener {
@@ -57,6 +60,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var adapter: MainNavListAdapter
 
     private lateinit var userSession: UserSessionInterface
+    val args: MainNavFragmentArgs by navArgs()
+
+    private var pageSource = ""
 
     override fun getScreenName(): String {
         return ""
@@ -74,7 +80,17 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 .inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pageSource = args.StringMainNavArgsSourceKey
+        viewModel.setPageSource(pageSource)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
+            it.setToolbarTitle(getString(R.string.title_main_nav))
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE)
+        }
         return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
 
@@ -170,6 +186,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
                         bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
             } else {
+                RouteManager.route(requireContext(), homeNavMenuViewModel.applink)
                 hitClickTrackingBasedOnId(homeNavMenuViewModel)
             }
         }

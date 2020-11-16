@@ -19,6 +19,7 @@ import com.tokopedia.homenav.category.view.di.DaggerCategoryListComponent
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_nav_category.view.*
@@ -33,6 +34,11 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
     private lateinit var menuViewModel: HomeNavMenuViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val pageTitle = arguments?.getString("title", "")?:""
+        activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
+            it.setToolbarTitle(pageTitle)
+            it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+        }
         return inflater.inflate(R.layout.fragment_nav_category, container, false)
     }
 

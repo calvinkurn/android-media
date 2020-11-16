@@ -15,6 +15,10 @@
             app:exitAnim="@anim/nav_slide_out_left"
             app:popEnterAnim="@anim/nav_fade_in"
             app:popExitAnim="@anim/nav_fade_out" />
+        <argument
+            android:name="@string/main_nav_args_source_key"
+            app:argType="string"
+            android:defaultValue=""/>
 
     </fragment>
 

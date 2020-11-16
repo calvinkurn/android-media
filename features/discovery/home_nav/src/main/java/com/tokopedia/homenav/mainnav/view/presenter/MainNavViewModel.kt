@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
@@ -15,6 +16,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_FAVORITE_SHOP
+import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_HOME
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_OPEN_SHOP_TICKER
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_QR_CODE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_RECENT_VIEW
@@ -94,6 +96,8 @@ class MainNavViewModel @Inject constructor(
             unreadCountComplain = 0
     )
 
+    private var pageSource: String = ""
+
     init {
         setInitialState()
         getMainNavData()
@@ -135,6 +139,10 @@ class MainNavViewModel @Inject constructor(
         val newMainNavList = _mainNavListVisitable
         newMainNavList.remove(visitable)
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+    }
+
+    fun setPageSource(pageSource: String = "") {
+        this.pageSource = pageSource
     }
 
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
@@ -203,6 +211,7 @@ class MainNavViewModel @Inject constructor(
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
                 getMainNavContent()
                 onlyForLoggedInUser { getUserSection() }
+                getHomeBackButtonMenu()
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
@@ -221,6 +230,17 @@ class MainNavViewModel @Inject constructor(
                 it.printStackTrace()
             }
             p2DataJob.join()
+        }
+    }
+
+    private fun getHomeBackButtonMenu() {
+        if (pageSource != ApplinkConsInternalNavigation.SOURCE_HOME) {
+            addWidgetList(
+                    listOf(
+                            SeparatorViewModel(),
+                            clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME)
+                    )
+            )
         }
     }
 

@@ -1,31 +1,33 @@
 package com.tokopedia.homenav.view.activity
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import androidx.navigation.Navigation
 import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.R
-import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import kotlinx.android.synthetic.main.activity_main_nav.*
 
 
 class HomeNavActivity: AppCompatActivity() {
+
+    private var pageSource: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         setContentView(R.layout.activity_main_nav)
+        pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_N0))
+//            setStatusBarColor(androidx.core.content.ContextCompat.getColor(this,com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
 
-        findViewById<Toolbar>(R.id.toolbar)?.let {
-            setSupportActionBar(it)
-            it.navigationIcon = getResDrawable(R.drawable.ic_close_x_black)
+        findViewById<NavToolbar>(R.id.toolbar)?.let {
+            it.setToolbarTitle(getString(R.string.title_main_nav))
+            it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_DARK, true)
         }
         setupNavigation()
     }
@@ -37,12 +39,14 @@ class HomeNavActivity: AppCompatActivity() {
 
     private fun setupNavigation() {
         val navController = findNavController(R.id.fragment_container)
-        val listener = AppBarConfiguration.OnNavigateUpListener {
+        toolbar.setOnBackButtonClickListener {
             navController.navigateUp()
         }
+        navController.setGraph(R.navigation.nav_graph, intent.extras)
+    }
 
-        val appBarConfiguration = AppBarConfiguration.Builder().setFallbackOnNavigateUpListener(listener).build()
-        navController.setGraph(R.navigation.nav_graph, Bundle())
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+    override fun onSupportNavigateUp(): Boolean {
+        return Navigation.findNavController(this, R.id.fragment_container).navigateUp()
+                || super.onSupportNavigateUp();
     }
 }

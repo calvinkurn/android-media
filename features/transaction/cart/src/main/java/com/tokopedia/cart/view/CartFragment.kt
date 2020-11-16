@@ -121,6 +121,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMEND
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -839,7 +840,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             navToolbar.apply {
                 setOnBackButtonClickListener { onBackPressed() }
                 setIcon(
-                        IconBuilder()
+                        IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
                                 .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, ::onNavigationToolbarWishlistClicked)
                                 .addIcon(IconList.ID_NAV_GLOBAL) {}
                 )
