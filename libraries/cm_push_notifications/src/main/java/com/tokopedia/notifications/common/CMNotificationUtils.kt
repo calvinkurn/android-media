@@ -23,6 +23,7 @@ import java.net.MalformedURLException
 import java.net.URLDecoder
 import java.net.UnknownHostException
 import java.util.*
+import kotlin.ClassCastException
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -36,8 +37,11 @@ object CMNotificationUtils {
     internal val STATE_LOGGED_IN = "LOGGED_IN"
 
     val CUSTOMER_APP_PAKAGE = "com.tokopedia.tkpd"
+    val CUSTOMER_APP_NAME = "Tokopedia"
     val SELLER_APP_PAKAGE = "com.tokopedia.sellerapp"
+    val SELLER_APP_NAME = "seller"
     val MITRA_APP_PAKAGE = "com.tokopedia.kelontongapp"
+    val MITRA_APP_NAME = "mitra"
 
     val currentLocalTimeStamp: Long
         get() = System.currentTimeMillis()
@@ -115,7 +119,17 @@ object CMNotificationUtils {
     }
 
     private fun mapTokenWithAppVersionRequired(appVersionName: String, cacheHandler: CMNotificationCacheHandler): Boolean {
-        val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        val oldAppVersionName = try {
+            cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
+        } catch (e: ClassCastException) {
+            try {
+                cacheHandler.remove(CMConstant.APP_VERSION_CACHE_KEY)
+                ""
+            } catch (e: Exception) {
+                e.printStackTrace()
+                ""
+            }
+        }
         Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
         return TextUtils.isEmpty(oldAppVersionName) || !oldAppVersionName.equals(appVersionName, ignoreCase = true)
     }
@@ -222,12 +236,12 @@ object CMNotificationUtils {
         if (context != null) {
             val packageName = context.packageName
             if (CUSTOMER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "Tokopedia"
+                appName = CUSTOMER_APP_NAME
             } else if (SELLER_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "seller"
+                appName = SELLER_APP_NAME
             }
             if (MITRA_APP_PAKAGE.equals(packageName, ignoreCase = true)) {
-                appName = "mitra"
+                appName = MITRA_APP_NAME
             }
         }
         return appName

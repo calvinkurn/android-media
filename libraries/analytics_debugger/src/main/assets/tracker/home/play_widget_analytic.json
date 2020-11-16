@@ -1,0 +1,110 @@
+{
+  "readme": "Play Widget Medium in Home - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "click view all",
+      "eventLabel": "{{0 - Tokopedia Play - \\d+}}",
+      "businessUnit": "ads solution",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "impression on play sgc banner",
+      "eventLabel": "{{.+ - \\d+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.+}}"
+        }
+      ],
+      "userId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "click",
+      "eventLabel": "{{click on banner play - .+ - \\d+}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.+}}"
+        }
+      ],
+      "userId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "view_item",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "impression on play sgc channel",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.+}}"
+        }
+      ],
+      "userId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "click",
+      "eventLabel":"{{(.+) - (.+) - (.+) - (.+) - (.+)}}",
+      "promotions": [
+        {
+          "creative_name": "{{.+}}",
+          "creative_slot": "{{\\d*.\\d*}}",
+          "item_id": "{{.*}}",
+          "item_name": "{{.+}}"
+        }
+      ],
+      "userId": "{{.*}}",
+      "channelId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "click remind me",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "click on remove remind me",
+      "eventLabel": "{{\\d+ - \\d+}}",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "homepage-cmp",
+      "eventAction": "click other content",
+      "eventLabel": "{{.+ - \\d+}}",
+      "businessUnit": "ads solution",
+      "currentSite": "tokopediamarketplace",
+      "userId": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

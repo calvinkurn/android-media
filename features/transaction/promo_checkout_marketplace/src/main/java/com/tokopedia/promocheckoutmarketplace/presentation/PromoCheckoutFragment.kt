@@ -91,7 +91,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private var hasTriedToGetLastSeenData = false
 
     private val viewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
+        ViewModelProvider(this, viewModelFactory).get(PromoCheckoutViewModel::class.java)
     }
 
     // Use single recycler view to prevent memory leak & OOM caused by nested recyclerview
@@ -288,8 +288,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun initializePromoCheckoutLastSeenBottomsheet() {
         if (promoCheckoutLastSeenBottomsheet == null) {
-            promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(bottomsheetPromoLastSeenContainer)
-            promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
+            bottomsheetPromoLastSeenContainer?.let {
+                promoCheckoutLastSeenBottomsheet = BottomSheetBehavior.from(it)
+                promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
     }
 
@@ -398,7 +400,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeFragmentUiModel() {
-        viewModel.fragmentUiModel.observe(this, Observer {
+        viewModel.fragmentUiModel.observe(viewLifecycleOwner, Observer {
             renderFragmentState(it)
         })
     }
@@ -412,31 +414,31 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeEmptyStateUiModel() {
-        viewModel.promoEmptyStateUiModel.observe(this, Observer {
+        viewModel.promoEmptyStateUiModel.observe(viewLifecycleOwner, Observer {
             addOrModify(it)
         })
     }
 
     private fun observePromoRecommendationUiModel() {
-        viewModel.promoRecommendationUiModel.observe(this, Observer {
+        viewModel.promoRecommendationUiModel.observe(viewLifecycleOwner, Observer {
             addOrModify(it)
         })
     }
 
     private fun observePromoInputUiModel() {
-        viewModel.promoInputUiModel.observe(this, Observer {
+        viewModel.promoInputUiModel.observe(viewLifecycleOwner, Observer {
             addOrModify(it)
         })
     }
 
     private fun observePromoListUiModel() {
-        viewModel.promoListUiModel.observe(this, Observer {
+        viewModel.promoListUiModel.observe(viewLifecycleOwner, Observer {
             adapter.addVisitableList(it)
         })
     }
 
     private fun observeVisitableChangeUiModel() {
-        viewModel.tmpUiModel.observe(this, Observer {
+        viewModel.tmpUiModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Update -> {
                     adapter.modifyData(adapter.data.indexOf(it.data))
@@ -449,7 +451,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeVisitableListChangeUiModel() {
-        viewModel.tmpListUiModel.observe(this, Observer {
+        viewModel.tmpListUiModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Insert -> {
                     it.data.forEach {
@@ -461,7 +463,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeGetCouponRecommendationResult() {
-        viewModel.getPromoListResponseAction.observe(this, Observer {
+        viewModel.getPromoListResponseAction.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 GetPromoListResponseAction.ACTION_CLEAR_DATA -> {
                     clearAllData()
@@ -476,7 +478,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeApplyPromoResult() {
-        viewModel.applyPromoResponseAction.observe(this, Observer {
+        viewModel.applyPromoResponseAction.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CALLER_PAGE -> {
                     val intent = Intent()
@@ -512,7 +514,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeClearPromoResult() {
-        viewModel.clearPromoResponse.observe(this, Observer {
+        viewModel.clearPromoResponse.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 ClearPromoResponseAction.ACTION_STATE_SUCCESS -> {
                     val intent = Intent()
@@ -533,7 +535,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun observeGetPromoLastSeenResult() {
-        viewModel.getPromoLastSeenResponse.observe(this, Observer {
+        viewModel.getPromoLastSeenResponse.observe(viewLifecycleOwner, Observer {
             when (it.state) {
                 GetPromoLastSeenAction.ACTION_SHOW -> {
                     it.data?.let {

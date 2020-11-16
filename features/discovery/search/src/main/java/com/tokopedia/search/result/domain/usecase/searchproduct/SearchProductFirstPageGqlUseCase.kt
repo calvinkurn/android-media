@@ -207,6 +207,8 @@ class SearchProductFirstPageGqlUseCase(
                         promoted_text
                         description
                         uri
+                        layout
+                        position
                         }
                         applinks
                     }

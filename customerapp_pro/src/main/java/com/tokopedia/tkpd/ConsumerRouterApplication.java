@@ -8,18 +8,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.fragment.app.Fragment;
-
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
-import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
-import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -30,8 +26,6 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
-import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -40,7 +34,6 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -54,13 +47,9 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
-import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.iris.Iris;
@@ -70,7 +59,6 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -78,7 +66,6 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
-import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -89,13 +76,11 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
-import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
@@ -103,6 +88,7 @@ import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
+import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
@@ -148,10 +134,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         GamificationRouter,
         ReactNativeRouter,
         NetworkRouter,
-        GlobalNavRouter,
         OmsModuleRouter,
         TkpdAppsFlyerRouter,
-        UnifiedOrderListRouter,
         LinkerRouter,
         DigitalRouter,
         CMRouter,
@@ -407,11 +391,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getOrderHistoryIntent(Context context, String orderId) {
-        return OrderHistoryActivity.createInstance(context, orderId, 1);
-    }
-
-    @Override
     public void onLogout(AppComponent appComponent) {
 
         forceLogout();
@@ -428,7 +407,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getHomeIntent(Context context) {
-        return MainParentActivity.start(context);
+        return RouteManager.getIntent(context, ApplinkConst.HOME);
     }
 
     @Override
@@ -622,26 +601,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getHomeFragment(boolean scrollToRecommendList) {
-        return HomeInternalRouter.getHomeFragment(scrollToRecommendList);
-    }
-
-    @Override
-    public Fragment getFeedPlusFragment(Bundle bundle) {
-        return FeedPlusContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return OfficialHomeContainerFragment.newInstance(bundle);
-    }
-
-    @Override
-    public ApplicationUpdate getAppUpdate(Context context) {
-        return new FirebaseRemoteAppUpdate(context);
-    }
-
-    @Override
     public long getLongRemoteConfig(String key, long defaultValue) {
         return remoteConfig.getLong(key, defaultValue);
     }
@@ -649,20 +608,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
-    }
-
-    @Override
-    public void sendOpenHomeEvent() {
-        UserSessionInterface userSession = new UserSession(context);
-        Map<String, Object> value = DataLayer.mapOf(
-                AppEventTracking.MOENGAGE.LOGIN_STATUS, userSession.isLoggedIn()
-        );
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, AppEventTracking.EventMoEngage.OPEN_BERANDA);
-    }
-
-    @Override
-    public Fragment getFlightOrderListFragment() {
-        return FlightOrderListFragment.createInstance();
     }
 
     @Override
