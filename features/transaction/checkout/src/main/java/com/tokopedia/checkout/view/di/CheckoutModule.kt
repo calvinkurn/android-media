@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper
@@ -191,4 +192,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         return GraphqlHelper.loadRawString(context.resources, R.raw.checkout_mutation)
     }
 
+    @Provides
+    @CheckoutScope
+    fun provideCheckoutTradeInAnalytics(userSession: UserSessionInterface): CheckoutTradeInAnalytics {
+        return CheckoutTradeInAnalytics(userSession.userId)
+    }
 }

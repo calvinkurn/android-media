@@ -329,6 +329,27 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           is_enable_next_button
           is_disable_pay_button
           is_ovo_only_campaign
+          ovo_additional_data {
+            ovo_activation {
+                is_required
+                button_title
+                error_message
+                error_ticker
+            }
+            ovo_top_up {
+                is_required
+                button_title
+                error_message
+                error_ticker
+                is_hide_digital
+            }
+            phone_number_registered {
+                is_required
+                button_title
+                error_message
+                error_ticker
+            }
+          }
         }
         shipment {
           service_id
