@@ -17,10 +17,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'coroutines'
+    artifactId = 'coroutines_dispatcher'
     groupId = 'com.tokopedia.library'
     versionName = "0.0.1"
-    artifactName = "coroutines-release"
+    artifactName = "coroutines_dispatcher-release"
 }
 
 apply from: '../../publish_local.gradle'

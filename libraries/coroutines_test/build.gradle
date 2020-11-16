@@ -16,7 +16,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.testDependencies.archCoreTesting
 
-    implementation project(rootProject.ext.libraries.coroutines)
+    implementation project(rootProject.ext.libraries.coroutinesDispatcher)
 
     api rootProject.ext.miscDependencies.coroutineTest
 }

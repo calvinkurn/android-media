@@ -71,7 +71,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
-    implementation project(rootProject.ext.libraries.coroutines)
+    implementation project(rootProject.ext.libraries.coroutinesDispatcher)
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.lottie
 
