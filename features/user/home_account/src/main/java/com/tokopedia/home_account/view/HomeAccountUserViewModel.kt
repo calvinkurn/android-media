@@ -4,9 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.home_account.AccountConstants
-import com.tokopedia.home_account.PermissionChecker
-import com.tokopedia.home_account.data.model.MemberDataView
-import com.tokopedia.home_account.data.model.ProfileDataView
 import com.tokopedia.home_account.data.model.SettingDataView
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.home_account.domain.usecase.HomeAccountShortcutUseCase
@@ -137,14 +134,14 @@ class HomeAccountUserViewModel @Inject constructor(
 
     private fun saveLocallyWallet(accountDataModel: UserAccountDataModel) {
         walletPref.saveWallet(accountDataModel.wallet)
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.tokoSwipeUrl = accountDataModel.vccUserStatus.redirectionUrl
+        accountDataModel.vccUserStatus.let{
+            walletPref.tokoSwipeUrl = it.redirectionUrl
         }
     }
 
     private fun saveLocallyVccUserStatus(accountDataModel: UserAccountDataModel) {
-        if (accountDataModel.vccUserStatus != null) {
-            walletPref.saveVccUserStatus(accountDataModel.vccUserStatus)
+        accountDataModel?.vccUserStatus?.let{
+            walletPref.saveVccUserStatus(it)
         }
     }
 
@@ -157,13 +154,15 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private fun saveDebitInstantData(accountDataModel: UserAccountDataModel) {
-        if (accountDataModel.debitInstant != null && accountDataModel.debitInstant.data != null) {
-            walletPref.saveDebitInstantUrl(accountDataModel.debitInstant.data.redirectUrl)
+        accountDataModel?.debitInstant?.data?.let {
+            walletPref.saveDebitInstantUrl(it.redirectUrl)
         }
     }
 
     private fun savePhoneVerified(accountDataModel: UserAccountDataModel) {
-        userSession.setIsMSISDNVerified(accountDataModel.profile.isPhoneVerified)
+        accountDataModel?.profile?.let {
+            userSession.setIsMSISDNVerified(it.isPhoneVerified)
+        }
     }
 
     private fun saveIsAffiliateStatus(accountDataModel: UserAccountDataModel) {
