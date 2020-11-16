@@ -34,7 +34,7 @@ class FeaturedShopComponentCallback(val context: Context?, private val homeCateg
 
     override fun onFeaturedShopItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
         FeaturedShopTracking.sendFeaturedShopItemClick(channelModel, channelGrid, homeCategoryListener.userId, parentPosition, position)
-        RouteManager.route(context, "${channelGrid.applink}?source=homepage.dc_shop.0.${channelModel.id}")
+        RouteManager.route(context, "${channelGrid.applink}?source=homepage.${channelModel.type}.0.${channelModel.id}")
     }
 
 }
