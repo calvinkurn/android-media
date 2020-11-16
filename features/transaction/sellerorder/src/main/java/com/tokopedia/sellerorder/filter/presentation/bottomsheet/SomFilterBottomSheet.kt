@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -76,7 +75,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private var statusBarColorUtil: StatusBarColorUtil? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        activity?.overridePendingTransition(0,0)
         super.onCreate(savedInstanceState)
         initInject()
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
@@ -110,6 +108,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         loadSomFilterData()
         clickShowOrder()
         observeSomFilter()
+        observeUpdateFilterSelected()
+        observeOrderListParam()
         bottomSheetReset()
         adjustBottomSheetPadding()
     }
@@ -215,6 +215,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        dialog?.window?.setWindowAnimations(-1)
+    }
+
     override fun onDestroy() {
         removeObservers(somFilterViewModel.filterResult)
         removeObservers(somFilterViewModel.updateFilterSelected)
@@ -309,40 +314,37 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun observeSomFilter() {
-        observe(somFilterViewModel.filterResult) {
-            finishSomFilterData()
-            when (it) {
-                is Success -> {
-                    if (it.data.isEmpty()) {
-                        somFilterAdapter?.setEmptyState(EmptyModel())
-                    } else {
-                        somFilterAdapter?.updateData(it.data)
-                        showHideBottomSheetReset()
+    private fun observeSomFilter() = observe(somFilterViewModel.filterResult) {
+                finishSomFilterData()
+                when (it) {
+                    is Success -> {
+                        if (it.data.isEmpty()) {
+                            somFilterAdapter?.setEmptyState(EmptyModel())
+                        } else {
+                            somFilterAdapter?.updateData(it.data)
+                            showHideBottomSheetReset()
+                        }
                     }
-                }
-                is Fail -> {
+                    is Fail -> { }
                 }
             }
+
+    private fun observeOrderListParam() = observe(somFilterViewModel.somFilterOrderListParam) {
+        when (it) {
+            is Success -> {
+                somListOrderParam = it.data
+            }
+            is Fail -> { }
         }
-        observe(somFilterViewModel.updateFilterSelected) {
-            when (it) {
-                is Success -> {
-                    somFilterAdapter?.updateData(it.data)
-                    showHideBottomSheetReset()
-                }
-                is Fail -> {
-                }
+    }
+
+    private fun observeUpdateFilterSelected() = observe(somFilterViewModel.updateFilterSelected) {
+        when (it) {
+            is Success -> {
+                somFilterAdapter?.updateData(it.data)
+                showHideBottomSheetReset()
             }
-        }
-        observe(somFilterViewModel.somFilterOrderListParam) {
-            when (it) {
-                is Success -> {
-                    somListOrderParam = it.data
-                }
-                is Fail -> {
-                }
-            }
+            is Fail -> { }
         }
     }
 
@@ -403,8 +405,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
-        fun createInstance(mActivity: FragmentActivity?,
-                           orderStatus: String,
+        fun createInstance(orderStatus: String,
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
                            filterDate: String,
