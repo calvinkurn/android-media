@@ -373,8 +373,8 @@ class ActivationPageFragment: BaseDaggerFragment() {
             }
         } else {
             view?.let { view ->
-                if (codValue) Toaster.make(view, COD_INACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
-                else Toaster.make(view, COD_ACTIVE_MESSAGE, type = Toaster.TYPE_NORMAL)
+                if (codValue) Toaster.build(view, COD_INACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
+                else Toaster.build(view, COD_ACTIVE_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show()
             }
             getShopFeature()
         }
@@ -400,7 +400,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.make(it, DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                            Toaster.build(it, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
                         }
                     }
                 }
@@ -408,8 +408,8 @@ class ActivationPageFragment: BaseDaggerFragment() {
             else -> {
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
-                    Toaster.make(it, throwable.message
-                            ?: DEFAULT_ERROR_MESSAGE, type = Toaster.TYPE_ERROR)
+                    Toaster.build(it, throwable.message
+                            ?: DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
                 }
             }
         }
