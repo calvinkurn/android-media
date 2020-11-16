@@ -1,34 +1,28 @@
 package com.tokopedia.sellerorder.oldlist.presentation.activity
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerorder.R
-import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.list.presentation.activities.SomListActivity
-import com.tokopedia.sellerorder.oldlist.di.DaggerSomListComponent
-import com.tokopedia.sellerorder.oldlist.di.SomListComponent
 import com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment
-import javax.inject.Inject
 
 /**
  * Created by fwidjaja on 2019-08-23.
  */
 
 // SOM = Seller Order Management
-class SomListActivity : BaseSimpleActivity(), HasComponent<SomListComponent> {
+class SomListActivity : BaseSimpleActivity() {
 
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfigImpl
+    private var remoteConfig: FirebaseRemoteConfigImpl = FirebaseRemoteConfigImpl(this)
 
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
@@ -58,7 +52,7 @@ class SomListActivity : BaseSimpleActivity(), HasComponent<SomListComponent> {
             return
         } else {
             super.onCreate(savedInstanceState)
-            window.decorView.setBackgroundColor(Color.WHITE)
+            window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 
@@ -82,9 +76,4 @@ class SomListActivity : BaseSimpleActivity(), HasComponent<SomListComponent> {
         (fragment as SomListFragment).onChatIconClicked()
         RouteManager.route(this, ApplinkConst.TOPCHAT_IDLESS)
     }
-
-    override fun getComponent(): SomListComponent =
-            DaggerSomListComponent.builder()
-                    .somComponent(SomComponentInstance.getSomComponent(application))
-                    .build()
 }
