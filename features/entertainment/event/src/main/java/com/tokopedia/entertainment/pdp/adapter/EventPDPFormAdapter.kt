@@ -53,8 +53,17 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
     override fun getItemCount(): Int = formData.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is EventPDPTextFieldViewHolder) {
-            holder.bind(formData.get(position), position)
+       when(holder.itemViewType){
+            TEXT_TYPE -> { holder as EventPDPTextFieldViewHolder
+                           holder.bind(formData.get(position), position)}
+            CHECKBOX_TYPE -> { holder as EventPDPCheckBoxViewHolder
+                           holder.bind(formData.get(position), position)}
+            DATEPICKER_TYPE -> { holder as EventPDPDatePickerViewHolder
+                           holder.bind(formData.get(position), position)}
+            CHIP_TYPE -> { holder as EventPDPChipsViewHolder
+                           holder.bind(formData.get(position), position)}
+            else -> { holder as EventPDPTextFieldViewHolder
+                holder.bind(formData.get(position), position)}
         }
     }
 
