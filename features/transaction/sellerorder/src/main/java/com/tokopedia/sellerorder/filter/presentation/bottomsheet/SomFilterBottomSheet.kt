@@ -75,6 +75,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.overridePendingTransition(0,0)
         initInject()
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
                 ?: arrayListOf()
@@ -153,7 +154,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                 .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(KEY_SOM_LIST_GET_ORDER_PARAM, somFilterViewModel.getSomListGetOrderListParam())
-        val intentSomSubFilter = SomSubFilterActivity.newInstance(this.activity,
+        val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
                 filterDate,
                 idFilter,
                 somFilterChipsList,
