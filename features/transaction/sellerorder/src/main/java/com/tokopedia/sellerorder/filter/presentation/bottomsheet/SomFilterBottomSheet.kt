@@ -215,8 +215,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onResume() {
+        super.onResume()
         dialog?.window?.setWindowAnimations(-1)
     }
 
