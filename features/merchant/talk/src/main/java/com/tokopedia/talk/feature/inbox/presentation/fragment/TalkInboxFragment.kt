@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -48,7 +50,7 @@ import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
 import javax.inject.Inject
 
 class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
-        HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract, TalkInboxViewHolderListener {
+        HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract, TalkInboxViewHolderListener, InboxFragment {
 
     companion object {
         const val TAB_PARAM = "tab_param"
@@ -152,6 +154,18 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     override fun onInboxItemImpressed(talkId: String, position: Int, isUnread: Boolean) {
         talkInboxTracking.eventItemImpress(inboxType, talkId, viewModel.getUserId(), position, isUnread, trackingQueue)
+    }
+
+    override fun onRoleChanged(role: Int) {
+        when(role) {
+            RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
+            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
+        }
+        setInboxType()
+    }
+
+    override fun onPageClickedAgain() {
+        getRecyclerView(view).scrollToPosition(0)
     }
 
     override fun onPause() {
@@ -360,6 +374,10 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         } else {
             ChipsUnify.TYPE_NORMAL
         }
+    }
+
+    private fun setInboxType()  {
+        viewModel.setInboxType(inboxType)
     }
 
 }
