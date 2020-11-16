@@ -113,6 +113,10 @@ data class NotificationUiModel(
         return typeBottomsheet == BS_TYPE_StockHandler
     }
 
+    fun isPromotion(): Boolean {
+        return sectionId == "promotion"
+    }
+
     companion object {
         const val TYPE_DEFAULT = 0
         const val TYPE_BANNER = 4

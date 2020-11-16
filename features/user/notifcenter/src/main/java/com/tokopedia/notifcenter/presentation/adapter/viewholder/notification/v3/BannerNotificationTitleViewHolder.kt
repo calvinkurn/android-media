@@ -30,8 +30,8 @@ class BannerNotificationTitleViewHolder(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindBannerImage(element)
-        bindFooterTimeStatus(element)
         bindClickBanner(element)
+        bindFooterTimeStatus(element)
     }
 
     override fun onViewRecycled() {
@@ -51,15 +51,21 @@ class BannerNotificationTitleViewHolder(
     }
 
     private fun bindFooterTimeStatus(element: NotificationUiModel) {
-        val isIn24HourAfterCurrentTime = TimeHelper.isIn24HourAfterCurrentTime(
-                element.expireTimeUnix
-        )
-        val isAfterCurrentTime = TimeHelper.isAfterCurrentTime(element.expireTimeUnix)
-        val isBeforeCurrentTime = TimeHelper.isBeforeCurrentTime(element.expireTimeUnix)
-        val timeMetaData = TimeMetaData(
-                isIn24HourAfterCurrentTime, isAfterCurrentTime, isBeforeCurrentTime
-        )
-        bindFooterWithTimeMetaData(element, timeMetaData)
+        if (element.isPromotion()) {
+            val isIn24HourAfterCurrentTime = TimeHelper.isIn24HourAfterCurrentTime(
+                    element.expireTimeUnix
+            )
+            val isAfterCurrentTime = TimeHelper.isAfterCurrentTime(element.expireTimeUnix)
+            val isBeforeCurrentTime = TimeHelper.isBeforeCurrentTime(element.expireTimeUnix)
+            val timeMetaData = TimeMetaData(
+                    isIn24HourAfterCurrentTime, isAfterCurrentTime, isBeforeCurrentTime
+            )
+            bindFooterWithTimeMetaData(element, timeMetaData)
+        } else {
+            status?.hide()
+            endDate?.hide()
+            countDown?.hide()
+        }
     }
 
     private fun bindFooterTimeStatusHasEnded(element: NotificationUiModel) {
@@ -88,6 +94,7 @@ class BannerNotificationTitleViewHolder(
             else -> null
         }
         text?.let {
+            status?.show()
             status?.setText(it)
         }
     }
