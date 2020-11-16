@@ -1,17 +1,18 @@
 package com.tokopedia.tradein.usecase
 
-import android.content.res.Resources
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.tradein.R
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.tradein.model.DeviceDataResponse
 import com.tokopedia.tradein.model.DeviceDiagGQL
 import com.tokopedia.tradein.model.DeviceDiagParams
 import com.tokopedia.tradein.model.KYCDetailGQL
+import com.tokopedia.tradein.raw.GQL_GET_DEVICE_DIAG
+import com.tokopedia.tradein.raw.GQL_KYC_STATUS
 import com.tokopedia.tradein.repository.TradeInRepository
 import java.lang.reflect.Type
 import javax.inject.Inject
 
+@GqlQuery("GqlGetDeviceDiag", GQL_GET_DEVICE_DIAG)
 class DiagnosticDataUseCase @Inject constructor(
         private val repository: TradeInRepository) {
 
@@ -35,18 +36,16 @@ class DiagnosticDataUseCase @Inject constructor(
         return variables
     }
 
-    fun getQueries(resources: Resources?, tradeInParams: TradeInParams?): MutableList<String> {
+    fun getQueries(tradeInParams: TradeInParams?): MutableList<String> {
         val queries: MutableList<String> = ArrayList()
-        queries.add((GraphqlHelper.loadRawString(resources,
-                R.raw.gql_get_device_diag)))
+        queries.add(GqlGetDeviceDiag.GQL_QUERY)
         if (tradeInParams?.isUseKyc == 1) {
-            queries.add(GraphqlHelper.loadRawString(resources,
-                    R.raw.gql_get_kyc_status))
+            queries.add(GQL_KYC_STATUS)
         }
         return queries
     }
 
-    suspend fun getDiagnosticData(resources: Resources?, tradeInParams: TradeInParams?, tradeInType: Int): DeviceDataResponse? {
+    suspend fun getDiagnosticData(tradeInParams: TradeInParams?, tradeInType: Int): DeviceDataResponse? {
         val request: MutableList<HashMap<String, Any>> = ArrayList()
         val type: MutableList<Type> = ArrayList()
 
@@ -56,7 +55,7 @@ class DiagnosticDataUseCase @Inject constructor(
             request.add(createRequestParamsKYCStatus())
             type.add(KYCDetailGQL::class.java)
         }
-        val response = repository.getGQLData(getQueries(resources, tradeInParams), type, request)
+        val response = repository.getGQLData(getQueries(tradeInParams), type, request)
         response?.let {
             val deviceDiagGQL = it.getData<DeviceDiagGQL>(DeviceDiagGQL::class.java)
             if (deviceDiagGQL != null) {

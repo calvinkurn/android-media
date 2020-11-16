@@ -87,10 +87,11 @@ class NotificationUpdatePresenter @Inject constructor(
     }
 
     override fun addProductToCart(
+            userId: String,
             product: ProductData,
             onSuccessAddToCart: (data: DataModel) -> Unit
     ) {
-        val requestParams = getCartRequestParams(product)
+        val requestParams = getCartRequestParams(userId, product)
         val atcSubscriber = getAtcSubscriber(onSuccessAddToCart)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
@@ -122,7 +123,7 @@ class NotificationUpdatePresenter @Inject constructor(
         }
     }
 
-    private fun getCartRequestParams(product: ProductData): RequestParams {
+    private fun getCartRequestParams(userId: String, product: ProductData): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams()
         addToCartRequestParams.productId = product.productId.toLongOrZero()
         addToCartRequestParams.shopId = product.shop?.id ?: -1
@@ -130,6 +131,7 @@ class NotificationUpdatePresenter @Inject constructor(
         addToCartRequestParams.notes = ""
         addToCartRequestParams.productName = product.name
         addToCartRequestParams.price = product.price
+        addToCartRequestParams.userId = userId
 
        return RequestParams.create().apply {
            putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)

@@ -51,23 +51,6 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:gravity="end">
-
-                    <ImageView
-                        android:id="@+id/courier_logo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        tools:src="@drawable/googleg_standard_color_18"
-                        tools:visibility="visible" />
-
-                </LinearLayout>
-
             </LinearLayout>
 
             <View
@@ -235,6 +218,28 @@
                     android:textColor="@color/orange_red"
                     tools:text="On Process" />
 
+                <LinearLayout
+                    android:id="@+id/ticker_info_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:visibility="visible">
+
+                    <com.tokopedia.unifycomponents.ticker.Ticker
+                        android:id="@+id/ticker_info_courier"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:tickerShapeType="loose"
+                        app:closeButtonVisibility="gone"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:background="@color/white_two" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/tracking_history"
                     android:layout_width="wrap_content"
@@ -282,25 +287,6 @@
                 </LinearLayout>
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginEnd="@dimen/dp_20"
-                android:layout_marginRight="@dimen/dp_20"
-                android:layout_marginBottom="@dimen/dp_16">
-
-                <com.tokopedia.unifycomponents.ticker.Ticker
-                    android:id="@+id/ticker_info_courier"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"/>
-
-            </LinearLayout>
-
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/live_tracking_button"
