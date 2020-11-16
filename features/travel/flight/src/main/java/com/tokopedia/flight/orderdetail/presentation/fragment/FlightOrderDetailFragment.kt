@@ -23,6 +23,7 @@ import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListAct
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
+import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailBrowserActivity
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity
 import com.tokopedia.flight.orderdetail.presentation.bottomsheet.FlightOrderDetailPaymentDetailBottomSheet
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailButtonsView
@@ -118,7 +119,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailViewModel.eticketData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-
+                    navigateToWebview("E-Ticket", it.data)
                 }
                 is Fail -> {
                 }
@@ -368,6 +369,12 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             navigateToCancellationDetailPage()
         } else if (isRequestCancel) {
             flightOrderDetailViewModel.onNavigateToCancellationClicked(data.journeys)
+        }
+    }
+
+    private fun navigateToWebview(title:String, htmlContent: String) {
+        context?.let {
+            startActivity(FlightOrderDetailBrowserActivity.getIntent(it, title, htmlContent))
         }
     }
 

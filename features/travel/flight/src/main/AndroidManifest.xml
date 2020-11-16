@@ -164,6 +164,10 @@
             android:label="@string/flight_order_list"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
+        <activity android:name=".orderdetail.presentation.activity.FlightOrderDetailBrowserActivity"
+            android:label="@string/flight_order_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight" />
         <activity
             android:name=".cancellationV2.presentation.activity.FlightCancellationChooseReasonActivity"
             android:label="@string/flight_cancellation_reason_title"

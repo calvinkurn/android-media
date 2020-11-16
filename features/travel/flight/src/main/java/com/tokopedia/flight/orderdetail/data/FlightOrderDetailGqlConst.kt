@@ -5,7 +5,7 @@ package com.tokopedia.flight.orderdetail.data
  */
 object FlightOrderDetailGqlConst {
     val QUERY_GET_ORDER_E_TICKET = """
-        query FlightGetETicket(${'$'}data: FlightETicketArgs!!) {
+        query FlightGetETicket(${'$'}data: FlightETicketArgs!) {
             flightGetETicket(input:${'$'}data) {
                 data
             }
