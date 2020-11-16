@@ -230,7 +230,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
                 {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it.items)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
                 },
                 {
                     rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
@@ -246,7 +246,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
                 {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it.items)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
                 },
                 {
                     rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)

@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
@@ -29,6 +30,10 @@ class NotificationAdapter constructor(
 
     override fun getProductCarouselViewPool(): RecyclerView.RecycledViewPool {
         return carouselViewPool
+    }
+
+    override fun isPreviousItemNotification(adapterPosition: Int): Boolean {
+        return visitables?.getOrNull(adapterPosition - 1) is NotificationUiModel
     }
 
     override fun onCreateViewHolder(
@@ -84,15 +89,25 @@ class NotificationAdapter constructor(
     fun insertNotificationData(
             lastKnownPosition: Int,
             element: LoadMoreUiModel,
-            data: List<Visitable<NotificationTypeFactory>>
+            response: NotificationDetailResponseModel
     ) {
         val elementData = getUpToDateUiModelPosition(lastKnownPosition, element)
         val position = elementData.first
         if (position == RecyclerView.NO_POSITION) return
         visitables.removeAt(position)
         notifyItemRemoved(position)
-        if (visitables.addAll(position, data)) {
-            notifyItemRangeInserted(position, data.size)
+        if (visitables.addAll(position, response.items)) {
+            notifyItemRangeInserted(position, response.items.size)
+            adjustDividerPadding(position, response)
+        }
+    }
+
+    private fun adjustDividerPadding(position: Int, response: NotificationDetailResponseModel) {
+        if (response.hasNext) return
+        val nextPosition = position + 1
+        val divider = visitables.getOrNull(nextPosition)
+        if (divider is BigDividerUiModel) {
+            notifyItemChanged(nextPosition, Any())
         }
     }
 

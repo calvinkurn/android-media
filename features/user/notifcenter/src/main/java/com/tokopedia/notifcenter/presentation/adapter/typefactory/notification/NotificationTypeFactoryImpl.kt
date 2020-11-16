@@ -103,6 +103,10 @@ class NotificationTypeFactoryImpl constructor(
                     adapterListener as? CarouselProductNotificationViewHolder.Listener,
                     adapterListener as? NotificationAdapterListener
             )
+            BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(
+                    view,
+                    adapterListener as? NotificationAdapterListener
+            )
             else -> createViewHolder(view, viewType)
         }
     }
@@ -111,7 +115,6 @@ class NotificationTypeFactoryImpl constructor(
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
-            BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
             NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)
             NotificationLoadingViewHolder.LAYOUT -> NotificationLoadingViewHolder(view)
