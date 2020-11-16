@@ -12,8 +12,6 @@ import com.tokopedia.user_identification_common.domain.pojo.KycStatusPojo
  */
 
 data class UserAccountDataModel(
-        @SerializedName("isAuthenticated")
-        var isAuthenticated: Int = 0,
 
         @SerializedName("wallet")
         @Expose
@@ -23,33 +21,9 @@ data class UserAccountDataModel(
         @Expose
         var profile: ProfileModel = ProfileModel(),
 
-        @SerializedName("userProfileCompletion")
-        @Expose
-        var userProfileCompletion: UserProfileCompletion = UserProfileCompletion(),
-
         @SerializedName("tokopoints")
         @Expose
         var tokopoints: TokopointsModel = TokopointsModel(),
-
-        @SerializedName("notifications")
-        @Expose
-        var notifications: NotificationsModel = NotificationsModel(),
-
-        @SerializedName("reputation_shops")
-        @Expose
-        var reputationShops: List<ReputationShop> = ArrayList(),
-
-        @SerializedName("tokopointsSumCoupon")
-        @Expose
-        var tokopointsSumCoupon: TokopointsSumCoupon = TokopointsSumCoupon(),
-
-        @SerializedName("membershipSumUserCard")
-        @Expose
-        var membershipSumUserCard: MembershipSumUserCard = MembershipSumUserCard(),
-
-        @SerializedName("le_preapprove")
-        @Expose
-        var lePreapprove: LePreapproveModel = LePreapproveModel(),
 
         @SerializedName("openDebitSettings")
         @Expose
@@ -59,29 +33,13 @@ data class UserAccountDataModel(
         @Expose
         var vccUserStatus: VccUserStatus = VccUserStatus(),
 
-        @SerializedName("vcc_user_balance")
-        @Expose
-        var vccUserBalanceDataModel: VccUserBalanceDataModel = VccUserBalanceDataModel(),
-
-        @SerializedName("kycStatus")
-        @Expose
-        val kycStatusPojo: KycStatusPojo = KycStatusPojo(),
-
         @SerializedName("isAffiliate")
         @Expose
         var isAffiliate: Boolean = false,
 
-        @SerializedName("CheckEligible")
-        @Expose
-        var premiumAccountResponse: PremiumAccountResponse = PremiumAccountResponse(),
-
         @SerializedName("balance")
         @Expose
         var saldo: DepositDataModel = DepositDataModel(),
-
-        @SerializedName("uohOrderCount")
-        @Expose
-        var uohOrderCount: UohCounterDataModel = UohCounterDataModel(),
 
         var shortcutResponse: ShortcutResponse = ShortcutResponse()
 )

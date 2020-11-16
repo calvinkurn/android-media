@@ -1,6 +1,5 @@
  query {
    status
-   isAuthenticated
    profile {
      name
      full_name
@@ -8,25 +7,6 @@
      user_id
      profilePicture
      phone_verified
-   }
-   userProfileCompletion {
-     isActive,
-     fullName,
-     birthDate,
-     birthDay,
-     birthMonth,
-     birthYear,
-     gender,
-     email,
-     msisdn,
-     isMsisdnVerified,
-     isCreatedPassword,
-     isBiodataDone,
-     isEmailDone,
-     isPasswordDone,
-     isMsisdnDone,
-     completionDone,
-     completionScore
    }
    tokopoints {
      status {
@@ -48,27 +28,6 @@
        }
      }
    }
-   notifications{
-     resolutionAs {
-       buyer
-     }
-     userSatisfactionSurvey
-     buyerOrderStatus {
-       paymentStatus
-       confirmed
-       processed
-       shipped
-       arriveAtDestination
-     }
-   }
-   tokopointsSumCoupon {
-       sumCoupon
-       sumCouponStr
-     }
-   membershipSumUserCard {
-       sumUserCard
-       sumUserCardStr
-     }
    vcc_user_status {
        status
        redirection_url
@@ -80,20 +39,6 @@
        title
        body
    }
-   vcc_user_balance {
-     data{
-       vcc_id
-       vcc_number
-       available_balance
-       credit_limit
-       outstanding_balance
-       available_balance_text
-       credit_limit_text
-       currency
-       lender_name
-       vcc_expire_at
-     }
-   }
    openDebitSettings {
        data {
          redirectURL
@@ -102,11 +47,5 @@
     balance {
             buyer_usable
             seller_usable
-    }
-    uohOrderCount {
-            onProcess
-            onProcessText
-            activeTickets
-            activeTicketsText
     }
  }
