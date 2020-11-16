@@ -49,10 +49,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
 
         with(recent_transaction_widget) {
             setListener(this@RechargeGeneralRecentTransactionFragment)
-            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) {
-                setRecentNumbers(recommendationList)
-                toggleTitle(showTitle)
-            }
+            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList, showTitle)
         }
     }
 

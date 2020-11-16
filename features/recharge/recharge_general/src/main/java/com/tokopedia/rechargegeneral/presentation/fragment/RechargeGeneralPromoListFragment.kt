@@ -59,10 +59,7 @@ class RechargeGeneralPromoListFragment : BaseDaggerFragment(), TopupBillsPromoLi
 
         with(promo_list_widget) {
             setListener(this@RechargeGeneralPromoListFragment)
-            if (::promoList.isInitialized && promoList.isNotEmpty()) {
-                setPromoList(promoList)
-                toggleTitle(showTitle)
-            }
+            if (::promoList.isInitialized && promoList.isNotEmpty()) setPromoList(promoList, showTitle)
         }
     }
 
