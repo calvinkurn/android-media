@@ -1859,7 +1859,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
-        shippingParam.setAddressId(shipmentDetailData.getAddressId());
+        int addressId = 0;
+        try {
+            addressId = Integer.parseInt(recipientAddressModel.getId());
+        } catch (NumberFormatException e) {
+            // No-op
+        }
+        shippingParam.setAddressId(addressId);
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
