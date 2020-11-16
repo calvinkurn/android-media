@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.presentation.models.SomListEmptyStateUiModel
@@ -23,7 +23,7 @@ class SomListOrderEmptyViewHolder(
     override fun bind(element: SomListEmptyStateUiModel?) {
         element?.let { element ->
             with(itemView) {
-                ivSomListEmptyStateIllustration.loadImageDrawable(element.imageUrl)
+                ivSomListEmptyStateIllustration.loadImage(element.imageUrl)
                 tvEmptyStateTitle.text = element.title
                 tvEmptyStateDescription.text = element.description
                 btnEmptyState.apply {

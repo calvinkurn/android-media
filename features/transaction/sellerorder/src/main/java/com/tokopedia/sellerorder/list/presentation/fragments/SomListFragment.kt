@@ -1284,7 +1284,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         return if (!isTopAdsActive && somListSortFilterTab.isNewOrderFilterSelected() &&
                 !somListSortFilterTab.isFilterApplied() && searchBarSomList.searchText.isEmpty()) {
             SomListEmptyStateUiModel(
-                    imageUrl = R.drawable.som_list_empty_state_with_no_filter_illustration,
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
                     title = getString(R.string.empty_peluang_title),
                     description = getString(R.string.empty_peluang_desc_non_topads_no_filter),
                     buttonText = getString(R.string.btn_cek_peluang_non_topads),
@@ -1293,12 +1293,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             )
         } else if (somListSortFilterTab.isFilterApplied() || searchBarSomList.searchText.isNotEmpty()) {
             SomListEmptyStateUiModel(
-                    imageUrl = R.drawable.som_list_empty_state_with_filter_illustration,
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION,
                     title = getString(R.string.som_list_empty_state_not_found_title)
             )
         } else {
             SomListEmptyStateUiModel(
-                    imageUrl = R.drawable.som_list_empty_state_with_no_filter_illustration,
+                    imageUrl = SomConsts.SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION,
                     title = getString(R.string.empty_peluang_title),
                     description = getString(R.string.som_list_empty_state_description_no_topads_no_filter)
             )

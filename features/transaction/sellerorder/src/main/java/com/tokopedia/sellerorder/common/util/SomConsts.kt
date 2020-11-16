@@ -216,4 +216,8 @@ object SomConsts {
 
     // Remote Configs
     const val ENABLE_NEW_SOM = "android_enable_new_som"
+
+    // Som List Illustration
+    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
 }
