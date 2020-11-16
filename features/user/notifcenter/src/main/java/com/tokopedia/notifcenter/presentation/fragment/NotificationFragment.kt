@@ -93,7 +93,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun loadData(page: Int) {
-        viewModel.loadFirstPageNotification(containerListener?.role)
+        if (page == 1) {
+            viewModel.loadFirstPageNotification(containerListener?.role)
+        }
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
