@@ -141,8 +141,15 @@ class MainNavViewModel @Inject constructor(
         _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
     }
 
+    fun deleteWidgetList(visitables: List<Visitable<*>>) {
+        val newMainNavList = _mainNavListVisitable
+        newMainNavList.removeAll(visitables)
+        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+    }
+
     fun setPageSource(pageSource: String = "") {
         this.pageSource = pageSource
+        if (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME) removeHomeBackButtonMenu()
     }
 
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
@@ -237,11 +244,19 @@ class MainNavViewModel @Inject constructor(
         if (pageSource != ApplinkConsInternalNavigation.SOURCE_HOME) {
             addWidgetList(
                     listOf(
-                            SeparatorViewModel(),
+                            SeparatorViewModel(sectionId = MainNavConst.Section.HOME),
                             clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME)
                     )
             )
         }
+    }
+
+    private fun removeHomeBackButtonMenu() {
+        val listOfHomeMenuSection = _mainNavListVisitable.filter {
+            (it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.HOME) ||
+                    (it is SeparatorViewModel && it.sectionId == MainNavConst.Section.HOME)
+        }
+        deleteWidgetList(listOfHomeMenuSection)
     }
 
     private suspend fun getMainNavContent() {

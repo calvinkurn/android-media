@@ -66,11 +66,14 @@
             app:typographyType="body_3"
             android:layout_marginTop="@dimen/dp_2"
             android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/order_product_status"
             app:layout_constraintStart_toEndOf="@id/order_product_image"
-            tools:text="This is product name"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="This is product name sadaidjwaoijjdiowj"
             android:ellipsize="end"
-            android:layout_width="wrap_content"
+            android:lines="1"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -81,9 +84,12 @@
             android:layout_marginStart="@dimen/dp_8"
             app:layout_constraintTop_toBottomOf="@id/order_product_name"
             app:layout_constraintStart_toEndOf="@id/order_product_image"
-            tools:text="Bayar sebelum 28 Jan, 13:04 WIB"
+            tools:text="Bayar sebelum 28 Jan, 13:04 WIB dsadawdawdsadaw"
             android:ellipsize="end"
-            android:layout_width="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:lines="1"
+            android:layout_width="0dp"
+            android:layout_marginEnd="@dimen/dp_8"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
