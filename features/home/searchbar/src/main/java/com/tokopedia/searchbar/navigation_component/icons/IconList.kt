@@ -132,7 +132,8 @@ object IconList {
                     iconType = IconToolbar.TYPE_LOTTIE,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
-                    name = NAME_WISHLIST
+                    name = NAME_WISHLIST,
+                    paddingEndRes = R.dimen.lottie_wishlist_padding_end
             ) {
                 onClick.invoke()
             }
