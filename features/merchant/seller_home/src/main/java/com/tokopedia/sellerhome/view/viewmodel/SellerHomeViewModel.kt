@@ -210,7 +210,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io()) {
+            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
                 getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
             })
@@ -222,7 +222,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getAnnouncementWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io()) {
+            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io) {
                 getAnnouncementUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
                 return@withContext getAnnouncementUseCase.get().executeOnBackground()
             })
