@@ -189,22 +189,38 @@ class ShopPageFragment :
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
-    private val iconTabHome: Int
-        get() = R.drawable.ic_shop_tab_home_new.takeIf {
+    private val iconTabHomeInactive: Int
+        get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
             isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_home_inactive
-    private val iconTabProduct: Int
-        get() = R.drawable.ic_shop_tab_product_new.takeIf {
+        } ?: R.drawable.ic_shop_tab_home_old_inactive
+    private val iconTabHomeActive: Int
+        get() = R.drawable.ic_shop_tab_home_active.takeIf {
             isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_products_inactive
-    private val iconTabFeed: Int
-        get() = R.drawable.ic_shop_tab_feed_new.takeIf {
+        } ?: -1
+    private val iconTabProductInactive: Int
+        get() = R.drawable.ic_shop_tab_product_inactive.takeIf {
             isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_feed_inactive
-    private val iconTabReview: Int
-        get() = R.drawable.ic_shop_tab_review_new.takeIf {
+        } ?: R.drawable.ic_shop_tab_products_old_inactive
+    private val iconTabProductActive: Int
+        get() = R.drawable.ic_shop_tab_product_active.takeIf {
             isUsingNewNavigation()
-        } ?: R.drawable.ic_shop_tab_review_inactive
+        } ?: -1
+    private val iconTabFeedInactive: Int
+        get() = R.drawable.ic_shop_tab_feed_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_feed_old_inactive
+    private val iconTabFeedActive: Int
+        get() = R.drawable.ic_shop_tab_feed_active.takeIf {
+            isUsingNewNavigation()
+        } ?: -1
+    private val iconTabReviewInactive: Int
+        get() = R.drawable.ic_shop_tab_review_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_review_old_inactive
+    private val iconTabReviewActive: Int
+        get() = R.drawable.ic_shop_tab_review_active.takeIf {
+            isUsingNewNavigation()
+        } ?: -1
     private val iconChatFloatingButton: Int
         get() = R.drawable.ic_chat_floating_button.takeIf {
             isUsingNewNavigation()
@@ -1011,7 +1027,8 @@ class ShopPageFragment :
                 getHomeFragment()?.let { homeFragment ->
                     add(ShopPageTabModel(
                             getString(R.string.shop_info_title_tab_home),
-                            iconTabHome,
+                            iconTabHomeInactive,
+                            iconTabHomeActive,
                             homeFragment
                     ))
                 }
@@ -1030,7 +1047,8 @@ class ShopPageFragment :
             )
             add(ShopPageTabModel(
                     getString(R.string.new_shop_info_title_tab_product),
-                    iconTabProduct,
+                    iconTabProductInactive,
+                    iconTabProductActive,
                     shopPageProductFragment
             ))
             if (isShowFeed) {
@@ -1040,7 +1058,8 @@ class ShopPageFragment :
                 )
                 add(ShopPageTabModel(
                         getString(R.string.shop_info_title_tab_feed),
-                        iconTabFeed,
+                        iconTabFeedInactive,
+                        iconTabFeedActive,
                         feedFragment
                 ))
             }
@@ -1050,7 +1069,8 @@ class ShopPageFragment :
             )
             add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_review),
-                    iconTabReview,
+                    iconTabReviewInactive,
+                    iconTabReviewActive,
                     shopReviewFragment
             ))
         }
