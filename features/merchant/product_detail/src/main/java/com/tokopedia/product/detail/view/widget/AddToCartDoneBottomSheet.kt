@@ -358,13 +358,16 @@ open class AddToCartDoneBottomSheet :
                 )
             }
         }
-        DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
-                item,
-                item.position,
-                addToCartDoneViewModel.isLoggedIn(),
-                item.pageName,
-                item.header
-        )
+        addedProductDataModel?.productId?.let {
+            DynamicProductDetailTracking.Click.eventAddToCartRecommendationClick(
+                    item,
+                    item.position,
+                    addToCartDoneViewModel.isLoggedIn(),
+                    item.pageName,
+                    item.header,
+                    it
+            )
+        }
         if (position.size > 1) {
             lastAdapterPosition = position[0]
             goToPDP(item, position[1])
