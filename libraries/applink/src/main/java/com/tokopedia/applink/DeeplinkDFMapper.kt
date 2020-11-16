@@ -191,6 +191,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
     const val DF_MERCHANT_LOGIN = "df_merchant_login"
+    const val DF_CONTENT_PROFILE = "df_content_profile"
 
     const val SHARED_PREF_TRACK_DF_USAGE = "pref_track_df_usage"
     var dfUsageList = mutableListOf<String>()
@@ -214,7 +215,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
 
             // Content
-            add(DFP({ it.startsWithPattern(PROFILE) }, DF_BASE, R.string.applink_title_profile))
+            add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.PROFILE_DETAIL) }, DF_CONTENT_PROFILE, R.string.applink_title_profile))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_EXPLORE) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_DASHBOARD) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))
             add(DFP({ it.startsWithPattern(ApplinkConstInternalContent.AFFILIATE_EDUCATION) }, DF_CONTENT_AFFILIATE, R.string.applink_title_affiliate))

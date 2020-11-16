@@ -13,7 +13,6 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent
 import com.tokopedia.applink.content.DeeplinkMapperContent.getContentCreatePostDeepLink
 import com.tokopedia.applink.content.DeeplinkMapperContent.getKolDeepLink
-import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.digital.DeeplinkMapperDigital.getRegisteredNavigationDigital
 import com.tokopedia.applink.digitaldeals.DeeplinkMapperDeals.getRegisteredNavigationDeals
@@ -265,7 +264,7 @@ object DeeplinkMapper {
             DLP.startWithPattern(ApplinkConst.Digital.DIGITAL_BROWSE) { _, _, deeplink -> getRegisteredNavigationExploreCategory(deeplink) },
             DLP.startWithPattern(ApplinkConst.TRADEIN) { _, _, deeplink -> getRegisteredTradeinNavigation(deeplink) },
             DLP.startWithPattern(ApplinkConst.CATEGORY) { _, _, deeplink -> getRegisteredCategoryNavigation(deeplink) },
-            DLP.startWithPattern(ApplinkConst.PROFILE) { _, _, deeplink -> getRegisteredNavigationContent(deeplink) },
+            DLP.startWithPattern(ApplinkConst.PROFILE) { _, _, deeplink -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP.startWithPattern(ApplinkConst.PLAY_DETAIL) { _, _, deeplink -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP.startWithPattern(ApplinkConst.PLAY_BROADCASTER) { _, _, deeplink -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
             DLP.startWithPattern(ApplinkConst.HOME_HOTLIST) { _, _, deeplink -> getRegisteredHotlist(deeplink) },
