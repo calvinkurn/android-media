@@ -215,6 +215,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                         talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         hideFullPageError()
                         hideFullPageLoading()
+                        hideLoading()
                         if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                             hideLoading()
@@ -239,6 +240,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                 }
                 is TalkInboxViewState.Fail -> {
                     hideFullPageLoading()
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageError()
                     } else {
@@ -246,6 +248,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                     }
                 }
                 is TalkInboxViewState.Loading -> {
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageLoading()
                     }
