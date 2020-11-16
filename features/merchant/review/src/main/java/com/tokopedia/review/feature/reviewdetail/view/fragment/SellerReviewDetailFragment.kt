@@ -65,7 +65,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         const val PRODUCT_IMAGE = "EXTRA_PRODUCT_IMAGE"
         const val SELECTED_DATE_CHIP = "selectedDateChip"
         const val SELECTED_DATE_POSITION = "selectedDatePosition"
-        private const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
+        const val TAG_COACH_MARK_REVIEW_DETAIL = "coachMarkReviewDetail"
     }
 
     @Inject

@@ -1,26 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
+    android:layout_height="@dimen/dp_64"
+    android:id="@+id/tab_category_container">
 
-    <ImageView
-        android:layout_marginTop="@dimen/spacing_lvl2"
-        android:id="@+id/image_view_category_icon"
-        android:layout_width="@dimen/layout_lvl4"
-        android:layout_height="@dimen/layout_lvl4"
-        android:layout_gravity="center"/>
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/motion_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        app:currentState="@+id/start"
+        app:layoutDescription="@xml/view_official_store_category_scene">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:layout_margin="@dimen/spacing_lvl2"
-        android:id="@+id/text_view_category_title"
-        android:layout_width="wrap_content"
-        app:typographyType="body_2"
-        android:ellipsize="end"
-        android:textColor="@color/Neutral_N700_96"
-        android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/image_view_category_icon"
+            android:layout_width="@dimen/layout_lvl4"
+            android:layout_height="@dimen/layout_lvl4"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toTopOf="@+id/text_view_category_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="spread" />
 
-</LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_view_category_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl2"
+            android:ellipsize="end"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_view_category_icon"
+            app:typographyType="body_2"
+            tools:text="Fahsion Coba coba" />
+
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+</FrameLayout>

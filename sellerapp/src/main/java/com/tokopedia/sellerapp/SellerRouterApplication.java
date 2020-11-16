@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkDelegate;
@@ -20,13 +19,15 @@ import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
+import com.tokopedia.cachemanager.CacheManager;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkRouter;
@@ -35,20 +36,18 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
-import com.tokopedia.gm.GMModuleRouter;
-import com.tokopedia.gm.common.di.component.DaggerGMComponent;
-import com.tokopedia.gm.common.di.component.GMComponent;
-import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
+import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -61,6 +60,7 @@ import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
 import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
+import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
@@ -68,7 +68,6 @@ import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.dashboard.data.model.DataDeposit;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
@@ -76,11 +75,14 @@ import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
@@ -94,7 +96,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
  */
 
 public abstract class SellerRouterApplication extends MainApplication
-        implements TkpdCoreRouter, GMModuleRouter, TopAdsModuleRouter,
+        implements TkpdCoreRouter, TopAdsModuleRouter,
         AbstractionRouter,
         ApplinkRouter,
         NetworkRouter,
@@ -102,15 +104,16 @@ public abstract class SellerRouterApplication extends MainApplication
         CoreNetworkRouter,
         LinkerRouter,
         SellerHomeRouter,
-        LoginRouter{
+        LoginRouter {
 
     protected RemoteConfig remoteConfig;
-    private DaggerGMComponent.Builder daggerGMBuilder;
-    private GMComponent gmComponent;
     private TopAdsComponent topAdsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
     private TetraDebugger tetraDebugger;
+    protected CacheManager cacheManager;
+
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
 
     @Override
     public void onCreate() {
@@ -119,7 +122,24 @@ public abstract class SellerRouterApplication extends MainApplication
         initializeRemoteConfig();
         initResourceDownloadManager();
         initIris();
+        performLibraryInitialisation();
+    }
+
+    private void performLibraryInitialisation(){
+        WeaveInterface initWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return initLibraries();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, SellerRouterApplication.this);
+    }
+
+    private boolean initLibraries(){
+        initCMPushNotification();
         initTetraDebugger();
+        return true;
     }
 
     private void initResourceDownloadManager() {
@@ -136,8 +156,28 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void initializeDagger() {
-        daggerGMBuilder = DaggerGMComponent.builder().gMModule(new GMModule());
         daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
+    }
+
+
+    private void initCMPushNotification() {
+        CMPushNotificationManager.getInstance().init(this);
+        List<String> excludeScreenList = new ArrayList<>();
+        excludeScreenList.add(Constants.SPLASH);
+        excludeScreenList.add(Constants.DEEPLINK_ACTIVITY);
+        excludeScreenList.add(Constants.DEEPLINK_HANDLER_ACTIVITY);
+        CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
+        refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(this), false);
+    }
+
+    @Override
+    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
+        CMPushNotificationManager.getInstance().refreshTokenFromBackground(token, force);
+    }
+
+    @Override
+    public void refreshFCMFromInstantIdService(String token) {
+        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
     }
 
     private void initTetraDebugger() {
@@ -151,13 +191,6 @@ public abstract class SellerRouterApplication extends MainApplication
         if(tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
         }
-    }
-
-    public GMComponent getGMComponent() {
-        if (gmComponent == null) {
-            gmComponent = daggerGMBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return gmComponent;
     }
 
     @Override
@@ -174,19 +207,17 @@ public abstract class SellerRouterApplication extends MainApplication
         EtalaseUtils.clearDepartementCache(context);
     }
 
-    /**
-     * User PersistentCacheManager Library directly
-     */
-    @Deprecated
     @Override
-    public CacheManager getGlobalCacheManager() {
-        return new GlobalCacheManager();
+    public CacheManager getPersistentCacheManager() {
+        if(cacheManager == null)
+            cacheManager = new PersistentCacheManager(this);
+        return cacheManager;
     }
 
     @Override
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.classParentStack = getHomeClass();
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -242,22 +273,10 @@ public abstract class SellerRouterApplication extends MainApplication
         return deepLinkDelegate.supportsUri(appLinks);
     }
 
-    @Override
-    public Observable<DataDeposit> getDataDeposit(String shopId) {
-        GetDepositTopAdsUseCase getDepositTopAdsUseCase = getTopAdsComponent().getDepositTopAdsUseCase();
-        return getDepositTopAdsUseCase.getExecuteObservable(GetDepositTopAdsUseCase.createRequestParams(shopId));
-    }
-
     @NonNull
     @Override
     public Intent getSplashScreenIntent(@NonNull Context context) {
         return new Intent(context, SplashScreenActivity.class);
-    }
-
-    @Override
-    public void goToTopAdsDashboard(Activity activity) {
-        Intent intent = new Intent(activity, TopAdsDashboardActivity.class);
-        activity.startActivity(intent);
     }
 
     @Override
@@ -416,16 +435,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void refreshFCMTokenFromBackgroundToCM(String token, boolean force) {
-
-    }
-
-    @Override
-    public void refreshFCMFromInstantIdService(String token) {
-
-    }
-
-    @Override
     public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
         ServerErrorHandler.sendForceLogoutAnalytics(url, isInvalidToken, isRequestDenied);
@@ -467,4 +476,5 @@ public abstract class SellerRouterApplication extends MainApplication
         SellerOnboardingPreference preference = new SellerOnboardingPreference(this);
         preference.putBoolean(SellerOnboardingPreference.HAS_OPEN_ONBOARDING, status);
     }
+
 }
