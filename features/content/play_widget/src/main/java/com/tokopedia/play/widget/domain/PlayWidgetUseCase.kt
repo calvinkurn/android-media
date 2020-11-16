@@ -33,7 +33,6 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
 
     companion object {
 
-        // TODO: share { text redirect_url use_short_url meta_title meta_description is_show_button }
         private const val query = """
         query playGetWidgetV2(${'$'}widgetType: String!, ${'$'}authorId: String, ${'$'}authorType: String){
           playGetWidgetV2(
@@ -71,6 +70,14 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
                   view {
                     formatted
                   }
+                }
+                share {
+                  text
+                  redirect_url
+                  use_short_url
+                  meta_title
+                  meta_description
+                  is_show_button
                 }
               }
               __typename ... on PlayWidgetBanner {
