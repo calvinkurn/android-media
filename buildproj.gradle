@@ -25,7 +25,7 @@ allprojects {
         flatDir {
             dirs '../aars'
         }
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
 }
 

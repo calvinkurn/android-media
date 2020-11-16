@@ -50,7 +50,6 @@ public class OrderTabAdapter extends FragmentStatePagerAdapter {
     }
 
     public interface Listener {
-        Context getAppContext();
         Bundle getBundle();
     }
 }
