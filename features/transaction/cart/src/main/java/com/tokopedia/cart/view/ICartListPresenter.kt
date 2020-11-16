@@ -123,4 +123,6 @@ interface ICartListPresenter {
     fun setLastApplyValid()
 
     fun saveCheckboxState(cartItemDataList: List<CartItemHolderData>)
+
+    fun followShop(shopId: String)
 }

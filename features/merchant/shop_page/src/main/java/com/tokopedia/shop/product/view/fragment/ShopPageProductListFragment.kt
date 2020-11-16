@@ -199,6 +199,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private var productListName: String = ""
     private var recyclerViewTopPadding = 0
     private var shopSortFilterHeight = 0
+    private var isOnViewCreated = false
     private var threeDotsClickShopProductViewModel: ShopProductViewModel? = null
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
     private var shopChangeProductGridSharedViewModel: ShopChangeProductGridSharedViewModel? = null
@@ -883,14 +884,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun initPltMonitoring() {
-        (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
+        if (!isShowNewShopHomeTab() && userVisibleHint) {
+            (activity as? ShopPageProductTabPerformanceMonitoringListener)?.initShopPageProductTabPerformanceMonitoring()
+        }
     }
 
     private fun startMonitoringPltNetworkRequest() {
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltPreparePage(it)
-                shopPageActivity.startMonitoringPltNetworkRequest(it)
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopMonitoringPltPreparePage(it)
+                    shopPageActivity.startMonitoringPltNetworkRequest(it)
+                }
             }
         }
     }
@@ -898,12 +903,16 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun startMonitoringPltRenderPage() {
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.startMonitoringPltRenderPage(it)
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.startMonitoringPltRenderPage(it)
+                }
             }
         }
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                shopPageActivity.startMonitoringPltRenderPage(it)
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.startMonitoringPltRenderPage(it)
+                }
             }
         }
     }
@@ -911,10 +920,18 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun stopMonitoringPltRenderPage() {
         (activity as? ShopPageProductTabPerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltRenderPage(it)
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopMonitoringPltRenderPage(it)
+                }
             }
         }
         stopPerformanceMonitoring()
+    }
+
+    private fun invalidateMonitoringPlt() {
+        if (!isShowNewShopHomeTab()) {
+            (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -946,10 +963,23 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         super.onViewCreated(view, savedInstanceState)
         initRecyclerView(view)
-        loadInitialData()
+        isOnViewCreated = true
+        loadInitialDataAfterOnViewCreated(userVisibleHint)
         observeShopProductFilterParameterSharedViewModel()
         observeShopChangeProductGridSharedViewModel()
         observeViewModelLiveData()
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        loadInitialDataAfterOnViewCreated(isVisibleToUser)
+        super.setUserVisibleHint(isVisibleToUser)
+    }
+
+    private fun loadInitialDataAfterOnViewCreated(isVisibleToUser: Boolean) {
+        if (isVisibleToUser && isOnViewCreated) {
+            loadInitialData()
+            isOnViewCreated = false
+        }
     }
 
     private fun getArgumentsData() {
@@ -982,6 +1012,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     override fun onPause() {
         super.onPause()
         shopPageTracking!!.sendAllTrackingQueue()
+        invalidateMonitoringPlt()
     }
 
     override fun onDestroy() {
@@ -1293,10 +1324,14 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun stopPerformanceMonitoring() {
         (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
             shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltRenderPage(it)
+                if (!isShowNewShopHomeTab()) {
+                    shopPageActivity.stopMonitoringPltRenderPage(it)
+                }
             }
         }
-        (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
+        if (!isShowNewShopHomeTab()) {
+            (activity as? ShopPageActivity)?.stopShopProductTabPerformanceMonitoring()
+        }
     }
 
     fun clearCache() {

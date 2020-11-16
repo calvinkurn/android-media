@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -48,7 +48,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="2px"
             android:text="@string/title_promote_by"
-            android:textColor="@color/topads_promoted_color"
+            android:textColor="@color/Unify_N700_44"
             app:layout_constraintStart_toEndOf="@+id/shop_image"
             app:layout_constraintTop_toBottomOf="@+id/shop_name"
             app:typographyType="small" />
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginTop="8dp"
-            android:textColor="@color/topads_shop_name"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@+id/shop_badge"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_5"
@@ -81,5 +81,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/shop_detail" />
+
+    <com.tokopedia.shopwidget.shopcard.ShopCardView
+        android:id="@+id/adsBannerShopCardView"
+        android:layout_height="wrap_content"
+        android:layout_width="@dimen/dp_0"
+        android:visibility="gone"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,11 +34,6 @@
                 layout="@layout/item_shipment_other_product"
                 tools:visibility="visible" />
 
-            <!--Shipping: Trade In Pickup-->
-            <include
-                layout="@layout/item_shipment_trade_in_pickup"
-                tools:visibility="visible" />
-
             <!--Shipping: Shipping Experience-->
             <include
                 layout="@layout/item_shipment_shipping_experience"
