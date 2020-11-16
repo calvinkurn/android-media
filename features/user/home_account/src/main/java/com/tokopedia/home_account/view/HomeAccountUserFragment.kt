@@ -44,7 +44,7 @@ import com.tokopedia.home_account.AccountConstants.Analytics.PAYMENT_METHOD
 import com.tokopedia.home_account.AccountConstants.Analytics.PERSONAL_DATA
 import com.tokopedia.home_account.AccountConstants.Analytics.PRIVACY_POLICY
 import com.tokopedia.home_account.AccountConstants.Analytics.TERM_CONDITION
-import com.tokopedia.home_account.HomeAccountErrorHandler
+import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.PermissionChecker
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -873,7 +873,7 @@ class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListener {
                         getString(R.string.title_try_again), View.OnClickListener { getData() })
             }
         }
-        HomeAccountErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
+        AccountErrorHandler.logExceptionToCrashlytics(e, userSession.userId, userSession.email, AccountConstants.ErrorCodes.ERROR_CODE_BUYER_ACCOUNT)
         fpmBuyer?.run { stopTrace() }
     }
 
