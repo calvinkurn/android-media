@@ -16,8 +16,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -35,11 +37,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MARKETPLAC
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
@@ -84,8 +86,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DEALS_SINGLE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_DIGITAL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_EVENTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_FLIGHT
@@ -105,6 +107,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListComponentInstance
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
@@ -259,7 +263,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                     PARAM_DEALS -> {
                         status = SEMUA_TRANSAKSI
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS_SINGLE
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
                     }
                     PARAM_PESAWAT -> {
                         status = SEMUA_TRANSAKSI
@@ -280,6 +284,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     PARAM_HOTEL -> {
                         status = SEMUA_TRANSAKSI
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
+                    }
+                    PARAM_TRAVEL_ENTERTAINMENT -> {
+                        status = SEMUA_TRANSAKSI
+                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
                     }
                 }
                 paramUohOrder.status = status
@@ -649,7 +657,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 || filterStatus.equals(PARAM_GIFTCARDS, true)
                 || filterStatus.equals(PARAM_INSURANCE, true)
                 || filterStatus.equals(PARAM_MODALTOKO, true)
-                || filterStatus.equals(PARAM_HOTEL, true)) {
+                || filterStatus.equals(PARAM_HOTEL, true)
+                || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_NORMAL
         } else {
             ChipsUnify.TYPE_SELECTED
@@ -676,7 +685,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 filterStatus.equals(PARAM_GIFTCARDS, true) ||
                 filterStatus.equals(PARAM_INSURANCE, true) ||
                 filterStatus.equals(PARAM_MODALTOKO, true) ||
-                filterStatus.equals(PARAM_HOTEL, true)) {
+                filterStatus.equals(PARAM_HOTEL, true) ||
+                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
             ChipsUnify.TYPE_SELECTED
         } else {
             ChipsUnify.TYPE_NORMAL
@@ -696,9 +706,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             filter3?.title = orderList.categories[1].label
 
-        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true) ||
-                filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true))
-                && !isReset) {
+        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
+                        || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
             filter3?.title = orderList.categories[2].label
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
@@ -786,33 +796,26 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
         if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_CATEGORIES
 
-        if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+        if ((filterStatus.equals(PARAM_MARKETPLACE, true)
+                        || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
+                        && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = PARAM_MARKETPLACE
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DIGITAL
 
-        } else if (filterStatus.equals(PARAM_EVENTS, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
+        } else if ((filterStatus.equals(PARAM_EVENTS, true)
+                        || filterStatus.equals(PARAM_DEALS, true)
+                        || filterStatus.equals(PARAM_PESAWAT, true)
+                        || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true))
+                        && !isReset) {
+            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
 
-        } else if (filterStatus.equals(PARAM_DEALS, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
-
-        } else if (filterStatus.equals(PARAM_PESAWAT, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
-
-        } else if (filterStatus.equals(PARAM_GIFTCARDS, true) && !isReset) {
+        } else if ((filterStatus.equals(PARAM_GIFTCARDS, true)
+                        || filterStatus.equals(PARAM_INSURANCE, true)
+                        || filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_INSURANCE, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_MODALTOKO, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_KEUANGAN
-
-        } else if (filterStatus.equals(PARAM_HOTEL, true) && !isReset) {
-            uohBottomSheetOptionAdapter.selectedKey = VERTICAL_CATEGORY_DEALS
 
         } else {
             uohBottomSheetOptionAdapter.selectedKey = currFilterCategoryKey
@@ -929,10 +932,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun initInjector() {
         activity?.let {
             DaggerUohListComponent.builder()
-                    .uohComponent(UohComponentInstance.getUohComponent(it.application))
+                    .baseAppComponent(getBaseAppComponent())
+                    .uohListModule(context?.let { UohListModule(it)})
                     .build()
                     .inject(this)
         }
+    }
+
+    private fun getBaseAppComponent(): BaseAppComponent {
+        return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
     private fun showBottomSheetFilterOptions(title: String) {
@@ -1542,13 +1550,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         userSession?.userId?.let {
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
-                name = productName,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString(),
-                list = list
-        ), topAds)
+                    name = productName,
+                    id = recommendationItem.productId.toString(),
+                    price = recommendationItem.price,
+                    category = recommendationItem.categoryBreadcrumbs,
+                    position = index.toString(),
+                    list = list
+            ), topAds)
         }
     }
 
@@ -1561,11 +1569,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         userSession?.userId?.let {
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
-                name = productName,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString()), topAds, it)
+                    name = productName,
+                    id = recommendationItem.productId.toString(),
+                    price = recommendationItem.price,
+                    category = recommendationItem.categoryBreadcrumbs,
+                    position = index.toString()), topAds, it)
         }
 
         if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
@@ -1615,7 +1623,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it,listProduct = arrayListProduct, isTopads = isTopAds) }
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
@@ -1666,7 +1674,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ))
             }
 
-            uohListViewModel.doAtcMulti(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
+            uohListViewModel.doAtcMulti(userSession?.userId
+                    ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
             // analytics
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()

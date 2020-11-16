@@ -397,8 +397,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
+                                                              Map<String, String> tradeInCustomDimension,
                                                               boolean hasInsurance,
                                                               String step,
+                                                              String eventCategory,
                                                               String eventAction,
                                                               String eventLabel,
                                                               String leasingId) {
@@ -411,7 +413,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             if (checkoutData != null) {
                 transactionId = checkoutData.getTransactionId();
             }
-            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(eeDataLayer, transactionId, eventAction, eventLabel);
+            analyticsActionListener.sendEnhancedEcommerceAnalyticsCheckout(
+                    eeDataLayer, tradeInCustomDimension, transactionId, eventCategory, eventAction, eventLabel
+            );
         }
     }
 
@@ -679,12 +683,31 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         );
 
         if (checkoutRequest != null && checkoutRequest.data != null && checkoutRequest.data.size() > 0) {
+            // Get additional param for trade in analytics
+            String deviceModel = "";
+            int devicePrice = 0;
+            String diagnosticId = "";
+            if (shipmentCartItemModelList != null && shipmentCartItemModelList.size() > 0) {
+                List<CartItemModel> cartItemModels = shipmentCartItemModelList.get(0).getCartItemModels();
+                if (cartItemModels != null && cartItemModels.size() > 0) {
+                    CartItemModel cartItemModel = cartItemModels.get(0);
+                    if (cartItemModel != null) {
+                        deviceModel = cartItemModel.getDeviceModel();
+                        devicePrice = cartItemModel.getOldDevicePrice();
+                        diagnosticId = cartItemModel.getDiagnosticId();
+                    }
+                }
+            }
+
             Map<String, Object> params = generateCheckoutParams(isOneClickShipment, isTradeIn, isTradeInDropOff, deviceId, checkoutRequest);
             RequestParams requestParams = RequestParams.create();
             requestParams.putAll(params);
             compositeSubscription.add(
                     checkoutGqlUseCase.createObservable(requestParams)
-                            .subscribe(getSubscriberCheckoutCart(checkoutRequest, isOneClickShipment, isTradeIn, deviceId, cornerId, leasingId))
+                            .subscribe(getSubscriberCheckoutCart(
+                                    checkoutRequest, isOneClickShipment, isTradeIn, deviceId,
+                                    cornerId, leasingId, deviceModel, devicePrice, diagnosticId)
+                            )
             );
         } else {
             getView().hideLoading();
@@ -886,8 +909,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
                                                                boolean isOneClickShipment,
-                                                               boolean isTradeIn, String deviceId,
-                                                               String cornerId, String leasingId) {
+                                                               boolean isTradeIn,
+                                                               String deviceId,
+                                                               String cornerId,
+                                                               String leasingId,
+                                                               String deviceModel,
+                                                               int devicePrice,
+                                                               String diagnosticId) {
         return new Subscriber<CheckoutData>() {
             @Override
             public void onCompleted() {
@@ -913,7 +941,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 getView().setHasRunningApiCall(false);
                 ShipmentPresenter.this.checkoutData = checkoutData;
                 if (!checkoutData.isError()) {
-                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId());
+                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId(), deviceModel, devicePrice, diagnosticId);
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
@@ -1480,9 +1508,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             if (recipientAddressModel != null) {
                                                 recipientAddressModel.setLatitude(latitude);
                                                 recipientAddressModel.setLongitude(longitude);
-                                            } else {
-                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(latitude);
-                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(longitude);
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
@@ -1499,8 +1524,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NonNull
-    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel
-                                                                   shipmentCartItemModel,
+    private RequestParams generateEditAddressRequestParams(ShipmentCartItemModel shipmentCartItemModel,
                                                            String addressLatitude, String addressLongitude) {
         Map<String, String> params = getGeneratedAuthParamNetwork(null);
 
@@ -1516,17 +1540,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String receiverName = "";
         String receiverPhone = "";
 
-        if (recipientAddressModel == null && shipmentCartItemModel != null && shipmentCartItemModel.getRecipientAddressModel() != null) {
-            addressId = shipmentCartItemModel.getRecipientAddressModel().getId();
-            addressName = shipmentCartItemModel.getRecipientAddressModel().getAddressName();
-            addressStreet = shipmentCartItemModel.getRecipientAddressModel().getStreet();
-            postalCode = shipmentCartItemModel.getRecipientAddressModel().getPostalCode();
-            districtId = shipmentCartItemModel.getRecipientAddressModel().getDestinationDistrictId();
-            cityId = shipmentCartItemModel.getRecipientAddressModel().getCityId();
-            provinceId = shipmentCartItemModel.getRecipientAddressModel().getProvinceId();
-            receiverName = shipmentCartItemModel.getRecipientAddressModel().getRecipientName();
-            receiverPhone = shipmentCartItemModel.getRecipientAddressModel().getRecipientPhoneNumber();
-        } else if (recipientAddressModel != null) {
+        if (recipientAddressModel != null) {
             addressId = recipientAddressModel.getId();
             addressName = recipientAddressModel.getAddressName();
             addressStreet = recipientAddressModel.getStreet();
@@ -1633,7 +1647,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
                                       boolean isOneClickShipment,
                                       boolean isTradeInDropOff,
-                                      boolean isHandleFallback) {
+                                      boolean isHandleFallback,
+                                      boolean reloadCheckoutPage) {
         getView().showLoading();
         getView().setHasRunningApiCall(true);
         List<DataChangeAddressRequest> dataChangeAddressRequests = new ArrayList<>();
@@ -1649,11 +1664,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
                                 newRecipientAddressModel.getLocationDataModel().getAddrId() : 0
                         );
+                        dataChangeAddressRequest.setIndomaret(true);
                     } else {
                         dataChangeAddressRequest.setAddressId(newRecipientAddressModel != null ?
-                                Integer.parseInt(newRecipientAddressModel.getId()) :
-                                Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId())
+                                Integer.parseInt(newRecipientAddressModel.getId()) : 0
                         );
+                        dataChangeAddressRequest.setIndomaret(false);
                     }
                     dataChangeAddressRequests.add(dataChangeAddressRequest);
                 }
@@ -1688,7 +1704,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             ErrorHandler.getErrorMessage(getView().getActivityContext(), e)
                                     );
                                     if (isHandleFallback) {
-                                        getView().renderChangeAddressFailed();
+                                        getView().renderChangeAddressFailed(reloadCheckoutPage);
                                     }
                                 }
                             }
@@ -1700,7 +1716,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     getView().setHasRunningApiCall(false);
                                     if (setShippingAddressData.isSuccess()) {
                                         getView().showToastNormal(getView().getActivityContext().getString(R.string.label_change_address_success));
-                                        getView().renderChangeAddressSuccess();
+                                        getView().renderChangeAddressSuccess(reloadCheckoutPage);
                                     } else {
                                         if (setShippingAddressData.getMessages() != null &&
                                                 setShippingAddressData.getMessages().size() > 0) {
@@ -1710,12 +1726,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             }
                                             getView().showToastError(stringBuilder.toString());
                                             if (isHandleFallback) {
-                                                getView().renderChangeAddressFailed();
+                                                getView().renderChangeAddressFailed(reloadCheckoutPage);
                                             }
                                         } else {
                                             getView().showToastError(getView().getActivityContext().getString(R.string.label_change_address_failed));
                                             if (isHandleFallback) {
-                                                getView().renderChangeAddressFailed();
+                                                getView().renderChangeAddressFailed(reloadCheckoutPage);
                                             }
                                         }
                                     }

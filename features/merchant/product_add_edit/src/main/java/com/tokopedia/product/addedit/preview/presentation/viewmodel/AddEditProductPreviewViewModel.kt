@@ -277,16 +277,10 @@ class AddEditProductPreviewViewModel @Inject constructor(
         return wholesaleList
     }
 
-    fun getStatusStockViewVariant(): Int {
-        val isActive: Boolean = productInputModel.value?.detailInputModel?.status == 1
-        val stockCount: Int = productInputModel.value?.detailInputModel?.stock ?: 0
-        return if (!isActive) {
-            TYPE_WAREHOUSE
-        } else if (isActive && stockCount > 0) {
-            TYPE_ACTIVE_LIMITED
-        } else {
-            TYPE_ACTIVE
-        }
+    fun setIsDataChanged(isChanged: Boolean) {
+        productInputModel.value?.isDataChanged = isChanged
     }
+
+    fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
 
 }
