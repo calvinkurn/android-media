@@ -51,9 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/som_list_sort_filter_horizontal_padding"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4.5dp"
         android:layout_marginEnd="@dimen/layout_lvl0"
-        android:paddingBottom="14dp"
+        android:paddingBottom="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/searchBarSomList"
         app:layout_scrollFlags="scroll|snap"
@@ -65,7 +65,7 @@
         android:id="@+id/bulkActionCheckBoxContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="13dp"
+        android:layout_marginStart="14dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sortFilterSomList">
@@ -105,7 +105,7 @@
         android:id="@+id/dividerMultiSelect"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="9dp"
         android:background="@color/Unify_N50"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/bulkActionCheckBoxContainer"
@@ -124,7 +124,10 @@
             android:id="@+id/rvSomList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipToPadding="false"
             android:layoutAnimation="@anim/recycler_view_animation_top_to_bottom"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingBottom="@dimen/spacing_lvl3"
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="20"
@@ -220,8 +223,7 @@
         android:background="@color/white"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:visibility="visible">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"

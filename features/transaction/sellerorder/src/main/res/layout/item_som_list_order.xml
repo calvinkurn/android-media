@@ -15,7 +15,7 @@
             android:id="@+id/somOrderListIndicator"
             android:layout_width="4dp"
             android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="@dimen/spacing_lvl2"
             android:background="@drawable/ic_order_status_indicator"
             app:layout_constraintBottom_toBottomOf="@id/tvSomListInvoice"
@@ -120,7 +120,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
-            android:layout_marginTop="9dp"
+            android:layout_marginTop="7dp"
             android:layout_marginEnd="@dimen/spacing_lvl3"
             app:closeButtonVisibility="gone"
             app:layout_constraintTop_toBottomOf="@id/divider"
@@ -131,7 +131,7 @@
             android:layout_width="@dimen/som_list_product_image_size"
             android:layout_height="@dimen/som_list_product_image_size"
             android:layout_marginStart="@dimen/som_list_order_item_padding"
-            android:layout_marginTop="9.5dp"
+            android:layout_marginTop="7.5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tickerSomListOrder" />
 

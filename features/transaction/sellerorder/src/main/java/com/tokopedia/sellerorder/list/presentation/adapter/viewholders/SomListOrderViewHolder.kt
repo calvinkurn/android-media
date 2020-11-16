@@ -22,6 +22,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_VIEW_COMPLAINT_SELLER
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.dpToPx
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.item_som_list_order.view.*
 
 class SomListOrderViewHolder(
@@ -109,7 +111,14 @@ class SomListOrderViewHolder(
 
     private fun setupProductList(element: SomListOrderUiModel) {
         with(itemView) {
-            ivSomListProduct.loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
+            ivSomListProduct.apply {
+                loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
+                if (element.cancelRequestNote.isNotBlank()) {
+                    setMargin(12.toPx(), 7.5f.dpToPx().toInt(), 0, 0)
+                } else {
+                    setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
+                }
+            }
             tvSomListProductName.apply {
                 text = element.orderProduct.firstOrNull()?.productName.orEmpty()
                 val layoutParams = layoutParams as ConstraintLayout.LayoutParams
