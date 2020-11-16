@@ -521,8 +521,4 @@
         <key>seller_home_dashboard_enable_cache</key>
         <value>false</value>
     </entry>
-    <entry>
-        <key>enable_new_som</key>
-        <value>true</value>
-    </entry>
 </defaultsMap>

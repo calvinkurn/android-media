@@ -57,7 +57,9 @@ class SomListOrderViewHolder(
             setupCourierInfo(element, isOrderEnded)
             setupDestinationInfo(element, isOrderEnded)
             setupQuickActionButton(element)
-            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED && element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER) {
+            if (element.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                    element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
+                    itemView.btnQuickAction.isVisible) {
                 listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
             }
         }

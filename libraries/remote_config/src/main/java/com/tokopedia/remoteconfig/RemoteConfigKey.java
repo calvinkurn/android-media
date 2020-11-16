@@ -241,7 +241,5 @@ public class RemoteConfigKey {
 
     public static final String SELLER_HOME_DASHBOARD_ENABLE_CACHE = "seller_home_dashboard_enable_cache";
 
-    public static final String ENABLE_NEW_SOM = "enable_new_som";
-
     public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 }

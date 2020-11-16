@@ -208,4 +208,16 @@ object SomConsts {
     const val FILTER_LABEL = "Label"
     const val FILTER_DEADLINE = "Jatuh Tempo"
     const val FILTER_DATE = "Tanggal"
+
+    // Order list sort by value
+    const val SORT_BY_PAYMENT_DATE_ASCENDING = 0
+    const val SORT_BY_TOTAL_OPEN_DESCENDING = 1
+    const val SORT_BY_PAYMENT_DATE_DESCENDING = 2
+
+    // Remote Configs
+    const val ENABLE_NEW_SOM = "android_enable_new_som"
+
+    // Som List Illustration
+    const val SOM_LIST_EMPTY_STATE_NO_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_illustration.png"
+    const val SOM_LIST_EMPTY_STATE_WITH_FILTER_ILLUSTRATION = "https://ecs7.tokopedia.net/android/others/som_list_empty_state_with_filter_illustration.png"
 }

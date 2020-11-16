@@ -265,4 +265,8 @@ class SomListViewModel @Inject constructor(
     fun setOrderTypeFilter(orderTypes: List<Int>) {
         this.getOrderListParams.orderTypeList = orderTypes
     }
+
+    fun setSortOrderBy(value: Int) {
+        this.getOrderListParams.sortBy = value
+    }
 }

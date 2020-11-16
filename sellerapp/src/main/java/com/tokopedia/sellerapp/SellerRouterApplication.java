@@ -47,7 +47,6 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -450,7 +449,7 @@ public abstract class SellerRouterApplication extends MainApplication
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
-        if (getBooleanRemoteConfig(RemoteConfigKey.ENABLE_NEW_SOM, false)) {
+        if (getBooleanRemoteConfig(SomConsts.ENABLE_NEW_SOM, true)) {
             return SomListFragment.newInstance(bundle);
         } else {
             return com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment.newInstance(bundle);
