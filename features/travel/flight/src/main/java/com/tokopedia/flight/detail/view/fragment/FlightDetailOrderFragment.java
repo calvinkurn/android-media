@@ -668,7 +668,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @NonNull
     private SpannableString buildAirlineContactInfo(String fullText, String mark) {
-        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = fullText.indexOf(mark);
         int stopIndex = fullText.length();
         SpannableString description = new SpannableString(fullText);

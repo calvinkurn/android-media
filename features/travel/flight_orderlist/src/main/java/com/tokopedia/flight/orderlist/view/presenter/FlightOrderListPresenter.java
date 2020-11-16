@@ -107,12 +107,12 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     private void buildAndRenderFilterList() {
         int[] colorBorder = new int[6];
-        colorBorder[0] = R.color.tkpd_main_green;
-        colorBorder[1] = R.color.tkpd_main_green;
-        colorBorder[2] = R.color.tkpd_main_green;
-        colorBorder[3] = R.color.tkpd_main_green;
-        colorBorder[4] = R.color.tkpd_main_green;
-        colorBorder[5] = R.color.tkpd_main_green;
+        colorBorder[0] = com.tokopedia.unifyprinciples.R.color.Unify_G400;
+        colorBorder[1] = com.tokopedia.unifyprinciples.R.color.Unify_G400;
+        colorBorder[2] = com.tokopedia.unifyprinciples.R.color.Unify_G400;
+        colorBorder[3] = com.tokopedia.unifyprinciples.R.color.Unify_G400;
+        colorBorder[4] = com.tokopedia.unifyprinciples.R.color.Unify_G400;
+        colorBorder[5] = com.tokopedia.unifyprinciples.R.color.Unify_G400;
 
         List<OrderSimpleViewModel> filtersMap = new ArrayList<>();
         filtersMap.add(new OrderSimpleViewModel("", getView().getString(R.string.flight_order_status_all_label)));
@@ -128,7 +128,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
             QuickFilterItem finishFilter = new QuickFilterItem();
             finishFilter.setName(entry.getDescription());
             finishFilter.setType(entry.getLabel());
-            finishFilter.setColorBorder(R.color.tkpd_main_green);
+            finishFilter.setColorBorder(com.tokopedia.unifyprinciples.R.color.Unify_G400);
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getLabel())) {
                 isAnyItemSelected = true;
                 finishFilter.setSelected(true);

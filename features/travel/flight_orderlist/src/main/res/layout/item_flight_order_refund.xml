@@ -86,7 +86,7 @@
                 android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_20"
                 android:text="@string/flight_order_refund_button_card"
-                android:textColor="@color/black" />
+                android:textColor="@color/Unify_N700" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

@@ -73,6 +73,6 @@
         style="@style/TextView.Micro.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/orange_red"
+        android:textColor="@color/Unify_Y500"
         tools:text="Rp500.000" />
 </LinearLayout>

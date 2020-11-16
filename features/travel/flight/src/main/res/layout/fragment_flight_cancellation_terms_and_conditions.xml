@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:fillViewport="true">
 
     <LinearLayout
@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:textColor="@color/font_black_secondary_54" />
+                android:textColor="@color/Unify_N700_44" />
 
         </androidx.core.widget.NestedScrollView>
 
@@ -36,13 +36,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/grey_500" />
+            android:background="@color/Unify_N200" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -64,7 +64,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_10"
-                android:textColor="@color/font_black_secondary_54"
+                android:textColor="@color/Unify_N700_44"
                 tools:text="@string/flight_cancellation_review_description" />
 
         </LinearLayout>

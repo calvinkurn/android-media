@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:fillViewport="true"
     android:fitsSystemWindows="true"
     tools:context="com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment">
@@ -42,7 +42,7 @@
                     android:focusable="false"
                     android:singleLine="true"
                     android:text="@string/flight_cancellation_reason_hint_label"
-                    android:textColor="@color/font_black_primary_70"
+                    android:textColor="@color/Unify_N700_68"
                     app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey" />
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/flight_cancellation_support_docs_label"
-                    android:textColor="@color/font_black_secondary_54" />
+                    android:textColor="@color/Unify_N700_44" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/attachment_description"
@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dp_16"
                     android:text="@string/flight_cancellation_support_docs_description"
-                    android:textColor="@color/font_black_disabled_38"
+                    android:textColor="@color/Unify_N700_32"
                     android:textSize="@dimen/sp_10" />
 
                 <androidx.recyclerview.widget.RecyclerView

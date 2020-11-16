@@ -10,7 +10,7 @@
         style="@style/TextView.Small.Bold.BlackSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_green"
+        android:background="@color/Unify_G100"
         android:paddingTop="@dimen/dp_8"
         android:paddingBottom="@dimen/dp_8"
         android:gravity="center"

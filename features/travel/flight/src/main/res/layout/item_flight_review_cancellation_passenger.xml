@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_14"
@@ -21,7 +21,7 @@
         android:id="@+id/tv_passenger_type"
         style="@style/TextView.Small"
         android:padding="@dimen/dp_2"
-        android:textColor="@color/font_black_secondary_54"
+        android:textColor="@color/Unify_N700_44"
         tools:text="@string/flight_label_departure_flight" />
 
 </LinearLayout>

@@ -39,7 +39,7 @@
             android:lines="1"
             android:singleLine="true"
             android:textAppearance="@style/TextView.Small"
-            android:textColor="@color/font_black_secondary_54" />
+            android:textColor="@color/Unify_N700_44" />
 
     </com.tokopedia.design.text.TkpdTextInputLayout>
 
@@ -60,7 +60,7 @@
             android:layout_marginRight="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
             android:text="@string/flight_resend_eticket_dialog_abort"
-            android:textColor="@color/font_black_secondary_54" />
+            android:textColor="@color/Unify_N700_44" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_resend_eticket_send"

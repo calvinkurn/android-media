@@ -387,7 +387,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         rv_meals.setHasFixedSize(true)
         rv_meals.isNestedScrollingEnabled = false
         rv_meals.adapter = mealAdapter
-        mealAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.design.R.color.bg_button_green_border_outline))
+        mealAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         mealAdapter.setViewModels(models)
         mealAdapter.notifyDataSetChanged()
     }
@@ -454,7 +454,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         rv_luggages.setHasFixedSize(true)
         rv_luggages.isNestedScrollingEnabled = false
         rv_luggages.adapter = luggageAdapter
-        luggageAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.design.R.color.bg_button_green_border_outline))
+        luggageAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
 

@@ -327,7 +327,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).indexOf("Pelajari");
         int stopIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(

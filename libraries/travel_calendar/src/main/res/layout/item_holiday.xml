@@ -14,7 +14,7 @@
         android:id="@+id/date_holiday"
         android:layout_width="@dimen/dp_80"
         android:layout_height="wrap_content"
-        android:textColor="@color/red_a700"
+        android:textColor="@color/Unify_R600"
         android:textStyle="bold"
         tools:text="1 Ags"/>
 
