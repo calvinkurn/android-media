@@ -22,10 +22,10 @@ import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndT
 class PltShopPagePowerMerchantPerformanceTest {
 
     companion object {
-        private const val TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_power_merchant_product_tab_test_case_page_load_time"
         private const val SAMPLE_SHOP_ID = "1154916"
     }
 
+    private val TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE = "shop_page_test_case_page_load_time"
     private var context: Context? = null
 
     @get:Rule
@@ -54,7 +54,7 @@ class PltShopPagePowerMerchantPerformanceTest {
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE,
+                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE,
                     GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
