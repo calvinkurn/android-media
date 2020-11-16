@@ -226,11 +226,21 @@ object ShopPageHomeMapper {
                     it.timeCounter,
                     it.totalNotify,
                     it.totalNotifyWording,
+                    mapToDynamicRule(it.dynamicRule),
                     mapCampaignListBanner(it.listBanner),
                     mapCampaignListProduct(it.statusCampaign, it.listProduct),
                     isRemindMe
             )
         }
+    }
+
+    private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
+        return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
+                dynamicRule.descriptionHeader,
+                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
+                        dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty()
+                )
+        )
     }
 
     private fun mapCampaignListProduct(

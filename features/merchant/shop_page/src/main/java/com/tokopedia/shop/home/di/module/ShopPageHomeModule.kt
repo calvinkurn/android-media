@@ -105,6 +105,12 @@ class ShopPageHomeModule {
                       timeCounter
                       totalNotify
                       totalNotifyWording
+                      dynamicRule {
+                        descriptionHeader
+                        dynamicRoleData{
+                         ruleID
+                        }
+                      }
                       banners {
                         imageID
                         imageURL
