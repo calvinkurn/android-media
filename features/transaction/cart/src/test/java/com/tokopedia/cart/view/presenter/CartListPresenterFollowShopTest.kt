@@ -3,12 +3,13 @@ package com.tokopedia.cart.view.presenter
 import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
-import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
+import com.tokopedia.cart.domain.model.cartlist.CartListData
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.cart.view.CartListPresenter
 import com.tokopedia.cart.view.ICartListView
+import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
+import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
@@ -16,19 +17,22 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.Valid
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.DataFollowShop
+import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.verifyOrder
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
-object CartListPresenterUndoDeleteCartTest : Spek({
+object CartListPresenterFollowShopTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
     val deleteCartUseCase: DeleteCartUseCase = mockk()
@@ -57,7 +61,7 @@ object CartListPresenterUndoDeleteCartTest : Spek({
     val followShopUseCase: FollowShopUseCase = mockk()
     val view: ICartListView = mockk(relaxed = true)
 
-    Feature("undo delete cart test") {
+    Feature("follow shop") {
 
         val cartListPresenter by memoized {
             CartListPresenter(
@@ -77,72 +81,53 @@ object CartListPresenterUndoDeleteCartTest : Spek({
             cartListPresenter.attachView(view)
         }
 
-        Scenario("undo delete cart success") {
+        Scenario("success follow shop") {
 
-            val response = UndoDeleteCartData().apply {
-                isSuccess = true
-                message = "Berhasil"
+            val dataFollowShop = DataFollowShop().apply {
+                followShop = FollowShop().apply {
+                    isSuccess = true
+                    message = "Success"
+                }
             }
 
-            Given("success response") {
-                every { undoDeleteCartUseCase.createObservable(any()) } returns Observable.just(response)
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.just(dataFollowShop)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
-            When("process undo delete") {
-                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
             }
 
             Then("should render success") {
-                verify {
-                    view.onUndoDeleteCartDataSuccess(response)
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageGreen(dataFollowShop.followShop.message, FollowShopSubscriber.CTA_WORDING)
                 }
             }
-
         }
 
-        Scenario("undo delete cart failed") {
+        Scenario("failed follow shop") {
 
-            val messageError = "Gagal"
+            val exception = ResponseErrorException("Failed")
 
-            val response = UndoDeleteCartData().apply {
-                isSuccess = false
-                message = messageError
+            Given("follow shop data") {
+                every { followShopUseCase.buildRequestParams(any()) } returns RequestParams.create()
+                every { followShopUseCase.createObservable(any()) } returns Observable.error(exception)
+                every { getCartListSimplifiedUseCase.createObservable(any()) } returns Observable.just(CartListData())
             }
 
-            Given("error response") {
-                every { undoDeleteCartUseCase.createObservable(any()) } returns Observable.just(response)
+            When("process follow shop") {
+                cartListPresenter.followShop("1")
             }
 
-            When("process undo delete") {
-                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
-            }
-
-            Then("should render error") {
-                verify {
-                    view.showToastMessageRed(messageError)
+            Then("should show error") {
+                verifyOrder {
+                    view.hideProgressLoading()
+                    view.showToastMessageRed(exception, FollowShopSubscriber.CTA_WORDING)
                 }
             }
-
-        }
-
-        Scenario("undo delete cart failed with exception") {
-
-            val exception = CartResponseErrorException()
-
-            Given("error response") {
-                every { undoDeleteCartUseCase.createObservable(any()) } returns Observable.error(exception)
-            }
-
-            When("process undo delete") {
-                cartListPresenter.processUndoDeleteCartItem(listOf("123"))
-            }
-
-            Then("should render error") {
-                verify {
-                    view.showToastMessageRed(exception)
-                }
-            }
-
         }
 
     }
