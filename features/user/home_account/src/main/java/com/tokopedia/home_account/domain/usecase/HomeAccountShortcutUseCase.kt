@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_account.AccountConstants
+import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.ShortcutResponse
 import com.tokopedia.network.exception.MessageErrorException
@@ -45,8 +46,8 @@ class HomeAccountShortcutUseCase @Inject constructor(
             if(data == null) {
                 val mapResponse = Utils.convertResponseToJson(gqlResponse)
                 data = ShortcutResponse()
-//                AccountHomeErrorHandler.logDataNull("GetShortcutDataUseCase",
-//                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
+                AccountErrorHandler.logDataNull("Account_GetShortcutDataUseCase",
+                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
             }
             return data
         }

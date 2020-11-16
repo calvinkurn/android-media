@@ -5,7 +5,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.network.data.model.response.ResponseV4ErrorException
 import timber.log.Timber
 
-object HomeAccountErrorHandler {
+object AccountErrorHandler {
     @JvmStatic
     fun getExceptionMessage(t: Throwable): String {
         return try {
@@ -31,6 +31,18 @@ object HomeAccountErrorHandler {
                 errorCode)
         val exception = AccountHomeException(errorMessage, t)
         Timber.w("P2#ACCOUNT_HOME_NEW_ERROR#'Failed render';'${getExceptionMessage(t)}';'${errorCode}'")
+        try {
+            FirebaseCrashlytics.getInstance().recordException(exception)
+        } catch (exception: Exception) {
+
+        }
+    }
+
+    @JvmStatic
+    fun logDataNull(source: String, t: Throwable) {
+        val exception = AccountHomeException(t.message ?: "", t)
+
+        Timber.w("P2#ACCOUNT_HOME_ERROR#'Failed parsing model'; $source;'$exception'")
         try {
             FirebaseCrashlytics.getInstance().recordException(exception)
         } catch (exception: Exception) {

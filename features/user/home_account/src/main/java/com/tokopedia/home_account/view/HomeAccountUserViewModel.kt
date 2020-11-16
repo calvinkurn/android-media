@@ -42,16 +42,11 @@ class HomeAccountUserViewModel @Inject constructor(
         private val setUserProfileSafeModeUseCase: SafeSettingProfileUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val walletPref: WalletPref,
-        private val permissionChecker: PermissionChecker,
         private val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     private val _buyerAccountData = MutableLiveData<Result<UserAccountDataModel>>()
     val buyerAccountDataData: LiveData<Result<UserAccountDataModel>>
         get() = _buyerAccountData
-
-    private val _profileLiveData = MutableLiveData<ProfileDataView>()
-    val profileData: LiveData<ProfileDataView>
-        get() = _profileLiveData
 
     private val _settingData = MutableLiveData<SettingDataView>()
     val settingData: LiveData<SettingDataView>
@@ -64,10 +59,6 @@ class HomeAccountUserViewModel @Inject constructor(
     private val _aboutTokopedia = MutableLiveData<SettingDataView>()
     val aboutTokopedia: LiveData<SettingDataView>
         get() = _aboutTokopedia
-
-    private val _memberData = MutableLiveData<MemberDataView>()
-    val memberData: LiveData<MemberDataView>
-        get() = _memberData
 
     private val _recommendationData = MutableLiveData<Result<List<RecommendationItem>>>()
     val getRecommendationData: LiveData<Result<List<RecommendationItem>>>
@@ -172,9 +163,7 @@ class HomeAccountUserViewModel @Inject constructor(
     }
 
     private fun savePhoneVerified(accountDataModel: UserAccountDataModel) {
-        if (accountDataModel.profile != null) {
-            userSession.setIsMSISDNVerified(accountDataModel.profile.isPhoneVerified)
-        }
+        userSession.setIsMSISDNVerified(accountDataModel.profile.isPhoneVerified)
     }
 
     private fun saveIsAffiliateStatus(accountDataModel: UserAccountDataModel) {

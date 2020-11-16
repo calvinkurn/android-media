@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_account.AccountConstants.Query.NEW_QUERY_BUYER_ACCOUNT_HOME
+import com.tokopedia.home_account.AccountErrorHandler
 import com.tokopedia.home_account.Utils
 import com.tokopedia.home_account.data.model.UserAccountDataModel
 import com.tokopedia.network.exception.MessageErrorException
@@ -44,8 +45,8 @@ class HomeAccountUserUsecase @Inject constructor(
             if (data == null) {
                 val mapResponse = Utils.convertResponseToJson(gqlResponse)
                 data = UserAccountDataModel()
-//                AccountHomeErrorHandler.logDataNull("GetBuyerAccountDataUseCase",
-//                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
+                AccountErrorHandler.logDataNull("Account_DataUseCase",
+                        Throwable("Results : ${mapResponse[Utils.M_RESULT]} - Errors : ${mapResponse[Utils.M_ERRORS]}"))
             }
             return data
         }
