@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull
  */
 class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                           defStyleAttr: Int = 0)
-    : LinearLayout(context, attrs, defStyleAttr) {
+    : LinearLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     private val recyclerView: RecyclerView
     private val titleWidget: TextView
@@ -38,13 +38,8 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         this.listener = listener
     }
 
-    fun setPromoList(promoList: List<TopupBillsPromo>, showTitle: Boolean) {
-        if (showTitle) {
-            titleWidget.text = context.getString(R.string.common_topup_title_promo)
-            titleWidget.show()
-        } else {
-            titleWidget.hide()
-        }
+    fun setPromoList(promoList: List<TopupBillsPromo>) {
+        titleWidget.text = context.getString(R.string.common_topup_title_promo)
         topupBillsPromoListAdapter = TopupBillsPromoListAdapter(promoList)
         recyclerView.adapter = topupBillsPromoListAdapter
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -93,6 +88,10 @@ class TopupBillsPromoListWidget @JvmOverloads constructor(@NotNull context: Cont
         if (::topupBillsPromoListAdapter.isInitialized) {
             topupBillsPromoListAdapter.resetPromoListSelected(promoId)
         }
+    }
+
+    override fun toggleTitle(value: Boolean) {
+        if (value) titleWidget.show() else titleWidget.hide()
     }
 
     interface ActionListener {

@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
+import com.tokopedia.common.topupbills.widget.TopupBillsRecentTransactionWidget
 import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
@@ -24,7 +25,6 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
     lateinit var viewModel: SharedRechargeGeneralViewModel
 
     private lateinit var recommendationList: ArrayList<TopupBillsRecommendation>
-    private var showTitle = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_recharge_general_recommendation, container, false)
@@ -44,12 +44,11 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
 
         arguments?.let {
             recommendationList = it.getParcelableArrayList(EXTRA_PARAM_RECOMMENDATION) ?: arrayListOf()
-            showTitle = it.getBoolean(EXTRA_PARAM_SHOW_TITLE, true)
         }
 
         with(recent_transaction_widget) {
             setListener(this@RechargeGeneralRecentTransactionFragment)
-            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList, showTitle)
+            if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) setRecentNumbers(recommendationList)
         }
     }
 
@@ -72,13 +71,11 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
 
     companion object {
         private const val EXTRA_PARAM_RECOMMENDATION = "EXTRA_PARAM_RECOMMENDATION"
-        private const val EXTRA_PARAM_SHOW_TITLE = "EXTRA_PARAM_SHOW_TITLE"
 
-        fun newInstance(recommendation: List<TopupBillsRecommendation>, showTitle: Boolean = true): RechargeGeneralRecentTransactionFragment {
+        fun newInstance(recommendation: List<TopupBillsRecommendation>): RechargeGeneralRecentTransactionFragment {
             val fragment = RechargeGeneralRecentTransactionFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(EXTRA_PARAM_RECOMMENDATION, ArrayList(recommendation))
-            bundle.putBoolean(EXTRA_PARAM_SHOW_TITLE, showTitle)
             fragment.arguments = bundle
             return fragment
         }
