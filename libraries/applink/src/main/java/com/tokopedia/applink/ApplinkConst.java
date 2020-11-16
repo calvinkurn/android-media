@@ -158,6 +158,7 @@ public interface ApplinkConst {
     String BELANJA_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_SUB = "tokopedia://order/marketplace/filter";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
+    String TRAVEL_AND_ENTERTAINMENT_ORDER = "tokopedia://travelent/order";
 
     String MARKETPLACE_WAITING_CONFIRMATION = "tokopedia://order/marketplace/filter/5";
     String MARKETPLACE_SENT = "tokopedia://order/marketplace/filter/13";
@@ -293,6 +294,7 @@ public interface ApplinkConst {
     String POWER_MERCHANT_SUBSCRIBE = "tokopedia://power_merchant/subscribe";
 
     String CATEGORY = "tokopedia://category";
+    String TRADEIN = "tokopedia://category/tradein";
     String QRSCAN = "tokopedia://scanqr";
     String OVOP2PTRANSFERFORM = "tokopedia-android-internal://ovop2ptransfer?phone";
     String OVOP2PTRANSFERFORM_SHORT = "tokopedia-android-internal://ovop2ptransfer";
@@ -451,6 +453,8 @@ public interface ApplinkConst {
         String SOURCE_PAGE = "source_page";
         String SEARCH_CREATE_TIME = "search_create_time_str";
         String SEARCH_PRODUCT_KEYWORD = "search_product_keyword";
+
+        String SHOP_FOLLOWERS_CHAT_KEY = "shop_followers_chat_key";
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";

@@ -35,6 +35,9 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
               useAce
               badge
               aceDefaultSort
+              rules {
+                name
+              }
             }
             error {
               message
