@@ -623,7 +623,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     }
 
     private fun autoFillPhoneNumber(number: String) {
-        val phoneHint = viewBound.pin?.pinPrefixText?.replace(Regex(REGEX_PHONE_NUMBER), "") ?: ""
+        val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
         var phoneNumber = replaceRegionPhoneCode(number)
 
         if (phoneNumber.contains(phoneHint)) {
