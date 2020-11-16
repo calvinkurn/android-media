@@ -157,7 +157,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void setToolbar(String title, String subtitle){
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(com.tokopedia.abstraction.R.id.toolbar);
         toolbar.setTitle(title);
         toolbar.setSubtitle(subtitle);
     }
