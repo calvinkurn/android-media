@@ -3,6 +3,8 @@ package com.tokopedia.logisticdata.data.entity.address;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * @author Aghny A. Putra on 25/01/18
  */
@@ -44,11 +46,11 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isTradeIn;
     private boolean isTradeInDropOffEnable;
     private int selectedTabIndex;
+    private boolean ignoreSelectionAction;
     private String dropOffAddressName;
     private String dropOffAddressDetail;
     private LocationDataModel locationDataModel;
-
-    private String disabledMultiAddressMessage;
+    private List<String> disabledAddress;
 
     public RecipientAddressModel() {
     }
@@ -293,12 +295,20 @@ public class RecipientAddressModel implements Parcelable {
         this.locationDataModel = locationDataModel;
     }
 
-    public String getDisabledMultiAddressMessage() {
-        return disabledMultiAddressMessage;
+    public List<String> getDisabledAddress() {
+        return disabledAddress;
     }
 
-    public void setDisabledMultiAddressMessage(String disabledMultiAddressMessage) {
-        this.disabledMultiAddressMessage = disabledMultiAddressMessage;
+    public void setDisabledAddress(List<String> disabledAddress) {
+        this.disabledAddress = disabledAddress;
+    }
+
+    public boolean isIgnoreSelectionAction() {
+        return ignoreSelectionAction;
+    }
+
+    public void setIgnoreSelectionAction(boolean ignoreSelectionAction) {
+        this.ignoreSelectionAction = ignoreSelectionAction;
     }
 
     public boolean equalCorner(RecipientAddressModel that) {
@@ -408,10 +418,10 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeByte(this.isTradeIn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isTradeInDropOffEnable ? (byte) 1 : (byte) 0);
         dest.writeInt(this.selectedTabIndex);
+        dest.writeByte(this.ignoreSelectionAction ? (byte) 1 : (byte) 0);
         dest.writeString(this.dropOffAddressName);
         dest.writeString(this.dropOffAddressDetail);
         dest.writeParcelable(this.locationDataModel, flags);
-        dest.writeString(this.disabledMultiAddressMessage);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -442,10 +452,10 @@ public class RecipientAddressModel implements Parcelable {
         this.isTradeIn = in.readByte() != 0;
         this.isTradeInDropOffEnable = in.readByte() != 0;
         this.selectedTabIndex = in.readInt();
+        this.ignoreSelectionAction = in.readByte() != 0;
         this.dropOffAddressName = in.readString();
         this.dropOffAddressDetail = in.readString();
         this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());
-        this.disabledMultiAddressMessage = in.readString();
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

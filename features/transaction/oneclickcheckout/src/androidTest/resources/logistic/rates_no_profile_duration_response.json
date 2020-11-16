@@ -29,7 +29,9 @@
                 "text_range_price": "",
                 "text_etd": "",
                 "text_notes": "",
-                "text_service_desc": " "
+                "text_service_desc": " ",
+                "text_eta_summarize": "",
+                "error_code": 0
               },
               "order_priority": {
                 "is_now": false,
@@ -105,6 +107,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 }
               ]
@@ -127,7 +133,9 @@
                 "text_range_price": "Rp38.000",
                 "text_etd": "1 hari",
                 "text_notes": "",
-                "text_service_desc": ""
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 0
               },
               "order_priority": {
                 "is_now": false,
@@ -203,6 +211,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 }
               ]
@@ -225,7 +237,9 @@
                 "text_range_price": "Rp40.000",
                 "text_etd": "2-4 hari",
                 "text_notes": "",
-                "text_service_desc": "Rekomendasi berat di atas 5kg"
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "",
+                "error_code": 0
               },
               "order_priority": {
                 "is_now": false,
@@ -301,6 +315,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 }
               ]
@@ -323,7 +341,9 @@
                 "text_range_price": "Rp7.000 - Rp13.000",
                 "text_etd": "3-4 hari",
                 "text_notes": "",
-                "text_service_desc": ""
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 0
               },
               "order_priority": {
                 "is_now": false,
@@ -399,6 +419,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 },
                 {
@@ -455,6 +479,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 }
               ]
@@ -489,6 +517,10 @@
               "formatted_price": "",
               "tnc_text": "",
               "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 0
             }
           },
           "info": {

@@ -71,7 +71,6 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
@@ -84,7 +83,6 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.review.feature.inbox.common.presentation.activity.InboxReputationActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
@@ -149,7 +147,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdAppsFlyerRouter,
         LinkerRouter,
         DigitalRouter,
-        CMRouter,
         KYCRouter {
 
     @Inject
@@ -390,7 +387,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.classParentStack = getHomeClass();
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -609,11 +606,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public long getLongRemoteConfig(String key, long defaultValue) {
-        return remoteConfig.getLong(key, defaultValue);
     }
 
     @Override

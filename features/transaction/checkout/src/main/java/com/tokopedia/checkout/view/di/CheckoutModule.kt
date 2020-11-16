@@ -1,9 +1,12 @@
 package com.tokopedia.checkout.view.di
 
 import android.content.Context
+import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
 import com.tokopedia.checkout.domain.mapper.ICheckoutMapper
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper
@@ -128,7 +131,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
+                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 gson: Gson): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -137,7 +141,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson)
     }
 
     @Provides
@@ -192,4 +196,9 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         return GraphqlHelper.loadRawString(context.resources, R.raw.checkout_mutation)
     }
 
+    @Provides
+    @CheckoutScope
+    fun provideCheckoutTradeInAnalytics(userSession: UserSessionInterface): CheckoutTradeInAnalytics {
+        return CheckoutTradeInAnalytics(userSession.userId)
+    }
 }
