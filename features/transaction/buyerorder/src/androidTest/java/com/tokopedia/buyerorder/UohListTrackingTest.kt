@@ -25,7 +25,8 @@ import org.junit.Assert.assertThat
 class UohListTrackingTest {
 
     companion object {
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/transaction/uoh_list.json"
+        private const val QUERY_VIEW_LIST = "tracker/transaction/uoh_list.json"
+        private const val QUERY_SEARCH = "tracker/transaction/uoh_search.json"
         const val KEY_UOH_ORDERS = "GetOrderHistory"
     }
 
@@ -60,15 +61,10 @@ class UohListTrackingTest {
 
         for (i in 0 until itemCount) {
             scrollUohRecyclerViewToPosition(uohRecyclerView, i)
-            // checkProduct(uohRecyclerView, i)
         }
         waitForData()
 
-        /*val query = getJsonDataFromAsset(context, "tracker/transaction/uoh_list.json")
-                ?: throw AssertionError("Validator Query not found")
-        submit { hasPassedAnalytics(gtmLogDBSource, query) }*/
-
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME), hasAllSuccess())
+        assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, QUERY_VIEW_LIST), hasAllSuccess())
     }
 
     private fun scrollUohRecyclerViewToPosition(uohRecyclerView: RecyclerView, position: Int) {

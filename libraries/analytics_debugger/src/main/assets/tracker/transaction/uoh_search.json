@@ -1,0 +1,16 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "submit search from cari transaksi",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ],
+  "readme": "UOH Search"
+}
