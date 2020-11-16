@@ -1387,7 +1387,10 @@ class ShopPageFragment :
     }
 
     private fun handleResultVideoFromLiveStreaming(resultCode: Int, data: Intent) {
-        if (resultCode == Activity.RESULT_OK) handlePlayBroadcastExtra(data)
+        if (resultCode == Activity.RESULT_OK) {
+            handlePlayBroadcastExtra(data)
+            refreshData()
+        }
     }
 
     private fun handlePlayBroadcastExtra(data: Intent) {
