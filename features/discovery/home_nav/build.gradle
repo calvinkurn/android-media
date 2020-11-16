@@ -18,6 +18,9 @@ android{
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 buildscript {

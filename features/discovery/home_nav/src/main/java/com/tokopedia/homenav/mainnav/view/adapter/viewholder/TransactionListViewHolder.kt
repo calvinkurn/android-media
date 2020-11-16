@@ -32,14 +32,15 @@ class TransactionListViewHolder(itemView: View,
         val edgeMargin = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_16)
         val spacingBetween = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_8)
 
-        itemView.transaction_rv.invalidateItemDecorations()
         itemView.transaction_rv.adapter = adapter
         itemView.transaction_rv.layoutManager = LinearLayoutManager(
                 context, LinearLayoutManager.HORIZONTAL, false
         )
-        itemView.transaction_rv.addItemDecoration(
-                NavOrderSpacingDecoration(spacingBetween, edgeMargin)
-        )
+        if (itemView.transaction_rv.itemDecorationCount == 0) {
+            itemView.transaction_rv.addItemDecoration(
+                    NavOrderSpacingDecoration(spacingBetween, edgeMargin)
+            )
+        }
         val visitableList = mutableListOf<Visitable<*>>()
         visitableList.addAll(element.orderListModel.paymentList.map { OrderPaymentModel(it) })
         visitableList.addAll(element.orderListModel.orderList.map { OrderProductModel(it) })

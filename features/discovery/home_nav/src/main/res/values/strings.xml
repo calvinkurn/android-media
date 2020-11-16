@@ -3,6 +3,8 @@
     <string name="sellerapp_scheme" translatable="false">sellerapp</string>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
+    <string name="main_nav_args_source_key">pageSource</string>
+
     <string name="search_tokopedia">Cari di Tokopedia</string>
     <string name="search_title_feed">Feed</string>
     <string name="content_desc_et_search">input search</string>

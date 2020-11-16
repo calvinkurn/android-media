@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -56,6 +57,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var adapter: MainNavListAdapter
 
     private lateinit var userSession: UserSessionInterface
+    val args: MainNavFragmentArgs by navArgs()
+
+    private var pageSource = ""
 
     override fun getScreenName(): String {
         return ""
@@ -71,6 +75,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 .baseNavComponent(baseNavComponent)
                 .build()
                 .inject(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pageSource = args.StringMainNavArgsSourceKey
+        viewModel.setPageSource(pageSource)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -164,6 +174,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                 NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
                         bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
             } else {
+                RouteManager.route(requireContext(), homeNavMenuViewModel.applink)
                 hitClickTrackingBasedOnId(homeNavMenuViewModel)
             }
         }

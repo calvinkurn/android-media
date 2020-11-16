@@ -57,6 +57,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             const val TOOLBAR_TYPE_TITLE = 1
             const val TOOLBAR_TYPE_CUSTOM = 2
         }
+
+        object StatusBar {
+            const val STATUS_BAR_LIGHT = 0
+            const val STATUS_BAR_DARK = 1
+        }
     }
 
     //public variable
@@ -138,9 +143,18 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Call this function to let the NavToolbar manage your status bar transparency
      */
-    fun setupToolbarWithStatusBar(activity: Activity) {
+    fun setupToolbarWithStatusBar(activity: Activity, statusBarTheme: Int? = null, applyPadding: Boolean = true) {
         statusBarUtil = StatusBarUtil(WeakReference(activity))
-        applyStatusBarPadding()
+
+        statusBarTheme?.let {
+            when (it) {
+                StatusBar.STATUS_BAR_LIGHT -> statusBarUtil?.requestStatusBarLight()
+                StatusBar.STATUS_BAR_DARK -> statusBarUtil?.requestStatusBarDark()
+                else -> statusBarUtil?.requestStatusBarDark()
+            }
+        }
+
+        if (applyPadding) applyStatusBarPadding()
     }
 
     /**
