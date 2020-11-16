@@ -134,7 +134,7 @@ public abstract class BaseNotificationFactory {
         // to preventing DeadSystemException crash
         // we must adding this flag on Intent
         // source: https://stackoverflow.com/questions/14654414
-        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        // intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
 
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
@@ -186,7 +186,11 @@ public abstract class BaseNotificationFactory {
     }
 
     protected long[] getVibratePattern() {
-        return new long[]{500, 500};
+        try {
+            return new long[]{500, 500};
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     protected Uri getRingtoneUri() {
