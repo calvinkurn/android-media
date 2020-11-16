@@ -5,6 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPCheckBoxViewHolder
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPChipsViewHolder
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPDatePickerViewHolder
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.common.util.EventConst.BLANK_LIST
 import com.tokopedia.entertainment.pdp.common.util.EventConst.ELEMENT_LIST
@@ -26,8 +29,25 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
+        return when(viewType) {
+            TEXT_TYPE -> EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
+                    ::addOrRemoveData, userSession, onClickFormListener, textFormListener)
+            CHECKBOX_TYPE -> EventPDPCheckBoxViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPCheckBoxViewHolder.LAYOUT_CHECKBOX, parent, false))
+            DATEPICKER_TYPE -> EventPDPDatePickerViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPDatePickerViewHolder.LAYOUT_DATE_PICKER, parent, false))
+            CHIP_TYPE -> EventPDPChipsViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPChipsViewHolder.LAYOUT_CHIPS, parent, false))
+            else -> EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
                 ::addOrRemoveData, userSession, onClickFormListener, textFormListener)
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return when(formData.get(position).elementType){
+            TEXT_TYPE_TEXT, LIST_TYPE_TEXT -> TEXT_TYPE
+            CHECKBOX_TYPE_TEXT -> CHECKBOX_TYPE
+            DATEPICKER_TYPE_TEXT -> DATEPICKER_TYPE
+            CHIP_TYPE_TEXT -> CHIP_TYPE
+            else -> TEXT_TYPE
+        }
     }
 
     override fun getItemCount(): Int = formData.size
@@ -88,5 +108,17 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
     companion object {
         const val EMPTY_TYPE = 1
         const val REGEX_TYPE = 2
+
+        const val TEXT_TYPE = 1
+        const val LIST_TYPE = 1
+        const val CHECKBOX_TYPE = 2
+        const val DATEPICKER_TYPE = 3
+        const val CHIP_TYPE = 4
+
+        const val TEXT_TYPE_TEXT = "text"
+        const val LIST_TYPE_TEXT = "list"
+        const val CHECKBOX_TYPE_TEXT = "checkbox"
+        const val DATEPICKER_TYPE_TEXT = "date"
+        const val CHIP_TYPE_TEXT = "chips"
     }
 }
