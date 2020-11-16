@@ -168,7 +168,7 @@ class StatisticViewModel @Inject constructor(
         })
     }
 
-    fun getPostWidgetData(dataKeys: List<String>) {
+    fun getPostWidgetData(dataKeys: List<Pair<String, String>>) {
         launchCatchError(block = {
             val result: Success<List<PostListDataUiModel>> = Success(withContext(dispatcher.io) {
                 getPostDataUseCase.get().params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)

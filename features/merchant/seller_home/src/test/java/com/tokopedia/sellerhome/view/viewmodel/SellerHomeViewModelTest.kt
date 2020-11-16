@@ -71,6 +71,12 @@ class SellerHomeViewModelTest {
     lateinit var getBarChartDataUseCase: GetBarChartDataUseCase
 
     @RelaxedMockK
+    lateinit var getMultiLineGraphUseCase: GetMultiLineGraphUseCase
+
+    @RelaxedMockK
+    lateinit var getAnnouncementDataUseCase: GetAnnouncementDataUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
     @get:Rule
@@ -99,6 +105,8 @@ class SellerHomeViewModelTest {
                 dagger.Lazy { getTableDataUseCase },
                 dagger.Lazy { getPieChartDataUseCase },
                 dagger.Lazy { getBarChartDataUseCase },
+                dagger.Lazy { getMultiLineGraphUseCase },
+                dagger.Lazy { getAnnouncementDataUseCase },
                 remoteConfig,
                 coroutineTestRule.dispatchers
         )
@@ -411,7 +419,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns success result`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -435,7 +443,7 @@ class SellerHomeViewModelTest {
 
     @Test
     fun `get post widget data then returns failed result`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"),  Pair("y", "y"))
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -633,5 +641,101 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.barChartWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get multi line graph widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+        val result = listOf(MultiLineGraphDataUiModel(), MultiLineGraphDataUiModel())
+
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        //number of data keys and result should same
+        assertTrue(dataKeys.size == result.size)
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.multiLineGraphWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get multi line graph widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getMultiLineGraphUseCase.params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        coEvery {
+            getMultiLineGraphUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getMultiLineGraphWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getMultiLineGraphUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.multiLineGraphWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should success when get announcement widget data`() = runBlocking {
+        val dataKeys = listOf(anyString())
+        val result = listOf(AnnouncementDataUiModel())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        //number of data keys and result should same
+        assertTrue(dataKeys.size == result.size)
+
+        val expectedResult = Success(result)
+        assertTrue(expectedResult.data.size == dataKeys.size)
+        assertEquals(expectedResult, viewModel.announcementWidgetData.value)
+    }
+
+    @Test
+    fun `should failed when get announcement widget data`() = runBlocking {
+        val dataKeys = listOf(anyString(), anyString())
+
+        getAnnouncementDataUseCase.params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
+
+        coEvery {
+            getAnnouncementDataUseCase.executeOnBackground()
+        } throws RuntimeException("error")
+
+        viewModel.getAnnouncementWidgetData(dataKeys)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            getAnnouncementDataUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.announcementWidgetData.value is Fail)
     }
 }

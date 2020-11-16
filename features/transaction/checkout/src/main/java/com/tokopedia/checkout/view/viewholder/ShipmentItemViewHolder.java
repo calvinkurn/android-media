@@ -42,6 +42,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
@@ -204,6 +205,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelFreeShippingEtaText;
     private Typography labelFreeShippingOriginalEtaPrice;
     private Typography labelFreeShippingDiscountedEtaPrice;
+    private ImageView imageMerchantVoucher;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -322,6 +324,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelFreeShippingEtaText = itemView.findViewById(R.id.label_free_shipping_eta);
         labelFreeShippingOriginalEtaPrice = itemView.findViewById(R.id.label_free_shipping_original_price_eta_partial);
         labelFreeShippingDiscountedEtaPrice = itemView.findViewById(R.id.label_free_shipping_discounted_price_eta_partial);
+        imageMerchantVoucher = itemView.findViewById(R.id.img_mvc);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -708,6 +711,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
         CashOnDeliveryProduct codProductData = selectedCourierItemData.getCodProductData();
+        MerchantVoucherProductModel merchantVoucherProductModel = selectedCourierItemData.getMerchantVoucherProductModel();
+
+        if (merchantVoucherProductModel != null && merchantVoucherProductModel.isMvc() == 1) {
+            imageMerchantVoucher.setVisibility(View.VISIBLE);
+            ImageHandler.LoadImage(imageMerchantVoucher, merchantVoucherProductModel.getMvcLogo());
+        } else {
+            imageMerchantVoucher.setVisibility(View.GONE);
+        }
 
         if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
             // On time delivery guarantee

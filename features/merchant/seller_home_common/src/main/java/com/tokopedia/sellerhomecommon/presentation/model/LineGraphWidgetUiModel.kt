@@ -15,6 +15,7 @@ data class LineGraphWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: LineGraphDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
