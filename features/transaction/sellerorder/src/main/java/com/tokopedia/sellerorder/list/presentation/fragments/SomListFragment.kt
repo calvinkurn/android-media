@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -106,8 +105,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         private const val KEY_LAST_SELECTED_ORDER_ID = "lastSelectedOrderId"
 
         private const val SHARED_PREF_NEW_SOM_LIST_COACH_MARK = "newSomListCoachMark"
-
-        private const val IS_BOTTOM_SHEET_FILTER_OPENED = "isBottomSheetFilterOpened"
 
         private val allowedRoles = listOf(Roles.MANAGE_SHOPSTATS, Roles.MANAGE_INBOX, Roles.MANAGE_TA, Roles.MANAGE_TX)
 
@@ -244,9 +241,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             skipSearch = true
             tabActive = savedInstanceState.getString(KEY_LAST_ACTIVE_FILTER).orEmpty()
             selectedOrderId = savedInstanceState.getString(KEY_LAST_SELECTED_ORDER_ID).orEmpty()
-            if(savedInstanceState.getBoolean(IS_BOTTOM_SHEET_FILTER_OPENED)) {
-                onParentSortFilterClicked()
-            }
         }
     }
 
@@ -343,11 +337,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString(KEY_LAST_ACTIVE_FILTER, tabActive)
         outState.putString(KEY_LAST_SELECTED_ORDER_ID, selectedOrderId)
-        if (somFilterBottomSheet?.bottomSheet?.state == BottomSheetBehavior.STATE_EXPANDED) {
-            outState.putBoolean(IS_BOTTOM_SHEET_FILTER_OPENED, true)
-        } else {
-            outState.putBoolean(IS_BOTTOM_SHEET_FILTER_OPENED, false)
-        }
         super.onSaveInstanceState(outState)
     }
 
@@ -363,7 +352,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onPause() {
         childFragmentManager.fragments.forEach {
-            if (it is BottomSheetUnify) it.dismiss()
+            if (it is BottomSheetUnify && it !is SomFilterBottomSheet) it.dismiss()
         }
         dismissCoachMark()
         super.onPause()
@@ -437,7 +426,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onParentSortFilterClicked() {
         val somFilterList = somListSortFilterTab.getSomFilterUi()
         somFilterBottomSheet = SomFilterBottomSheet.createInstance(
-                this.activity,
                 somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
                 viewModel.getDataOrderListParams().statusList,
                 somFilterList,

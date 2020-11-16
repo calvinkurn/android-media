@@ -105,14 +105,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
             }
         }
-
-        val coachmarkHeader = CoachMarkItem(itemView,
-                itemView.context.getString(R.string.coachmark_header),
-                itemView.context.getString(R.string.coachmark_header_info))
-
-        actionListener?.onAddedCoachMarkHeader(
-                coachmarkHeader
-        )
     }
 
     private fun setupOrderStatus(statusText: String, statusCode: Int) {

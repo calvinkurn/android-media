@@ -27,9 +27,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -160,25 +157,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val coachMark: CoachMark by lazy {
-        CoachMarkBuilder().build()
-    }
-
-    private val coachMarkEdit: CoachMarkItem by lazy {
-        CoachMarkItem(btn_secondary, getString(R.string.coachmark_edit), getString(R.string.coachmark_edit_info))
-    }
-
-    private val coachMarkAccept: CoachMarkItem by lazy {
-        CoachMarkItem(btn_primary, getString(R.string.coachmark_terima_pesanan), getString(R.string.coachmark_terima_pesanan_info))
-    }
-
-    private val coachMarkChat: CoachMarkItem by lazy {
-        CoachMarkItem(view?.rootView?.findViewById(R.id.som_action_chat),
-                getString(R.string.coachmark_chat),
-                getString(R.string.coachmark_chat_info)
-        )
-    }
-
     private var somToaster: Snackbar? = null
 
     private var orderId = ""
@@ -201,8 +179,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     private var refreshHandler: RefreshHandler? = null
     private var bottomSheetCourierProblems: BottomSheetUnify? = null
 
-    private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
-
     private var secondaryBottomSheet: BottomSheetUnify? = null
     private var progressBar: ProgressBar? = null
 
@@ -215,7 +191,6 @@ class SomDetailFragment : BaseDaggerFragment(),
     private val connectionMonitor by lazy { context?.run { SomConnectionMonitor(this) } }
 
     companion object {
-        private const val TAG_COACHMARK_DETAIL = "coachmark"
 
         private const val ERROR_GET_ORDER_DETAIL = "Error when get order detail."
         private const val ERROR_ACCEPTING_ORDER = "Error when accepting order."
@@ -314,20 +289,6 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.chat_menu, menu)
-    }
-
-    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
-        coachMarkItems.add(coachMarkChat)
-        coachMarkItems.add(coachMarkItemHeader)
-    }
-
-    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
-        coachMarkItems.add(coachMarkItemProduct)
-    }
-
-    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
-        coachMarkItems.add(coachMarkItemShipping)
-        addedCoachMark()
     }
 
     private fun checkUserRole() {
@@ -551,22 +512,6 @@ class SomDetailFragment : BaseDaggerFragment(),
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
-    }
-
-    private fun addedCoachMark() {
-        if (detailResponse.button.isNotEmpty()) {
-            coachMarkItems.add(coachMarkEdit)
-            coachMarkItems.add(coachMarkAccept)
-            showCoachMark()
-        } else {
-            showCoachMark()
-        }
-    }
-
-    private fun showCoachMark() {
-        if (!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)) {
-            coachMark.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
-        }
     }
 
     private fun renderHeader() {
