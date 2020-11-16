@@ -116,7 +116,6 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.TrackingDetailsItemUiModel;
@@ -3037,14 +3036,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-<<<<<<<<< Temporary merge branch 1
-    public void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
-        if (shipmentCartItemModel != null) {
-            reloadCourier(shipmentCartItemModel, lastSelectedCourierOrder, skipMvc);
-        }
-    }
-=========
     public void onClickTradeInInfo() {
         checkoutTradeInAnalytics.eventTradeInClickInformation(isTradeInByDropOff());
         FragmentManager fragmentManager = getFragmentManager();
@@ -3063,5 +3054,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onSwapInUserAddress() {
         checkoutTradeInAnalytics.eventTradeInClickTukarDiAlamatmu();
     }
->>>>>>>>> Temporary merge branch 2
+
+    @Override
+    public void prepareReloadRates(int lastSelectedCourierOrder, boolean skipMvc) {
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(lastSelectedCourierOrder);
+        if (shipmentCartItemModel != null) {
+            reloadCourier(shipmentCartItemModel, lastSelectedCourierOrder, skipMvc);
+        }
+    }
 }

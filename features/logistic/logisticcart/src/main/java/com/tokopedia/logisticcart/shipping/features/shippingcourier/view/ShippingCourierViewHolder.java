@@ -96,7 +96,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
             ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
             tvMvc.setText(R.string.tv_mvc_text);
             tvMvcError.setVisibility(View.GONE);
-        } else if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 1) {
+        } else if (shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null && shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().isMvc() == 0) {
             layoutMvc.setVisibility(View.VISIBLE);
             ImageHandler.LoadImage(imgMvc, shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData().getMvcLogo());
             tvMvc.setText(R.string.tv_mvc_text);

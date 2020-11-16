@@ -28,7 +28,6 @@ import javax.inject.Inject;
 public class ShippingDurationConverter {
 
     private static final int COD_TRUE_VAL = 1;
-    private static final int MVC_TRUE_VAL = 1;
 
     @Inject
     public ShippingDurationConverter() {
