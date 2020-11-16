@@ -74,8 +74,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     private var fm: FragmentManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         activity?.overridePendingTransition(0,0)
+        super.onCreate(savedInstanceState)
         initInject()
         val somFilterUiModelList = arguments?.getParcelableArrayList<SomFilterUiModel>(KEY_SOM_FILTER_LIST)
                 ?: arrayListOf()
