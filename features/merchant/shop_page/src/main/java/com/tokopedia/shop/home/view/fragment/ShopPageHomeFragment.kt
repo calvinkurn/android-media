@@ -550,11 +550,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 isRegisterCampaign,
                 true
         )
-        shopPageHomeTracking.clickNotifyMeButton(
-                isOwner,
-                data.action,
-                customDimensionShopPage
-        )
+        if(viewModel?.isCampaignFollower(data.campaignId) == true){
+            shopPageHomeTracking.clickNotifyMeNplFollowerButton(
+                    isOwner,
+                    data.action,
+                    viewModel?.userId.orEmpty(),
+                    customDimensionShopPage
+            )
+        }else{
+            shopPageHomeTracking.clickNotifyMeButton(
+                    isOwner,
+                    data.action,
+                    customDimensionShopPage
+            )
+        }
         view?.let {
             Toaster.make(
                     it,
@@ -1365,7 +1374,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
                     parentPosition + 1,
-                    itemPosition + 1,
+                    itemPosition,
                     isLogin,
                     customDimensionShopPage
             )
@@ -1390,7 +1399,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel?.displayedPrice ?: "",
                     shopName,
                     parentPosition + 1,
-                    itemPosition + 1,
+                    itemPosition,
                     isLogin,
                     customDimensionShopPage
             )
@@ -1400,17 +1409,18 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onClickTncCampaignNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
         model.data?.firstOrNull()?.let {
             shopPageHomeTracking.clickTncButton(isOwner, it.statusCampaign, customDimensionShopPage)
-            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign)
+            showNplCampaignTncBottomSheet(it.campaignId, it.statusCampaign, it.dynamicRule.dynamicRoleData.ruleID)
         }
     }
 
-    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String) {
+    private fun showNplCampaignTncBottomSheet(campaignId: String, statusCampaign: String, ruleID: String) {
         val bottomSheet = ShopHomeNplCampaignTncBottomSheet.createInstance(
                 campaignId,
                 statusCampaign,
                 shopId,
                 isOfficialStore,
-                isGoldMerchant
+                isGoldMerchant,
+                ruleID
         )
         bottomSheet.show(childFragmentManager, "")
     }
@@ -1447,7 +1457,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     customDimensionShopPage
             )
             context?.let {context ->
-                RouteManager.route(context, model.header.ctaLink)
+                // expected ctaLink produce ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST
+                val showcaseIntent = RouteManager.getIntent(context, model.header.ctaLink).apply {
+                    // set isNeedToReload data to true for sync shop info data in product result fragment
+                    putExtra(ShopParamConstant.EXTRA_IS_NEED_TO_RELOAD_DATA, true)
+                }
+                startActivity(showcaseIntent)
+            }
+        }
+    }
+
+    override fun onClickCampaignBannerAreaNplWidget(model: ShopHomeNewProductLaunchCampaignUiModel) {
+        model.data?.firstOrNull()?.let {
+            context?.let {context ->
+                val appLink  = model.header.ctaLink
+                if(appLink.isNotEmpty()){
+                    RouteManager.route(context, appLink)
+                }
             }
         }
     }

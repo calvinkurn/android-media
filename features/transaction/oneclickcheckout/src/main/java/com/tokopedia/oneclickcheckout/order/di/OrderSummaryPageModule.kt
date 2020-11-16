@@ -12,6 +12,7 @@ import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
@@ -25,6 +26,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -32,7 +34,7 @@ import dagger.Provides
 import javax.inject.Named
 
 @Module(includes = [PeopleAddressNetworkModule::class, PurchasePlatformNetworkModule::class])
-class OrderSummaryPageModule(private val activity: Activity) {
+open class OrderSummaryPageModule(private val activity: Activity) {
 
     @OrderSummaryPageScope
     @Provides
@@ -106,5 +108,12 @@ class OrderSummaryPageModule(private val activity: Activity) {
     @Named(AtcConstant.MUTATION_ATC_OCC_EXTERNAL)
     fun provideAtcOccExternalMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout_external)
+    }
+
+    @OrderSummaryPageScope
+    @Provides
+    @Named(OVO_ACTIVATION_URL)
+    open fun provideOvoActivationLink(): String {
+        return "${TokopediaUrl.getInstance().WEB}ovo/api/v2/activate"
     }
 }
