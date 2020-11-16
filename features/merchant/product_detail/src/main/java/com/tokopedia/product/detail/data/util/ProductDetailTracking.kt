@@ -12,20 +12,6 @@ import javax.inject.Inject
 
 class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
 
-    fun eventReportLogin() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Report.EVENT_LABEL)
-    }
-
-    fun eventReportNoLogin() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(ProductTrackingConstant.Report.EVENT,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.CLICK,
-                ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
-    }
-
     fun eventAtcClickLihat(productId: String?) {
         if (productId.isNullOrEmpty()) {
             return

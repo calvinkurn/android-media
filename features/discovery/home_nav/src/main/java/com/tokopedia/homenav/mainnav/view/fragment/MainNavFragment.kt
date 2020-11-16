@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TRANSACTION
@@ -151,6 +152,11 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onRefresh() {
+    }
+
+    override fun onProfileSectionClicked() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.OLD_HOME_ACCOUNT)
+        startActivity(intent)
     }
 
     override fun onProfileLoginClicked() {

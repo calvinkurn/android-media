@@ -155,6 +155,7 @@ import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
+import java.lang.Exception
 import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Callable
@@ -305,8 +306,22 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
-    private fun isNavRevamp(): Boolean = getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
-    private fun isNavOld(): Boolean = getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
+    private fun isNavRevamp(): Boolean {
+        return try {
+            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_REVAMP
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+    private fun isNavOld(): Boolean {
+        return try {
+            getAbTestPlatform().getString(EXP_TOP_NAV, VARIANT_OLD) == VARIANT_OLD
+        } catch (e: Exception) {
+            e.printStackTrace()
+            true
+        }
+    }
 
     private fun navAbTestCondition(ifNavRevamp: ()-> Unit = {}, ifNavOld: ()-> Unit = {}) {
         if (isNavRevamp()) {

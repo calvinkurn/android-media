@@ -12,11 +12,11 @@ class NavRecyclerViewScrollListener(
         val navScrollCallback: NavScrollCallback? = null
 ): RecyclerView.OnScrollListener() {
     private val statusBarUtil = navToolbar.statusBarUtil
+
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         if (startTransitionPixel == 0) startTransitionPixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_start_transition)
         if (toolbarTransitionRangePixel == 0) toolbarTransitionRangePixel = navToolbar.resources.getDimensionPixelSize(R.dimen.default_nav_toolbar_transition_range)
-
         calculateNavToolbarTransparency(recyclerView.computeVerticalScrollOffset())
     }
 
