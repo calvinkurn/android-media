@@ -29,8 +29,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
-import com.tokopedia.design.quickfilter.QuickFilterItem;
-import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
@@ -46,6 +44,8 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.sortfilter.SortFilter;
+import com.tokopedia.sortfilter.SortFilterItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,6 @@ import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_
 
 public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightOrderTypeFactory>
         implements FlightOrderListContract.View,
-        QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
@@ -80,7 +79,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Inject
     FlightOrderListPresenter presenter;
 
-    private QuickSingleFilterView quickSingleFilterView;
+    private SortFilter quickSingleFilterView;
 
     public static FlightOrderListFragment createInstance() {
         Bundle bundle = new Bundle();
@@ -116,7 +115,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_order_list, container, false);
         quickSingleFilterView = view.findViewById(R.id.quick_filter);
-        quickSingleFilterView.setListener(this);
         return view;
     }
 
@@ -146,9 +144,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     }
 
     @Override
-    public void renderOrderStatus(List<QuickFilterItem> filterItems) {
-        quickSingleFilterView.setDefaultItem(filterItems.get(0));
-        quickSingleFilterView.renderFilter(filterItems);
+    public void renderOrderStatus(List<SortFilterItem> filterItems) {
+        quickSingleFilterView.addItem(new ArrayList(filterItems));
     }
 
     @Override
