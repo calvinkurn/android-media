@@ -27,6 +27,8 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
           text_etd
           text_notes
           text_service_desc
+          text_eta_summarize
+          error_code
         }
         order_priority {
           is_now
@@ -93,7 +95,7 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
             cod_text
             formatted_price
             tnc_text
-             tnc_link
+            tnc_link
           }
           features {
             ontime_delivery_guarantee {
@@ -104,6 +106,10 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
               url_detail
               icon_url
             }
+          }
+          eta {
+            text_eta
+            error_code
           }
         }
       }
@@ -136,6 +142,10 @@ query RatesV3Api($param: OngkirRatesV3Input!) {
               formatted_price
               tnc_text
               tnc_link
+            }
+        eta {
+              text_eta
+              error_code
             }
       }
       info {

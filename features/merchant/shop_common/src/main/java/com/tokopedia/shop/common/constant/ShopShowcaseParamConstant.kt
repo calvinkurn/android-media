@@ -2,7 +2,6 @@ package com.tokopedia.shop.common.constant
 
 object ShopShowcaseParamConstant {
     const val SHOWCASE_PICKER_RESULT_REQUEST_CODE = 1011
-    const val SHOWCASE_LIST_BUNDLE = "bundle"
     const val EXTRA_SHOP_ID = "EXTRA_SHOP_ID"
     const val EXTRA_ETALASE_ID = "EXTRA_ETALASE_ID"
     const val EXTRA_SHOP_TYPE = "EXTRA_SHOP_TYPE"
