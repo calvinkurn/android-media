@@ -9,6 +9,7 @@ enum class ChannelType(val value: String) {
     Draft("0"),
     Active("1"),
     Pause("3"),
+    CompleteDraft("-2"),
     Unknown("-1");
 
     companion object {
@@ -25,7 +26,8 @@ enum class ChannelType(val value: String) {
         fun getChannelType(
                 activeLiveChannel: Int,
                 pausedChannel: Int,
-                draftChannel: Int
+                draftChannel: Int,
+                completeDraft: Boolean
         ): Pair<String, ChannelType> {
             var channelId = 0
             var playChannelStatus = Unknown
@@ -37,6 +39,10 @@ enum class ChannelType(val value: String) {
                 pausedChannel > 0 -> {
                     channelId = pausedChannel
                     playChannelStatus = Pause
+                }
+                completeDraft && draftChannel > 0 -> {
+                    channelId = draftChannel
+                    playChannelStatus = CompleteDraft
                 }
                 draftChannel > 0 -> {
                     channelId = draftChannel

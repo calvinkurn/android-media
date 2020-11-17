@@ -6,7 +6,7 @@ buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -105,6 +105,10 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
 }
 
 project.ext {

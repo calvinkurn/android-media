@@ -62,8 +62,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
 
         val headers = response.headers()
         if (headers.size() > 0) {
-
-            var mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val mNotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 mNotificationManager.createNotificationChannel(
                         NotificationChannel(CHANNEL_ID,
@@ -71,36 +70,79 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                                 NotificationManager.IMPORTANCE_LOW))
             }
 
-            var get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
-            if (get.equals(URL_BETA)) {
-                context.let {
-                    saveBeta(it, true)
+            determineShowNotif(GlobalConfig.APPLICATION_TYPE, context) { appName: String, appType: Int, context: Context ->
 
-                    val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
-                    var appName = context.getString(R.string.tokopedia_beta)
-                    when (GlobalConfig.APPLICATION_TYPE) {
-                        GlobalConfig.SELLER_APPLICATION ->
-                            appName = "sellerapp"
-                        GlobalConfig.CONSUMER_PRO_APPLICATION ->
-                            appName = "Tokopedia Pro"
+                val createNotif = { context: Context, appName: String, function: (context: Context) -> Unit ->
+                    {
+                        context.let {
+                            function(context)
+                            val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
+                            remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
+                            val mBuilder =
+                                    NotificationCompat.Builder(context, CHANNEL_ID)
+                                            .setSmallIcon(R.drawable.beta_icon)
+                                            .setCustomContentView(remoteView)
+                                            .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
+
+                            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
+                        }
                     }
-
-                    remoteView.setTextViewText(R.id.mynotifyexpnd, appName)
-
-                    val mBuilder =
-                            NotificationCompat.Builder(context, CHANNEL_ID)
-                                    .setSmallIcon(R.drawable.beta_icon)
-                                    .setCustomContentView(remoteView)
-                                    .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
-
-                    mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                 }
-            } else {
-                saveBeta(context, false)
-                mNotificationManager.cancel(NOTIFICATION_ID)
+
+                val cancelNotif = { function: (context: Context) -> Unit ->
+                    {
+                        function(context)
+                        mNotificationManager.cancel(NOTIFICATION_ID)
+                    }
+                }
+
+                when (GlobalConfig.APPLICATION_TYPE) {
+                    GlobalConfig.CONSUMER_APPLICATION, GlobalConfig.SELLER_APPLICATION -> {
+                        val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
+                        if (get.equals(URL_BETA)) {
+                            createNotif(context, appName) {
+                                saveBeta(it, true)
+                            }
+                        } else {
+                            cancelNotif {
+                                saveBeta(it, false)
+                            }
+                        }
+                    }
+                    GlobalConfig.CONSUMER_PRO_APPLICATION -> {
+                        val get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
+                        createNotif(context, if (get.equals(URL_BETA)) {
+                            appName + "-beta"
+                        } else {
+                            appName
+                        }) {
+                            saveBeta(it, true)
+                        }
+                    }
+                    else -> {
+                    }
+                }
+
             }
         }
 
         return response
+    }
+
+    fun determineShowNotif(appType: Int = GlobalConfig.CONSUMER_APPLICATION, context: Context,
+                           function: (appName: String, appType: Int, context: Context) -> Unit) {
+
+        // determine string to present
+        var appName = ""
+        when (GlobalConfig.APPLICATION_TYPE) {
+            GlobalConfig.CONSUMER_APPLICATION ->
+                appName = context.getString(R.string.tokopedia_beta)
+            GlobalConfig.SELLER_APPLICATION ->
+                appName = "sellerapp"
+            GlobalConfig.CONSUMER_PRO_APPLICATION ->
+                appName = "Tokopedia Pro"
+        }
+
+        function(appName, appType, context)
     }
 }

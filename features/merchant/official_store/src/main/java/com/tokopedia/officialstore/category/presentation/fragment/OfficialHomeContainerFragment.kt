@@ -1,21 +1,20 @@
 package com.tokopedia.officialstore.category.presentation.fragment
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.officialstore.ApplinkConstant
@@ -32,6 +31,8 @@ import com.tokopedia.officialstore.category.presentation.adapter.OfficialHomeCon
 import com.tokopedia.officialstore.category.presentation.viewmodel.OfficialStoreCategoryViewModel
 import com.tokopedia.officialstore.category.presentation.widget.OfficialCategoriesTab
 import com.tokopedia.officialstore.common.listener.RecyclerViewScrollListener
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.MainToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,12 +54,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     @Inject
     lateinit var viewModel: OfficialStoreCategoryViewModel
 
-    private var statusBar: View? = null
     private var mainToolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
     private var loadingCategoryLayout: View? = null
     private var viewPager: ViewPager? = null
-    private var appbarCategory: AppBarLayout? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
     private var keyCategory = "0"
@@ -66,6 +65,9 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private lateinit var tracking: OfficialStoreTracking
     private lateinit var categoryPerformanceMonitoring: PerformanceMonitoring
     private var officialStorePerformanceMonitoringListener: OfficialStorePerformanceMonitoringListener? = null
+
+    private lateinit var remoteConfig: RemoteConfig
+    private val queryHashingKey = "android_do_query_hashing"
 
     private val tabAdapter: OfficialHomeContainerAdapter by lazy {
         OfficialHomeContainerAdapter(context, childFragmentManager)
@@ -90,9 +92,10 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        remoteConfig = FirebaseRemoteConfigImpl(context)
         init(view)
         observeOfficialCategoriesData()
-        viewModel.getOfficialStoreCategories()
+        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
     }
 
     override fun onDestroy() {
@@ -112,6 +115,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
 
     // config collapse & expand tablayout
     override fun onContentScrolled(dy: Int) {
+        if(dy == 0) return;
+
         tabLayout?.adjustTabCollapseOnScrolled(dy)
     }
 
@@ -134,7 +139,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun observeOfficialCategoriesData() {
-        viewModel.officialStoreCategoriesResult.observe(this, Observer {
+        viewModel.officialStoreCategoriesResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     removeLoading()
@@ -142,8 +147,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                 }
                 is Fail -> {
                     removeLoading()
-                    NetworkErrorHelper.showEmptyState(context, coordinator_layout_fragment_os) {
-                        viewModel.getOfficialStoreCategories()
+                    NetworkErrorHelper.showEmptyState(context, official_home_motion) {
+                        viewModel.getOfficialStoreCategories(remoteConfig.getBoolean(queryHashingKey, false))
                     }
                 }
             }
@@ -166,17 +171,19 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
             tabAdapter.categoryList.add(category)
         }
         tabAdapter.notifyDataSetChanged()
-        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories), appbarCategory!!)
+        tabLayout?.setup(viewPager!!, convertToCategoriesTabItem(officialStoreCategories.categories))
         val categorySelected = getSelectedCategory(officialStoreCategories)
         tabLayout?.getTabAt(categorySelected)?.select()
 
-        tabAdapter.categoryList.forEachIndexed { index, category ->
+        if(!officialStoreCategories.isCache){
+            tabAdapter.categoryList.forEachIndexed { index, category ->
             tracking.eventImpressionCategory(
                     category.title,
                     category.categoryId,
                     index,
                     category.icon
             )
+            }
         }
 
         tabLayout?.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener{
@@ -208,32 +215,18 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun init(view: View) {
-        configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
-        appbarCategory = view.findViewById(R.id.appbarLayout)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
     }
 
-    //status bar background compability
-    private fun configStatusBar(view: View) {
-        statusBar = view.findViewById(R.id.statusbar)
-        activity?.let {
-            statusBar?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
-        }
-        statusBar?.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
-        }
-    }
-
     private fun removeLoading() {
-        loadingCategoryLayout?.visibility = View.GONE
-        tabLayout?.visibility = View.VISIBLE
+        loadingCategoryLayout?.gone()
+        view_content_loading?.gone()
+        tabLayout?.visible()
     }
 
     private fun configMainToolbar(view: View) {

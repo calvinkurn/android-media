@@ -8,4 +8,5 @@ interface ShopPagePerformanceMonitoringListener {
     fun startMonitoringPltNetworkRequest(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface)
     fun startMonitoringPltRenderPage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface)
     fun stopMonitoringPltRenderPage(pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface)
+    fun invalidateMonitoringPlt()
 }

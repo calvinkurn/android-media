@@ -4,13 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.view.adapter.DateFilterAdapter
-import com.tokopedia.statistic.view.adapter.factory.DateFilterAdapterFactoryImpl
+import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_stc_select_date_range.view.*
@@ -20,7 +22,7 @@ import java.util.*
  * Created By @ilhamsuaib on 15/06/20
  */
 
-class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.Listener {
+class DateFilterBottomSheet : BottomSheetUnify(), DateFilterListener {
 
     companion object {
         const val TAG = "DateFilterBottomSheet"
@@ -29,7 +31,6 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
 
         fun newInstance(): DateFilterBottomSheet {
             return DateFilterBottomSheet().apply {
-                setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
                 clearContentPadding = true
             }
         }
@@ -52,6 +53,11 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
                 getFilterPerMonth(),
                 DateFilterItem.ApplyButton
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.StcDialogStyle)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -78,6 +84,22 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
         val selectedItem = items.firstOrNull { it.isSelected } ?: return
         applyChangesCallback?.invoke(selectedItem)
         dismissAllowingStateLoss()
+    }
+
+    override fun showDateTimePickerBottomSheet(bottomSheet: BottomSheetUnify, tag: String) {
+        if (isActivityResumed()) {
+            fm?.let {
+                bottomSheet.show(it, tag)
+            }
+        }
+    }
+
+    override fun dismissDateFilterBottomSheet() {
+        dismiss()
+    }
+
+    override fun showDateFilterBottomSheet() {
+        show()
     }
 
     fun setFragmentManager(fm: FragmentManager): DateFilterBottomSheet {
@@ -158,5 +180,10 @@ class DateFilterBottomSheet : BottomSheetUnify(), DateFilterAdapterFactoryImpl.L
                 dismiss()
             }
         }
+    }
+
+    private fun isActivityResumed(): Boolean {
+        val state = (activity as? AppCompatActivity)?.lifecycle?.currentState
+        return state == Lifecycle.State.STARTED || state == Lifecycle.State.RESUMED
     }
 }

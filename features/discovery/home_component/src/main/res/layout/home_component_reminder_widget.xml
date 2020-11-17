@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/spacing_lvl3"
-    android:background="@color/reminder_recommendation_bg_color">
+    android:background="@color/Unify_T400">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/reminder_recommendation_title"

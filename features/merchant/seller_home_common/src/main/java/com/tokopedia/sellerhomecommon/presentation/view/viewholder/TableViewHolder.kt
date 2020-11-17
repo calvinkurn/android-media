@@ -5,12 +5,14 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
@@ -121,15 +123,12 @@ class TableViewHolder(
         val tooltip = element.tooltip
         val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
-            btnTableInformation.visible()
+            tvTableWidgetTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvTableWidgetTitle.setOnClickListener {
                 listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
             }
-            btnTableInformation.setOnClickListener {
-                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
-            }
         } else {
-            btnTableInformation.gone()
+            tvTableWidgetTitle.clearUnifyDrawableEnd()
         }
     }
 

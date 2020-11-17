@@ -221,9 +221,9 @@ class PlayViewModelTest {
         coEvery { userSession.shopId } returns mockChannel.partner.id
 
         val expectedModel = PartnerInfoUiModel(
-                id = mockShopInfo.shopCore.shopId.toLong(),
-                name = mockShopInfo.shopCore.name,
-                type = PartnerType.Shop,
+                id = mockChannel.partner.id.toLongOrZero(),
+                name = mockChannel.partner.name,
+                type = PartnerType.getTypeByValue(mockChannel.partner.type),
                 isFollowed = mockShopInfo.favoriteData.alreadyFavorited == 1,
                 isFollowable = userSession.shopId != mockShopInfo.shopCore.shopId
         )

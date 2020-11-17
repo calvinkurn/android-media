@@ -83,7 +83,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:gravity="top"
                 android:text="@string/topads_edit_search_empty_tip_desc1"
-                app:layout_constraintBottom_toTopOf="@+id/typography25"
+                app:layout_constraintBottom_toTopOf="@+id/desc2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -96,9 +96,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_2"
-                app:layout_constraintBottom_toBottomOf="@+id/typography25"
+                app:layout_constraintBottom_toBottomOf="@+id/desc2"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/typography25"
+                app:layout_constraintTop_toTopOf="@+id/desc2"
                 app:srcCompat="@drawable/topads_create_ic_checklist" />
 
             <com.tokopedia.unifyprinciples.Typography
@@ -139,7 +139,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/imageView4"
-                app:layout_constraintTop_toBottomOf="@+id/typography25"
+                app:layout_constraintTop_toBottomOf="@+id/desc2"
                 app:typographyType="body_2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
