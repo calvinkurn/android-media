@@ -9,10 +9,12 @@ import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.view.activity.VerificationActivity
 import com.tokopedia.otp.verification.view.viewbinding.OnboardingMisscallViewBinding
+import com.tokopedia.utils.permission.PermissionCheckerHelper
+import com.tokopedia.utils.permission.request
 
 /**
  * Created by Ade Fulki on 22/04/20.
@@ -26,12 +28,15 @@ class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
 
     override val viewBound = OnboardingMisscallViewBinding()
 
+    private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_COTP_MISSCALL
 
     override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        checkPermissionGetPhoneNumber()
         otpData = arguments?.getParcelable(OtpConstant.OTP_DATA_EXTRA) ?: OtpData()
         modeListData = arguments?.getParcelable(OtpConstant.OTP_MODE_EXTRA) ?: ModeListData()
         KeyboardHandler.hideSoftKeyboard(activity)
@@ -72,6 +77,24 @@ class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
 
     private fun stopAnimation() {
         viewBound.imgAnimation?.pauseAnimation()
+    }
+
+    private fun checkPermissionGetPhoneNumber(){
+        if (!::permissionCheckerHelper.isInitialized) {
+            permissionCheckerHelper = PermissionCheckerHelper()
+        }
+
+        activity?.let {
+            permissionCheckerHelper.request(it, getPermissions()) { }
+        }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(
+                PermissionCheckerHelper.Companion.PERMISSION_READ_CALL_LOG,
+                PermissionCheckerHelper.Companion.PERMISSION_CALL_PHONE,
+                PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE
+        )
     }
 
     companion object {
