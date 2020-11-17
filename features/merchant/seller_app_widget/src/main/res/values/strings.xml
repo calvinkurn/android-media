@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="saw_ready_to_ship">Siap Dikirim</string>
+    <string name="saw_new_order">Pesanan Baru</string>
+</resources>
