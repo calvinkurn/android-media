@@ -1142,7 +1142,7 @@ public class MainParentActivity extends BaseActivity implements
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
             String rollenceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-            if (!rollenceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP)) {
+            if (rollenceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP)) {
                 globalNavAnalytics.get().eventBottomNavigationDrawer(menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
