@@ -8,8 +8,6 @@ import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant.ERR
 import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.InactivePhoneSubmitDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.PhoneValidationDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.data.UploadHostDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.GetUploadHostUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.ImageUploadUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.PhoneValidationUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.SubmitDataUseCase
@@ -22,7 +20,6 @@ import javax.inject.Inject
 class InactivePhoneDataUploadViewModel @Inject constructor(
         private val phoneValidationUseCase: PhoneValidationUseCase,
         private val imageUploadUseCase: ImageUploadUseCase,
-        private val getUploadHostUseCase: GetUploadHostUseCase,
         private val submitDataUseCase: SubmitDataUseCase,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
@@ -30,10 +27,6 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
     private val _phoneValidation = MutableLiveData<Result<PhoneValidationDataModel>>()
     val phoneValidation: LiveData<Result<PhoneValidationDataModel>>
         get() = _phoneValidation
-
-    private val _uploadHost = MutableLiveData<Result<UploadHostDataModel>>()
-    val uploadHost: LiveData<Result<UploadHostDataModel>>
-        get() = _uploadHost
 
     private val _imageUpload = MutableLiveData<Result<ImageUploadDataModel>>()
     val imageUpload: LiveData<Result<ImageUploadDataModel>>
@@ -60,25 +53,9 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         })
     }
 
-    fun getUploadHost() {
+    fun uploadImage(email: String, oldMsisdn: String, userIndex: Int, filePath: String, source: String) {
         launchCatchError(coroutineContext, {
-            getUploadHostUseCase.execute(onSuccess = {
-                if (it.data.generatedHost.uploadHost.isNotEmpty()) {
-                    _uploadHost.postValue(Success(it))
-                } else {
-                    _uploadHost.postValue(Fail(Throwable("")))
-                }
-            }, onError = {
-                _uploadHost.postValue(Fail(it))
-            })
-        }, {
-            _uploadHost.postValue(Fail(it))
-        })
-    }
-
-    fun uploadImage(url: String, email: String, oldMsisdn: String, userIndex: Int, filePath: String, source: String) {
-        launchCatchError(coroutineContext, {
-            imageUploadUseCase.setParam(url, email, oldMsisdn, userIndex, filePath)
+            imageUploadUseCase.setParam(email, oldMsisdn, userIndex, filePath)
             imageUploadUseCase.execute(onSuccess = {
                 if (it.status == ImageUploadUseCase.STATUS_OK && it.data.pictureObject.isNotEmpty()) {
                     it.source = source
@@ -111,9 +88,5 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         super.onCleared()
         submitDataUseCase.cancelJob()
         phoneValidationUseCase.cancelJob()
-    }
-
-    companion object {
-
     }
 }

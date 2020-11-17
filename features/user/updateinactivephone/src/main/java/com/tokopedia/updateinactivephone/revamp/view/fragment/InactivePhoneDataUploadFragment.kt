@@ -97,24 +97,8 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                 is Success -> {
                     if (it.data.validation.status == 1) {
                         userDataTemp.setUserId(it.data.validation.userId)
-                        viewModel.getUploadHost()
+                        doUploadImage(FileType.ID_CARD, ID_CARD)
                     }
-                }
-
-                is Fail -> {
-                    hideLoading()
-                    view?.let { view ->
-                        Toaster.make(view, it.throwable.message.toString(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-                    }
-                }
-            }
-        })
-
-        viewModel.uploadHost.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    uploadHost = it.data.data.generatedHost.uploadHost
-                    doUploadImage(FileType.ID_CARD, ID_CARD)
                 }
 
                 is Fail -> {
@@ -170,12 +154,14 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
 
     private fun doUploadImage(fileType: FileType, source: String) {
         context?.let {
-            viewModel.uploadImage(uploadHost, userDataTemp.getEmail(), userDataTemp.getOldPhone(), userDataTemp.getIndex(), filePath(it, fileType.id), source)
+            viewModel.uploadImage(userDataTemp.getEmail(), userDataTemp.getOldPhone(), userDataTemp.getIndex(), filePath(it, fileType.id), source)
         }
     }
 
     private fun gotoSuccessPage() {
         activity?.let {
+            userDataTemp.delete()
+
             val intent = InactivePhoneSuccessPageActivity.createIntent(it)
             startActivity(intent)
             it.finish()
@@ -241,7 +227,6 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
         super.onDestroy()
         viewModel.onCleared()
         viewModel.phoneValidation.removeObservers(this)
-        viewModel.uploadHost.removeObservers(this)
         viewModel.imageUpload.removeObservers(this)
         viewModel.submitData.removeObservers(this)
     }

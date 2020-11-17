@@ -66,14 +66,10 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         initObserver()
         fragmentTransactionInterface = activity as FragmentTransactionInterface
 
-        // check login method
-        // if null / empty / not (phone or email) -- > check argument from applink !!! add flag from where
-        // else check argument from intent
-
         arguments?.let {
             if (it.isEmpty) return
 
-            phoneNumber = it.getString(PARAM_PHONE, "")
+            phoneNumber = replaceRegionPhoneCode(it.getString(PARAM_PHONE, ""))
             email = it.getString(PARAM_EMAIL, "")
         }
     }
@@ -83,12 +79,12 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
         btnNext?.setOnClickListener {
             showLoading()
-            if (userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
-                userDataTemp.setOldPhone(phoneNumber)
-                viewModel.phoneValidation(userDataTemp.getOldPhone(), email)
-            } else if (email.isNotEmpty() || userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_EMAIL) {
+            if (email.isNotEmpty() || userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_EMAIL) {
                 userDataTemp.setEmail(email)
-                gotoOnboardingIdCardPage()
+                viewModel.phoneValidation(phoneNumber, email)
+            } else if (phoneNumber.isNotEmpty() || userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
+                userDataTemp.setOldPhone(phoneNumber)
+                viewModel.phoneValidation(phoneNumber, email)
             }
         }
     }
@@ -149,8 +145,23 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
         viewModel.phoneValidation.removeObservers(this)
     }
 
+    private fun replaceRegionPhoneCode(phoneNumber: String): String {
+        val regionRegex = Regex(REGEX_PHONE_NUMBER_REGION)
+        val symbolRegex = Regex(REGEX_PHONE_NUMBER)
+        var result = phoneNumber
+
+        if (phoneNumber.contains(regionRegex)) {
+            result = phoneNumber.replace(regionRegex, "0")
+        }
+
+        return result.replace(symbolRegex, "")
+    }
+
     companion object {
         private const val REQUEST_CHOOSE_ACCOUNT = 100
+
+        private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
+        private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
 
         fun createInstance(bundle: Bundle): Fragment = InactivePhoneOnboardingFragment().apply {
             arguments = bundle

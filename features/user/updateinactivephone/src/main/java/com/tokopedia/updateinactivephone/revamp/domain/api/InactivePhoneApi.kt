@@ -9,20 +9,11 @@ import retrofit2.http.*
 interface InactivePhoneApi {
 
     @Multipart
-    @POST("")
+    @POST("userapp/api/v1/sq-inactive-phone/upload-photo")
     suspend fun uploadImage(
-            @Url url: String,
-            @Body params: ImageUploadParamDataModel,
-            @Part("fileToUpload\"; filename=\"image.jpg") imageFile: RequestBody
+            @Part("index") userIndex: RequestBody,
+            @Part("old_msisdn") oldMsisdn: RequestBody,
+            @Part("email") email: RequestBody,
+            @Part("file\"; filename=\"inactivePhone.jpg") file: RequestBody
     ): ImageUploadDataModel
-
-    @FormUrlEncoded
-    @POST(GET_UPLOAD_HOST)
-    suspend fun getUploadHost(
-            @FieldMap params: Map<String, @JvmSuppressWildcards Any>
-    ): UploadHostDataModel
-
-    companion object {
-        private const val GET_UPLOAD_HOST = "apps/notactive/image/upload-host"
-    }
 }

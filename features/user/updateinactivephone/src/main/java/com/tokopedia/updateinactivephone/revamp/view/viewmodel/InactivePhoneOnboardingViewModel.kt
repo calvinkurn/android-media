@@ -46,11 +46,10 @@ class InactivePhoneOnboardingViewModel @Inject constructor(
     }
 
     fun isValidPhoneNumber(phone: String): Boolean {
+        if (phone.isEmpty() || phone.isBlank() || phone == "0") return true
+
         val isValid = phone.matches(PHONE_MATCHER)
-        if (phone.isEmpty()) {
-            _phoneValidation.postValue(Fail(Throwable(ERROR_EMPTY_PHONE)))
-            return false
-        } else if (!isValid) {
+        if (!isValid) {
             _phoneValidation.postValue(Fail(Throwable(ERROR_INVALID_PHONE_NUMBER)))
             return false
         } else if (isValid && phone.length < 9) {

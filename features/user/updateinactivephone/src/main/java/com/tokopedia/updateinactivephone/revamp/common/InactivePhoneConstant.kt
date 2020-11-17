@@ -20,7 +20,6 @@ object InactivePhoneConstant {
     const val REQUEST_CAPTURE_SAVING_BOOK = 300
 
     const val PARAM_USER_DETAIL_DATA = "userData"
-    const val PARAM_URL_UPLOAD_IMAGE = "image_upload_url"
     const val PARAM_FILE_TO_UPLOAD = "fileToUpload"
     const val PARAM_EMAIL = "email"
     const val PARAM_OLD_PHONE = "oldMsisdn"
