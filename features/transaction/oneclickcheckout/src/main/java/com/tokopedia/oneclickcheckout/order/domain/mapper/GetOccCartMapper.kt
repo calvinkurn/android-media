@@ -192,7 +192,7 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapPaymentCreditCard(payment: Payment, data: GetOccCartData?): OrderPaymentCreditCard {
+    private fun mapPaymentCreditCard(payment: Payment, data: GetOccCartData): OrderPaymentCreditCard {
         val creditCard = payment.creditCard
         val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
         return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
@@ -204,10 +204,7 @@ class GetOccCartMapper @Inject constructor() {
                 numberOfCards.totalCards)
     }
 
-    private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData?): OrderPaymentCreditCardAdditionalData {
-        if (data == null) {
-            return OrderPaymentCreditCardAdditionalData()
-        }
+    private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData): OrderPaymentCreditCardAdditionalData {
         return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
                 data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature,
                 data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl)
