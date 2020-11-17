@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.view_flight_order_detail_passenger.view.*
 class FlightOrderDetailPassengerView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var isPassengerDetailVisible: Boolean = true
+    private var isPassengerDetailVisible: Boolean = false
 
     private var passengerList: List<FlightOrderDetailPassengerModel> = arrayListOf()
 
@@ -40,6 +40,8 @@ class FlightOrderDetailPassengerView @JvmOverloads constructor(context: Context,
         rvFlightOrderPassengerDetail.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         rvFlightOrderPassengerDetail.setHasFixedSize(true)
         rvFlightOrderPassengerDetail.adapter = adapter
+
+        setupPassengerDetailView()
     }
 
     private fun setupToggleButton() {
@@ -52,14 +54,17 @@ class FlightOrderDetailPassengerView @JvmOverloads constructor(context: Context,
     }
 
     private fun togglePassengerDetail() {
+        isPassengerDetailVisible = !isPassengerDetailVisible
+        setupPassengerDetailView()
+    }
+
+    private fun setupPassengerDetailView() {
         if (isPassengerDetailVisible) {
-            ivFlightOrderTogglePassengerDetail.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24))
-            rvFlightOrderPassengerDetail.visibility = View.GONE
-            isPassengerDetailVisible = false
-        } else {
             ivFlightOrderTogglePassengerDetail.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_up_gray_24))
             rvFlightOrderPassengerDetail.visibility = View.VISIBLE
-            isPassengerDetailVisible = true
+        } else {
+            ivFlightOrderTogglePassengerDetail.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_arrow_down_gray_24))
+            rvFlightOrderPassengerDetail.visibility = View.GONE
         }
     }
 
