@@ -67,6 +67,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     private var viewPager: ViewPager? = null
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
+    private var badgeNumberCart: Int = 0
     private var keyCategory = "0"
 
     private lateinit var tracking: OfficialStoreTracking
@@ -128,13 +129,15 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     // from: GlobalNav, to show notification maintoolbar
-    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
+    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         mainToolbar?.run {
             setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(IconList.ID_CART, cartCount)
         }
         badgeNumberNotification = notificationCount
         badgeNumberInbox = inboxCount
+        badgeNumberCart = cartCount
     }
 
     override fun getScreenName(): String {
@@ -258,7 +261,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                     ApplinkConstant.OFFICIAL_SEARCHBAR
             )
         }
-        onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
     }
 
     private fun castContextToOfficialStorePerformanceMonitoring(context: Context): OfficialStorePerformanceMonitoringListener? {

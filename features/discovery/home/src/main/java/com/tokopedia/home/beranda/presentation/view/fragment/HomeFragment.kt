@@ -109,6 +109,7 @@ import com.tokopedia.iris.IrisAnalytics.Companion.getInstance
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.loyalty.view.activity.PromoListActivity
@@ -220,6 +221,7 @@ open class HomeFragment : BaseDaggerFragment(),
         private const val VARIANT_OLD = "Existing Navigation"
         private const val VARIANT_REVAMP = "Navigation Revamp"
         private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
+        private const val HOME_SOURCE = "home"
 
         @JvmStatic
         fun newInstance(scrollToRecommendList: Boolean): HomeFragment {
@@ -1611,7 +1613,13 @@ open class HomeFragment : BaseDaggerFragment(),
                                 applink = if (data.keyword?.isEmpty() != false) {
                                     ApplinkConstInternalDiscovery.AUTOCOMPLETE
                                 } else PARAM_APPLINK_AUTOCOMPLETE,
-                                searchbarClickCallback = {},
+                                searchbarClickCallback = {
+                                    RouteManager.route(context,
+                                            ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
+                                            HOME_SOURCE,
+                                            data.keyword.safeEncodeUtf8(),
+                                            isFirstInstall().toString())
+                                },
                                 searchbarImpressionCallback = {},
                                 durationAutoTransition = durationAutoTransition,
                                 shouldShowTransition = shouldShowTransition()
@@ -1942,7 +1950,7 @@ open class HomeFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
+    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         navAbTestCondition(
                 ifNavOld = {
                     if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
@@ -1953,6 +1961,7 @@ open class HomeFragment : BaseDaggerFragment(),
                 ifNavRevamp = {
                     navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
                     navToolbar?.setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+                    navToolbar?.setBadgeCounter(IconList.ID_CART, cartCount)
                 }
         )
     }
@@ -2339,6 +2348,15 @@ open class HomeFragment : BaseDaggerFragment(),
 
             if (isViewVisible) playWidgetCoordinator.onResume()
             else playWidgetCoordinator.onPause()
+        }
+    }
+
+    private fun String?.safeEncodeUtf8(): String {
+        return try {
+            this?.encodeToUtf8()?:""
+        }
+        catch(throwable: Throwable) {
+            ""
         }
     }
 }

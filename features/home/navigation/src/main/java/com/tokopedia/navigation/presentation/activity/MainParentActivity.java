@@ -748,7 +748,10 @@ public class MainParentActivity extends BaseActivity implements
                 return;
 
             if (fragment instanceof AllNotificationListener && notification != null) {
-                ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
+                ((AllNotificationListener) fragment).onNotificationChanged(
+                        notification.getTotalNotif(),
+                        notification.getTotalInbox(),
+                        notification.getTotalCart());
             }
 
             invalidateOptionsMenu();
@@ -966,7 +969,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setAction(Intent.ACTION_VIEW);
 
                     Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-                    productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.setActison(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
