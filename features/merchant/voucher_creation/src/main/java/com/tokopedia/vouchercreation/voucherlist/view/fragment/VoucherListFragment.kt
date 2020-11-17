@@ -90,7 +90,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         VoucherViewHolder.Listener, DownloadHelper.DownloadHelperListener {
 
     companion object {
-        private const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
+        const val KEY_IS_ACTIVE_VOUCHER = "is_active_voucher"
         private val MENU_VOUCHER_ACTIVE_ID = R.id.menuMvcShowVoucherActive
         private val MENU_VOUCHER_HISTORY_ID = R.id.menuMvcShowVoucherHistory
 
@@ -101,13 +101,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
         private const val ERROR_GET_VOUCHER = "Error get voucher list"
         private const val ERROR_STOP_VOUCHER = "Error stop voucher list"
 
-        fun newInstance(isActiveVoucher: Boolean): VoucherListFragment {
-            return VoucherListFragment().apply {
-                arguments = Bundle().apply {
-                    putBoolean(KEY_IS_ACTIVE_VOUCHER, isActiveVoucher)
-                }
-            }
-        }
+        fun newInstance(): VoucherListFragment = VoucherListFragment()
     }
 
     private var fragmentListener: Listener? = null

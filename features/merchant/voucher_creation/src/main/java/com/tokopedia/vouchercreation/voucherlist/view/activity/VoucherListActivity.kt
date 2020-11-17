@@ -84,7 +84,7 @@ class VoucherListActivity : BaseActivity(),
         super.onNewIntent(intent)
 
         var isActive = true
-        val isUpdateVoucherSuccess = intent?.getBooleanExtra(UPDATE_VOUCHER_KEY, false)
+        val isUpdateVoucherSuccess = intent?.getBooleanExtra(UPDATE_VOUCHER_KEY, false) ?: false
         val voucherId = intent?.extras?.getInt(SUCCESS_VOUCHER_ID_KEY)
         intent?.extras?.getBoolean(IS_ACTIVE, true)?.let {
             isActive = it
@@ -146,11 +146,13 @@ class VoucherListActivity : BaseActivity(),
     }
 
     private fun getFragment(isActiveVoucher: Boolean,
-                            isUpdateVoucherSuccess: Boolean? = null,
+                            isUpdateVoucherSuccess: Boolean = false,
                             voucherId: Int? = successVoucherId): VoucherListFragment {
-        return VoucherListFragment.newInstance(isActiveVoucher).apply {
+        return VoucherListFragment.newInstance().apply {
             setFragmentListener(this@VoucherListActivity)
-            val bundle = Bundle()
+            val bundle = Bundle().apply {
+                putBoolean(VoucherListFragment.KEY_IS_ACTIVE_VOUCHER, isActiveVoucher)
+            }
             val willShowSuccessCreationDialog = !isSuccessDialogAlreadyShowed && isActiveVoucher && voucherId != 0
             if (willShowSuccessCreationDialog) {
                 with(bundle) {
@@ -159,10 +161,8 @@ class VoucherListActivity : BaseActivity(),
                 }
                 isSuccessDialogAlreadyShowed = true
             } else {
-                isUpdateVoucherSuccess?.let { isUpdate ->
-                    if (isUpdate) {
-                        bundle.putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
-                    }
+                if (isUpdateVoucherSuccess) {
+                    bundle.putBoolean(VoucherListFragment.IS_UPDATE_VOUCHER, true)
                 }
             }
             arguments = bundle
