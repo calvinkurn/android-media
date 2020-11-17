@@ -1,7 +1,9 @@
 package com.tokopedia.buyerorder.list.view.presenter;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.list.data.TabData;
 import com.tokopedia.buyerorder.list.data.ticker.Input;
@@ -17,7 +19,7 @@ import java.util.Map;
 import rx.Subscriber;
 import timber.log.Timber;
 
-public class OrderListInitPresenterImpl implements OrderListInitContract.Presenter {
+public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListInitContract.View>  implements OrderListInitContract.Presenter {
     OrderListInitContract.View view;
     GraphqlUseCase initUseCase;
     GraphqlUseCase tickerUseCase;
@@ -29,10 +31,9 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
 
 
     @Override
-    public void getInitData(String orderCategory) {
+    public void getInitData(String query, String orderCategory) {
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(),
-                R.raw.initorderlist), TabData.class, false);
+                GraphqlRequest(query, TabData.class, false);
         initUseCase.addRequest(graphqlRequest);
 
         initUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -44,8 +45,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
             public void onError(Throwable e) {
                 Timber.d(e.toString());
                 view.removeProgressBarView();
-                view.showErrorNetwork(
-                        ErrorHandler.getErrorMessage(view.getAppContext(), e));
+                view.showErrorNetwork(e.toString());
             }
 
             @Override
@@ -69,17 +69,19 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
     }
 
     @Override
-    public void getTickerInfo() {
+    public void getTickerInfo(Context context) {
+        if (getView() == null)
+            return;
         Map<String, Object> requestInfo = new HashMap<>();
         Input input = new Input();
-        UserSession userSession = new UserSession(view.getAppContext());
+        UserSession userSession = new UserSession(context);
         input.setRequest_by("buyer");
         input.setUser_id(userSession.getUserId());
         input.setClient("mobile");
 
         requestInfo.put("input", input);
         tickerUseCase = new GraphqlUseCase();
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().getResources(), R.raw.tickerinfo), TickerResponse.class, requestInfo, false);
+        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.tickerinfo), TickerResponse.class, requestInfo, false);
         tickerUseCase.addRequest(graphqlRequest);
         tickerUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
@@ -90,8 +92,7 @@ public class OrderListInitPresenterImpl implements OrderListInitContract.Present
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                view.showErrorNetwork(
-                        ErrorHandler.getErrorMessage(view.getAppContext(), e));
+                view.showErrorNetwork(e.toString());
 
             }
 

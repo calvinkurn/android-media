@@ -2,7 +2,6 @@ package com.tokopedia.statistic.view.adapter.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
@@ -13,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.statistic.R
 import com.tokopedia.statistic.common.Const
-import com.tokopedia.statistic.view.bottomsheet.DateFilterBottomSheet
+import com.tokopedia.statistic.view.adapter.listener.DateFilterListener
 import com.tokopedia.statistic.view.model.DateFilterItem
 import kotlinx.android.synthetic.main.item_stc_month_picker.view.*
 import java.util.*
@@ -25,17 +24,12 @@ import java.util.concurrent.TimeUnit
 
 class MonthPickerViewHolder(
         itemView: View?,
-        private val fm: FragmentManager,
-        private val onSelected: (DateFilterItem) -> Unit
+        private val listener: DateFilterListener
 ) : AbstractViewHolder<DateFilterItem.MonthPickerItem>(itemView) {
 
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.item_stc_month_picker
-    }
-
-    private val dateFilterBottomSheet by lazy {
-        fm.findFragmentByTag(DateFilterBottomSheet.TAG) as? DateFilterBottomSheet
     }
 
     override fun bind(element: DateFilterItem.MonthPickerItem) {
@@ -63,7 +57,7 @@ class MonthPickerViewHolder(
     private fun onItemClickListener(element: DateFilterItem.MonthPickerItem) {
         element.isSelected = true
         showCustomForm(true)
-        onSelected(element)
+        listener.onItemDateRangeClick(element)
     }
 
     private fun showCustomForm(isShown: Boolean) = with(itemView) {
@@ -122,7 +116,7 @@ class MonthPickerViewHolder(
                     element.endDate = selectedMonth
                 }
                 showSelectedMonth(element)
-                onSelected(element)
+                this@MonthPickerViewHolder.listener.onItemDateRangeClick(element)
                 dismiss()
             }
 
@@ -130,17 +124,13 @@ class MonthPickerViewHolder(
                 showDateFilterBottomSheet()
             }
 
-            dismissDateFilterBottomSheet()
-            show(fm, Const.BottomSheet.TAG_MONTH_PICKER)
+            this@MonthPickerViewHolder.listener.dismissDateFilterBottomSheet()
+            this@MonthPickerViewHolder.listener.showDateTimePickerBottomSheet(this@with, Const.BottomSheet.TAG_MONTH_PICKER)
         }
     }
 
     private fun showDateFilterBottomSheet() {
-        dateFilterBottomSheet?.show(fm, DateFilterBottomSheet.TAG)
-    }
-
-    private fun dismissDateFilterBottomSheet() {
-        dateFilterBottomSheet?.dismiss()
+        listener.showDateFilterBottomSheet()
     }
 
     private fun showSelectedMonth(element: DateFilterItem.MonthPickerItem) {
