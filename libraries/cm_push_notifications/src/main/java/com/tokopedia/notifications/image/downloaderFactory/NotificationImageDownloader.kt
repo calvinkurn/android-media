@@ -2,7 +2,7 @@ package com.tokopedia.notifications.image.downloaderFactory
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.graphics.Bitmap
+import android.graphics.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.notifications.model.BaseNotificationModel
@@ -36,19 +36,41 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
             properties: ImageSizeAndTimeout
     ): Bitmap? {
         try {
-            return Glide.with(context)
+            val bitmap =  Glide.with(context)
                     .asBitmap()
                     .load(url).apply {
                         if (rounded != 0) {
                             transform(RoundedCorners(rounded))
                         }
-                    }
-                    .override(properties.width, properties.height)
+                    }.override(properties.width, properties.height)
                     .submit(properties.width, properties.height)
                     .get(properties.seconds, TimeUnit.SECONDS)
+            if(properties.is2x1Required){
+                return resizeImageTO2X1Ration(bitmap)
+            }
+            return bitmap
         } catch (e: Exception) {
         }
         return null
+    }
+
+    private fun resizeImageTO2X1Ration(bitmap: Bitmap?): Bitmap? {
+        if (bitmap == null)
+            return null
+        val ratio = bitmap.width / bitmap.height
+        if (ratio < 2) {
+            val resizedBitmap = Bitmap.createBitmap(bitmap.width * 2, bitmap.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(resizedBitmap)
+            //todo support dark mode
+            canvas.drawColor(Color.WHITE)
+            val frameToDraw = Rect(0, 0, bitmap.width, bitmap.height)
+            val whereToDraw = RectF(bitmap.width / 2.toFloat(), 0F,
+                    bitmap.width / 2.toFloat() + bitmap.width.toFloat(), canvas.height.toFloat())
+            canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, Paint())
+            bitmap.recycle()
+            return resizedBitmap
+        }
+        return bitmap
     }
 
     private fun storeBitmapToFile(context: Context, bitmap: Bitmap): String? {
@@ -88,13 +110,13 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 }
 
 
-enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Long) {
+enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Long, val is2x1Required : Boolean = false) {
     ACTION_BUTTON_ICON(100, 100, 3L),
-    BIG_IMAGE(720, 360, 10L),
+    BIG_IMAGE(720, 360, 10L, true),
     PRODUCT_IMAGE(360, 360, 5L),
-    CAROUSEL(720, 360, 10L),
-    VISUAL_COLLAPSED(360, 64, 5L),
-    VISUAL_EXPANDED(720, 360, 10L),
+    CAROUSEL(720, 360, 10L, true),
+    VISUAL_COLLAPSED(360, 64, 5L, true),
+    VISUAL_EXPANDED(720, 360, 10L, true),
     BANNER_COLLAPSED(180, 64, 5L),
     FREE_ONGKIR(290, 60, 5L),
     STAR_REVIEW(60, 60, 5L)

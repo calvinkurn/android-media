@@ -2,6 +2,7 @@ package com.tokopedia.notifications.factory
 
 import android.app.Notification
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.text.TextUtils
 import androidx.core.app.NotificationCompat
@@ -40,8 +41,9 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
         var bitmap = CMNotificationUtils.loadBitmapFromUrl(baseNotificationModel.media?.mediumQuality)
                 ?: getBitmap(baseNotificationModel.media?.mediumQuality)
         if (null != bitmap) {
-            val ratio = getRatio(bitmap)
+            /*val ratio = getRatio(bitmap)
             bitmap = getBitmap(baseNotificationModel.media?.mediumQuality, ratio.first, ratio.second)
+*/
             builder.setLargeIcon(bitmap)
             val bigPictureStyle = NotificationCompat.BigPictureStyle()
                     .setSummaryText(CMNotificationUtils.getSpannedTextFromStr(baseNotificationModel.detailMessage))
@@ -58,11 +60,13 @@ class ImageNotification internal constructor(context: Context, baseNotificationM
     private fun getRatio(bitmap: Bitmap): Pair<Int, Int> {
         var height = bitmap.height
         var width = bitmap.width
-        if (height > ImageSizeAndTimeout.BIG_IMAGE.height) {
-            val gcd = findGCD(height, width)
-            width = (width / gcd) / (height / gcd) * ImageSizeAndTimeout.BIG_IMAGE.height
-            height = ImageSizeAndTimeout.BIG_IMAGE.height
-        }
+        val displayMetrics = Resources.getSystem().displayMetrics
+        val deviceWidth = displayMetrics.widthPixels
+        val notificationHeightWRTRatio = deviceWidth / 2
+        val gcd = findGCD(height, width)
+        width = (width / gcd) / (height / gcd) * notificationHeightWRTRatio
+        height = notificationHeightWRTRatio
+
         return Pair(width, height)
     }
 
