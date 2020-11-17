@@ -30,7 +30,7 @@ class SquareVoucherPainter(private val context: Context,
         private const val INITIAL_X = 0.15f
         private const val SHOP_NAME_Y = 0.25f
         private const val PROMO_NAME_Y = 0.425f
-        private const val SHOP_AVATAR_X = 0.665f
+        private const val SHOP_AVATAR_X = 0.663f
         private const val SHOP_AVATAR_Y = 0.145f
         private const val SHOP_AVATAR_SIZE = 0.2f
         private const val SHOP_AVATAR_RADIUS = 0.6f
