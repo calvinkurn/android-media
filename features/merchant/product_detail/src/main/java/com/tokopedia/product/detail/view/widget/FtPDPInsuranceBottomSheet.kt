@@ -1,19 +1,18 @@
 package com.tokopedia.product.detail.view.widget
 
-import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.FrameLayout
-import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.webview.TkpdWebView
 
 class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
@@ -77,22 +76,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
         showCloseIcon = false
         showKnob = true
         showHeader = false
-    }
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val bottomSheetDialog = super.onCreateDialog(savedInstanceState)
-
-        bottomSheetDialog.setOnShowListener {
-            val bottomSheet: FrameLayout = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet)
-
-            val behavior = BottomSheetBehavior.from(bottomSheet)
-            //behavior.skipCollapsed = true
-            //behavior.isHideable = true
-            behavior.isFitToContents = false
-            behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
-        }
-        //isCancelable = true
-        return bottomSheetDialog
+        customPeekHeight = (getScreenHeight() * 9 / 16).toDp()
     }
 
     private inner class MyWebViewClient : WebViewClient() {

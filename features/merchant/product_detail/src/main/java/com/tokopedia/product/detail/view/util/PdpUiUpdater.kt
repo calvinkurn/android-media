@@ -291,7 +291,14 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
+    /**
+     * @param ppItemData : Holds Purchase Protection data from getPdpData GQL
+     * title             : either ppItemData.title | ppItemData.titlePDP
+     * contentList       : first element = subtitle, second element: insurance partner details
+     * rendered in a vertical recycler view
+     */
     private fun updatePurchaseProtectionData(ppItemData: PPItemDetailPage) {
+
         productProtectionMap?.run {
             if (ppItemData.title?.isNotEmpty() == true) {
                 title = ppItemData.title ?: ""

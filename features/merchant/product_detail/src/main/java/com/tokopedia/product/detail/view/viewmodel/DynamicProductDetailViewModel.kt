@@ -253,6 +253,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun getPurchaseProtectionUrl(): String {
         return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL?: ""
     }
+
+    fun getInsurancePartnerName(): String {
+        return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.partnerText?: ""
+    }
+
+    fun getPPTitleName(): String {
+        return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.titlePDP ?: ""
+    }
+
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
         this.talkLastAction = talkLastAction
     }

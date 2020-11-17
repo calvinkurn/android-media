@@ -563,7 +563,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Impression.eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1)
+        when(componentTrackDataModel.componentName) {
+            ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
+                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1, viewModel.getPPTitleName())
+            else ->  DynamicProductDetailTracking.Impression
+                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1, "")
+
+        }
     }
 
     /**
@@ -666,6 +672,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
+                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, viewModel.getInsurancePartnerName(), componentTrackDataModel)
                 openFtInsuranceBottomSheet(viewModel.getPurchaseProtectionUrl())
             }
         }
@@ -2041,6 +2048,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+    /**
+     * @param url : linkUrl for insurance partner to be rendered in web-view
+     */
     private fun openFtInsuranceBottomSheet(url: String) {
         val pdpInsuranceBottomSheet = FtPDPInsuranceBottomSheet.newInstance(url)
         pdpInsuranceBottomSheet.show(childFragmentManager, "FT_TAG")
