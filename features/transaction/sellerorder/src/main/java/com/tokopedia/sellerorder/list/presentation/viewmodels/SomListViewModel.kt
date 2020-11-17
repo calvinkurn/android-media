@@ -81,7 +81,6 @@ class SomListViewModel @Inject constructor(
         addSource(_bulkAcceptOrderResult) {
             when (it) {
                 is Success -> getBulkAcceptOrderStatus(it.data.data.batchId, 0L)
-                is Fail -> Fail(it.throwable)
             }
         }
     }
