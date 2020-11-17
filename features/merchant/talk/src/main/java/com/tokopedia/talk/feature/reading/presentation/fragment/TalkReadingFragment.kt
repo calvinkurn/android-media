@@ -55,6 +55,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_reading.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_reading_empty.*
 import javax.inject.Inject
@@ -299,7 +300,7 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
     }
 
     private fun showPageEmpty() {
-        reading_image_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
+        reading_empty_error.loadImage(TALK_READING_EMPTY_IMAGE_URL)
         addFloatingActionButton.hide()
         pageEmpty.show()
         readingEmptyAskButton.setOnClickListener {
