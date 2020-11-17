@@ -616,9 +616,7 @@ final class ProductListPresenter
     }
 
     private boolean isLocalSearch() {
-        return navSource != null
-                && navSource.equals(VALUE_OF_NAVSOURCE_CAMPAIGN)
-                && !textIsEmpty(pageId);
+        return !textIsEmpty(navSource) && !textIsEmpty(pageId);
     }
 
     private int convertCountReviewFormatToInt(String countReviewFormat) {
