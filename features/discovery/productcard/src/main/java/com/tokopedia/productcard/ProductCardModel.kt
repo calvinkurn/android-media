@@ -162,7 +162,7 @@ data class ProductCardModel (
     }
 
     private fun getSplittedLabelGroupVariant(): Triple<List<LabelGroupVariant>, List<LabelGroupVariant>, List<LabelGroupVariant>> {
-        val sizeVariantLimit = 16
+        val sizeVariantLimit = 18
         var sizeVariantCount = 0
         var hiddenSizeVariant = 0
 

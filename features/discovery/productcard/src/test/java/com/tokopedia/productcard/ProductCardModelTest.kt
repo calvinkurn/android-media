@@ -102,6 +102,7 @@ internal class ProductCardModelTest {
                 labelVariantSize2,
                 labelVariantSize3,
                 labelVariantSize4,
+                labelVariantSize5,
                 labelVariantCustom
         )
 
