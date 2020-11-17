@@ -20,7 +20,7 @@ class GetCategoryGroupUseCase (
 
     init {
         val query = """
-            query dynamicHomeIcon(${'$'}page:String){
+            query businessUnitList(${'$'}page:String){
               dynamicHomeIcon{
                 categoryGroup(page:${'$'}page){
                   id
@@ -52,7 +52,9 @@ class GetCategoryGroupUseCase (
 
     override suspend fun executeOnBackground(): Result<List<DynamicHomeIconEntity.Category>> {
         return try {
-            Success(graphqlUseCase.executeOnBackground().dynamicHomeIcon.categoryGroup)
+            graphqlUseCase.setRequestParams(params)
+            val data = graphqlUseCase.executeOnBackground()
+            Success(data.dynamicHomeIcon.categoryGroup)
         } catch (e: Throwable){
             Fail(e)
         }
