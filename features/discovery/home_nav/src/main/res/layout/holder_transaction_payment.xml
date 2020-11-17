@@ -5,6 +5,7 @@
     app:cardElevation="@dimen/dp_4"
     app:cardCornerRadius="@dimen/dp_8"
     android:layout_marginBottom="@dimen/dp_4"
+    android:foreground="?attr/selectableItemBackground"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">

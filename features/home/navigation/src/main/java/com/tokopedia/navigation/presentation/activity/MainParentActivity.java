@@ -591,14 +591,7 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.get().isLoggedIn();
 
-        WeaveInterface addShortcutsWeave = new WeaveInterface() {
-            @NotNull
-            @Override
-            public Object execute() {
-                return addShortcuts();
-            }
-        };
-        Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
+        addShortcuts();
 
         WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
             @NotNull
@@ -960,7 +953,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setAction(Intent.ACTION_VIEW);
 
                     Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-                    productIntent.setActison(Intent.ACTION_VIEW);
+                    productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
