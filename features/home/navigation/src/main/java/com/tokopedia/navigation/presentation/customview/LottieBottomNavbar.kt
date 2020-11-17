@@ -39,6 +39,7 @@ class LottieBottomNavbar : LinearLayout {
     private var navbarContainer: LinearLayout? = null
     private var buttonColor: Int = Color.GRAY
     private var activeButtonColor: Int = Color.TRANSPARENT
+    private var isThreeItemBottomNav: Boolean = false
 
     constructor(ctx: Context, attrs: AttributeSet) : super(ctx, attrs) {
         getLayoutAtr(attrs)
@@ -94,7 +95,7 @@ class LottieBottomNavbar : LinearLayout {
     private fun adjustBadgePosition() {
         if (menu.isEmpty()) return
         val itemWidthSize = containerWidth/menu.size
-        val badgeRightMargin = itemWidthSize/4
+        val badgeRightMargin = if (isThreeItemBottomNav) (itemWidthSize/2.7).toInt() else itemWidthSize/4
 
         badgeLayoutParam = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         badgeLayoutParam?.gravity = Gravity.END
@@ -397,10 +398,10 @@ class LottieBottomNavbar : LinearLayout {
         }
     }
 
-    fun setMenu(menu: List<BottomMenu>) {
+    fun setMenu(menu: List<BottomMenu>, isThreeItemBottomNav:Boolean = false) {
         this.menu.clear()
         this.menu.addAll(menu)
-
+        this.isThreeItemBottomNav = isThreeItemBottomNav
         itemCount = this.menu.size
         resizeContainer()
 

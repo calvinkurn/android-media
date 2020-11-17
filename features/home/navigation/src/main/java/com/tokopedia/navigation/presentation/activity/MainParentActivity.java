@@ -332,8 +332,7 @@ public class MainParentActivity extends BaseActivity implements
         showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
 
-        String rollenceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-        populateBottomNavigationView(rollenceNavType);
+        populateBottomNavigationView();
         bottomNavigation.setMenuClickListener(this);
 
         initNewFeedClickReceiver();
@@ -1141,8 +1140,7 @@ public class MainParentActivity extends BaseActivity implements
         int position = getPositionFragmentByMenu(index);
         this.currentSelectedFragmentPosition = position;
         if (!isFirstNavigationImpression) {
-            String rollenceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-            if (rollenceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP)) {
+            if (isRollanceTestingUsingNavigationRevamp()) {
                 globalNavAnalytics.get().eventBottomNavigationDrawer(menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
@@ -1176,11 +1174,11 @@ public class MainParentActivity extends BaseActivity implements
         scrollToTop(fragment); // enable feature scroll to top for home & feed
     }
 
-    public void populateBottomNavigationView(String rollenceNavType){
+    public void populateBottomNavigationView(){
         menu.add(new BottomMenu(R.id.menu_home, getResources().getString(R.string.home), R.raw.bottom_nav_home, R.raw.bottom_nav_home_to_enabled, R.drawable.ic_bottom_nav_home_active, R.drawable.ic_bottom_nav_home_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_feed, getResources().getString(R.string.feed), R.raw.bottom_nav_feed, R.raw.bottom_nav_feed_to_enabled,  R.drawable.ic_bottom_nav_feed_active, R.drawable.ic_bottom_nav_feed_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
         menu.add(new BottomMenu(R.id.menu_os, getResources().getString(R.string.official), R.raw.bottom_nav_official, R.raw.bottom_nav_os_to_enabled,  R.drawable.ic_bottom_nav_os_active, R.drawable.ic_bottom_nav_os_enabled,com.tokopedia.navigation.R.color.color_active_bottom_nav_os, true, 1f, 3f));
-        if (!rollenceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP)) {
+        if (!isRollanceTestingUsingNavigationRevamp()) {
             menu.add(new BottomMenu(R.id.menu_cart, getResources().getString(R.string.keranjang), R.raw.bottom_nav_cart, R.raw.bottom_nav_cart_to_enabled, R.drawable.ic_bottom_nav_cart_active, R.drawable.ic_bottom_nav_cart_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
             if (userSession.get().isLoggedIn()) {
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun), R.raw.bottom_nav_account, R.raw.bottom_nav_account_to_enabled, R.drawable.ic_bottom_nav_account_active, R.drawable.ic_bottom_nav_account_enabled, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
@@ -1188,7 +1186,12 @@ public class MainParentActivity extends BaseActivity implements
                 menu.add(new BottomMenu(R.id.menu_account, getResources().getString(R.string.akun_non_login), null, null, R.drawable.ic_bottom_nav_nonlogin_enabled, null, com.tokopedia.navigation.R.color.color_active_bottom_nav, true, 1f, 3f));
             }
         }
-        bottomNavigation.setMenu(menu);
+        bottomNavigation.setMenu(menu, isRollanceTestingUsingNavigationRevamp());
         handleAppLinkBottomNavigation();
+    }
+
+    private boolean isRollanceTestingUsingNavigationRevamp() {
+        String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
+        return rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
     }
 }
