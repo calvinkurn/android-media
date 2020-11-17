@@ -30,6 +30,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
 
     //libs
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
@@ -54,6 +55,8 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
+
+    implementation rootProject.ext.networkDependencies.glide
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.archCoreTesting

@@ -1,2 +1,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.sellerappwidget" />
+    package="com.tokopedia.sellerappwidget">
+
+    <application android:label="@string/app_name">
+
+        <receiver android:name="com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/saw_widget_info_order" />
+        </receiver>
+
+        <service
+            android:name=".view.remoteview.OrderWidgetRemoteViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <service
+            android:name=".view.service.GetOrderService"
+            android:enabled="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+    </application>
+</manifest>
