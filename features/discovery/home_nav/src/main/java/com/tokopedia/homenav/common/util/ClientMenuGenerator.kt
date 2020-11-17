@@ -136,7 +136,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
                 id = ID_ALL_TRANSACTION,
                 srcIconId = IconUnify.LIST_TRANSACTION,
                 itemTitle = context.getString(R.string.menu_transaction_menu_all_transaction),
-                applink = ApplinkConst.OMS_ORDER_DETAIL.needLoginValidation(),
+                applink = ApplinkConst.PURCHASE_ORDER.needLoginValidation(),
                 notifCount = notifCount,
                 sectionId = sectionId
         )

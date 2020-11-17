@@ -98,7 +98,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private void initView(View view) {
         setToolbar(view);
         accountAnalytics = new AccountAnalytics(getActivity());
-        onNotificationChanged(counterNumber, 0);
+        onNotificationChanged(counterNumber, 0, 0);
         showBuyerPage();
     }
 
@@ -168,7 +168,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onNotificationChanged(int notificationCount, int inboxCount) {
+    public void onNotificationChanged(int notificationCount, int inboxCount, int cartCount) {
         setToolbarNotificationCount(notificationCount);
         setToolbarInboxCount(inboxCount);
     }

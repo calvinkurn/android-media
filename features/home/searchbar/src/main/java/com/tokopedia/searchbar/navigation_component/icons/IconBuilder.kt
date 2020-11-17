@@ -29,7 +29,7 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
 
 internal data class IconConfig(val iconList: MutableList<IconToolbar>)
 
-internal data class IconToolbar(val id: Int, val name: String = "", val bundle: Bundle? = null, val imageRes: Int? = null, val applink: String, var nonLoginApplink: String = "", var badgeCounter: Int = 0, var disableRouteManager: Boolean = false, val iconType: Int = TYPE_IMAGE, val paddingEndRes: Int = 0, val onIconClicked: ()->Unit) {
+internal data class IconToolbar(val id: Int, val name: String = "", val bundle: Bundle? = null, val imageRes: Int? = null, val applink: String, var nonLoginApplink: String = applink, var badgeCounter: Int = 0, var disableRouteManager: Boolean = false, val iconType: Int = TYPE_IMAGE, val paddingEndRes: Int = 0, val onIconClicked: ()->Unit) {
     companion object {
         val TYPE_IMAGE = 0
         val TYPE_LOTTIE = 1

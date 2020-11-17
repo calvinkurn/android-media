@@ -97,6 +97,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
+        if (recyclerView.itemDecorationCount == 0)
+            recyclerView.addItemDecoration(MainNavSpacingDecoration(
+                    resources.getDimensionPixelOffset(R.dimen.dp_12)))
         initAdapter()
     }
 

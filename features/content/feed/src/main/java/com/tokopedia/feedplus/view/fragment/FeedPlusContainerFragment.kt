@@ -117,6 +117,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
+    private var badgeNumberCart: Int = 0
     private var isFabExpanded = false
     private var toolbarType = TOOLBAR_GRADIENT
     private var startToTransitionOffset = 0
@@ -260,7 +261,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         return isLightThemeStatusBar
     }
 
-    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
+    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
         (feedToolbar as? FeedMainToolbar)?.run {
             setNotificationNumber(notificationCount)
             setInboxNumber(inboxCount)
@@ -268,6 +269,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         (feedToolbar as? NavToolbar)?.run {
             setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
             setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(IconList.ID_CART, cartCount)
         }
         this.badgeNumberNotification = notificationCount
         this.badgeNumberInbox = inboxCount
@@ -305,7 +307,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
-        onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
     }
 
     private fun requestFeedTab() {

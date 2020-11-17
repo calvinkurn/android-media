@@ -20,7 +20,6 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.SparseArray;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -34,7 +33,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
@@ -198,13 +196,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private PageLoadTimePerformanceCallback pageLoadTimePerformanceCallback;
     private PageLoadTimePerformanceCallback officialStorePageLoadTimePerformanceCallback;
-
-    // animate icon OS
-    private MenuItem osMenu;
-    private LottieDrawable lottieOsDrawable;
-    private float OS_STATE_SELECTED = 1f;
-    private float OS_STATE_UNSELECTED = 0f;
-    private float OS_STATE_ANIMATED = 0.7f;
 
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
@@ -748,7 +739,10 @@ public class MainParentActivity extends BaseActivity implements
                 return;
 
             if (fragment instanceof AllNotificationListener && notification != null) {
-                ((AllNotificationListener) fragment).onNotificationChanged(notification.getTotalNotif(), notification.getTotalInbox());
+                ((AllNotificationListener) fragment).onNotificationChanged(
+                        notification.getTotalNotif(),
+                        notification.getTotalInbox(),
+                        notification.getTotalCart());
             }
 
             invalidateOptionsMenu();
@@ -966,7 +960,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setAction(Intent.ACTION_VIEW);
 
                     Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
-                    productIntent.setAction(Intent.ACTION_VIEW);
+                    productIntent.setActison(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
                     ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
