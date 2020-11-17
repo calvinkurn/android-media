@@ -9,7 +9,8 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/containerContentOrderDetail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:visibility="gone">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -128,7 +129,8 @@
         android:id="@+id/containerLoaderOrderDetail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
             android:layout_width="@dimen/layout_lvl6"
@@ -139,6 +141,67 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:loader_type="circular" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/Unify_N0"
+        android:id="@+id/containerFlightOrderError"
+        android:padding="@dimen/spacing_lvl4">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/ivFlightOrderErrorImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toTopOf="@id/tgFlightOrderErrorTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:srcCompat="@drawable/unify_globalerrors_connection" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgFlightOrderErrorTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/tgFlightOrderErrorMessage"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivFlightOrderErrorImage"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="heading_4"
+            tools:text="Error" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgFlightOrderErrorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toTopOf="@id/btnFlightOrderError"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgFlightOrderErrorTitle"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:typographyType="body_3"
+            tools:text="Error" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnFlightOrderError"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:text="@string/flight_booking_action_retry"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgFlightOrderErrorMessage"
+            app:layout_constraintVertical_chainStyle="packed" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -31,6 +32,7 @@ import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetai
 import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetailJourneyView
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailButtonModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailErrorModel
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
@@ -102,6 +104,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     checkIfShouldGoToCancellation(it.data)
                 }
                 is Fail -> {
+                    val gson = Gson()
+                    val errorData = gson.fromJson<FlightOrderDetailErrorModel>(it.throwable.message, FlightOrderDetailErrorModel::class.java)
+                    renderErrorView(errorData.title, errorData.message)
                 }
             }
         })
@@ -184,11 +189,25 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     private fun showLoading() {
         containerContentOrderDetail.visibility = View.GONE
         containerLoaderOrderDetail.visibility = View.VISIBLE
+        containerFlightOrderError.visibility = View.GONE
     }
 
     private fun hideLoading() {
         containerContentOrderDetail.visibility = View.VISIBLE
         containerLoaderOrderDetail.visibility = View.GONE
+        containerFlightOrderError.visibility = View.GONE
+    }
+
+    private fun showError() {
+        containerContentOrderDetail.visibility = View.GONE
+        containerLoaderOrderDetail.visibility = View.GONE
+        containerFlightOrderError.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        containerContentOrderDetail.visibility = View.GONE
+        containerLoaderOrderDetail.visibility = View.VISIBLE
+        containerFlightOrderError.visibility = View.GONE
     }
 
     private fun renderView(data: FlightOrderDetailDataModel) {
@@ -377,6 +396,26 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         context?.let {
             startActivity(FlightOrderDetailBrowserActivity.getIntent(it, title, htmlContent))
         }
+    }
+
+    private fun renderErrorView(title: String, message: String) {
+        if (title.isNotEmpty()) {
+            tgFlightOrderErrorTitle.visibility = View.VISIBLE
+            tgFlightOrderErrorTitle.text = title
+        } else {
+            tgFlightOrderErrorTitle.visibility = View.GONE
+        }
+        if (message.isNotEmpty()) {
+            tgFlightOrderErrorMessage.visibility = View.VISIBLE
+            tgFlightOrderErrorMessage.text = message
+        } else {
+            tgFlightOrderErrorMessage.visibility = View.GONE
+        }
+        btnFlightOrderError.setOnClickListener {
+            hideError()
+            flightOrderDetailViewModel.fetchOrderDetailData()
+        }
+        showError()
     }
 
     companion object {

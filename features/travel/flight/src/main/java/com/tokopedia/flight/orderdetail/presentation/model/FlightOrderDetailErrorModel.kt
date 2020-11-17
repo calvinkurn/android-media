@@ -16,6 +16,9 @@ data class FlightOrderDetailErrorModel(
         @SerializedName("Status")
         @Expose
         val status: String = "",
+        @SerializedName("Title")
+        @Expose
+        val title: String = "",
         @SerializedName("Message")
         @Expose
         val message: String = ""
