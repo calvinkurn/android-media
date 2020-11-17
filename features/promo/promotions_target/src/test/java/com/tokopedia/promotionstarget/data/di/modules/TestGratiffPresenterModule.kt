@@ -8,20 +8,21 @@ import com.tokopedia.promotionstarget.data.gql.GraphqlHelper
 import com.tokopedia.promotionstarget.domain.presenter.DialogCreator
 import dagger.Module
 import dagger.Provides
+import io.mockk.mockk
 import javax.inject.Named
 
 @Module
-class GratiffPresenterModule {
+class TestGratiffPresenterModule {
 
     @Provides
     @Named(GRATIFF_NOTIFICATION)
-    fun provideGratiffNotification(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_gratif_notification)
+    fun provideGratiffNotification(context: Context): String = ""
 
     @Provides
     @Named(HACHIKO_COUPON_DETAIL)
-    fun provideHachikoCouponDetail(context: Context): String = GraphqlHelper.loadRawString(context.resources, R.raw.t_promo_hachiko_coupon)
+    fun provideHachikoCouponDetail(context: Context): String = ""
 
     @Provides
-    fun provideDialogCreator(): DialogCreator = DialogCreator()
+    fun provideDialogCreator() :DialogCreator = mockk()
 
 }

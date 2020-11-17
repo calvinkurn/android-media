@@ -5,12 +5,12 @@ import android.content.Context
 import android.content.DialogInterface
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
-import com.tokopedia.promotionstarget.data.di.components.DaggerCmGratificationPresenterComponent
-import com.tokopedia.promotionstarget.data.di.modules.AppModule
+import com.tokopedia.promotionstarget.data.di.components.componentProvider.CmGratifiPresenterComponentProvider
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
 import com.tokopedia.promotionstarget.data.notification.GratifResultStatus
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
@@ -31,7 +31,6 @@ import com.tokopedia.promotionstarget.domain.usecase.NotificationUseCase
 import com.tokopedia.promotionstarget.domain.usecase.TokopointsCouponDetailUseCase
 import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.Locks
-import com.tokopedia.promotionstarget.presentation.ui.dialog.CmGratificationDialog
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.withLock
@@ -40,7 +39,7 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val context: Context) {
+class GratificationPresenter @Inject constructor(val context: Context, val componentProvider: CmGratifiPresenterComponentProvider = CmGratifiPresenterComponentProvider()) {
     val TAG = "GratifTag"
 
     @Inject
@@ -48,6 +47,9 @@ class GratificationPresenter @Inject constructor(val context: Context) {
 
     @Inject
     lateinit var tpCouponDetailUseCase: TokopointsCouponDetailUseCase
+
+    @Inject
+    lateinit var dialogCreator: DialogCreator
 
     @Inject
     @field:Named(IO)
@@ -63,9 +65,7 @@ class GratificationPresenter @Inject constructor(val context: Context) {
     var dialogVisibilityContract: CmDialogVisibilityContract? = null
 
     init {
-        DaggerCmGratificationPresenterComponent.builder()
-                .appModule(AppModule(context))
-                .build()
+        componentProvider.getComponent(context)
                 .inject(this)
     }
 
@@ -81,31 +81,43 @@ class GratificationPresenter @Inject constructor(val context: Context) {
     ): Job? {
         return scope?.launch(worker + ceh) {
             Locks.notificationMutex.withLock {
-                if (timeout > 0L) {
-                    var responseReceived = false
-                    withTimeout(timeout) {
+                try {
+                    if (timeout > 0L) {
+                        var responseReceived = false
+                        withTimeout(timeout) {
+                            processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity)
+                            responseReceived = true
+                        }
+                        if (!responseReceived) {
+                            gratifPopupCallback?.onIgnored(GratifPopupIngoreType.TIMEOUT)
+                            Timber.d("$TAG GRATIF ENGINE - Manual Cancellation timeout reached $timeout ")
+                        } else { //Do nothing (can't delete this due to weird compile error)
+                        }
+                    } else {
                         processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity)
-                        responseReceived = true
                     }
-                    if (!responseReceived) {
-                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.TIMEOUT)
-                        Timber.d("$TAG GRATIF ENGINE - Manual Cancellation timeout reached $timeout ")
-                    }
-                } else {
-                    processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity)
-                }
+                } catch (ex: Exception) {
 
+                    //special handle for push
+                    weakActivity?.get()?.let { activity ->
+                        if (notificationEntryType == NotificationEntryType.PUSH) {
+                            dialogVisibilityContract?.onDialogDismiss(activity)
+                        }
+                    }
+                    exceptionCallback?.onError(ex)
+                }
             }
         }
     }
 
-    private suspend fun processApis(weakActivity: WeakReference<Activity>?,
-                                    notificationID: Int,
-                                    @NotificationEntryType notificationEntryType: Int,
-                                    paymentID: Long = 0,
-                                    gratifPopupCallback: GratifPopupCallback? = null,
-                                    screenName: String,
-                                    closeCurrentActivity: Boolean) {
+    @VisibleForTesting
+    suspend fun processApis(weakActivity: WeakReference<Activity>?,
+                            notificationID: Int,
+                            @NotificationEntryType notificationEntryType: Int,
+                            paymentID: Long = 0,
+                            gratifPopupCallback: GratifPopupCallback? = null,
+                            screenName: String,
+                            closeCurrentActivity: Boolean) {
 
         val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
         val notifResponse = notificationUseCase.getResponse(map)
@@ -153,15 +165,11 @@ class GratificationPresenter @Inject constructor(val context: Context) {
                                   closeCurrentActivity: Boolean
     ) {
 
-        val dialog = CmGratificationDialog().show(activity,
+        val dialog = dialogCreator.createGratifDialog(activity,
                 gratifNotification,
                 couponDetail,
                 notificationEntryType,
-                DialogInterface.OnShowListener { dialog ->
-                    if (dialog != null) {
-                        gratifPopupCallback?.onShow(dialog)
-                    }
-                }, screenName, closeCurrentActivity)
+                gratifPopupCallback, screenName, closeCurrentActivity)
         dialogVisibilityContract?.onDialogShown(activity)
 
         dialog?.setOnDismissListener { dialogInterface ->
@@ -175,6 +183,25 @@ class GratificationPresenter @Inject constructor(val context: Context) {
             gratifPopupCallback?.onDismiss(dialogInterface)
         }
     }
+
+//    @VisibleForTesting
+//    fun createDialog(activity: Activity,
+//                     gratifNotification: GratifNotification,
+//                     couponDetail: TokopointsCouponDetailResponse,
+//                     @NotificationEntryType notificationEntryType: Int,
+//                     gratifPopupCallback: GratifPopupCallback? = null,
+//                     screenName: String,
+//                     closeCurrentActivity: Boolean): BottomSheetDialog? {
+//        return CmGratificationDialog().show(activity,
+//                gratifNotification,
+//                couponDetail,
+//                notificationEntryType,
+//                DialogInterface.OnShowListener { dialog ->
+//                    if (dialog != null) {
+//                        gratifPopupCallback?.onShow(dialog)
+//                    }
+//                }, screenName, closeCurrentActivity)
+//    }
 
 
     fun showGratificationInApp(weakActivity: WeakReference<Activity>?,
@@ -238,7 +265,8 @@ class GratificationPresenter @Inject constructor(val context: Context) {
         }
     }
 
-    private fun initSafeScope() {
+    @VisibleForTesting
+    fun initSafeScope() {
         try {
             if (scope == null) {
                 if (job != null) {
@@ -250,7 +278,8 @@ class GratificationPresenter @Inject constructor(val context: Context) {
         }
     }
 
-    private fun initSafeJob() {
+    @VisibleForTesting
+    fun initSafeJob() {
         try {
             if (job == null) {
                 job = SupervisorJob()
