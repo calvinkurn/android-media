@@ -141,12 +141,10 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             )
             iconToolbar.onIconClicked.invoke()
             val isLoggedIn = topNavComponentListener.isLoggedIn()
-            if (!iconToolbar.disableRouteManager && isLoggedIn) {
-                if (iconToolbar.applink.isNotEmpty() && isLoggedIn) {
-                    RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
-                }
-            } else if (iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
-                RouteManager.route(context, iconToolbar.nonLoginApplink)
+            if (!iconToolbar.disableRouteManager && iconToolbar.applink.isNotEmpty() && isLoggedIn) {
+                RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
+            } else if (!iconToolbar.disableRouteManager && iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
+                RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
             }
         }
 
@@ -181,12 +179,10 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
             )
             iconToolbar.onIconClicked.invoke()
             val isLoggedIn = topNavComponentListener.isLoggedIn()
-            if (!iconToolbar.disableRouteManager && isLoggedIn) {
-                if (iconToolbar.applink.isNotEmpty() && isLoggedIn) {
-                    RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
-                }
-            } else if (iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
-                RouteManager.route(context, iconToolbar.nonLoginApplink)
+            if (!iconToolbar.disableRouteManager && iconToolbar.applink.isNotEmpty() && isLoggedIn) {
+                RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
+            } else if (!iconToolbar.disableRouteManager && iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
+                RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
             }
         }
 
