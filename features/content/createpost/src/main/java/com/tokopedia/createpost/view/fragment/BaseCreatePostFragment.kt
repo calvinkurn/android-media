@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.CREATE_POST_ERROR_MSG
 import com.tokopedia.createpost.DRAFT_ID
 import com.tokopedia.createpost.TYPE_AFFILIATE
@@ -714,10 +715,16 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
             hideLoading()
 
-            if (isTypeAffiliate()) {
-                goToProfile()
-            } else {
-                goToFeed()
+            when {
+                GlobalConfig.isSellerApp() -> {
+                    activity?.setResult(Activity.RESULT_OK)
+                }
+                isTypeAffiliate() -> {
+                    goToProfile()
+                }
+                else -> {
+                    goToFeed()
+                }
             }
 
             it.finish()
