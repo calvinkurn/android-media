@@ -9,7 +9,9 @@ class NotificationLoadingViewHolder(
         itemView: View?
 ) : AbstractViewHolder<LoadingModel>(itemView) {
 
-    override fun bind(element: LoadingModel?) {}
+    override fun bind(element: LoadingModel?) {
+
+    }
 
     companion object {
         val LAYOUT = R.layout.item_notification_loading_state

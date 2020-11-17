@@ -26,7 +26,6 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
-import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
@@ -109,6 +108,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
+        viewModel.loadNotificationFilter(containerListener?.role)
     }
 
     private fun initRecommendationComponent() {
@@ -180,6 +180,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.recommendations.observe(viewLifecycleOwner, Observer {
             renderRecomList(it)
         })
+
+        viewModel.filterList.observe(viewLifecycleOwner, Observer {
+            filter?.updateFilterState(it)
+        })
     }
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
@@ -215,12 +219,14 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     private fun setupFilter() {
-        filter?.filterListener = object : NotificationFilterView.FilterListener {
-            override fun onFilterChanged(@NotificationFilterType filterType: Int) {
-                viewModel.filter = filterType
-                loadInitialData()
-            }
-        }
+        filter?.setFilterListener(
+                object : NotificationFilterView.FilterListener {
+                    override fun onFilterChanged(filterType: Int) {
+                        viewModel.filter = filterType
+                        loadInitialData()
+                    }
+                }
+        )
     }
 
     override fun onSwipeRefresh() {

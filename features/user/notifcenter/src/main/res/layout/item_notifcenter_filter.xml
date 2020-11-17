@@ -7,44 +7,16 @@
     android:orientation="horizontal"
     tools:parentTag="android.widget.LinearLayout">
 
-    <HorizontalScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_filter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/notif_dp_56"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:scrollbars="none">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="@dimen/spacing_lvl4"
-            android:paddingVertical="@dimen/notif_dp_12">
-
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/filter_transaction"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/notif_dp_32"
-                app:chipSize="small"
-                app:chipText="@string/title_notification_transaction" />
-
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/filter_promo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                app:chipSize="small"
-                app:chipText="@string/title_notification_promo" />
-
-            <com.tokopedia.unifycomponents.ChipsUnify
-                android:id="@+id/filter_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                app:chipSize="small"
-                app:chipText="@string/title_notification_info" />
-
-        </LinearLayout>
-    </HorizontalScrollView>
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <ImageView
         android:id="@+id/iv_setting_notif"

@@ -3,7 +3,6 @@ package com.tokopedia.notifcenter.domain
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.Paging
@@ -27,14 +26,13 @@ class NotifcenterDetailUseCase @Inject constructor(
     var pagingEarlier = Paging()
 
     fun getFirstPageNotification(
-            @NotificationFilterType
             filter: Int,
             @RoleType
             role: Int,
             onSuccess: (NotificationDetailResponseModel) -> Unit,
             onError: (Throwable) -> Unit
     ) {
-        val fields = if (filter == NotificationFilterType.NONE) {
+        val fields = if (!hasFilter(filter)) {
             arrayOf("new")
         } else {
             emptyArray()
@@ -57,7 +55,6 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     fun getMoreNewNotifications(
-            @NotificationFilterType
             filter: Int,
             @RoleType
             role: Int,
@@ -80,7 +77,6 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     fun getMoreEarlierNotifications(
-            @NotificationFilterType
             filter: Int,
             @RoleType
             role: Int,
@@ -102,8 +98,8 @@ class NotifcenterDetailUseCase @Inject constructor(
         )
     }
 
-    private fun hasFilter(@NotificationFilterType filter: Int): Boolean {
-        return filter != NotificationFilterType.NONE
+    private fun hasFilter(filter: Int): Boolean {
+        return filter != FILTER_NONE
     }
 
     private fun getNotifications(
@@ -144,14 +140,12 @@ class NotifcenterDetailUseCase @Inject constructor(
     }
 
     private fun generateParam(
-            @NotificationFilterType
             filter: Int,
             @RoleType
             role: Int,
             lastNotifId: String,
             fields: Array<String>
     ): Map<String, Any?> {
-        // TODO: refactor fot account switcher
         return mapOf(
                 PARAM_TYPE_ID to role,
                 PARAM_TAG_ID to filter,
@@ -171,6 +165,8 @@ class NotifcenterDetailUseCase @Inject constructor(
         private const val PARAM_TIMEZONE = "timezone"
         private const val PARAM_LAST_NOTIF_ID = "last_notif_id"
         private const val PARAM_FIELDS = "fields"
+
+        const val FILTER_NONE = 0
     }
 
     private val query = """
