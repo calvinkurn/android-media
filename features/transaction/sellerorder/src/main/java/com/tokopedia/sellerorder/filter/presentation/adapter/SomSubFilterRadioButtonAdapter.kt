@@ -13,6 +13,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import kotlinx.android.synthetic.main.filter_radio_item.view.*
 
+
 class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterListener: SomSubRadioButtonFilterListener) :
         RecyclerView.Adapter<SomSubFilterRadioButtonAdapter.RadioButtonViewHolder>() {
 
@@ -35,14 +36,17 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         diffResult.dispatchUpdatesTo(this)
     }
 
-    private fun clickHandlerRadio(item: SomFilterChipsUiModel) {
+    private fun clickHandlerRadio(item: SomFilterChipsUiModel, position: Int) {
         listSubFilter.filter {
             it.idFilter == SomConsts.FILTER_STATUS_ORDER
-        }.map {
-            it.isSelected = false
+        }.mapIndexed { index, somFilterChipsUiModel ->
+            if(somFilterChipsUiModel.isSelected) {
+                somFilterChipsUiModel.isSelected = false
+                notifyItemChanged(index)
+            }
         }
         item.isSelected = true
-        notifyDataSetChanged()
+        notifyItemChanged(position)
         if (item.isSelected) {
             this.idList = ArrayList(idList)
         }
@@ -86,7 +90,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
                 toggleChildStatus(item, rb_filter.isChecked)
 
                 rb_filter.setOnCheckedChangeListener { _, isChecked ->
-                    clickHandlerRadio(item)
+                    clickHandlerRadio(item, adapterPosition)
                     toggleChildStatus(item, isChecked)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
                 }
@@ -109,7 +113,7 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
 
         private fun toggleChildStatus(item: SomFilterChipsUiModel, isChecked: Boolean) {
             with(itemView) {
-                if(item.childStatus.isEmpty()) {
+                if (item.childStatus.isEmpty()) {
                     rvChildFilterStatus.hide()
                 } else if (item.childStatus.isNotEmpty() && isChecked) {
                     val childItem = item.childStatus

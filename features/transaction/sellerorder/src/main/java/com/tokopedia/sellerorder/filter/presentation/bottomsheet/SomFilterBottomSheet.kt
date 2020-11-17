@@ -19,7 +19,6 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DEADLINE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
@@ -144,7 +143,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     override fun onFilterChipsClicked(somFilterData: SomFilterChipsUiModel, idFilter: String,
                                       position: Int, chipType: String, orderStatus: String) {
         when (idFilter) {
-            FILTER_SORT, FILTER_LABEL, FILTER_DEADLINE, FILTER_STATUS_ORDER -> {
+            FILTER_SORT, FILTER_LABEL, FILTER_STATUS_ORDER -> {
                 somFilterViewModel.updateFilterSelected(idFilter, position, chipType, filterDate)
                 somFilterViewModel.updateParamSom(idFilter)
             }

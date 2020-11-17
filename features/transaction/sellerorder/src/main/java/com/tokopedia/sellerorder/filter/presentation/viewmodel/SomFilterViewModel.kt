@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DATE
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DEADLINE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
@@ -195,9 +194,6 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                 }
                 FILTER_LABEL -> {
                     somListGetOrderListParam.isShippingPrinted = idOneSelect ?: 0
-                }
-                FILTER_DEADLINE -> {
-                    somListGetOrderListParam.deadline = idOneSelect ?: 0
                 }
             }
             _somFilterOrderListParam.postValue(Success(somListGetOrderListParam))
