@@ -13,21 +13,19 @@ import com.tokopedia.product.detail.data.model.installment.InstallmentResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRICE
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
+import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class ProductInstallmentViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>,
-        @Named("Main")
-        val dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher){
+        dispatcher: DynamicProductDetailDispatcherProvider
+): BaseViewModel(dispatcher.ui()){
 
     private val installmentResp = MutableLiveData<Result<List<InstallmentBank>>>()
     val transformedInstallment = Transformations.map(installmentResp){

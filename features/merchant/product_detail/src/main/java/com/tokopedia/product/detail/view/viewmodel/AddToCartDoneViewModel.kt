@@ -10,6 +10,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
+import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -22,12 +23,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 
 class AddToCartDoneViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
@@ -35,8 +34,7 @@ class AddToCartDoneViewModel @Inject constructor(
         private val removeWishlistUseCase: RemoveWishListUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addToCartUseCase: AddToCartUseCase,
-        @Named("Main")
-        val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher
+        dispatcher: DynamicProductDetailDispatcherProvider) : BaseViewModel(dispatcher.ui()
 ) {
     val recommendationProduct = MutableLiveData<Result<List<RecommendationWidget>>>()
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
