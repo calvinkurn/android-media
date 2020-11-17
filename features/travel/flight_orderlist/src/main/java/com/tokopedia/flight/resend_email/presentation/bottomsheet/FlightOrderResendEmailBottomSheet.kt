@@ -111,6 +111,7 @@ class FlightOrderResendEmailBottomSheet : BottomSheetUnify() {
 
     private fun renderView() {
         mChildView.tfResendEticketEmailAddress.textFieldInput.setText(flightResendETicketViewModel.userEmail)
+        flightResendETicketViewModel.isValidEmailInput(mChildView.tfResendEticketEmailAddress.textFieldInput.text.toString())
         mChildView.btnResendETicketSend.setOnClickListener {
             flightResendETicketViewModel.sendEticket(mChildView.tfResendEticketEmailAddress.textFieldInput.text.toString())
         }
@@ -156,7 +157,7 @@ class FlightOrderResendEmailBottomSheet : BottomSheetUnify() {
     }
 
     private fun showErrorToaster(@StringRes resId: Int) {
-        Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        Toaster.build(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     companion object {
