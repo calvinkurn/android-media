@@ -10,8 +10,8 @@
         android:id="@+id/tg_umrah_checkout_title_mandatory_document"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyType="heading_5"
         app:typographyWeight="bold"
         android:textColor="@color/Neutral_N700"
@@ -21,9 +21,9 @@
         android:id="@+id/tg_umrah_checkout_desc_mandatory_document"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_18"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginRight="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/dimen_dp_18"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/dimen_dp_18"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
         android:textColor="@color/Neutral_N700"
@@ -31,6 +31,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_18"/>
+        android:layout_height="@dimen/dimen_dp_18"/>
 
 </LinearLayout>
