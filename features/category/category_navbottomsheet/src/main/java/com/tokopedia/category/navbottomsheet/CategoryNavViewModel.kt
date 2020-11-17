@@ -11,6 +11,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import javax.inject.Inject
 
 class CategoryNavViewModel @Inject constructor(): ViewModel() {
