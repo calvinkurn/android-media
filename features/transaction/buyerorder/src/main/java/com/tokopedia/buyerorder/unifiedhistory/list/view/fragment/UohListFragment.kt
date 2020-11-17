@@ -321,7 +321,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        arrayFilterDate = resources.getStringArray(R.array.filter_date)
+        activity?.let {
+            arrayFilterDate = it.resources?.getStringArray(R.array.filter_date) as Array<String>
+        }
     }
 
     private fun observingData() {
@@ -739,19 +741,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterDate() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val arrayListMapDate = arrayListOf<HashMap<String, String>>()
         var i = 0
-        arrayFilterDate.forEach { optionDate ->
-            val mapKey = HashMap<String, String>()
-            mapKey["$i"] = optionDate
-            arrayListMap.add(mapKey)
-            i++
+        if (arrayFilterDate.isNotEmpty()) {
+            arrayFilterDate.forEach { optionDate ->
+                val mapKey = HashMap<String, String>()
+                mapKey["$i"] = optionDate
+                arrayListMapDate.add(mapKey)
+                i++
+            }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapDate
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
         uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -761,17 +765,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterStatus() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val arrayListMapStatus = arrayListOf<HashMap<String, String>>()
         orderList.filters.forEach { option ->
             val mapKey = HashMap<String, String>()
             mapKey[option] = option
-            arrayListMap.add(mapKey)
+            arrayListMapStatus.add(mapKey)
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = SEMUA_TRANSAKSI
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapStatus
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
         uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -781,16 +785,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterCategory() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val arrayListMapCategory = arrayListOf<HashMap<String, String>>()
         val mapKeyDefault = HashMap<String, String>()
         mapKeyDefault[ALL_CATEGORIES] = ALL_CATEGORIES_TRANSACTION
-        arrayListMap.add(mapKeyDefault)
+        arrayListMapCategory.add(mapKeyDefault)
         orderList.categories.forEach { category ->
             val mapKey = HashMap<String, String>()
             mapKey[category.value] = category.label
-            arrayListMap.add(mapKey)
+            arrayListMapCategory.add(mapKey)
         }
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapCategory
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION

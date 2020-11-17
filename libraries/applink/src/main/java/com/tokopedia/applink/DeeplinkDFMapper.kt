@@ -60,6 +60,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHOOSE_ACCOUNT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
@@ -321,6 +322,20 @@ object DeeplinkDFMapper : CoroutineScope {
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.lastOrNull() == ReviewApplinkConst.PATH_REVIEW)
             }, DF_BASE, R.string.title_product_review))
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_EXPECTED_PATH_SIZE)
+            }, DF_BASE, R.string.title_review_inbox))
+
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_DETAIL_EXPECTED_PATH_SIZE)
+            }, DF_BASE, R.string.title_review_detail))
+
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
+            }, DF_BASE, R.string.title_create_review))
 
             // Operational
             add(DFP({
@@ -412,6 +427,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(PUSH_NOTIFICATION_TROUBLESHOOTER) }, DF_BASE, R.string.applink_notif_troubleshooter))
 
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
+            add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_loginphone))
+
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
             add(DFP({ it.startsWith(CHECKOUT_ADDRESS_SELECTION) }, DF_BASE, R.string.checkout_module_title_activity_shipping_address))
@@ -497,8 +514,21 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.AUTHORITY_PRODUCT && uri.pathSegments.last() == ReviewApplinkConst.PATH_REVIEW)
-            }, DF_BASE, R.string.title_product_review))
+            }, DF_BASE_SELLER_APP, R.string.title_product_review))
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_EXPECTED_PATH_SIZE)
+            }, DF_BASE_SELLER_APP, R.string.title_review_inbox))
 
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.PATH_REVIEW && uri.pathSegments.size == ReviewApplinkConst.REVIEW_DETAIL_EXPECTED_PATH_SIZE)
+            }, DF_BASE_SELLER_APP, R.string.title_review_detail))
+
+            add(DFP({
+                val uri = Uri.parse(it).buildUpon().build()
+                (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
+            }, DF_BASE_SELLER_APP, R.string.title_create_review))
         }
     }
 

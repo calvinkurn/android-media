@@ -105,6 +105,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)
     //Operational
 
@@ -133,6 +134,7 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.loginphone)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)
