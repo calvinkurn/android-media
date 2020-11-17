@@ -67,8 +67,6 @@ class GetUohOrdersNavUseCase (
                             statusText = it.metadata.status.label,
                             statusTextColor = it.metadata.status.textColor,
                             productNameText = product.title,
-                            descriptionText = product.inline1.label,
-                            descriptionTextColor = product.inline1.textColor,
                             additionalProductCount = additionalProductCount,
                             imageUrl = product.imageURL,
                             id = it.orderUUID,
