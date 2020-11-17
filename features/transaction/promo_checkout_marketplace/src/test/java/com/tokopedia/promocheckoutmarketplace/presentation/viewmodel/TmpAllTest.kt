@@ -1510,4 +1510,42 @@ class TmpAllTest {
         assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == true)
     }
 
+    @Test
+    fun `WHEN apply recommended promo of expanded item THEN should be applied`() {
+        //given
+        val data = GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoDataWithHeader()
+        viewModel.setPromoListValue(data)
+        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+                uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("THIRX598GSA7MADK2X7") },
+                uiState = PromoRecommendationUiModel.UiState())
+        )
+
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+
+        //when
+        viewModel.applyRecommendedPromo()
+
+        //then
+        assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
+    }
+
+    @Test
+    fun `WHEN apply recommended promo of collapsed item THEN should be applied`() {
+        //given
+        val data = GetPromoListDataProvider.provideCurrentSelectedCollapsedMerchantPromoData()
+        viewModel.setPromoListValue(data)
+        viewModel.setPromoRecommendationValue(PromoRecommendationUiModel(
+                uiData = PromoRecommendationUiModel.UiData().apply { promoCodes = listOf("POMAH09JBL") },
+                uiState = PromoRecommendationUiModel.UiState())
+        )
+
+        every { analytics.eventClickPilihPromoRecommendation(any(), any()) } just Runs
+
+        //when
+        viewModel.applyRecommendedPromo()
+
+        //then
+        assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
+    }
+
 }
