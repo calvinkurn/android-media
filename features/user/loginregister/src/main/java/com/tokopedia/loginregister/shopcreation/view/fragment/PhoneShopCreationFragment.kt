@@ -325,14 +325,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         errorMessage.text = message
         context?.let {
             errorMessage.text = message
-            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Red_R500))
+            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Unify_R500))
         }
     }
 
     private fun clearMessageFieldPhone() {
         context?.let {
             errorMessage.text = getString(R.string.desc_phone_shop_creation)
-            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Neutral_N500))
+            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Unify_N500))
         }
     }
 

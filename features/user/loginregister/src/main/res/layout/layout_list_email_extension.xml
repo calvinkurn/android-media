@@ -10,7 +10,7 @@
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_32"
     android:background="@drawable/bg_rounded_corner_email_extension"
-    android:textColor="@color/medium_green_70"
+    android:textColor="@color/Unify_G400"
     android:textSize="@dimen/sp_14"
     android:paddingTop="@dimen/dp_6"
     android:paddingBottom="@dimen/dp_6"

@@ -150,7 +150,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if (activity != null) {
                 drawable = TextDrawable(activity!!)
                 drawable.text = resources.getString(R.string.login)
-                drawable.setTextColor(resources.getColor(R.color.tkpd_main_green))
+                drawable.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 drawable.textSize = 14f
             }
             return drawable
@@ -331,8 +331,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             checkPermissionGetPhoneNumber()
             optionTitle.setText(R.string.register_option_title)
 
-            registerButton.setColor(Color.WHITE)
-            registerButton.setBorderColor(MethodChecker.getColor(activity, R.color.black_38))
+            context?.let {
+                registerButton.setColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+            }
+            registerButton.setBorderColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             registerButton.setRoundCorner(10)
             registerButton.setImageResource(R.drawable.ic_email)
             registerButton.setOnClickListener {
@@ -351,7 +353,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
-                            activity, R.color.tkpd_main_green
+                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                     ds.typeface = Typeface.create("sans-serif-medium", Typeface
                             .NORMAL)
@@ -485,7 +487,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         for (i in discoverItems.indices) {
             val item = discoverItems[i]
             if (item.id != PHONE_NUMBER) {
-                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, R.color.white))
+                val loginTextView = LoginTextView(activity, MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 loginTextView.setText(item.name)
                 loginTextView.setBorderColor(MethodChecker.getColor(activity, R.color
                         .black_38))

@@ -220,7 +220,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         if (activity != null) {
             drawable = TextDrawable(activity!!)
             drawable.text = resources.getString(R.string.register)
-            drawable.setTextColor(MethodChecker.getColor(context, R.color.tkpd_main_green))
+            drawable.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         }
         return drawable
     }
@@ -439,7 +439,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
                 override fun updateDrawState(ds: TextPaint) {
                     ds.color = MethodChecker.getColor(
-                            activity, R.color.tkpd_main_green
+                            activity, com.tokopedia.unifyprinciples.R.color.Unify_G400
                     )
                     ds.typeface = Typeface.create("sans-serif", Typeface
                             .NORMAL)
@@ -475,7 +475,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -521,7 +521,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             layoutParams.setMargins(0, 10, 0, 10)
             socmedButtonsContainer.removeAllViews()
             providers.forEach {
-                val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
+                val tv = LoginTextView(activity, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 tv.tag = it.id
                 tv.setText(it.name)
                 if (userSession.name.isNotEmpty()) {

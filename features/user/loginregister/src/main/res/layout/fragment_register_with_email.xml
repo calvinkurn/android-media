@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:background="@color/white">
+  android:background="@color/Unify_N0">
   
   <ScrollView
     android:layout_width="match_parent"
@@ -42,7 +42,7 @@
           android:imeOptions="actionNext"
           android:inputType="textEmailAddress"
           android:maxLines="1"
-          android:textColor="@color/black_70"
+          android:textColor="@color/Unify_N700_68"
           android:textSize="@dimen/spacing_lvl4"
           android:enabled="false"/>
         
@@ -64,7 +64,7 @@
           android:imeOptions="actionNext"
           android:inputType="textCapWords"
           android:maxLines="1"
-          android:textColor="@color/black_70"
+          android:textColor="@color/Unify_N700_68"
           android:textSize="@dimen/spacing_lvl4"/>
       
       </com.tokopedia.design.text.TkpdHintTextInputLayout>
@@ -88,7 +88,7 @@
           android:imeOptions="actionUnspecified"
           android:inputType="textPassword"
           android:maxLines="1"
-          android:textColor="@color/black_70"
+          android:textColor="@color/Unify_N700_68"
           android:textSize="@dimen/spacing_lvl4"
           android:typeface="sans"/>
         

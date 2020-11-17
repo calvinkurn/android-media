@@ -221,7 +221,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             @Override
             public void updateDrawState(@NonNull TextPaint textPaint) {
                 super.updateDrawState(textPaint);
-                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), R.color.green_nob));
+                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
         };
 
@@ -239,7 +239,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             @Override
             public void updateDrawState(@NonNull TextPaint textPaint) {
                 super.updateDrawState(textPaint);
-                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), R.color.green_nob));
+                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
         };
 
@@ -310,7 +310,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
 
                               @Override
                               public void updateDrawState(TextPaint ds) {
-                                  ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                                  ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
                               }
                           }
                 , sourceString.indexOf(hyperlinkString)

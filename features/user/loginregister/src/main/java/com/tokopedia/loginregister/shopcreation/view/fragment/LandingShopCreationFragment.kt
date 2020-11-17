@@ -314,7 +314,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         loading.visibility = View.VISIBLE
         mainView.visibility = View.INVISIBLE
         context?.let {
-            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Neutral_N0))
+            baseView.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
         }
     }
 
