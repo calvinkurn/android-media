@@ -13,7 +13,7 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/play_placeholder_shadow"/>
+            <solid android:color="@color/Unify_N700_20"/>
             <corners android:radius="@dimen/play_placeholder_radius"/>
         </shape>
     </item>

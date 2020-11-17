@@ -26,7 +26,7 @@ class PlayChatViewHolder(
         val userName = SpannableString(chat.name)
         userName.setSpan(
                 ForegroundColorSpan(
-                        MethodChecker.getColor(itemView.context, R.color.Neutral_N150)
+                        MethodChecker.getColor(itemView.context, R.color.Unify_N150)
                 ),
                 0,
                 chat.name.length,

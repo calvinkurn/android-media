@@ -22,7 +22,7 @@ class MentionEditText : MultiAutoCompleteTextView {
     companion object {
         @ColorInt
         fun getMentionColor(context: Context): Int {
-            return ContextCompat.getColor(context, R.color.Green_G500)
+            return ContextCompat.getColor(context, R.color.Unify_G500)
         }
     }
 

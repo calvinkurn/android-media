@@ -27,7 +27,7 @@
         android:layout_marginStart="@dimen/dp_7"
         android:layout_marginLeft="@dimen/dp_7"
         android:text="@string/shop_home_npl_remind_me"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/image_notification"
