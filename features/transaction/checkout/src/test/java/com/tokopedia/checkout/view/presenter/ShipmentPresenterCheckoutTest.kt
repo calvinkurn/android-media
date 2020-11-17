@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.presenter
 
 import android.app.Activity
+import com.google.gson.Gson
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
@@ -110,6 +111,8 @@ class ShipmentPresenterCheckoutTest {
 
     private lateinit var presenter: ShipmentPresenter
 
+    private var gson = Gson()
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -122,7 +125,7 @@ class ShipmentPresenterCheckoutTest {
                 ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                 getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
 
@@ -145,7 +148,7 @@ class ShipmentPresenterCheckoutTest {
         // Then
         verifyOrder {
             view.setHasRunningApiCall(false)
-            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, null, 0, null)
             view.renderCheckoutCartSuccess(any())
         }
     }

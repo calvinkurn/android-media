@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData
 import com.tokopedia.checkout.domain.model.saveshipmentstate.SaveShipmentStateData
@@ -109,6 +110,8 @@ class ShipmentPresenterSaveShipmentStateTest {
 
     private lateinit var presenter: ShipmentPresenter
 
+    private var gson = Gson()
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -121,7 +124,7 @@ class ShipmentPresenterSaveShipmentStateTest {
                 ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                 getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
 

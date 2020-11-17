@@ -135,7 +135,7 @@ class ShipmentPresenterDisableFeatureTest {
                 ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                 getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
 

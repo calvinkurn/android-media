@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.api.CommonPurchaseApiUrl
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData
@@ -106,7 +107,7 @@ class ShipmentPresenterHelpTicketTest {
 
     private var shipmentDataConverter = ShipmentDataConverter()
 
-//    private val gson = Gson()
+    private val gson = Gson()
 //    private val unitTestFileUtils = UnitTestFileUtils()
 //    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
 
@@ -125,7 +126,7 @@ class ShipmentPresenterHelpTicketTest {
                 ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                 getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
 

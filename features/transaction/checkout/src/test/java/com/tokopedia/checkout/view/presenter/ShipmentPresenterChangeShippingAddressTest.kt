@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.presenter
 
+import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData
 import com.tokopedia.checkout.domain.usecase.*
@@ -101,6 +102,8 @@ class ShipmentPresenterChangeShippingAddressTest {
 
     private lateinit var presenter: ShipmentPresenter
 
+    private var gson = Gson()
+
     @Before
     fun before() {
         MockKAnnotations.init(this)
@@ -113,7 +116,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                 getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                validateUsePromoRevampUseCase, TestSchedulers)
+                validateUsePromoRevampUseCase, gson, TestSchedulers)
         presenter.attachView(view)
     }
 
@@ -125,7 +128,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 .build())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false)
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false, true)
 
         // Then
         verifySequence {
@@ -135,7 +138,7 @@ class ShipmentPresenterChangeShippingAddressTest {
             view.setHasRunningApiCall(false)
             view.activityContext
             view.showToastNormal(any())
-            view.renderChangeAddressSuccess()
+            view.renderChangeAddressSuccess(true)
         }
     }
 
@@ -147,7 +150,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 .build())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false)
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false, true)
 
         // Then
         verifySequence {
@@ -166,7 +169,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false)
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false, true)
 
         // Then
         verifySequence {
