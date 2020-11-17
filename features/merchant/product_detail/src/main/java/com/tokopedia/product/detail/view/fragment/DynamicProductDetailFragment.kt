@@ -91,6 +91,7 @@ import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.restrictioninfo.RestrictionInfoResponse
 import com.tokopedia.product.detail.data.util.*
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.product.detail.data.util.VariantMapper.generateVariantString
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
@@ -129,6 +130,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
@@ -251,7 +253,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
-    private val BUNDLE = "bundle"
 
     private var productDaggerComponent: ProductDetailComponent? = null
 
@@ -476,6 +477,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     val phoneType = data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE)
                             ?: "none/other"
                     val phonePrice = data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE)
+                    DynamicProductDetailTracking.TradeIn.eventAddToCartFinalPrice(phoneType,
+                            phonePrice,
+                            deviceId,
+                            viewModel.userId,
+                            viewModel.getDynamicProductInfoP1)
                     buyAfterTradeinDiagnose(deviceId, phoneType, phonePrice)
                 }
             }
@@ -1966,7 +1972,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 bundle.putBoolean(ShopShowcaseParamConstant.EXTRA_IS_SELLER_NEED_TO_HIDE_SHOWCASE_GROUP_VALUE, true)
 
                 val shopEtalasePickerIntent: Intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-                shopEtalasePickerIntent.putExtra(BUNDLE, bundle)
+                shopEtalasePickerIntent.putExtra(EXTRA_BUNDLE, bundle)
                 startActivityForResult(shopEtalasePickerIntent, ProductDetailConstant.REQUEST_CODE_ETALASE)
             }
         }
@@ -2313,7 +2319,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (secondAppLink.isEmpty()) {
                 showTopAdsBottomSheet()
             } else {
-                RouteManager.route(context, secondAppLink)
+                val intent = RouteManager.getIntent(context,secondAppLink).apply {
+                    putExtra(PARAM_DIRECTED_FROM_MANAGE_OR_PDP
+                            ,true)
+                }
+                startActivity(intent)
             }
         } else {
             if (secondAppLink.isEmpty()) {
@@ -2884,6 +2894,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             tradeinParam.setPrice(it.data.price.value)
             tradeinParam.productId = it.basic.getProductId()
             tradeinParam.productName = it.data.name
+            tradeinParam.origin =  viewModel.getMultiOriginByProductId().getOrigin()
         }
         intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)

@@ -16,6 +16,7 @@ interface BaseWidgetUiModel<T : BaseDataUiModel> : Visitable<WidgetAdapterFactor
     val appLink: String
     val dataKey: String
     val ctaText: String
+    val isShowEmpty: Boolean
     var data: T?
     var impressHolder: ImpressHolder
     var isLoaded: Boolean
