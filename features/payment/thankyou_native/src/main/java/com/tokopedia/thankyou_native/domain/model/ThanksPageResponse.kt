@@ -72,7 +72,9 @@ data class ThanksPageData(
         @SerializedName("is_mub")
         val isMonthlyNewUser: Boolean,
         @SerializedName("custom_data")
-        val thanksCustomization: ThanksCustomization?
+        val thanksCustomization: ThanksCustomization?,
+        //created and used locally
+        var paymentMethodCount: Int
 ) : Parcelable
 
 data class PaymentDetail(
