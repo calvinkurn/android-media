@@ -19,6 +19,10 @@ class SellerReviewReplyActivity : BaseSimpleActivity(), HasComponent<ReviewReply
         return R.layout.activity_seller_review_reply
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.seller_review_reply_parent_view
+    }
+
     override fun getComponent(): ReviewReplyComponent {
         return DaggerReviewReplyComponent
                 .builder()

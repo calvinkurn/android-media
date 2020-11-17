@@ -229,6 +229,24 @@ class GetOccCartMapper @Inject constructor() {
         return installmentTerms
     }
 
+    private fun mapPaymentOvoData(ovoAdditionalData: OvoAdditionalData, data: GetOccCartData): OrderPaymentOvoAdditionalData {
+        return OrderPaymentOvoAdditionalData(
+                activation = mapPaymentOvoActionData(ovoAdditionalData.ovoActivationData),
+                topUp = mapPaymentOvoActionData(ovoAdditionalData.ovoTopUpData),
+                phoneNumber = mapPaymentOvoActionData(ovoAdditionalData.phoneNumberRegistered),
+                callbackUrl = data.paymentAdditionalData.callbackUrl,
+                customerData = mapPaymentOvoCustomerData(data.customerData)
+        )
+    }
+
+    private fun mapPaymentOvoActionData(ovoActionData: OvoActionData): OrderPaymentOvoActionData {
+        return OrderPaymentOvoActionData(ovoActionData.isRequired, ovoActionData.buttonTitle, ovoActionData.errorMessage, ovoActionData.errorTicker, ovoActionData.isHideDigital)
+    }
+
+    private fun mapPaymentOvoCustomerData(data: CustomerData): OrderPaymentOvoCustomerData {
+        return OrderPaymentOvoCustomerData(data.name, data.email, data.msisdn)
+    }
+
     private fun mapAddress(address: Address): OrderProfileAddress {
         return OrderProfileAddress(address.addressId, address.receiverName, address.addressName, address.addressStreet, address.districtId,
                 address.districtName, address.cityId, address.cityName, address.provinceId, address.provinceName, address.phone, address.longitude,
