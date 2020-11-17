@@ -168,7 +168,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onNotificationChanged(int notificationCount, int inboxCount) {
+    public void onNotificationChanged(int notificationCount, int inboxCount, int cartCount) {
         setToolbarNotificationCount(notificationCount);
         setToolbarInboxCount(inboxCount);
     }
