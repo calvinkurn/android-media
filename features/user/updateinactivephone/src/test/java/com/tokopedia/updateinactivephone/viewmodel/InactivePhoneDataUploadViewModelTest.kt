@@ -6,7 +6,6 @@ import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.InactivePhoneSubmitDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.PhoneValidationDataModel
 import com.tokopedia.updateinactivephone.revamp.domain.data.UploadHostDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.GetUploadHostUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.ImageUploadUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.PhoneValidationUseCase
 import com.tokopedia.updateinactivephone.revamp.domain.usecase.SubmitDataUseCase
@@ -34,17 +33,16 @@ class InactivePhoneDataUploadViewModelTest {
     val dispatcher = TestCoroutineDispatcher()
     val phoneValidationUseCase = mockk<PhoneValidationUseCase>(relaxed = true)
     val imageUploadUseCase = mockk<ImageUploadUseCase>(relaxed = true)
-    val getUploadHostUseCase = mockk<GetUploadHostUseCase>(relaxed = true)
     val submitDataUseCase = mockk<SubmitDataUseCase>(relaxed = true)
 
     val observerPhoneValidation = mockk<Observer<Result<PhoneValidationDataModel>>>(relaxed = true)
     val observerImageUpload = mockk<Observer<Result<ImageUploadDataModel>>>(relaxed = true)
-    val observerGetUploadHost = mockk<Observer<Result<UploadHostDataModel>>>(relaxed = true)
     val observerSubmitData = mockk<Observer<Result<InactivePhoneSubmitDataModel>>>(relaxed = true)
 
     lateinit var viewmodel: InactivePhoneDataUploadViewModel
 
     val phoneNumber = "62800000000000"
+    val email = "asdfghk@tokopedia.com"
     val mockThrowable = Throwable("Opss!")
 
     @Before
@@ -52,14 +50,12 @@ class InactivePhoneDataUploadViewModelTest {
         viewmodel = InactivePhoneDataUploadViewModel(
                 phoneValidationUseCase,
                 imageUploadUseCase,
-                getUploadHostUseCase,
                 submitDataUseCase,
                 dispatcher
         )
 
         viewmodel.phoneValidation.observeForever(observerPhoneValidation)
         viewmodel.imageUpload.observeForever(observerImageUpload)
-        viewmodel.uploadHost.observeForever(observerGetUploadHost)
         viewmodel.submitData.observeForever(observerSubmitData)
     }
 
@@ -69,7 +65,6 @@ class InactivePhoneDataUploadViewModelTest {
 
         viewmodel.phoneValidation.removeObserver(observerPhoneValidation)
         viewmodel.imageUpload.removeObserver(observerImageUpload)
-        viewmodel.uploadHost.removeObserver(observerGetUploadHost)
         viewmodel.submitData.removeObserver(observerSubmitData)
     }
 
@@ -86,7 +81,7 @@ class InactivePhoneDataUploadViewModelTest {
             firstArg<(PhoneValidationDataModel) -> Unit>().invoke(mockResponse)
         }
 
-        viewmodel.userValidation(phoneNumber, 1)
+        viewmodel.userValidation(phoneNumber, email, 1)
 
         every {
             observerPhoneValidation.onChanged(any())
@@ -106,7 +101,7 @@ class InactivePhoneDataUploadViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewmodel.userValidation(phoneNumber, 1)
+        viewmodel.userValidation(phoneNumber, email, 1)
 
         every {
             observerPhoneValidation.onChanged(any())
@@ -118,56 +113,15 @@ class InactivePhoneDataUploadViewModelTest {
         assertEquals(result.throwable, mockThrowable)
     }
 
-    /** Get Upload Host */
-    @Test
-    fun `get host - Success`() {
-        val host = "http://sample.com"
-        val mockResponse = UploadHostDataModel(UploadHostDataModel.UploadHostData(
-                UploadHostDataModel.GeneratedHost(uploadHost = host))
-        )
-
-        every {
-            getUploadHostUseCase.execute(any(), any())
-        } answers {
-            firstArg<(UploadHostDataModel) -> Unit>().invoke(mockResponse)
-        }
-
-        viewmodel.getUploadHost()
-
-        verify {
-            observerGetUploadHost.onChanged(any())
-        }
-
-        assert(viewmodel.uploadHost.value is Success)
-
-        val result = viewmodel.uploadHost.value as Success
-        assert(result.data.data.generatedHost.uploadHost.isNotEmpty())
-    }
-
-    @Test
-    fun `get host - Fail`() {
-        every {
-            getUploadHostUseCase.execute(any(), any())
-        } answers {
-            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-        }
-
-        viewmodel.getUploadHost()
-
-        verify {
-            observerGetUploadHost.onChanged(any())
-        }
-
-        assert(viewmodel.uploadHost.value is Fail)
-
-        val result = viewmodel.uploadHost.value as Fail
-        assertEquals(result.throwable, mockThrowable)
-    }
 
     /** Upload Image */
     @Test
     fun `Image Upload - Success upload image`() {
-        val mockResponse = ImageUploadDataModel(picObj = "data sample")
+        val mockResponse = ImageUploadDataModel(
+                status = ImageUploadUseCase.STATUS_OK,
+                data = ImageUploadDataModel.PictureObjectDataModel(
+                        pictureObject = "data sample"
+                ))
 
         every {
             imageUploadUseCase.execute(any(), any())
@@ -175,7 +129,7 @@ class InactivePhoneDataUploadViewModelTest {
             firstArg<(ImageUploadDataModel) -> Unit>().invoke(mockResponse)
         }
 
-        viewmodel.uploadImage("url", "userId", "path", "source")
+        viewmodel.uploadImage(email, phoneNumber, 1, "pathFile", "source")
 
         verify {
             observerImageUpload.onChanged(any())
@@ -184,7 +138,7 @@ class InactivePhoneDataUploadViewModelTest {
         assert(viewmodel.imageUpload.value is Success)
 
         val result = viewmodel.imageUpload.value as Success
-        assert(result.data.picObj.isNotEmpty())
+        assert(result.data.data.pictureObject.isNotEmpty())
     }
 
     @Test
@@ -195,7 +149,7 @@ class InactivePhoneDataUploadViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewmodel.uploadImage("url", "userId", "path", "source")
+        viewmodel.uploadImage(email, phoneNumber, 1, "pathFile", "source")
 
         verify {
             observerImageUpload.onChanged(any())
