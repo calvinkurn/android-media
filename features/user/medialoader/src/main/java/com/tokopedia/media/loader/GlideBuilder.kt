@@ -15,6 +15,8 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.Loader
 import com.tokopedia.media.loader.common.LoaderStateListener
 import com.tokopedia.media.loader.common.MediaDataSource.Companion.mapToDataSource
@@ -22,6 +24,7 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.module.GlideApp
 import com.tokopedia.media.loader.transform.BlurHashDecoder
 import com.tokopedia.media.loader.transform.CircleCrop
+import com.tokopedia.media.loader.utils.AttributeUtils
 import com.tokopedia.media.loader.utils.BLUR_HASH_QUERY
 import com.tokopedia.media.loader.utils.mediaSignature
 import com.tokopedia.media.loader.utils.toUri
@@ -29,6 +32,9 @@ import com.tokopedia.media.loader.wrapper.MediaCacheStrategy.Companion.mapToDisk
 import com.tokopedia.media.loader.wrapper.MediaDecodeFormat.Companion.mapToDecodeFormat
 
 object GlideBuilder {
+
+    private const val MEDIA_LOADER_TRACE = "mp_medialoader"
+    private const val URL_PREFIX = "https://ecs7-p.tokopedia.net/img/cache/"
 
     private val blurHashRandom = listOf(
             "A4ADcRuO_2y?",
@@ -50,7 +56,8 @@ object GlideBuilder {
             })
 
     private fun glideListener(
-            listener: LoaderStateListener?
+            listener: LoaderStateListener?,
+            performanceMonitoring: PerformanceMonitoring?
     ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
                 e: GlideException?,
@@ -69,6 +76,7 @@ object GlideBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
+            performanceMonitoring?.stopTrace()
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
         }
@@ -77,6 +85,8 @@ object GlideBuilder {
     @JvmOverloads
     fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
         with(properties) {
+            var performanceMonitoring: PerformanceMonitoring? = null
+
             val localTransform = mutableListOf<Transformation<Bitmap>>()
             val drawableError = imageView.resourceError(error)
             val context = imageView.context
@@ -94,6 +104,9 @@ object GlideBuilder {
                     Loader.glideUrl(source).also { glideUrl ->
                         source = glideUrl
                         signatureKey = signatureKey.mediaSignature(glideUrl)
+                    }.apply {
+                        val imageUrl = this.toStringUrl()
+                        performanceMonitoring = getPerformanceMonitoring(imageUrl, context)
                     }
                 }
 
@@ -134,7 +147,7 @@ object GlideBuilder {
                         transform(MultiTransformation(localTransform))
                     }
 
-                    listener(glideListener(loaderListener))
+                    listener(glideListener(loaderListener, performanceMonitoring))
 
                 }.into(imageView)
             }
@@ -181,6 +194,19 @@ object GlideBuilder {
                     .transform(RoundedCorners(10))
                     .into(this)
         }
+    }
+
+    private fun getPerformanceMonitoring(url: String, context: Context): PerformanceMonitoring {
+        val urlWithoutPrefix = url.removePrefix(URL_PREFIX)
+        val mediaSetting = MediaSettingPreferences(context)
+        val mediaSettingIndex = mediaSetting.qualitySettings()
+
+        val performanceMonitoring = PerformanceMonitoring.start(MEDIA_LOADER_TRACE)
+        performanceMonitoring?.putCustomAttribute("image_url", urlWithoutPrefix)
+        performanceMonitoring?.putCustomAttribute("image_quality_setting", mediaSetting.getQualitySetting(mediaSettingIndex))
+        performanceMonitoring?.putCustomAttribute("date_time", AttributeUtils.getDateTime())
+
+        return performanceMonitoring
     }
 
 }
