@@ -119,8 +119,8 @@ class SomListOrderViewHolder(
         with(itemView) {
             ivSomListProduct.apply {
                 loadImageRounded(element.orderProduct.firstOrNull()?.picture.orEmpty())
-                if (element.cancelRequestNote.isNotBlank()) {
-                    setMargin(12.toPx(), 7.5f.dpToPx().toInt(), 0, 0)
+                if (element.tickerInfo.text.isNotBlank()) {
+                    setMargin(12.toPx(), 6.5f.dpToPx().toInt(), 0, 0)
                 } else {
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
