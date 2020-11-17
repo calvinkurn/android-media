@@ -334,6 +334,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             val clipboardManager: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(label, textToCopy)
             clipboardManager.setPrimaryClip(clipData)
+            showSnackbarSuccess(getString(R.string.flight_order_detail_success_copy_message, label))
         }
     }
 
@@ -348,7 +349,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun showSnackbarSuccess(message: String) {
-        Toaster.make(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 
     private fun navigateToCancellationDetailPage() {
@@ -372,7 +373,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun navigateToWebview(title:String, htmlContent: String) {
+    private fun navigateToWebview(title: String, htmlContent: String) {
         context?.let {
             startActivity(FlightOrderDetailBrowserActivity.getIntent(it, title, htmlContent))
         }
@@ -384,9 +385,9 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         private const val EXTRA_REQUEST_CANCEL = "EXTRA_REQUEST_CANCEL"
         private const val EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION"
 
-        private const val CLIP_LABEL_INVOICE_ID = "Flight Invoice Id"
-        private const val CLIP_LABEL_DEPARTURE_BOOKING_CODE = "Flight Departure Booking Code"
-        private const val CLIP_LABEL_RETURN_BOOKING_CODE = "Flight Return Booking Code"
+        private const val CLIP_LABEL_INVOICE_ID = "Invoice id"
+        private const val CLIP_LABEL_DEPARTURE_BOOKING_CODE = "Kode booking keberangkatan"
+        private const val CLIP_LABEL_RETURN_BOOKING_CODE = "Kode booking kepulangan"
 
         private const val REQUEST_CODE_SEND_E_TICKET = 1111
         private const val REQUEST_CODE_CANCELLATION = 1112

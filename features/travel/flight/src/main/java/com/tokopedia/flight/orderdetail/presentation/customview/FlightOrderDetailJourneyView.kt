@@ -64,7 +64,7 @@ class FlightOrderDetailJourneyView @JvmOverloads constructor(context: Context, a
     }
 
     private fun renderTicketView() {
-        var hasTerminalInfo: Boolean = false
+        var hasTerminalInfo = false
         if (journeys.isNotEmpty()) {
             val onwardJourney = journeys[0]
             if (onwardJourney.airlineLogo != null) {
