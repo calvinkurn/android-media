@@ -28,7 +28,7 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
             TrackingTransactionSection.clickOnOrderStatus(
                     mainNavListener.getUserId(),
                     otherTrackingLabel)
-            RouteManager.route(context, ApplinkConst.OMS_ORDER_DETAIL)
+            RouteManager.route(context, ApplinkConst.PURCHASE_ORDER)
         }
     }
 }
