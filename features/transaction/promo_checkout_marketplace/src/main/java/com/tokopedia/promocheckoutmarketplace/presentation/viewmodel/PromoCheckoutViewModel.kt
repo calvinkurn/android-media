@@ -113,15 +113,21 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     // Used for mocking _promoListUiModel value.
-    // Called from unit test.
+    // Should only be called from unit test.
     fun setPromoListValue(value: ArrayList<Visitable<*>>) {
         _promoListUiModel.value = value
     }
 
     // Used for mocking _promoRecommendationUiModel value.
-    // Called from unit test.
+    // Should only be called from unit test.
     fun setPromoRecommendationValue(value: PromoRecommendationUiModel) {
         _promoRecommendationUiModel.value = value
+    }
+
+    // Used for mocking _promoInputUiModel value.
+    // Should only be called from unit test.
+    fun setPromoInputUiModelValue(value: PromoInputUiModel) {
+        _promoInputUiModel.value = value
     }
 
 

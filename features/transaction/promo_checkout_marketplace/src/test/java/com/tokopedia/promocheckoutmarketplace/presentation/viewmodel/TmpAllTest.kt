@@ -1579,4 +1579,68 @@ class TmpAllTest {
         assert(viewModel.promoListUiModel.value?.size ?: 0 > 1)
     }
 
+    @Test
+    fun `WHEN update state before apply manual input promo THEN state should be loading`() {
+        //given
+        val data = GetPromoListDataProvider.providePromoInputData()
+        viewModel.setPromoInputUiModelValue(data)
+
+        every { analytics.eventClickTerapkanPromo(any(), any()) } just Runs
+        every { analytics.eventClickTerapkanAfterTypingPromoCode(any(), any(), any()) } just Runs
+
+        //when
+        viewModel.updatePromoInputStateBeforeApplyPromo("code", false)
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiState?.isLoading == true)
+    }
+
+    @Test
+    fun `WHEN update state before apply manual input promo THEN promo code should not be empty`() {
+        //given
+        val data = GetPromoListDataProvider.providePromoInputData()
+        viewModel.setPromoInputUiModelValue(data)
+
+        every { analytics.eventClickTerapkanPromo(any(), any()) } just Runs
+        every { analytics.eventClickTerapkanAfterTypingPromoCode(any(), any(), any()) } just Runs
+
+        //when
+        viewModel.updatePromoInputStateBeforeApplyPromo("code", false)
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiData?.promoCode?.isNotBlank() == true)
+    }
+
+    @Test
+    fun `WHEN reset promo manual input state THEN state should be not loading`() {
+        //given
+        val data = GetPromoListDataProvider.providePromoInputData()
+        viewModel.setPromoInputUiModelValue(data)
+
+        every { analytics.eventClickTerapkanPromo(any(), any()) } just Runs
+        every { analytics.eventClickTerapkanAfterTypingPromoCode(any(), any(), any()) } just Runs
+
+        //when
+        viewModel.resetPromoInput()
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiState?.isLoading == false)
+    }
+
+    @Test
+    fun `WHEN reset promo manual input state THEN promo code should be empty`() {
+        //given
+        val data = GetPromoListDataProvider.providePromoInputData()
+        viewModel.setPromoInputUiModelValue(data)
+
+        every { analytics.eventClickTerapkanPromo(any(), any()) } just Runs
+        every { analytics.eventClickTerapkanAfterTypingPromoCode(any(), any(), any()) } just Runs
+
+        //when
+        viewModel.resetPromoInput()
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiData?.promoCode.isNullOrEmpty())
+    }
+
 }
