@@ -26,8 +26,7 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                                  val mapOfPendingInApp: ConcurrentHashMap<Int, PendingData>,
                                  val broadcastScreenNames: ArrayList<String>,
                                  val activityProvider: ActivityProvider,
-                                 val remoteConfigImpl: FirebaseRemoteConfigImpl?,
-                                 val dialogIsShownMap: WeakHashMap<Activity, Boolean>? = null
+                                 val remoteConfigImpl: FirebaseRemoteConfigImpl?
 ) : InAppPopupContract {
 
     val TAG = "CmDialogHandler"
@@ -38,13 +37,14 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
             override fun onIgnored(reason: Int) {
                 super.onIgnored(reason)
                 tempWeakActivity.get()?.let {
-                    dialogIsShownMap?.remove(it)
+                    gratificationPresenter.dialogVisibilityContract?.onDialogDismiss(it)
                 }
             }
         }, screenName)
     }
 
-    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String, gratifPopupCallback: GratifPopupCallback, screenName: String): Job? {
+    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String?, gratifPopupCallback: GratifPopupCallback, screenName: String): Job? {
+        if(customValues.isNullOrEmpty()) return null
         try {
             val json = JSONObject(customValues)
             val gratificationId = json.getString("gratificationId")
