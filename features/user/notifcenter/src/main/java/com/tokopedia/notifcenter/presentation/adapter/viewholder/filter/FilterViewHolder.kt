@@ -42,7 +42,13 @@ class FilterViewHolder(
     }
 
     private fun bindState(element: FilterUiModel) {
-        val state = listener?.isSelected(element)
+        val isSelected = listener?.isSelected(element) ?: false
+        val state = if (isSelected) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+        filter?.chipType = state
     }
 
     private fun toggleChipState() {

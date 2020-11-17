@@ -40,6 +40,10 @@ class NotificationFilterAdapter constructor(
         }
     }
 
+    fun reset() {
+        selectedFilter = defaultFilter
+    }
+
     override fun onCreateViewHolder(
             parent: ViewGroup, viewType: Int
     ): AbstractViewHolder<out Visitable<*>> {

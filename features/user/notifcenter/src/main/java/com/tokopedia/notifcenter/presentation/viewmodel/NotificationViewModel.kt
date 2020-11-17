@@ -185,6 +185,10 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
+    fun reset() {
+        filter = NotifcenterDetailUseCase.FILTER_NONE
+    }
+
     override fun addWishlist(
             model: RecommendationItem,
             callback: ((Boolean, Throwable?) -> Unit)

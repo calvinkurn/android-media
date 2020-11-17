@@ -55,6 +55,10 @@ class NotificationFilterView : LinearLayout {
         rvFilterAdapter?.filterListener = filterListener
     }
 
+    fun reset() {
+        rvFilterAdapter?.reset()
+    }
+
     private fun initViewInflation(context: Context?) {
         View.inflate(context, R.layout.item_notifcenter_filter, this)?.apply {
             bindView(this)
