@@ -1643,4 +1643,19 @@ class TmpAllTest {
         assert(viewModel.promoInputUiModel.value?.uiData?.promoCode.isNullOrEmpty())
     }
 
+    @Test
+    fun `WHEN set promo input code from last apply THEN promo code should not be empty`() {
+        //given
+        val data = GetPromoListDataProvider.providePromoInputData()
+        viewModel.setPromoInputUiModelValue(data)
+
+        every { analytics.eventClickPromoLastSeenItem(any(), any()) } just Runs
+
+        //when
+        viewModel.setPromoInputFromLastApply("code")
+
+        //then
+        assert(viewModel.promoInputUiModel.value?.uiData?.promoCode?.isBlank() == false)
+    }
+
 }
