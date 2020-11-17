@@ -77,18 +77,19 @@ class ImagePreviewViewer {
     }
 
     private fun startViewer(imageList: List<String>?, imageViewTransitionFrom: ImageView?, context: Context?, index: Int) {
-
-        viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
-                .withBackgroundColor(Color.BLACK)
-                .withStartPosition(index)
-                .withTransitionFrom(imageViewTransitionFrom)
-                .withImageChangeListener {
-                    overlayView.updateImageIndexPosition(it, imageList)
-                    imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
-                    imagePreviewSliderAdapter.setSelectedImage(it)
-                }
-                .withOverlayView(overlayView)
-                .show()
+        context?.let {
+            viewer = StfalconImageViewer.Builder<String>(context, imageList, ::loadImages)
+                    .withBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G900))
+                    .withStartPosition(index)
+                    .withTransitionFrom(imageViewTransitionFrom)
+                    .withImageChangeListener {
+                        overlayView.updateImageIndexPosition(it, imageList)
+                        imagePreviewLayoutManager.smoothScrollToPosition(rvImageList, RecyclerView.State(), it)
+                        imagePreviewSliderAdapter.setSelectedImage(it)
+                    }
+                    .withOverlayView(overlayView)
+                    .show()
+        }
     }
 
     private fun loadImages(imageView: ImageView?, imageList: String?) {
