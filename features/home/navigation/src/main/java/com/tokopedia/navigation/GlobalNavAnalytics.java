@@ -26,7 +26,6 @@ import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CURRENT
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CURRENTSITE_VALUE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_LABEL;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_USERID;
-import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_USERID;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.HOME_PAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.INBOX;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.NAV;
