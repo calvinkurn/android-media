@@ -1594,6 +1594,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopPageHomeTracking.clickFilterRating(productListName, selectedFilterMap[RATING_PARAM_KEY] ?: "0", customDimensionShopPage)
         }
     }
+
+    //region play widget
     /**
      * Play Widget
      */
@@ -1717,6 +1719,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 ) {
                     shopPlayWidgetAnalytic.onClickMoreActionShareLinkChannel(channelUiModel.channelId)
                     copyToClipboard(channelUiModel.share.fullShareContent)
+                    showLinkCopiedToaster()
+                    playWidgetActionBottomSheet.dismiss()
                 }
             )
         }
@@ -1782,8 +1786,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         widgetDeleteDialogContainer.confirmDelete(requireContext(), channelId)
     }
 
+    private fun showLinkCopiedToaster() {
+        activity?.run {
+            Toaster.build(
+                    view = findViewById(android.R.id.content),
+                    text = getString(R.string.shop_page_play_widget_sgc_link_copied),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_NORMAL
+            ).show()
+        }
+    }
+
     private fun copyToClipboard(shareContents: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-widget", shareContents))
     }
+    //endregion
 }
