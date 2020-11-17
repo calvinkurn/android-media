@@ -17,4 +17,13 @@
     <string name="play_widget_delete_cancel">Kembali</string>
 
     <string name="play_widget_delete_loading_text">Menghapus…</string>
+    
+    <string name="play_widget_watch_title">Tonton videomu di aplikasi Tokopedia, ya!</string>
+    <string name="play_widget_watch_desc">
+        Download aplikasi Tokopedia buat
+        tonton video di Tokopedia Play!
+    </string>
+    <string name="play_widget_download_tokopedia">Download Tokopedia</string>
+    <string name="play_widget_watch_later">Nanti Dulu</string>
+
 </resources>
