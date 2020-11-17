@@ -182,9 +182,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel) {
         view?.let {
             if (homeNavMenuViewModel.sectionId == MainNavConst.Section.BU_ICON) {
+                if(homeNavMenuViewModel.applink.isNotEmpty()){
+                    RouteManager.route(context, homeNavMenuViewModel.applink)
+                } else {
+                    NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
+                            bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
+                }
                 TrackingBuSection.onClickBusinessUnitItem(homeNavMenuViewModel.itemTitle, userSession.userId)
-                NavigationRouter.MainNavRouter.navigateTo(it, NavigationRouter.PAGE_CATEGORY,
-                        bundleOf("title" to homeNavMenuViewModel.itemTitle, BUNDLE_MENU_ITEM to homeNavMenuViewModel))
             } else {
                 RouteManager.route(requireContext(), homeNavMenuViewModel.applink)
                 hitClickTrackingBasedOnId(homeNavMenuViewModel)
