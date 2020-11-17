@@ -488,7 +488,7 @@
             "payment": {
               "enable": 1,
               "active": 1,
-              "gateway_code": "DEBITCARD",
+              "gateway_code": "DEBITONLINE",
               "gateway_name": "Kartu Debit",
               "image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/cc-new.png",
               "description": "Kartu Debit (************1841)",
