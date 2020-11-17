@@ -16,7 +16,6 @@ import com.tokopedia.deals.location_picker.model.response.Location
 import com.tokopedia.deals.search.DealsSearchConstants
 import com.tokopedia.deals.search.domain.DealsSearchGqlQueries
 import com.tokopedia.deals.search.model.response.CuratedData
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -73,7 +72,7 @@ class DealCategoryViewModel @Inject constructor(
     fun getCategoryBrandData(category: String, coordinates: String, location: String, page: Int = 1, isFilter: Boolean) {
         launch {
             val rawQuery = DealsSearchGqlQueries.getEventSearchQuery()
-            dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(page, isFilter), onErrorSearch(),
+            dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(page, isFilter, category), onErrorSearch(),
                     "",
                     coordinates,
                     location,
@@ -89,12 +88,12 @@ class DealCategoryViewModel @Inject constructor(
         getCategoryBrandData(categoryId, location.coordinates, location.locType.name, isFilter = isFilter)
     }
 
-    private fun onSuccessSearch(page: Int, isFilter: Boolean): (SearchData) -> Unit {
+    private fun onSuccessSearch(page: Int, isFilter: Boolean, category: String): (SearchData) -> Unit {
         return {
             if (page == 1) {
                 val categoryLayout = if (it.eventSearch.brands.isNotEmpty()
                         && it.eventSearch.products.isNotEmpty()) {
-                    mapCategoryLayout.mapCategoryLayout(it, page)
+                    mapCategoryLayout.mapCategoryLayout(it, page, category)
                 } else {
                     mapCategoryLayout.getEmptyLayout(isFilter)
                 }
