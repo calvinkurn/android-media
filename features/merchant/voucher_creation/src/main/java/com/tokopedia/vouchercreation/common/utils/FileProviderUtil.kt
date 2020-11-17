@@ -16,13 +16,16 @@ fun Bitmap.getSavedImageDirPath(context: Context, filename: String): String {
 }
 
 fun Bitmap.getSavedImageDirFile(context: Context, filename: String, isSharing: Boolean = true): File {
-    val contextWrapper = ContextWrapper(context)
-    val fileDir = contextWrapper.getDir(FILE_DIR, Context.MODE_PRIVATE)
-    val filePath = File(fileDir, "${filename}.jpg").also {
-        if (isSharing) {
-            it.checkVoucherDirectory()
-        }
-    }
+    val fileDir =
+            if (isSharing) {
+                File(context.filesDir, FILE_DIR).also {
+                    it.checkVoucherDirectory()
+                }
+            } else {
+                val contextWrapper = ContextWrapper(context)
+                contextWrapper.getDir(FILE_DIR, Context.MODE_PRIVATE)
+            }
+    val filePath = File(fileDir, "${filename}.jpg")
     val fos = FileOutputStream(filePath)
 
     try {
