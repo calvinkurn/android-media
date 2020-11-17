@@ -27,6 +27,7 @@ import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommenda
 import com.tokopedia.promocheckoutmarketplace.data.response.GetPromoSuggestionResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoRecommendationUiModel
@@ -1546,6 +1547,36 @@ class TmpAllTest {
 
         //then
         assert(viewModel.promoRecommendationUiModel.value?.uiState?.isButtonSelectEnabled == false)
+    }
+
+    @Test
+    fun `WHEN update expanded ineligible promo list header state THEN should be collapsed`() {
+        //given
+        val data = GetPromoListDataProvider.provideExpandedPromoIneligibleData()
+        val promoEligibilityHeaderUiModel = data[0] as PromoEligibilityHeaderUiModel
+        viewModel.setPromoListValue(data)
+
+        //when
+        viewModel.updateIneligiblePromoList(promoEligibilityHeaderUiModel)
+
+        //then
+        assert(viewModel.promoListUiModel.value?.size == 1)
+    }
+
+    @Test
+    fun `WHEN update collapsed ineligible promo list header state THEN should be expanded`() {
+        //given
+        val data = GetPromoListDataProvider.provideCollapsedPromoIneligibleData()
+        val promoEligibilityHeaderUiModel = data[0] as PromoEligibilityHeaderUiModel
+        viewModel.setPromoListValue(data)
+
+        every { analytics.eventClickExpandIneligiblePromoList(any()) } just Runs
+
+        //when
+        viewModel.updateIneligiblePromoList(promoEligibilityHeaderUiModel)
+
+        //then
+        assert(viewModel.promoListUiModel.value?.size ?: 0 > 1)
     }
 
 }

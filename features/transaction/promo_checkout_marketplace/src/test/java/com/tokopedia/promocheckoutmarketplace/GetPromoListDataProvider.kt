@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 
@@ -320,6 +321,31 @@ object GetPromoListDataProvider {
         selectedPromoUiModel.uiState.isSelected = false
         selectedPromoUiModel.uiState.isDisabled = true
         promoListUiModelList.add(selectedPromoUiModel)
+
+        return promoListUiModelList
+    }
+
+    fun provideExpandedPromoIneligibleData(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val response = provideGetPromoListResponseSuccessAllExpanded()
+        val promoEligibilityHeaderUiModel = uiModelmapper.mapPromoEligibilityHeaderUiModel(response.couponListRecommendation.data.couponSections[1])
+        promoListUiModelList.add(promoEligibilityHeaderUiModel)
+        val selectedPromoHeaderUiModel = uiModelmapper.mapPromoListHeaderUiModel(response.couponListRecommendation.data.couponSections[1].subSections[0], 0, true)
+        promoListUiModelList.add(selectedPromoHeaderUiModel)
+
+        return promoListUiModelList
+    }
+
+    fun provideCollapsedPromoIneligibleData(): ArrayList<Visitable<*>> {
+        val promoListUiModelList = ArrayList<Visitable<*>>()
+        val response = provideGetPromoListResponseSuccessAllExpanded()
+        val tmpPromoListUiModelList = ArrayList<Visitable<*>>()
+        val selectedPromoHeaderUiModel = uiModelmapper.mapPromoListHeaderUiModel(response.couponListRecommendation.data.couponSections[1].subSections[0], 0, true)
+        tmpPromoListUiModelList.add(selectedPromoHeaderUiModel)
+        val promoEligibilityHeaderUiModel = uiModelmapper.mapPromoEligibilityHeaderUiModel(response.couponListRecommendation.data.couponSections[1])
+        promoEligibilityHeaderUiModel.uiData.tmpPromo = tmpPromoListUiModelList
+        promoEligibilityHeaderUiModel.uiState.isCollapsed = true
+        promoListUiModelList.add(promoEligibilityHeaderUiModel)
 
         return promoListUiModelList
     }
