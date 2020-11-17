@@ -125,9 +125,7 @@ class SomListSortFilterTab(
             if (type != ChipsUnify.TYPE_SELECTED) type = ChipsUnify.TYPE_SELECTED
         }
         selectedTab = status
-        sortFilter.postDelayed({
-            updateCounter(selectedCount)
-        }, SWIPE_TAB_ANIMATION_DELAY)
+        updateCounter(selectedCount)
     }
 
     fun updateCounterFilter() {
