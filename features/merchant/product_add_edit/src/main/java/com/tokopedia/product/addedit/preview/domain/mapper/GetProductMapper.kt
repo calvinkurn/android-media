@@ -193,7 +193,7 @@ class GetProductMapper @Inject constructor() {
     private fun mapVideoInputModel(videos: List<Video>): List<VideoLinkModel> =
             videos.map {
                 VideoLinkModel(
-                        inputUrl = it.source + getYoutubeDelimiter(it.source) + it.url
+                        inputUrl = getYoutubeHost(it.source) + getYoutubeDelimiter(it.source) + it.url
                 )
             }
 
@@ -227,7 +227,9 @@ class GetProductMapper @Inject constructor() {
         const val UNIT_KILOGRAM_SRING = "KG"
         const val YOUTUBE_URL_DELIMITER = "/watch?v="
         const val YOUTUBE_URL_DELIMITER_SHORT = "/"
-        const val YOUTUBE_URL = "www.youtube.com"
+        const val YOUTUBE_URL = "youtube.com"
+        const val YOUTUBE_URL_SHORTEN = "youtu.be"
+        const val YOUTUBE_SOURCE = "youtube"
 
         fun getActiveStatus(type: String) =
                 when (type) {
@@ -239,5 +241,9 @@ class GetProductMapper @Inject constructor() {
         fun getYoutubeDelimiter(source: String) =
                 if (source.contains(YOUTUBE_URL)) YOUTUBE_URL_DELIMITER
                 else YOUTUBE_URL_DELIMITER_SHORT
+
+        fun getYoutubeHost(source: String) =
+                if (source == YOUTUBE_SOURCE) YOUTUBE_URL_SHORTEN
+                else source
     }
 }
