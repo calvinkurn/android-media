@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.datepicker.DatePickerUnify
+import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
@@ -30,6 +33,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
 import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPDatePickerViewHolder
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
@@ -39,16 +43,21 @@ import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_event_list_form.view.*
 import java.io.Serializable
+import java.util.*
+import kotlin.collections.LinkedHashMap
 
 class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
-        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener {
+        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener,
+        EventPDPDatePickerViewHolder.Listener{
 
     private var urlPDP = ""
     private var keyActiveBottomSheet = ""
     private var positionActiveForm = 0
+    private var selectedCalendar: Calendar? = null
     var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
     var listBottomSheetTemp : LinkedHashMap<String, String> = linkedMapOf()
     val bottomSheets = BottomSheetUnify()
+
 
     @Inject
     lateinit var viewModel: EventPDPFormViewModel
@@ -81,7 +90,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     private fun setupAdapter() {
-        formAdapter = EventPDPFormAdapter(userSession, this, this)
+        formAdapter = EventPDPFormAdapter(userSession, this, this, this)
     }
 
     private fun setupView() {
@@ -279,6 +288,30 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         bottomSheets.dismiss()
     }
 
+    override fun clickDatePicker(title: String, position: Int) {
+        context?.let{
+            val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+            val minDate = GregorianCalendar(YEAR_END, MONTH_END, DAY_END)
+            var datepickerObject = DateTimePickerUnify(it, minDate, maxDate, maxDate).apply {
+                 setTitle(title)
+                 datePickerButton.let { button ->
+                    button.setOnClickListener {
+                        selectedCalendar = getDate()
+                        formAdapter.notifyItemChanged(position)
+                        dismiss()
+                    }
+                }
+            }
+            fragmentManager?.let {
+                datepickerObject.show(it, "")
+            }
+        }
+    }
+
+    override fun getDate(): Calendar? {
+       return selectedCalendar
+    }
+
     companion object {
         fun newInstance(url: String) = EventPDPFormFragment().also {
             it.arguments = Bundle().apply {
@@ -290,6 +323,10 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         val REQUEST_CODE = 100
         const val SEARCH_PAGE_LIMIT = 10
         const val DELAY_CONST: Long = 100
+
+        const val YEAR_END = 1900
+        const val DAY_END = 1
+        const val MONTH_END = 1
     }
 
     fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =
