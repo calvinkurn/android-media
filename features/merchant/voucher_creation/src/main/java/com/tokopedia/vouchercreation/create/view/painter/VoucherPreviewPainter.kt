@@ -28,7 +28,8 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.BannerVouc
 class VoucherPreviewPainter(private val context: Context,
                             private val bitmap: Bitmap,
                             var onSuccessGetBitmap: (Bitmap) -> Unit = { _ -> },
-                            private val bannerBaseUiModel: BannerBaseUiModel) {
+                            private val bannerBaseUiModel: BannerBaseUiModel,
+                            private val onErrorGetBitmap: (Throwable) -> Unit = {}) {
 
     companion object {
         private const val ASTERISK = "*"
@@ -130,6 +131,9 @@ class VoucherPreviewPainter(private val context: Context,
                         .load(shopAvatar)
                         .listener(object : RequestListener<Bitmap> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                e?.let { ex ->
+                                    onErrorGetBitmap(ex)
+                                }
                                 return false
                             }
 
@@ -178,6 +182,9 @@ class VoucherPreviewPainter(private val context: Context,
                         .load(shopAvatar)
                         .listener(object : RequestListener<Bitmap> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                e?.let { ex ->
+                                    onErrorGetBitmap(ex)
+                                }
                                 return false
                             }
 
@@ -205,6 +212,9 @@ class VoucherPreviewPainter(private val context: Context,
                                 .load(bannerBaseUiModel.freeDeliveryLabelUrl)
                                 .listener(object : RequestListener<Bitmap> {
                                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
                                         return false
                                     }
 
@@ -225,6 +235,9 @@ class VoucherPreviewPainter(private val context: Context,
                                 .load(bannerBaseUiModel.cashbackLabelUrl)
                                 .listener(object : RequestListener<Bitmap> {
                                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
                                         return false
                                     }
 
@@ -245,6 +258,9 @@ class VoucherPreviewPainter(private val context: Context,
                                 .load(bannerBaseUiModel.cashbackLabelUrl)
                                 .listener(object : RequestListener<Bitmap> {
                                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
                                         return false
                                     }
 
@@ -264,6 +280,9 @@ class VoucherPreviewPainter(private val context: Context,
                                 .load(bannerBaseUiModel.cashbackUntilLabelUrl)
                                 .listener(object : RequestListener<Bitmap> {
                                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                        e?.let { ex ->
+                                            onErrorGetBitmap(ex)
+                                        }
                                         return false
                                     }
 

@@ -361,8 +361,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                         .listener(object : RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                 e?.run {
-                                    MvcErrorHandler.logToCrashlytics(this, ERROR_MESSAGE)
-                                    onFailListener(message.toBlankOrString())
+                                    showDrawingError(this)
                                 }
                                 btnMvcSavePeriod?.isLoading = false
                                 dismiss()
@@ -372,7 +371,9 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                             override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                 activity?.runOnUiThread {
                                     val bitmap = resource.toBitmap()
-                                    val painter = SquareVoucherPainter(this@run, bitmap, onSuccessGetBitmap)
+                                    val painter = SquareVoucherPainter(this@run, bitmap, onSuccessGetBitmap) {
+                                        showDrawingError(it)
+                                    }
                                     painter.drawInfo(postVoucherUiModel)
                                 }
                                 return false
@@ -381,6 +382,13 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                         .submit()
             }
         }
+    }
+
+    private fun showDrawingError(error: Throwable) {
+        MvcErrorHandler.logToCrashlytics(error, ERROR_MESSAGE)
+        onFailListener(error.message.toBlankOrString())
+        btnMvcSavePeriod?.isLoading = false
+        dismiss()
     }
 
     fun setOnSuccessClickListener(callback: () -> Unit): VoucherPeriodBottomSheet {

@@ -643,20 +643,16 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                     .signature(ObjectKey(System.currentTimeMillis().toString()))
                     .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                            view?.run {
-                                Toaster.make(this,
-                                        context?.getString(R.string.mvc_general_error).toBlankOrString(),
-                                        Toaster.LENGTH_SHORT,
-                                        Toaster.TYPE_ERROR)
-                            }
-                            refreshFooterButton()
+                            showDrawingError(e)
                             return false
                         }
 
                         override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                             activity?.runOnUiThread {
                                 val bitmap = resource.toBitmap()
-                                val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetUpdateBitmap, getBannerBaseUiModel())
+                                val painter = VoucherPreviewPainter(this@run, bitmap, ::onSuccessGetUpdateBitmap, getBannerBaseUiModel()) {
+                                    showDrawingError(it)
+                                }
                                 painter.drawFull(getVoucherBanner(), bitmap)
                             }
                             return false
@@ -712,6 +708,19 @@ class ReviewVoucherFragment : BaseDetailFragment() {
                         }
                     })
                     .submit()
+        }
+    }
+
+    private fun showDrawingError(error: Throwable?) {
+        view?.run {
+            Toaster.make(this,
+                    context?.getString(R.string.mvc_general_error).toBlankOrString(),
+                    Toaster.LENGTH_SHORT,
+                    Toaster.TYPE_ERROR)
+        }
+        refreshFooterButton()
+        error?.run {
+            MvcErrorHandler.logToCrashlytics(this, ERROR_DRAW)
         }
     }
 

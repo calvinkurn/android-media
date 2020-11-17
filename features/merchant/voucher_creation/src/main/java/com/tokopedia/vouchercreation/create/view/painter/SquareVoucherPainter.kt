@@ -24,7 +24,8 @@ import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVouche
 
 class SquareVoucherPainter(private val context: Context,
                            private val bitmap: Bitmap,
-                           private val onSuccessGetBitmap: (Bitmap) -> Unit) {
+                           private val onSuccessGetBitmap: (Bitmap) -> Unit,
+                           private val onErrorGetBitmap: (Throwable) -> Unit = {}) {
 
     companion object {
         private const val INITIAL_X = 0.15f
@@ -169,6 +170,9 @@ class SquareVoucherPainter(private val context: Context,
                     .load(avatarUrl)
                     .listener(object : RequestListener<Bitmap> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                            e?.let { ex ->
+                                onErrorGetBitmap(ex)
+                            }
                             return false
                         }
 
@@ -197,6 +201,9 @@ class SquareVoucherPainter(private val context: Context,
                     .load(leftLabelImageUrl)
                     .listener(object : RequestListener<Bitmap> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                            e?.let { ex ->
+                                onErrorGetBitmap(ex)
+                            }
                             return false
                         }
 
@@ -258,6 +265,9 @@ class SquareVoucherPainter(private val context: Context,
                         .load(cashbackLabelUrl.orEmpty())
                         .listener(object : RequestListener<Bitmap> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
+                                e?.let { ex ->
+                                    onErrorGetBitmap(ex)
+                                }
                                 return false
                             }
 
