@@ -1658,4 +1658,84 @@ class TmpAllTest {
         assert(viewModel.promoInputUiModel.value?.uiData?.promoCode?.isBlank() == false)
     }
 
+    @Test
+    fun `WHEN pre applied promo code is empty THEN should has no different pre applied state`() {
+        //given
+        val data = GetPromoListDataProvider.provideFragmentData()
+        viewModel.setFragmentUiModelValue(data)
+
+        //when
+        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
+
+        //then
+        assert(!hasDifferentPreAppliedState)
+    }
+
+    @Test
+    fun `WHEN has any expanded promo item unchecked but exist as pre applied promo item THEN should has different pre applied state`() {
+        //given
+        val fragmentData = GetPromoListDataProvider.provideFragmentData()
+        fragmentData.uiData.preAppliedPromoCode = listOf("THIRX598GSA7MADK2X7")
+        viewModel.setFragmentUiModelValue(fragmentData)
+
+        val promoData = GetPromoListDataProvider.provideCurrentUnSelectedExpandedGlobalAndMerchantPromoData()
+        viewModel.setPromoListValue(promoData)
+
+        //when
+        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
+
+        //then
+        assert(hasDifferentPreAppliedState)
+    }
+
+    @Test
+    fun `WHEN has any collapsed promo item unchecked but exist as pre applied promo item THEN should has different pre applied state`() {
+        //given
+        val fragmentData = GetPromoListDataProvider.provideFragmentData()
+        fragmentData.uiData.preAppliedPromoCode = listOf("KRDCICIL598GSNML0AM")
+        viewModel.setFragmentUiModelValue(fragmentData)
+
+        val promoData = GetPromoListDataProvider.provideCurrentUnSelectedCollapsedGlobalAndMerchantPromoData()
+        viewModel.setPromoListValue(promoData)
+
+        //when
+        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
+
+        //then
+        assert(hasDifferentPreAppliedState)
+    }
+
+    @Test
+    fun `WHEN has any expanded promo item checked but have not been applied THEN should has different pre applied state`() {
+        //given
+        val fragmentData = GetPromoListDataProvider.provideFragmentData()
+        fragmentData.uiData.preAppliedPromoCode = listOf("CODE")
+        viewModel.setFragmentUiModelValue(fragmentData)
+
+        val promoData = GetPromoListDataProvider.provideCurrentSelectedExpandedGlobalPromoData()
+        viewModel.setPromoListValue(promoData)
+
+        //when
+        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
+
+        //then
+        assert(hasDifferentPreAppliedState)
+    }
+
+    @Test
+    fun `WHEN has any collapsed promo item checked but have not been applied THEN should has different pre applied state`() {
+        val fragmentData = GetPromoListDataProvider.provideFragmentData()
+        fragmentData.uiData.preAppliedPromoCode = listOf("CODE")
+        viewModel.setFragmentUiModelValue(fragmentData)
+
+        val promoData = GetPromoListDataProvider.provideCurrentSelectedCollapsedGlobalPromoData()
+        viewModel.setPromoListValue(promoData)
+
+        //when
+        val hasDifferentPreAppliedState = viewModel.hasDifferentPreAppliedState()
+
+        //then
+        assert(hasDifferentPreAppliedState)
+    }
+
 }

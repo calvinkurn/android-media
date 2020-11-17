@@ -4,9 +4,11 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.promocheckoutmarketplace.data.response.CouponListRecommendationResponse
 import com.tokopedia.promocheckoutmarketplace.presentation.mapper.PromoCheckoutUiModelMapper
+import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.FragmentUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoInputUiModel
 import com.tokopedia.promocheckoutmarketplace.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.purchase_platform.common.constant.PAGE_CART
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 
 object GetPromoListDataProvider {
@@ -353,6 +355,10 @@ object GetPromoListDataProvider {
 
     fun providePromoInputData(): PromoInputUiModel {
         return uiModelmapper.mapPromoInputUiModel()
+    }
+
+    fun provideFragmentData(): FragmentUiModel {
+        return uiModelmapper.mapFragmentUiModel(PAGE_CART)
     }
 
 }

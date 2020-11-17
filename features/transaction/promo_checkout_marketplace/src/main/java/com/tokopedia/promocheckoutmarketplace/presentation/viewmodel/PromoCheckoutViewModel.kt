@@ -112,6 +112,12 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
     }
 
+    // Used for mocking _fragmentUiModel value.
+    // Should only be called from unit test.
+    fun setFragmentUiModelValue(value: FragmentUiModel) {
+        _fragmentUiModel.value = value
+    }
+
     // Used for mocking _promoListUiModel value.
     // Should only be called from unit test.
     fun setPromoListValue(value: ArrayList<Visitable<*>>) {
