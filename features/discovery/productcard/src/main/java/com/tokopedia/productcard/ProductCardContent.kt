@@ -296,7 +296,7 @@ private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
         val ssb = SpannableStringBuilder(" ${productCardModel.countSoldRating}${if (productCardModel.willShowSalesAndRating()) " | " else ""}")
         val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
         drawableStar?.let {
-            drawableStar.setBounds(0, 0, 20, 20)
+            drawableStar.setBounds(0, 0, 25, 25)
             ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
         }
         salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)

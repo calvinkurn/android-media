@@ -124,7 +124,8 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
         if (googleApiClient.isConnected()) {
             // follow the same logic in here: https://github.com/mapbox/mapbox-events-android/pull/184/files
             // fix fabric bug: https://fabric.io/pt-tokopedia/android/apps/com.tokopedia.tkpd/issues/5c305bc7f8b88c29633eef60?time=last-seven-days
-            if (locationPermissionCheck()) {
+            // add locationRequest!= null to "fix Attempt to read from field 'int com.google.android.gms.location.LocationRequest.a' on a null object reference"
+            if (locationPermissionCheck() && locationRequest != null) {
                 LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
             }
         }

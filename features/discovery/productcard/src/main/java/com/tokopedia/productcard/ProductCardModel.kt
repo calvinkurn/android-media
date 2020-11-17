@@ -125,7 +125,7 @@ data class ProductCardModel (
     }
 
     fun willShowRatingAndReviewCount(): Boolean {
-        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowSalesAndRating()
+        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0 && !willShowRating()
     }
 
     fun willShowSalesAndRating(): Boolean{

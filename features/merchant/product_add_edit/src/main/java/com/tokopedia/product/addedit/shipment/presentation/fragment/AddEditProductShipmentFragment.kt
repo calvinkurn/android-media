@@ -248,6 +248,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun inputAllDataInProductInputModel() {
+        productInputModel?.isDataChanged = true
         productInputModel?.shipmentInputModel?.apply {
             isMustInsurance = switchInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()
