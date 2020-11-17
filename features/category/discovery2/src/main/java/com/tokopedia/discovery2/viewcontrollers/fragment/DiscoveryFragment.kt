@@ -349,7 +349,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 hints = listOf(HintData(placeholder = data?.searchTitle
                         ?: getString(R.string.default_search_title))),
                 applink = handleSearchClick(data),
-                searchbarImpressionCallback = {
+                searchbarClickCallback = {
                     handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
                 }
         )
