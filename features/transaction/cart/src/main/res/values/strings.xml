@@ -40,7 +40,7 @@
     <string name="alert_payment_canceled_or_failed_transaction_module">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="message_payment_success">Pembayaran Berhasil</string>
     <string name="checkout_module_keranjang_belanja_kosong_new">Wah, keranjang belanjamu kosong</string>
-    <string name="checkout_empty_cart_sub_message_new">Daripada dianggurin, mending isi dengan barang-barang impianmu. Yuk, cek sekarang!</string>
+    <string name="checkout_empty_cart_sub_message_new">Yuk, isi dengan barang-barang impianmu!</string>
     <string name="checkout_module_mulai_belanja">Mulai Belanja</string>
     <string name="cart_empty_with_promo_title">Ada promo menunggumu, nih!</string>
     <string name="cart_empty_with_promo_desc">Ayo belanja min. Rp100.000 untuk pakai promo cashback 10% maks. Rp50.000!</string>
@@ -60,4 +60,5 @@
     <string name="toaster_cta_cancel">Batalkan</string>
     <string name="label_move_to_wishlist">Pindahkan ke Wishlist</string>
     <string name="label_cannot_be_processed">Tidak bisa diproses (%d)</string>
+    <string name="message_no_cart_item_selected">Pilih barang dulu sebelum beli</string>
 </resources>

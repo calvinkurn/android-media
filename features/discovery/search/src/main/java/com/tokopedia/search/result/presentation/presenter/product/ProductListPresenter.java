@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -20,8 +21,8 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase;
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.analytics.SearchTracking;
@@ -36,6 +37,7 @@ import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewMo
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.FreeOngkirViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardViewModel;
@@ -46,16 +48,20 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
+import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.utils.SchedulersProvider;
 import com.tokopedia.search.utils.SearchFilterUtilsKt;
+import com.tokopedia.search.utils.SearchKotlinExtKt;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.sortfilter.SortFilterItem;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
+import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.LabelGroup;
@@ -92,6 +98,7 @@ import rx.functions.Action1;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
+import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
@@ -121,6 +128,9 @@ final class ProductListPresenter
     private static final String DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu";
     private static final String DEFAULT_USER_ID = "0";
     private static final int QUICK_FILTER_MINIMUM_SIZE = 2;
+    private static final List<String> LOCAL_SEARCH_KEY_PARAMS =
+            Arrays.asList(SearchApiConst.NAVSOURCE, SearchApiConst.SRP_PAGE_ID, SearchApiConst.SRP_PAGE_TITLE);
+    public static final String EMPTY_LOCAL_SEARCH_RESPONSE_CODE = "11";
 
     private UseCase<SearchProductModel> searchProductFirstPageUseCase;
     private UseCase<SearchProductModel> searchProductLoadMoreUseCase;
@@ -131,6 +141,7 @@ final class ProductListPresenter
     private LocalCacheHandler searchOnBoardingLocalCache;
     private Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase;
     private Lazy<UseCase<String>> getProductCountUseCase;
+    private Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase;
     private TopAdsUrlHitter topAdsUrlHitter;
     private SchedulersProvider schedulersProvider;
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
@@ -146,6 +157,12 @@ final class ProductListPresenter
     private String responseCode = "";
     private int topAdsCount = 1;
     private ShopRatingABTestStrategy shopRatingABTestStrategy = null;
+    private String navSource = "";
+    private String pageId = "";
+    private String pageTitle = "";
+    private String autoCompleteApplink = "";
+    private boolean isGlobalNavWidgetAvailable = false;
+    private boolean isShowHeadlineAdsBasedOnGlobalNav = false;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -157,6 +174,8 @@ final class ProductListPresenter
     @Nullable private ProductItemViewModel threeDotsProductItem = null;
     private int firstProductPosition = 0;
     private boolean hasFullThreeDotsOptions = false;
+    @Nullable private CpmModel cpmModel = null;
+    @Nullable private List<CpmData> cpmDataList = null;
 
     @Inject
     ProductListPresenter(
@@ -175,6 +194,8 @@ final class ProductListPresenter
             Lazy<UseCase<DynamicFilterModel>> getDynamicFilterUseCase,
             @Named(SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE)
             Lazy<UseCase<String>> getProductCountUseCase,
+            @Named(SearchConstant.SearchProduct.GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE)
+            Lazy<UseCase<SearchProductModel>> getLocalSearchRecommendationUseCase,
             TopAdsUrlHitter topAdsUrlHitter,
             SchedulersProvider schedulersProvider,
             Lazy<RemoteConfig> remoteConfig
@@ -188,6 +209,7 @@ final class ProductListPresenter
         this.searchOnBoardingLocalCache = searchOnBoardingLocalCache;
         this.getDynamicFilterUseCase = getDynamicFilterUseCase;
         this.getProductCountUseCase = getProductCountUseCase;
+        this.getLocalSearchRecommendationUseCase = getLocalSearchRecommendationUseCase;
         this.topAdsUrlHitter = topAdsUrlHitter;
         this.schedulersProvider = schedulersProvider;
     }
@@ -331,6 +353,11 @@ final class ProductListPresenter
 
     @Override
     public void loadMoreData(Map<String, Object> searchParameter) {
+        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation();
+        else searchProductLoadMore(searchParameter);
+    }
+
+    private void searchProductLoadMore(Map<String, Object> searchParameter) {
         checkViewAttached();
 
         Map<String, String> additionalParams = getAdditionalParamsMap();
@@ -475,7 +502,7 @@ final class ProductListPresenter
 
             ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
             ProductViewModel productViewModel = mapper
-                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+                    .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -504,6 +531,8 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>();
         processBroadMatch(searchProduct, list);
 
+        addSearchInTokopedia(searchProduct, list);
+
         getView().removeLoading();
         getView().addProductList(list);
     }
@@ -512,9 +541,12 @@ final class ProductListPresenter
         List<Visitable> list = new ArrayList<>(createProductItemVisitableList(productViewModel));
         productList.addAll(list);
 
+        processHeadlineAds(searchParameter, list);
         processInspirationCardPosition(searchParameter, list);
         processInspirationCarouselPosition(searchParameter, list);
         processBroadMatch(searchProductModel.getSearchProduct(), list);
+
+        addSearchInTokopedia(searchProductModel.getSearchProduct(), list);
 
         getView().removeLoading();
         getView().addProductList(list);
@@ -524,6 +556,9 @@ final class ProductListPresenter
 
     private List<Visitable> createProductItemVisitableList(ProductViewModel productViewModel) {
         List<Visitable> list = new ArrayList<>(productViewModel.getProductList());
+
+        if (isLocalSearch()) return list;
+
         int j = 0;
         for (int i = 0; i < productViewModel.getTotalItem(); i++) {
             try {
@@ -580,6 +615,12 @@ final class ProductListPresenter
         return list;
     }
 
+    private boolean isLocalSearch() {
+        return navSource != null
+                && navSource.equals(VALUE_OF_NAVSOURCE_CAMPAIGN)
+                && !textIsEmpty(pageId);
+    }
+
     private int convertCountReviewFormatToInt(String countReviewFormat) {
         String countReviewString = countReviewFormat.replaceAll("[^\\d]", "");
 
@@ -605,7 +646,7 @@ final class ProductListPresenter
         for (LabelGroup labelGroup : labelGroupList) {
             labelGroupViewModelList.add(
                     new LabelGroupViewModel(
-                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle()
+                            labelGroup.getPosition(), labelGroup.getType(), labelGroup.getTitle(), ""
                     )
             );
         }
@@ -642,6 +683,10 @@ final class ProductListPresenter
     public void loadData(Map<String, Object> searchParameter) {
         checkViewAttached();
 
+        setNavSource(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.NAVSOURCE));
+        setPageId(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_ID));
+        setPageTitle(SearchKotlinExtKt.getValueString(searchParameter, SearchApiConst.SRP_PAGE_TITLE));
+
         Map<String, String> additionalParams = getAdditionalParamsMap();
         if (searchParameter == null || additionalParams == null) return;
 
@@ -658,6 +703,18 @@ final class ProductListPresenter
         // Unsubscribe first in case user has slow connection, and the previous loadDataUseCase has not finished yet.
         searchProductFirstPageUseCase.unsubscribe();
         searchProductFirstPageUseCase.execute(requestParams, getLoadDataSubscriber(requestParams.getParameters()));
+    }
+
+    private void setNavSource(String navSource) {
+        this.navSource = navSource;
+    }
+
+    private void setPageId(String pageId) {
+        this.pageId = pageId;
+    }
+
+    private void setPageTitle(String pageTitle) {
+        this.pageTitle = pageTitle;
     }
 
     private boolean checkShouldEnrichWithAdditionalParams(Map<String, String> additionalParams) {
@@ -748,6 +805,8 @@ final class ProductListPresenter
         setResponseCode(productViewModel.getResponseCode());
         setSuggestionViewModel(productViewModel.getSuggestionModel());
         setRelatedViewModel(productViewModel.getRelatedViewModel());
+        setAutoCompleteApplink(productViewModel.getAutocompleteApplink());
+        setTotalData(productViewModel.getTotalData());
 
         doInBackground(productViewModel, this::sendTrackingNoSearchResult);
 
@@ -755,14 +814,12 @@ final class ProductListPresenter
         getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
-            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel);
+            getViewToHandleEmptyProductList(searchProductModel.getSearchProduct(), productViewModel, searchParameter);
         } else {
             getViewToShowProductList(searchParameter, searchProductModel, productViewModel);
             processDefaultQuickFilter(searchProductModel);
             processQuickFilter(searchProductModel.getQuickFilterModel());
         }
-
-        setTotalData(productViewModel.getTotalData());
 
         getView().updateScrollListener();
 
@@ -799,7 +856,7 @@ final class ProductListPresenter
 
         ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
         ProductViewModel productViewModel = mapper
-                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -818,7 +875,15 @@ final class ProductListPresenter
         this.relatedViewModel = relatedViewModel;
     }
 
-    private void getViewToHandleEmptyProductList(SearchProductModel.SearchProduct searchProduct, ProductViewModel productViewModel) {
+    private void setAutoCompleteApplink(String autoCompleteApplink) {
+        this.autoCompleteApplink = autoCompleteApplink;
+    }
+
+    private void getViewToHandleEmptyProductList(
+            SearchProductModel.SearchProduct searchProduct,
+            ProductViewModel productViewModel,
+            Map<String, Object> searchParameter
+    ) {
         getView().hideQuickFilterShimmering();
 
         if (isShowBroadMatch()) {
@@ -877,14 +942,128 @@ final class ProductListPresenter
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
+        getView().removeLoading();
+
+        GlobalNavViewModel globalNavViewModel = getGlobalNavViewModel(productViewModel);
+        boolean isBannerAdsAllowed = globalNavViewModel == null;
+
+        clearData();
+        getView().setEmptyProduct(globalNavViewModel, createEmptySearchViewModel(isBannerAdsAllowed));
+    }
+
+    private GlobalNavViewModel getGlobalNavViewModel(ProductViewModel productViewModel) {
         boolean isGlobalNavWidgetAvailable
                 = productViewModel.getGlobalNavViewModel() != null && enableGlobalNavWidget;
-        getView().removeLoading();
-        getView().setEmptyProduct(isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null);
+
+        return isGlobalNavWidgetAvailable ? productViewModel.getGlobalNavViewModel() : null;
+    }
+
+    private EmptySearchProductViewModel createEmptySearchViewModel(boolean isBannerAdsAllowed) {
+        EmptySearchProductViewModel emptySearchViewModel = new EmptySearchProductViewModel();
+
+        emptySearchViewModel.setBannerAdsAllowed(isBannerAdsAllowed);
+        emptySearchViewModel.setIsFilterActive(getView().isAnyFilterActive());
+
+        if (isShowLocalSearchRecommendation() && !getView().isAnyFilterActive()) {
+            emptySearchViewModel.setLocalSearch(true);
+            emptySearchViewModel.setGlobalSearchApplink(constructGlobalSearchApplink());
+            emptySearchViewModel.setKeyword(getView().getQueryKey());
+            emptySearchViewModel.setPageTitle(pageTitle);
+        }
+
+        return emptySearchViewModel;
+    }
+
+    private boolean isShowLocalSearchRecommendation() {
+        return isLocalSearch() && responseCode.equals(EMPTY_LOCAL_SEARCH_RESPONSE_CODE);
     }
 
     private void getViewToShowRecommendationItem() {
         getView().addLoading();
+
+        if (isShowLocalSearchRecommendation()) getLocalSearchRecommendation();
+        else getGlobalSearchRecommendation();
+    }
+
+    private void getLocalSearchRecommendation() {
+        getLocalSearchRecommendationUseCase.get().execute(
+                createLocalSearchRequestParams(),
+                createLocalSearchRecommenationSubscriber()
+        );
+    }
+
+    @NotNull
+    private RequestParams createLocalSearchRequestParams() {
+        RequestParams requestParams = RequestParams.create();
+
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE);
+        requestParams.putString(SearchApiConst.NAVSOURCE, VALUE_OF_NAVSOURCE_CAMPAIGN);
+        requestParams.putString(SearchApiConst.SRP_PAGE_TITLE, pageTitle);
+        requestParams.putString(SearchApiConst.SRP_PAGE_ID, pageId);
+        requestParams.putString(SearchApiConst.START, String.valueOf(getStartFrom()));
+        requestParams.putString(SearchApiConst.ROWS, getSearchRows());
+
+        return requestParams;
+    }
+
+    @NotNull
+    private Subscriber<SearchProductModel> createLocalSearchRecommenationSubscriber() {
+        return new Subscriber<SearchProductModel>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e != null) e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(SearchProductModel searchProductModel) {
+                getLocalSearchRecommendationSuccess(searchProductModel);
+            }
+        };
+    }
+
+    private void getLocalSearchRecommendationSuccess(SearchProductModel searchProductModel) {
+        if (isViewNotAttached()) return;
+
+        ProductViewModel productViewModel = createProductViewModelMapperLocalSearchRecommendation(searchProductModel);
+
+        List<Visitable> visitableList = new ArrayList<>();
+
+        if (startFrom == 0) visitableList.add(new SearchProductTitleViewModel(pageTitle));
+
+        visitableList.addAll(productViewModel.getProductList());
+
+        incrementStart();
+        setTotalData(searchProductModel.getSearchProduct().getHeader().getTotalData());
+
+        getView().removeLoading();
+        getView().addLocalSearchRecommendation(visitableList);
+
+        if (hasNextPage()) getView().addLoading();
+
+        getView().updateScrollListener();
+    }
+
+    private ProductViewModel createProductViewModelMapperLocalSearchRecommendation(SearchProductModel searchProductModel) {
+        if (startFrom == 0) getView().clearLastProductItemPositionFromCache();
+
+        int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
+
+        ProductViewModelMapper mapper = new ProductViewModelMapper(shopRatingABTestStrategy);
+        ProductViewModel productViewModel = mapper
+                .convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString, pageTitle);
+
+        saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
+
+        return productViewModel;
+    }
+
+    private void getGlobalSearchRecommendation() {
         recommendationUseCase.execute(
                 recommendationUseCase.getRecomParams(1, DEFAULT_VALUE_X_SOURCE, SEARCH_PAGE_NAME_RECOMMENDATION, new ArrayList<>()),
                 new Subscriber<List<? extends RecommendationWidget>>() {
@@ -922,11 +1101,15 @@ final class ProductListPresenter
             getView().showAdultRestriction();
         }
 
-        boolean isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
+        addPageTitle(list);
+
+        isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productViewModel);
 
         if (isGlobalNavWidgetAvailable) {
             list.add(productViewModel.getGlobalNavViewModel());
             getView().sendImpressionGlobalNav(productViewModel.getGlobalNavViewModel());
+
+            isShowHeadlineAdsBasedOnGlobalNav = productViewModel.getGlobalNavViewModel().getIsShowTopAds();
         }
 
         if (!isTickerHasDismissed
@@ -945,18 +1128,16 @@ final class ProductListPresenter
             getView().trackEventImpressionBannedProducts(false);
         }
 
-        if (productViewModel.getCpmModel() != null && shouldShowCpmShop(productViewModel)) {
-            if (!isGlobalNavWidgetAvailable || productViewModel.getGlobalNavViewModel().getIsShowTopAds()) {
-                CpmViewModel cpmViewModel = new CpmViewModel();
-                cpmViewModel.setCpmModel(productViewModel.getCpmModel());
-                list.add(cpmViewModel);
-            }
+        if(productViewModel.getCpmModel() != null) {
+            cpmModel = productViewModel.getCpmModel();
+            cpmDataList = productViewModel.getCpmModel().getData();
         }
 
         topAdsCount = 1;
         productList = createProductItemVisitableList(productViewModel);
-        firstProductPosition = list.size();
         list.addAll(productList);
+
+        processHeadlineAds(searchParameter, list);
 
         if (!textIsEmpty(productViewModel.getAdditionalParams())) {
             additionalParams = productViewModel.getAdditionalParams();
@@ -970,6 +1151,10 @@ final class ProductListPresenter
 
         processBroadMatch(searchProduct, list);
 
+        addSearchInTokopedia(searchProduct, list);
+
+        firstProductPosition = getFirstProductPosition(list);
+
         getView().removeLoading();
         getView().setProductList(list);
         getView().backToTop();
@@ -982,6 +1167,20 @@ final class ProductListPresenter
         getView().stopTracePerformanceMonitoring();
     }
 
+    private int getFirstProductPosition(List<Visitable> list) {
+        if (productList.isEmpty()) return 0;
+
+        int firstProductPosition = list.indexOf(productList.get(0));
+
+        return Math.max(firstProductPosition, 0);
+    }
+
+    private void addPageTitle(List<Visitable> list) {
+        if (pageTitle == null || pageTitle.isEmpty()) return;
+
+        list.add(new SearchProductTitleViewModel(pageTitle));
+    }
+
     private boolean getIsGlobalNavWidgetAvailable(ProductViewModel productViewModel) {
         return productViewModel.getGlobalNavViewModel() != null
                 && enableGlobalNavWidget
@@ -989,18 +1188,70 @@ final class ProductListPresenter
                 && !getView().isAnySortActive();
     }
 
+    private void addSearchInTokopedia(SearchProductModel.SearchProduct searchProduct, List<Visitable> list) {
+        if (isLastPage(searchProduct) && isLocalSearch()) {
+            String globalSearchApplink = constructGlobalSearchApplink();
+            SearchInTokopediaViewModel searchInTokopediaViewModel = new SearchInTokopediaViewModel(globalSearchApplink);
+
+            list.add(searchInTokopediaViewModel);
+        }
+    }
+
+    private String constructGlobalSearchApplink() {
+        String globalSearchApplink = ApplinkConstInternalDiscovery.SEARCH_RESULT;
+
+        String queryParams = UrlParamUtils.getQueryParams(autoCompleteApplink);
+        String globalSearchQueryParams = UrlParamUtils.removeKeysFromQueryParams(queryParams, LOCAL_SEARCH_KEY_PARAMS);
+
+        if (!textIsEmpty(globalSearchQueryParams))
+            globalSearchApplink += "?" + globalSearchQueryParams;
+
+        return globalSearchApplink;
+    }
+
     private boolean shouldShowSuggestion(ProductViewModel productViewModel) {
         return showSuggestionResponseCodeList.contains(responseCode)
                 && !textIsEmpty(productViewModel.getSuggestionModel().getSuggestionText());
     }
 
-    private boolean shouldShowCpmShop(ProductViewModel productViewModel) {
-        if (productViewModel.getCpmModel().getData().isEmpty()) {
-            return false;
+    private void processHeadlineAds(Map<String, Object> searchParameter, List<Visitable> visitableList) {
+        boolean canProcessHeadlineAds = isHeadlineAdsAllowed() && cpmDataList != null && cpmDataList.size() > 0;
+
+        if (!canProcessHeadlineAds) return;
+
+        Iterator<CpmData> cpmDataIterator = cpmDataList.iterator();
+
+        while(cpmDataIterator.hasNext()) {
+            CpmData data = cpmDataIterator.next();
+            int position = data.getCpm() == null ? -1 : data.getCpm().getPosition();
+
+            if (position < 0 || !shouldShowCpmShop(data)) {
+                cpmDataIterator.remove();
+                continue;
+            }
+
+            if (position > productList.size()) continue;
+
+            try {
+                CpmViewModel cpmViewModel = createCpmViewModel(data);
+
+                if (position == 0 || position == 1) processHeadlineAdsAtTop(visitableList, cpmViewModel);
+                else processHeadlineAdsAtPosition(visitableList, position, cpmViewModel);
+
+                cpmDataIterator.remove();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                getView().logWarning(UrlParamUtils.generateUrlParamString(searchParameter), exception);
+            }
         }
+    }
 
-        CpmData cpmData = productViewModel.getCpmModel().getData().get(0);
+    private boolean isHeadlineAdsAllowed() {
+        return !isLocalSearch()
+                && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav);
+    }
 
+    private boolean shouldShowCpmShop(CpmData cpmData) {
         if (cpmData == null) {
             return false;
         }
@@ -1026,6 +1277,46 @@ final class ProductListPresenter
 
     private boolean isViewWillRenderCpmDigital(Cpm cpm) {
         return cpm.getTemplateId() == 4;
+    }
+
+    @Nullable
+    private CpmViewModel createCpmViewModel(CpmData cpmData) {
+        if (cpmModel == null) return null;
+
+        CpmModel cpmForViewModel = createCpmForViewModel(cpmData);
+
+        if (cpmForViewModel == null) return null;
+
+        CpmViewModel cpmViewModel = new CpmViewModel();
+        cpmViewModel.setCpmModel(cpmForViewModel);
+
+        return cpmViewModel;
+    }
+
+    @Nullable
+    private CpmModel createCpmForViewModel(CpmData cpmData) {
+        if (cpmModel == null) return null;
+
+        CpmModel cpmForViewModel = new CpmModel();
+        cpmForViewModel.setHeader(cpmModel.getHeader());
+        cpmForViewModel.setStatus(cpmModel.getStatus());
+        cpmForViewModel.setError(cpmModel.getError());
+
+        List<CpmData> cpmList = new ArrayList<>();
+        cpmList.add(cpmData);
+        cpmForViewModel.setData(cpmList);
+
+        return cpmForViewModel;
+    }
+
+    private void processHeadlineAdsAtTop(List<Visitable> visitableList, CpmViewModel cpmViewModel) {
+        Visitable product = productList.get(0);
+        visitableList.add(visitableList.indexOf(product), cpmViewModel);
+    }
+
+    private void processHeadlineAdsAtPosition(List<Visitable> visitableList, int position, CpmViewModel cpmViewModel) {
+        Visitable product = productList.get(position - 1);
+        visitableList.add(visitableList.indexOf(product) + 1, cpmViewModel);
     }
 
     private BannedProductsTickerViewModel createBannedProductsTickerViewModel(String errorMessage, String liteUrl) {
@@ -1270,7 +1561,9 @@ final class ProductListPresenter
 
     private GeneralSearchTrackingModel createGeneralSearchTrackingModel(ProductViewModel productViewModel, String query, Set<String> categoryIdMapping, Set<String> categoryNameMapping) {
         return new GeneralSearchTrackingModel(
+                createGeneralSearchTrackingEventCategory(),
                 createGeneralSearchTrackingEventLabel(productViewModel, query),
+                getUserId(),
                 Boolean.toString(!productViewModel.getProductList().isEmpty()),
                 StringUtils.join(categoryIdMapping, ","),
                 StringUtils.join(categoryNameMapping, ","),
@@ -1278,21 +1571,41 @@ final class ProductListPresenter
         );
     }
 
+    private String createGeneralSearchTrackingEventCategory() {
+        return SearchEventTracking.Category.EVENT_TOP_NAV + (textIsEmpty(pageTitle) ? "" : " - " + pageTitle);
+    }
+
     private String createGeneralSearchTrackingEventLabel(ProductViewModel productViewModel, String query) {
         String source = getTopNavSource(productViewModel.getGlobalNavViewModel());
         return String.format(
-                SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                SearchEventTracking.Label.GENERAL_SEARCH_EVENT_LABEL,
                 query,
-                productViewModel.getKeywordProcess(),
+                getKeywordProcess(productViewModel),
                 productViewModel.getResponseCode(),
-                source
+                source,
+                getNavSourceForGeneralSearchTracking(),
+                getPageTitleForGeneralSearchTracking()
         );
     }
 
     private String getTopNavSource(GlobalNavViewModel globalNavViewModel) {
-        if (globalNavViewModel == null) return "none";
-        if (globalNavViewModel.getSource().isEmpty()) return "other";
+        if (globalNavViewModel == null) return SearchEventTracking.NONE;
+        if (globalNavViewModel.getSource().isEmpty()) return SearchEventTracking.OTHER;
         return globalNavViewModel.getSource();
+    }
+
+    private String getKeywordProcess(ProductViewModel productViewModel) {
+        String keywordProcess = productViewModel.getKeywordProcess();
+
+        return textIsEmpty(keywordProcess) ? "0" : keywordProcess;
+    }
+
+    private String getNavSourceForGeneralSearchTracking() {
+        return textIsEmpty(navSource) ? SearchEventTracking.NONE : navSource;
+    }
+
+    private String getPageTitleForGeneralSearchTracking() {
+        return textIsEmpty(pageTitle) ? SearchEventTracking.NONE : pageTitle;
     }
 
     private String createGeneralSearchTrackingRelatedKeyword(ProductViewModel productViewModel) {
@@ -1881,6 +2194,7 @@ final class ProductListPresenter
         if (searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
         if (getProductCountUseCase != null) getProductCountUseCase.get().unsubscribe();
+        if (getLocalSearchRecommendationUseCase != null) getLocalSearchRecommendationUseCase.get().unsubscribe();
         if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) unsubscribeCompositeSubscription();
     }
 
