@@ -66,21 +66,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     }
 
     /**
-     * This method is only called from express checkout,
-     * once express checkout is deleted, this should be deleted.
-     * If someone need to call courier recommendation, please use the other one
-     */
-    @Override
-    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList) {
-        if (view != null) {
-            view.showLoading();
-            loadDuration(0, selectedServiceId, -1, false, false,
-                    shopShipmentList, false, shippingParam, "", false, 0);
-        }
-    }
-
-    /**
      * Calls rates
      */
     @Override
@@ -92,7 +77,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           List<Product> products, String cartString,
                                           boolean isTradeInDropOff,
                                           RecipientAddressModel recipientAddressModel,
-                                          boolean isFulfillment, int preOrderTime) {
+                                          boolean isFulfillment, int preOrderTime,
+                                          String mvc) {
         if (view != null) {
             view.showLoading();
             ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString,
@@ -102,7 +88,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime);
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc);
         }
     }
 
@@ -110,12 +96,13 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                               boolean isCorner, boolean isLeasing,
                               List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi,
                               ShippingParam shippingParam, String pslCode,
-                              boolean isFulfillment, int preOrderTime) {
+                              boolean isFulfillment, int preOrderTime, String mvc) {
         RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
+                .mvc(mvc)
                 .build();
 
         Observable<ShippingRecommendationData> observable;

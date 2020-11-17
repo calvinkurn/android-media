@@ -34,7 +34,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="@dimen/spacing_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
-        tools:src="@drawable/ic_rating_star_four"/>
+        tools:src="@drawable/review_ic_rating_star_four"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvFeedbackUser"
