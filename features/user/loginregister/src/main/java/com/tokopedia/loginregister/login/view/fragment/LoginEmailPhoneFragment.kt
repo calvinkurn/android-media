@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -203,13 +204,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.add(Menu.NONE, ID_ACTION_REGISTER, 0, "")
+
         val menuItem = menu.findItem(ID_ACTION_REGISTER)
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         if (getDraw() != null) {
             menuItem.icon = getDraw()
         }
         if (GlobalConfig.isAllowDebuggingTools()) {
-            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, getString(R.string.developer_options))
+            val devOpsText = SpannableString(getString(R.string.developer_options))
+            context?.let {
+                devOpsText.setSpan(ForegroundColorSpan(
+                        MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)),
+                        0, devOpsText.length, 0)
+            }
+            menu.add(Menu.NONE, ID_ACTION_DEVOPS, 1, devOpsText)
             menu.findItem(ID_ACTION_DEVOPS).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
         }
         super.onCreateOptionsMenu(menu, inflater)

@@ -25,6 +25,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_3"
+                app:defaultTextColorLabel="@color/Unify_N700_44"
+                app:focusedTextColorLabel="@color/Unify_N700_44"
                 android:hint="@string/phone_or_email_input"
                 android:inputType="phone"
                 android:paddingLeft="-5dp">
@@ -35,6 +37,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_5"
+                    android:textColor="@color/Unify_N700_96"
                     android:imeOptions="actionDone"
                     android:singleLine="true"/>
 
@@ -94,10 +97,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/error_message"
+            app:defaultTextColorLabel="@color/Unify_N700_44"
+            app:focusedTextColorLabel="@color/Unify_N700_44"
             android:hint="@string/title_password"
             android:paddingLeft="-5dp"
             android:visibility="gone"
-            app:passwordToggleDrawable="@drawable/asl_password_visibility"
+            app:passwordToggleDrawable="@drawable/asl_loginregister_password_visibility"
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -137,7 +142,7 @@
             android:visibility="gone"
             />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -145,8 +150,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/register"
-            android:textAllCaps="false"
-            app:buttonCompatType="disable"/>
+            android:textAllCaps="false"/>
 
     </RelativeLayout>
 

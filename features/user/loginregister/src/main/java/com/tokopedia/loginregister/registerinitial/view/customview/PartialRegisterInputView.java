@@ -19,14 +19,15 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.utils.KeyboardHandler;
 import com.tokopedia.loginregister.common.view.EmailExtension;
+import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     AutoCompleteTextView etInputEmailPhone;
     TextView tvMessage;
     TextView tvError;
-    ButtonCompat btnAction;
+    UnifyButton btnAction;
     EmailExtension emailExtension;
 
     TextInputEditText etPassword;
@@ -224,11 +225,11 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void onValidValue(){
         hideError();
-        btnAction.setButtonCompatType(ButtonCompat.PRIMARY);
+        btnAction.setEnabled(true);
     }
 
     private void onInvalidValue(){
-        btnAction.setButtonCompatType(ButtonCompat.PRIMARY_DISABLED);
+        btnAction.setEnabled(false);
     }
 
     public String getTextValue() {

@@ -544,6 +544,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
     private void setWrapperHint(TkpdHintTextInputLayout wrapper, String s) {
         wrapper.setErrorEnabled(false);
         wrapper.setHelperEnabled(true);
+        wrapper.setHelperTextAppearance(R.style.loginRegisterHelperText);
         wrapper.setHelper(s);
     }
 

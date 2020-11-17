@@ -8,4 +8,5 @@
     android:paddingLeft="@dimen/dp_24"
     android:paddingRight="@dimen/dp_24"
     android:paddingTop="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_16"/>
+    android:paddingBottom="@dimen/dp_16"
+    android:background="@color/Unify_N0"/>

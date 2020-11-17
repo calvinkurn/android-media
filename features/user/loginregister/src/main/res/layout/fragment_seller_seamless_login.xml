@@ -15,7 +15,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/seller_seamless_main_view"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -61,10 +61,11 @@
             android:layout_marginTop="@dimen/spacing_lvl4"
             android:text="@string/button_use_another_acc"
             app:unifyButtonSize="medium"
-            app:layout_constraintEnd_toEndOf="@+id/seller_seamless_positive_btn"
-            app:layout_constraintStart_toStartOf="@+id/seller_seamless_positive_btn"
-            app:layout_constraintTop_toBottomOf="@+id/seller_seamless_positive_btn"
-            app:unifyButtonVariant="text" />
+            app:layout_constraintEnd_toEndOf="@id/seller_seamless_positive_btn"
+            app:layout_constraintStart_toStartOf="@id/seller_seamless_positive_btn"
+            app:layout_constraintTop_toBottomOf="@id/seller_seamless_positive_btn"
+            app:unifyButtonVariant="text"
+            android:textColor="@color/Unify_N700_68"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/typography"

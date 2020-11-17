@@ -66,7 +66,7 @@ public class LoginTextView extends LinearLayout {
         shape = new GradientDrawable();
         shape.setColor(Color.TRANSPARENT);
         if (attrs == null) {
-            setDefaultShape();
+            setDefaultShape(context);
         } else {
             setAttrs(context, attrs);
         }
@@ -118,7 +118,7 @@ public class LoginTextView extends LinearLayout {
         }
     }
 
-    private void setDefaultShape() {
+    private void setDefaultShape(Context context) {
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
         shape.setColor(getBackgroundColor());

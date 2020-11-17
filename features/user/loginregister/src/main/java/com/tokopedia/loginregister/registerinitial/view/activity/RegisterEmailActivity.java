@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent;
@@ -34,6 +35,7 @@ public class RegisterEmailActivity extends BaseSimpleActivity implements HasComp
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
     }
 
     @Override

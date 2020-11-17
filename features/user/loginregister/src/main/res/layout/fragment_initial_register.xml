@@ -72,17 +72,18 @@
                     />
             </RelativeLayout>
 
-            <com.tokopedia.design.component.ButtonCompat
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/socmed_btn"
                 android:contentDescription="@string/content_desc_socmed_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_24"
+                android:layout_marginLeft="@dimen/spacing_lvl5"
+                android:layout_marginRight="@dimen/spacing_lvl5"
                 android:text="@string/social_media"
                 android:textAllCaps="false"
-                app:buttonCompatType="white"/>
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="alternate"/>
 
             <com.tokopedia.loginregister.common.view.LoginTextView
                 android:id="@+id/register"

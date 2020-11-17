@@ -30,6 +30,8 @@
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:defaultTextColorLabel="@color/Unify_N700_44"
+        app:focusedTextColorLabel="@color/Unify_N700_44"
         android:hint="@string/title_email"
         android:layout_marginBottom="@dimen/layout_lvl3"
         android:inputType="textCapWords">
@@ -54,6 +56,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl3"
+        app:defaultTextColorLabel="@color/Unify_N700_44"
+        app:focusedTextColorLabel="@color/Unify_N700_44"
         android:hint="@string/title_full_name"
         android:inputType="textCapWords">
         
@@ -75,8 +79,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl3"
+        app:defaultTextColorLabel="@color/Unify_N700_44"
+        app:focusedTextColorLabel="@color/Unify_N700_44"
         android:hint="@string/prompt_password"
-        app:passwordToggleDrawable="@drawable/asl_password_visibility"
+        app:passwordToggleDrawable="@drawable/asl_loginregister_password_visibility"
         app:passwordToggleEnabled="true">
         
         <com.google.android.material.textfield.TextInputEditText

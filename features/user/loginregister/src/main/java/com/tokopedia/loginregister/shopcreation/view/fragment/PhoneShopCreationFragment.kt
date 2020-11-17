@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
@@ -162,6 +163,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        textFieldPhone.textFieldInput.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
         textFieldPhone.textFieldInput.addTextChangedListener(object : PhoneNumberTextWatcher(textFieldPhone.textFieldInput) {
             override fun onTextChanged(s: CharSequence, cursorPosition: Int, before: Int, count: Int) {
                 super.onTextChanged(s, cursorPosition, before, count)
