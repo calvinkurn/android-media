@@ -180,7 +180,7 @@ class SomListSortFilterTab(
     }
 
     fun isFilterApplied(): Boolean {
-        return sortFilter.indicatorCounter != 0
+        return (sortFilter.indicatorCounter - 1.takeIf { selectedTab != null }.orZero()) != 0
     }
 
     fun clear() {
