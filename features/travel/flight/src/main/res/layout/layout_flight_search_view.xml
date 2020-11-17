@@ -13,7 +13,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightOriginLabel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:text="@string/flight_search_origin_label"
@@ -25,7 +25,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightOriginAirport"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:textColor="@color/Unify_N700_96"
@@ -49,7 +49,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDestinationLabel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:text="@string/flight_search_airport_arrival_title"
@@ -61,7 +61,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDestinationAirport"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:textColor="@color/Unify_N700_96"
@@ -92,7 +92,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDepartureDateLabel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -107,7 +107,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDepartureDate"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -146,7 +146,7 @@
 
         <View
             android:id="@+id/separatorDepartureDate"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="1dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -167,7 +167,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightReturnDateLabel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -182,7 +182,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightReturnDate"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -196,7 +196,7 @@
 
         <View
             android:id="@+id/separatorReturnDate"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="1dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -217,7 +217,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightPassengerLabel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -232,7 +232,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightPassenger"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -246,7 +246,7 @@
 
         <View
             android:id="@+id/separatorPassenger"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="1dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -267,7 +267,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightClassLabel"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -282,7 +282,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightClass"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -296,7 +296,7 @@
 
         <View
             android:id="@+id/separatorClass"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="1dp"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"

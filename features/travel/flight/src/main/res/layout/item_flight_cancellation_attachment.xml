@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/dp_8"
-    android:layout_marginTop="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:layout_marginTop="@dimen/spacing_lvl3"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/padding_4"
@@ -13,15 +13,15 @@
 
     <RelativeLayout
         android:id="@+id/image_container"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
+        android:layout_width="@dimen/flight_dp_60"
+        android:layout_height="@dimen/flight_dp_60"
         android:background="@drawable/bg_flight_gray_rounded_dashed"
-        android:padding="@dimen/dp_1">
+        android:padding="@dimen/flight_dp_1">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_attachment"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
+            android:layout_width="@dimen/layout_lvl5"
+            android:layout_height="@dimen/layout_lvl5"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/flight_ic_upload_photo" />
 
@@ -40,7 +40,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@+id/image_container"
         android:layout_toRightOf="@+id/image_container"

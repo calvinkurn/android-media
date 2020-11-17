@@ -358,7 +358,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         mealAdapter.setMarginTopDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
         mealAdapter.setMarginBottomDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
         mealAdapter.setArrowVisible(true)
-        mealAdapter.setFontSize(resources.getDimension(com.tokopedia.design.R.dimen.sp_12))
+        mealAdapter.setFontSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2))
         mealAdapter.setInteractionListener { adapterPosition, viewModel ->
             val meal = flightBookingMealRouteModels.get(adapterPosition)
             var existingSelected: FlightBookingAmenityMetaModel? = null
@@ -430,7 +430,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         luggageAdapter.setMarginTopDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
         luggageAdapter.setMarginBottomDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
         luggageAdapter.setArrowVisible(true)
-        luggageAdapter.setFontSize(resources.getDimension(com.tokopedia.design.R.dimen.sp_12))
+        luggageAdapter.setFontSize(resources.getDimension(com.tokopedia.unifycomponents.R.dimen.fontSize_lvl2))
         luggageAdapter.setInteractionListener { adapterPosition, viewModel ->
             val luggage = flightBookingLuggageRouteModels.get(adapterPosition)
 

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/dp_20"
+    android:layout_marginTop="@dimen/flight_dp_20"
     android:background="@color/Unify_N0"
     android:orientation="vertical"
-    android:padding="@dimen/dp_20">
+    android:padding="@dimen/flight_dp_20">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,11 +16,11 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/TextView.Title.Bold"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:letterSpacing="-0.01"
-            android:textSize="@dimen/sp_18"
+            android:textSize="@dimen/fontSize_lvl5"
             tools:text="Asuransi Perjalanan" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -28,9 +28,9 @@
             android:id="@+id/ic_flight_insurance_protection_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/dp_4"
+            android:drawablePadding="@dimen/spacing_lvl2"
             android:text="@string/flight_detail_order_protection_label"
-            android:textSize="@dimen/sp_18" />
+            android:textSize="@dimen/fontSize_lvl5" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -43,6 +43,6 @@
         style="@style/CardInsuranceDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginTop="@dimen/spacing_lvl3"
         android:text="@string/flight_order_detail_insurance_description" />
 </LinearLayout>

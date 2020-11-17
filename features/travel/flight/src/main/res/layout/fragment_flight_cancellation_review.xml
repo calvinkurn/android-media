@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:orientation="vertical"
-        android:padding="@dimen/dp_20"
+        android:padding="@dimen/flight_dp_20"
         android:visibility="gone">
 
         <ProgressBar
@@ -48,10 +48,10 @@
                 android:layout_marginBottom="@dimen/padding_16"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_16">
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingTop="@dimen/spacing_lvl4"
+                android:paddingEnd="@dimen/spacing_lvl3"
+                android:paddingRight="@dimen/spacing_lvl4">
 
                 <TextView
                     android:id="@+id/tv_departure_label"
@@ -65,14 +65,14 @@
                     android:id="@+id/container_additional_reason"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro.BlackDisabled"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/spacing_lvl4"
                         android:text="@string/flight_cancellation_reason_label" />
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -94,7 +94,7 @@
                         style="@style/TextView.Micro.BlackDisabled"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginBottom="@dimen/spacing_lvl3"
                         android:text="@string/flight_cancellation_review_passenger_id_label" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -111,14 +111,14 @@
                 android:layout_height="wrap_content"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:padding="@dimen/dp_16">
+                android:padding="@dimen/spacing_lvl4">
 
                 <TextView
                     android:id="@+id/tv_estimate_label"
                     style="@style/TextView.TitleMedium.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:background="@color/Unify_N0"
                     android:text="@string/flight_cancellation_estimate_refund_label" />
 
@@ -146,13 +146,13 @@
                     android:id="@+id/container_estimate_refund"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/margin_8"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Small.Bold"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="@string/flight_cancellation_estimate_refund_label" />
@@ -160,7 +160,7 @@
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_total_refund"
                         style="@style/TextView.Title.OrangeRed.Bold"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="right"
@@ -186,7 +186,7 @@
                     style="@style/TextView.Small.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
                     android:layout_marginBottom="@dimen/margin_8"
                     android:visibility="gone"
                     tools:text="@string/flight_cancellation_review_refund_to_email_detail"
@@ -199,8 +199,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_10">
+                android:paddingTop="@dimen/flight_dp_10"
+                android:paddingBottom="@dimen/flight_dp_10">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/button_submit"

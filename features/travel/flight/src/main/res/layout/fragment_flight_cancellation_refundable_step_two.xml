@@ -29,8 +29,8 @@
                 style="@style/HintTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"
-                android:layout_marginTop="@dimen/dp_5"
+                android:layout_marginBottom="@dimen/spacing_lvl4"
+                android:layout_marginTop="@dimen/spacing_lvl2"
                 android:hint="@string/flight_cancellation_reason_label">
 
                 <com.tokopedia.design.component.EditTextCompat
@@ -66,10 +66,10 @@
                     style="@style/TextView.Micro"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/spacing_lvl4"
                     android:text="@string/flight_cancellation_support_docs_description"
                     android:textColor="@color/Unify_N700_32"
-                    android:textSize="@dimen/sp_10" />
+                    android:textSize="@dimen/fontSize_lvl1" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_attachments"
