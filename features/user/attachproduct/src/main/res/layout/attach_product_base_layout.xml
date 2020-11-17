@@ -81,14 +81,14 @@
                         android:layout_gravity="center_vertical"
                         android:layout_marginEnd="@dimen/spacing_lvl2"
                         android:layout_marginRight="@dimen/spacing_lvl2"
-                        tools:background="@color/attachproduct_black" />
+                        tools:background="@color/Unify_N700" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_variant_color"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@color/Neutral_N200"
+                        android:textColor="@color/Unify_N200"
                         app:typographyType="small"
                         app:typographyWeight="bold"
                         tools:text="Hitam" />
@@ -111,7 +111,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:textColor="@color/Neutral_N200"
+                        android:textColor="@color/Unify_N200"
                         app:typographyType="small"
                         app:typographyWeight="bold"
                         tools:text="Besar" />
@@ -132,7 +132,7 @@
                 android:lineSpacingExtra="4sp"
                 android:maxWidth="@dimen/attachproduct_172dp"
                 android:maxLines="1"
-                android:textColor="@color/attach_product_title"
+                android:textColor="@color/Unify_N700"
                 app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 tools:text="Nama Produk YANG PANJAAAANG ASLKDAJLSKDJALSKJD" />
@@ -148,7 +148,7 @@
                 android:layout_toEndOf="@+id/discount"
                 android:layout_toRightOf="@+id/discount"
                 android:gravity="center_vertical"
-                android:textColor="@color/Neutral_N700_44"
+                android:textColor="@color/Unify_N700_44"
                 android:visibility="gone"
                 app:typographyType="small"
                 tools:text="Rp 2.099.000"
@@ -160,7 +160,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/discount"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:textColor="@color/attachproduct_deep_orange_500"
+                android:textColor="@color/Unify_Y500"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="Rp 2.099.000" />
@@ -274,7 +274,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:textColor="@color/Neutral_N700_44"
+            android:textColor="@color/Unify_N700_44"
             app:typographyType="body_3"
             tools:text="11:00" />
     </LinearLayout>

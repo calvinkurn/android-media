@@ -7,6 +7,9 @@ import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse
 import com.tokopedia.tradein.usecase.MoneyInCheckoutUseCase
 import com.tokopedia.tradein.usecase.MoneyInCourierRatesUseCase
 import com.tokopedia.tradein.usecase.MoneyInPickupScheduleUseCase
+import com.tokopedia.tradein.viewmodel.liveState.CourierPriceError
+import com.tokopedia.tradein.viewmodel.liveState.MutationCheckoutError
+import com.tokopedia.tradein.viewmodel.liveState.ScheduleTimeError
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
