@@ -37,6 +37,7 @@
             app:toolbarDefaultHint = "@string/default_search_title"
             app:toolbarContentType="typeSearchbar"
             app:toolbarBackButton="back"
+            app:toolbarPageName="@string/discovery_page"
             android:visibility="gone"
             tools:visibility = "visible"/>
 
