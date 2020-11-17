@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
+import com.tokopedia.sellerorder.common.presenter.model.Roles
+import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.usecases.*
@@ -20,6 +22,9 @@ import io.mockk.Ordering
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -559,6 +564,54 @@ class SomListViewModelTest {
         }
 
         assert(viewModel.topAdsCategoryResult.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun getUserRoles_shouldSuccess() {
+        coEvery {
+            getUserRoleUseCase.execute()
+        } returns Success(SomGetUserRoleUiModel())
+
+        viewModel.getUserRoles()
+
+        coVerify { getUserRoleUseCase.execute() }
+
+        assert(viewModel.userRoleResult.observeAwaitValue() is Success)
+    }
+
+    @Test
+    fun getUserRoles_shouldFailed() {
+        coEvery {
+            getUserRoleUseCase.execute()
+        } throws Throwable()
+
+        viewModel.getUserRoles()
+
+        coVerify { getUserRoleUseCase.execute() }
+
+        assert(viewModel.userRoleResult.observeAwaitValue() is Fail)
+    }
+
+    @Test
+    fun getUserRoles_shouldSkippedWhenAlreadyRunning() = runBlocking {
+        viewModel::class.java.superclass!!.getDeclaredField("getUserRolesJob").apply {
+            isAccessible = true
+        }.set(viewModel, launch { delay(10000) })
+
+        viewModel.getUserRoles()
+
+        coVerify(inverse = true) { getUserRoleUseCase.execute() }
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+        return@runBlocking
+    }
+
+    @Test
+    fun getUserRolesTest() {
+        val newUserRolesValue = SomGetUserRoleUiModel(listOf(Roles.MANAGE_SHOPSTATS))
+        viewModel.setUserRoles(newUserRolesValue)
+        val userRolesValue = viewModel.userRoleResult.observeAwaitValue()
+        assert(userRolesValue is Success && userRolesValue.data == newUserRolesValue)
     }
 
     @Test
