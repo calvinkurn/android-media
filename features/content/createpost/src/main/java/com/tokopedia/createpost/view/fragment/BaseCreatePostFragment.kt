@@ -695,7 +695,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         if (isFormInvalid()) {
             return
         }
-
+        context?.let {
+            val input = it.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            input.hideSoftInputFromWindow(view?.applicationWindowToken, 0)
+        }
         if (affiliatePref.isFirstTimePost(userSession.userId) && !skipFirstTimeChecking) openShareBottomSheetDialog()
         else {
             submitPost()
