@@ -5,6 +5,8 @@ import android.app.Instrumentation
 import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingPolicies
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -18,7 +20,9 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringListener
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
+import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -27,10 +31,12 @@ import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 import org.hamcrest.core.AllOf.allOf
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.TimeUnit
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -49,22 +55,44 @@ class ProductDetailActivityTest {
         override fun getActivityIntent(): Intent {
             return ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         }
+
+        override fun afterActivityLaunched() {
+            super.afterActivityLaunched()
+            productDetailLoadTimeMonitoringListener.onStartPltListener()
+            activity?.productDetailLoadTimeMonitoringListener = productDetailLoadTimeMonitoringListener
+            markAsIdleIfPltIsSucceed()
+        }
+    }
+
+    val productDetailLoadTimeMonitoringListener = object : ProductDetailLoadTimeMonitoringListener {
+        override fun onStartPltListener() {
+            ProductDetailIdlingResource.increment()
+        }
+
+        override fun onStopPltListener() {
+            ProductDetailIdlingResource.decrement()
+        }
     }
 
     @Before
     fun setup() {
+        setUpTimeoutIdlingResource()
+        IdlingRegistry.getInstance().register(ProductDetailIdlingResource.idlingResource)
         gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(ProductDetailMockResponse())
+        intendingIntent()
+    }
+
+    @After
+    fun finish() {
+        IdlingRegistry.getInstance().unregister(ProductDetailIdlingResource.idlingResource)
     }
 
     @Test
     fun validateClickBuyIsLogin() {
         actionTest {
             fakeLogin()
-            intendingIntent()
-            waitForData()
             clickVariantTest()
-            intendingIntent()
             clickBuyNow()
         } assertTest {
             waitForTrackerSent()
@@ -78,8 +106,6 @@ class ProductDetailActivityTest {
     fun validateClickAddToCartIsLogin() {
         actionTest {
             fakeLogin()
-            intendingIntent()
-            waitForData()
             clickVariantTest()
             clickAddToCart()
         } assertTest {
@@ -97,12 +123,9 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickBuyIsNonLogin() {
         actionTest {
-            intendingIntent()
-            waitForData()
             clickVariantTest()
             clickBuyNow()
         } assertTest {
-            intendingIntent()
             performClose(activityRule)
             waitForTrackerSent()
             validate(gtmLogDBSource, targetContext, BUTTON_BUY_NON_LOGIN_PATH)
@@ -113,8 +136,6 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickAddToCartIsNonLogin() {
         actionTest {
-            intendingIntent()
-            waitForData()
             clickVariantTest()
             clickAddToCart()
         } assertTest {
@@ -128,8 +149,6 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickGuideOnSizeChart() {
         actionTest {
-            intendingIntent()
-            waitForData()
             clickSeeGuideSizeChart()
         } assertTest {
             performClose(activityRule)
@@ -137,6 +156,11 @@ class ProductDetailActivityTest {
             validate(gtmLogDBSource, targetContext, GUIDE_ON_SIZE_CHART_PATH)
             finishTest()
         }
+    }
+
+    private fun setUpTimeoutIdlingResource() {
+        IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
+        IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
     }
 
     private fun finishTest() {
@@ -153,26 +177,17 @@ class ProductDetailActivityTest {
         onView(withId(R.id.rv_pdp)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(6, scrollTo())
         )
-        Thread.sleep(1000)
-
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantImageViewHolder>(0, clickChildViewWithId(R.id.variantImgContainer)))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantChipViewHolder>(1, clickChildViewWithId(R.id.containerChipVariant)))
-
-        Thread.sleep(1000)
     }
 
     private fun clickSeeGuideSizeChart() {
         onView(withId(R.id.rv_pdp)).perform(
                 RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(6, scrollTo())
         )
-        Thread.sleep(1000)
         val viewInteraction = onView(allOf(withId(R.id.rvContainerVariant))).check(matches(isDisplayed()))
         viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<VariantContainerViewHolder>(1, clickChildViewWithId(R.id.txtVariantGuideline)))
-    }
-
-    private fun waitForData() {
-        Thread.sleep(8000)
     }
 
     private fun waitForTrackerSent() {
@@ -189,6 +204,13 @@ class ProductDetailActivityTest {
 
     private fun intendingIntent() {
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+    }
+
+    private fun markAsIdleIfPltIsSucceed() {
+        val performanceData = activityRule.activity.pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
+        if (performanceData?.isSuccess == true) {
+            productDetailLoadTimeMonitoringListener.onStopPltListener()
+        }
     }
 
     companion object {
