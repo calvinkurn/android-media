@@ -15,7 +15,7 @@ class MainNavSpacingDecoration(private val edgeMargin: Int) : RecyclerView.ItemD
 
         outRect.top = 0
         outRect.right = 0
-        val bottomValue = if (pos == parent.adapter?.itemCount?:0 - 1) edgeMargin else 0
+        val bottomValue = if (pos == (parent.adapter?.itemCount?:0) - 1) edgeMargin else 0
         outRect.bottom = bottomValue
 
         outRect.left = 0
