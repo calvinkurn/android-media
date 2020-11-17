@@ -16,8 +16,8 @@ import javax.inject.Inject
 class ShopPageSettingViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-        dispatcher: CoroutineDispatchers
-) : BaseViewModel(dispatcher.main) {
+        private val dispatcherProvider: CoroutineDispatchers
+) : BaseViewModel(dispatcherProvider.main) {
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
 
@@ -27,7 +27,7 @@ class ShopPageSettingViewModel @Inject constructor(
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            val shopInfo = withContext(Dispatchers.IO) {
+            val shopInfo = withContext(dispatcherProvider.io) {
                 getShopInfo(id, shopDomain, isRefresh)
             }
             shopInfoResp.postValue(Success(shopInfo))
