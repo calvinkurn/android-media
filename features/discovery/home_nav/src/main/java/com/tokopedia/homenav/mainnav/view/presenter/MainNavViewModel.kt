@@ -172,8 +172,7 @@ class MainNavViewModel @Inject constructor(
         addWidgetList(listOf(
                 InitialShimmerAccountDataModel(),
                 InitialShimmerBuListDataModel(),
-                InitialShimmerTransactionDataModel(),
-                InitialShimmerMenuDataModel()
+                InitialShimmerTransactionDataModel()
         ))
     }
 
@@ -375,7 +374,7 @@ class MainNavViewModel @Inject constructor(
             val result = withContext(baseDispatcher.get().io()) {
                 getUserMembershipUseCase.get().executeOnBackground()
             }
-            accountData.badge = result.tokopoints.status.tier.eggImageURL
+            accountData.badge = result.tokopoints.status.tier.imageUrl
             updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
         }){
             _membershipResultListener.postValue(Fail(it))

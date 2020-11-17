@@ -41,6 +41,7 @@ class GetUserMembershipUseCase @Inject constructor(
                         name
                         nameDesc
                         eggImageURL
+                        eggImageHomepageURL
                       }
                     }
                   }
