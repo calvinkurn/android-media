@@ -510,7 +510,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -531,7 +531,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -550,7 +550,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },
@@ -569,7 +569,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                         ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                     }
                 },

@@ -231,14 +231,14 @@ class VerificationMethodFragment : BaseOtpFragment(), IOnBackPressed {
                     }
 
                     override fun updateDrawState(ds: TextPaint) {
-                        ds.color = MethodChecker.getColor(context, R.color.Green_G500)
+                        ds.color = MethodChecker.getColor(context, R.color.Unify_G500)
                     }
                 },
                 message.indexOf(getString(R.string.setting)),
                 message.indexOf(getString(R.string.setting)) + getString(R.string.setting).length,
                 0)
         viewBound.phoneInactive?.visible()
-        context?.let { ContextCompat.getColor(it, R.color.Neutral_N700_68) }?.let {
+        context?.let { ContextCompat.getColor(it, R.color.Unify_N700_68) }?.let {
             viewBound.phoneInactive?.setTextColor(it)
         }
         viewBound.phoneInactive?.movementMethod = LinkMovementMethod.getInstance()

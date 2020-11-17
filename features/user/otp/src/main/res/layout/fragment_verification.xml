@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_marginLeft="@dimen/prefix_miscall_margin_left"
                 android:layout_marginTop="@dimen/prefix_miscall_margin_top"
                 android:text="@string/cotp_miscall_verification_phone_code"
-                android:textColor="@color/Neutral_N0"
+                android:textColor="@color/Unify_N0"
                 android:visibility="gone"
                 app:layout_constraintStart_toStartOf="@+id/method_icon"
                 app:layout_constraintTop_toTopOf="@+id/method_icon"
