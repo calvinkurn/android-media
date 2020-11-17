@@ -98,12 +98,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                 somFilterUiModel.addAll(somFilterResult)
             }
 
-            somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData =
-                    somFilterResult.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.onEach { chips ->
-                        if (chips.name == orderStatus) {
-                            chips.isSelected = true
-                        }
-                    } ?: listOf()
+            somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.onEach { chips ->
+                if (chips.name == orderStatus) {
+                    chips.isSelected = true
+                }
+            }
 
             shouldSelectRequestCancelFilter()
             val somFilterVisitable = mutableListOf<BaseSomFilter>()
