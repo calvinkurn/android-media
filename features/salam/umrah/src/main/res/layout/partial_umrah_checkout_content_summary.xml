@@ -4,11 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white_65"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_12"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_12">
+    android:background="@color/Neutral_N0"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/unify_space_12"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/unify_space_12">
 
     <LinearLayout
         android:id="@+id/container_umrah_checkout_summary"
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/umrah_bg_checkout_gray"
         android:orientation="vertical"
-        android:padding="@dimen/dp_12"
+        android:padding="@dimen/unify_space_12"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -37,14 +37,14 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_height="@dimen/dimen_dp_1"
+            android:layout_marginTop="@dimen/unify_space_12"
             android:background="@color/Neutral_N100" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_12">
+            android:layout_marginTop="@dimen/unify_space_12">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_checkout_summary_total_title"
@@ -70,11 +70,11 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
-        android:padding="@dimen/dp_12"
-        app:cardElevation="@dimen/dp_2"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:padding="@dimen/unify_space_12"
+        app:cardElevation="@dimen/spacing_lvl1"
         app:cardUseCompatPadding="true"
-        app:cardCornerRadius="@dimen/dp_8"
+        app:cardCornerRadius="@dimen/spacing_lvl3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_umrah_checkout_summary">
@@ -82,7 +82,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_12"
+            android:padding="@dimen/unify_space_12"
             android:orientation="vertical">
 
             <com.tokopedia.unifyprinciples.Typography
@@ -99,7 +99,7 @@
                 android:id="@+id/rl_umrah_checkout_full_paid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/unify_space_12"
                 tools:targetApi="m"
                 tools:ignore="UnusedAttribute">
 
@@ -135,9 +135,9 @@
             <View
                 android:id="@+id/view_umrah_checkout_separator"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginLeft="@dimen/dp_32"
+                android:layout_height="@dimen/dimen_dp_1"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:layout_marginLeft="@dimen/spacing_lvl6"
                 android:background="@color/Neutral_N100" />
 
             <RelativeLayout
@@ -147,7 +147,7 @@
                 android:id="@+id/rl_umrah_checkout_down_payment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/spacing_lvl4"
                 tools:targetApi="m"
                 tools:ignore="UnusedAttribute">
 
@@ -186,7 +186,7 @@
                     android:text="@string/umrah_checkout_summary_downpayment_desc"
                     android:textColor="@color/Neutral_N700"
                     app:typographyType="small"
-                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginTop="@dimen/unify_space_12"
                     android:layout_below="@+id/tg_umrah_checkout_downpayment_title"
                     android:layout_toRightOf="@+id/rb_umrah_checkout_down_payment" />
 

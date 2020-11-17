@@ -1,8 +1,7 @@
-package data
+package com.tokopedia.entertainment.data
 
 import com.tokopedia.entertainment.pdp.data.pdp.ItemMapResponse
 import com.tokopedia.entertainment.pdp.data.pdp.MetaDataResponse
-import com.tokopedia.entertainment.pdp.data.pdp.PassengerForm
 
 object MockMetaData {
     fun getMetaDataResponse(): MetaDataResponse {

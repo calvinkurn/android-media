@@ -12,33 +12,33 @@
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_height="@dimen/dp_32"
-        tools:layout_width="@dimen/dp_32"
-        tools:src="@color/light_blue_300" />
+        tools:layout_height="@dimen/spacing_lvl6"
+        tools:layout_width="@dimen/spacing_lvl6"
+        tools:src="@color/Blue_B300" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/iv_widget_umrah_pdp_item_loader"
         app:corners="45"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/spacing_lvl6"
+        android:layout_height="@dimen/spacing_lvl6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_widget_umrah_pdp_item_title_loader"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_width="@dimen/unify_space_96"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         app:corners="4"
         app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item_loader"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tg_widget_umrah_pdp_item_desc_loader"
-        android:layout_width="@dimen/dp_100"
-        android:layout_height="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_width="@dimen/unify_space_96"
+        android:layout_height="@dimen/unify_space_12"
+        android:layout_marginTop="@dimen/spacing_lvl1"
         app:corners="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/tg_widget_umrah_pdp_item_title_loader"

@@ -13,6 +13,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,8 +24,8 @@ import javax.inject.Inject
 class ShopPageSettingViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatcherProvider: CoroutineDispatcherProvider
+) : BaseViewModel(dispatcherProvider.main()) {
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
 
@@ -34,7 +35,7 @@ class ShopPageSettingViewModel @Inject constructor(
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
-            val shopInfo = withContext(Dispatchers.IO) {
+            val shopInfo = withContext(dispatcherProvider.io()) {
                 getShopInfo(id, shopDomain, isRefresh)
             }
             shopInfoResp.postValue(Success(shopInfo))
