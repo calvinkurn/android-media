@@ -616,9 +616,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
 
     @RequiresPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private fun downloadFiles(uri: String) {
-        val missingPermissions = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         activity?.let {
-            ActivityCompat.requestPermissions(it, missingPermissions, DOWNLOAD_REQUEST_CODE)
             try {
                 val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this)
                 helper.downloadFile { true }

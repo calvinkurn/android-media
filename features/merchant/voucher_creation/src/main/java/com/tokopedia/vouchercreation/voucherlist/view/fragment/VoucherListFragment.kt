@@ -162,8 +162,6 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private var isInverted: Boolean = false
     private var isSortApplied: Boolean = false
 
-    private var downloadImagesAction: () -> Unit = {}
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_mvc_voucher_list, container, false)
     }
@@ -1162,7 +1160,7 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
     private fun downloadFiles(uri: String) {
         activity?.let {
             try {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), null)
+                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
                 helper.downloadFile { true }
             } catch (se: SecurityException) {
                 MvcErrorHandler.logToCrashlytics(se, MvcError.ERROR_SECURITY)
@@ -1179,18 +1177,6 @@ class VoucherListFragment : BaseListFragment<BaseVoucherListUiModel, VoucherList
             } catch (ex: Exception) {
                 MvcErrorHandler.logToCrashlytics(ex, MvcError.ERROR_DOWNLOAD)
                 view?.showDownloadActionTicker(false)
-            }
-        }
-    }
-
-    private fun setupDowloadAction(uri: String) {
-        downloadImagesAction = {
-            activity?.let {
-                val helper = DownloadHelper(it, uri, System.currentTimeMillis().toString(), this@VoucherListFragment)
-                if (ActivityCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    return@let
-                }
-                helper.downloadFile { true }
             }
         }
     }
