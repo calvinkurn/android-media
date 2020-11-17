@@ -75,7 +75,8 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 header_date_value?.text = item.dataObject.paymentDate
 
                 if (item.dataObject.deadlineText.isNotEmpty()) {
-                    header_deadline_label?.visibility = View.VISIBLE
+                    header_deadline_label?.show()
+                    due_label?.show()
                     if (item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED || item.dataObject.statusCode == STATUS_CODE_ORDER_DELIVERED_DUE_LIMIT) {
                         header_deadline_label?.text = itemView.context.getString(R.string.som_deadline_done)
                     } else {
@@ -84,14 +85,14 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
 
                     label_due_response_day_count?.text = item.dataObject.deadlineText
                     ic_time?.loadImageDrawable(R.drawable.ic_label_due_time)
-                    itemView.ic_time?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                    ic_time?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
                     if (item.dataObject.deadlineColor.isNotEmpty() && !item.dataObject.deadlineColor.equals(LABEL_EMPTY, true)) {
-                        itemView.due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
+                        due_label?.setCardBackgroundColor(Color.parseColor(item.dataObject.deadlineColor))
                     }
                 } else {
-                    header_deadline_label?.visibility = View.GONE
-                    due_label?.visibility = View.GONE
+                    header_deadline_label?.hide()
+                    due_label?.hide()
                 }
 
                 header_invoice?.text = item.dataObject.invoice
@@ -105,14 +106,6 @@ class SomDetailHeaderViewHolder(itemView: View, private val actionListener: SomD
                 }
             }
         }
-
-        val coachmarkHeader = CoachMarkItem(itemView,
-                itemView.context.getString(R.string.coachmark_header),
-                itemView.context.getString(R.string.coachmark_header_info))
-
-        actionListener?.onAddedCoachMarkHeader(
-                coachmarkHeader
-        )
     }
 
     private fun setupOrderStatus(statusText: String, statusCode: Int) {

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +19,6 @@ import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
-import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DEADLINE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
@@ -49,7 +47,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomSheetUnify(),
+class SomFilterBottomSheet : BottomSheetUnify(),
         SomFilterListener, SomFilterDateBottomSheet.CalenderListener,
         HasComponent<SomFilterComponent> {
 
@@ -73,6 +71,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private var fm: FragmentManager? = null
 
+    private var statusBarColorUtil: StatusBarColorUtil? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInject()
@@ -90,6 +90,10 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         somFilterViewModel.setSomFilterUiModel(somFilterUiModelList)
         somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
                 ?: SomListGetOrderListParam())
+
+        setShowListener {
+            setStatusBarColor()
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -103,6 +107,8 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         loadSomFilterData()
         clickShowOrder()
         observeSomFilter()
+        observeUpdateFilterSelected()
+        observeOrderListParam()
         bottomSheetReset()
         adjustBottomSheetPadding()
     }
@@ -137,7 +143,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     override fun onFilterChipsClicked(somFilterData: SomFilterChipsUiModel, idFilter: String,
                                       position: Int, chipType: String, orderStatus: String) {
         when (idFilter) {
-            FILTER_SORT, FILTER_LABEL, FILTER_DEADLINE, FILTER_STATUS_ORDER -> {
+            FILTER_SORT, FILTER_LABEL, FILTER_STATUS_ORDER -> {
                 somFilterViewModel.updateFilterSelected(idFilter, position, chipType, filterDate)
                 somFilterViewModel.updateParamSom(idFilter)
             }
@@ -153,7 +159,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
                 .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(KEY_SOM_LIST_GET_ORDER_PARAM, somFilterViewModel.getSomListGetOrderListParam())
-        val intentSomSubFilter = SomSubFilterActivity.newInstance(this.activity,
+        val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
                 filterDate,
                 idFilter,
                 somFilterChipsList,
@@ -208,10 +214,16 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        dialog?.window?.setWindowAnimations(-1)
+    }
+
     override fun onDestroy() {
         removeObservers(somFilterViewModel.filterResult)
         removeObservers(somFilterViewModel.updateFilterSelected)
         removeObservers(somFilterViewModel.somFilterOrderListParam)
+        undoStatusBarColor()
         super.onDestroy()
     }
 
@@ -224,7 +236,7 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
     fun show(fm: FragmentManager?) {
         this.fm = fm
         isApplyFilter = false
-        mActivity?.supportFragmentManager?.let {
+        fm?.let {
             show(it, SOM_FILTER_BOTTOM_SHEET_TAG)
         }
     }
@@ -252,6 +264,16 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
 
     private fun initInject() {
         component?.inject(this)
+    }
+
+    private fun setStatusBarColor() {
+        statusBarColorUtil = StatusBarColorUtil(requireActivity())
+        statusBarColorUtil?.setStatusBarColor()
+    }
+
+    private fun undoStatusBarColor() {
+        statusBarColorUtil?.undoSetStatusBarColor()
+        statusBarColorUtil = null
     }
 
     private fun clickShowOrder() {
@@ -291,40 +313,37 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         }
     }
 
-    private fun observeSomFilter() {
-        observe(somFilterViewModel.filterResult) {
-            finishSomFilterData()
-            when (it) {
-                is Success -> {
-                    if (it.data.isEmpty()) {
-                        somFilterAdapter?.setEmptyState(EmptyModel())
-                    } else {
-                        somFilterAdapter?.updateData(it.data)
-                        showHideBottomSheetReset()
+    private fun observeSomFilter() = observe(somFilterViewModel.filterResult) {
+                finishSomFilterData()
+                when (it) {
+                    is Success -> {
+                        if (it.data.isEmpty()) {
+                            somFilterAdapter?.setEmptyState(EmptyModel())
+                        } else {
+                            somFilterAdapter?.updateData(it.data)
+                            showHideBottomSheetReset()
+                        }
                     }
-                }
-                is Fail -> {
+                    is Fail -> { }
                 }
             }
+
+    private fun observeOrderListParam() = observe(somFilterViewModel.somFilterOrderListParam) {
+        when (it) {
+            is Success -> {
+                somListOrderParam = it.data
+            }
+            is Fail -> { }
         }
-        observe(somFilterViewModel.updateFilterSelected) {
-            when (it) {
-                is Success -> {
-                    somFilterAdapter?.updateData(it.data)
-                    showHideBottomSheetReset()
-                }
-                is Fail -> {
-                }
+    }
+
+    private fun observeUpdateFilterSelected() = observe(somFilterViewModel.updateFilterSelected) {
+        when (it) {
+            is Success -> {
+                somFilterAdapter?.updateData(it.data)
+                showHideBottomSheetReset()
             }
-        }
-        observe(somFilterViewModel.somFilterOrderListParam) {
-            when (it) {
-                is Success -> {
-                    somListOrderParam = it.data
-                }
-                is Fail -> {
-                }
-            }
+            is Fail -> { }
         }
     }
 
@@ -385,14 +404,13 @@ class SomFilterBottomSheet(private val mActivity: FragmentActivity?) : BottomShe
         const val REQUEST_CODE_FILTER_SEE_ALL = 901
         const val RESULT_CODE_FILTER_SEE_ALL = 801
 
-        fun createInstance(mActivity: FragmentActivity?,
-                           orderStatus: String,
+        fun createInstance(orderStatus: String,
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
                            filterDate: String,
                            isRequestCancelFilterApplied: Boolean
         ): SomFilterBottomSheet {
-            val fragment = SomFilterBottomSheet(mActivity)
+            val fragment = SomFilterBottomSheet()
             val args = Bundle()
             args.putString(KEY_ORDER_STATUS, orderStatus)
             args.putIntegerArrayList(KEY_ORDER_STATUS_ID_LIST, ArrayList(orderStatusIdList))

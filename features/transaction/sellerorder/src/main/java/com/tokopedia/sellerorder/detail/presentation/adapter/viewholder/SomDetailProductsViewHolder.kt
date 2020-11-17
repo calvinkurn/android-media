@@ -38,14 +38,6 @@ class SomDetailProductsViewHolder(itemView: View, private val actionListener: So
                     rv_products?.visibility = View.GONE
                 }
             }
-
-            val coachmarkProducts = CoachMarkItem(this,
-                    itemView.context.getString(R.string.coachmark_product),
-                    itemView.context.getString(R.string.coachmark_product_info))
-
-            actionListener?.onAddedCoachMarkProducts(
-                    coachmarkProducts
-            )
         }
     }
 }

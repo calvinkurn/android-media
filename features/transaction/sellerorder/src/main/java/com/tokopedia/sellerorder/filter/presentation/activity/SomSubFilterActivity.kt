@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.filter.presentation.activity
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -35,7 +36,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
         const val ALL_FILTER = "Semua"
 
         @JvmStatic
-        fun newInstance(context: FragmentActivity?,
+        fun newInstance(context: Context?,
                         filterDate: String,
                         idFilter: String,
                         somSubFilterList: List<SomFilterChipsUiModel>,
@@ -104,6 +105,7 @@ class SomSubFilterActivity : BaseSimpleActivity(),
     }
 
     private fun btnSaveSubFilter() {
+        btnSaveSubFilter.isEnabled = false
         btnSaveSubFilter?.setOnClickListener {
             val cacheManager = SaveInstanceCacheManager(this, true)
             val cacheManagerId = cacheManager.id
@@ -183,7 +185,6 @@ class SomSubFilterActivity : BaseSimpleActivity(),
                 }
             } else {
                 actionTextView?.hide()
-                btnSaveSubFilter.isEnabled = false
             }
         }
     }

@@ -160,14 +160,6 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
             }
         }
 
-        val coachmarkShipping = CoachMarkItem(itemView,
-                itemView.context.getString(R.string.coachmark_shipping),
-                itemView.context.getString(R.string.coachmark_shipping_info))
-
-        actionListener?.onAddedCoachMarkShipping(
-                coachmarkShipping
-        )
-
     }
 
     companion object {
