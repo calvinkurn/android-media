@@ -107,8 +107,8 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                 toolbarContentType = ta.getInt(R.styleable.NavToolbar_toolbarContentType, TOOLBAR_TYPE_TITLE)
                 toolbarTitle = ta.getString(R.styleable.NavToolbar_toolbarTitle)?:""
                 toolbarDefaultHint = ta.getString(R.styleable.NavToolbar_toolbarDefaultHint)?:""
-                toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
                 toolbarPageName = ta.getString(R.styleable.NavToolbar_toolbarPageName)?:DEFAULT_PAGE_NAME
+                toolbarCustomReference = ta.getResourceIdOrThrow(R.styleable.NavToolbar_toolbarCustomContent)
             } catch (e: IllegalArgumentException) {
 
             } finally {
