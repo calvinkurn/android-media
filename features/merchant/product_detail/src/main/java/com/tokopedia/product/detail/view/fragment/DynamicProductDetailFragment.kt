@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -112,7 +111,7 @@ import com.tokopedia.product.detail.view.listener.PartialButtonActionListener
 import com.tokopedia.product.detail.view.util.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.detail.view.widget.*
-import com.tokopedia.product.info.view.ProductFullDescriptionTabActivity
+import com.tokopedia.product.info.view.ProductFullDescriptionActivity
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailBottomSheetListener
 import com.tokopedia.product.info.view.bottomsheet.ProductDetailInfoBottomSheet
 import com.tokopedia.product.share.ProductData
@@ -614,8 +613,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let {
             val data = ProductDetailUtil.generateDescriptionData(it, textDescription)
             context?.let { ctx ->
-                startActivity(ProductFullDescriptionTabActivity.createIntent(ctx,
-                        data, viewModel.getDynamicProductInfoP1?.basic?.catalogID ?: ""))
+                startActivity(ProductFullDescriptionActivity.createIntent(ctx, data))
                 activity?.overridePendingTransition(R.anim.pull_up, 0)
                 DynamicProductDetailTracking.Click.eventClickProductDescriptionReadMore(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
