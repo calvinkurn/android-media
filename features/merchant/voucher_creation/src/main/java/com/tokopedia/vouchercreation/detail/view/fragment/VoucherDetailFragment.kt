@@ -41,6 +41,7 @@ import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoringListener
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.DASH_DATE_FORMAT
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.HOUR_FORMAT
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getDisplayedDateString
 import com.tokopedia.vouchercreation.common.utils.shareVoucher
 import com.tokopedia.vouchercreation.common.utils.showDownloadActionTicker
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
@@ -441,7 +442,7 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
             val startHour = DateTimeUtils.reformatUnsafeDateTime(startTime, HOUR_FORMAT)
             val endHour = DateTimeUtils.reformatUnsafeDateTime(finishTime, HOUR_FORMAT)
 
-            val fullDisplayedDate = getDisplayedDateString(startDate, startHour, endDate, endHour)
+            val fullDisplayedDate = getDisplayedDateString(context, startDate, startHour, endDate, endHour)
 
             val voucherDetailInfoList: MutableList<VoucherDetailUiModel> = mutableListOf(
                     VoucherHeaderUiModel(

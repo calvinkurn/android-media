@@ -32,6 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxEndDate
@@ -42,7 +43,6 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getToday
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.common.utils.showErrorToaster
-import com.tokopedia.vouchercreation.create.view.activity.CreateMerchantVoucherStepsActivity
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
 import com.tokopedia.vouchercreation.create.view.painter.VoucherPreviewPainter
@@ -102,10 +102,10 @@ class SetVoucherPeriodFragment : Fragment() {
     }
     private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
         BannerBaseUiModel(
-                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+                VoucherUrl.BANNER_BASE_URL,
+                VoucherUrl.FREE_DELIVERY_URL,
+                VoucherUrl.CASHBACK_URL,
+                VoucherUrl.CASHBACK_UNTIL_URL
         )}
     private var onSuccessGetBannerBitmap: (Bitmap) -> Unit = { _ -> }
     private var getVoucherReviewData: () -> VoucherReviewUiModel? = { null }

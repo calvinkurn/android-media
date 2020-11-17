@@ -29,6 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationAnalyticConstant
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
+import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
 import com.tokopedia.vouchercreation.common.plt.MvcPerformanceMonitoring
@@ -66,13 +67,6 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
         private const val PROGRESS_DURATION = 200L
 
         private const val ERROR_MESSAGE = "Error get voucher initial data"
-
-        //These are default url for banners that we will use in case the server returned error
-        const val BANNER_BASE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/banner.jpg"
-        const val FREE_DELIVERY_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_gratis_ongkir.png"
-        const val CASHBACK_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback.png"
-        const val CASHBACK_UNTIL_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/label/label_cashback_hingga.png"
-        const val POST_IMAGE_URL = "https://ecs7.tokopedia.net/img/merchant-coupon/banner/v3/base_image/ig_post.jpg"
 
         const val DUPLICATE_VOUCHER = "duplicate_voucher"
         const val IS_DUPLICATE = "is_duplicate"
@@ -235,18 +229,18 @@ class CreateMerchantVoucherStepsActivity : BaseActivity(){
 
     private var bannerBaseUiModel =
             BannerBaseUiModel(
-                    BANNER_BASE_URL,
-                    FREE_DELIVERY_URL,
-                    CASHBACK_URL,
-                    CASHBACK_UNTIL_URL
+                    VoucherUrl.BANNER_BASE_URL,
+                    VoucherUrl.FREE_DELIVERY_URL,
+                    VoucherUrl.CASHBACK_URL,
+                    VoucherUrl.CASHBACK_UNTIL_URL
             )
 
     private var postBaseUiModel =
             PostBaseUiModel(
-                    POST_IMAGE_URL,
-                    FREE_DELIVERY_URL,
-                    CASHBACK_URL,
-                    CASHBACK_UNTIL_URL
+                    VoucherUrl.POST_IMAGE_URL,
+                    VoucherUrl.FREE_DELIVERY_URL,
+                    VoucherUrl.CASHBACK_URL,
+                    VoucherUrl.CASHBACK_UNTIL_URL
             )
 
     private var token = ""

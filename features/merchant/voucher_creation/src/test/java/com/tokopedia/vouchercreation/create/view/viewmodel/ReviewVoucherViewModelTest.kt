@@ -2,6 +2,7 @@ package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import android.graphics.Bitmap
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.vouchercreation.common.domain.usecase.UpdateVoucherUseCase
 import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.usecase.*
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel

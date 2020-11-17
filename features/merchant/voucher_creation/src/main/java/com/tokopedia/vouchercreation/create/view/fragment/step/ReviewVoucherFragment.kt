@@ -35,6 +35,7 @@ import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
 import com.tokopedia.vouchercreation.common.consts.VoucherUrl
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
 import com.tokopedia.vouchercreation.common.errorhandler.MvcErrorHandler
+import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getDisplayedDateString
 import com.tokopedia.vouchercreation.common.utils.dismissBottomSheetWithTags
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
@@ -107,10 +108,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var getToken: () -> String = { "" }
     private var getPostBaseUiModel: () -> PostBaseUiModel = {
         PostBaseUiModel(
-                CreateMerchantVoucherStepsActivity.POST_IMAGE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+                VoucherUrl.POST_IMAGE_URL,
+                VoucherUrl.FREE_DELIVERY_URL,
+                VoucherUrl.CASHBACK_URL,
+                VoucherUrl.CASHBACK_UNTIL_URL
         )}
     private var onReturnToStep: (Int) -> Unit = { _ -> }
     private var getBannerBitmap: () -> Bitmap? = { null }
@@ -118,10 +119,10 @@ class ReviewVoucherFragment : BaseDetailFragment() {
     private var getPromoCodePrefix: () -> String = { "" }
     private var getBannerBaseUiModel: () -> BannerBaseUiModel = {
         BannerBaseUiModel(
-                CreateMerchantVoucherStepsActivity.BANNER_BASE_URL,
-                CreateMerchantVoucherStepsActivity.FREE_DELIVERY_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_URL,
-                CreateMerchantVoucherStepsActivity.CASHBACK_UNTIL_URL
+                VoucherUrl.BANNER_BASE_URL,
+                VoucherUrl.FREE_DELIVERY_URL,
+                VoucherUrl.CASHBACK_URL,
+                VoucherUrl.CASHBACK_UNTIL_URL
         )}
     private var getVoucherBanner: () -> BannerVoucherUiModel = {
         BannerVoucherUiModel(
@@ -479,11 +480,11 @@ class ReviewVoucherFragment : BaseDetailFragment() {
 
     private fun renderReviewInformation(voucherReviewUiModel: VoucherReviewUiModel) {
         voucherReviewUiModel.run {
-            val postDisplayedDate = getDisplayedDateString(startDate, endDate)
+            val postDisplayedDate = getDisplayedDateString(context, startDate, endDate)
             val fullDisplayedDate: String? = if (startDate.isEmpty()) {
                 null
             } else {
-                getDisplayedDateString(startDate, startHour, endDate, endHour)
+                getDisplayedDateString(context, startDate, startHour, endDate, endHour)
             }
             val displayedPromoCode =
                     when {

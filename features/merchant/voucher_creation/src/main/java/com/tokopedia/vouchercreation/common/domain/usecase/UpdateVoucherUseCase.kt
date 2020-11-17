@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.domain.usecase
+package com.tokopedia.vouchercreation.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -7,7 +7,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.vouchercreation.common.base.BaseGqlUseCase
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
 import com.tokopedia.vouchercreation.voucherlist.domain.model.UpdateVoucherResponse
-import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ChangeVoucherPeriodUseCase
 import javax.inject.Inject
 
 class UpdateVoucherUseCase @Inject constructor(private val gqlRepository: GraphqlRepository) : BaseGqlUseCase<Boolean>()  {
@@ -26,7 +25,7 @@ class UpdateVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
                 "  }\n" +
                 "}"
 
-        private const val UPDATE_PARAM_KEY = "update_param"
+        const val UPDATE_PARAM_KEY = "update_param"
 
         @JvmStatic
         fun createRequestParam(updateVoucherParam: UpdateVoucherParam) = RequestParams().apply {
@@ -35,7 +34,7 @@ class UpdateVoucherUseCase @Inject constructor(private val gqlRepository: Graphq
     }
 
     override suspend fun executeOnBackground(): Boolean {
-        val request = GraphqlRequest(ChangeVoucherPeriodUseCase.MUTATION, UpdateVoucherResponse::class.java, params.parameters)
+        val request = GraphqlRequest(MUTATION, UpdateVoucherResponse::class.java, params.parameters)
         val response = gqlRepository.getReseponse(listOf(request))
 
         val error = response.getError(UpdateVoucherResponse::class.java)

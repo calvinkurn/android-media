@@ -1,5 +1,7 @@
 package com.tokopedia.vouchercreation.common.bottmsheet.voucherperiodbottomsheet
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,19 +9,23 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.kotlin.extensions.view.loadImageDrawable
-import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.parseAsHtml
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.di.component.DaggerVoucherCreationComponent
@@ -28,6 +34,8 @@ import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMaxStartDate
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils.getMinStartDate
 import com.tokopedia.vouchercreation.common.utils.convertUnsafeDateTime
+import com.tokopedia.vouchercreation.create.view.painter.SquareVoucherPainter
+import com.tokopedia.vouchercreation.create.view.uimodel.voucherimage.PostVoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import com.tokopedia.vouchercreation.voucherlist.view.viewmodel.ChangeVoucherPeriodViewModel
 import kotlinx.android.synthetic.main.bottomsheet_mvc_voucher_edit_period.*
@@ -66,6 +74,9 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
 
         const val TAG = "VoucherPeriodBottomSheet"
     }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -180,7 +191,7 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
             btnMvcSavePeriod?.run {
                 setOnClickListener {
                     isLoading = true
-                    viewModel.validateVoucherPeriod(voucher)
+                    viewModel.startValidating()
                 }
             }
 
@@ -221,6 +232,9 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
                 (endDate as? GregorianCalendar)?.run {
                     edtMvcEndDate?.setDateText(this)
                 }
+            }
+            observe(viewModel.startEndDatePairLiveData) { (startDate, endDate) ->
+                validateVoucherPeriod(startDate, endDate)
             }
             observe(viewModel.updateVoucherSuccessLiveData) { result ->
                 when(result) {
@@ -324,6 +338,48 @@ class VoucherPeriodBottomSheet : BottomSheetUnify() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+        }
+    }
+
+    private fun validateVoucherPeriod(startDate: String, endDate: String) {
+        voucher?.run {
+            getSquareVoucherBitmap(this, startDate, endDate) { squareBitmap ->
+                viewModel.validateVoucherPeriod(this, squareBitmap)
+            }
+        }
+    }
+
+    private fun getSquareVoucherBitmap(voucherUiModel: VoucherUiModel, startDate: String, endDate: String, onSuccessGetBitmap: (Bitmap) -> Unit) {
+        context?.run {
+            PostVoucherUiModel.mapToUiModel(
+                    this,
+                    voucherUiModel, userSession.shopAvatar, userSession.shopName, startDate, endDate)?.also { postVoucherUiModel ->
+                Glide.with(this)
+                        .asDrawable()
+                        .load(postVoucherUiModel.postBaseUiModel.postBaseUrl)
+                        .signature(ObjectKey(System.currentTimeMillis().toString()))
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                e?.run {
+                                    MvcErrorHandler.logToCrashlytics(this, ERROR_MESSAGE)
+                                    onFailListener(message.toBlankOrString())
+                                }
+                                btnMvcSavePeriod?.isLoading = false
+                                dismiss()
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Drawable, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                activity?.runOnUiThread {
+                                    val bitmap = resource.toBitmap()
+                                    val painter = SquareVoucherPainter(this@run, bitmap, onSuccessGetBitmap)
+                                    painter.drawInfo(postVoucherUiModel)
+                                }
+                                return false
+                            }
+                        })
+                        .submit()
+            }
         }
     }
 

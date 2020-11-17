@@ -1,4 +1,4 @@
-package com.tokopedia.vouchercreation.create.domain.usecase
+package com.tokopedia.vouchercreation.common.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
