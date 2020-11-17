@@ -36,7 +36,7 @@ import kotlinx.coroutines.launch
 class DynamicChannelMixTopViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
+) : AbstractViewHolder<DynamicChannelDataModel>(view), CoroutineScope {
 
     companion object {
         @LayoutRes
@@ -59,7 +59,7 @@ class DynamicChannelMixTopViewHolder(
     private var adapter: MixWidgetAdapter? = null
 
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
             setupHeader(dynamicChannelData.channel)
             setupContent(dynamicChannelData)

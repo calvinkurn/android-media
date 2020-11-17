@@ -28,7 +28,7 @@ import kotlinx.coroutines.launch
 class DynamicChannelMixLeftViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope, TransparentProductFlashSaleClickListener {
+) : AbstractViewHolder<DynamicChannelDataModel>(view), CoroutineScope, TransparentProductFlashSaleClickListener {
 
     companion object {
         @LayoutRes
@@ -50,7 +50,7 @@ class DynamicChannelMixLeftViewHolder(
     private var adapter: MixWidgetAdapter? = null
 
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
             dcEventHandler.onMixLeftBannerImpressed(dynamicChannelData.channel, 1)
             setupHeader(dynamicChannelData.channel)

@@ -5,6 +5,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.otp.verification.DispatcherProviderTest
 import com.tokopedia.otp.verification.domain.data.*
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
+import com.tokopedia.otp.verification.domain.pojo.OtpModeListPojo
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
