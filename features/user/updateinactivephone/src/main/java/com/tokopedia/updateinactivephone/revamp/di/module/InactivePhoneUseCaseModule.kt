@@ -37,10 +37,4 @@ class InactivePhoneUseCaseModule {
     fun provideImageUploadUseCase(apiClient: InactivePhoneApiClient<InactivePhoneApi>): ImageUploadUseCase {
         return ImageUploadUseCase(apiClient)
     }
-
-    @InactivePhoneScope
-    @Provides
-    fun provideGetUploadHostUseCase(apiClient: InactivePhoneApiClient<InactivePhoneApi>): GetUploadHostUseCase {
-        return GetUploadHostUseCase(apiClient)
-    }
 }
