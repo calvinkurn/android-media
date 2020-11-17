@@ -11,14 +11,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
 
 class ProductReportViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                  @Named("product_report_reason")
                                                  private val reportReasonQuery: String,
-                                                 private val dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.main) {
+                                                 dispatcher: CoroutineDispatchers): BaseViewModel(dispatcher.io) {
 
     val reasonResponse =  MutableLiveData<Result<List<ProductReportReason>>>()
 
@@ -29,13 +28,11 @@ class ProductReportViewModel @Inject constructor(private val graphqlRepository: 
     private fun getReportReason(){
         launchCatchError(block = {
             val graphqlRequest = GraphqlRequest(reportReasonQuery, ProductReportReason.Response::class.java)
-            val data = withContext(dispatcher.io){
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
-            }
+            val data = graphqlRepository.getReseponse(listOf(graphqlRequest))
             val list = data.getSuccessData<ProductReportReason.Response>().data
-            reasonResponse.value = Success(list)
+            reasonResponse.postValue(Success(list))
         }){
-            reasonResponse.value = Fail(it)
+            reasonResponse.postValue(Fail(it))
         }
     }
 
