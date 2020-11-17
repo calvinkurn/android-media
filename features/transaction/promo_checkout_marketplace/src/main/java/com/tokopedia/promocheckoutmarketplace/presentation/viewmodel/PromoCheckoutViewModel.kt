@@ -108,7 +108,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = _getPromoLastSeenResponse
 
     // Page source : CART, CHECKOUT, OCC
-    private fun getPageSource(): Int {
+    fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
     }
 
@@ -1617,55 +1617,4 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun sendAnalyticsClickLihatDetailKupon(promoCode: String) {
-        analytics.eventClickLihatDetailKupon(getPageSource(), promoCode)
-    }
-
-    fun sendAnalyticsClickRemovePromoCode() {
-        analytics.eventClickRemovePromoCode(getPageSource())
-    }
-
-    fun sendAnalyticsViewPopupSavePromo() {
-        analytics.eventViewPopupSavePromo(getPageSource())
-    }
-
-    fun sendAnalyticsClickKeluarHalaman() {
-        analytics.eventClickKeluarHalaman(getPageSource())
-    }
-
-    fun sendAnalyticsClickSimpanPromoBaru() {
-        analytics.eventClickSimpanPromoBaru(getPageSource())
-    }
-
-    fun sendAnalyticsClickButtonVerifikasiNomorHp() {
-        analytics.eventClickButtonVerifikasiNomorHp(getPageSource())
-    }
-
-    fun sendAnalyticsViewErrorPopup() {
-        analytics.eventViewErrorPopup(getPageSource())
-    }
-
-    fun sendAnalyticsClickCobaLagi() {
-        analytics.eventClickCobaLagi(getPageSource())
-    }
-
-    fun sendAnalyticsClickPakaiPromoFailed(errorMessage: String) {
-        analytics.eventClickPakaiPromoFailed(getPageSource(), errorMessage)
-    }
-
-    fun sendAnalyticsClickBeliTanpaPromo() {
-        analytics.eventClickBeliTanpaPromo(getPageSource())
-    }
-
-    fun sendAnalyticsDismissLastSeen() {
-        analytics.eventDismissLastSeen(getPageSource())
-    }
-
-    fun sendAnalyticsClickPromoInputField() {
-        analytics.eventClickInputField(getPageSource(), userSession.userId)
-    }
-
-    fun sendAnalyticsViewLastSeenPromo() {
-        analytics.eventShowLastSeenPopUp(getPageSource(), userSession.userId)
-    }
 }

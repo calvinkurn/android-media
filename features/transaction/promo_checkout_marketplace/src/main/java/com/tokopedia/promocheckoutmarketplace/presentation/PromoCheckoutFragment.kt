@@ -57,6 +57,7 @@ import com.tokopedia.promocheckoutmarketplace.di.DaggerPromoCheckoutMarketplaceC
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.promocheckoutmarketplace.presentation.adapter.PromoLastSeenAdapter
+import com.tokopedia.promocheckoutmarketplace.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.promocheckoutmarketplace.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.promocheckoutmarketplace.presentation.listener.PromoCheckoutActionListener
@@ -71,6 +72,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -83,6 +85,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     @Inject
     lateinit var itemDecorator: PromoCheckoutDecoration
+
+    @Inject
+    lateinit var analytics: PromoCheckoutAnalytics
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var promoCheckoutLastSeenBottomsheet: BottomSheetBehavior<FrameLayout>? = null
     private var showBottomsheetJob: Job? = null
@@ -291,13 +299,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 val bboPromoCodes = arguments?.getStringArrayList(ARGS_BBO_PROMO_CODES) as ArrayList<String>?
                 viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), validateUsePromoRequest, bboPromoCodes
                         ?: ArrayList())
-                viewModel.sendAnalyticsClickBeliTanpaPromo()
+                analytics.eventClickBeliTanpaPromo(viewModel.getPageSource())
             }
         }
 
         bottomsheetCloseButton?.let { bottomsheetCloseButton ->
             bottomsheetCloseButton.setOnClickListener {
-                viewModel.sendAnalyticsDismissLastSeen()
+                analytics.eventDismissLastSeen(viewModel.getPageSource())
                 hidePromoCheckoutLastSeenBottomsheet()
             }
         }
@@ -536,7 +544,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                     it.exception?.let {
                         showToastMessage(it)
-                        viewModel.sendAnalyticsClickPakaiPromoFailed(getErrorMessage(it))
+                        analytics.eventClickPakaiPromoFailed(viewModel.getPageSource(), getErrorMessage(it))
                     }
                 }
             }
@@ -611,7 +619,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
                 promoCheckoutLastSeenBottomsheet?.state = BottomSheetBehavior.STATE_COLLAPSED
 
-                viewModel.sendAnalyticsViewLastSeenPromo()
+                analytics.eventShowLastSeenPopUp(viewModel.getPageSource(), userSession.userId)
                 hasTriedToGetLastSeenData = false
             }
         }
@@ -693,14 +701,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 layoutGlobalError?.setType(getGlobalErrorType(it))
             }
             layoutGlobalError?.setActionClickListener { view ->
-                viewModel.sendAnalyticsClickCobaLagi()
+                analytics.eventClickCobaLagi(viewModel.getPageSource())
                 layoutGlobalError?.gone()
                 reloadData()
             }
             layoutGlobalError?.show()
             layoutMainContainer?.gone()
             containerActionBottom?.gone()
-            viewModel.sendAnalyticsViewErrorPopup()
+            analytics.eventViewErrorPopup(viewModel.getPageSource())
         }
     }
 
@@ -803,7 +811,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAText(getString(R.string.label_primary_cta_promo_dialog_backpressed))
                 setSecondaryCTAText(getString(R.string.label_secondary_cta_promo_dialog_backpressed))
                 setPrimaryCTAClickListener {
-                    viewModel.sendAnalyticsClickSimpanPromoBaru()
+                    analytics.eventClickSimpanPromoBaru(viewModel.getPageSource())
                     if (viewModel.isHasAnySelectedPromoItem()) {
                         val validateUsePromoRequest = arguments?.getParcelable(ARGS_VALIDATE_USE_REQUEST)
                                 ?: ValidateUsePromoRequest()
@@ -819,7 +827,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                 }
                 setSecondaryCTAClickListener {
-                    viewModel.sendAnalyticsClickKeluarHalaman()
+                    analytics.eventClickKeluarHalaman(viewModel.getPageSource())
                     dismiss()
                     val intent = Intent()
                     setPromoMvcLockCourierFlow(false)
@@ -829,7 +837,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             }.show()
 
-            viewModel.sendAnalyticsViewPopupSavePromo()
+            analytics.eventViewPopupSavePromo(viewModel.getPageSource())
         }
     }
 
@@ -873,7 +881,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun getOrShowLastSeenData() {
         hasTriedToGetLastSeenData = true
-        viewModel.sendAnalyticsClickPromoInputField()
+        analytics.eventClickInputField(viewModel.getPageSource(), userSession.userId)
         view?.let {
             if (promoCheckoutLastSeenBottomsheet?.state == BottomSheetBehavior.STATE_HIDDEN) {
                 val query = GraphqlHelper.loadRawString(it.resources, R.raw.promo_suggestion_query)
@@ -894,7 +902,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onCLickClearManualInputPromo() {
-        viewModel.sendAnalyticsClickRemovePromoCode()
+        analytics.eventClickRemovePromoCode(viewModel.getPageSource())
     }
 
     override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
@@ -906,7 +914,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
-        viewModel.sendAnalyticsClickLihatDetailKupon(element.uiData.promoCode)
+        analytics.eventClickLihatDetailKupon(viewModel.getPageSource(), element.uiData.promoCode)
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
             val promoCodeLink = element.uiData.couponAppLink + element.uiData.promoCode
             putExtra(EXTRA_KUPON_CODE, promoCodeLink)
@@ -923,7 +931,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
         if (element.uiData.emptyStateStatus == STATUS_PHONE_NOT_VERIFIED) {
-            viewModel.sendAnalyticsClickButtonVerifikasiNomorHp()
+            analytics.eventClickButtonVerifikasiNomorHp(viewModel.getPageSource())
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
         } else {
