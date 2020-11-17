@@ -92,6 +92,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:background="@color/Unify_N0"
         android:visibility="gone">
 
     <com.tokopedia.unifycomponents.LoaderUnify
@@ -114,7 +115,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:typographyType="heading_2"
         android:textSize="@dimen/fontSize_lvl6"
-        android:textColor="@color/liveness_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:lineSpacingExtra="@dimen/liveness_text_spacing_6"
         android:gravity="center_horizontal"
         android:text="@string/upload_loading_title"/>
@@ -129,7 +130,7 @@
         android:layout_marginTop="@dimen/spacing_lvl3"
         app:typographyType="body_2"
         android:textSize="@dimen/fontSize_lvl3"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:lineSpacingExtra="@dimen/liveness_text_spacing_5"
         android:gravity="center_horizontal"
         android:text="@string/upload_loading_subtitle"/>
