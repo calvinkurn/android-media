@@ -43,7 +43,6 @@ object DeepLinkChecker {
     const val FLIGHT = 18
     const val REFERRAL = 19
     const val TOKOPOINT = 20
-    const val GROUPCHAT = 21
     const val SALE = 22
     const val WALLET_OVO = 23
     const val PLAY = 24
