@@ -34,12 +34,17 @@
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="body_2"
+                app:typographyWeight="reguler"
                 android:layout_marginRight="@dimen/dp_5"
-                android:text="@string/product_review_label_by"
-                style="@style/TextView.Small.BlackSecondary"/>
+                android:text="@string/product_review_label_by" />
 
             <com.tokopedia.unifyprinciples.Typography
-                style="@style/TextView.Small.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyWeight="bold"
                 android:ellipsize="end"
                 android:id="@+id/reviewer_name"
                 android:maxLines="1"
@@ -47,7 +52,10 @@
         </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
-            style="@style/TextView.Micro.BlackDisabled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_44"
             android:id="@+id/review_time"
             android:layout_below="@+id/container_reply"
             tools:text="31 Jul 2016, pukul 11:48" />
@@ -65,8 +73,10 @@
     </RelativeLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        style="@style/TextView.Small.BlackSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:enabled="true"
+        app:typographyType="body_2"
         android:id="@+id/review"
         android:lineSpacingExtra="21px"
         android:longClickable="true"

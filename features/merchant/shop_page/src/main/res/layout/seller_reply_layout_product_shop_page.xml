@@ -13,7 +13,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_8"
@@ -37,7 +36,10 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_counter_like"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_44"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     tools:text="Anda dan 2 orang terbantu" />
             </LinearLayout>
@@ -55,7 +57,11 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/see_reply_button"
-                    style="@style/TextView.Micro.BlackSecondary.Bold"
+                    app:typographyWeight="bold"
+                    app:typographyType="body_2"
+                    android:textColor="@color/Unify_N700_44"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="@string/see_reply" />
 
@@ -77,7 +83,6 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/Unify_N0"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             android:visibility="gone"
@@ -96,13 +101,18 @@
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        style="@style/TextView.Small.BlackSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyWeight="reguler"
+                        app:typographyType="body_2"
                         android:layout_marginRight="@dimen/dp_5"
                         android:text="@string/product_review_label_by" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_reply_name"
-                        style="@style/TextView.Small.Bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyWeight="bold"
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Pretty Sugar Shop" />
@@ -118,7 +128,11 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_label"
+                        android:layout_width="wrap_content"
                         style="@style/TextView.Micro.Green.Bold"
+                        android:layout_height="wrap_content"
+                        app:typographyWeight="bold"
+                        app:typographyType="body_3"
                         android:layout_marginEnd="@dimen/dp_5"
                         android:layout_marginRight="@dimen/dp_5"
                         android:background="@drawable/label_seller_shop_page"
@@ -133,7 +147,10 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/seller_reply_time"
-                        style="@style/TextView.Micro.BlackDisabled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:typographyType="body_3"
+                        android:textColor="@color/Unify_N700_44"
                         android:textSize="@dimen/sp_12"
                         tools:text="31 Jul 2016, pukul 11:48" />
                 </LinearLayout>
@@ -141,11 +158,13 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/seller_reply"
-                    style="@style/TextView.Micro.BlackSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:typographyType="body_2"
                     android:layout_marginTop="@dimen/dp_10"
                     android:enabled="true"
                     android:focusable="true"
-                    android:fontFamily="sans-serif"
+                    app:typographyWeight="reguler"
                     android:longClickable="true"
                     android:textIsSelectable="true"
                     tools:text="Terima kasih sudah mempercayai toko kami. Silahkan melihat-lihat produk” lainnya yang tersedia di toko kami." />
