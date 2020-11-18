@@ -717,6 +717,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
+        Assert.assertNotNull(viewModel.shouldHideFloatingButton())
     }
 
     @Test
