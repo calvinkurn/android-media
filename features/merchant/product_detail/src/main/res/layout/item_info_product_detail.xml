@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:maxLines="1"
-        android:textColor="@color/light_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/pdp_guideline_1"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_4"
         android:singleLine="true"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintBottom_toBottomOf="@+id/info_detail_title"
         app:layout_constraintLeft_toRightOf="@+id/pdp_guideline_1"
         app:layout_constraintRight_toRightOf="parent"
@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/Neutral_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/info_detail_title" />
 
