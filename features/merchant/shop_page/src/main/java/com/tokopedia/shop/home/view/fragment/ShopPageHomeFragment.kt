@@ -1685,18 +1685,22 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
                 else if (widget.hasFailedTranscodedChannel) {}
 
-                if (parentFragment is ShopPageFragment) {
+                val parent = parentFragment
+                if (parent is ShopPageFragment) {
                     val recyclerView = getRecyclerView(view)
-                    recyclerView.addOneTimeGlobalLayoutListener {
-                        viewScope.launch {
-                            val fragment = parentFragment as? ShopPageFragment ?: return@launch
-                            fragment.collapseAppBar()
-                            var cursor = 0
-                            val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
-                            val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
-                            while (cursor < finalPosition) {
-                                delay(40)
-                                recyclerView.smoothScrollToPosition(++cursor)
+
+                    if (parent.isNewlyBroadcastSaved() == true) {
+                        parent.clearIsNewlyBroadcastSaved()
+                        recyclerView.addOneTimeGlobalLayoutListener {
+                            viewScope.launch {
+                                parent.collapseAppBar()
+                                var cursor = 0
+                                val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
+                                val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
+                                while (cursor < finalPosition) {
+                                    delay(40)
+                                    recyclerView.smoothScrollToPosition(++cursor)
+                                }
                             }
                         }
                     }

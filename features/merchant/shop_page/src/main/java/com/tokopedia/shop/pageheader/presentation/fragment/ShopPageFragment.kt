@@ -1137,6 +1137,17 @@ class ShopPageFragment :
         }
     }
 
+    fun isNewlyBroadcastSaved(): Boolean? {
+        val args = arguments
+        return args?.containsKey(NEWLY_BROADCAST_CHANNEL_SAVED)?.let {
+            args.getBoolean(NEWLY_BROADCAST_CHANNEL_SAVED)
+        }
+    }
+
+    fun clearIsNewlyBroadcastSaved() {
+        arguments?.remove(NEWLY_BROADCAST_CHANNEL_SAVED)
+    }
+
     override fun onFollowerTextClicked(shopFavourited: Boolean) {
         context?.run {
             shopPageTracking?.clickFollowUnfollow(shopFavourited, customDimensionShopPage)
@@ -1401,6 +1412,9 @@ class ShopPageFragment :
         val isChannelSaved: Boolean = if (data.hasExtra(NEWLY_BROADCAST_CHANNEL_SAVED)) {
             data.getBooleanExtra(NEWLY_BROADCAST_CHANNEL_SAVED, false)
         } else return
+
+        if (arguments == null) arguments = Bundle()
+        arguments?.putBoolean(NEWLY_BROADCAST_CHANNEL_SAVED, isChannelSaved)
 
         if (isChannelSaved) showWidgetTranscodingToaster()
         else showWidgetDeletedToaster()
