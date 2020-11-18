@@ -23,11 +23,4 @@ class LandingShopCreationActivity : BaseShopCreationActivity() {
         }
         return LandingShopCreationFragment.createInstance(bundle)
     }
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-
-        val baseView = findViewById<View>(R.id.base_view)
-        baseView.background = ContextCompat.getDrawable(baseContext, R.drawable.bg_landing_shop_creation)
-    }
 }
