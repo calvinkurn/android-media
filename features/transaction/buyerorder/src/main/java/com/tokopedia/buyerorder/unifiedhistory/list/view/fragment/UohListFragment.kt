@@ -320,7 +320,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        arrayFilterDate = activity?.resources.getStringArray(R.array.filter_date) as Array<String>
+        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as Array<String>
     }
 
     private fun observingData() {
