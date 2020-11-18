@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -22,7 +21,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.view.CommonUtils.hideKeyboard
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -55,7 +53,7 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListFragment : BaseListFragment<Visitable<*>,
+class VoucherGameListFragment : BaseListFragment<Visitable<VoucherGameListAdapterFactory>,
         VoucherGameListAdapterFactory>(),
         VoucherGameListViewHolder.OnClickListener {
 
@@ -188,16 +186,17 @@ class VoucherGameListFragment : BaseListFragment<Visitable<*>,
         } )
 
         search_input_view.searchBarTextField.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
+            override fun afterTextChanged(s: Editable?) {
+                s?.toString()?.let { searchVoucherGame(it, swipe_refresh_layout.isRefreshing) }
             }
 
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
             }
 
-            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                text?.let { searchVoucherGame(it.toString(), swipe_refresh_layout.isRefreshing) }
-            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
 
+            }
         })
 
         search_input_view.searchBarTextField.setOnClickListener { voucherGameAnalytics.eventClickSearchBox() }
@@ -239,6 +238,7 @@ class VoucherGameListFragment : BaseListFragment<Visitable<*>,
             showEmpty()
         } else {
             checkAutoSelectOperator(data.operators)
+            clearAllData()
             renderList(data.operators)
 
             recycler_view.post {
@@ -349,18 +349,18 @@ class VoucherGameListFragment : BaseListFragment<Visitable<*>,
 
     }
 
-    override fun onItemClicked(item: Visitable<*>) {
+    override fun onItemClicked(item: Visitable<VoucherGameListAdapterFactory>) {
 
     }
 
     override fun onItemClicked(operator: VoucherGameOperator) {
-        if (search_input_view.searchBarTextField.text.isNotEmpty()) { //utk tracking kalau datanya ada
-            voucherGameAnalytics.eventClickSearchResult(search_input_view.searchBarTextField.text.toString()) //kirim textnya
+        if (search_input_view.searchBarTextField.text.isNotEmpty()) {
+            voucherGameAnalytics.eventClickSearchResult(search_input_view.searchBarTextField.text.toString())
 
             val operatorList = voucherGameViewModel.voucherGameList.value
             if (operatorList is Success && operatorList.data.operators.isNotEmpty()) {
                 val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
-                voucherGameAnalytics.impressionOperatorCardSearchResult(search_input_view.searchBarTextField.text.toString(), //kirim textnya
+                voucherGameAnalytics.impressionOperatorCardSearchResult(search_input_view.searchBarTextField.text.toString(),
                         operatorList.data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
             }
 
@@ -423,10 +423,6 @@ class VoucherGameListFragment : BaseListFragment<Visitable<*>,
     override fun getSwipeRefreshLayoutResourceId(): Int {
         return R.id.swipe_refresh_layout
     }
-
-   /* override fun getSearchInputViewResourceId(): Int {
-        return R.id.search_input_view  //belum tau
-    }*/
 
     companion object {
 
