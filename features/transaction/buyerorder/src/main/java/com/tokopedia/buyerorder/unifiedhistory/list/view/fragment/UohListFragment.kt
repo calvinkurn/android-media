@@ -320,9 +320,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        if (activity != null && isAdded) {
-            arrayFilterDate = resources.getStringArray(R.array.filter_date) as Array<String>
-        }
+        arrayFilterDate = activity?.resources.getStringArray(R.array.filter_date) as Array<String>
     }
 
     private fun observingData() {
@@ -418,9 +416,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             paramUohOrder.uUID = ""
             paramUohOrder.page = currPage
         }
-        if (activity != null && isAdded) {
-            uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.uoh_get_order_history), paramUohOrder)
-        }
+        uohListViewModel.loadOrderList(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_get_order_history), paramUohOrder)
     }
 
     private fun loadRecommendationList() {
@@ -727,10 +723,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             val limitDate = inputFormat.parse(orderList.dateLimit)
             val limitDateStr = outputFormat.format(limitDate)
             view?.let { context?.let { it1 -> UohUtils.hideKeyBoard(it1, it) } }
-            if (activity != null && isAdded) {
-                val resetMsg = resources.getString(R.string.uoh_reset_filter_msg)?.replace(UohConsts.DATE_LIMIT, limitDateStr)
-                showToaster(resetMsg, Toaster.TYPE_NORMAL)
-            }
+            val resetMsg = activity?.resources?.getString(R.string.uoh_reset_filter_msg)?.replace(UohConsts.DATE_LIMIT, limitDateStr)
+            resetMsg?.let { it1 -> showToaster(it1, Toaster.TYPE_NORMAL) }
             resetFilter()
             refreshHandler?.startRefresh()
             userSession?.userId?.let { it1 -> UohAnalytics.clickXChipsToClearFilter(it1) }
@@ -883,37 +877,44 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderEmptyList() {
         refreshHandler?.finishRefresh()
         val listRecomm = arrayListOf<UohTypeData>()
-        if (activity != null && isAdded && !onLoadMoreRecommendation) {
+        if (!onLoadMoreRecommendation) {
             val searchBarIsNotEmpty = search_bar?.searchBarTextField?.text?.isNotEmpty() ?: false
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
                     emptyStatus = context?.let { context ->
                             ContextCompat.getDrawable(context, R.drawable.uoh_empty_search_list)?.let { drawable ->
-                                UohEmptyState(drawable,
-                                        resources.getString(R.string.uoh_search_empty),
-                                        resources.getString(R.string.uoh_search_empty_desc),
-                                        false, "")
+                                activity?.resources?.let { resource ->
+                                    UohEmptyState(drawable,
+                                            resource.getString(R.string.uoh_search_empty),
+                                            resource.getString(R.string.uoh_search_empty_desc),
+                                            false, "")
+                                }
+
                             }
                     }
                 }
                 paramUohOrder.status.isNotEmpty() -> {
                     emptyStatus = context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_filter_empty),
-                                    resources.getString(R.string.uoh_filter_empty_desc),
-                                    true, resources.getString(R.string.uoh_filter_empty_btn))
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_filter_empty),
+                                        resource.getString(R.string.uoh_filter_empty_desc),
+                                        true, resource.getString(R.string.uoh_filter_empty_btn))
+                            }
                         }
                     }
                 }
                 else -> {
                     emptyStatus = context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.uoh_empty_order_list)?.let { drawable ->
-                            UohEmptyState(drawable,
-                                    resources.getString(R.string.uoh_no_order),
-                                    resources.getString(R.string.uoh_no_order_desc),
-                                    true, resources.getString(R.string.uoh_no_order_btn))
+                            activity?.resources?.let { resource ->
+                                UohEmptyState(drawable,
+                                        resource.getString(R.string.uoh_no_order),
+                                        resource.getString(R.string.uoh_no_order_desc),
+                                        true, resource.getString(R.string.uoh_no_order_btn))
+                            }
                         }
                     }
                 }
@@ -1073,8 +1074,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val paramFinishOrder = userSession?.userId?.let { it1 ->
                     UohFinishOrderParam(orderId = orderId, userId = it1, action = actionStatus)
                 }
-                if (activity != null && isAdded && paramFinishOrder != null) {
-                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_order), paramFinishOrder)
+                if (paramFinishOrder != null) {
+                    uohListViewModel.doFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_order), paramFinishOrder)
                 }
 
                 userSession?.userId?.let { it1 -> UohAnalytics.clickSelesaiOnBottomSheetFinishTransaction(it1) }
@@ -1101,9 +1102,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             bottomSheetLsFinishOrder?.dismiss()
             currIndexNeedUpdate = index
             uohItemAdapter.showLoaderAtIndex(index)
-            if (activity != null && isAdded) {
-                uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(resources, R.raw.uoh_finish_lsprint), orderId)
-            }
+            uohListViewModel.doLsPrintFinishOrder(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_finish_lsprint), orderId)
         }
 
         viewBottomSheet.btn_ls_kembali?.setOnClickListener {
@@ -1151,18 +1150,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val flightQueryParam = gson.fromJson(orderData.metadata.queryParams, FlightQueryParams::class.java)
                 val invoiceId = flightQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
-                if (activity != null && isAdded) {
-                    uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
-                }
+                uohListViewModel.doFlightResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_flight), invoiceId, email)
 
             } else if (gqlGroup.equals(GQL_TRAIN_EMAIL, true)) {
                 val trainQueryParam = gson.fromJson(orderData.metadata.queryParams, TrainQueryParams::class.java)
                 val invoiceId = trainQueryParam.invoiceId
                 val email = "${viewBottomSheet.tf_email.textFieldInput.text}"
                 val param = TrainResendEmailParam(bookCode = invoiceId, email = email)
-                if (activity != null && isAdded) {
-                    uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(resources, R.raw.uoh_send_eticket_train), param)
-                }
+                uohListViewModel.doTrainResendEmail(GraphqlHelper.loadRawString(activity?.resources, R.raw.uoh_send_eticket_train), param)
             }
             userSession?.userId?.let { it1 -> UohAnalytics.clickKirimOnBottomSheetSendEmail(it1, orderData.verticalCategory) }
         }
@@ -1485,8 +1480,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 button.actionType.equals(GQL_RECHARGE_BATALKAN, true) -> {
                     currIndexNeedUpdate = index
                     orderIdNeedUpdated = order.orderUUID
-                    if (order.verticalID.isNotEmpty() && activity != null && isAdded) {
-                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(resources, R.raw.recharge_set_fail), order.verticalID.toInt())
+                    if (order.verticalID.isNotEmpty()) {
+                        uohListViewModel.doRechargeSetFail(GraphqlHelper.loadRawString(activity?.resources, R.raw.recharge_set_fail), order.verticalID.toInt())
                     }
                 }
             }
@@ -1686,10 +1681,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ))
             }
 
-            if (activity != null && isAdded) {
-                uohListViewModel.doAtcMulti(userSession?.userId
-                        ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
-            }
+            uohListViewModel.doAtcMulti(userSession?.userId
+                    ?: "", GraphqlHelper.loadRawString(activity?.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
             // analytics
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
