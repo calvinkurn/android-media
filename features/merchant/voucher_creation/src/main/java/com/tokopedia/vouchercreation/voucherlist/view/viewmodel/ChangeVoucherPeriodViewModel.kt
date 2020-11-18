@@ -20,13 +20,15 @@ import com.tokopedia.vouchercreation.voucherlist.domain.usecase.GetTokenUseCase
 import com.tokopedia.vouchercreation.voucherlist.model.ui.VoucherUiModel
 import kotlinx.coroutines.withContext
 import rx.Observable
+import rx.Scheduler
 import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
+import javax.inject.Named
 
 class ChangeVoucherPeriodViewModel @Inject constructor(private val dispatchers: CoroutineDispatchers,
+                                                       @Named("io") private val ioScheduler: Scheduler,
+                                                       @Named("main") private val mainThreadScheduler: Scheduler,
                                                        private val changeVoucherPeriodUseCase: ChangeVoucherPeriodUseCase,
                                                        private val uploadVoucherUseCase: UploadVoucherUseCase,
                                                        private val saveSquareVoucherUseCase: SaveSquareVoucherUseCase,
@@ -78,8 +80,8 @@ class ChangeVoucherPeriodViewModel @Inject constructor(private val dispatchers: 
 
     private fun uploadAndUpdateVoucher(squareImagePath: String) {
         getUploadVoucherImagesObservable(squareImagePath)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(ioScheduler)
+                .observeOn(mainThreadScheduler)
                 .subscribe( object : Subscriber<MutableList<String?>>() {
                     override fun onNext(urlList: MutableList<String?>?) {
                         val imageUrl = urlList?.getOrNull(0).toBlankOrString()

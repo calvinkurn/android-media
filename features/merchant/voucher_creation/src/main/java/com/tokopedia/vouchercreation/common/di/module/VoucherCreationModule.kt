@@ -21,6 +21,10 @@ import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import rx.Scheduler
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import javax.inject.Named
 
 @Module(includes = [ImageUploaderModule::class])
 class VoucherCreationModule {
@@ -54,4 +58,15 @@ class VoucherCreationModule {
     @VoucherCreationScope
     @Provides
     fun providePermissionCheckerHelper(): PermissionCheckerHelper = PermissionCheckerHelper()
+
+    @VoucherCreationScope
+    @Provides
+    @Named("io")
+    fun provideSchedulerIo(): Scheduler = Schedulers.io()
+
+    @VoucherCreationScope
+    @Provides
+    @Named("main")
+    fun provideMainThreadScheduler(): Scheduler = AndroidSchedulers.mainThread()
+
 }

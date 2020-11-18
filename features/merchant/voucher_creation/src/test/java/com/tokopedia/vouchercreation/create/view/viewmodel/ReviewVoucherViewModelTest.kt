@@ -2,9 +2,13 @@ package com.tokopedia.vouchercreation.create.view.viewmodel
 
 import android.graphics.Bitmap
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.UpdateVoucherUseCase
 import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
-import com.tokopedia.vouchercreation.create.domain.usecase.*
+import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.SaveBannerVoucherUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.SaveSquareVoucherUseCase
+import com.tokopedia.vouchercreation.create.domain.usecase.UploadVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.voucherreview.VoucherReviewUiModel
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -19,6 +23,7 @@ import org.junit.Test
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import rx.Observable
+import rx.schedulers.Schedulers
 
 @ExperimentalCoroutinesApi
 class ReviewVoucherViewModelTest {
@@ -56,15 +61,15 @@ class ReviewVoucherViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = ReviewVoucherViewModel(TestCoroutineDispatchers, createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
+        mViewModel = ReviewVoucherViewModel(TestCoroutineDispatchers, Schedulers.immediate(), Schedulers.immediate(), createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
     }
 
     @Test
-    fun `success create voucher`() = runBlocking {
+    fun `success update voucher`() = runBlocking {
         val dummyVoucherReviewUiModel = VoucherReviewUiModel()
         val dummyBannerUrl: String? = DUMMY_VOUCHER_BANNER_URL
         val dummySquareUrl: String? = DUMMY_VOUCHER_SQUARE_URL
-        val dummySuccessResultCode = 1
+        val dummySuccessResult = true
 
         coEvery {
             saveBannerVoucherUseCase.executeOnBackground()
@@ -76,8 +81,8 @@ class ReviewVoucherViewModelTest {
             uploadVoucherUseCase.createObservable(any())
         } returns Observable.just(mutableListOf(dummyBannerUrl, dummySquareUrl))
         coEvery {
-            createVoucherUseCase.executeOnBackground()
-        } returns dummySuccessResultCode
+            updateVoucherUseCase.executeOnBackground()
+        } returns dummySuccessResult
 
         mViewModel.updateVoucher(
                 dummyBitmap,
@@ -92,7 +97,10 @@ class ReviewVoucherViewModelTest {
             saveBannerVoucherUseCase.executeOnBackground()
             saveSquareVoucherUseCase.executeOnBackground()
             uploadVoucherUseCase.createObservable(any())
+            updateVoucherUseCase.executeOnBackground()
         }
+
+        assert(mViewModel.updateVoucherSuccessLiveData.value == Success(dummySuccessResult))
     }
 
 }
