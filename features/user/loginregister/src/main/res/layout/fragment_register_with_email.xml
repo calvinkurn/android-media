@@ -73,32 +73,14 @@
       
       </com.tokopedia.design.text.TkpdHintTextInputLayout>
       
-      <com.tokopedia.design.text.TkpdHintTextInputLayout
+      <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/wrapper_password"
-        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/layout_lvl3"
-        app:defaultTextColorLabel="@color/Unify_N700_44"
-        app:focusedTextColorLabel="@color/Unify_N700_44"
-        android:hint="@string/prompt_password"
-        app:passwordToggleDrawable="@drawable/asl_loginregister_password_visibility"
-        app:passwordToggleEnabled="true">
-        
-        <com.google.android.material.textfield.TextInputEditText
-          android:id="@+id/register_password"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:imeActionId="123321"
-          android:imeActionLabel="Lanjut"
-          android:imeOptions="actionUnspecified"
-          android:inputType="textPassword"
-          android:maxLines="1"
-          android:textColor="@color/Unify_N700_68"
-          android:textSize="@dimen/spacing_lvl4"
-          android:typeface="sans"/>
-        
-      </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        app:text_field_label="@string/prompt_password"
+        app:text_field_label_static = "true"
+        app:text_field_input_type="textPassword"/>
       
       <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/register_button"

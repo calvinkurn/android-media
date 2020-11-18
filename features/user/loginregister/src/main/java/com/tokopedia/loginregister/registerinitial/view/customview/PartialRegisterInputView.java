@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.registerinitial.view.customview;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
@@ -27,6 +25,7 @@ import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.utils.KeyboardHandler;
 import com.tokopedia.loginregister.common.view.EmailExtension;
+import com.tokopedia.unifycomponents.TextFieldUnify;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil;
 
@@ -47,8 +46,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     UnifyButton btnAction;
     EmailExtension emailExtension;
 
-    TextInputEditText etPassword;
-    TkpdHintTextInputLayout wrapperPassword;
+    TextFieldUnify wrapperPassword;
     TextView btnForgotPassword;
     TextView btnChange;
 
@@ -87,7 +85,6 @@ public class PartialRegisterInputView extends BaseCustomView {
     private void init() {
         View view = inflate(getContext(), R.layout.layout_partial_register_input, this);
         etInputEmailPhone = view.findViewById(R.id.input_email_phone);
-        etPassword = view.findViewById(R.id.password);
         tvMessage = view.findViewById(R.id.message);
         tvError = view.findViewById(R.id.error_message);
         btnAction = view.findViewById(R.id.register_btn);
@@ -122,7 +119,7 @@ public class PartialRegisterInputView extends BaseCustomView {
             return handled;
         });
 
-        etPassword.addTextChangedListener(watcher(wrapperPassword));
+        wrapperPassword.getTextFieldInput().addTextChangedListener(watcherUnify(wrapperPassword));
 
         btnAction.setOnClickListener(new ClickRegister());
         btnChange.setOnClickListener(new OnClickListener() {
@@ -140,7 +137,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     }
 
     public void onErrorPassword(String message) {
-        setWrapperError(wrapperPassword, message);
+        setWrapperErrorNew(wrapperPassword, message);
     }
 
     private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
@@ -151,6 +148,18 @@ public class PartialRegisterInputView extends BaseCustomView {
         } else {
             wrapper.setErrorEnabled(true);
             wrapper.setError(s);
+            showError();
+        }
+    }
+
+    private void setWrapperErrorNew(TextFieldUnify wrapper, String s) {
+        if (s == null) {
+            wrapper.setError(false);
+            wrapper.setMessage("");
+            hideError();
+        } else {
+            wrapper.setError(true);
+            wrapper.setMessage(s);
             showError();
         }
     }
@@ -166,6 +175,44 @@ public class PartialRegisterInputView extends BaseCustomView {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 setWrapperError(wrapper, null);
+                if(s != null) {
+                    if (isButtonValidatorActived) {
+                        validateValue(s.toString());
+                    }
+
+                    if (etInputEmailPhone.isFocused() && etInputEmailPhone.getText().toString().contains("@") && emailExtension != null) {
+                        showEmailExtension();
+                        isExtensionSelected = false;
+
+                        String[] charEmail = etInputEmailPhone.getText().toString().split("@");
+                        if (charEmail.length > 1) {
+                            emailExtension.filterExtensions(charEmail[1]);
+                        } else {
+                            emailExtension.updateExtensions(emailExtensionList);
+                        }
+                    } else {
+                        hideEmailExtension();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        };
+    }
+
+    private TextWatcher watcherUnify(final TextFieldUnify wrapper) {
+
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                setWrapperErrorNew(wrapper, null);
                 if(s != null) {
                     if (isButtonValidatorActived) {
                         validateValue(s.toString());
@@ -332,7 +379,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     public void resetErrorWrapper() {
         setWrapperError(wrapperEmailPhone, null);
-        setWrapperError(wrapperPassword, null);
+        setWrapperErrorNew(wrapperPassword, null);
     }
 
     private void showEmailExtension() {

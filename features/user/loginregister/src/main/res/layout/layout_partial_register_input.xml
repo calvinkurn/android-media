@@ -91,34 +91,15 @@
             android:visibility="invisible"
             tools:visibility="visible"/>
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
+        <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/wrapper_password"
-            style="@style/HintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/error_message"
-            app:defaultTextColorLabel="@color/Unify_N700_44"
-            app:focusedTextColorLabel="@color/Unify_N700_44"
-            android:hint="@string/title_password"
-            android:paddingLeft="-5dp"
             android:visibility="gone"
-            app:passwordToggleDrawable="@drawable/asl_loginregister_password_visibility"
-            app:passwordToggleEnabled="true">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/password"
-                android:contentDescription="@string/content_desc_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeActionLabel="Lanjut"
-                android:imeOptions="actionDone"
-                android:paddingLeft="5dp"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:textColor="@color/Unify_N700"
-                android:textSize="@dimen/sp_16"
-                android:typeface="sans"/>
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+            app:text_field_label="@string/title_password"
+            app:text_field_label_static = "true"
+            app:text_field_input_type="textPassword"/>
 
         <TextView
             android:id="@+id/forgot_pass"
@@ -129,11 +110,13 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/wrapper_password"
             android:layout_gravity="end"
-            android:layout_marginTop="@dimen/dp_5"
             android:fontFamily="sans-serif"
             android:gravity="end"
             android:lineSpacingExtra="9sp"
-            android:padding="@dimen/dp_10"
+            android:paddingTop="@dimen/spacing_lvl2"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/spacing_lvl2"
             android:layout_marginRight="-10dp"
             android:text="@string/title_forgot_password"
             android:textColor="@color/Unify_G400"

@@ -34,8 +34,8 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -987,20 +987,20 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerAnalytics.trackFailedClickEmailSignUpButton(RegisterAnalytics.LABEL_EMAIL_EXIST)
         registerAnalytics.trackFailedClickEmailSignUpButtonAlreadyRegistered()
         activity?.let {
-            val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(R.string.email_already_registered))
-            dialog.setDesc(
+            dialog.setDescription(
                     String.format(resources.getString(
                             R.string.email_already_registered_info), email))
-            dialog.setBtnOk(getString(R.string.already_registered_yes))
-            dialog.setOnOkClickListener { v ->
+            dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
+            dialog.setPrimaryCTAClickListener {
                 registerAnalytics.trackClickYesButtonRegisteredEmailDialog()
                 dialog.dismiss()
                 startActivity(LoginActivity.DeepLinkIntents.getIntentLoginFromRegister(it, email))
                 it.finish()
             }
-            dialog.setBtnCancel(getString(R.string.already_registered_no))
-            dialog.setOnCancelClickListener {
+            dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+            dialog.setSecondaryCTAClickListener {
                 registerAnalytics.trackClickChangeButtonRegisteredEmailDialog()
                 dialog.dismiss()
             }
@@ -1012,26 +1012,28 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerAnalytics.trackClickPhoneSignUpButton()
         registerAnalytics.trackFailedClickPhoneSignUpButton(RegisterAnalytics.LABEL_PHONE_EXIST)
         registerAnalytics.trackFailedClickPhoneSignUpButtonAlreadyRegistered()
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.phone_number_already_registered))
-        dialog.setDesc(
-                String.format(resources.getString(
-                        R.string.reigster_page_phone_number_already_registered_info), phone))
-        dialog.setBtnOk(getString(R.string.already_registered_yes))
-        dialog.setOnOkClickListener {
-            registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
-            dialog.dismiss()
-            phoneNumber = phone
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(getString(R.string.phone_number_already_registered))
+            dialog.setDescription(
+                    String.format(resources.getString(
+                            R.string.reigster_page_phone_number_already_registered_info), phone))
+            dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
+            dialog.setPrimaryCTAClickListener {
+                registerAnalytics.trackClickYesButtonRegisteredPhoneDialog()
+                dialog.dismiss()
+                phoneNumber = phone
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+                val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
+                startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
+            }
+            dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+            dialog.setSecondaryCTAClickListener {
+                registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setBtnCancel(getString(R.string.already_registered_no))
-        dialog.setOnCancelClickListener {
-            registerAnalytics.trackClickChangeButtonRegisteredPhoneDialog()
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
@@ -1074,23 +1076,25 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun showProceedWithPhoneDialog(phone: String) {
         registerAnalytics.trackClickPhoneSignUpButton()
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(phone)
-        dialog.setDesc(resources.getString(R.string.phone_number_not_registered_info))
-        dialog.setBtnOk(getString(R.string.proceed_with_phone_number))
-        dialog.setOnOkClickListener {
-            registerAnalytics.trackClickYesButtonPhoneDialog()
-            dialog.dismiss()
-            userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
-            startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(phone)
+            dialog.setDescription(resources.getString(R.string.phone_number_not_registered_info))
+            dialog.setPrimaryCTAText(getString(R.string.proceed_with_phone_number))
+            dialog.setPrimaryCTAClickListener {
+                registerAnalytics.trackClickYesButtonPhoneDialog()
+                dialog.dismiss()
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+                val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
+                startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
+            }
+            dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
+            dialog.setSecondaryCTAClickListener {
+                registerAnalytics.trackClickChangeButtonPhoneDialog()
+                dialog.dismiss()
+            }
+            dialog.show()
         }
-        dialog.setBtnCancel(getString(R.string.already_registered_no))
-        dialog.setOnCancelClickListener {
-            registerAnalytics.trackClickChangeButtonPhoneDialog()
-            dialog.dismiss()
-        }
-        dialog.show()
     }
 
     private fun setTempPhoneNumber(maskedPhoneNumber: String) {
