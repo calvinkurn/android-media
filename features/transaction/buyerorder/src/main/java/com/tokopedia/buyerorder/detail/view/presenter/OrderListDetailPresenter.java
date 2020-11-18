@@ -144,7 +144,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 variables.put(ORDER_ID, orderId);
                 graphqlRequest = new
                         GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                        R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+                        R.raw.orderdetail_marketplace), DetailsData.class, variables);
 
             } else {
                 variables.put("orderCategory", orderCategory);
@@ -152,7 +152,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 variables.put(CART_STRING, cartString);
                 graphqlRequest = new
                         GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                        R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
+                        R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables);
             }
 
         } else {
@@ -163,7 +163,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(UPSTREAM, upstream != null ? upstream : "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                    R.raw.orderdetails), DetailsData.class, variables, false);
+                    R.raw.orderdetails), DetailsData.class, variables);
         }
 
 
@@ -292,10 +292,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                R.raw.tapactions), ActionButtonList.class, variables, false);
+                R.raw.tapactions), ActionButtonList.class, variables);
 
         orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.setRequest(graphqlRequest);
+        orderDetailsUseCase.addRequest(graphqlRequest);
         orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<GraphqlResponse>() {
