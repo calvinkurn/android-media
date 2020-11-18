@@ -9,6 +9,7 @@ import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
@@ -17,6 +18,7 @@ import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailData
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailSimpleModel
 import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailCancellationMapper
+import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
@@ -100,6 +102,24 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         mutableCancellationData.value = orderDetailCancellationMapper.transform(journeyList)
     }
 
+    fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Boolean {
+        var checkInAvailable = false
+        val today = FlightDateUtil.getCurrentDate()
+
+        if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {
+            for (journey in flightOrderDetailData.journeys) {
+                val webCheckInOpenTime = FlightDateUtil.stringToDate(journey.webCheckIn.startTime)
+                val webCheckInCloseTime = FlightDateUtil.stringToDate(journey.webCheckIn.endTime)
+                if (webCheckInOpenTime.before(today) && webCheckInCloseTime.after(today)) {
+                    checkInAvailable = true
+                    break
+                }
+            }
+        }
+
+        return checkInAvailable
+    }
+
     fun buildPaymentDetailData(): List<FlightOrderDetailSimpleModel> {
         val returnData = arrayListOf<FlightOrderDetailSimpleModel>()
         val orderDetailData = orderDetailData.value
@@ -129,10 +149,12 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
             }
 
             for ((key, value) in journeyFare) {
+                val adultPriceTotal = (passengers[FlightPassengerType.ADULT.id]
+                        ?: 0) * (value[FlightPassengerType.ADULT.id] ?: 0)
                 returnData.add(
                         FlightOrderDetailSimpleModel(
                                 "$key ${FlightPassengerType.ADULT.type} x${passengers[FlightPassengerType.ADULT.id]}",
-                                "Rp${CurrencyFormatHelper.convertToRupiah(value[FlightPassengerType.ADULT.id].toString())}",
+                                "Rp${CurrencyFormatHelper.convertToRupiah(adultPriceTotal.toString())}",
                                 false,
                                 false,
                                 false,
@@ -142,10 +164,12 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
                 )
 
                 if (value.containsKey(FlightPassengerType.CHILDREN.id)) {
+                    val childrenPriceTotal = (passengers[FlightPassengerType.CHILDREN.id]
+                            ?: 0) * (value[FlightPassengerType.CHILDREN.id] ?: 0)
                     returnData.add(
                             FlightOrderDetailSimpleModel(
                                     "$key ${FlightPassengerType.CHILDREN.type} x${passengers[FlightPassengerType.CHILDREN.id]}",
-                                    "Rp${CurrencyFormatHelper.convertToRupiah(value[FlightPassengerType.CHILDREN.id].toString())}",
+                                    "Rp${CurrencyFormatHelper.convertToRupiah(childrenPriceTotal.toString())}",
                                     false,
                                     false,
                                     false,

@@ -274,6 +274,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
         /* Render Web Check In View */
         val today = FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate())
+        val isWebCheckInButtonVisible: Boolean = flightOrderDetailViewModel.isWebCheckInAvailable(data)
         val isCancellationButtonVisible: Boolean =
                 when {
                     data.journeys.size > 1 -> {
@@ -311,7 +312,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_web_check_in),
                         getString(R.string.flight_order_detail_check_in_label),
                         getString(R.string.flight_order_detail_check_in_description),
-                        true,
+                        isWebCheckInButtonVisible,
                         true
                 ),
                 FlightOrderDetailButtonModel(
@@ -323,6 +324,11 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                 )
         )
         flightOrderDetailCheckIn.buildView()
+        if (isWebCheckInButtonVisible || isCancellationButtonVisible) {
+            flightOrderDetailCheckIn.visibility = View.VISIBLE
+        } else {
+            flightOrderDetailCheckIn.visibility = View.GONE
+        }
 
         /* Render Contact Us */
         tgFlightOrderContactUs.text = MethodChecker.fromHtml(getString(R.string.flight_order_detail_contact_us))
