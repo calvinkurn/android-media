@@ -53,7 +53,11 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
     }
 
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(view) {
-        val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(if (element.dataContent.lastOrNull()?.subtitle?.isNotBlank() == true) element.dataContent.last().subtitle else "")
+        val subtitleDescription = element.dataContent.firstOrNull {
+            it.title == "Deskripsi"
+        }?.subtitle ?: ""
+
+        val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(subtitleDescription)
 
         if (descFormatted.isNotEmpty()) {
             (product_detail_info_seemore.layoutParams as? ViewGroup.MarginLayoutParams)?.topMargin = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)

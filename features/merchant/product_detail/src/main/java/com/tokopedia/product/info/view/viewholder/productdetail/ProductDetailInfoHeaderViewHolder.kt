@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoHeaderDataModel
-import com.tokopedia.product.info.model.specification.Specification
 import com.tokopedia.product.info.view.ProductDetailInfoListener
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
@@ -32,18 +31,18 @@ class ProductDetailInfoHeaderViewHolder(private val view: View,
         view.pdp_header_product_title?.text = element.productTitle
         ImageUtils.loadImageRounded2(view.context, view.pdp_header_img, element.img, 8F)
         setupItemList(element.listOfInfo)
-        setupSpecification(element.specification)
+        setupSpecification(element.listOfAnnotation, element.needToShowSpecification())
     }
 
-    private fun setupSpecification(specification: List<Specification>) = with(view) {
-        if (specification.isNotEmpty()) {
+    private fun setupSpecification(annotation: List<ProductDetailInfoContent>, showSpecification: Boolean) = with(view) {
+        if (showSpecification) {
             pdp_header_product_see_more.show()
+            pdp_header_product_see_more.setOnClickListener {
+                listener.goToSpecification(annotation)
+            }
         } else {
             pdp_header_product_see_more.hide()
-        }
-
-        pdp_header_product_see_more.setOnClickListener {
-            listener.goToSpecification(specification)
+            pdp_header_product_see_more.setOnClickListener {}
         }
     }
 

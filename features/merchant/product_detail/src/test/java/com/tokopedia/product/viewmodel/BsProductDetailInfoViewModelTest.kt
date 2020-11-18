@@ -9,10 +9,6 @@ import com.tokopedia.product.info.model.productdetail.response.DataShopNotes
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
 import com.tokopedia.product.info.model.productdetail.uidata.*
-import com.tokopedia.product.info.model.specification.Catalog
-import com.tokopedia.product.info.model.specification.Data
-import com.tokopedia.product.info.model.specification.Row
-import com.tokopedia.product.info.model.specification.Specification
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.util.TestDispatcherProvider
@@ -107,7 +103,6 @@ class BsProductDetailInfoViewModelTest {
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().first().img.isNotEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().first().listOfInfo.isNotEmpty())
-        Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().first().specification.isEmpty())
         //endregion
 
         //region discussion
@@ -124,7 +119,6 @@ class BsProductDetailInfoViewModelTest {
     @Test
     fun `success get data from network with expandable item`() {
         val shopNotes = DataShopNotes("", listOf(ShopNotesData("asd", "asd", "asd", false, 1, "")))
-        val specification = Data(Catalog("asd", arrayListOf(Specification("asd", listOf(Row("asd", listOf("asd")))))))
 
         viewModel.bottomSheetDetailData.observeForever { }
 
@@ -132,8 +126,7 @@ class BsProductDetailInfoViewModelTest {
             getProductDetailBottomSheetUseCase.executeOnBackground(any(), any())
         } returns PdpGetDetailBottomSheet(
                 bottomsheetData = bottomSheetOrderItem,
-                dataShopNotes = shopNotes,
-                specification = specification
+                dataShopNotes = shopNotes
         )
 
         viewModel.setParams(ProductInfoParcelData(productId = "123", shopId = "213", productTitle = "123", productImageUrl = "123", variantGuideline = "123123", listOfVideo = listOfVideo, data = bottomSheetHeaderWithDiscussion))
@@ -144,7 +137,6 @@ class BsProductDetailInfoViewModelTest {
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().isNotEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().first().img.isNotEmpty())
         Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().first().listOfInfo.isNotEmpty())
-        Assert.assertTrue((viewModel.bottomSheetDetailData.value as Success).data.filterIsInstance<ProductDetailInfoHeaderDataModel>().first().specification.isNotEmpty())
         //endregion
 
         //region discussion

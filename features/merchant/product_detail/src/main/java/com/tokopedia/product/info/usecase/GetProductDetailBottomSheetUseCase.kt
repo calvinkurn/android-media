@@ -22,10 +22,9 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
     : UseCase<PdpGetDetailBottomSheet>() {
 
     companion object {
-        fun createParams(productId: String, shopId: String, catalogId: String): RequestParams = RequestParams.create().apply {
+        fun createParams(productId: String, shopId: String): RequestParams = RequestParams.create().apply {
             putString(ProductDetailCommonConstant.PRODUCT_ID_PARAM, productId)
             putString(ProductDetailCommonConstant.SHOP_ID_PARAM, shopId)
-            putString(ProductDetailCommonConstant.PARAM_CATALOG_ID, catalogId)
         }
 
         val QUERY = """
@@ -55,18 +54,6 @@ class GetProductDetailBottomSheetUseCase @Inject constructor(private val graphql
                   title
                   buttonType
                   buttonCopy
-                }
-                productCatalogDetail{
-                  catalog{
-                    id
-                    specification{
-                      name
-                      row{
-                        key
-                        value
-                      }
-                    }
-                  }
                 }
                 error{
                   Code

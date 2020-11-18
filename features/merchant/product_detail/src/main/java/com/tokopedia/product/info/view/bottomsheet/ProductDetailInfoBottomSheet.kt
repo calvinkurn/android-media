@@ -27,13 +27,13 @@ import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTracking
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.info.model.productdetail.uidata.*
-import com.tokopedia.product.info.model.specification.Specification
 import com.tokopedia.product.info.util.ProductDetailBottomSheetBuilder
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
@@ -223,11 +223,11 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         }
     }
 
-    override fun goToSpecification(specification: List<Specification>) {
+    override fun goToSpecification(annotation: List<ProductDetailInfoContent>) {
         DynamicProductDetailTracking.ProductDetailSheet.onSpecificationClick(listener?.getPdpDataSource(), viewModel?.userSession?.userId
                 ?: "")
-        val bs = ProductSpecificationBottomSheet()
-        bs.getData(specification)
+        val bs = ProductAnnotationBottomSheet()
+        bs.getData(annotation)
         bs.show(childFragmentManager, "specBs")
     }
 

@@ -1,6 +1,5 @@
 package com.tokopedia.product.info.util
 
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
 import com.tokopedia.product.info.model.productdetail.response.PdpGetDetailBottomSheet
 import com.tokopedia.product.info.model.productdetail.uidata.*
@@ -22,14 +21,9 @@ object ProductDetailInfoMapper {
             when (it.componentName) {
                 HEADER_DETAIL_KEY -> {
                     val productInfoData = parcelData.data.filter { it.title.toLowerCase() != DESCRIPTION_DETAIL_KEY }.take(MAXIMUM_LIST_SHOWING)
-                    val productSpecificationData = responseData.specification.catalog.specification.take(MAXIMUM_LIST_SHOWING - productInfoData.count()).map {
-                        ProductDetailInfoContent(title = it.row.firstOrNull()?.key
-                                ?: "", subtitle = it.row.firstOrNull()?.value?.firstOrNull()
-                                ?: "", applink = "")
-                    }
+                    val annotationData = parcelData.data.filter { it.title.toLowerCase() != DESCRIPTION_DETAIL_KEY && it.isAnnotation }
 
-                    val appendedData = productInfoData + productSpecificationData
-                    listOfComponent.add(ProductDetailInfoHeaderDataModel(index, parcelData.productImageUrl, parcelData.productTitle, appendedData, responseData.specification.catalog.specification))
+                    listOfComponent.add(ProductDetailInfoHeaderDataModel(index, parcelData.productImageUrl, parcelData.productTitle, productInfoData, annotationData))
                 }
                 DESCRIPTION_DETAIL_KEY -> {
                     val descriptionValue = parcelData.data.firstOrNull { it.title.toLowerCase() == DESCRIPTION_DETAIL_KEY }?.subtitle

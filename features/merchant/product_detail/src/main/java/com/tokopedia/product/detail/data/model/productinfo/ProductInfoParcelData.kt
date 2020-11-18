@@ -9,7 +9,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoConten
 data class ProductInfoParcelData(
         val productId: String = "",
         val shopId: String = "",
-        val catalogId: String = "",
         val productTitle: String = "",
         val productImageUrl: String = "",
         val variantGuideline: String = "",

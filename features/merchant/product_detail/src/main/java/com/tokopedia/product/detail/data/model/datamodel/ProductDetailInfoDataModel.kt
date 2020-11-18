@@ -18,10 +18,6 @@ data class ProductDetailInfoDataModel(
         return dataContent.filter { it.showAtFront }.filterNot { it.title == "Deskripsi" }
     }
 
-    fun getDataWithoutDescription(): List<ProductDetailInfoContent> {
-        return dataContent.filterNot { it.title == "Deskripsi" }
-    }
-
     override val impressHolder: ImpressHolder = ImpressHolder()
 
     override fun name(): String = name
@@ -39,5 +35,6 @@ data class ProductDetailInfoContent(
         val title: String = "",
         var subtitle: String = "",
         val applink: String = "",
-        val showAtFront: Boolean = false
+        val showAtFront: Boolean = false,
+        val isAnnotation: Boolean = false
 ) : Parcelable

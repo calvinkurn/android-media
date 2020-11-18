@@ -30,7 +30,7 @@ class BsProductDetailInfoViewModel @Inject constructor(dispatchers: DynamicProdu
     val bottomSheetDetailData: LiveData<Result<List<ProductDetailInfoVisitable>>> = Transformations.switchMap(parcelData) {
         val bottomSheetData = MutableLiveData<Result<List<ProductDetailInfoVisitable>>>()
         launchCatchError(block = {
-            val requestParams = GetProductDetailBottomSheetUseCase.createParams(it.productId, it.shopId, it.catalogId)
+            val requestParams = GetProductDetailBottomSheetUseCase.createParams(it.productId, it.shopId)
             val responseData = getProductDetailBottomSheetUseCase.executeOnBackground(requestParams, it.forceRefresh)
             val visitableData = ProductDetailInfoMapper.generateVisitable(responseData, it)
 

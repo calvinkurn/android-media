@@ -125,7 +125,6 @@ object ProductTrackingConstant {
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
-        const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
