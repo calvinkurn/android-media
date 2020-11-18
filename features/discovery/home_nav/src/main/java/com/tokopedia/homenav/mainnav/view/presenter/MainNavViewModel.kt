@@ -215,9 +215,9 @@ class MainNavViewModel @Inject constructor(
     private fun getMainNavData() {
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
+                getHomeBackButtonMenu()
                 getMainNavContent()
                 onlyForLoggedInUser { getUserSection() }
-                getHomeBackButtonMenu()
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
