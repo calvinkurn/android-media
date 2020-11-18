@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.filter.presentation.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -12,18 +13,25 @@ import kotlinx.android.synthetic.main.item_chips_som_filter.view.*
 
 class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener) : RecyclerView.Adapter<SomFilterItemChipsAdapter.ChipsListViewHolder>() {
 
-    private var somFilterData: SomFilterUiModel? = null
-    private var somFilterChipsUiModel: List<SomFilterChipsUiModel>? = null
+    private var somFilterChipsUiModel = mutableListOf<SomFilterChipsUiModel>()
+    private var nameFilter = ""
 
-    fun setChipsFilter(somFilterUiModel: SomFilterUiModel) {
-        if (somFilterUiModel.somFilterData.size >= MAX_CHIPS_FILTER) {
-            this.somFilterData = somFilterUiModel
-            somFilterChipsUiModel = somFilterUiModel.somFilterData.take(MAX_CHIPS_FILTER)
+    fun setChipsFilter(newSomFilterChipsUiModel: List<SomFilterChipsUiModel>, nameFilter: String) {
+        this.nameFilter = nameFilter
+        if (newSomFilterChipsUiModel.size >= MAX_CHIPS_FILTER) {
+            val maxChipsFilter = newSomFilterChipsUiModel.take(MAX_CHIPS_FILTER)
+            val callBack = SomSubFilterDiffUtil(somFilterChipsUiModel, maxChipsFilter)
+            val diffResult = DiffUtil.calculateDiff(callBack)
+            somFilterChipsUiModel.clear()
+            somFilterChipsUiModel.addAll(maxChipsFilter)
+            diffResult.dispatchUpdatesTo(this)
         } else {
-            this.somFilterData = somFilterUiModel
-            somFilterChipsUiModel = somFilterUiModel.somFilterData
+            val callBack = SomSubFilterDiffUtil(somFilterChipsUiModel, newSomFilterChipsUiModel)
+            val diffResult = DiffUtil.calculateDiff(callBack)
+            somFilterChipsUiModel.clear()
+            somFilterChipsUiModel.addAll(newSomFilterChipsUiModel)
+            diffResult.dispatchUpdatesTo(this)
         }
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChipsListViewHolder {
@@ -32,11 +40,12 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
     }
 
     override fun getItemCount(): Int {
-        return somFilterChipsUiModel?.size ?: 0
+        return somFilterChipsUiModel.size
     }
 
     override fun onBindViewHolder(holder: ChipsListViewHolder, position: Int) {
-        somFilterChipsUiModel?.get(position)?.let { holder.bind(it) }
+        val data = somFilterChipsUiModel[position]
+        holder.bind(data)
     }
 
     inner class ChipsListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -53,7 +62,7 @@ class SomFilterItemChipsAdapter(private val somFilterListener: SomFilterListener
                     }
                     setOnClickListener {
                         somFilterListener.onFilterChipsClicked(data,
-                                somFilterData?.nameFilter.orEmpty(),
+                                nameFilter,
                                 adapterPosition,
                                 chipType.orEmpty(),
                                 data.name)

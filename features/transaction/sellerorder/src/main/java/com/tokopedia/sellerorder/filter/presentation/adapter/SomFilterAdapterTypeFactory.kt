@@ -10,6 +10,7 @@ import com.tokopedia.sellerorder.filter.presentation.adapter.viewholder.SomFilte
 import com.tokopedia.sellerorder.filter.presentation.adapter.viewholder.SomFilterLoadingViewHolder
 import com.tokopedia.sellerorder.filter.presentation.adapter.viewholder.SomFilterViewHolder
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 
 class SomFilterAdapterTypeFactory(private val filterListener: SomFilterListener) : BaseAdapterTypeFactory(), TypeFactorySomFilterAdapter {
@@ -22,8 +23,8 @@ class SomFilterAdapterTypeFactory(private val filterListener: SomFilterListener)
         return SomFilterDateViewHolder.LAYOUT
     }
 
-    override fun type(viewModel: EmptyModel?): Int {
-        return SomFilterEmptyViewHolder.LAYOUT
+    override fun type(somFilterEmptyUiModel: SomFilterEmptyUiModel): Int {
+        return  SomFilterEmptyViewHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingModel): Int {
