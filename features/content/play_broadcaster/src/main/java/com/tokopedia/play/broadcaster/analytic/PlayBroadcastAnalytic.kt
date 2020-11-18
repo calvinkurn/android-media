@@ -567,7 +567,7 @@ class PlayBroadcastAnalytic(private val userSession: UserSessionInterface) {
      * View confirm on pop up delete on Report Page
      */
     fun viewConfirmDeleteOnReportPage(channelId: String) {
-        viewCustomGeneralEvent(
+        viewGeneralEvent(
                 "confirm on pop up delete",
                 "- $channelId"
         )
