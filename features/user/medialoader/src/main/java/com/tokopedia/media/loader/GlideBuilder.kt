@@ -181,7 +181,7 @@ object GlideBuilder {
     private fun blurring(blurHash: String?): Bitmap? {
         return BlurHashDecoder.decode(
                 blurHash = blurHash,
-                width = 20,
+                width = 60,
                 height = 20
         )
     }
@@ -191,7 +191,7 @@ object GlideBuilder {
                 .asBitmap()
                 .load(resource)
                 .fitCenter()
-                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
     }
 
     fun loadGifImage(imageView: ImageView, data: String) {
