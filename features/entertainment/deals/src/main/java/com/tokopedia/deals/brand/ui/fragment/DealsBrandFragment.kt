@@ -111,7 +111,7 @@ class DealsBrandFragment : DealsBaseFragment(), DealsBrandActionListener,
             }
         })
 
-        baseViewModel.observableCurrentLocation.observe(this, Observer {
+        baseViewModel.observableCurrentLocation.observe(viewLifecycleOwner, Observer {
             onBaseLocationChanged(it)
         })
     }
