@@ -5,6 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,6 +55,7 @@ import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.dialog.PlayWidgetDeleteDialogContainer
+import com.tokopedia.play.widget.ui.dialog.PlayWidgetWatchDialogContainer
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
@@ -144,6 +146,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
         const val NUM_VOUCHER_DISPLAY = 10
 
+//        private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.sellerapp"
+        private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
+
         fun createInstance(
                 shopId: String,
                 isOfficialStore: Boolean,
@@ -221,6 +226,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
         })
     }
+
+    private val widgetWatchDialogContainer by lazy { PlayWidgetWatchDialogContainer() }
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
@@ -1604,7 +1611,14 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         if (GlobalConfig.isSellerApp()) {
-
+            if (isCustomerAppInstalled()) {
+//                startActivity(
+//                        requireActivity().packageManager.getLaunchIntentForPackage(CUSTOMER_APP_PACKAGE)
+//                )
+                RouteManager.route(context, appLink)
+            } else {
+                widgetWatchDialogContainer.openPlayStore(requireContext())
+            }
         } else {
             val intent = RouteManager.getIntent(requireContext(), appLink)
             startActivityForResult(intent, PlayWidgetCardMediumChannelViewHolder.KEY_PLAY_WIDGET_REQUEST_CODE)
@@ -1790,5 +1804,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private fun copyToClipboard(shareContents: String) {
         (requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager)
                 .setPrimaryClip(ClipData.newPlainText("play-widget", shareContents))
+    }
+
+    private fun isCustomerAppInstalled() = try {
+        requireActivity().packageManager.getPackageInfo(CUSTOMER_APP_PACKAGE, 0)
+        true
+    } catch (e: PackageManager.NameNotFoundException) {
+        false
     }
 }
