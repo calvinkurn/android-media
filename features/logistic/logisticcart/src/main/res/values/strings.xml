@@ -30,6 +30,7 @@
     <string name="tv_error">Jarak melebihi batas maksimum kurir</string>
     <string name="tv_text_desc">(Direkomendasikan untuk berat di atas 5kg)</string>
     <string name="tv_duration">4 Jam</string>
+    <string name="tv_mvc_text">Promo yang dipakai</string>
     <string name="content_img_check">image check</string>
     <string name="content_desc_tv_duration">text durasi</string>
     <string name="content_desc_tv_courier">text kurir</string>

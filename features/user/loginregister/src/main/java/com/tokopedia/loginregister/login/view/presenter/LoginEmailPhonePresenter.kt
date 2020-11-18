@@ -122,6 +122,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginFacebook(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -135,6 +136,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 LoginTokenFacebookSubscriber(userSession,
                         view.onSuccessLoginFacebookPhone(),
                         view.onErrorLoginFacebookPhone(),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToSecurityQuestion(""))
         )
     }
@@ -159,6 +161,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     LoginTokenSubscriber(userSession,
                             { getUserInfo() },
                             view.onErrorLoginGoogle(email),
+                            { view.showPopup().invoke(it.loginToken.popupError) },
                             view.onGoToActivationPage(email),
                             view.onGoToSecurityQuestion(email)))
         }
@@ -186,8 +189,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 view.showLoadingLogin()
                 loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                         email, password), LoginTokenSubscriber(userSession,
-                        { view.onSuccessLoginEmail() },
+                        { view.onSuccessLoginEmail(it) },
                         view.onErrorLoginEmail(email),
+                        { view.showPopup().invoke(it.loginToken.popupError) },
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email),
                         onFinished = {
@@ -204,8 +208,9 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             loginTokenUseCase.executeLoginAfterSQ(LoginTokenUseCase.generateParamLoginAfterSQ(
                     userSession, validateToken), LoginTokenSubscriber(userSession,
-                    { getUserInfo() },
+                    { view.onSuccessReloginAfterSQ(it) },
                     view.onErrorReloginAfterSQ(validateToken),
+                    { view.showPopup().invoke(it.loginToken.popupError) },
                     view.onGoToActivationPageAfterRelogin(),
                     view.onGoToSecurityQuestionAfterRelogin()))
         }
