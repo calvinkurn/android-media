@@ -34,7 +34,6 @@ class TopAdsHeadlineKeySelectedAdapter(private val onCheck: ((position: Int) -> 
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.view.checkBox.setOnClickListener(null)
         holder.view.checkBox.isChecked = true
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordBid.textFieldInput.setText(Utils.convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))

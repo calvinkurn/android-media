@@ -35,7 +35,6 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.view.checkBox.setOnClickListener(null)
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordDesc.text = String.format(holder.view.context.getString(R.string.topads_headline_keyword_desc), convertToCurrency(items[holder.adapterPosition].totalSearch.toLong()))
         holder.view.keywordBid.textFieldInput.setText(convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
