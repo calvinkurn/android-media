@@ -385,7 +385,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     private fun getNotificationStatus(componentsItems: ComponentsItem): String {
         val parentProductContainer = getComponent(componentsItems.parentComponentId, pageIdentifier)
         parentProductContainer?.let {
-            return if (it.properties?.buttonNotification == true) NOTIFY_ON else NOTIFY_OFF
+            return if (componentsItems.data?.firstOrNull()?.notifyMe != null) NOTIFY_ON else NOTIFY_OFF
         }
         return NOTIFY_ON
     }
