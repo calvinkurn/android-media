@@ -641,6 +641,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun setupViews() {
         showWaitingPaymentOrderListMenuShimmer()
         rvSomList.layoutManager = somListLayoutManager
+        rvSomList.setItemViewCacheSize(6)
         setupListeners()
     }
 
@@ -1008,6 +1009,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             updateOrderCounter()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
+            checkBoxBulkAction.skipAnimation()
             toggleTvSomListBulkText()
         }
 
@@ -1222,6 +1224,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
                 multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
+                toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 if (shouldScrollToTop) {
                     shouldScrollToTop = false
@@ -1236,7 +1239,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
             } else {
                 adapter.addMoreData(data)
-                updateBulkActionCheckboxStatus()
+                rvSomList.post {
+                    updateBulkActionCheckboxStatus()
+                }
             }
             rvSomList?.postDelayed({
                 reshowNewOrderCoachMark(data)
