@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <ProgressBar
         android:id="@+id/hotel_booking_loading_bar"
@@ -16,7 +16,7 @@
         android:id="@+id/hotel_booking_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -48,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:typographyType="heading_3"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         tools:text="Avissa Suites" />
 
                     <LinearLayout
@@ -71,7 +71,7 @@
                             android:paddingTop="@dimen/spacing_lvl1"
                             android:paddingRight="@dimen/hotel_6dp"
                             android:paddingBottom="@dimen/spacing_lvl1"
-                            android:textColor="#9e9fa3"
+                            android:textColor="@color/hotel_property_label_text_color"
                             app:typographyType="small"
                             app:typographyWeight="bold"
                             tools:text="Hotel" />
@@ -84,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="2"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         tools:text="Jalan Cihampelas No 211-217 Bandung 40131, Cihampelas" />
                 </LinearLayout>
@@ -134,7 +134,7 @@
                     android:layout_marginBottom="@dimen/layout_lvl1"
                     android:textStyle="bold"
                     app:typographyType="heading_4"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     tools:text="Kamar Deluxe Double" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -147,7 +147,7 @@
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
                     app:drawableLeftCompat="@drawable/ic_hotel_16"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     tools:visibility="visible" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -156,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_lvl1"
                     app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     tools:text="2 Kamar • 2 Tamu" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -166,7 +166,7 @@
                     android:text="@string/hotel_booking_free_breakfast"
                     android:visibility="visible"
                     app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"/>
+                    android:textColor="@color/Unify_N700_68"/>
 
                 <com.tokopedia.unifycomponents.ticker.Ticker
                     android:id="@+id/cancellation_policy_ticker"
@@ -243,7 +243,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/hotel_booking_request_form_notice"
                         app:typographyType="body_3"
-                        android:textColor="@color/Neutral_N700_68"/>
+                        android:textColor="@color/Unify_N700_68"/>
 
                 </LinearLayout>
 
@@ -271,7 +271,7 @@
                     android:layout_marginBottom="@dimen/layout_lvl1"
                     android:text="@string/hotel_booking_contact_detail_title"
                     app:typographyType="heading_4"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                      />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -281,7 +281,7 @@
                     android:layout_marginBottom="@dimen/hotel_12dp"
                     android:text="@string/hotel_booking_contact_detail_info"
                     app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     />
 
                 <com.tokopedia.travel.passenger.presentation.widget.TravellerInfoWidget
@@ -371,7 +371,7 @@
                     android:text="@string/hotel_booking_invoice_title"
                     android:textStyle="bold"
                     app:typographyType="heading_4"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                    />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -385,7 +385,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:typographyType="body_3"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="2 kamar x 2 malam" />
@@ -397,7 +397,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyWeight="bold"
                         tools:text="Rp 400.000" />
 
@@ -416,7 +416,7 @@
                         android:text="@string/hotel_booking_tax_label"
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -427,7 +427,7 @@
                         android:text="@string/hotel_booking_tax_included"
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -454,7 +454,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="body_3"
-                        android:textColor="@color/Neutral_N700_96"
+                        android:textColor="@color/Unify_N700_96"
                         app:typographyWeight="bold"
                         tools:text="Bayar di Hotel" />
 
@@ -477,7 +477,7 @@
                     android:text="@string/hotel_booking_invoice_foreign_currency_label"
                     android:visibility="gone"
                     app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68"
+                    android:textColor="@color/Unify_N700_68"
                     tools:text="Sebagai referensi, estimasi harga dalam rupiah sebesar Rp 400.000"
                     tools:visibility="visible" />
 
@@ -507,7 +507,7 @@
                     android:paddingBottom="@dimen/layout_lvl1"
                     android:text="@string/hotel_booking_important_notes"
                     app:typographyType="body_3"
-                    android:textColor="@color/Neutral_N700_68" />
+                    android:textColor="@color/Unify_N700_68" />
 
             </LinearLayout>
 

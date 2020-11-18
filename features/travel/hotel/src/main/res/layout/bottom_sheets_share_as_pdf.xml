@@ -47,7 +47,7 @@
             android:layout_marginLeft="@dimen/hotel_3dp"
             android:visibility="gone"
             app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             tools:visibility="visible"
             tools:text="lalalala"/>
 
@@ -70,7 +70,7 @@
                 android:layout_marginStart="@dimen/layout_lvl1"
                 android:layout_marginLeft="@dimen/layout_lvl1"
                 android:text="@string/hotel_share_add_email"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 app:typographyType="body_2" />
 
         </LinearLayout>

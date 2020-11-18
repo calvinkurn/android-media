@@ -4,7 +4,7 @@
     <color name="hotel_safety_badge_blue">#0081CB</color>
     <color name="pink_property">#ef144a</color>
     <color name="blue_background">@color/Unify_B100</color>
-    <color name="grey_no_image">#f3f4f5</color>
+    <color name="grey_no_image">@color/Unify_N50</color>
     <color name="grey_share_menu">#52565e</color>
     <color name="ticket_start_gradient">#f7fff0</color>
     <color name="ticket_end_gradient">#d1ffdd</color>
@@ -20,6 +20,7 @@
     <color name="hotel_grey_300">#e0e0e0</color>
     <color name="hotel_grey_400">#bdbdbd</color>
     <color name="hotel_grey_500">#9e9e9e</color>
+    <color name="hotel_grey">#DDDDDD</color>
     <color name="hotel_dark_orange_300">#ff5722</color>
     <color name="hotel_orange_607">#ff5607</color>
     <color name="hotel_lightish_green">#77db80</color>
@@ -27,6 +28,8 @@
 
     <color name="hotel_textview_light">#ae31353b</color>
     <color name="hotel_color_active_rail">#42b549</color>
+
+    <color name="hotel_property_label_text_color">#9e9fa3</color>
 
     <color name="search_subtitle">#7031353b</color>
 </resources>

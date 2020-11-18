@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         app:typographyType="small"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         tools:text="Wi-Fi Hotel Kencang"
         android:maxLines="2"
         android:ellipsize="end"/>

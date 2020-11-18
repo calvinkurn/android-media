@@ -28,7 +28,7 @@
             android:layout_marginLeft="@dimen/layout_lvl1"
             android:layout_weight="1"
             app:typographyType="heading_4"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             tools:text="Fasilitas Umum"
             />
 
