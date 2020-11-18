@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.core.graphics.BitmapCompat
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.MultiTransformation
@@ -56,6 +57,7 @@ object GlideBuilder {
             })
 
     private fun glideListener(
+            startTime: Long,
             listener: LoaderStateListener?,
             performanceMonitoring: PerformanceMonitoring?
     ) = object : RequestListener<Bitmap> {
@@ -76,6 +78,10 @@ object GlideBuilder {
                 dataSource: DataSource?,
                 isFirstResource: Boolean
         ): Boolean {
+            val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it) }?: 0
+            val endTime = System.currentTimeMillis()
+            performanceMonitoring?.putCustomAttribute("load_time", endTime - startTime)
+            performanceMonitoring?.putCustomAttribute("file_size", fileSize)
             performanceMonitoring?.stopTrace()
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
@@ -86,6 +92,7 @@ object GlideBuilder {
     fun loadImage(data: Any?, imageView: ImageView, properties: Properties) {
         with(properties) {
             var performanceMonitoring: PerformanceMonitoring? = null
+            val startTime = System.currentTimeMillis()
 
             val localTransform = mutableListOf<Transformation<Bitmap>>()
             val drawableError = imageView.resourceError(error)
@@ -147,7 +154,7 @@ object GlideBuilder {
                         transform(MultiTransformation(localTransform))
                     }
 
-                    listener(glideListener(loaderListener, performanceMonitoring))
+                    listener(glideListener(startTime, loaderListener, performanceMonitoring))
 
                 }.into(imageView)
             }
