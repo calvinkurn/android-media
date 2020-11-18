@@ -116,8 +116,8 @@ class SomListSortFilterTab(
     }
 
     fun selectTab(status: SomListFilterUiModel.Status) {
-        filterItems.forEach {
-            if (!it.title.contains(status.status) && it.type == ChipsUnify.TYPE_SELECTED) {
+        filterItems.filter { !it.title.contains(status.status) }.forEach {
+            if (it.type == ChipsUnify.TYPE_SELECTED) {
                 it.type = ChipsUnify.TYPE_NORMAL
             }
         }
@@ -156,9 +156,7 @@ class SomListSortFilterTab(
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
-    fun getSelectedFilterSatusName(): String = selectedTab?.status.orEmpty()
-
-    fun getSelectedTab() = selectedTab
+    fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
 
     fun getSomListFilterUiModel() = somListFilterUiModel
 

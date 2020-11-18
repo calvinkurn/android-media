@@ -426,7 +426,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onParentSortFilterClicked() {
         val somFilterList = somListSortFilterTab.getSomFilterUi()
         somFilterBottomSheet = SomFilterBottomSheet.createInstance(
-                somListSortFilterTab.getSelectedTab()?.status.orEmpty(),
+                somListSortFilterTab.getSelectedFilterStatusName(),
                 viewModel.getDataOrderListParams().statusList,
                 somFilterList,
                 filterDate,
@@ -502,7 +502,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onStartAdvertiseButtonClicked() {
         SomAnalytics.eventClickStartAdvertise(
                 somListSortFilterTab.getSelectedFilterStatus(),
-                somListSortFilterTab.getSelectedFilterSatusName())
+                somListSortFilterTab.getSelectedFilterStatusName())
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
@@ -849,7 +849,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     }
                     SomAnalytics.eventBulkAcceptOrder(
                             somListSortFilterTab.getSelectedFilterStatus(),
-                            somListSortFilterTab.getSelectedFilterSatusName(),
+                            somListSortFilterTab.getSelectedFilterStatusName(),
                             successCount,
                             userSession.userId,
                             userSession.shopId)
@@ -1443,7 +1443,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 somListSortFilterTab.show(somListFilter)
                 somListSortFilterTab.updateCounterFilter()
             }
-            refreshOrderList()
+            loadFilters(false)
+            if (shouldReloadOrderListImmediately()) {
+                refreshOrderList()
+            } else {
+                getSwipeRefreshLayout(view)?.isRefreshing = true
+            }
         }
         setDefaultSortByValue()
     }

@@ -82,11 +82,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when update filter selected should return success`() {
         runBlocking {
-            somFilterViewModel.updateFilterSelected(mockIdFilter, 2, ChipsUnify.TYPE_NORMAL, mockDate)
+            somFilterViewModel.updateFilterSelected(mockIdFilter, 2, ChipsUnify.TYPE_NORMAL)
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
-            val somFilterDataList = somFilterSuccess.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.filterIsInstance<SomFilterDateUiModel>()?.firstOrNull()
+            val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()
+            val filterDate = somFilterSuccess.first.filterIsInstance<SomFilterDateUiModel>()?.firstOrNull()
             assertTrue(somFilterViewModel.somFilterOrderListParam.value is Success)
             assertNotNull(somFilterDataList)
             assertNotNull(filterDate)
@@ -96,11 +96,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when update filter many selected should return success`() {
         runBlocking {
-            somFilterViewModel.updateFilterManySelected(mockIdFilter, ChipsUnify.TYPE_NORMAL, 2, mockDate)
+            somFilterViewModel.updateFilterManySelected(mockIdFilter, ChipsUnify.TYPE_NORMAL, 2)
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
-            val somFilterDataList = somFilterSuccess.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
+            val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()
+            val filterDate = somFilterSuccess.first.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
             assertTrue(somFilterViewModel.somFilterOrderListParam.value is Success)
             assertNotNull(somFilterDataList)
             assertNotNull(filterDate)
@@ -118,11 +118,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                 add(SomFilterChipsUiModel(idList = listOf(690, 691, 695, 698, 699, 700, 701), idFilter = "Pesanan Selesai", key = "done", amount = 0, isSelected = false))
             }
 
-            somFilterViewModel.updateSomFilterSeeAll(mockIdFilter, mockSubFilterList, mockDate)
+            somFilterViewModel.updateSomFilterSeeAll(mockIdFilter, mockSubFilterList)
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
-            val somFilterDataList = somFilterSuccess.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
+            val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()
+            val filterDate = somFilterSuccess.first.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
             assertNotNull(somFilterViewModel.somFilterOrderListParam.value)
             assertNotNull(somFilterDataList)
             assertNotNull(filterDate)
@@ -133,7 +133,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when reset all of som filter should return success`() {
         runBlocking {
             somFilterViewModel.resetFilterSelected()
-            val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
+            val somFilterSuccess = (somFilterViewModel.resetFilterResult.value as Success).data
             val somFilterDataList = somFilterSuccess.filterIsInstance<SomFilterUiModel>()
             val filterDate = somFilterSuccess.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
             assertNotNull(somFilterDataList)

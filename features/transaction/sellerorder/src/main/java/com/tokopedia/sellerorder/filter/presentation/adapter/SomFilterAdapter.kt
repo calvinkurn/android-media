@@ -1,10 +1,9 @@
 package com.tokopedia.sellerorder.filter.presentation.adapter
 
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.*
 
 class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAdapter<SomFilterAdapterTypeFactory>(adapterTypeFactory) {
 
@@ -13,15 +12,35 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
     }
 
     fun updateData(dataList: List<BaseSomFilter>) {
+        val callBack = SomFilterDiffUtilCallback(visitables, dataList)
+        val diffResult = DiffUtil.calculateDiff(callBack)
+        visitables.clear()
+        visitables.addAll(dataList)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun resetFilterSelected(dataList: List<BaseSomFilter>) {
         visitables.clear()
         visitables.addAll(dataList)
         notifyDataSetChanged()
     }
 
-    fun setEmptyState(emptyData: EmptyModel) {
+    fun setEmptyState(emptyData: SomFilterEmptyUiModel) {
+        val visitableEmpty = mutableListOf<BaseSomFilter>(emptyData)
+        val callBack = SomFilterDiffUtilCallback(visitables, visitableEmpty)
+        val diffResult = DiffUtil.calculateDiff(callBack)
         visitables.clear()
-        visitables.add(emptyData)
-        notifyDataSetChanged()
+        visitables.addAll(visitableEmpty)
+        diffResult.dispatchUpdatesTo(this)
+    }
+
+    fun updateChipsSelected(chipsList: List<SomFilterChipsUiModel>, nameFilter: String) {
+        val updateIndex = visitables.filterIsInstance<SomFilterUiModel>().firstOrNull { it.nameFilter == nameFilter }
+        val chipsIndex = visitables.indexOf(updateIndex)
+        visitables.filterIsInstance<SomFilterUiModel>().firstOrNull { it.nameFilter == nameFilter}?.somFilterData = chipsList
+        if(chipsIndex != -1) {
+            notifyItemChanged(chipsIndex)
+        }
     }
 
     fun updateDateFilterText(date: String) {
