@@ -1,7 +1,9 @@
 package com.tokopedia.play.widget.ui.custom
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -9,6 +11,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
@@ -17,7 +20,9 @@ import com.tokopedia.play.widget.player.PlayVideoPlayer
 import com.tokopedia.play.widget.player.PlayVideoPlayerReceiver
 import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
+import com.tokopedia.play.widget.util.PlayWidgetCompositeTouchDelegate
 import com.tokopedia.unifycomponents.LoaderUnify
+
 
 /**
  * Created by mzennis on 26/10/20.
@@ -48,6 +53,8 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     private var mPlayer: PlayVideoPlayer? = null
     private var mListener: Listener? = null
 
+    private val compositeTouchDelegate: PlayWidgetCompositeTouchDelegate
+
     private lateinit var mModel: PlayWidgetMediumChannelUiModel
 
     init {
@@ -65,6 +72,11 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         tvTotalView = view.findViewById(R.id.viewer)
         llLoadingContainer = view.findViewById(R.id.ll_loading_container)
         loaderLoading = view.findViewById(R.id.loader_loading)
+
+        compositeTouchDelegate = PlayWidgetCompositeTouchDelegate(view)
+        view.touchDelegate = compositeTouchDelegate
+
+        setupView(view)
     }
 
     private val playerListener = object : PlayVideoPlayer.VideoPlayerListener {
@@ -189,6 +201,16 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         setPlayer(null)
+    }
+
+    private fun setupView(view: View) {
+        ivAction.addOneTimeGlobalLayoutListener {
+            val rect = Rect()
+            ivAction.getHitRect(rect)
+            rect.top = view.top
+            rect.right = view.right
+            compositeTouchDelegate.addDelegate(TouchDelegate(rect, ivAction))
+        }
     }
 
     interface Listener {

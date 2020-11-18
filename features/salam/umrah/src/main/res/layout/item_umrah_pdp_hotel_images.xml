@@ -3,12 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cv_umrah_pdp_hotel_image_container"
-    android:layout_width="@dimen/dp_200"
-    android:layout_height="@dimen/dp_100"
+    android:layout_width="@dimen/dimen_dp_200"
+    android:layout_height="@dimen/unify_space_96"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackgroundBorderless"
-    app:cardCornerRadius="@dimen/dp_8"
+    app:cardCornerRadius="@dimen/spacing_lvl3"
     app:cardUseCompatPadding="true"
     tools:targetApi="lollipop">
 
@@ -17,5 +17,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@color/light_blue_300" />
+        android:src="@color/Blue_B300" />
 </androidx.cardview.widget.CardView>
