@@ -16,9 +16,13 @@ import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateListener
+import com.tokopedia.play.util.channel.state.PlayViewerChannelStateProcessor
+import com.tokopedia.play.util.video.buffer.PlayViewerVideoBufferGovernor
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateListener
 import com.tokopedia.play.util.video.state.PlayViewerVideoStateProcessor
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
@@ -38,7 +42,9 @@ import javax.inject.Inject
  */
 class PlayViewModel @Inject constructor(
         private val playVideoManager: PlayVideoManager,
-        private val videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+        videoStateProcessorFactory: PlayViewerVideoStateProcessor.Factory,
+        channelStateProcessorFactory: PlayViewerChannelStateProcessor.Factory,
+        videoBufferGovernorFactory: PlayViewerVideoBufferGovernor.Factory,
         private val getChannelInfoUseCase: GetChannelDetailUseCase,
         private val getSocketCredentialUseCase: GetSocketCredentialUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
@@ -48,7 +54,8 @@ class PlayViewModel @Inject constructor(
         private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
-        private val dispatchers: CoroutineDispatcherProvider
+        private val dispatchers: CoroutineDispatcherProvider,
+        private val pageMonitoring: PlayPltPerformanceCallback
 ) : PlayBaseViewModel(dispatchers.main) {
 
     /**
@@ -206,6 +213,15 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private val channelStateListener = object : PlayViewerChannelStateListener {
+        override fun onChannelFreezeStateChanged(shouldFreeze: Boolean) {
+            scope.launch(dispatchers.immediate) {
+                val value = _observableEvent.value
+                value?.let { _observableEvent.value = it.copy(isFreeze = shouldFreeze) }
+            }
+        }
+    }
+
     private val videoManagerListener = object : PlayVideoManager.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
             scope.launch(dispatchers.immediate) {
@@ -226,10 +242,14 @@ class PlayViewModel @Inject constructor(
     }
 
     private val videoStateProcessor = videoStateProcessorFactory.create(scope) { channelType }
+    private val channelStateProcessor = channelStateProcessorFactory.create(scope) { channelType }
+    private val videoBufferGovernor = videoBufferGovernorFactory.create(scope)
 
     init {
         playVideoManager.addListener(videoManagerListener)
         videoStateProcessor.addStateListener(videoStateListener)
+        channelStateProcessor.addStateListener(channelStateListener)
+        videoBufferGovernor.startBufferGovernance()
 
         stateHandler.observeForever(stateHandlerObserver)
 
@@ -259,6 +279,7 @@ class PlayViewModel @Inject constructor(
         stopPlayer()
         playVideoManager.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
+        channelStateProcessor.removeStateListener(channelStateListener)
     }
     //endregion
 
@@ -404,6 +425,7 @@ class PlayViewModel @Inject constructor(
 
     fun getChannelInfo(channelId: String) {
 
+        pageMonitoring.startNetworkRequestPerformanceMonitoring()
         var retryCount = 0
 
         fun getChannelInfoResponse(channelId: String){
@@ -441,7 +463,10 @@ class PlayViewModel @Inject constructor(
                 if (completeInfoUiModel.videoPlayer.isGeneral) playGeneralVideoStream(channel)
                 else playVideoManager.release()
 
-                _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
+                _observablePartnerInfo.value = completeInfoUiModel.channelInfo.partnerInfo
+                if (completeInfoUiModel.channelInfo.partnerInfo.type == PartnerType.Shop) {
+                    getFollowStatus(completeInfoUiModel.channelInfo)
+                }
 
             }) {
                 if (retryCount == 0) _observableChannelErrorEvent.value = Event(false)
@@ -455,7 +480,7 @@ class PlayViewModel @Inject constructor(
 
         if (!isFreezeOrBanned) {
             _observableGetChannelInfo.value = NetworkResult.Loading
-            getChannelInfoResponse(channelId)
+            if (channelInfoJob?.isActive != true) getChannelInfoResponse(channelId)
         }
     }
 
@@ -557,9 +582,10 @@ class PlayViewModel @Inject constructor(
                     is BannedFreeze -> {
                         if (result.channelId.isNotEmpty() && result.channelId.equals(channelId, true)) {
                             _observableEvent.value = _observableEvent.value?.copy(
-                                    isFreeze = result.isFreeze,
                                     isBanned = result.isBanned && result.userId.isNotEmpty()
                                             && result.userId.equals(userSession.userId, true))
+
+                            channelStateProcessor.setIsFreeze(result.isFreeze)
                         }
                     }
                     is ProductTag -> {
@@ -646,17 +672,15 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
-        return if (channel.partnerInfo.type == PartnerType.Tokopedia) channel.partnerInfo
-        else {
-            val shopInfo = getPartnerInfo(channel.partnerInfo.id, channel.partnerInfo.type)
-            PlayUiMapper.mapPartnerInfoFromShop(userSession.shopId, shopInfo)
+    private suspend fun getFollowStatus(channel: ChannelInfoUiModel) {
+        val shopInfo = withContext(dispatchers.io) {
+            getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(channel.partnerInfo.id.toInt(), channel.partnerInfo.type)
+            getPartnerInfoUseCase.executeOnBackground()
         }
-    }
-
-    private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
-        getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
-        getPartnerInfoUseCase.executeOnBackground()
+        _observablePartnerInfo.value = channel.partnerInfo.copy(
+                isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
+                isFollowable = userSession.shopId != shopInfo.shopCore.shopId
+        )
     }
 
     private suspend fun getBadgeCart(showCart: Boolean) {

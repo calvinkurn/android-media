@@ -405,7 +405,7 @@ class AddEditProductDescriptionFragment:
         if(descriptionViewModel.isAddMode && !descriptionViewModel.isDraftMode) {
             var dataBackPressed = NO_DATA
             if(descriptionViewModel.isFirstMoved) {
-                inputAllDataInInputDraftModel()
+                inputAllDataInInputModel()
                 dataBackPressed = DESCRIPTION_DATA
                 descriptionViewModel.productInputModel.value?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, NO_DATA)
             }
@@ -415,7 +415,8 @@ class AddEditProductDescriptionFragment:
         }
     }
 
-    private fun inputAllDataInInputDraftModel() {
+    private fun inputAllDataInInputModel() {
+        descriptionViewModel.productInputModel.value?.isDataChanged = true
         descriptionViewModel.productInputModel.value?.descriptionInputModel = DescriptionInputModel(
                 textFieldDescription.getText(),
                 getFilteredValidVideoLink()
@@ -652,7 +653,7 @@ class AddEditProductDescriptionFragment:
         if (descriptionViewModel.isAddMode) {
             ProductAddDescriptionTracking.clickContinue(shopId)
         }
-        inputAllDataInInputDraftModel()
+        inputAllDataInInputModel()
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
             arguments?.let {
                 val cacheManagerId = AddEditProductDescriptionFragmentArgs.fromBundle(it).cacheManagerId
@@ -665,21 +666,21 @@ class AddEditProductDescriptionFragment:
                 }
                 val destination = AddEditProductDescriptionFragmentDirections.actionAddEditProductDescriptionFragmentToAddEditProductShipmentFragment()
                 destination.cacheManagerId = cacheManagerId
-                findNavController().navigate(destination)
+                NavigationController.navigate(this@AddEditProductDescriptionFragment, destination)
             }
         }
     }
 
     private fun submitInput() {
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
-            inputAllDataInInputDraftModel()
+            inputAllDataInInputModel()
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE)
         }
     }
 
     private fun submitInputEdit() {
         if (descriptionViewModel.validateInputVideo(adapter.data)) {
-            inputAllDataInInputDraftModel()
+            inputAllDataInInputModel()
             setFragmentResultWithBundle(REQUEST_KEY_DESCRIPTION)
         }
         if (descriptionViewModel.isEditMode) {

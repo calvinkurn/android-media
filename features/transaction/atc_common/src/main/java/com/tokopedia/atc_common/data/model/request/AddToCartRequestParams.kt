@@ -16,10 +16,17 @@ data class AddToCartRequestParams(
         var warehouseId: Int = 0,
         var atcFromExternalSource: String = ATC_FROM_OTHERS,
         var isSCP: Boolean = false,
-        // appflyer analytics data
+        // analytics data
         var productName: String = "",
         var category: String = "",
-        var price: String = ""
+        var price: String = "",
+        var userId: String = "",
+        var categoryLevel1Id: String = "",
+        var categoryLevel1Name: String = "",
+        var categoryLevel2Id: String = "",
+        var categoryLevel2Name: String = "",
+        var categoryLevel3Id: String = "",
+        var categoryLevel3Name: String = ""
 ) {
     companion object {
         const val ATC_FROM_WISHLIST = "wishlist_list"

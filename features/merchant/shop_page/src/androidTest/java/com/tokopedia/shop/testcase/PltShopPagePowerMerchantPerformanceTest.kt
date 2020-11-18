@@ -2,7 +2,6 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -18,9 +17,7 @@ import com.tokopedia.shop.mock.ShopPageWithoutHomeTabMockResponseConfig.Companio
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
-import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
-import java.util.HashMap
-import com.tokopedia.test.application.util.setupTotalSizeInterceptor
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor
 
 class PltShopPagePowerMerchantPerformanceTest {
 
@@ -29,10 +26,6 @@ class PltShopPagePowerMerchantPerformanceTest {
     }
 
     private val TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE = "shop_page_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE = "shop_page_header_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_home_tab_test_case_page_load_time"
-    private val TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE = "shop_page_product_tab_test_case_page_load_time"
-
     private var context: Context? = null
 
     @get:Rule
@@ -45,8 +38,10 @@ class PltShopPagePowerMerchantPerformanceTest {
     fun init() {
         context = InstrumentationRegistry.getInstrumentation().targetContext
         context?.let {
-            setupGraphqlMockResponseWithCheck(ShopPageWithoutHomeTabMockResponseConfig())
-            setupTotalSizeInterceptor(listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL))
+            setupGraphqlMockResponseWithCheckAndTotalSizeInterceptor(
+                    ShopPageWithoutHomeTabMockResponseConfig(),
+                    listOf(KEY_QUERY_GET_IS_SHOP_OFFICIAL)
+            )
             val intent = Intent()
             intent.putExtra(ShopPageActivity.SHOP_ID, SAMPLE_SHOP_ID)
             activityRule.launchActivity(intent)
@@ -56,24 +51,6 @@ class PltShopPagePowerMerchantPerformanceTest {
     @Test
     fun testPageLoadTimePerformance() {
         waitForData()
-        activityRule.activity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_HEADER_LOAD_TIME_PERFORMANCE
-            )
-        }
-        activityRule.activity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_HOME_TAB_LOAD_TIME_PERFORMANCE
-            )
-        }
-        activityRule.activity.getShopPageProductTabLoadTimePerformanceCallback()?.let {
-            savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_PRODUCT_TAB_LOAD_TIME_PERFORMANCE
-            )
-        }
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
                     it.getPltPerformanceData(),

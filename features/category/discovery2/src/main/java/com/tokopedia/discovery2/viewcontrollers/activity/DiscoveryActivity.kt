@@ -6,9 +6,10 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.crashlytics.android.Crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
@@ -22,9 +23,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-
-const val NATIVE = "native"
-const val REACT_NATIVE = "react-native"
 const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
@@ -43,14 +41,14 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     companion object {
         const val END_POINT = "end_point"
-        const val SOURCE_QUERY = "source"
-        const val PINNED_COMPONENT_ID = "componentID"
-        const val PINNED_ACTIVE_TAB = "activeTab"
-        const val PINNED_COMP_ID = "pinnedcompID"
+        const val SOURCE = "source"
+        const val COMPONENT_ID = "componentID"
+        const val ACTIVE_TAB = "activeTab"
+        const val TARGET_COMP_ID = "targetcompID"
         const val PRODUCT_ID = "product_id"
-
-        @JvmField
-        var config: String = ""
+        const val PIN_PRODUCT = "pinProduct"
+        const val CATEGORY_ID = "category_id"
+        const val EMBED_CATEGORY = "embedCategory"
 
         @JvmStatic
         fun createDiscoveryIntent(context: Context, endpoint: String): Intent {
@@ -71,44 +69,11 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     override fun initView() {
-        moveToRnIfRequired()
+        inflateFragment()
         toolbar?.hide()
-        setObserver()
-    }
-
-    private fun moveToRnIfRequired() {
-        if (config.isNotEmpty()) {
-            if (config == NATIVE) {
-                inflateFragment()
-            } else {
-                routeToReactNativeDiscovery()
-            }
-        } else {
-            discoveryViewModel.getDiscoveryUIConfig()
-        }
-    }
-
-    private fun setObserver() {
-        discoveryViewModel.getDiscoveryUIConfigLiveData().observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    config = it.data
-                    moveToRnIfRequired()
-                }
-            }
-        })
     }
 
     override fun setupFragment(savedInstance: Bundle?) {
-    }
-
-    private fun routeToReactNativeDiscovery() {
-        RouteManager.route(
-                this,
-                ApplinkConst.REACT_DISCOVERY_PAGE.replace("{page_id}", intent?.data?.lastPathSegment
-                        ?: intent?.getStringExtra(END_POINT) ?: "")
-        )
-        finish()
     }
 
     private fun startPerformanceMonitoring() {
@@ -153,7 +118,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     override fun setLogCrash() {
         super.setLogCrash()
         this.javaClass.canonicalName?.let { className ->
-            if (!GlobalConfig.DEBUG) Crashlytics.log(className + " " + intent?.data?.lastPathSegment)
+            if (!GlobalConfig.DEBUG) FirebaseCrashlytics.getInstance().log(className + " " + intent?.data?.lastPathSegment)
         }
     }
 
@@ -166,4 +131,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         preSelectedTab = -1
     }
 
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageLoadTimePerformanceInterface?.getPltPerformanceData()
+    }
 }

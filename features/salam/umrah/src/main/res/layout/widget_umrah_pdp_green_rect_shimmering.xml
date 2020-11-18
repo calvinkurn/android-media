@@ -4,5 +4,5 @@
         app:corners="16"
         android:id="@+id/container_widget_umrah_pdp_green_rect_shimmering"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"/>
+        android:layout_height="@dimen/layout_lvl7"/>
 </merge>

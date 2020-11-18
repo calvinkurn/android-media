@@ -7,7 +7,13 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.view.View
+import android.widget.CompoundButton
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import rx.Emitter
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 /**
@@ -68,3 +74,28 @@ fun <T : Any> List<T>.each(action: T.() -> Unit) {
 }
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
+
+fun joinToString(strings: List<String>, separator: String): String = strings.joinToString(separator)
+
+fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.joinToString(separator)
+
+const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
+fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
+        Observable.create({ emitter: Emitter<Boolean> ->
+            view.setOnClickListener {
+                emitter.onNext(true)
+            }
+        }, Emitter.BackpressureMode.LATEST)
+                .debounce(timeout, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+
+fun rxCompoundButtonCheckDebounce(compoundButton: CompoundButton, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
+        Observable.create({ emitter: Emitter<Boolean> ->
+            compoundButton.setOnCheckedChangeListener { _, isChecked ->
+                emitter.onNext(isChecked)
+            }
+        }, Emitter.BackpressureMode.LATEST)
+                .debounce(timeout, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())

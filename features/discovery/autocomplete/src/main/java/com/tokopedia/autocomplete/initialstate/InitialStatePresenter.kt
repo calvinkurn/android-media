@@ -2,6 +2,7 @@ package com.tokopedia.autocomplete.initialstate
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateSearchViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.DynamicInitialStateTitleViewModel
 import com.tokopedia.autocomplete.initialstate.dynamic.convertDynamicInitialStateSearchToVisitableList
@@ -144,9 +145,30 @@ class InitialStatePresenter @Inject constructor(
         return dataLayerList
     }
 
-    private fun onPopularSearchImpressed(list: List<InitialStateItem>) {
-        list.withNotEmpty{
-            view?.onPopularSearchImpressed(getDataLayerForPromo(this))
+    private fun onPopularSearchImpressed(data: InitialStateData) {
+        data.items.withNotEmpty{
+            val dynamicInitialStateItemTrackingModel = createDynamicInitialStateItemTrackingModel(
+                    getUserId(), data.header, data.featureId, getDataLayerForPromo(this)
+            )
+            view?.onPopularSearchImpressed(dynamicInitialStateItemTrackingModel)
+        }
+    }
+
+    private fun createDynamicInitialStateItemTrackingModel(userId: String, title: String, type: String, list: List<Any>): DynamicInitialStateItemTrackingModel {
+        return DynamicInitialStateItemTrackingModel(
+                userId = userId,
+                title = title,
+                type = type,
+                list = list
+        )
+    }
+
+    private fun onDynamicSectionImpressed(data: InitialStateData) {
+        data.items.withNotEmpty{
+            val dynamicInitialStateItemTrackingModel = createDynamicInitialStateItemTrackingModel(
+                    getUserId(), data.header, data.featureId, getDataLayerForPromo(this)
+            )
+            view?.onDynamicSectionImpressed(dynamicInitialStateItemTrackingModel)
         }
     }
 
@@ -165,7 +187,7 @@ class InitialStatePresenter @Inject constructor(
                     )
                 }
                 InitialStateData.INITIAL_STATE_POPULAR_SEARCH -> {
-                    onPopularSearchImpressed(initialStateData.items)
+                    onPopularSearchImpressed(initialStateData)
                     data.addAll(
                             initialStateData.convertPopularSearchToVisitableList().insertTitleWithRefresh(
                                     initialStateData.featureId,
@@ -175,6 +197,7 @@ class InitialStatePresenter @Inject constructor(
                     )
                 }
                 else -> {
+                    onDynamicSectionImpressed(initialStateData)
                     data.addAll(
                             initialStateData.convertDynamicInitialStateSearchToVisitableList().insertDynamicTitle(
                                     initialStateData.featureId,
@@ -229,12 +252,16 @@ class InitialStatePresenter @Inject constructor(
     }
 
     private fun MutableList<Visitable<*>>.insertTitleWithRefresh(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
+        if (title.isEmpty()) return this
+
         val titleSearch = PopularSearchTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
         return this
     }
 
     private fun MutableList<Visitable<*>>.insertDynamicTitle(featureId: String, title: String, labelAction: String): List<Visitable<*>> {
+        if (title.isEmpty()) return this
+
         val titleSearch = DynamicInitialStateTitleViewModel(featureId, title, labelAction)
         this.add(0, titleSearch)
         return this
@@ -267,13 +294,16 @@ class InitialStatePresenter @Inject constructor(
 
             if (refreshedPopularSearchData.isEmpty()) return
 
-            listVisitable.forEachIndexed { _, visitable ->
-                if (visitable is PopularSearchViewModel) {
+            var refreshIndex = -1
+
+            listVisitable.forEachIndexed { index, visitable ->
+                if (visitable is PopularSearchViewModel && visitable.featureId == featureId) {
                     visitable.list = refreshedPopularSearchData
+                    if (listVisitable[index - 1] is PopularSearchTitleViewModel) refreshIndex = index - 1
                 }
             }
 
-            view.showInitialStateResult(listVisitable)
+            if (refreshIndex != -1) view.refreshViewWithPosition(refreshIndex)
         }
     }
 
@@ -309,13 +339,16 @@ class InitialStatePresenter @Inject constructor(
 
             if (dynamicInitialStateData.isEmpty()) return
 
-            listVisitable.forEachIndexed { _, visitable ->
-                if (visitable is DynamicInitialStateSearchViewModel) {
+            var refreshIndex = -1
+
+            listVisitable.forEachIndexed { index, visitable ->
+                if (visitable is DynamicInitialStateSearchViewModel && visitable.featureId == featureId) {
                     visitable.list = dynamicInitialStateData
+                    if (listVisitable[index - 1] is DynamicInitialStateTitleViewModel) refreshIndex = index - 1
                 }
             }
 
-            view.showInitialStateResult(listVisitable)
+            if (refreshIndex != -1) view.refreshViewWithPosition(refreshIndex)
         }
     }
 
@@ -475,5 +508,13 @@ class InitialStatePresenter @Inject constructor(
             view?.dropKeyBoard()
             view?.renderCompleteRecentSearch(recentSearchVisitable)
         }
+    }
+
+    override fun onDynamicSectionItemClicked(item: BaseItemInitialStateSearch, adapterPosition: Int) {
+        val label = "value: ${item.title} - title: ${item.header} - po: ${adapterPosition + 1}"
+        view?.trackEventClickDynamicSectionItem(getUserId(), label, item.featureId)
+
+        view?.route(item.applink, searchParameter)
+        view?.finish()
     }
 }

@@ -377,4 +377,10 @@
     <string name="content_desc_provider_name">button sosial media</string>
     <string name="content_desc_wrapper_pass_partial">wrapper password partial register</string>
 
+    <!-- POPUP ERROR -->
+    <string name="popup_error_title">Permintaanmu gagal diproses</string>
+    <string name="popup_error_desc">Ada kendala pada koneksi atau HP-mu. Coba lagi atau hubungi Tokopedia Care.</string>
+    <string name="check_full_information">Cek Informasi Lengkap</string>
+    <string name="close_popup">Tutup</string>
+
 </resources>

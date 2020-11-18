@@ -28,7 +28,6 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -297,16 +296,16 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void showErrorSnackbar(String message) {
+    public void showErrorToaster(String message) {
         if (getActivity() == null) return;
         if (message == null || TextUtils.isEmpty(message)) {
-            Toaster.INSTANCE.make(getView(),
+            Toaster.build(getView(),
                     getActivity().getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
-                    });
+                    Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
+                    }).show();
         } else {
-            Toaster.INSTANCE.make(getView(),message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR,
-                    "", v -> {});
+            Toaster.build(getView(),message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR,
+                    "", v -> {}).show();
         }
     }
 
@@ -886,39 +885,25 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     private void openGeoLocation() {
+        /*here access presenter*/
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
         int resultCode = availability.isGooglePlayServicesAvailable(getActivity());
         if (ConnectionResult.SUCCESS == resultCode) {
+            mPresenter.editAddressPinPoint(address, locationEditText.getText().toString());
             Timber.d("Google play services available");
-
-            LocationPass locationPass = new LocationPass();
-
-            if (!TextUtils.isEmpty(address.getLatitude())
-                    && !TextUtils.isEmpty(address.getLongitude())
-                    && !address.getLatitude().equals(String.valueOf(MONAS_LATITUDE))
-                    && !address.getLongitude().equals(String.valueOf(MONAS_LONGITUDE))) {
-                locationPass.setLatitude(address.getLatitude());
-                locationPass.setLongitude(address.getLongitude());
-                locationPass.setGeneratedAddress(locationEditText.getText().toString());
-            } else if (!TextUtils.isEmpty(address.getCityName()) && !TextUtils.isEmpty(address.getDistrictName())) {
-                locationPass.setDistrictName(address.getDistrictName());
-                locationPass.setCityName(address.getCityName());
-            } else {
-                locationPass.setLatitude(String.valueOf(MONAS_LATITUDE));
-                locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
-            }
-
-            if (getActivity() != null) {
-                Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
-                        isAddAddressFromCartCheckoutMarketplace());
-                startActivityForResult(intent, REQUEST_CODE);
-            }
         } else {
             Timber.d("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
             dialog.show();
         }
+    }
+
+    @Override
+    public void goToGeolocationActivity(LocationPass locationPass) {
+        Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
+                isAddAddressFromCartCheckoutMarketplace());
+        startActivityForResult(intent, REQUEST_CODE);
     }
 
     private boolean isAddAddressFromCartCheckoutMarketplace() {

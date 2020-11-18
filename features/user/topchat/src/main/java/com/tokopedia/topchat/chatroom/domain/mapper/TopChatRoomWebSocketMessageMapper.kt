@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_STICKER
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
+import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.merchantvoucher.common.gql.data.*
@@ -22,7 +23,9 @@ import javax.inject.Inject
 /**
  * @author by nisie on 10/12/18.
  */
-class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
+class TopChatRoomWebSocketMessageMapper @Inject constructor(
+
+) : WebsocketMessageMapper() {
 
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
@@ -117,5 +120,17 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
 
     fun parseResponse(response: WebSocketResponse?): ChatSocketPojo {
         return Gson().fromJson(response?.jsonObject, ChatSocketPojo::class.java)
+    }
+
+    fun mapToDummyMessage(
+            messageId: String,
+            userId: String,
+            name: String,
+            startTime: String,
+            messageText: String
+    ): Visitable<*> {
+        return MessageViewModel(
+                messageId, userId, name, startTime, messageText
+        )
     }
 }

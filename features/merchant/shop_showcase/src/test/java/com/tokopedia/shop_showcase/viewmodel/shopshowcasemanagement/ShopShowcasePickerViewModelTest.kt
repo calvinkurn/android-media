@@ -6,8 +6,8 @@ import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseP
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListBuyer.ShopShowcaseListBuyerResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListBuyerUseCase
+import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
+import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListSellerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmodel.ShopShowcasePickerViewModel
 import com.tokopedia.usecase.coroutines.Success
@@ -26,7 +26,7 @@ import org.junit.Test
 class ShopShowcasePickerViewModelTest {
 
     @RelaxedMockK
-    lateinit var getBuyerShowcaseList: GetShopShowcaseListBuyerUseCase
+    lateinit var getSellerShowcaseList: GetShopShowcaseListSellerUseCase
 
     @RelaxedMockK
     lateinit var getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase
@@ -43,7 +43,7 @@ class ShopShowcasePickerViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopShowcasePickerViewModel(
-                getBuyerShowcaseList,
+                getSellerShowcaseList,
                 getShopShowcaseTotalProductUseCase,
                 createShopShowcaseUseCase,
                 TestCoroutineDispatchers()
@@ -51,23 +51,20 @@ class ShopShowcasePickerViewModelTest {
     }
 
     @Test
-    fun `given showcase list as a buyer when shopid and isowner is provided`() {
+    fun `given showcase list as a seller`() {
         runBlocking {
-            val shopId = "123456"
-            val isOwner = false
-
             coEvery {
-                getBuyerShowcaseList.executeOnBackground()
-            } returns ShopShowcaseListBuyerResponse()
+                getSellerShowcaseList.executeOnBackground()
+            } returns ShopShowcaseListSellerResponse()
 
-            viewModel.getShopShowcaseListAsBuyer(shopId = shopId, isOwner = isOwner)
+            viewModel.getShopShowcaseListAsSeller()
 
             coVerify {
-                getBuyerShowcaseList.executeOnBackground()
+                getSellerShowcaseList.executeOnBackground()
             }
 
-            val expectedResponse = Success(ShopShowcaseListBuyerResponse())
-            val actualResponse = viewModel.getListBuyerShopShowcaseResponse.value as Success<ShopShowcaseListBuyerResponse>
+            val expectedResponse = Success(ShopShowcaseListSellerResponse())
+            val actualResponse = viewModel.getListSellerShopShowcaseResponse.value as Success<ShopShowcaseListSellerResponse>
             assertEquals(expectedResponse, actualResponse)
         }
     }

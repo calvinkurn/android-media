@@ -1,0 +1,33 @@
+{
+  "readme": "Rating Product - click sort in bottom sheet",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - rating product tab",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName": "rating produk"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - sort on rating product page",
+      "eventLabel" : "{{.*}}",
+      "shopId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName": "rating produk"
+    },
+    {
+      "event" : "clickReview",
+      "eventCategory" : "ulasan - rating produk",
+      "eventAction" : "click - select sort on bottomsheet",
+      "eventLabel" : "{{sortBy:.*;}}",
+      "shopId": "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName": "rating produk"
+    }
+  ]
+}

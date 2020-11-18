@@ -50,6 +50,16 @@ object ApplinkConstInternalGlobal {
     val PARAM_KTP_PATH = "ktpPath"
     @JvmField
     val PARAM_FACE_PATH = "facePath"
+    @JvmField
+    val PARAM_CTA_TYPE = "ctaType"
+    @JvmField
+    val PARAM_IMG_LINK = "imglink"
+    @JvmField
+    val PARAM_MESSAGE_TITLE = "messageTitle"
+    @JvmField
+    val PARAM_MESSAGE_BODY = "messageBody"
+    @JvmField
+    val PARAM_STATUS = "status"
 
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
@@ -284,6 +294,16 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
 
+    // ReceiverNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-receiver
+    @JvmField
+    val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
+
+    // SettingNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-setting
+    @JvmField
+    val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
+
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
     @JvmField
@@ -511,4 +531,8 @@ object ApplinkConstInternalGlobal {
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+
+    //FeedbackPageActivity
+    @JvmField
+    val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 }

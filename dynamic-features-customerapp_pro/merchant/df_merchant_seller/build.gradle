@@ -1,0 +1,61 @@
+apply plugin: 'com.android.dynamic-feature'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.feature'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+}
+
+dependencies {
+    implementation project(rootProject.ext.app.customerapp_pro)
+
+    implementation project(rootProject.ext.features.productAddEdit)
+    implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.powerMerchantSubscribe)
+    implementation project(rootProject.ext.features.shopSettings)
+    implementation project(rootProject.ext.features.topAdsDashboard)
+    implementation project(rootProject.ext.features.sellerorder)
+    implementation project(rootProject.ext.features.editshipping)
+    implementation project(rootProject.ext.features.shopScore)
+    implementation project(rootProject.ext.features.sellerMenu)
+}

@@ -50,6 +50,7 @@ class ClaimCouponViewModel(val application: Application, val components: Compone
             claimCouponUseCase.getClickCouponData(components.id, components.pageEndPoint)
             componentList.postValue(components.getComponentsItem() as ArrayList<ComponentsItem>)
         }, onError = {
+            it.printStackTrace()
         })
     }
 

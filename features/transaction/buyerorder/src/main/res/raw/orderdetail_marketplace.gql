@@ -121,6 +121,13 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       backgroundColor
       imageUrl
     }
+    discount {
+      label
+      value
+      textColor
+      backgroundColor
+      imageUrl
+    }
     detail {
       label
       value

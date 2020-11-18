@@ -158,7 +158,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     }
 
     private Drawable getBackgroundDrawable(String hexColor) {
-        Drawable backgroundDrawable = MethodChecker.getDrawable(itemView.getContext(), R.drawable.circle_color_variant_indicator);
+        Drawable backgroundDrawable = MethodChecker.getDrawable(itemView.getContext(), R.drawable.topchat_circle_color_variant_indicator);
 
         if (backgroundDrawable == null) return null;
 
@@ -174,7 +174,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     private void applyStrokeTo(Drawable backgroundDrawable) {
         if (backgroundDrawable instanceof GradientDrawable) {
             float strokeWidth = toDp(1);
-            ((GradientDrawable) backgroundDrawable).setStroke((int) strokeWidth, ContextCompat.getColor(itemView.getContext(), R.color.grey_300));
+            ((GradientDrawable) backgroundDrawable).setStroke((int) strokeWidth, ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N100));
         }
     }
 
@@ -336,7 +336,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
 
     private void updateWishListIconState(ProductAttachmentViewModel element) {
         if (element.isWishListed()) {
-            int color = ContextCompat.getColor(itemView.getContext(), R.color.chatcommon_wishlist_selected);
+            int color = ContextCompat.getColor(itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_R500);
             ivWishList.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         } else {
             ivWishList.clearColorFilter();

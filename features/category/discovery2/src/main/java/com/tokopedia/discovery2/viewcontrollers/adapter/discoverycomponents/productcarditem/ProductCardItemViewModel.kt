@@ -6,6 +6,7 @@ import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery2.PDP_APPLINK
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.Utils
@@ -48,13 +49,10 @@ class ProductCardItemViewModel(val application: Application, val components: Com
 
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
-
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
-
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
-
 
     init {
         initDaggerInject()
@@ -128,7 +126,6 @@ class ProductCardItemViewModel(val application: Application, val components: Com
             ""
         }
     }
-
 
     fun getInterestedCount(dataItem: DataItem): String {
         val notifyMeCount = dataItem.notifyMeCount
@@ -204,35 +201,42 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     fun handleNavigation() {
-        dataItem.value?.applinks?.let { applink ->
+        val applink = dataItem.value?.applinks
+        if (applink.isNullOrEmpty()) {
+            val productId = dataItem.value?.productId
+            if (!productId.isNullOrEmpty()) {
+                navigate(context, "$PDP_APPLINK${productId}")
+            }
+        } else {
             navigate(context, applink)
         }
     }
 
-    fun notifyMeVisibility(): Boolean? {
-        return components.properties?.buttonNotification
+    fun notifyMeVisibility(): Boolean {
+        return components.data?.firstOrNull()?.notifyMe != null
     }
 
-    fun subscribeUser(syncSelectedTab: Boolean = false) {
+    fun subscribeUser() {
         if (isUserLoggedIn()) {
             dataItem.value?.let { productItemData ->
-
-                launchCatchError(block = {
-                    val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
-                    campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
-                        if (campaignResponse.success == true) {
-                            productItemData.notifyMe = !productItemData.notifyMe
-                            notifyMeCurrentStatus.value = productItemData.notifyMe
-                            showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
-                            this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.id, components.pageEndPoint, syncSelectedTab)
-                        } else {
-                            showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
+                productItemData.notifyMe?.let {
+                    launchCatchError(block = {
+                        val campaignNotifyResponse = campaignNotifyUserCase.subscribeToCampaignNotifyMe(getNotifyRequestBundle(productItemData))
+                        campaignNotifyResponse.checkCampaignNotifyMeResponse?.let { campaignResponse ->
+                            if (campaignResponse.success == true) {
+                                productItemData.notifyMe = !it
+                                notifyMeCurrentStatus.value = productItemData.notifyMe
+                                showNotifyToast.value = Triple(false, campaignResponse.message, productItemData.campaignId.toIntOrZero())
+                                this@ProductCardItemViewModel.syncData.value = productCardItemUseCase.notifyProductComponentUpdate(components.parentComponentId, components.pageEndPoint)
+                            } else {
+                                showNotifyToast.value = Triple(true, campaignResponse.errorMessage, 0)
+                            }
                         }
-                    }
-                }, onError = {
-                    showNotifyToast.value = Triple(true, context.getString(R.string.product_card_error_msg), 0)
-                    it.printStackTrace()
-                })
+                    }, onError = {
+                        showNotifyToast.value = Triple(true, context.getString(R.string.product_card_error_msg), 0)
+                        it.printStackTrace()
+                    })
+                }
             }
         } else {
             showLoginLiveData.value = true
@@ -240,14 +244,15 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     }
 
     override fun loggedInCallback() {
-        subscribeUser(true)
+        subscribeUser()
     }
 
     fun sendTopAdsClick() {
         dataItem.value?.let {
             val topAdsClickUrl = it.topadsClickUrl
             if (it.isTopads == true && topAdsClickUrl != null) {
-                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase.hitClick(this::class.qualifiedName, topAdsClickUrl, it.productId
+                        ?: "", it.name ?: "", it.imageUrl ?: "")
             }
         }
     }
@@ -256,7 +261,8 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         dataItem.value?.let {
             val topAdsViewUrl = it.topadsViewUrl
             if (it.isTopads == true && topAdsViewUrl != null && !components.topAdsTrackingStatus) {
-                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId ?: "", it.name ?: "", it.imageUrl ?: "")
+                discoveryTopAdsTrackingUseCase.hitImpressions(this::class.qualifiedName, topAdsViewUrl, it.productId
+                        ?: "", it.name ?: "", it.imageUrl ?: "")
                 components.topAdsTrackingStatus = true
             }
         }
@@ -266,7 +272,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
         val campaignNotifyMeRequest = CampaignNotifyMeRequest()
         campaignNotifyMeRequest.campaignID = dataItem.campaignId.toIntOrZero()
         campaignNotifyMeRequest.productID = dataItem.productId.toIntOrZero()
-        campaignNotifyMeRequest.action = if (dataItem.notifyMe) {
+        campaignNotifyMeRequest.action = if (dataItem.notifyMe == true) {
             UNREGISTER
         } else {
             REGISTER
@@ -281,5 +287,4 @@ class ProductCardItemViewModel(val application: Application, val components: Com
                 .build()
                 .inject(this)
     }
-
 }

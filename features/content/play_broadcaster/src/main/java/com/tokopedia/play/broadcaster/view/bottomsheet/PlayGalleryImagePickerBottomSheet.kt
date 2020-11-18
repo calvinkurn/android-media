@@ -146,8 +146,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
         val permission = Manifest.permission.WRITE_EXTERNAL_STORAGE
         return if (ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
             when (id) {
-                ALBUM_LOADER_ID -> AlbumLoader.createInstance(requireContext(), GalleryType.IMAGE_ONLY)
-                MEDIA_LOADER_ID -> AlbumMediaLoader.newInstance(requireContext(), selectedAlbumItem, GalleryType.IMAGE_ONLY)
+                ALBUM_LOADER_ID -> AlbumLoader.newInstance(requireContext(), GalleryType.IMAGE_ONLY)
+                MEDIA_LOADER_ID -> AlbumMediaLoader.newInstance(requireContext(), selectedAlbumItem?.intoAlbum(), GalleryType.IMAGE_ONLY)
                 else -> Loader<Cursor>(requireContext())
             }
         } else {
@@ -190,11 +190,13 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
                 height = maxHeight
             }
             bottomSheet?.setBackgroundColor(Color.TRANSPARENT)
-            val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
-            bottomSheetBehavior.isHideable = true
-            bottomSheetBehavior.skipCollapsed = true
-            bottomSheetBehavior.peekHeight = maxHeight
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet?.let {
+                val bottomSheetBehavior = BottomSheetBehavior.from(it)
+                bottomSheetBehavior.isHideable = true
+                bottomSheetBehavior.skipCollapsed = true
+                bottomSheetBehavior.peekHeight = maxHeight
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
 
             isCancelable = true
         }
@@ -298,7 +300,7 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
 
     private fun isMediaPassValidation(mediaItem: MediaItem): Boolean {
         // check if file exists
-        val file = File(mediaItem.realPath)
+        val file = File(mediaItem.path)
         if (!file.exists()) {
             showToaster(
                     message = getString(R.string.play_prepare_cover_gallery_error_not_found_label),
@@ -317,7 +319,8 @@ class PlayGalleryImagePickerBottomSheet @Inject constructor(
             )
             return false
         }
-        if (mediaItem.width < MINIMUM_COVER_WIDTH || mediaItem.height < MINIMUM_COVER_HEIGHT) {
+        if (mediaItem.getWidth(requireContext()) < MINIMUM_COVER_WIDTH ||
+                mediaItem.getHeight(requireContext()) < MINIMUM_COVER_HEIGHT) {
             showToaster(
                     message = getString(R.string.play_prepare_cover_gallery_error_pixel_label, MINIMUM_COVER_WIDTH, MINIMUM_COVER_HEIGHT),
                     type = Toaster.TYPE_ERROR,

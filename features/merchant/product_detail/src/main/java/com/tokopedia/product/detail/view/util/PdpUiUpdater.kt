@@ -97,9 +97,8 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     val shopCredibility: ProductShopCredibilityDataModel?
         get() = mapOfData[ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY] as? ProductShopCredibilityDataModel
 
-    val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
-        it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2
-                || it == ProductDetailConstant.PDP_3 || it == ProductDetailConstant.PDP_4
+    val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterValues {
+        it is ProductRecommendationDataModel
     }.map {
         it.value as ProductRecommendationDataModel
     }
@@ -242,7 +241,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             shopInfoMap?.run {
                 shopLocation = it.shopInfo.location
                 shopLastActive = it.shopInfo.shopLastActive
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
                 shopAvatar = it.shopInfo.shopAssets.avatar
                 isAllowManage = it.shopInfo.isAllowManage
                 isGoAPotik = it.isGoApotik
@@ -266,7 +264,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                 shopRating = it.shopRating
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
             }
 
             orderPriorityMap?.run {
@@ -404,6 +401,11 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         shopCredibility?.enableButtonFavorite = true
     }
 
+    fun updateShopFollow(isFollow: Int) {
+        shopInfoMap?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
+        shopCredibility?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
+    }
+
     fun failUpdateShopFollow() {
         shopInfoMap?.enableButtonFavorite = true
         shopCredibility?.enableButtonFavorite = true
@@ -421,6 +423,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                     discountPercentage = it.discountPercentage,
                     reviewCount = it.countReview,
                     ratingCount = it.rating,
+                    countSoldRating = it.ratingAverage,
                     shopLocation = it.location,
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,

@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.model
 
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 
@@ -43,7 +44,7 @@ class InspirationCarouselViewModel(
             val description: List<String> = listOf(),
             val optionPosition: Int = 0,
             val inspirationCarouselType: String = ""
-        ){
+        ): ImpressHolder() {
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
                         "name", name,

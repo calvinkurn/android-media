@@ -2,6 +2,8 @@ package com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import com.tokopedia.topads.edit.view.sheet.EditKeywordSortSheet
@@ -29,6 +31,7 @@ class EditNegKeywordItemViewHolder(val view: View,
     override fun bind(item: EditNegKeywordItemViewModel) {
         item.data.let {
             view.keyword_name.text = it.tag
+            view.delete.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_ic_delete))
             view.delete.setOnClickListener {
                 actionDelete?.invoke(adapterPosition)
             }
@@ -37,10 +40,12 @@ class EditNegKeywordItemViewHolder(val view: View,
             else
                 view.sort.text = TITLE_2
 
+            view.drop_down_arrow.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_dropdown_arrow))
+
             view.sort.setOnClickListener {
-                sortKeywordList = EditKeywordSortSheet.newInstance(view.context)
+                sortKeywordList = EditKeywordSortSheet.newInstance()
                 sortKeywordList.setChecked(view.sort.text.toString())
-                sortKeywordList.show()
+                sortKeywordList.show((view.context as FragmentActivity).supportFragmentManager, "")
                 sortKeywordList.onItemClick = {
                     val prev = view.sort.text
                     view.sort.text = sortKeywordList.getSelectedSortId()
