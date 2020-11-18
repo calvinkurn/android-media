@@ -80,8 +80,10 @@ object GlideBuilder {
         ): Boolean {
             val fileSize = resource?.let { BitmapCompat.getAllocationByteCount(it) }?: 0
             val endTime = System.currentTimeMillis()
-            performanceMonitoring?.putCustomAttribute("load_time", endTime - startTime)
-            performanceMonitoring?.putCustomAttribute("file_size", fileSize)
+
+            performanceMonitoring?.putCustomAttribute("load_time", (endTime - startTime).toString())
+            performanceMonitoring?.putCustomAttribute("file_size", fileSize.toString())
+
             performanceMonitoring?.stopTrace()
             listener?.successLoad(resource, mapToDataSource(dataSource))
             return false
