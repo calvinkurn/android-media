@@ -39,7 +39,7 @@ class OvoAddPhoneFragment : BaseAddPhoneEmailFragment(), BaseAddPhoneListener, B
     }
 
     override fun onDialogNegativeBtnClicked() {
-
+        startActivity(Intent(context!!, OvoFinalPageActivity::class.java))
     }
 
     override fun onAddPhoneNextButtonClicked() {
@@ -47,7 +47,7 @@ class OvoAddPhoneFragment : BaseAddPhoneEmailFragment(), BaseAddPhoneListener, B
     }
 
     override fun onAddPhoneOtherMethodButtonClicked() {
-
+        startActivity(Intent(context!!, OvoAddNameActivity::class.java))
     }
 
     companion object {

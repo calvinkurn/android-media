@@ -23,7 +23,7 @@ class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
         super.onViewCreated(view, savedInstanceState)
         context?.run {
             setTitle(getString(R.string.ovo_external_register_title_success))
-            setDescription(getString(R.string.ovo_external_register_title_success))
+            setDescription(getString(R.string.ovo_external_register_description_success))
             setMainImage(imgResId = R.drawable.img_ovo_collaboration)
             setSuccessListener(this@OvoSuccessFragment)
         }

@@ -8,6 +8,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
+        android:layout_marginTop="@dimen/unify_space_32"
         android:id="@+id/fragment_base_success_main_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
         android:id="@+id/fragment_base_success_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_32"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,7 +45,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/fragment_base_success_main_btn"
         android:layout_marginTop="@dimen/unify_space_24"
-        android:layout_width="wrap_content"
+        android:layout_width="174dp"
         android:layout_height="wrap_content"
         android:text="Cek Tokopedia"
         app:layout_constraintEnd_toEndOf="parent"

@@ -26,7 +26,7 @@ open class ExternalAccountFinalFragment: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_base_success_external_account, container)
+        return inflater.inflate(R.layout.fragment_base_success_external_account, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -535,4 +535,10 @@ object ApplinkConstInternalGlobal {
     //FeedbackPageActivity
     @JvmField
     val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
+
+    // OvoAddNameActivity
+    // tokopedia-android-internal://global/external-login
+    @JvmField
+    val EXTERNAL_LOGIN = "$INTERNAL_GLOBAL/external-login"
+
 }
