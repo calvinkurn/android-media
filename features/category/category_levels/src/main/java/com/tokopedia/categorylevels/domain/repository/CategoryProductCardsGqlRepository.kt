@@ -20,7 +20,6 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
     companion object {
         //TODO niranjan move query params to repo
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
-        private const val RPC_CATEGORY_ID = "rpc_page_number"
     }
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {

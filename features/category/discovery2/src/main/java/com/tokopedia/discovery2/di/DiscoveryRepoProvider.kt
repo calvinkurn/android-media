@@ -3,6 +3,8 @@ package com.tokopedia.discovery2.di
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
+import com.tokopedia.discovery2.repository.childcategory.DiscoveryChildCategoryRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRestRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
@@ -32,6 +34,10 @@ class DiscoveryRepoProvider : RepositoryProvider {
 
     override fun provideChipFilterRepository(): ChipFilterRepository {
         return ChipFilterRestRepository()
+    }
+
+    override fun provideChildCategoryRepository(): ChildCategoryRepository {
+        return DiscoveryChildCategoryRepository()
     }
 
 }

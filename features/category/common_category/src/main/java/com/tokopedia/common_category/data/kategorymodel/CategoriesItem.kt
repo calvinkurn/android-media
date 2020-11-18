@@ -1,4 +1,4 @@
-package com.tokopedia.kategori.model
+package com.tokopedia.common_category.data.kategorymodel
 
 import com.google.gson.annotations.SerializedName
 

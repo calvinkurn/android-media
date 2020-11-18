@@ -68,4 +68,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
+    //Child Categories
+    ChildCategory(R.layout.widget_recycler_view, ComponentNames.ChildCategories.componentName),
+    ChildCategoryItem(R.layout.child_category_item, ComponentNames.ChildCategoryItem.componentName),
 }

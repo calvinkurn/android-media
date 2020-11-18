@@ -9,6 +9,7 @@ import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQLRepository
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
+import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
@@ -97,6 +98,11 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     @Provides
     fun provideTokopointsRestRepository(): TokopointsRepository {
         return TokopointsRestRepository()
+    }
+
+    @Provides
+    fun provideChildCategoryRepository(): ChildCategoryRepository {
+        return repoProvider.provideChildCategoryRepository()
     }
 
     @Provides

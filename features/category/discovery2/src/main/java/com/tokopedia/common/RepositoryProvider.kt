@@ -1,6 +1,7 @@
 package com.tokopedia.common
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
@@ -10,4 +11,5 @@ interface RepositoryProvider {
     fun provideDiscoveryPageRepository(getGQLString: (Int) -> String): DiscoveryPageRepository
     fun provideProductCardsRepository(): ProductCardsRepository
     fun provideChipFilterRepository(): ChipFilterRepository
+    fun provideChildCategoryRepository(): ChildCategoryRepository
 }

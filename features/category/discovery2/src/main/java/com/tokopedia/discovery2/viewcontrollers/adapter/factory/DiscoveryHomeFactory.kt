@@ -25,6 +25,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterItemViewModel
@@ -153,6 +157,10 @@ class DiscoveryHomeFactory {
 
             //Quick Filter
             initializeComponent(ComponentsList.QuickFilter, ::QuickFilterViewHolder, ::QuickFilterViewModel)
+
+            //Child Categories
+            initializeComponent(ComponentsList.ChildCategory, ::ChildCategoriesViewHolder, ::ChildCategoriesViewModel)
+            initializeComponent(ComponentsList.ChildCategoryItem, ::ChildCategoriesItemViewHolder, ::ChildCategoriesItemViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder:(v: View, fragment: Fragment) -> E,
