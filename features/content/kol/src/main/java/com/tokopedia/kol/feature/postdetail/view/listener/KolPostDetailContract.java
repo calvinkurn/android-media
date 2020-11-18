@@ -11,7 +11,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.statistic.PostStatisticCommiss
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -44,10 +43,6 @@ public interface KolPostDetailContract {
         void onErrorToggleFavoriteShop(String errorMessage, String shopId);
 
         void onSuccessToggleFavoriteShop();
-
-        void onErrorSendVote(String errorMessage);
-
-        void onSuccessSendVote(int positionInFeed, String optionId, VoteStatisticDomainModel voteStatisticDomainModel);
 
         void onErrorDeletePost(Throwable e);
 
@@ -82,8 +77,6 @@ public interface KolPostDetailContract {
         void unlikeKol(int id, int rowNumber, KolPostLikeListener likeListener);
 
         void toggleFavoriteShop(String shopId);
-
-        void sendVote(int positionInFeed, String pollId, String optionId);
 
         void trackAffiliate(String clickURL);
 
