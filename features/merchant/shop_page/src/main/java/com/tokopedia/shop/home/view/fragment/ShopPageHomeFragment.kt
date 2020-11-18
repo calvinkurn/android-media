@@ -147,7 +147,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
         const val NUM_VOUCHER_DISPLAY = 10
 
-//        private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.sellerapp"
         private const val CUSTOMER_APP_PACKAGE = "com.tokopedia.tkpd"
 
         fun createInstance(
@@ -1613,10 +1612,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onWidgetOpenAppLink(view: View, appLink: String) {
         if (GlobalConfig.isSellerApp()) {
             if (isCustomerAppInstalled()) {
-//                startActivity(
-//                        requireActivity().packageManager.getLaunchIntentForPackage(CUSTOMER_APP_PACKAGE)
-//                )
-//                RouteManager.route(context, appLink)
                 startActivity(Intent(Intent.ACTION_VIEW).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     data = Uri.parse(appLink)
