@@ -37,6 +37,7 @@
                 android:layout_marginStart="@dimen/spacing_lvl4"
                 android:layout_marginEnd="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl4"
+                android:visibility="gone"
                 app:tickerType="announcement"
                 app:titleText="@string/label_edit_product_notification_title"
                 app:descriptionText="@string/label_edit_product_notification_description"
