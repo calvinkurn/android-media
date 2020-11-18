@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.category.navbottomsheet.CategoryNavViewModel
+import com.tokopedia.category.navbottomsheet.CategoryNavBottomViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -21,6 +21,6 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @CategoryNavBottomSheetScope
-    @ViewModelKey(CategoryNavViewModel::class)
-    internal abstract fun bindsCategoryNavViewModel(viewModel: CategoryNavViewModel): ViewModel
+    @ViewModelKey(CategoryNavBottomViewModel::class)
+    internal abstract fun bindsCategoryNavViewModel(bottomViewModel: CategoryNavBottomViewModel): ViewModel
 }

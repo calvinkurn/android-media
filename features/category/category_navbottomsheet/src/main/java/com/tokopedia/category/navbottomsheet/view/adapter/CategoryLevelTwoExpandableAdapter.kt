@@ -1,8 +1,6 @@
 package com.tokopedia.category.navbottomsheet.view.adapter
 
 import android.content.Context
-import android.graphics.Typeface
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,18 +15,14 @@ import com.tokopedia.unifyprinciples.Typography
 class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?)
     : BaseExpandableListAdapter() {
 
-    val TAG = "TestingL2"
-
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
 //        Expanded List Position -1 because expandedList position 0 signifies Semua L2
-//        Log.e(TAG, "getChild:  ${levelTwoList?.get(listPosition)?.child?.get(expandedListPosition - 1)?.name ?: ""} at Listposition $listPosition at expadedListPosition at $expandedListPosition")
         return if (expandedListPosition == 0)
             "Semua ${levelTwoList?.get(listPosition)?.name}"
         else levelTwoList?.get(listPosition)?.child?.get(expandedListPosition - 1)?.name ?: ""
     }
 
     override fun getChildId(listPosition: Int, expandedListPosition: Int): Long {
-        Log.e(TAG, "getChildId:  ${expandedListPosition.toLong()} at Listposition $listPosition at expadedListPosition at $expandedListPosition")
         return expandedListPosition.toLong()
     }
 
@@ -36,36 +30,29 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?)
                               isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
         var convertViewTemp = convertView
         val expandedListText = getChild(listPosition, expandedListPosition) as String
-        Log.e(TAG, "getChildView:  $expandedListText at Listposition $listPosition at expadedListPosition at $expandedListPosition")
         if (convertViewTemp == null) {
             val layoutInflater = parent.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertViewTemp = layoutInflater.inflate(R.layout.item_cat_level_three, null)
-            Log.e(TAG, "getChildView: convertViewTemp was null for $expandedListText at Listposition $listPosition at expadedListPosition at $expandedListPosition")
         }
         val expandedListTextView = convertViewTemp?.findViewById<View>(R.id.expandedListItem) as? Typography
-        Log.e(TAG, "getChildView:  $expandedListText at Listposition $listPosition at expadedListPosition at $expandedListPosition textView is ${expandedListTextView}")
         expandedListTextView?.text = expandedListText
         return convertViewTemp!!
     }
 
     override fun getChildrenCount(listPosition: Int): Int {
-        Log.e(TAG, "getChildrenCount:  ${levelTwoList?.get(listPosition)?.child?.size ?: 0} at Listposition $listPosition")
         return levelTwoList?.get(listPosition)?.child?.size?.let { it + 1 } ?: 0
     }
 
     override fun getGroup(listPosition: Int): Any {
-        Log.e(TAG, "getGroup:  ${levelTwoList?.get(listPosition)?.name ?: ""} at Listposition $listPosition")
         return levelTwoList?.get(listPosition)?.name ?: ""
     }
 
     override fun getGroupCount(): Int {
-        Log.e(TAG, "getGroupCount:  ${levelTwoList?.size ?: 0} ")
         return levelTwoList?.size ?: 0
     }
 
     override fun getGroupId(listPosition: Int): Long {
-        Log.e(TAG, "getGroupId:  ${listPosition.toLong()} ")
         return listPosition.toLong()
     }
 
@@ -73,17 +60,14 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?)
                               convertView: View?, parent: ViewGroup): View {
         var convertViewTemp = convertView
         val listTitle = getGroup(listPosition) as String
-        Log.e(TAG, "getGroupView:  $listTitle at Listposition $listPosition ")
         if (convertView == null) {
             val layoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertViewTemp = layoutInflater.inflate(R.layout.item_cat_level_two, null)
-            Log.e(TAG, "getGroupView: convertView was null $listTitle at Listposition $listPosition ")
         }
         val listTitleTextView = convertViewTemp?.findViewById<Typography>(R.id.listTitle)
         listTitleTextView?.text = listTitle
         val expandedIcon = convertViewTemp?.findViewById<ImageView>(R.id.expand_icon)
         expandedIcon?.loadImageDrawable(if (isExpanded) R.drawable.ic_chevron_up else R.drawable.ic_chevron_down)
-        Log.e(TAG, "getGroupView:  $listTitle at Listposition $listPosition lisTitleTextView was $listTitleTextView")
         return convertViewTemp!!
     }
 
