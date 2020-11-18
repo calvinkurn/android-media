@@ -3,13 +3,13 @@ package com.tokopedia.attachproduct.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.attachproduct.R;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
@@ -51,7 +51,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.Unify_N0));
+        toolbar.setBackgroundColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
     }
 
     @Override

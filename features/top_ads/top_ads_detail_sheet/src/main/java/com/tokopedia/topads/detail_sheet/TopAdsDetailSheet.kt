@@ -1,6 +1,7 @@
 package com.tokopedia.topads.detail_sheet
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Switch
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant.DIRECTED_FROM_MANAGE_OR_PDP
 import com.tokopedia.topads.common.data.internal.AutoAdsStatus
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.common.view.widget.AutoAdsWidgetCommon
@@ -202,7 +204,9 @@ class TopAdsDetailSheet : BottomSheetUnify() {
             txtBudget.visibility = View.GONE
             createGroupLayout.setOnClickListener {
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendPdpBottomSheetEvent("click-${desc.text}", "")
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                val intent =  RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                intent.putExtra(DIRECTED_FROM_MANAGE_OR_PDP,true)
+                startActivity(intent)
             }
         }
     }

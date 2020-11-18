@@ -978,6 +978,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     }
 
     private fun inputAllDataInProductInputModel() {
+        viewModel.productInputModel.isDataChanged = true
         viewModel.productInputModel.detailInputModel.apply {
             productName = productNameField.getText()
             price = productPriceField.getTextBigIntegerOrZero()

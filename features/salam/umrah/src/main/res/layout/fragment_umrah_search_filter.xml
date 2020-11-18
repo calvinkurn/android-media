@@ -11,8 +11,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/bt_umrah_search_filter_save"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/dp_12">
+        android:layout_height="@dimen/unify_space_0"
+        android:layout_marginBottom="@dimen/unify_space_12">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -26,9 +26,9 @@
                 android:text="@string/umrah_search_filter_departure_period"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                android:layout_marginTop="@dimen/dp_16"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_departure_period_see_all"
@@ -37,23 +37,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_see_all"
-                android:textColor="@color/g_500"
+                android:textColor="@color/Green_G500"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16" />
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_umrah_search_filter_departure_period"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_departure_period"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:clipToPadding="false"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"/>
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_departure_city"
@@ -64,9 +64,9 @@
                 android:text="@string/umrah_search_filter_departure_city"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"/>
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_departure_city_see_all"
@@ -75,23 +75,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/umrah_see_all"
-                android:textColor="@color/g_500"
+                android:textColor="@color/Green_G500"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16" />
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_umrah_search_filter_departure_city"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_departure_city"
                 app:layout_constraintRight_toRightOf="parent"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/unify_space_12"
                 android:clipToPadding="false"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"/>
+                android:paddingLeft="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_travel_duration"
@@ -102,18 +102,18 @@
                 android:text="@string/umrah_search_filter_travel_duration"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4" />
 
             <com.tokopedia.salam.umrah.search.presentation.widget.UmrahSeekbarRangeWidget
                 android:id="@+id/sr_umrah_search_filter_travel_duration"
                 app:layout_constraintLeft_toLeftOf="@+id/tg_umrah_search_filter_travel_duration"
                 app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_travel_duration"
                 app:layout_constraintRight_toRightOf="@+id/tg_umrah_search_filter_departure_city_see_all"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/unify_space_0"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"/>
+                android:layout_marginTop="@dimen/unify_space_12"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tg_umrah_search_filter_package_price"
@@ -124,22 +124,69 @@
                 android:text="@string/umrah_search_filter_package_price"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
-                android:layout_marginTop="@dimen/dp_24"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16" />
+                android:layout_marginTop="@dimen/spacing_lvl5"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4" />
 
-            <com.tokopedia.design.text.RangeInputView
-                android:id="@+id/riv_umrah_search_filter_package_price"
-                app:layout_constraintLeft_toLeftOf="@+id/sr_umrah_search_filter_travel_duration"
-                app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_package_price"
-                app:layout_constraintRight_toRightOf="@+id/tg_umrah_search_filter_departure_city_see_all"
-                app:driv_label_max="@string/umrah_search_filter_package_price_maximum"
-                app:driv_label_min="@string/umrah_search_filter_package_price_minimum"
-                app:driv_typable="false"
-                app:driv_value_max_length="@integer/umrah_max_length_duration_input"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/flow_umrah_search_filter"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12" />
+                app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_filter_package_price"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:constraint_referenced_ids="tf_umrah_search_filter_min_price,tf_umrah_search_filter_max_price"
+                app:flow_wrapMode="aligned"
+                app:flow_verticalAlign="center"
+                app:flow_horizontalStyle="spread"
+                app:flow_horizontalGap="@dimen/spacing_lvl3"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:paddingBottom="@dimen/spacing_lvl4"
+                />
+
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                app:text_field_label_static="true"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl4"
+                app:text_field_label="@string/umrah_search_filter_package_price_minimum"
+                app:text_field_input_type="number"
+                android:id="@+id/tf_umrah_search_filter_min_price"
+                app:layout_constraintHorizontal_weight="1"
+                tools:ignore="MissingConstraints"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                />
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                app:text_field_label_static="true"
+                android:layout_width="@dimen/unify_space_0"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/unify_space_12"
+                app:text_field_label="@string/umrah_search_filter_package_price_maximum"
+                app:text_field_input_type="number"
+                android:id="@+id/tf_umrah_search_filter_max_price"
+                app:layout_constraintHorizontal_weight="1"
+                tools:ignore="MissingConstraints"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                />
+
+            <com.tokopedia.unifycomponents.RangeSliderUnify
+                android:id="@+id/range_umrah_price"
+                app:layout_constraintTop_toBottomOf="@+id/flow_umrah_search_filter"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:valueFrom="@integer/umrah_value_min_range_slider"
+                app:valueTo="@integer/umrah_value_max_range_slider"
+                app:initialValue="@integer/umrah_value_min_range_slider"
+                app:initialMaxValue="@integer/umrah_value_max_range_slider"
+                app:step="@integer/umrah_value_step_range_slider"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
@@ -150,7 +197,8 @@
         app:layout_constraintRight_toRightOf="parent"
         android:src="@drawable/umrah_bg_search_filter_save_button"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="@dimen/unify_space_0"/>
+
     <com.tokopedia.unifycomponents.UnifyButton
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
@@ -162,12 +210,13 @@
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
         android:text="@string/label_save"
-        android:layout_marginBottom="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
         tools:targetApi="m"
         tools:ignore="UnusedAttribute" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
