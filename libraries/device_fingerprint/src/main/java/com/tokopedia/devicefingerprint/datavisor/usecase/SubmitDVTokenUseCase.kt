@@ -36,9 +36,7 @@ class SubmitDVTokenUseCase @Inject constructor(
                    status
                    message
               }
-            }
-        }
-        """.trimIndent()
+        }""".trimIndent()
     }
     //endregion
 
