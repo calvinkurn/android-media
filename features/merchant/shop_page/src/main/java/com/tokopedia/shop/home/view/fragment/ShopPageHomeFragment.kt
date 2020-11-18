@@ -38,10 +38,7 @@ import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.thousandFormatted
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -89,6 +86,7 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.util.CheckCampaignNplException
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
@@ -113,7 +111,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
+import kotlinx.coroutines.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
+import kotlin.math.min
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
         ShopHomeDisplayWidgetListener,
@@ -176,6 +177,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     lateinit var shopPlayWidgetAnalytic: ShopPlayWidgetAnalyticListener
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var dispatcher: CoroutineDispatcherProvider
+
     private var viewModel: ShopHomeViewModel? = null
     private var shopId: String = ""
     private var isOfficialStore: Boolean = false
@@ -226,6 +230,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
     private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
+
+    private val viewJob = SupervisorJob()
+
+    private val viewScope = object : CoroutineScope {
+        override val coroutineContext: CoroutineContext
+            get() = viewJob + dispatcher.main()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
@@ -361,6 +372,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         if (::playWidgetCoordinator.isInitialized) {
             playWidgetCoordinator.onDestroy()
         }
+        viewJob.cancelChildren()
     }
 
     override fun onDestroy() {
@@ -1672,6 +1684,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (widget is PlayWidgetUiModel.Medium) {
                 if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
                 else if (widget.hasFailedTranscodedChannel) {}
+
+                if (parentFragment is ShopPageFragment) {
+                    val recyclerView = getRecyclerView(view)
+                    recyclerView.addOneTimeGlobalLayoutListener {
+                        viewScope.launch {
+                            val fragment = parentFragment as? ShopPageFragment ?: return@launch
+                            fragment.collapseAppBar()
+                            var cursor = 0
+                            val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
+                            val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
+                            while (cursor < finalPosition) {
+                                delay(40)
+                                recyclerView.smoothScrollToPosition(++cursor)
+                            }
+                        }
+                    }
+                }
             }
 
             carouselPlayWidgetUiModel?.actionEvent?.getContentIfNotHandled()?.let {

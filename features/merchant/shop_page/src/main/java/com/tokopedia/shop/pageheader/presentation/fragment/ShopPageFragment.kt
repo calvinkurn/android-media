@@ -1131,6 +1131,12 @@ class ShopPageFragment :
         swipeToRefresh.isRefreshing = true
     }
 
+    fun collapseAppBar() {
+        appBarLayout.post {
+            appBarLayout.setExpanded(false)
+        }
+    }
+
     override fun onFollowerTextClicked(shopFavourited: Boolean) {
         context?.run {
             shopPageTracking?.clickFollowUnfollow(shopFavourited, customDimensionShopPage)
