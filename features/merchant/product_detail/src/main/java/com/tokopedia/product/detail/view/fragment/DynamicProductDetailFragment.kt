@@ -596,9 +596,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
         when(componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1, viewModel.getPPTitleName())
+                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
+                            viewModel.getDynamicProductInfoP1, viewModel.getPPTitleName(), viewModel.getPurchaseProtectionUrl())
             else ->  DynamicProductDetailTracking.Impression
-                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1, "")
+                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
+                            viewModel.getDynamicProductInfoP1, "", "")
 
         }
     }
@@ -703,7 +705,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
-                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, viewModel.getInsurancePartnerName(), componentTrackDataModel)
+                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, viewModel.getInsurancePartnerUrl(), componentTrackDataModel)
                 openFtInsuranceBottomSheet(viewModel.getPurchaseProtectionUrl())
             }
         }
