@@ -47,12 +47,10 @@ class ShopSettingsEtalaseListViewModel
 
     fun deleteShopEtalase(etalaseId: String) {
         launchCatchError(block = {
-            withContext(dispatchers.io) {
-                val data = withContext(dispatchers.io) {
-                    deleteShopEtalaseUseCase.getData(DeleteShopEtalaseUseCase.createRequestParams(etalaseId))
-                }
-                _deleteMessage.postValue(Success(data))
+            val data = withContext(dispatchers.io) {
+                deleteShopEtalaseUseCase.getData(DeleteShopEtalaseUseCase.createRequestParams(etalaseId))
             }
+            _deleteMessage.value = Success(data)
         }) {
             _deleteMessage.value = Fail(it)
         }

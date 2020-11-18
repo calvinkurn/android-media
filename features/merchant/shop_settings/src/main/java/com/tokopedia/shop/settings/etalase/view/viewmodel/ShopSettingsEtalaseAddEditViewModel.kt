@@ -52,18 +52,16 @@ class ShopSettingsEtalaseAddEditViewModel
 
     fun saveShopEtalase(etalaseModel: ShopEtalaseUiModel, isEdit: Boolean = false) {
         launchCatchError(block = {
-            withContext(dispatchers.io) {
-                val useCase: UseCase<String> = if (!isEdit) addShopEtalaseUseCase else updateShopEtalaseUseCase
-                val requestParams = AddShopEtalaseUseCase.createRequestParams(etalaseModel.name)
+            val useCase: UseCase<String> = if (!isEdit) addShopEtalaseUseCase else updateShopEtalaseUseCase
+            val requestParams = AddShopEtalaseUseCase.createRequestParams(etalaseModel.name)
 
-                if (isEdit) {
-                    requestParams.putString(ID, etalaseModel.id)
-                }
-                val data = withContext(dispatchers.io) {
-                    useCase.getData(requestParams)
-                }
-                _saveMessage.postValue(Success(data))
+            if (isEdit) {
+                requestParams.putString(ID, etalaseModel.id)
             }
+            val data = withContext(dispatchers.io) {
+                useCase.getData(requestParams)
+            }
+            _saveMessage.value = Success(data)
         }) {
             _saveMessage.value = Fail(it)
         }
