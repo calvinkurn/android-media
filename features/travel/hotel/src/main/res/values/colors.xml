@@ -3,12 +3,12 @@
     <color name="blue_booking">#0066a9</color>
     <color name="hotel_safety_badge_blue">#0081CB</color>
     <color name="pink_property">#ef144a</color>
-    <color name="blue_background">#e5f5ff</color>
+    <color name="blue_background">@color/Unify_B100</color>
     <color name="grey_no_image">#f3f4f5</color>
     <color name="grey_share_menu">#52565e</color>
     <color name="ticket_start_gradient">#f7fff0</color>
     <color name="ticket_end_gradient">#d1ffdd</color>
-    <color name="ticket_divider">#e5e7e9</color>
+    <color name="ticket_divider">@color/Unify_N75</color>
     <color name="bg_green_e_voucher">#82ef95</color>
     <color name="hotel_snackbar_border">#87d58b</color>
     <color name="green_all_facility_tab_underlined">#42b549</color>
