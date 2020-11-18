@@ -219,7 +219,6 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
         keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
-
     }
 
     private fun setAdapter() {
@@ -252,7 +251,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
         minSuggestedBid = list.firstOrNull()?.minBid ?: 0
-        keywordListAdapter.setList(list, list.firstOrNull()?.minBid ?: 0)
+        keywordListAdapter.setList(list, list.firstOrNull()?.minBid
+                ?: 0, stepperModel?.selectedKeywords)
         setCount()
     }
 
@@ -273,7 +273,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     private fun setCount() {
         selectedTitle.text = String.format(getString(R.string.topads_common_selected_list_count), keywordSelectedAdapter.itemCount)
         selectedTitle.visibility = if (keywordSelectedAdapter.itemCount > 0) View.VISIBLE else View.GONE
-        selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), keywordSelectedAdapter.itemCount + keywordListAdapter.getSelectItems().size)
+        selectKeyInfo.text = String.format(getString(R.string.format_selected_keyword), getSelectedKeywords().size)
     }
 
     override fun initInjector() {
