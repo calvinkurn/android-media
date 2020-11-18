@@ -1646,23 +1646,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         return animator
     }
 
-    private fun View?.animateResize(from: Int, to: Int, startDelay: Long = 0): ValueAnimator {
-        val animator = ValueAnimator.ofInt(from, to)
-        animator.duration = BUTTON_ENTER_LEAVE_ANIMATION_DURATION
-        animator.addUpdateListener { valueAnimator ->
-            context?.let {
-                this?.layoutParams?.let {
-                    val newLayoutParams = it
-                    newLayoutParams.height = (valueAnimator.animatedValue as? Int).orZero()
-                    this?.layoutParams = newLayoutParams
-                }
-            }
-        }
-        animator.startDelay = startDelay
-        animator.start()
-        return animator
-    }
-
     private fun animateBulkAcceptOrderButtonEnter() {
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
         containerBtnBulkAction?.visible()
