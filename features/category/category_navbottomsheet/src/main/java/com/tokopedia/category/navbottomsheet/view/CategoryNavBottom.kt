@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_cat_nav.*
 import javax.inject.Inject
 
 
-class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.CategorySelectListener {
+class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomSheetUnify(), CategoryNavLevelOneAdapter.CategorySelectListener {
 
     private var selectedLevelOnePosition: Int = 0
     private lateinit var categoryLevelOneAdapter: CategoryNavLevelOneAdapter
@@ -29,9 +29,13 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var categoryNavViewModel: CategoryNavViewModel
     private val categoryList = ArrayList<CategoriesItem>()
-    private var selectedLevelOneID = "-1";
+    private var selectedLevelOneID = "-1"
     private var lastExpandedPosition = -1
 
+    init {
+        isDragable = true
+        isHideable = true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,8 +110,7 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
     private fun initView() {
         context?.let {
             setTitle(it.resources.getString(R.string.kategori_title))
-            val linearLayoutManager = LinearLayoutManager(it)
-            master_list.layoutManager = linearLayoutManager
+            master_list.layoutManager = LinearLayoutManager(it)
         }
 //        addShimmerItems(categoryList)
         categoryLevelOneAdapter = CategoryNavLevelOneAdapter(categoryList, this)
@@ -118,6 +121,18 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
             }
             lastExpandedPosition = groupPosition
         })
+
+        slave_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
+            if (childPosition == 0)
+                categoryList[selectedLevelOnePosition].child?.get(groupPosition)?.id?.let {
+                    listener.onCategorySelected(it.toInt(), 2)
+                }
+            else
+                categoryList[selectedLevelOnePosition].child?.get(groupPosition)?.child?.get(childPosition)?.id?.let {
+                    listener.onCategorySelected(it.toInt(), 3)
+                }
+            return@setOnChildClickListener true
+        }
     }
 
     override fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?) {
@@ -130,5 +145,9 @@ class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.Ca
             selectedLevelOneID = id
             selectedLevelOnePosition = position
         }
+    }
+
+    interface CategorySelected {
+        fun onCategorySelected(catId: Int, depth: Int)
     }
 }

@@ -6,22 +6,26 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/master_list"
-        android:layout_width="@dimen/dp_72"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/slave_list"
+        app:layout_constraintEnd_toStartOf="@+id/separator_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constrainedHeight="true"/>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/separator_guideline"
+        app:layout_constraintGuide_percent=".25"/>
     <ExpandableListView
         android:id="@+id/slave_list"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:foregroundGravity="top"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/master_list"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constrainedHeight="true"/>
+        app:layout_constraintStart_toEndOf="@+id/separator_guideline"
+        app:layout_constraintTop_toTopOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

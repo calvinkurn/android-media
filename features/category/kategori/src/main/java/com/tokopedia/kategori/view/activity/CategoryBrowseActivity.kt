@@ -1,6 +1,7 @@
 package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_category_browse.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener {
+open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener, CategoryNavBottomSheet.CategorySelected{
 
     private val trackingQueue: TrackingQueue by lazy {
         TrackingQueue(this)
@@ -114,7 +115,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
 //        (slaveFragment as Listener).refreshView(id, categoryName, applink)
-        val sheet = CategoryNavBottomSheet()
+        val sheet = CategoryNavBottomSheet(this)
         sheet.show(supportFragmentManager,"Testing")
     }
 
@@ -179,6 +180,10 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     override fun stopPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
         pageLoadTimePerformanceMonitoring = null
+    }
+
+    override fun onCategorySelected(catId: Int, depth: Int) {
+        Log.e("TESTINGBOTTOM","catId $catId depth $depth")
     }
 }
 
