@@ -23,7 +23,7 @@ class EventPDPChipsViewHolder (val view: View,
             }
 
             chip_event_form.setItem(ArrayList(chipsList(element.helpText)),
-                    initialSelectedItemPos = if (element.value.isNotEmpty()) getId(chipsList(element.helpText), element.value)  else null)
+                    initialSelectedItemPos = if (!element.value.isNotEmpty() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) 0 else getId(chipsList(element.helpText), element.value))
 
             chip_event_form.selectOnlyOneChip(true)
             chip_event_form.canDiselectAfterSelect(false)

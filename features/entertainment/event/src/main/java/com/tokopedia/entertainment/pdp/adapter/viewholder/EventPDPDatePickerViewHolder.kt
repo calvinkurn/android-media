@@ -20,11 +20,19 @@ class EventPDPDatePickerViewHolder (val view: View,
 
     fun bind(element: Form, position: Int){
         with(itemView){
+
             tg_event_date_picker.textFieldWrapper.hint = element.title
             tg_event_date_picker.setMessage(element.helpText)
             tg_event_date_picker.textFieldInput.apply {
                 keyListener = null
-                setText(element.title)
+                if(element.value.isNullOrEmpty() || element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
+                    setText(element.title)
+                } else {
+                    val format = SimpleDateFormat(VALUE_FORMAT)
+                    val date = format.parse(element.value)
+                    val dateShow = date.toFormattedString(SHOW_FORMAT, LocaleUtils.getIDLocale())
+                    setText(dateShow)
+                }
                 setOnTouchListener(object : View.OnTouchListener {
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         when (event?.action) {

@@ -17,6 +17,10 @@ class EventPDPCheckBoxViewHolder (val view: View,
                 val value = if (isChecked) 1 else 0
                 addOrRemoveData(position, value.toString() ,"")
             }
+
+            if(!element.value.isNullOrEmpty() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))){
+                cb_form_event.isChecked = element.value.equals("1")
+            }
         }
     }
 
