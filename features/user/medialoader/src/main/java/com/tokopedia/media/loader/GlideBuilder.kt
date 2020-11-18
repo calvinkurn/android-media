@@ -128,9 +128,11 @@ object GlideBuilder {
                     if (placeHolder != 0) {
                         placeholder(placeHolder)
                     } else {
-                        if (!isCircular || !isFreeOngkirIcon(source)) {
+                        if (!isCircular || !imageExcludeList(source)) {
                             blurHash(source) { hash ->
-                                placeholder(BitmapDrawable(context.resources, blurring(hash)))
+                                val bitmapHash = BitmapDrawable(context.resources, blurring(hash))
+                                thumbnail(thumbnailLoader(context, bitmapHash))
+                                placeholder(bitmapHash)
                             }
                         } else {
                             placeholder(R.drawable.ic_media_default_placeholder)
@@ -161,7 +163,7 @@ object GlideBuilder {
         }
     }
 
-    private fun isFreeOngkirIcon(source: Any?): Boolean {
+    private fun imageExcludeList(source: Any?): Boolean {
         return if (source is GlideUrl) exceptionBlurring.contains(source.toStringUrl()) else false
     }
 
