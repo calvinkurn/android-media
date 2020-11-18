@@ -190,17 +190,17 @@
         app:layout_constraintTop_toTopOf="@+id/txt_main_price"
         app:srcCompat="@drawable/ic_pdp_wishlist_unfilled" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_product_pdp"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
         android:layout_marginEnd="@dimen/dp_10"
+        android:visibility="gone"
+        app:icon_name="SHARE_MOBILE"
         app:layout_constraintBottom_toBottomOf="@id/fab_detail_pdp"
         app:layout_constraintEnd_toStartOf="@+id/fab_detail_pdp"
         app:layout_constraintTop_toTopOf="@id/fab_detail_pdp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        app:srcCompat="@drawable/ic_pdp_share_new" />
+        tools:visibility="visible" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_fab_share"
