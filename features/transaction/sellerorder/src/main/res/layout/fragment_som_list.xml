@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:constraint_referenced_ids="tvSomListBulk,bulkActionCheckBoxContainer,dividerMultiSelect" />
+        app:constraint_referenced_ids="bulkActionCheckBoxContainer,dividerMultiSelect" />
 
     <!--  start success views  -->
 
@@ -61,13 +61,13 @@
         app:sort_filter_type="advanced"
         tools:visibility="visible" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/bulkActionCheckBoxContainer"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="14dp"
-        android:orientation="horizontal"
-        android:gravity="center"
+        android:animateLayoutChanges="true"
+        android:minHeight="25dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sortFilterSomList">
 
@@ -76,7 +76,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="false"
-            android:visibility="gone" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSomListOrderCounter"
@@ -85,24 +87,25 @@
             android:layout_marginStart="3dp"
             android:layout_marginTop="0.5dp"
             android:textColor="@color/Unify_N700_96"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/checkBoxBulkAction"
+            app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3"
             tools:text="2 Pesanan" />
 
-    </LinearLayout>
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSomListBulk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:text="@string/som_list_multi_select"
+            android:textColor="@color/Unify_G500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_6" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvSomListBulk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:text="@string/som_list_multi_select"
-        android:textColor="@color/Unify_G500"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/bulkActionCheckBoxContainer"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bulkActionCheckBoxContainer"
-        app:typographyType="heading_6"
-        tools:visibility="visible" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/dividerMultiSelect"
