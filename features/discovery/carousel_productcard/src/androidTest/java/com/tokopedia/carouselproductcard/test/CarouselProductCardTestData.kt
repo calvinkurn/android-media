@@ -4,7 +4,7 @@ import com.tokopedia.productcard.ProductCardModel
 
 internal var productCardNameSuffix = 0
 
-internal val carouselProductCardGridTestData = mutableListOf<List<ProductCardModel>>().also {
+internal val carouselProductCardTestData = mutableListOf<List<ProductCardModel>>().also {
     it.add(createCarouselProductCardGrid())
     it.add(createCarouselProductCardGridWithButtonATC())
     it.add(createCarouselProductCardGrid())
@@ -63,7 +63,7 @@ private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
             isTopAds = true,
@@ -88,7 +88,7 @@ private fun createProductCardTwoLinesProductName(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
             hasThreeDots = true
@@ -106,7 +106,7 @@ private fun createProductCardWithSlashPrice(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             hasThreeDots = true
     )
@@ -154,7 +154,7 @@ private fun createProductCardMaxInfoAndLabelATC(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
             isTopAds = true,
@@ -178,7 +178,7 @@ private fun createProductCardTwoLinesProductNameATC(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
             hasAddToCartButton = true
@@ -196,7 +196,7 @@ private fun createProductCardWithSlashPriceATC(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            ratingString = "4.5",
+            ratingCount = 4,
             reviewCount = 60,
             hasAddToCartButton = true
     )
