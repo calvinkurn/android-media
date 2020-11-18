@@ -525,9 +525,7 @@ class ShopEditBasicInfoFragment: Fragment() {
         shopEditTicker.setHtmlDescription(message)
         shopEditTicker.setDescriptionClickEvent(object : TickerCallback{
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (type == Ticker.TYPE_WARNING) {
-                    clickReadMore(linkUrl)
-                }
+                clickReadMore(linkUrl)
             }
             override fun onDismiss() {}
         })
