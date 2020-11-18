@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.etalase.view.presenter
+package com.tokopedia.shop.settings.etalase.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
