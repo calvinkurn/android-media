@@ -59,7 +59,7 @@ class ProductDetailActivityTest {
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
             productDetailLoadTimeMonitoringListener.onStartPltListener()
-            activity?.productDetailLoadTimeMonitoringListener = productDetailLoadTimeMonitoringListener
+            activity.productDetailLoadTimeMonitoringListener = productDetailLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
         }
     }
@@ -162,6 +162,7 @@ class ProductDetailActivityTest {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
     }
+
 
     private fun finishTest() {
         gtmLogDBSource.deleteAll().subscribe()
