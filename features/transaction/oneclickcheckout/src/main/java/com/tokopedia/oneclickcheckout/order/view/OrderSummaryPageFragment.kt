@@ -52,10 +52,7 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
-import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
@@ -122,6 +119,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val tickerPreferenceInfo by lazy { view?.findViewById<Ticker>(R.id.ticker_preference_info) }
     private val emptyPreferenceCard by lazy { view?.findViewById<View>(R.id.empty_preference_card) }
     private val preferenceCard by lazy { view?.findViewById<View>(R.id.preference_card) }
+    private val newPreferenceCard by lazy { view?.findViewById<View>(R.id.new_preference_card) }
 
     private val btnPromoCheckout by lazy { view?.findViewById<ButtonPromoCheckoutView>(R.id.btn_promo_checkout) }
 
@@ -130,6 +128,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private var orderProductCard: OrderProductCard? = null
     private lateinit var orderPreferenceCard: OrderPreferenceCard
+    private lateinit var newOrderPreferenceCard: NewOrderPreferenceCard
     private lateinit var orderInsuranceCard: OrderInsuranceCard
     private lateinit var orderTotalPaymentCard: OrderTotalPaymentCard
 
@@ -250,6 +249,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         swipeRefreshLayout?.isRefreshing = true
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
+        newOrderPreferenceCard = NewOrderPreferenceCard(view, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener(), orderSummaryAnalytics)
         orderInsuranceCard = OrderInsuranceCard(view, getOrderInsuranceCardListener(), orderSummaryAnalytics)
         orderTotalPaymentCard = OrderTotalPaymentCard(view, getOrderTotalPaymentCardListener())
@@ -275,6 +275,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             showPreferenceCard()
                             orderPreferenceCard.setPreference(it.data)
+                            newOrderPreferenceCard.setPreference(it.data)
                         } else {
                             showEmptyPreferenceCard()
                         }
@@ -297,6 +298,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                     it.data.preference.payment.gatewayCode.isNotEmpty()) {
                                 showPreferenceCard()
                                 orderPreferenceCard.setPreference(it.data)
+                                newOrderPreferenceCard.setPreference(it.data)
                             } else {
                                 showEmptyPreferenceCard()
                             }
@@ -317,6 +319,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         viewModel.orderShipment.observe(viewLifecycleOwner, Observer {
             orderPreferenceCard.setShipment(it)
+            newOrderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
@@ -327,6 +330,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         viewModel.orderPayment.observe(viewLifecycleOwner, Observer {
             orderPreferenceCard.setPayment(it)
+            newOrderPreferenceCard.setPayment(it)
         })
 
         viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
@@ -587,7 +591,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showPreferenceCard() {
         emptyPreferenceCard?.gone()
-        preferenceCard?.visible()
+        preferenceCard?.gone()
+        newPreferenceCard?.visible()
         orderTotalPaymentCard.setPaymentVisible(true)
         btnPromoCheckout?.visible()
     }
@@ -596,6 +601,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         imageEmptyProfile?.setImageUrl(EMPTY_PROFILE_IMAGE)
         emptyPreferenceCard?.visible()
         preferenceCard?.gone()
+        newPreferenceCard?.gone()
         orderTotalPaymentCard.setPaymentVisible(false)
         btnPromoCheckout?.gone()
         orderInsuranceCard.setGroupInsuranceVisible(false)
@@ -705,6 +711,100 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         startActivityForResult(intent, REQUEST_CODE_PROMO)
                     }
                 }
+            }
+        }
+    }
+
+    private fun getNewOrderPreferenceCardListener() = object : NewOrderPreferenceCard.OrderPreferenceCardListener {
+
+        override fun onChangePreferenceClicked() {
+            orderSummaryAnalytics.eventChangesProfile()
+            showPreferenceListBottomSheet()
+        }
+
+        override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
+            orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
+            viewModel.chooseCourier(shippingCourierViewModel)
+        }
+
+        override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.get().userId)
+            viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        }
+
+        override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
+            orderSummaryAnalytics.eventChooseBboAsDuration()
+            viewModel.chooseLogisticPromo(logisticPromoUiModel)
+        }
+
+        override fun chooseCourier() {
+            orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
+                newOrderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
+            }
+        }
+
+        override fun chooseDuration(isDurationError: Boolean) {
+            if (isDurationError) {
+                orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
+            }
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
+                newOrderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
+            }
+        }
+
+        override fun onPreferenceEditClicked(preference: OrderPreference) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
+                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
+                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
+                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
+            }
+            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+        }
+
+        override fun onInstallmentDetailClicked() {
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
+                newOrderPreferenceCard.showInstallmentDetailBottomSheet(this@OrderSummaryPageFragment)
+            }
+        }
+
+        override fun onInstallmentDetailChange(selectedInstallmentTerm: OrderPaymentInstallmentTerm) {
+            viewModel.chooseInstallment(selectedInstallmentTerm)
+        }
+
+        override fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData) {
+            context?.let {
+                startActivityForResult(CreditCardPickerActivity.createIntent(it, additionalData), REQUEST_CODE_CREDIT_CARD)
+            }
+        }
+
+        override fun onOvoActivateClicked(callbackUrl: String) {
+            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                override fun onActivationResult(isSuccess: Boolean) {
+                    view?.let {
+                        it.post {
+                            if (isSuccess) {
+                                Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                            } else {
+                                Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                            }
+                            refresh()
+                        }
+                    }
+                }
+            }).show(this@OrderSummaryPageFragment, userSession.get())
+        }
+
+        override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
+            context?.let {
+                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
             }
         }
     }

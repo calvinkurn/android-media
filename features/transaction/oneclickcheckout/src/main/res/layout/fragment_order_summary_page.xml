@@ -119,20 +119,9 @@
                     app:tickerShapeType="loose"
                     app:tickerType="announcement" />
 
-<!--                <include-->
-<!--                    android:id="@+id/preference_card"-->
-<!--                    layout="@layout/card_order_preference"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginTop="@dimen/dp_12"-->
-<!--                    android:layout_marginBottom="@dimen/dp_16"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toBottomOf="@+id/preference_card_new" />-->
-
                 <include
                     android:id="@+id/preference_card"
-                    layout="@layout/card_order_preference_new"
+                    layout="@layout/card_order_preference"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_12"
@@ -142,6 +131,17 @@
                     app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info" />
 
                 <include
+                    android:id="@+id/new_preference_card"
+                    layout="@layout/card_order_preference_new"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_16"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/preference_card" />
+
+                <include
                     android:id="@+id/empty_preference_card"
                     layout="@layout/card_order_empty_preference"
                     android:layout_width="0dp"
@@ -149,7 +149,7 @@
                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/preference_card" />
+                    app:layout_constraintTop_toBottomOf="@+id/new_preference_card" />
 
                 <View
                     android:id="@+id/divider"

@@ -104,6 +104,7 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-        RouteManager.route(this, ApplinkConst.OCC + "?product_id=688020593")
+//        RouteManager.route(this, ApplinkConst.OCC + "?product_id=688020593")
+        RouteManager.route(this, ApplinkConst.OCC)
     }
 }
