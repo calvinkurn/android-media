@@ -1582,15 +1582,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val visorInstance = VisorFingerprintInstance()
         visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
-                presenter.submitVisorToken(token)
                 Log.d("visor init success", "success")
-                Toast.makeText(context, "token : "+ token, Toast.LENGTH_SHORT).show()
+                presenter.submitVisorToken(token)
             }
 
             override fun onFailedInitToken(error: String) {
                 Log.d("visor initfailed", error)
-                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-                SnackbarManager.make(activity, error,Snackbar.LENGTH_SHORT)
             }
         })
     }
