@@ -584,7 +584,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun onDismissBottomSheet() {
+    fun onDismissBottomSheet() {
         try {
             if (bottomSheet != null) {
                 bottomSheet.dismiss()
