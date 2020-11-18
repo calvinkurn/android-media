@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.model.StepperModel
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -63,6 +64,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
             createNewStepperModel()
         }
         super.onCreate(savedInstanceState)
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -167,7 +169,7 @@ class UserIdentificationFormActivity : BaseStepperActivity() {
         val span = SpannableString(text)
         val radius = dpToPx(4)
         val gapWidth = dpToPx(12)
-        val color = ResourcesCompat.getColor(resources, R.color.kyc_centralized_dbdee2, null)
+        val color = ResourcesCompat.getColor(resources, com.tokopedia.unifyprinciples.R.color.Unify_N100, null)
         val bulletSpan: BulletSpan
         bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             BulletSpan(gapWidth, color, radius)

@@ -3,6 +3,7 @@ package com.tokopedia.kyc_centralized.view.activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
@@ -33,6 +34,7 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
         if (intent != null && intent.extras != null) {
             isSourceSeller = intent.extras?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
         }
+        toolbar.setTitleTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
     }
 
     override fun getNewFragment(): Fragment? {
