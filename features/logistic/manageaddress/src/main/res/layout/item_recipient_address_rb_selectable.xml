@@ -20,7 +20,7 @@
             android:id="@+id/rl_shipment_recipient_address_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:foreground="?selectableItemBackground">
 
             <LinearLayout
@@ -60,7 +60,7 @@
                 android:layout_marginBottom="@dimen/dp_16"
                 android:layout_toStartOf="@+id/ll_radio_button_container"
                 android:layout_toLeftOf="@+id/ll_radio_button_container"
-                android:background="@color/white">
+                android:background="@color/Unify_N0">
 
                 <include layout="@layout/layout_address_normal" />
 
@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/rl_address_container"
-                android:background="@color/grey_300" />
+                android:background="@color/Unify_N100" />
 
             <TextView
                 android:id="@+id/button_change_address"
@@ -83,7 +83,7 @@
                 android:gravity="center"
                 android:padding="@dimen/dp_8"
                 android:text="@string/change_address"
-                android:textColor="@color/black_38"
+                android:textColor="@color/Unify_N700_32"
                 android:textSize="@dimen/sp_12" />
 
 
@@ -104,6 +104,6 @@
         android:textAllCaps="false"
         android:visibility="gone"
         tools:visibility="visible"
-        android:textColor="@color/green_250" />
+        android:textColor="@color/Unify_G400" />
 
 </LinearLayout>
