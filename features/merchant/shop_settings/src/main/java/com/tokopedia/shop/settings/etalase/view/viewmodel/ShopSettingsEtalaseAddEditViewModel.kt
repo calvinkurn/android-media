@@ -42,7 +42,7 @@ class ShopSettingsEtalaseAddEditViewModel
                 getShopEtalaseUseCase.params = GetShopEtalaseUseCase.createRequestParams(true)
                 val shopShowcaseData = getShopEtalaseUseCase.executeOnBackground()
                 shopShowcaseData.let {
-                    _shopEtalase.value = Success(it.shopShowcases.result)
+                    _shopEtalase.postValue(Success(it.shopShowcases.result))
                 }
             }
         }) {
@@ -52,16 +52,18 @@ class ShopSettingsEtalaseAddEditViewModel
 
     fun saveShopEtalase(etalaseModel: ShopEtalaseUiModel, isEdit: Boolean = false) {
         launchCatchError(block = {
-            val useCase: UseCase<String> = if (!isEdit) addShopEtalaseUseCase else updateShopEtalaseUseCase
-            val requestParams = AddShopEtalaseUseCase.createRequestParams(etalaseModel.name)
+            withContext(dispatchers.io) {
+                val useCase: UseCase<String> = if (!isEdit) addShopEtalaseUseCase else updateShopEtalaseUseCase
+                val requestParams = AddShopEtalaseUseCase.createRequestParams(etalaseModel.name)
 
-            if (isEdit) {
-                requestParams.putString(ID, etalaseModel.id)
+                if (isEdit) {
+                    requestParams.putString(ID, etalaseModel.id)
+                }
+                val data = withContext(dispatchers.io) {
+                    useCase.getData(requestParams)
+                }
+                _saveMessage.postValue(Success(data))
             }
-            val data = withContext(dispatchers.io) {
-                useCase.getData(requestParams)
-            }
-            _saveMessage.value = Success(data)
         }) {
             _saveMessage.value = Fail(it)
         }

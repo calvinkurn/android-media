@@ -37,7 +37,7 @@ class ShopSettingsEtalaseListViewModel
                     for ((countPrimaryEtalase, shopEtalaseModel) in it.shopShowcases.result.withIndex()) {
                         shopEtalaseUiModels.add(ShopEtalaseUiModel(shopEtalaseModel, countPrimaryEtalase < PRIMARY_ETALASE_LIMIT))
                     }
-                    _shopEtalase.value = Success(shopEtalaseUiModels)
+                    _shopEtalase.postValue(Success(shopEtalaseUiModels))
                 }
             }
         }) {
@@ -47,10 +47,12 @@ class ShopSettingsEtalaseListViewModel
 
     fun deleteShopEtalase(etalaseId: String) {
         launchCatchError(block = {
-            val data = withContext(dispatchers.io) {
-                deleteShopEtalaseUseCase.getData(DeleteShopEtalaseUseCase.createRequestParams(etalaseId))
+            withContext(dispatchers.io) {
+                val data = withContext(dispatchers.io) {
+                    deleteShopEtalaseUseCase.getData(DeleteShopEtalaseUseCase.createRequestParams(etalaseId))
+                }
+                _deleteMessage.postValue(Success(data))
             }
-            _deleteMessage.value = Success(data)
         }) {
             _deleteMessage.value = Fail(it)
         }
