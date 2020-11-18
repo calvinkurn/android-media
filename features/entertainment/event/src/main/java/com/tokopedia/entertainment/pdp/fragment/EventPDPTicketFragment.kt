@@ -338,7 +338,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
     }
 
     override fun getLocalCache(): Boolean {
-        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, true)
+        return localCacheHandler.getBoolean(SHOW_COACH_MARK_KEY, false)
     }
 
     override fun showCoachMark(view: View, height: Int) {
@@ -352,7 +352,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
                 getCoachMarkItems(view)
         )
         localCacheHandler.apply {
-            putBoolean(SHOW_COACH_MARK_KEY, false)
+            putBoolean(SHOW_COACH_MARK_KEY, true)
             applyEditor()
         }
     }
@@ -407,8 +407,8 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         const val IS_HIBURAN = 8192
         const val DATE_TICKET = "EEE, dd MMM yyyy"
 
-        private const val PREFERENCES_NAME = "event_ticket_preferences"
-        private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
+        const val PREFERENCES_NAME = "event_ticket_preferences"
+        const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"
         private const val COACH_MARK_START_DELAY = 1000L
     }
 

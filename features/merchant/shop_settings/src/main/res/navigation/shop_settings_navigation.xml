@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/shop_settings_navigation"
+    app:startDestination="@id/shopSettingsInfoFragment">
+
+    <fragment
+        android:id="@+id/shopSettingsInfoFragment"
+        android:name="com.tokopedia.shop.settings.basicinfo.view.fragment.ShopSettingsInfoFragment"
+        tools:layout="@layout/fragment_shop_settings_info" >
+        <action
+            android:id="@+id/action_shopSettingsInfoFragment_to_shopEditBasicInfoFragment"
+            app:destination="@id/shopEditBasicInfoFragment"
+            app:enterAnim="@anim/shopsettings_fade_in"
+            app:exitAnim="@anim/shopsettings_fade_out"
+            app:popEnterAnim="@anim/shopsettings_fade_in"
+            app:popExitAnim="@anim/shopsettings_fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shopEditBasicInfoFragment"
+        android:name="com.tokopedia.shop.settings.basicinfo.view.fragment.ShopEditBasicInfoFragment"
+        tools:layout="@layout/fragment_shop_edit_basic_info" >
+        <argument
+            android:name="cacheManagerId"
+            app:argType="string"
+            android:defaultValue='"0"' />
+    </fragment>
+</navigation>

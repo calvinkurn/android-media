@@ -1,0 +1,18 @@
+{
+  "data": {
+    "fetchAnnouncementWidgetData": {
+      "data": [
+        {
+          "dataKey": "defaultBanner",
+          "errorMsg": "",
+          "title": "Yuk, mulai tambah produk pertamamu!",
+          "subtitle": "Segera tambahkan produk untuk menarik calon pembeli.",
+          "imageUrl": "https://ecs7.tokopedia.net/seller-dashboard/seller_dashboard_home_announcement_tambah_produk_asset.png",
+          "button": {
+            "applink": "tokopedia://product/add"
+          }
+        }
+      ]
+    }
+  }
+}

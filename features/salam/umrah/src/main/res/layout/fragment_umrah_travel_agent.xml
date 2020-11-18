@@ -10,7 +10,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/white">
+            android:background="@color/Neutral_N0">
 
             <LinearLayout
                 android:id="@+id/container_umrah_travel"
@@ -23,16 +23,16 @@
                     android:id="@+id/iw_umrah_travel_agent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16" />
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4" />
 
                 <com.tokopedia.unifycomponents.UnifyButton
                     android:id="@+id/btn_umrah_travel_contact"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/spacing_lvl4"
+                    android:layout_marginTop="@dimen/spacing_lvl4"
+                    android:layout_marginRight="@dimen/spacing_lvl4"
                     android:text="@string/umrah_travel_contact"
                     app:unifyButtonSize="small"
                     app:unifyButtonType="alternate"
@@ -42,16 +42,16 @@
                     android:id="@+id/tl_umrah_travel_agent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:tabMaxWidth="0dp"
+                    app:tabMaxWidth="@dimen/unify_space_0"
                     app:tabGravity="fill"
                     app:tabMode="fixed"
                     app:tabIndicatorColor="@color/Green_G500"
                     app:tabSelectedTextColor="@color/Green_G500"
                     app:tabTextAppearance="@style/tabUmrahStyle"
-                    app:tabTextColor="@color/grey_450" />
+                    app:tabTextColor="@color/Neutral_N150" />
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
+                    android:layout_height="@dimen/spacing_lvl1"
                     android:background="@color/shadow_5"
                     />
 
@@ -59,7 +59,7 @@
                     android:id="@+id/vp_umrah_travel_agent"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/dp_8" />
+                    android:layout_marginTop="@dimen/spacing_lvl3" />
 
             </LinearLayout>
 
