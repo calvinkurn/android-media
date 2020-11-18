@@ -50,7 +50,7 @@ class OfficialCategoriesTab(context: Context,
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
-                                R.color.Purple_P600
+                                R.color.Unify_P600
                         ))
                         setWeight(Typography.BOLD)
                     }
@@ -63,7 +63,7 @@ class OfficialCategoriesTab(context: Context,
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
-                                R.color.Neutral_N700_96
+                                R.color.Unify_N700_96
                         ))
                         setWeight(Typography.REGULAR)
                     }
@@ -76,7 +76,7 @@ class OfficialCategoriesTab(context: Context,
                     text_view_category_title?.apply {
                         setTextColor(MethodChecker.getColor(
                                 context,
-                                R.color.Purple_P600
+                                R.color.Unify_P600
                         ))
                         setWeight(Typography.BOLD)
                     }
