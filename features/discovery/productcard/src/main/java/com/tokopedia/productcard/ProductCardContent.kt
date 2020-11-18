@@ -77,26 +77,29 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
-
-    view?.let {
-        val constraintSet = ConstraintSet()
-
-        constraintSet.clone(it)
-
-        val constrainedId = if (productCardModel.discountPercentage.isNotEmpty()) R.id.labelDiscount else R.id.textViewSlashedPrice
-
-        constraintSet.clear(R.id.labelPrice)
-        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, constrainedId, ConstraintSet.BOTTOM)
-        constraintSet.connect(R.id.labelPrice, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-
-        constraintSet.applyTo(it)
-    }
+    moveLabelPriceConstraint(productCardModel)
 
     if (productCardModel.isShowDiscountOrSlashPrice())
         labelPrice?.initLabelGroup(null)
     else
         labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+}
+
+private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
+    val shouldMoveConstraint = productCardModel.discountPercentage.isNotEmpty() && productCardModel.slashedPrice.isEmpty()
+
+    if (!shouldMoveConstraint) return
+
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.let {
+        val constraintSet = ConstraintSet().apply { clone(it) }
+
+        constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, R.id.labelDiscount, ConstraintSet.BOTTOM)
+
+        constraintSet.applyTo(it)
+    }
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {

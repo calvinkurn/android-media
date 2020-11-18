@@ -18,12 +18,12 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelDiscountAndSlashPrice())
     it.add(testSlashPriceWithoutLabelDiscount())
     it.add(testLabelDiscountWithoutSlashPrice())
+    it.add(testLabelPriceAndSlashPrice())
     it.add(testTwoLinesProductName())
     it.add(testMaximumInfoAndLabel())
     it.add(testLabelGimmickNumberOfStock())
     it.add(testLabelSoldOut())
     it.add(testLabelNewProduct())
-    it.add(testLabelPriceAndSlashPrice())
     it.add(testLabelIntegrity())
     it.add(testLabelShippingInfo())
     it.add(testNoShopBadge())
@@ -307,7 +307,7 @@ private fun testLabelDiscountAndSlashPrice(): ProductCardModelMatcher {
 
 private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Slash Price",
+            productName = "Slash Price without label discount",
             productImageUrl = productImageUrl,
             slashedPrice = "Rp8.499.000",
             formattedPrice = "Rp7.999.000",
@@ -344,7 +344,7 @@ private fun testSlashPriceWithoutLabelDiscount(): ProductCardModelMatcher {
 
 private fun testLabelDiscountWithoutSlashPrice(): ProductCardModelMatcher {
     val productCardModel = ProductCardModel(
-            productName = "Label Discount",
+            productName = "Label Discount without slash price",
             productImageUrl = productImageUrl,
             discountPercentage = "20%",
             formattedPrice = "Rp7.999.000",
@@ -372,6 +372,41 @@ private fun testLabelDiscountWithoutSlashPrice(): ProductCardModelMatcher {
         it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+        it[R.id.imageFreeOngkirPromo] = isDisplayed()
+        it[R.id.imageThreeDots] = isDisplayed()
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
+    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
+
+    val productCardModel = ProductCardModel(
+            productName = "Slash Price prioritized over Label Price",
+            productImageUrl = productImageUrl,
+            discountPercentage = "20%",
+            slashedPrice = "Rp8.499.000",
+            formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
+            hasThreeDots = true,
+            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
+            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
+                labelGroups.add(labelPrice)
+            }
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
+        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
@@ -574,41 +609,6 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
         it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.imageThreeDots] = isDisplayed()
-    }
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testLabelPriceAndSlashPrice(): ProductCardModelMatcher {
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Cashback", type = LIGHT_GREEN)
-
-    val productCardModel = ProductCardModel(
-            productName = "Slash Price and Label Price",
-            productImageUrl = productImageUrl,
-            discountPercentage = "20%",
-            slashedPrice = "Rp8.499.000",
-            formattedPrice = "Rp7.999.000",
-            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
-                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
-            },
-            shopLocation = "DKI Jakarta",
-            hasThreeDots = true,
-            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
-                labelGroups.add(labelPrice)
-            }
-    )
-
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelDiscount] = isDisplayedWithText(productCardModel.discountPercentage)
-        it[R.id.textViewSlashedPrice] = isDisplayedWithText(productCardModel.slashedPrice)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
