@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
@@ -1582,19 +1583,25 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
                 presenter.submitVisorToken(token)
+                Log.d("visor init visor success", "success")
+                Toast.makeText(context, "token : "+ token, Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailedInitToken(error: String) {
+                Log.d("visor init visor failed", error)
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                 SnackbarManager.make(activity, error,Snackbar.LENGTH_SHORT)
             }
         })
     }
 
     override fun onSuccessSubmitVisorToken(message: String) {
+        Log.d("visor update data to backend success", message)
         SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
     }
 
     override fun onErrorSubmitVisorToken(message: String) {
+        Log.d("visor update data to backend error", message)
         SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
     }
 
