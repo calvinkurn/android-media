@@ -24,7 +24,9 @@ class MainNavListAdapter(val mainNavTypeFactoryImpl: MainNavTypeFactoryImpl): Li
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
-        holder.bind(getItem(position))
+        if (position < itemCount) {
+            holder.bind(getItem(position))
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {

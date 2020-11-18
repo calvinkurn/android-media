@@ -28,6 +28,8 @@ object IconList {
     const val NAME_WISHLIST = "Wishlist"
     const val NAME_SHARE = "Share"
     const val NAME_SETTING = "Setting"
+    const val NAME_BACK_BUTTON = "Back Button"
+    const val NAME_SEARCH_BAR = "Search Bar"
 
     const val ID_NAV_LOTTIE_WISHLIST = 91
 

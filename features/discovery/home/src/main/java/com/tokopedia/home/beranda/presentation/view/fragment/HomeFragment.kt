@@ -1980,7 +1980,10 @@ open class HomeFragment : BaseDaggerFragment(),
                     }
                 }
             } else if (isNavRevamp()) {
-                navToolbar?.let { height = navToolbar?.height?:0 }
+                navToolbar?.let {
+                    height = navToolbar?.height?:0
+                    height += resources.getDimensionPixelSize(R.dimen.dp_8)
+                }
             }
             return height
         }

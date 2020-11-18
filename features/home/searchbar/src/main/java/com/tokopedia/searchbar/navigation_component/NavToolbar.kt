@@ -29,7 +29,9 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.user.session.UserSession
@@ -83,7 +85,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var toolbarPageName: String = DEFAULT_PAGE_NAME
 
     //helper variable
-    private var shadowApplied: Boolean = false
+    var shadowApplied: Boolean = false
     private var userSessionInterface: UserSessionInterface? = null
 
     //controller variable
@@ -227,7 +229,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navSearchBarController = NavSearchbarController(
                 this,
                 applinkForController,
-                searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback)
+                searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback, topNavComponentListener = this)
         navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
     }
 
@@ -240,7 +242,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
-        nav_icon_back.setOnClickListener { backButtonClickListener.invoke() }
+        nav_icon_back.setOnClickListener {
+            NavToolbarTracking.clickNavToolbarComponent(
+                    toolbarPageName,
+                    IconList.NAME_BACK_BUTTON,
+                    getUserId()
+            )
+            backButtonClickListener.invoke()
+        }
     }
 
     fun setToolbarContentType(toolbarContentType: Int) {
@@ -271,6 +280,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             nav_icon_back.tag = backType
             if (context is Activity) {
                 nav_icon_back.setOnClickListener {
+                    NavToolbarTracking.clickNavToolbarComponent(
+                            toolbarPageName,
+                            IconList.NAME_BACK_BUTTON,
+                            getUserId()
+                    )
                     (context as? Activity)?.onBackPressed()
                 }
             }
@@ -328,7 +342,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = paddingTop, right: Int = paddingRight, bottom: Int = paddingBottom) {
+    private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = ViewHelper.getStatusBarHeight(context), right: Int = paddingRight, bottom: Int = paddingBottom) {
         setPadding(left, top, right, bottom)
     }
 

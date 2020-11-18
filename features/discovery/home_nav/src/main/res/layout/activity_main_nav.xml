@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
         android:id="@+id/toolbar"
@@ -19,7 +18,6 @@
         app:toolbarBackButton="close"
         app:toolbarAlwaysShowShadow="false"
         app:toolbarPageName="nav page"
-        app:toolbarTitle="ada deh"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
