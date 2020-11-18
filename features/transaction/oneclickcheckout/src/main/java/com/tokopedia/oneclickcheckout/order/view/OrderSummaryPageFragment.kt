@@ -737,6 +737,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             viewModel.chooseLogisticPromo(logisticPromoUiModel)
         }
 
+        override fun chooseAddress() {
+            if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
+                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment)
+            }
+        }
+
         override fun chooseCourier() {
             orderSummaryAnalytics.eventChangeCourierOSP(viewModel.getCurrentShipperId().toString())
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {

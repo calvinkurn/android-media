@@ -1,5 +1,10 @@
 package com.tokopedia.oneclickcheckout.order.view.card
 
+import android.graphics.Typeface.BOLD
+import android.text.SpannableString
+import android.text.style.RelativeSizeSpan
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.iconunify.IconUnify
@@ -24,6 +29,7 @@ import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class NewOrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) {
@@ -32,33 +38,36 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private var shipment: OrderShipment? = null
     private var payment: OrderPayment? = null
 
-    private val tvCardHeader by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_card_header) }
+    private val tvCardHeader by lazy { view.findViewById<Typography>(R.id.tv_new_card_header) }
     private val lblMainPreference by lazy { view.findViewById<Label>(R.id.lbl_new_main_preference) }
-    private val tvChoosePreference by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_choose_preference) }
+    private val tvChoosePreference by lazy { view.findViewById<Typography>(R.id.tv_new_choose_preference) }
 
-    private val tvAddressName by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_address_name) }
-    private val tvAddressReceiver by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_address_receiver) }
-    private val tvAddressDetail by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_address_detail) }
-    private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_new_shipping_promo) }
-    private val tickerShippingPromoDescription by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.ticker_new_shipping_promo_description) }
-    private val tickerAction by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.ticker_new_action) }
+    private val tvAddressName by lazy { view.findViewById<Typography>(R.id.tv_new_address_name) }
+    private val tvAddressReceiver by lazy { view.findViewById<Typography>(R.id.tv_new_address_receiver) }
+    private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
+    private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
 
     private val ivPayment by lazy { view.findViewById<ImageUnify>(R.id.iv_new_payment) }
-    private val tvPaymentName by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_payment_name) }
-    private val tvPaymentDetail by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_payment_detail) }
-    private val tvPaymentErrorMessage by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_payment_error_message) }
-    private val tvInstallmentType by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_installment_type) }
-    private val tvInstallmentDetail by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_installment_detail) }
-    private val tvInstallmentErrorMessage by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_installment_error_message) }
-    private val tvInstallmentErrorAction by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_installment_error_action) }
+    private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_name) }
+    private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_payment_detail) }
+    private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_payment_error_message) }
+    private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_new_installment_type) }
+    private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_installment_detail) }
+    private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
+    private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
 
-    private val tvNewShippingDuration by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_shipping_duration) }
-    private val btnNewChangeDuration by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_duration) }
-    private val tvNewShippingCourier by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_shipping_courier) }
-    private val btnNewChangeCourier by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_courier) }
-    private val tvNewShippingErrorMessage by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.tv_new_shipping_error_message) }
-    private val btnNewReloadShipping by lazy { view.findViewById<com.tokopedia.unifyprinciples.Typography>(R.id.btn_new_reload_shipping) }
-    private val iconNewReloadShipping by lazy { view.findViewById<IconUnify>(R.id.icon_new_reload_shipping) }
+    private val tickerShippingPromo by lazy { view.findViewById<CardUnify>(R.id.ticker_new_shipping_promo) }
+    private val tickerShippingPromoDescription by lazy { view.findViewById<Typography>(R.id.ticker_new_shipping_promo_description) }
+    private val tickerAction by lazy { view.findViewById<Typography>(R.id.ticker_new_action) }
+
+    private val tvShippingDuration by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_duration) }
+    private val btnChangeDuration by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_duration) }
+    private val tvShippingCourier by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_courier) }
+    private val tvShippingDiscountPrice by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_discount_price) }
+    private val btnChangeCourier by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_courier) }
+    private val tvShippingErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_error_message) }
+    private val btnReloadShipping by lazy { view.findViewById<Typography>(R.id.btn_new_reload_shipping) }
+    private val iconReloadShipping by lazy { view.findViewById<IconUnify>(R.id.icon_new_reload_shipping) }
 
     fun setPreference(preference: OrderPreference) {
         this.preference = preference
@@ -121,33 +130,42 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             // loading?
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
-                tvNewShippingDuration?.text = "Pengiriman ${shipping.serviceName}"
-                tvNewShippingDuration?.visible()
-                btnNewChangeDuration?.setOnClickListener {
+                tvShippingDuration?.text = "Pengiriman ${shipping.serviceName}"
+                tvShippingDuration?.visible()
+                btnChangeDuration?.setOnClickListener {
                     listener.chooseDuration(false)
                 }
-                btnNewChangeDuration?.visible()
-                tvNewShippingCourier?.text = "${shipping.shipperName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()})"
-                tvNewShippingCourier?.visible()
-                btnNewChangeCourier?.setOnClickListener {
+                btnChangeDuration?.visible()
+                tvShippingCourier?.text = "${shipping.shipperName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()})"
+                tvShippingCourier?.visible()
+                btnChangeCourier?.setOnClickListener {
                     listener.chooseCourier()
                 }
-                btnNewChangeCourier?.visible()
-                tvNewShippingErrorMessage?.gone()
-                btnNewReloadShipping?.gone()
-                iconNewReloadShipping?.gone()
+                btnChangeCourier?.visible()
+                tvShippingErrorMessage?.gone()
+                btnReloadShipping?.gone()
+                iconReloadShipping?.gone()
 
                 renderBboTicker(shipping)
 
                 if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-                    tvNewShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping)
-                    tvNewShippingDuration?.gone()
-                    btnNewChangeDuration?.gone()
+                    tvShippingCourier?.text = view.context.getString(R.string.lbl_osp_free_shipping)
+                    tvShippingDuration?.gone()
+                    btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
 //                        tvBboPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
 //                        tvShippingSlashPrice?.gone()
+                        tvShippingDiscountPrice?.gone()
                     } else {
-
+                        val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
+                        val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
+                        val span = SpannableString("($originalPrice $finalPrice)")
+                        span.setSpan(StrikethroughSpan(), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        span.setSpan(RelativeSizeSpan(10/12f), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        span.setSpan(StyleSpan(BOLD), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        tvShippingDiscountPrice?.text = span
+                        tvShippingDiscountPrice?.visible()
 //                        tvBboPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
 //                        tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
 //                        tvShippingSlashPrice?.paintFlags?.let {
@@ -157,18 +175,18 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 }
             } else {
-                tvNewShippingDuration?.text = "Pengiriman"
-                tvNewShippingDuration?.visible()
-                btnNewChangeDuration?.gone()
-                tvNewShippingCourier?.gone()
-                btnNewChangeCourier?.gone()
-                tvNewShippingErrorMessage?.text = shipping.serviceErrorMessage
-                tvNewShippingErrorMessage?.visible()
-                btnNewReloadShipping?.setOnClickListener {
+                tvShippingDuration?.text = "Pengiriman"
+                tvShippingDuration?.visible()
+                btnChangeDuration?.gone()
+                tvShippingCourier?.gone()
+                btnChangeCourier?.gone()
+                tvShippingErrorMessage?.text = shipping.serviceErrorMessage
+                tvShippingErrorMessage?.visible()
+                btnReloadShipping?.setOnClickListener {
 
                 }
-                btnNewReloadShipping?.visible()
-                iconNewReloadShipping?.visible()
+                btnReloadShipping?.visible()
+                iconReloadShipping?.visible()
             }
         }
     }
@@ -400,6 +418,14 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             tvAddressReceiver?.gone()
         }
         tvAddressDetail?.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
+
+        btnChangeAddress?.setOnClickListener {
+            listener.chooseAddress()
+        }
+    }
+
+    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment) {
+
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
@@ -487,6 +513,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean)
 
         fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel)
+
+        fun chooseAddress()
 
         fun chooseCourier()
 
