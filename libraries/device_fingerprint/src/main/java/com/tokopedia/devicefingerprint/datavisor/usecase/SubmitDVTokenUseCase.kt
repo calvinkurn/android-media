@@ -37,7 +37,7 @@ class SubmitDVTokenUseCase @Inject constructor(
                    message
               }
             }
-
+        }
         """.trimIndent()
     }
     //endregion

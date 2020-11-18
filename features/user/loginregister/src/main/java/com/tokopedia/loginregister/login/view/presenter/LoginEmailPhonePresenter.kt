@@ -347,7 +347,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         submitDVTokenUseCase.execute({
             view.onSuccessSubmitVisorToken(it.deviceCrDetail.message)
         },{
-            view.onSuccessSubmitVisorToken(it.localizedMessage)
+            view.onErrorSubmitVisorToken(it.localizedMessage)
         })
     }
 }
