@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.di
 
 import android.content.Context
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.checkout.R
@@ -64,6 +65,10 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
+    fun provideContext(): Context = shipmentFragment.activityContext
+
+    @Provides
+    @CheckoutScope
     fun provideICheckoutMapper(): ICheckoutMapper {
         return CheckoutMapper()
     }
@@ -76,7 +81,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+    fun provideCheckPromoStackingCodeUseCase(context: Context,
                                              mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
         return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
@@ -90,7 +95,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
-    fun provideSubmitHelpTicketUseCaseQuery(@ApplicationContext context: Context): String {
+    fun provideSubmitHelpTicketUseCaseQuery(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.purchase_platform.common.R.raw.submit_help_ticket)
     }
 
@@ -126,7 +131,8 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
-                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase): ShipmentContract.Presenter {
+                                 validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
+                                 gson: Gson): ShipmentContract.Presenter {
         return ShipmentPresenter(compositeSubscription,
                 checkoutGqlUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
@@ -135,7 +141,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase,
                 stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics, getInsuranceCartUseCase,
-                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase)
+                shipmentDataConverter, releaseBookingUseCase, validateUsePromoRevampUseCase, gson)
     }
 
     @Provides
@@ -165,28 +171,28 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     @Named(SHIPMENT_ADDRESS_FORM_QUERY)
-    fun provideGetShipmentAddressFormQuery(@ApplicationContext context: Context): String {
+    fun provideGetShipmentAddressFormQuery(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.shipment_address_form_query)
     }
 
     @Provides
     @CheckoutScope
     @Named(SAVE_SHIPMENT_STATE_MUTATION)
-    fun provideSaveShipmentStateMutation(@ApplicationContext context: Context): String {
+    fun provideSaveShipmentStateMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.save_shipment_state_mutation)
     }
 
     @Provides
     @CheckoutScope
     @Named(CHANGE_SHIPPING_ADDRESS_MUTATION)
-    fun provideChangeShippingAddressMutation(@ApplicationContext context: Context): String {
+    fun provideChangeShippingAddressMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.change_shipping_address_mutation)
     }
 
     @Provides
     @CheckoutScope
     @Named(CHECKOUT_MUTATION)
-    fun provideCheckoutMutation(@ApplicationContext context: Context): String {
+    fun provideCheckoutMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.checkout_mutation)
     }
 

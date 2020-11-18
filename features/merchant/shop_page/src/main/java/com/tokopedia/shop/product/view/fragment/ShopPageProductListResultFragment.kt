@@ -51,6 +51,9 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.common.constant.*
 import com.tokopedia.shop.common.constant.ShopPageConstant.EMPTY_PRODUCT_SEARCH_IMAGE_URL
+import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.data.model.*
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseRules
@@ -1010,7 +1013,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopInfo!!.shopCore.shopID)
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-            intent.putExtra(BUNDLE, bundle)
+            intent.putExtra(EXTRA_BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
         }
     }
@@ -1050,7 +1053,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_KEYWORD = "saved_keyword"
         val SAVED_SORT_VALUE = "saved_sort_name"
         val SAVED_SHOP_PRODUCT_FILTER_PARAMETER = "SAVED_SHOP_PRODUCT_FILTER_PARAMETER"
-        val BUNDLE = "bundle"
 
         private const val SELECTED_ETALASE_TYPE_DEFAULT_VALUE = -10
 

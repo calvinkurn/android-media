@@ -7,5 +7,6 @@ data class AdditionalInfoUiModel(
 		var messageInfoUiModel: MessageInfoUiModel = MessageInfoUiModel(),
 		var errorDetailUiModel: ErrorDetailUiModel = ErrorDetailUiModel(),
 		var emptyCartInfoUiModel: EmptyCartInfoUiModel = EmptyCartInfoUiModel(),
-		var usageSummariesUiModel: List<UsageSummariesUiModel> = emptyList()
+		var usageSummariesUiModel: List<UsageSummariesUiModel> = emptyList(),
+		var promoSpIds: List<PromoSpIdUiModel> = emptyList()
 ) : Parcelable
