@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="@dimen/hotel_5dp"
         android:layout_height="@dimen/hotel_5dp"
-        android:tint="@color/hotel_grey_300"
+        android:tint="@color/Unify_N100"
         app:srcCompat="@drawable/ic_dot_black" />
 
     <com.tokopedia.unifyprinciples.Typography

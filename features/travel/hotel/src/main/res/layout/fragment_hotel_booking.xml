@@ -71,7 +71,7 @@
                             android:paddingTop="@dimen/spacing_lvl1"
                             android:paddingRight="@dimen/hotel_6dp"
                             android:paddingBottom="@dimen/spacing_lvl1"
-                            android:textColor="@color/hotel_property_label_text_color"
+                            android:textColor="@color/Unify_N200"
                             app:typographyType="small"
                             app:typographyWeight="bold"
                             tools:text="Hotel" />
@@ -105,7 +105,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
                 android:id="@+id/booking_room_duration_info"
@@ -212,7 +212,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/layout_lvl1"
                         android:text="@string/hotel_booking_add_request_label"
-                        android:textColor="@color/hotel_green_250"
+                        android:textColor="@color/Unify_G400"
                         app:typographyType="body_2" />
 
                 </LinearLayout>
@@ -252,7 +252,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <LinearLayout
                 android:id="@+id/contact_detail_container"
@@ -329,7 +329,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/layout_lvl1"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <LinearLayout
                 android:id="@+id/booking_pay_now_promo_container"
@@ -348,7 +348,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl1"
-                    android:background="@color/hotel_divider_color_gray" />
+                    android:background="@color/Unify_N75" />
 
             </LinearLayout>
 
@@ -438,7 +438,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/hotel_1dp"
                     android:layout_marginBottom="@dimen/layout_lvl2"
-                    android:background="@color/hotel_divider_color_gray" />
+                    android:background="@color/Unify_N75" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/invoice_estimated_price_container"
@@ -495,7 +495,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/layout_lvl1"
-                    android:background="@color/hotel_divider_color_gray" />
+                    android:background="@color/Unify_N75" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_booking_important_notes"

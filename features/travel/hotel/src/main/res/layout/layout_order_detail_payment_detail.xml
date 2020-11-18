@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:background="@color/hotel_grey_300"
+            android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/hotel_1dp"
             android:layout_marginTop="@dimen/layout_lvl2"
-            android:background="@color/hotel_grey_300"
+            android:background="@color/Unify_N100"
             app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
         <androidx.recyclerview.widget.RecyclerView

@@ -3,5 +3,5 @@
     <solid android:color="@color/Unify_N0"/>
     <corners android:radius="@dimen/layout_lvl2" />
     <stroke android:width="@dimen/hotel_1dp"
-        android:color="@color/hotel_grey_300"/>
+        android:color="@color/Unify_N100"/>
 </shape>

@@ -20,7 +20,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="center"
-        android:background="#cc52565e">
+        android:background="@color/Unify_N500_68">
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"

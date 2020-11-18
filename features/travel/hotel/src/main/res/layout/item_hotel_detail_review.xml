@@ -44,7 +44,7 @@
                 android:paddingTop="@dimen/hotel_1dp"
                 android:paddingRight="@dimen/layout_lvl1"
                 android:paddingBottom="@dimen/hotel_1dp"
-                android:textColor="@color/blue_booking"
+                android:textColor="@color/Unify_B600"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 tools:text="8,6" />

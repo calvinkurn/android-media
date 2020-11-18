@@ -97,7 +97,7 @@
         android:paddingRight="@dimen/hotel_6dp"
         android:paddingBottom="@dimen/spacing_lvl1"
         android:text="@string/hotel_room_night_count"
-        android:textColor="@color/hotel_property_label_text_color"
+        android:textColor="@color/Unify_N200"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="10 Malam" />

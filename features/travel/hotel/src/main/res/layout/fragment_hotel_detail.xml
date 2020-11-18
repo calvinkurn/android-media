@@ -47,7 +47,7 @@
                             android:layout_height="@dimen/hotel_160dp"
                             android:scaleType="centerCrop"
                             app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@color/grey_no_image" />
+                            app:srcCompat="@color/Unify_N50" />
 
                         <LinearLayout
                             android:id="@+id/hotel_photo_layout"
@@ -63,7 +63,7 @@
                                 android:layout_height="@dimen/hotel_76dp"
                                 android:layout_weight="1"
                                 android:scaleType="centerCrop"
-                                app:srcCompat="@color/grey_no_image" />
+                                app:srcCompat="@color/Unify_N50" />
 
                             <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/iv_second_photo_preview"
@@ -73,7 +73,7 @@
                                 android:layout_marginRight="@dimen/spacing_lvl1"
                                 android:layout_weight="1"
                                 android:scaleType="centerCrop"
-                                app:srcCompat="@color/grey_no_image" />
+                                app:srcCompat="@color/Unify_N50" />
 
                             <RelativeLayout
                                 android:layout_width="@dimen/layout_lvl0"
@@ -85,7 +85,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="@dimen/hotel_76dp"
                                     android:scaleType="centerCrop"
-                                    app:srcCompat="@color/grey_no_image" />
+                                    app:srcCompat="@color/Unify_N50" />
 
                                 <androidx.appcompat.widget.AppCompatImageView
                                     android:id="@+id/iv_third_photo_preview_black_layer"
@@ -237,7 +237,7 @@
                                 android:paddingTop="@dimen/spacing_lvl1"
                                 android:paddingRight="@dimen/hotel_6dp"
                                 android:paddingBottom="@dimen/spacing_lvl1"
-                                android:textColor="@color/hotel_property_label_text_color"
+                                android:textColor="@color/Unify_N200"
                                 app:typographyType="body_3"
                                 app:typographyWeight="bold"
                                 tools:text="Hotel" />
@@ -295,7 +295,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="@dimen/hotel_1dp"
                             android:layout_marginTop="@dimen/spacing_lvl2"
-                            android:background="@color/hotel_grey_200" />
+                            android:background="@color/Unify_N50" />
 
                         <LinearLayout
                             android:id="@+id/container_hotel_review"
@@ -330,7 +330,7 @@
                                     android:layout_marginRight="@dimen/spacing_lvl2"
                                     android:layout_toEndOf="@+id/iv_booking_logo"
                                     android:layout_toRightOf="@+id/iv_booking_logo"
-                                    android:textColor="@color/blue_booking"
+                                    android:textColor="@color/Unify_B600"
                                     app:typographyType="heading_4"
                                     tools:text="8,6" />
 
@@ -639,7 +639,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spacing_lvl1"
-                android:background="@color/hotel_grey_200" />
+                android:background="@color/Unify_N50" />
 
             <com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWidget
                 android:id="@+id/widget_hotel_global_search"
@@ -649,7 +649,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_grey_200" />
+                android:background="@color/Unify_N50" />
 
             <LinearLayout
                 android:id="@+id/container_room_available"

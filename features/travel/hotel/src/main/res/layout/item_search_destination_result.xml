@@ -48,7 +48,7 @@
             android:paddingLeft="@dimen/hotel_6dp"
             android:paddingRight="@dimen/hotel_6dp"
             android:paddingBottom="@dimen/spacing_lvl1"
-            android:textColor="@color/hotel_property_label_text_color"
+            android:textColor="@color/Unify_N200"
             app:typographyType="small"
             app:typographyWeight="bold"
             android:background="@drawable/bg_search_destination_tag"

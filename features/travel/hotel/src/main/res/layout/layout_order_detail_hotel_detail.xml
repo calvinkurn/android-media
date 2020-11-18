@@ -36,7 +36,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Unify_N700_68"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
@@ -65,7 +65,7 @@
                     app:typographyType="body_3"
                     app:typographyWeight="bold"
                     tools:text="XYZABABA110"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Unify_N700_68"
                     tools:textSize="@dimen/sp_12"
                     tools:textStyle="bold" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -75,7 +75,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/hotel_grey_300"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
             <com.tokopedia.hotel.common.presentation.widget.RoomDurationView
@@ -87,7 +87,7 @@
                 android:id="@+id/seperator_3"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_grey_300"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toBottomOf="@+id/checkin_checkout_date" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,7 +150,7 @@
                     app:typographyType="body_2"
                     app:typographyWeight="bold"
                     tools:text="Kamar Deluxe Double"
-                    tools:textColor="@color/light_primary"
+                    tools:textColor="@color/Unify_N700_68"
                     tools:textSize="@dimen/sp_14"
                     tools:textStyle="bold" />
 
@@ -206,7 +206,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/call_hotel_layout"

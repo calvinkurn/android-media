@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/hotel_1dp"
                     android:layout_marginTop="@dimen/layout_lvl2"
-                    android:background="@color/hotel_grey_300"
+                    android:background="@color/Unify_N100"
                     app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -84,7 +84,7 @@
                 android:id="@+id/transaction_seperator_2"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
-                android:background="@color/hotel_grey_300"
+                android:background="@color/Unify_N100"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -145,6 +145,8 @@
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="25dp"
                 android:text="@string/hotel_order_detail_see_evoucher_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
                 android:textColor="@color/Unify_G500"
                 app:layout_constraintEnd_toStartOf="@+id/see_evoucher_next_icon"
                 app:layout_constraintStart_toStartOf="parent"

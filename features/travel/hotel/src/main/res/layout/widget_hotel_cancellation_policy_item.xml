@@ -9,7 +9,7 @@
         android:id="@+id/hotel_cancellation_refund_connecting_line"
         android:layout_width="@dimen/spacing_lvl1"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@color/ticket_divider"
+        android:background="@color/Unify_N75"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/hotel_cancellation_policy_item_icon_normal"
         app:layout_constraintLeft_toLeftOf="@+id/hotel_cancellation_policy_item_icon_normal"

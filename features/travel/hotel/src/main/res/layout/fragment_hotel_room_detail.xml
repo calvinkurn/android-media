@@ -162,7 +162,7 @@
                             android:gravity="end"
                             android:lineSpacingExtra="@dimen/sp_6"
                             android:text="@string/hotel_room_room_left_text"
-                            android:textColor="@color/pink_property"
+                            android:textColor="@color/Unify_R500"
                             android:visibility="gone"
                             app:typographyType="body_3"
                             app:layout_constraintBottom_toBottomOf="parent"
@@ -174,7 +174,7 @@
                         android:id="@+id/view"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/hotel_1dp"
-                        android:background="@color/hotel_divider_color_gray" />
+                        android:background="@color/Unify_N75" />
 
                     <LinearLayout
                         android:id="@+id/pay_at_hotel_container"
@@ -183,7 +183,7 @@
                         android:orientation="vertical"
                         android:visibility="gone"
                         android:padding="@dimen/layout_lvl2"
-                        android:background="@color/hotel_grey"
+                        android:background="@color/Unify_N100"
                         tools:visibility="visible">
 
                         <com.tokopedia.unifyprinciples.Typography
