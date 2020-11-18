@@ -21,7 +21,6 @@ import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.di.FeedDispatcherProvider
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.VoteViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.data.DataItem
 import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
@@ -45,7 +44,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.usecase.SendVoteUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -67,7 +65,6 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
                                         private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
                                         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
                                         private val likeKolPostUseCase: LikeKolPostUseCase,
-                                        private val sendVoteUseCase: SendVoteUseCase,
                                         private val atcUseCase: AddToCartUseCase,
                                         private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
                                         private val deletePostUseCase: DeletePostUseCase,
@@ -91,7 +88,6 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
     val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
     val followKolRecomResp = MutableLiveData<Result<FollowKolViewModel>>()
     val likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
-    val voteResp = MutableLiveData<Result<VoteViewModel>>()
     val deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
     val atcResp = MutableLiveData<Result<AtcViewModel>>()
     val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
@@ -269,17 +265,6 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
             deletePostResp.value = Success(results)
         }) {
             deletePostResp.value = Fail(it)
-        }
-    }
-
-    fun doVote(rowNumber: Int, pollId: String, optionId: String) {
-        launchCatchError(block = {
-            val results = withContext(baseDispatcher.io()) {
-                vote(optionId, pollId, rowNumber)
-            }
-            voteResp.value = Success(results)
-        }) {
-            voteResp.value = Fail(it)
         }
     }
 
@@ -521,20 +506,6 @@ class FeedViewModel @Inject constructor(private val baseDispatcher: FeedDispatch
                     data.isFollow = false
                 }
             }
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun vote(optionId: String, pollId: String, rowNumber: Int): VoteViewModel {
-        try {
-            val data = VoteViewModel()
-            data.optionId = optionId
-            data.rowNumber = rowNumber
-            val params = SendVoteUseCase.createParamsV1(pollId, optionId)
-            val response = sendVoteUseCase.createObservable(params).toBlocking().single()
-            data.voteModel = response
             return data
         } catch (e: Throwable) {
             throw e

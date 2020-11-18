@@ -131,7 +131,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import timber.log.Timber
 import java.util.*
@@ -431,14 +430,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                 }
-            })
-
-            voteResp.observe(lifecycleOwner, Observer {
-                when(it) {
-                    is Success -> onSuccessSendVote(it.data.rowNumber, it.data.optionId, it.data.voteModel)
-                    is Fail -> onErrorSendVote(it.throwable.localizedMessage)
-                }
-
             })
 
             atcResp.observe(lifecycleOwner, Observer {
@@ -1779,7 +1770,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onVoteOptionClicked(rowNumber: Int, pollId: String, optionId: String) {
-        feedViewModel.doVote(rowNumber, pollId, optionId)
+
     }
 
     private fun onGoToLink(link: String) {
