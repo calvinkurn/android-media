@@ -20,7 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
--keepclasseswithmembers class * { native <methods>; }
--keep class com.datavisor.vangogh.** { *; }
--keep class com.datavisor.zhengdao.** { *; }
+#-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+#-keepclasseswithmembers class * { native <methods>; }
+#-keep class com.datavisor.vangogh.** { *; }
+#-keep class com.datavisor.zhengdao.** { *; }
