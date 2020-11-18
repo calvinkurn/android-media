@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationChooseReasonActivity;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
@@ -38,6 +37,7 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,12 +56,12 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private static final int CHOOSE_REASON_REQUEST_CODE = 1111;
 
     private LinearLayout container;
-    private EditTextCompat tvChooseReason;
+    private AppCompatEditText tvChooseReason;
     private LinearLayout attachmentContainer;
     private AppCompatTextView attachmentDescription;
     private ProgressBar progressBar;
     private RecyclerView rvAttachments;
-    private AppCompatButton btnNext;
+    private UnifyButton btnNext;
 
     private List<FlightCancellationAttachmentModel> attachments;
     private List<FlightCancellationAttachmentModel> viewAttachments;

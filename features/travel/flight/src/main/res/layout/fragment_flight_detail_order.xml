@@ -36,6 +36,7 @@
                     android:id="@+id/icon_status"
                     android:layout_width="@dimen/layout_lvl5"
                     android:layout_height="@dimen/layout_lvl5"
+                    android:layout_marginEnd="@dimen/spacing_lvl2"
                     android:layout_marginRight="@dimen/spacing_lvl2"
                     app:srcCompat="@drawable/ic_flight_round" />
 
@@ -44,14 +45,19 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        style="@style/TextView.Micro.BlackDisabled"
-                        android:layout_toRightOf="@id/icon_status"
-                        android:text="@string/flight_label_status" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_label_status"
+                        android:textColor="@color/Unify_N700_44"
+                        app:typographyType="body_3" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/status_ticket"
-                        style="@style/TextView.Micro"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="body_3"
                         tools:text="Tiket dibatalkan" />
                 </LinearLayout>
             </LinearLayout>
@@ -60,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
-                android:background="@drawable/bg_line_separator" />
+                android:background="@drawable/flight_bg_line_seperator" />
 
             <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/cancellation_warning"
@@ -84,17 +90,22 @@
                 android:paddingBottom="@dimen/spacing_lvl1"
                 android:weightSum="2">
 
-                <TextView
-                    style="@style/TextView.Small.BlackSecondary"
+                <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="@string/flight_label_transaction_date" />
+                    android:text="@string/flight_label_transaction_date"
+                    android:textColor="@color/Unify_N700_68"
+                    app:typographyType="body_2" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/transaction_date"
-                    style="@style/TextView.Small.Bold"
                     android:layout_width="@dimen/layout_lvl0"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold"
                     tools:text="1 Sep 2017, 05:00 WIB" />
             </LinearLayout>
 
@@ -116,18 +127,22 @@
                     android:paddingBottom="@dimen/spacing_lvl1"
                     android:weightSum="2">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_description_label"
-                        style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="@dimen/layout_lvl0"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyType="body_2"
                         tools:text="Rekening Tujuan" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_description"
-                        style="@style/TextView.Small"
                         android:layout_width="@dimen/layout_lvl0"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="body_2"
                         tools:text="1 Sep 2017, 05:00 WIB" />
                 </LinearLayout>
 
@@ -142,19 +157,23 @@
                     android:paddingBottom="@dimen/spacing_lvl1"
                     android:weightSum="2">
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_cost_label"
-                        style="@style/TextView.Small.BlackSecondary"
                         android:layout_width="@dimen/layout_lvl0"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Jumlah Pembayaran" />
+                        android:text="Jumlah Pembayaran"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyType="body_2" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_cost"
-                        style="@style/TextView.Small.Bold"
                         android:layout_width="@dimen/layout_lvl0"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textColor="@color/Unify_Y500"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
                         tools:text="Rp100.000" />
                 </LinearLayout>
 
@@ -169,17 +188,22 @@
                     android:paddingBottom="@dimen/spacing_lvl1"
                     android:weightSum="2">
 
-                    <TextView
-                        style="@style/TextView.Small.BlackSecondary"
+                    <com.tokopedia.unifyprinciples.Typography
                         android:layout_width="@dimen/layout_lvl0"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="@string/flight_order_detail_due_date_label" />
+                        android:text="@string/flight_order_detail_due_date_label"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyType="body_2" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_payment_due_date"
-                        style="@style/TextView.Small.Bold"
                         android:layout_width="@dimen/layout_lvl0"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="body_2"
+                        app:typographyWeight="bold"
                         tools:text="1 Nov 2018" />
                 </LinearLayout>
             </LinearLayout>
@@ -190,7 +214,7 @@
                 android:layout_height="0.5dp"
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
-                android:background="@drawable/bg_line_separator" />
+                android:background="@drawable/flight_bg_line_seperator" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -207,19 +231,25 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/TextView.Small.BlackSecondary"
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/spacing_lvl2"
                         android:layout_marginRight="@dimen/spacing_lvl2"
-                        android:text="@string/flight_label_order_id_detail" />
+                        android:text="@string/flight_label_order_id_detail"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyType="body_2" />
 
-                    <TextView
+                    <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/order_id_detail"
-                        style="@style/TextView.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_marginRight="@dimen/spacing_lvl2"
+                        android:textColor="@color/Unify_N700_96"
+                        app:typographyType="body_2"
                         tools:text="323088926194" />
 
-                    <ImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/copy_order_id"
                         android:layout_width="@dimen/layout_lvl2"
                         android:layout_height="@dimen/layout_lvl2"
@@ -236,9 +266,12 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        style="@style/TextView.Micro.Green"
-                        android:text="@string/flight_label_show_invoice" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_label_show_invoice"
+                        android:textColor="@color/Unify_G500"
+                        app:typographyType="body_3" />
 
                 </LinearLayout>
             </RelativeLayout>
@@ -260,15 +293,16 @@
                 android:layout_height="wrap_content"
                 app:srcCompat="@drawable/ic_product_travel_flight_normal_eticket" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/spacing_lvl2"
                 android:layout_marginLeft="@dimen/spacing_lvl2"
                 android:text="Lihat E-Tiket"
-                android:textColor="@color/Unify_G400"
-                app:fontSize="small"
-                app:weight="medium" />
+                android:textColor="@color/Unify_G500"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
 
         </LinearLayout>
 
@@ -300,17 +334,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/flight_dp_20"
+                android:paddingLeft="@dimen/flight_dp_10"
                 android:paddingRight="@dimen/flight_dp_20">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/title_expendable_passenger"
                     style="@style/style_expandable_flight_detail_order_title"
                     android:layout_width="@dimen/layout_lvl0"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:padding="@dimen/flight_dp_10"
                     android:text="@string/flight_label_passenger_data"
-                    android:textSize="18sp" />
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="heading_3" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/image_expendable_passenger"
@@ -318,7 +354,6 @@
                     android:layout_height="@dimen/flight_dp_20"
                     android:layout_gravity="center_vertical"
                     app:srcCompat="@drawable/ic_arrow_up" />
-
             </LinearLayout>
 
             <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
@@ -340,13 +375,10 @@
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/layout_lvl2"
-            android:paddingRight="@dimen/layout_lvl2"
             android:visibility="gone"
             tools:visibility="visible">
 
-            <com.tokopedia.design.component.TextViewCompat
-                style="@style/TextView.TitleBig.Bold"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -356,13 +388,15 @@
                 android:paddingRight="@dimen/flight_dp_20"
                 android:paddingBottom="@dimen/flight_dp_10"
                 android:text="@string/flight_order_detail_cancellation_label"
-                android:textColor="@color/Unify_G400"
-                android:textSize="@dimen/fontSize_lvl5" />
+                android:textColor="@color/Unify_G500"
+                android:textSize="@dimen/fontSize_lvl5"
+                app:typographyType="heading_3" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/layout_lvl1"
                 android:layout_height="@dimen/layout_lvl1"
                 android:layout_gravity="center"
+                android:layout_marginRight="@dimen/flight_dp_20"
                 app:srcCompat="@drawable/flight_shape_red_circle" />
 
         </LinearLayout>
@@ -385,9 +419,9 @@
             android:id="@+id/cross_sell_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            tools:visibility="visible"/>
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -402,13 +436,16 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/flight_dp_20">
 
-                <TextView
-                    style="@style/TextView.TitleBig.Bold"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/container_download_invoice"
                     android:text="@string/flight_label_detail_price"
-                    android:textSize="18sp" />
+                    android:textColor="@color/Unify_N700_96"
+                    android:textSize="18sp"
+                    app:typographyType="heading_3" />
 
                 <LinearLayout
                     android:id="@+id/container_download_invoice"
@@ -427,9 +464,12 @@
                         android:layout_marginRight="@dimen/spacing_lvl2"
                         app:srcCompat="@drawable/flight_ic_download_eticket" />
 
-                    <TextView
-                        style="@style/TextView.Micro.Green"
-                        android:text="@string/flight_label_invoice" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/flight_label_invoice"
+                        android:textColor="@color/Unify_G500"
+                        app:typographyType="body_3" />
 
                 </LinearLayout>
             </RelativeLayout>
@@ -447,18 +487,25 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/flight_dp_20">
 
-                <TextView
-                    style="@style/TextView.Small.Bold"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/total_price"
-                    android:text="@string/flight_label_price_total" />
+                    android:text="@string/flight_label_price_total"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_2"
+                    app:typographyWeight="bold" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/total_price"
-                    style="@style/TextView.TitleBig.Bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="heading_2"
                     tools:text="Rp. 500.0000" />
             </RelativeLayout>
         </LinearLayout>
@@ -477,32 +524,57 @@
                 android:orientation="horizontal"
                 android:paddingBottom="@dimen/flight_dp_10">
 
-                <TextView
-                    style="@style/TextView.Micro"
+                <com.tokopedia.unifyprinciples.Typography
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginRight="@dimen/spacing_lvl2"
-                    android:text="Untuk bantuan silakan klik" />
+                    android:text="Untuk bantuan silakan klik"
+                    android:textColor="@color/Unify_N700_96"
+                    app:typographyType="body_3" />
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/help"
-                    style="@style/TextView.Micro.Green"
-                    android:text="@string/di_sini" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/di_sini"
+                    android:textColor="@color/Unify_G500"
+                    app:typographyType="body_3" />
             </LinearLayout>
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/button_cancel"
-                style="@style/Button.Submit.White.Stroke"
-                android:text="@string/flight_label_cancel_ticket" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                android:layout_marginVertical="@dimen/spacing_lvl3"
+                android:text="@string/flight_label_cancel_ticket"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
 
-            <Button
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/button_reschedule"
-                style="@style/Button.Submit.White.Stroke"
-                android:text="@string/flight_label_reschedule_ticket" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                android:layout_marginVertical="@dimen/spacing_lvl3"
+                android:text="@string/flight_label_reschedule_ticket"
+                app:unifyButtonSize="large"
 
-            <Button
+                app:unifyButtonType="alternate"
+                app:unifyButtonVariant="ghost" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/button_reorder"
-                style="@style/Button.Submit.Orange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/spacing_lvl4"
+                android:layout_marginVertical="@dimen/spacing_lvl3"
                 android:text="@string/flight_label_reorder"
                 android:visibility="gone"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="transaction"
+                app:unifyButtonVariant="filled"
                 tools:visibility="visible" />
         </LinearLayout>
 

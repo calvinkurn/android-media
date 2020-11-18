@@ -7,12 +7,14 @@
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true">
 
-    <com.tokopedia.design.text.SearchInputView
+    <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/search_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_scrollFlags="scroll|snap|enterAlways"
-        app:siv_search_hint="@string/flight_label_search_hint_airport" />
+        app:search_bar_show_icon="false"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:search_bar_placeholder="@string/flight_label_search_hint_airport" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

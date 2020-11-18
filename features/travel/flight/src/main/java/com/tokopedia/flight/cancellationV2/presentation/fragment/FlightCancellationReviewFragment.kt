@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet
@@ -256,11 +256,11 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
     }
 
     private fun showSuccessDialog(resId: Int) {
-        val dialog = Dialog(activity, Dialog.Type.RETORIC)
+        val dialog = DialogUnify(requireContext(), DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.flight_cancellation_review_dialog_success_title))
-        dialog.setDesc(Html.fromHtml(getString(resId)))
-        dialog.setBtnOk("OK")
-        dialog.setOnOkClickListener {
+        dialog.setDescription(Html.fromHtml(getString(resId)))
+        dialog.setPrimaryCTAText("OK")
+        dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             closeCancellationReviewPage()
         }

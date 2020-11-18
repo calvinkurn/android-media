@@ -23,15 +23,21 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="heading_2"
+            android:textColor="@color/Unify_N700_96"
             android:id="@+id/departure_airport_code"
-            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
             tools:text="CGK" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
             android:id="@+id/departure_airport_name"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="center"
             tools:text="Jakarta"
             android:singleLine="true"
@@ -53,14 +59,20 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/arrival_airport_code"
-            style="@style/TextView.TitleBig.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:typographyType="heading_2"
+            android:textColor="@color/Unify_N700_96"
             tools:text="DPS" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
             android:id="@+id/arrival_airport_name"
-            style="@style/TextView.Micro.BlackSecondary"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:gravity="center"
             tools:text="Denpasar"
             android:singleLine="true"
