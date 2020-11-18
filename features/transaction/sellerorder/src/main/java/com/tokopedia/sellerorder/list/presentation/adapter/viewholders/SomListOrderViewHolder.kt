@@ -4,13 +4,9 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
 import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -133,37 +129,34 @@ class SomListOrderViewHolder(
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
             }
-            tvSomListProductName.apply {
-                element.orderProduct.firstOrNull()?.let { product ->
-                    val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
-                    val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
-                    text = composeProductName(productName, productVariant)
+            element.orderProduct.firstOrNull()?.let { product ->
+                val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
+                val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
+
+                tvSomListProductName.apply {
+                    if (productVariant.isBlank()) {
+                        maxLines = 2
+                        isSingleLine = false
+                        if (element.orderProduct.size > 1) {
+                            setPadding(0, 0, 0, 0)
+                        } else {
+                            setPadding(0, 0, 0, 1.5f.dpToPx().toInt())
+                        }
+                    } else {
+                        maxLines = 1
+                        isSingleLine = true
+                    }
+                    text = productName
                     val layoutParams = layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.verticalBias = if (element.orderProduct.size == 1) {
                         0.5f
                     } else 0f
                     this.layoutParams = layoutParams
-                    viewTreeObserver.addOnPreDrawListener {
-                        val lineCount = layout.lineCount
-                        for (i in 0 until lineCount) {
-                            val ellipsisCount = layout.getEllipsisCount(i)
-                            if (ellipsisCount > 0) {
-                                if (text.contains(composeProductName(productName, productVariant))) {
-                                    val start = productName.length - ellipsisCount
-                                    val end = productName.length
-                                    if (start in 0..end) {
-                                        val croppedProductName = "${productName.removeRange(start, end).trim()}..."
-                                        text = composeProductName(croppedProductName, productVariant)
-                                        return@addOnPreDrawListener false
-                                    }
-                                }
-                            }
-                        }
-
-                        viewTreeObserver.removeOnPreDrawListener(this)
-                        true
-                    }
                     return@apply
+                }
+                tvSomListProductVariant.apply {
+                    text = "($productVariant)"
+                    showWithCondition(productVariant.isNotBlank())
                 }
             }
             tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
@@ -276,18 +269,6 @@ class SomListOrderViewHolder(
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
             }
         }
-    }
-
-    private fun composeProductName(productName: String, variant: String): SpannableString {
-        val rawText = "$productName${" ($variant)".takeIf { variant.isNotBlank() }.orEmpty()}"
-        if (variant.isBlank()) return SpannableString(rawText)
-        return itemView.context?.run {
-            val variantColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            val foregroundColorSpan = ForegroundColorSpan(variantColor)
-            SpannableString(rawText).apply {
-                setSpan(foregroundColorSpan, rawText.lastIndexOf('('), rawText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        } ?: SpannableString(rawText)
     }
 
     interface SomListOrderItemListener {
