@@ -990,18 +990,6 @@ class ShopPageFragment :
         }
     }
 
-    private fun getSelectedTabPosition(): Int {
-        return if (isShowHomeTab()) {
-            if (isShowNewHomeTab()) {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            }
-        } else {
-            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-        }
-    }
-
     private fun isShowHomeTab(): Boolean {
         return (shopPageHeaderDataModel?.shopHomeType.orEmpty() != ShopHomeType.NONE)
     }
