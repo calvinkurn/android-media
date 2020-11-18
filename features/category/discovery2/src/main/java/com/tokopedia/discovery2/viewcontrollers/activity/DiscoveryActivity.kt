@@ -18,6 +18,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import javax.inject.Inject
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
@@ -56,6 +57,7 @@ class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initDaggerInject()
+        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
     }

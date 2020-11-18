@@ -282,7 +282,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
             ivSearch.show()
             ivSearch.setOnClickListener {
                 getDiscoveryAnalytics().trackSearchClick()
-                RouteManager.route(context, handleSearchClick(data))
+                handleSearchClick(data)
             }
             typographyHeader.text = data?.name ?: getString(R.string.tokopedia)
         } else {
@@ -348,18 +348,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         navToolbar.setupSearchbar(
                 hints = listOf(HintData(placeholder = data?.searchTitle
                         ?: getString(R.string.default_search_title))),
-                applink = handleSearchClick(data),
                 searchbarClickCallback = {
                     handleGlobalNavClick(Constant.TOP_NAV_BUTTON.SEARCH_BAR)
+                    handleSearchClick(data)
                 }
         )
     }
 
-    private fun handleSearchClick(data: PageInfo?): String {
-        return if (data?.searchApplink?.isNotEmpty() == true) {
-            data.searchApplink
+    private fun handleSearchClick(data: PageInfo?) {
+        if (data?.searchApplink?.isNotEmpty() == true) {
+            RouteManager.route(context, data.searchApplink)
         } else {
-            Utils.SEARCH_DEEPLINK
+            RouteManager.route(context, Utils.SEARCH_DEEPLINK)
         }
     }
 
