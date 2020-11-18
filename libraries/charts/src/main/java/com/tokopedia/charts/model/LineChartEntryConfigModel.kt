@@ -13,5 +13,6 @@ data class LineChartEntryConfigModel(
         val lineColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_COLOR),
         val fillDrawable: Drawable? = null,
         val fillColor: Int = Color.parseColor(ChartColor.DEFAULT_LINE_CHART_FILL_COLOR),
-        val drawFillEnabled: Boolean = true
+        val drawFillEnabled: Boolean = true,
+        val isLineDashed: Boolean = false
 )

@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull
  */
 open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull context: Context, attrs: AttributeSet? = null,
                                                                        defStyleAttr: Int = 0)
-    : FrameLayout(context, attrs, defStyleAttr) {
+    : FrameLayout(context, attrs, defStyleAttr), TopupBillsWidgetInterface {
 
     protected val recyclerView: RecyclerView
     protected val titleWidget: TextView
@@ -82,7 +82,7 @@ open class TopupBillsRecentTransactionWidget @JvmOverloads constructor(@NotNull 
         }
     }
 
-    fun toggleTitle(value: Boolean) {
+    override fun toggleTitle(value: Boolean) {
         if (value) titleWidget.show() else titleWidget.hide()
     }
 }

@@ -34,6 +34,7 @@ dependencies {
     implementation project(rootProject.ext.features.promoCheckoutCommon)
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.applink)
@@ -50,6 +51,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
+    implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex

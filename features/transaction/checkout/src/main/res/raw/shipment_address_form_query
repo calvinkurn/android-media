@@ -400,6 +400,13 @@ query shipment_address_form($params: ShipmentAddressFormParams) {
                 detail
                 message
               }
+              promo_sp_ids {
+                unique_id
+                mvc_shipping_benefits {
+                  benefit_amount
+                  sp_id
+                }
+              }
             }
             benefit_summary_info {
               final_benefit_amount_str
