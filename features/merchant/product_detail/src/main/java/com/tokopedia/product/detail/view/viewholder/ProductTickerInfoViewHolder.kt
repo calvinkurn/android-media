@@ -46,13 +46,13 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     private fun renderTicker(element: ProductTickerInfoDataModel) {
         showComponent()
         if (element.statusInfo != null && element.statusInfo?.shopStatus != 1 && element.statusInfo?.isIdle == false) {
-            setupShopInfoTicker(element.statusInfo, element.closedInfo)
+            setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
-            setupShopInfoTicker(element.statusInfo, element.closedInfo)
+            setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
         } else if (element.isOos()) {
-            renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis))
+            renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis), element.impressHolder)
         } else if (element.isProductInactive()) {
-            renderOutOfStockTicker(getStringRes(R.string.ticker_product_inactive_description), getStringRes(R.string.ticker_product_inactive_title))
+            renderOutOfStockTicker(getStringRes(R.string.ticker_product_inactive_description), getStringRes(R.string.ticker_product_inactive_title), element.impressHolder)
         } else if (element.generalTickerInfo?.isNotEmpty() == true) {
             setupGeneralTicker(element.generalTickerInfo ?: listOf())
         } else {
@@ -60,32 +60,32 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         }
     }
 
-    private fun setupShopInfoTicker(statusInfo: ShopInfo.StatusInfo?, closedInfo: ShopInfo.ClosedInfo?) = with(view) {
+    private fun setupShopInfoTicker(statusInfo: ShopInfo.StatusInfo?, closedInfo: ShopInfo.ClosedInfo?, impressHolder: ImpressHolder) = with(view) {
         shop_ticker_info.show()
         when (statusInfo?.shopStatus) {
             ProductShopStatusTypeDef.OPEN, ProductShopStatusTypeDef.INACTIVE -> {
                 val statusMessage = getStringRes(R.string.ticker_desc_shop_idle)
                 val statusTitle = getStringRes(R.string.ticker_title_shop_idle)
                 renderShopTicker(statusTitle, statusMessage, null)
-                addImpressionListener(statusMessage, statusTitle)
+                addImpressionListener(statusMessage, statusTitle, impressHolder)
             }
             ProductShopStatusTypeDef.CLOSED -> {
                 val openDate = closedInfo?.closeDetail?.openDateUnix.toDateId("EEEE, dd MMM yyyy")
                 val statusMessage = view.context.getString(R.string.ticker_desc_shop_close, openDate)
                 val statusTitle = getStringRes(R.string.ticker_title_shop_close)
-                addImpressionListener(statusMessage, statusTitle)
+                addImpressionListener(statusMessage, statusTitle, impressHolder)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
             ProductShopStatusTypeDef.MODERATED_PERMANENTLY, ProductShopStatusTypeDef.MODERATED -> {
                 val statusMessage = if (listener.isOwner()) getStringRes(R.string.ticker_desc_shop_moderated_seller) else getStringRes(R.string.ticker_desc_shop_moderated_buyer)
                 val statusTitle = if (listener.isOwner()) getStringRes(R.string.ticker_title_shop_moderated_seller) else getStringRes(R.string.ticker_title_shop_moderated_buyer)
-                addImpressionListener(statusMessage, statusTitle)
+                addImpressionListener(statusMessage, statusTitle, impressHolder)
                 renderShopTicker(statusTitle, statusMessage, listener::onTickerShopClicked)
             }
             ProductShopStatusTypeDef.INCUBATED -> {
                 val processedMessage = getStringRes(R.string.ticker_desc_shop_incubated)
                 val titleMessage = getStringRes(R.string.ticker_title_shop_incubated)
-                addImpressionListener(processedMessage, titleMessage)
+                addImpressionListener(processedMessage, titleMessage, impressHolder)
                 renderShopTicker(titleMessage, processedMessage, null)
             }
             else -> {
@@ -95,7 +95,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         }
     }
 
-    private fun renderOutOfStockTicker(tickerDescription: String, tickerTitle: String) {
+    private fun renderOutOfStockTicker(tickerDescription: String, tickerTitle: String, impressHolder: ImpressHolder) {
         itemView.shop_ticker_info.apply {
             setHtmlDescription(tickerDescription)
             this.tickerTitle = tickerTitle
@@ -106,7 +106,7 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
 
                 override fun onDismiss() {}
             })
-            addImpressionListener(tickerDescription, tickerTitle)
+            addImpressionListener(tickerDescription, tickerTitle, impressHolder)
             show()
         }
     }
@@ -123,9 +123,9 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
         })
     }
 
-    private fun addImpressionListener(tickerDescription: String, tickerTitle: String) {
+    private fun addImpressionListener(tickerDescription: String, tickerTitle: String, impressHolder: ImpressHolder) {
         itemView.shop_ticker_info.apply {
-            addOnImpressionListener(ImpressHolder()) {
+            addOnImpressionListener(impressHolder) {
                 DynamicProductDetailTracking.Impression.eventTickerImpression(tickerType, tickerTitle, tickerDescription)
             }
         }
