@@ -112,6 +112,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private val lblOnboardingHeader by lazy { view?.findViewById<Typography>(R.id.lbl_occ_onboarding_header) }
     private val ivOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_occ_onboarding) }
 
+    private val newOnboardingCard by lazy { view?.findViewById<View>(R.id.layout_new_occ_onboarding) }
+    private val ivNewOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_new_occ_onboarding) }
+
     private val tvHeader2 by lazy { view?.findViewById<Typography>(R.id.tv_header_2) }
     private val tvHeader3 by lazy { view?.findViewById<Typography>(R.id.tv_header_3) }
 
@@ -508,6 +511,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
             tvHeader2?.visible()
             tvHeader3?.gone()
+
+            if (viewModel.isNewFlow) {
+                onboardingCard?.gone()
+                newOnboardingCard?.visible()
+                ivNewOnboarding?.setImageUrl(BELI_LANGSUNG_CART_IMAGE)
+            }
         } else {
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header_intro)
             val spannableString = SpannableString("${preference.onboardingHeaderMessage} Info")
@@ -524,7 +533,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tickerPreferenceInfo?.setHtmlDescription(preference.message)
         tickerPreferenceInfo?.visibility = if (preference.message.isNotBlank()) View.VISIBLE else View.GONE
 
-        if (orderPreference.onboarding.isShowOnboardingTicker) {
+        if (!viewModel.isNewFlow && orderPreference.onboarding.isShowOnboardingTicker) {
             lblOnboardingHeader?.text = orderPreference.onboarding.onboardingTicker.title
             lblOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
             ivOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)

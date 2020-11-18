@@ -45,6 +45,15 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ticker_osp" />
 
+                <include
+                    android:id="@+id/layout_new_occ_onboarding"
+                    layout="@layout/layout_occ_onboarding_new"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_occ_onboarding" />
+
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_header"
                     android:layout_width="wrap_content"
@@ -54,7 +63,7 @@
                     android:text="@string/lbl_osp_header"
                     android:textColor="@color/Neutral_N700_96"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/layout_occ_onboarding"
+                    app:layout_constraintTop_toBottomOf="@+id/layout_new_occ_onboarding"
                     app:typographyType="heading_4"
                     app:typographyWeight="bold" />
 

@@ -76,7 +76,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private var hasSentViewOspEe = false
 
-    private var isNewFlow = true
+    var isNewFlow = true
 
     fun getCurrentProfileId(): Int {
         return _orderPreference.preference.profileId
