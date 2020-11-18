@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/main_view"
@@ -14,7 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/Neutral_N0"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
             android:padding="@dimen/spacing_lvl4">
 
@@ -25,7 +25,7 @@
                 android:paddingBottom="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:text="@string/are_you_sure_change_phone_number"
-                android:textColor="@color/changephonenumber_black_70" />
+                android:textColor="@color/Unify_N700_68" />
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -49,7 +49,7 @@
                         android:layout_marginBottom="@dimen/changephonenumber_dp_9"
                         android:lineSpacingExtra="@dimen/changephonenumber_sp_9"
                         android:text="@string/you_have"
-                        android:textColor="@color/changephonenumber_black_38"
+                        android:textColor="@color/Unify_N700_32"
                         app:typographyType="body_3" />
 
                     <LinearLayout
@@ -65,7 +65,7 @@
                             android:drawablePadding="@dimen/changephonenumber_dp_9"
                             android:gravity="center_vertical"
                             android:text="@string/tokopedia_balance"
-                            android:textColor="@color/changephonenumber_black_70"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -73,7 +73,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="end|center_vertical"
-                            android:textColor="@color/changephonenumber_black_70"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="heading_6"
                             tools:text="Rp 2.430.034,123" />
                     </LinearLayout>
@@ -91,7 +91,7 @@
                             android:drawablePadding="@dimen/changephonenumber_dp_9"
                             android:gravity="center_vertical"
                             android:text="@string/tokocash"
-                            android:textColor="@color/changephonenumber_black_70"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="body_3" />
 
                         <com.tokopedia.unifyprinciples.Typography
@@ -99,7 +99,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="end|center_vertical"
-                            android:textColor="@color/changephonenumber_black_70"
+                            android:textColor="@color/Unify_N700_68"
                             app:typographyType="heading_6"
                             tools:text="Rp 100.000" />
                     </LinearLayout>
@@ -113,7 +113,7 @@
                 android:lineSpacingExtra="@dimen/changephonenumber_sp_7"
                 android:paddingTop="@dimen/spacing_lvl3"
                 android:text="@string/if_you_change_phone_number_then"
-                android:textColor="@color/changephonenumber_black_70"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_2" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -132,7 +132,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="@string/change_phone_number"
-                android:textColor="@color/Neutral_N0"
+                android:textColor="@color/Unify_N0"
                 android:textSize="@dimen/changephonenumber_sp_13"
                 android:textStyle="bold" />
 
@@ -145,7 +145,7 @@
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center"
                 android:text="@string/withdraw_tokopedia_balance"
-                android:textColor="@color/changephonenumber_black_54"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="@dimen/changephonenumber_sp_13"
                 android:textStyle="bold" />
         </LinearLayout>
