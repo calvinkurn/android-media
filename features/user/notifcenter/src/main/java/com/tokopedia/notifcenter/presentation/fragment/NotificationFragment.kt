@@ -309,6 +309,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
     }
 
+    override fun markNotificationAsRead(element: NotificationUiModel) {
+        viewModel.markNotificationAsRead(containerListener?.role, element)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         recommendationLifeCycleAware?.onActivityResult(requestCode, resultCode, data)

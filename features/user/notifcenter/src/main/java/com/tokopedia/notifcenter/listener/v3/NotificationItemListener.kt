@@ -11,4 +11,5 @@ interface NotificationItemListener {
     fun showProductBottomSheet(element: NotificationUiModel)
     fun buyProduct(product: ProductData)
     fun addProductToCart(product: ProductData)
+    fun markNotificationAsRead(element: NotificationUiModel)
 }

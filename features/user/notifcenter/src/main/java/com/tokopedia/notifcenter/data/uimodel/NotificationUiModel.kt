@@ -33,7 +33,7 @@ data class NotificationUiModel(
         @SerializedName("image")
         val imageMetaData: List<ImageMetaData> = listOf(),
         @SerializedName("read_status")
-        val readStatus: Int = 0,
+        var readStatus: Int = 0,
         @SerializedName("section_icon")
         val sectionIcon: String = "",
         @SerializedName("section_id")
@@ -85,12 +85,8 @@ data class NotificationUiModel(
         return typeFactory.type(this)
     }
 
-    /**
-     * 1 == new notif
-     * 2 == clicked
-     */
     fun isRead(): Boolean {
-        return readStatus == 2
+        return readStatus == STATUS_READ
     }
 
     fun isTypeDefault(): Boolean {
@@ -117,7 +113,14 @@ data class NotificationUiModel(
         return sectionId == "promotion"
     }
 
+    fun markNotificationAsRead() {
+        readStatus = STATUS_READ
+    }
+
     companion object {
+        const val STATUS_UNREAD = 1
+        const val STATUS_READ = 2
+
         const val TYPE_DEFAULT = 0
         const val TYPE_BANNER = 4
         const val TYPE_BUY = 5

@@ -106,12 +106,21 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindClick(element: NotificationUiModel) {
         container?.setOnClickListener {
+            if (!element.isRead()) {
+                markNotificationAsRead(element)
+            }
             if (element.isLongerContent) {
                 listener?.showLongerContent(element)
             } else {
                 RouteManager.route(itemView.context, element.dataNotification.appLink)
             }
         }
+    }
+
+    private fun markNotificationAsRead(element: NotificationUiModel) {
+        element.markNotificationAsRead()
+        bindContainer(element)
+        listener?.markNotificationAsRead(element)
     }
 
     private fun getStringResource(stringId: Int): String {

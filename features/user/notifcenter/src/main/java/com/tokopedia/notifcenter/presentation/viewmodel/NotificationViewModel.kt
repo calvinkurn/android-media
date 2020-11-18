@@ -11,8 +11,10 @@ import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResp
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
+import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
@@ -42,6 +44,7 @@ interface INotificationViewModel {
 class NotificationViewModel @Inject constructor(
         private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
         private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
+        private val markAsReadUseCase: MarkNotificationAsReadUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addWishListUseCase: AddWishListUseCase,
@@ -118,6 +121,20 @@ class NotificationViewModel @Inject constructor(
                 {
                     _filterList.postValue(Resource.error(it, null))
                 }
+        )
+    }
+
+    fun markNotificationAsRead(
+            @RoleType
+            role: Int?,
+            element: NotificationUiModel
+    ) {
+        if (role == null) return
+        launchCatchError(dispatcher.io(),
+                {
+                    markAsReadUseCase.markAsRead(role, element.notifId).collect { }
+                },
+                { }
         )
     }
 
