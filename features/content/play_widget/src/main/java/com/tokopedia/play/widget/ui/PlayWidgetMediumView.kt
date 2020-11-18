@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.SnapHelper
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -106,7 +107,8 @@ class PlayWidgetMediumView : ConstraintLayout, IPlayWidgetView {
             )
             if (mWidgetListener != null
                     && (item.channelType == PlayWidgetChannelType.Live
-                            || item.channelType ==  PlayWidgetChannelType.Vod)) {
+                            || item.channelType == PlayWidgetChannelType.Vod
+                            || GlobalConfig.isSellerApp())) {
                 mWidgetListener?.onWidgetOpenAppLink(view, item.appLink)
             } else {
                 RouteManager.route(context, item.appLink)
