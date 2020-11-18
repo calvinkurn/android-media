@@ -44,16 +44,20 @@ class ProductTickerInfoViewHolder(private val view: View, private val listener: 
     }
 
     private fun renderTicker(element: ProductTickerInfoDataModel) {
-        showComponent()
         if (element.statusInfo != null && element.statusInfo?.shopStatus != 1 && element.statusInfo?.isIdle == false) {
+            showComponent()
             setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
         } else if (element.statusInfo != null && element.statusInfo?.isIdle == true) {
+            showComponent()
             setupShopInfoTicker(element.statusInfo, element.closedInfo, element.impressHolder)
         } else if (element.isOos()) {
+            showComponent()
             renderOutOfStockTicker(getStringRes(R.string.ticker_out_of_stock_description), getStringRes(R.string.stock_habis), element.impressHolder)
         } else if (element.isProductInactive()) {
+            showComponent()
             renderOutOfStockTicker(getStringRes(R.string.ticker_product_inactive_description), getStringRes(R.string.ticker_product_inactive_title), element.impressHolder)
         } else if (element.generalTickerInfo?.isNotEmpty() == true) {
+            showComponent()
             setupGeneralTicker(element.generalTickerInfo ?: listOf())
         } else {
             hideComponent()
