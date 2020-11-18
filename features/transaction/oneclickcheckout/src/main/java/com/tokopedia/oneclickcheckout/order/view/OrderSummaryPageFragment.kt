@@ -748,6 +748,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             viewModel.chooseLogisticPromo(logisticPromoUiModel)
         }
 
+        override fun reloadShipping() {
+            viewModel.getRates()
+        }
+
         override fun chooseAddress() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, viewModel.getAddressCornerUseCase.get())

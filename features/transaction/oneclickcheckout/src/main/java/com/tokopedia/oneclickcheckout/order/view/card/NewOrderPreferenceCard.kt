@@ -6,7 +6,10 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StrikethroughSpan
 import android.text.style.StyleSpan
 import android.view.View
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -50,7 +53,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvAddressDetail by lazy { view.findViewById<Typography>(R.id.tv_new_address_detail) }
     private val btnChangeAddress by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_address) }
 
-    private val ivPayment by lazy { view.findViewById<ImageUnify>(R.id.iv_new_payment) }
+    private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_new_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_payment_detail) }
     private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_payment_error_message) }
@@ -139,9 +142,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 btnChangeDuration?.visible()
                 tvShippingCourier?.text = "${shipping.shipperName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()})"
                 tvShippingCourier?.visible()
-                btnChangeCourier?.setOnClickListener {
-                    listener.chooseCourier()
-                }
                 btnChangeCourier?.visible()
                 tvShippingErrorMessage?.gone()
                 btnReloadShipping?.gone()
@@ -166,8 +166,14 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvShippingDiscountPrice?.text = span
                         tvShippingDiscountPrice?.visible()
                     }
+                    btnChangeCourier?.setOnClickListener {
+                        listener.chooseDuration(false)
+                    }
                 } else {
                     tvShippingDiscountPrice?.gone()
+                    btnChangeCourier?.setOnClickListener {
+                        listener.chooseCourier()
+                    }
                 }
             } else {
                 tvShippingDuration?.text = "Pengiriman"
@@ -178,7 +184,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 tvShippingErrorMessage?.text = shipping.serviceErrorMessage
                 tvShippingErrorMessage?.visible()
                 btnReloadShipping?.setOnClickListener {
-
+                    listener.reloadShipping()
                 }
                 btnReloadShipping?.visible()
                 iconReloadShipping?.visible()
@@ -211,7 +217,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private fun showPayment() {
         val paymentModel = preference.preference.payment
 
-        ivPayment?.setImageUrl(paymentModel.image)
+        ivPayment?.let {
+            ImageHandler.loadImageFitCenter(view.context, it, paymentModel.image)
+        }
         tvPaymentName?.text = paymentModel.gatewayName
         val description = paymentModel.description
         if (description.isNotBlank()) {
@@ -220,12 +228,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         } else {
             tvPaymentDetail?.gone()
         }
-//        if (paymentModel.tickerMessage.isNotBlank()) {
-//            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
-//            tvPaymentInfo?.visible()
-//        } else {
-//            tvPaymentInfo?.gone()
-//        }
 
         val payment = payment
         if (payment != null) {
@@ -365,9 +367,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
         if (isDetailRed) {
-//            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
         } else {
-//            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
         }
     }
 
@@ -375,7 +377,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         ivPayment?.alpha = 1f
         tvPaymentName?.alpha = 1f
         tvPaymentDetail?.alpha = 1f
-//        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
     private fun showAddress() {
@@ -428,12 +430,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     break
                 }
             }
-            if (shippingRecommendationData.logisticPromo != null) {
-                list.add(shippingRecommendationData.logisticPromo)
-                if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
-                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
-                }
-            }
             ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
                 override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
                     listener.onCourierChange(shippingCourierViewModel)
@@ -459,7 +455,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         if (shippingRecommendationData != null) {
             val list: ArrayList<RatesViewModelType> = ArrayList(shippingRecommendationData.shippingDurationViewModels)
             if (shippingRecommendationData.logisticPromo != null) {
-                list.add(shippingRecommendationData.logisticPromo)
+                list.add(0, shippingRecommendationData.logisticPromo)
                 if (shippingRecommendationData.logisticPromo.disabled && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && shippingRecommendationData.logisticPromo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[1])) {
                     orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
                 }
@@ -504,6 +500,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean)
 
         fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel)
+
+        fun reloadShipping()
 
         fun chooseAddress()
 

@@ -160,7 +160,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         OrderShipment(
                                 serviceName = orderPreference.preference.shipment.serviceName,
                                 serviceDuration = orderPreference.preference.shipment.serviceDuration,
-                                serviceErrorMessage = OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE,
+                                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
                                 shippingRecommendationData = null
                         ),
                         "",
@@ -435,11 +435,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return null
     }
 
-    fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel): Pair<OrderShipment?, OccGlobalEvent> {
+    fun onApplyBbo(shipping: OrderShipment, logisticPromoUiModel: LogisticPromoUiModel, isNewFlow: Boolean): Pair<OrderShipment?, OccGlobalEvent> {
         val shippingRecommendationData = shipping.shippingRecommendationData
         if (shippingRecommendationData != null) {
             var logisticPromoShipping: ShippingCourierUiModel? = null
-            val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty()
+            val shouldEnableServicePicker = shipping.isServicePickerEnable || !shipping.serviceErrorMessage.isNullOrEmpty() || isNewFlow
             for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                 if (shippingDurationViewModel.isSelected) {
                     for (shippingCourierUiModel in shippingDurationViewModel.shippingCourierViewModelList) {

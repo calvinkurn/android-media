@@ -56,7 +56,7 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                     isHideable = true
                     isFullpage = true
                     clearContentPadding = true
-                    setTitle(context.getString(R.string.lbl_osp_secondary_header))
+                    setTitle(context.getString(R.string.bottom_sheet_title_choose_address))
                     val child = View.inflate(context, R.layout.bottom_sheet_address_list, null)
                     setupChild(context, child)
                     setChild(child)

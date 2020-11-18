@@ -76,6 +76,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private var hasSentViewOspEe = false
 
+    private var isNewFlow = true
+
     fun getCurrentProfileId(): Int {
         return _orderPreference.preference.profileId
     }
@@ -209,7 +211,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.LOADING)
             val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel, oldCode), logisticPromoUiModel.promoCode)
             if (isApplied && resultValidateUse != null) {
-                val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
+                val (newShipment, _) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, isNewFlow)
                 if (newShipment != null) {
                     _orderShipment = newShipment
                     orderShipment.value = _orderShipment
@@ -298,7 +300,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Loading
                 val (isApplied, resultValidateUse, newGlobalEvent) = promoProcessor.validateUseLogisticPromo(generateValidateUsePromoRequestWithBbo(logisticPromoUiModel), logisticPromoUiModel.promoCode)
                 if (isApplied && resultValidateUse != null) {
-                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel)
+                    val (newShipment, newEvent) = logisticProcessor.onApplyBbo(shipping, logisticPromoUiModel, isNewFlow)
                     if (newShipment != null) {
                         _orderShipment = newShipment
                         orderShipment.value = _orderShipment
@@ -639,6 +641,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     companion object {
         const val DEBOUNCE_TIME = 1000L
 
+        const val FAIL_GET_RATES_ERROR_MESSAGE = "Gagal menampilkan pengiriman"
         const val NO_COURIER_SUPPORTED_ERROR_MESSAGE = "Tidak ada kurir yang mendukung pengiriman ini ke lokasi Anda."
         const val NO_DURATION_AVAILABLE = "Durasi pengiriman tidak tersedia"
         const val NEED_PINPOINT_ERROR_MESSAGE = "Butuh pinpoint lokasi"
