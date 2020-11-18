@@ -15,6 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.getUohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
@@ -86,7 +87,7 @@ class UohTopAdsVerificationTest {
 
     private fun clickProductRecommItem(uohRecyclerView: RecyclerView, i: Int) {
         try {
-            Espresso.onView(ViewMatchers.withId(uohRecyclerView.id))
+            onView(withId(uohRecyclerView.id))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
         } catch (e: PerformException) {
             e.printStackTrace()

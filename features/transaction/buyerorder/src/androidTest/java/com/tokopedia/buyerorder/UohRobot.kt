@@ -1,17 +1,19 @@
 package com.tokopedia.buyerorder
 
-import android.content.Intent
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import android.view.View
+import androidx.annotation.NonNull
+import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.hamcrest.Description
+import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
+
 
 /**
  * Created by fwidjaja on 08/11/20.
@@ -23,6 +25,22 @@ class UohRobot {
 
     fun login(rule: ActivityTestRule<UohListActivity>) {
         InstrumentationAuthHelper.loginToAnUser(rule.activity.application)
+    }
+
+    fun atPosition(position: Int, @NonNull itemMatcher: Matcher<View?>): Matcher<View?>? {
+        return object : BoundedMatcher<View?, RecyclerView>(RecyclerView::class.java) {
+            override fun describeTo(description: Description) {
+                description.appendText("has item at position $position: ")
+                itemMatcher.describeTo(description)
+            }
+
+            override fun matchesSafely(view: RecyclerView): Boolean {
+                val viewHolder: RecyclerView.ViewHolder = view.findViewHolderForAdapterPosition(position)
+                        ?: // has no item on such position
+                        return false
+                return itemMatcher.matches(viewHolder.itemView)
+            }
+        }
     }
 }
 
