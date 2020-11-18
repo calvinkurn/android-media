@@ -16,7 +16,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -139,8 +138,6 @@ class MerchantVoucherTargetViewModelTest {
 
         mViewModel.validateVoucherTarget(anyString(), anyString())
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             voucherTargetValidationUseCase.executeOnBackground()
         }
@@ -157,8 +154,6 @@ class MerchantVoucherTargetViewModelTest {
         } throws dummyThrowable
 
         mViewModel.validateVoucherTarget(anyString(), anyString())
-
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             voucherTargetValidationUseCase.executeOnBackground()

@@ -124,8 +124,6 @@ class ChangeVoucherPeriodViewModelTest {
 
             validateVoucherPeriod(voucherUiModel, dummyBitmap)
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 saveSquareVoucherUseCase.executeOnBackground()
                 uploadVoucherUseCase.createObservable(any())
@@ -179,7 +177,7 @@ class ChangeVoucherPeriodViewModelTest {
 
             startValidating()
 
-            assert(startDateCalendarLiveData.value != null)
+            assert(startEndDatePairLiveData.value != null)
         }
     }
 
