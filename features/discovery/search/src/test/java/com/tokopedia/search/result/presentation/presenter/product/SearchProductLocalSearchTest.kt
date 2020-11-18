@@ -30,7 +30,7 @@ internal class SearchProductLocalSearchTest: ProductListPresenterTestFixtures() 
     private val keyword = "asus"
     private val searchParameter = mapOf(
         SearchApiConst.Q to keyword,
-        SearchApiConst.NAVSOURCE to "campaign",
+        SearchApiConst.NAVSOURCE to "clp",
         SearchApiConst.SRP_PAGE_TITLE to searchProductPageTitle,
         SearchApiConst.SRP_PAGE_ID to "1234"
     )
