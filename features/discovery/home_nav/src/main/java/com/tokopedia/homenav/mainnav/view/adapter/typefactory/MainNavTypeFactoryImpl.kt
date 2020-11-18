@@ -51,20 +51,8 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
         return HomeNavTickerViewHolder.LAYOUT
     }
 
-    override fun type(initialShimmerAccountDataModel: InitialShimmerAccountDataModel): Int {
-        return InitialShimmeringAccountViewHolder.LAYOUT
-    }
-
-    override fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel): Int {
-        return InitialShimmeringTransactionViewHolder.LAYOUT
-    }
-
-    override fun type(initialShimmerBuListDataModel: InitialShimmerBuListDataModel): Int {
-        return InitialShimmeringBuListViewHolder.LAYOUT
-    }
-
-    override fun type(initialShimmerMenuDataModel: InitialShimmerMenuDataModel): Int {
-        return InitialShimmeringUserMenuViewHolder.LAYOUT
+    override fun type(initialShimmerDataModel: InitialShimmerDataModel): Int {
+        return InitialShimmeringDataViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
@@ -74,10 +62,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
             HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view)
-            InitialShimmeringAccountViewHolder.LAYOUT -> InitialShimmeringAccountViewHolder(view)
-            InitialShimmeringTransactionViewHolder.LAYOUT -> InitialShimmeringTransactionViewHolder(view)
-            InitialShimmeringBuListViewHolder.LAYOUT -> InitialShimmeringBuListViewHolder(view)
-            InitialShimmeringUserMenuViewHolder.LAYOUT -> InitialShimmeringUserMenuViewHolder(view)
+            InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
     }

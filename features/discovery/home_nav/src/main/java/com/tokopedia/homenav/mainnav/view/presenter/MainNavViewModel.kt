@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
@@ -25,12 +26,16 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_SUBSCR
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
+import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
+import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.async
@@ -154,8 +159,7 @@ class MainNavViewModel @Inject constructor(
 
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
-            removeInitialStateAccount()
-            removeInitialStateBuList()
+            removeInitialStateData()
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
             _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
         } catch (e: Exception) {
@@ -169,54 +173,23 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     private fun setInitialState() {
-        addWidgetList(listOf(
-                InitialShimmerAccountDataModel(),
-                InitialShimmerBuListDataModel(),
-                InitialShimmerTransactionDataModel()
-        ))
+        addWidget(InitialShimmerDataModel())
     }
 
-    private fun removeInitialStateAccount() {
+    private fun removeInitialStateData() {
         launch{
             val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerAccountDataModel }?.let {
+            mainNavigationDataModel?.dataList?.find { it is InitialShimmerDataModel }?.let {
                 deleteWidget(it)
             }
         }
     }
-
-    private fun removeInitialStateBuList() {
-        launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerBuListDataModel }?.let {
-                deleteWidget(it)
-            }
-        }
-    }
-    private fun removeInitialStateTransaction() {
-        launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerTransactionDataModel }?.let {
-                deleteWidget(it)
-            }
-        }
-    }
-
-    private fun removeInitialStateUserMenu() {
-        launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerMenuDataModel }?.let {
-                deleteWidget(it)
-            }
-        }
-    }
-
 
     private fun getMainNavData() {
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
                 getMainNavContent()
-                onlyForLoggedInUser { getUserSection() }
+//                onlyForLoggedInUser { getUserSection() }
                 getHomeBackButtonMenu()
             }) {
                 Timber.d("P1 error")
@@ -264,7 +237,6 @@ class MainNavViewModel @Inject constructor(
     }
 
     private suspend fun getUserMenu() {
-        removeInitialStateUserMenu()
         addWidgetList(buildUserMenuList())
     }
 
@@ -286,7 +258,6 @@ class MainNavViewModel @Inject constructor(
                 val firstTransactionMenu = _mainNavListVisitable.find {
                     it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
                 }
-                removeInitialStateTransaction()
                 val indexOfFirstTransactionMenu = _mainNavListVisitable.indexOf(firstTransactionMenu)
                 addWidget(transactionListItemViewModel, indexOfFirstTransactionMenu)
             }
@@ -357,12 +328,17 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getShopData(shopId: Int, accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = shopId)
-                getShopInfoUseCase.get().executeOnBackground()
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getShopInfoUseCase.get().executeOnBackground()
+                }
             }
+
             val newData = accountData.copy()
-            newData.shopName = result.shopCore.name
+            val result = (call.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            result?.let {
+                newData.setUserShopName(it.info.shopName, it.info.shopId)
+            }
             updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             _shopResultListener.postValue(Fail(it))
@@ -371,11 +347,17 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getUserBadgeImage(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getUserMembershipUseCase.get().executeOnBackground()
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getUserMembershipUseCase.get().executeOnBackground()
+                }
             }
-            accountData.badge = result.tokopoints.status.tier.imageUrl
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            result?.let {
+                newData.setUserBadge(it.tokopoints.status.tier.imageUrl)
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             _membershipResultListener.postValue(Fail(it))
         }
@@ -383,12 +365,17 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getOvoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getWalletUseCase.get().executeOnBackground()
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getWalletUseCase.get().executeOnBackground()
+                }
             }
-            accountData.ovoSaldo = result.cashBalance
-            accountData.ovoPoint = result.pointBalance
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+            result?.let {
+                newData.setWalletData(it.cashBalance, it.pointBalance)
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             //post error get ovo with new livedata
 
@@ -402,11 +389,18 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getSaldoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getSaldoUseCase.get().executeOnBackground()
+            val call =  async {
+                withContext(baseDispatcher.get().io()) {
+                    getSaldoUseCase.get().executeOnBackground()
+                }
             }
-            accountData.saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+            result?.let {
+               newData.setSaldoData(
+                       convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: "")
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             val newAccountData = accountData.copy(
                     saldo = AccountHeaderViewModel.ERROR_TEXT
@@ -450,6 +444,12 @@ class MainNavViewModel @Inject constructor(
     fun reloadShopData(shopId: Int,accountData: AccountHeaderViewModel) {
         launch(coroutineContext, block = {
             getShopData(shopId, accountData)
+        })
+    }
+
+    fun reloadUserData() {
+        launch(coroutineContext, block = {
+            getMainNavContent()
         })
     }
 

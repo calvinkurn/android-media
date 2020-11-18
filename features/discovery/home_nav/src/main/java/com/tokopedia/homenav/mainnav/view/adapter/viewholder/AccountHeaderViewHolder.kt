@@ -95,34 +95,41 @@ class AccountHeaderViewHolder(itemView: View,
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
 
-//        element.userName = AccountHeaderViewModel.ERROR_TEXT
-//        element.ovoSaldo = ""
-//        element.ovoPoint = ""
-//        element.shopName = AccountHeaderViewModel.ERROR_TEXT
         userImage.loadImageCircle(element.userImage)
 
-        if (element.userName.equals(AccountHeaderViewModel.ERROR_TEXT)) {
+        if (element.isGetUserNameError) {
             tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT)
             tvName.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
-            tvName.setOnClickListener{null}
+            tvName.setOnClickListener(null)
         }
 
-        tvOvo.text = MethodChecker.fromHtml(
-                if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT)) element.ovoSaldo
-                else renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo))
-        tvOvo.setOnClickListener {
-            if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT))
-                View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
-            else null
+        if (element.isGetOvoError && element.isGetSaldoError) {
+            tvOvo.text = AccountHeaderViewModel.ERROR_TEXT
+            tvOvo.setOnClickListener{
+                mainNavListener.onErrorProfileOVOClicked(element)
+            }
+            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
+        } else if (element.isGetOvoError && !element.isGetSaldoError) {
+            tvOvo.text = element.saldo
+            tvOvo.setOnClickListener(null)
+            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
+        } else {
+            tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
+            tvOvo.setOnClickListener(null)
+            if (element.ovoSaldo.isNotEmpty()) {
+                usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
+            } else if (element.saldo.isNotEmpty()) {
+                usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
+            }
         }
 
         if (element.shopName.isNotEmpty()) {
             tvShopInfo.visibility = View.VISIBLE
-            if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT)) {
-                tvShopInfo.text = element.shopName
-                tvShopInfo.setOnClickListener{mainNavListener.onErrorProfileOVOClicked(element)}
+            if (element.isGetShopError) {
+                tvShopInfo.text = AccountHeaderViewModel.ERROR_TEXT
+                tvShopInfo.setOnClickListener{mainNavListener.onErrorProfileShopClicked(element)}
             } else {
                 val subtext = MethodChecker.fromHtml(element.shopName).toString()
                 val fulltext = String.format(TEXT_TOKO_SAYA, subtext)
@@ -132,12 +139,6 @@ class AccountHeaderViewHolder(itemView: View,
                 str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 tvShopInfo.setOnClickListener { onShopClicked(element.shopId) }
             }
-        }
-
-        if (element.ovoSaldo.isNotEmpty()) {
-            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
-        } else if (element.saldo.isNotEmpty()) {
-            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
         }
 
         layoutLogin.setOnClickListener {
