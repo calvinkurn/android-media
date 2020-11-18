@@ -54,6 +54,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
         private const val TITLE = "OVO"
         private const val WALLET_TYPE = "OVO"
         private const val BEBAS_ONGKIR_TYPE = "bebas ongkir"
+        private const val KUPON_SAYA_URL_PATH = "kupon-saya"
         private const val CDN_URL = "https://ecs7.tokopedia.net/img/android/"
         private const val BG_CONTAINER_URL = CDN_URL + "bg_product_fintech_tokopoint_normal/" +
                 "drawable-xhdpi/bg_product_fintech_tokopoint_normal.png"
@@ -288,7 +289,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                                 tokopointsDrawerHomeData.sectionContent.first().textAttributes?.text?.contains(BEBAS_ONGKIR_TYPE, ignoreCase = true) == true){
                             OvoWidgetTracking.sendBebasOngkir(listener?.userId ?: "0")
                         } else if (tokopointsDrawerHomeData.sectionContent.isNotEmpty() &&
-                                tokopointsDrawerHomeData.sectionContent[0].tagAttributes?.text?.isNotEmpty() == true) {
+                                tokopointsDrawerHomeData.redirectAppLink.contains(KUPON_SAYA_URL_PATH)) {
                             OvoWidgetTracking.sendClickOnTokopointsNewCouponTracker()
                         } else {
                             OvoWidgetTracking.sendTokopointTrackerClick()
