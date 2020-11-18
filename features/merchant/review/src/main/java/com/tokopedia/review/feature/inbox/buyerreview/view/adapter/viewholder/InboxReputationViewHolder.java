@@ -171,21 +171,21 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
         switch (reputationDaysLeft) {
             case "1":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(context, R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.abstraction.R
                         .color.red_500),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             case "2":
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(context, R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.design.R
                         .color.orange_300),
                         PorterDuff.Mode
                                 .MULTIPLY));
                 break;
             default:
                 background.setColorFilter(new
-                        PorterDuffColorFilter(MethodChecker.getColor(context, R
+                        PorterDuffColorFilter(MethodChecker.getColor(context, com.tokopedia.design.R
                         .color.light_blue_300),
                         PorterDuff.Mode
                                 .MULTIPLY));
