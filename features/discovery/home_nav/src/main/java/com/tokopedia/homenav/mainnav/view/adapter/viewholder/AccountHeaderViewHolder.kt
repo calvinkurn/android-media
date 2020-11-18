@@ -2,9 +2,11 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.text.Spanned
+import android.text.Spannable
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -19,6 +21,7 @@ import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
+import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
@@ -46,6 +49,7 @@ class AccountHeaderViewHolder(itemView: View,
         @LayoutRes
         val LAYOUT = R.layout.holder_account_header
         const val TEXT_LOGIN_AS = "Masuk Sebagai %s"
+        const val TEXT_TOKO_SAYA = "Toko saya:  %s"
         private const val GREETINGS_0_2 = "Selamat tidur~"
         private const val GREETINGS_3_4 =  "Lagi begadang? Kangen, ya?"
         private const val GREETINGS_5_9 =  "Selamat pagi! Semongko!"
@@ -98,36 +102,36 @@ class AccountHeaderViewHolder(itemView: View,
         userImage.loadImageCircle(element.userImage)
 
         if (element.userName.equals(AccountHeaderViewModel.ERROR_TEXT)) {
-            renderProfileLoginSection(
-                    MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT),
-                    tvName,
-                    View.OnClickListener { mainNavListener.onErrorProfileNameClicked(element) }
-            )
+            tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT)
+            tvName.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
+            tvName.setOnClickListener{null}
         }
-        renderProfileLoginSection(
-                MethodChecker.fromHtml(
-                        if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT)) element.ovoSaldo
-                        else renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)),
-                tvOvo,
-                if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT))
-                    View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
-                else null)
+
+        tvOvo.text = MethodChecker.fromHtml(
+                if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT)) element.ovoSaldo
+                else renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo))
+        tvOvo.setOnClickListener {
+            if (element.ovoSaldo.equals(AccountHeaderViewModel.ERROR_TEXT))
+                View.OnClickListener { mainNavListener.onErrorProfileOVOClicked(element) }
+            else null
+        }
+
         if (element.shopName.isNotEmpty()) {
             tvShopInfo.visibility = View.VISIBLE
-            renderProfileLoginSection(
-                    MethodChecker.fromHtml(
-                            if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT)) element.shopName
-                            else itemView.context.getString(R.string.account_home_shop_name_card, element.shopName)),
-                    tvShopInfo,
-                    View.OnClickListener {
-                        if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT))
-                             mainNavListener.onErrorProfileOVOClicked(element)
-                        else
-                            onShopClicked(element.shopId)
-                    }
-            )
+            if (element.shopName.equals(AccountHeaderViewModel.ERROR_TEXT)) {
+                tvShopInfo.text = element.shopName
+                tvShopInfo.setOnClickListener{mainNavListener.onErrorProfileOVOClicked(element)}
+            } else {
+                val subtext = MethodChecker.fromHtml(element.shopName).toString()
+                val fulltext = String.format(TEXT_TOKO_SAYA, subtext)
+                tvShopInfo.setText(fulltext, TextView.BufferType.SPANNABLE)
+                val str = tvShopInfo.text as Spannable
+                val i = fulltext.indexOf(subtext)
+                str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                tvShopInfo.setOnClickListener { onShopClicked(element.shopId) }
+            }
         }
 
         if (element.ovoSaldo.isNotEmpty()) {
@@ -139,11 +143,6 @@ class AccountHeaderViewHolder(itemView: View,
         layoutLogin.setOnClickListener {
             mainNavListener.onProfileSectionClicked()
         }
-    }
-
-    private fun renderProfileLoginSection(text: Spanned, typography: Typography, clickListener : View.OnClickListener?) {
-        typography.setOnClickListener(clickListener)
-        typography.text = text
     }
 
     private fun renderOvoText(ovoString: String, pointString: String, saldoString: String): String {
@@ -241,5 +240,12 @@ class AccountHeaderViewHolder(itemView: View,
 
     private fun setFirstTimeUserSeeNameAnimationOnSession(value: Boolean) {
         MainNavConst.MainNavState.runAnimation = value
+    }
+
+    private fun setColor(view: TextView, fulltext: String, subtext: String, color: Int) {
+        view.setText(fulltext, TextView.BufferType.SPANNABLE)
+        val str = view.text as Spannable
+        val i = fulltext.indexOf(subtext)
+        str.setSpan(ForegroundColorSpan(color), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 }
