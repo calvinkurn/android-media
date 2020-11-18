@@ -4,6 +4,8 @@
     <string name="play_widget_success_remove_reminder">Berhasil menghapus pengingat</string>
     <string name="play_widget_error_reminder">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
 
+    <string name="play_widget_banner_fallback_text">Masuk ke Tokopedia Play</string>
+
     <string name="play_widget_transcode_loading_text">Menyimpan…</string>
     <string name="play_widget_transcode_loading_failed">Gagal disimpan</string>
 

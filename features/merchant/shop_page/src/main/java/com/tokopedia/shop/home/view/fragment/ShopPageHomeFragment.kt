@@ -70,6 +70,10 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
 import com.tokopedia.shop.common.constant.*
+import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HOME_RENDER
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.ERROR_WHEN_GET_YOUTUBE_DATA
 import com.tokopedia.shop.common.util.ShopPageExceptionHandler.logExceptionToCrashlytics
@@ -98,7 +102,7 @@ import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHomeTabPerformanceMonitoringListener
+import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
@@ -137,7 +141,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         private const val REQUEST_CODE_SORT = 301
         private const val REQUEST_CODE_PLAY_ROOM = 256
         private const val REQUEST_CODE_USER_LOGIN = 101
-        const val BUNDLE = "bundle"
         const val REGISTER_VALUE = "REGISTER"
         const val UNREGISTER_VALUE = "UNREGISTER"
         const val NPL_REMIND_ME_CAMPAIGN_ID =  "NPL_REMIND_ME_CAMPAIGN_ID"
@@ -225,7 +228,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private lateinit var playWidgetActionBottomSheet: PlayWidgetSellerActionBottomSheet
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initPltMonitoring()
+        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
         getIntentData()
         setupPlayWidget()
         super.onCreate(savedInstanceState)
@@ -241,39 +244,48 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         setupPlayWidgetAnalyticListener()
     }
 
-    private fun initPltMonitoring() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.initShopPageHomeTabPerformanceMonitoring()
-    }
-
-
-    private fun startMonitoringPltNetworkRequest() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltPreparePage(it)
-                shopPageActivity.startMonitoringPltNetworkRequest(it)
-            }
-        }
-    }
-
     private fun startMonitoringPltRenderPage() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltRenderPage(it)
             }
         }
     }
 
     private fun stopMonitoringPltRenderPage() {
-        (activity as? ShopPageHomeTabPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageHomeTabLoadTimePerformanceCallback()?.let {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltRenderPage(it)
             }
         }
-        stopPerformanceMonitor()
+    }
+
+    private fun startMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startCustomMetric(it, tag)
+            }
+        }
+    }
+
+    private fun stopMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopCustomMetric(it, tag)
+            }
+        }
     }
 
     private fun invalidateMonitoringPlt() {
-        (activity as? ShopPageActivity)?.invalidateMonitoringPlt()
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.invalidateMonitoringPlt(it)
+            }
+        }
+    }
+
+    private fun stopMonitoringPerformance() {
+        (activity as? ShopPageActivity)?.stopShopHomeTabPerformanceMonitoring()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -376,7 +388,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         globalError_shopPage.hide()
         showLoading()
         shopHomeAdapter.isOwner = isOwner
-        startMonitoringPltNetworkRequest()
+        stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_PREPARE)
+        startMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
         viewModel?.getShopPageHomeData(shopId, shopProductFilterParameter ?: ShopProductFilterParameter())
     }
 
@@ -393,6 +406,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun observeLiveData() {
         viewModel?.shopHomeLayoutData?.observe(viewLifecycleOwner, Observer {
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_MIDDLE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_HOME_RENDER)
             startMonitoringPltRenderPage()
             hideLoading()
             when (it) {
@@ -413,7 +428,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             }
             getRecyclerView(view)?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    stopMonitoringPltCustomMetric(SHOP_TRACE_HOME_RENDER)
                     stopMonitoringPltRenderPage()
+                    stopMonitoringPerformance()
                     getRecyclerView(view)?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                 }
             })
@@ -508,9 +525,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeAdapter.setHomeMerchantVoucherData(it.data)
                 }
                 is Fail -> {
-                    shopPageHomeLayoutUiModel?.listWidget?.indexOfFirst { uiModel -> uiModel is ShopHomeVoucherUiModel }?.let { index ->
-                        val data = shopPageHomeLayoutUiModel?.listWidget?.get(index) as ShopHomeVoucherUiModel
-                        shopHomeAdapter.setHomeMerchantVoucherData(data.copy(isError = true))
+                    shopPageHomeLayoutUiModel?.listWidget?.filterIsInstance(
+                            ShopHomeVoucherUiModel::class.java
+                    )?.firstOrNull()?.let { uiModel ->
+                        shopHomeAdapter.setHomeMerchantVoucherData(uiModel.copy(isError = true))
                     }
                 }
             }
@@ -1286,10 +1304,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    private fun stopPerformanceMonitor() {
-        (activity as? ShopPageActivity)?.stopShopHomeTabPerformanceMonitoring()
-    }
-
 
     fun clearCache() {
         viewModel?.clearCache()
@@ -1312,7 +1326,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             bundle.putString(ShopShowcaseParamConstant.EXTRA_SHOP_ID, shopId)
 
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_SHOP_SHOWCASE_LIST)
-            intent.putExtra(BUNDLE, bundle)
+            intent.putExtra(EXTRA_BUNDLE, bundle)
             startActivityForResult(intent, REQUEST_CODE_ETALASE)
         }
     }

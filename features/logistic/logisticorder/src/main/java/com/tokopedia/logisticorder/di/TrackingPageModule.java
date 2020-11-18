@@ -2,8 +2,8 @@ package com.tokopedia.logisticorder.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.config.GlobalConfig;
@@ -11,11 +11,6 @@ import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
 import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
 import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
-import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.logisticorder.mapper.ITrackingPageMapper;
 import com.tokopedia.logisticorder.mapper.TrackingPageMapper;
 import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
@@ -28,6 +23,11 @@ import com.tokopedia.logisticorder.usecase.executor.SchedulerProvider;
 import com.tokopedia.logisticorder.utils.DateUtil;
 import com.tokopedia.logisticorder.view.ITrackingPageFragment;
 import com.tokopedia.logisticorder.view.OrderAnalyticsOrderTracking;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.converter.StringResponseConverter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -49,8 +49,17 @@ public class TrackingPageModule {
 
     private ITrackingPageFragment view;
 
-    public TrackingPageModule(ITrackingPageFragment view) {
+    private Context context;
+
+    public TrackingPageModule(ITrackingPageFragment view, Context context) {
         this.view = view;
+        this.context = context;
+    }
+
+    @Provides
+    @TrackingPageContext
+    Context provideTrackingPageContext() {
+        return context;
     }
 
     @Provides
@@ -68,7 +77,7 @@ public class TrackingPageModule {
 
     @Provides
     @TrackingPageScope
-    UserSession provideUserSession(@ApplicationContext Context context) {
+    UserSession provideUserSession(@TrackingPageContext Context context) {
         return new UserSession(context);
 
     }
