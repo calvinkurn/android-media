@@ -1690,35 +1690,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSendVote(rowNumber: Int, optionId: String,
-                                   voteStatisticDomainModel: VoteStatisticDomainModel) {
-        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
-        val (_, _, _, _, _, _, contentList) = newList[rowNumber]
-        for (basePostViewModel in contentList) {
-            if (basePostViewModel is PollContentViewModel) {
-                basePostViewModel.voted = true
-                val totalVoter: Int = voteStatisticDomainModel.totalParticipants.toIntOrZero()
-                basePostViewModel.totalVoterNumber = totalVoter
-                for (i in 0 until basePostViewModel.optionList.size) {
-                    val optionViewModel = basePostViewModel.optionList[i]
-
-                    optionViewModel.selected = if (optionId == optionViewModel.optionId)
-                        PollContentOptionViewModel.SELECTED
-                    else
-                        PollContentOptionViewModel.UNSELECTED
-                    optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
-                }
-            }
-        }
-        adapter.updateList(newList)
-    }
-
-    private fun onErrorSendVote(message: String) {
-        view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
-        }
-    }
-
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
