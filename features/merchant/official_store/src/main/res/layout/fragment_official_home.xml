@@ -9,12 +9,20 @@
     android:layout_width="match_parent"
     app:currentState="@+id/start"
     app:layoutDescription="@xml/fragment_official_home_scene">
-
+    <View
+        android:visibility="invisible"
+        android:id="@+id/statusbar"
+        android:background="@color/Unify_N0"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
     <FrameLayout
         android:id="@+id/toolbar_container"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statusbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
         <com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -62,6 +70,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar_container"
         tools:visibility="visible" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
         android:layout_width="0dp"
