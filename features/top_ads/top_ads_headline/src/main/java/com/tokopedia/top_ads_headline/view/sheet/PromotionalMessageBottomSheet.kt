@@ -6,11 +6,14 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.promotional_message_bottom_sheet_layout.*
 
 class PromotionalMessageBottomSheet : BottomSheetUnify() {
@@ -42,9 +45,23 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpChipsText()
+        setUpToolTip()
         setUpTextField()
         saveBtn.setOnClickListener {
             dismiss()
+        }
+    }
+
+    private fun setUpToolTip() {
+        val tooltipView = layoutInflater.inflate(com.tokopedia.topads.common.R.layout.tooltip_custom_view, null).apply {
+            val tvToolTipText = this.findViewById<Typography>(R.id.tooltip_text)
+            tvToolTipText?.text = getString(R.string.topads_headline_promotional_tooltip_text)
+            val imgTooltipIcon = this.findViewById<ImageUnify>(R.id.tooltip_icon)
+            imgTooltipIcon?.setImageDrawable(context?.getResDrawable(R.drawable.topads_ic_tips))
+        }
+        tooltipBtn.addItem(tooltipView)
+        tooltipBtn.setOnClickListener {
+            openTemplateTipsBottomSheet()
         }
     }
 
@@ -83,10 +100,18 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
         chip2.text = getString(R.string.topads_headline_recommended_template_2, storeName)
         chip3.text = getString(R.string.topads_headline_recommended_template_3, storeName)
         chip4.text = getString(R.string.topads_headline_recommended_template_4, storeName)
-        chip1.setOnClickListener { openTemplateTipsBottomSheet() }
-        chip2.setOnClickListener { openTemplateTipsBottomSheet() }
-        chip3.setOnClickListener { openTemplateTipsBottomSheet() }
-        chip4.setOnClickListener { openTemplateTipsBottomSheet() }
+        chip1.setOnClickListener {
+            promotionalMessageInputText.textFieldInput.setText(chip1.text)
+        }
+        chip2.setOnClickListener {
+            promotionalMessageInputText.textFieldInput.setText(chip2.text)
+        }
+        chip3.setOnClickListener {
+            promotionalMessageInputText.textFieldInput.setText(chip3.text)
+        }
+        chip4.setOnClickListener {
+            promotionalMessageInputText.textFieldInput.setText(chip4.text)
+        }
     }
 
     private fun openTemplateTipsBottomSheet() {

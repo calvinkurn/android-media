@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.top_ads_headline.data.CpmModelMapper
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
@@ -24,13 +25,13 @@ import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.common.view.TopAdsProductImagePreviewWidget
-import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ad_content_fragment.*
 import javax.inject.Inject
 
 private const val SELECT_PRODUCT_REQUEST_CODE = 1001
+private const val MAX_PRODUCT_PREVIEW = 3
 
 class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
@@ -45,6 +46,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var cpmModelMapper: CpmModelMapper
 
     private lateinit var viewModel: AdContentViewModel
 
@@ -113,6 +117,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         if (selectedTopAdsProducts.isNotEmpty()) {
             onProductsSelectionChange()
         }
+        stepperModel?.slogan = getString(R.string.topads_headline_promotional_dummy_message)
         promotionalMessageInputText.textFieldInput.setText(getString(R.string.topads_headline_promotional_dummy_message))
         promotionalMessageInputText.textFieldInput.isFocusable = false
         promotionalMessageInputText.textFieldInput.setOnClickListener {
@@ -121,7 +126,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         btnSubmit.setOnClickListener {
             onClickSubmit()
         }
-        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", 3, 0, this::onSuccess, this::onError)
+        fetchProductsForPreview()
+    }
+
+    private fun fetchProductsForPreview() {
+        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", MAX_PRODUCT_PREVIEW, 0, this::showTopAdsBannerPreview, this::onError)
     }
 
     private fun onClickSubmit() {
@@ -138,7 +147,14 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         }
     }
 
-    private fun onSuccess(cpmModel: CpmModel) {
+    private fun showTopAdsBannerPreview(responseProductList: List<ResponseProductList.Result.TopadsGetListProduct.Data> = emptyList()) {
+        val cpmModel = if (responseProductList.isEmpty()) {
+            cpmModelMapper.getCpmModelResponse(selectedTopAdsProducts.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
+                    ?: "")
+        } else {
+            cpmModelMapper.getCpmModelResponse(responseProductList.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
+                    ?: "")
+        }
         stepperModel?.cpmModel = cpmModel
         topAdsBannerView.displayAds(cpmModel)
     }
@@ -159,8 +175,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
         stepperModel?.let {
             it.slogan = promotionalMessage
-            it.cpmModel.data[0].cpm.cpmShop.slogan = promotionalMessage
-            onSuccess(it.cpmModel)
+            showTopAdsBannerPreview()
         }
     }
 
@@ -185,6 +200,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         val imageList = ArrayList<String>()
         selectedTopAdsProducts.forEach {
             imageList.add(it.productImage)
+        }
+        if (selectedTopAdsProducts.size >= MAX_PRODUCT_PREVIEW) {
+            showTopAdsBannerPreview()
         }
         productImagePreviewWidget.setSelectedProductList(imageList)
         setUpSelectedText()

@@ -42,7 +42,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.fragment_ad_schedule_and_budget.*
-import kotlinx.coroutines.selects.select
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -200,7 +199,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
     }
 
     private fun advertisingCostTextWatcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(advertisingCost.textFieldInput, "${stepperModel?.minBid ?: 0}") {
+        return object : NumberTextWatcher(advertisingCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
@@ -222,12 +221,16 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
     }
 
     private fun budgetCostTextWatcher(): NumberTextWatcher? {
-        return object : NumberTextWatcher(budgetCost.textFieldInput, "${stepperModel?.dailyBudget ?: 0}") {
+        return object : NumberTextWatcher(budgetCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
                 budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, input)
-                val minBid = advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
+                val minBid = if (advertisingCost.isTextFieldError) {
+                    stepperModel?.minBid ?: 0
+                } else {
+                    advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
+                }
                 if (input < minBid * MULTIPLIER
                         && budgetCost.isVisible) {
                     budgetCost.setError(true)
@@ -251,11 +254,13 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                 budgetCost.show()
                 hari.show()
                 budgetCostMessage.show()
+                btnNext.isEnabled = !budgetCost.isTextFieldError
             } else {
                 budgetWarningMessage.show()
                 budgetCost.hide()
                 hari.hide()
                 budgetCostMessage.hide()
+                btnNext.isEnabled = !advertisingCost.isTextFieldError
             }
         }
     }

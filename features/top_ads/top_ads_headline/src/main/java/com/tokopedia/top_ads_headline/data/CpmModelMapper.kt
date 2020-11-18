@@ -13,7 +13,7 @@ private const val SHOP_BADGE = "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Ba
 class CpmModelMapper @Inject constructor(@ApplicationContext private val context: Context,
                                          private val userSession: UserSessionInterface) {
 
-    fun getCpmModelResponse(response: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>): CpmModel {
+    fun getCpmModelResponse(response: List<ResponseProductList.Result.TopadsGetListProduct.Data>, promotionalMessage: String): CpmModel {
         return CpmModel().apply {
             data.add(CpmData().apply {
                 cpm = Cpm().apply {
@@ -23,18 +23,18 @@ class CpmModelMapper @Inject constructor(@ApplicationContext private val context
                     name = userSession.shopName
                     promotedText = context.getString(R.string.topads_headline_promoted_by)
                     badges = listOf(Badge(SHOP_BADGE))
-                    cpmShop = mapCpmShop(response)
+                    cpmShop = mapCpmShop(response, promotionalMessage)
                     cpmImage = CpmImage().apply { fullEcs = userSession.profilePicture }
                 }
             })
         }
     }
 
-    private fun mapCpmShop(response: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>): CpmShop {
+    private fun mapCpmShop(response: List<ResponseProductList.Result.TopadsGetListProduct.Data>, promotionalMessage: String): CpmShop {
         return CpmShop().apply {
             id = userSession.shopId
             name = userSession.shopName
-            slogan = context.getString(R.string.topads_headline_promotional_dummy_message)
+            slogan = promotionalMessage
             isPowerMerchant = userSession.isPowerMerchantIdle
             isOfficial = userSession.isShopOfficialStore
             imageShop = ImageShop().apply {

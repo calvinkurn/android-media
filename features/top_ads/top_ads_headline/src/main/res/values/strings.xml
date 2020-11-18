@@ -3,7 +3,7 @@
     <string name="topads_headline_ad_detail_fragment_label">Isi Detail Iklan</string>
     <string name="topads_headline_ad_content_fragment_label">Isi Konten Iklan</string>
     <string name="topads_headline_ad_schedule_and_budget_fragment_label">Atur Jadwal &amp; Anggaran</string>
-    <string name="topads_headline_ad_detail_name_header">Nama Iklan Headline</string>
+    <string name="topads_headline_ad_detail_name_header">Nama Iklan Toko</string>
     <string name="topads_headline_ad_detail_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
     <string name="topads_headline_ad_detail_name_hint">Masukkan nama iklan</string>
     <string name="topads_headline_continue">Lanjutkan</string>
@@ -51,6 +51,7 @@
     <string name="topads_headline_tips_name_and_photo_correct">Pastikan nama dan foto produk sudah sesuai.</string>
 
     <!--tips for creating promotional messages-->
+    <string name="topads_headline_promotional_tooltip_text">Tips buat pesan promosi</string>
     <string name="topads_headline_promotional_message_header">Tips membuat pesan promosi</string>
     <string name="topads_headline_promotional_message_1">Ceritakan keunggulan toko, produk atau promo yang berlangsung ke calon pembeli.</string>
     <string name="topads_headline_promotional_message_2">Gunakan kata-kata promosi, seperti “Diskon hingga 50%”, “Ekstra cashback 30%”, “Bebas ongkir”, dan lainnya.</string>
