@@ -100,9 +100,10 @@ class LoginActivityInstrumentedTest {
         onRegisterFooterSpannableClick()
         onSocmedBtnClick()
         clickGoogleLogin()
-        Thread.sleep(1000)
-        onSocmedBtnClick()
-        clickFacebookLogin()
+//        Thread.sleep(1000)
+//        onSocmedBtnClick()
+//        Thread.sleep(1000)
+//        clickFacebookLogin()
         assertThat(
             getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
             hasAllSuccess()
@@ -136,13 +137,12 @@ class LoginActivityInstrumentedTest {
 
     }
 
-    fun clickFacebookLogin(){
-        onView(withText("Facebook"))
-                .inRoot(isDialog()) // <---
-                .check(matches(isDisplayed()))
-                .perform(click())
-
-    }
+//    fun clickFacebookLogin(){
+//        onView(withText("Facebook"))
+//                .inRoot(isDialog()) // <---
+//                .check(matches(isDisplayed()))
+//                .perform(click())
+//    }
 
     /* click login email */
     fun onLoginViaEmail() {
