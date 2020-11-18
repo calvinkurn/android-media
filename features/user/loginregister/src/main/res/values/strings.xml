@@ -379,4 +379,22 @@
     <string name="check_full_information">Cek Informasi Lengkap</string>
     <string name="close_popup">Tutup</string>
 
+    <!-- External Register -->
+    <string name="title_external_register">Daftar</string>
+    <string name="title_external_register_add_name">Siapa nama kamu?</string>
+    <string name="ovo_connect_account_description">Kamu bisa menghubungkan akun Tokopedia dan OVO agar transaksi jadi lebih praktis.</string>
+    <string name="ovo_connect_account_title">Hubungkan akun ini ke OVO?</string>
+    <string name="dialog_connect_account_positive_btn_text">Ya, Hubungkan</string>
+    <string name="dialog_connect_account_negative_btn_text">Daftar Tanpa Hubungkan</string>
+    <string name="base_add_phone_other_method">Metode Lain</string>
+    <string name="base_add_phone_or">atau daftar dengan</string>
+    <string name="base_add_phone_other_next">Selanjutnya</string>
+    <string name="base_add_name_next">Lanjut Daftar</string>
+    <string name="base_add_phone_placeholder">Nomor Ponsel atau Email</string>
+    <string name="ovo_external_register_description_success">Akun Tokopedia kamu sudah aktif. Cashback dari transaksimu di Tokopedia akan masuk ke OVO Points.</string>
+    <string name="ovo_external_register_title_success">Hore! Pendaftaranmu berhasil</string>
+    <string name="base_add_name_ktp_message">Pastikan sesuai KTP untuk memudahkan verifikasi.</string>
+    <string name="base_add_name_full_name">Nama Lengkap</string>
+    <string name="base_add_name_title">Siapa nama kamu?</string>
+
 </resources>
