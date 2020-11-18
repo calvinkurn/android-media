@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/Unify_N0"
     android:orientation="vertical">
 
@@ -21,8 +21,7 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:layout_height="wrap_content"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,10 +29,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.webview.TkpdWebView
-            android:id="@+id/swd_tnc_webview"
+            android:id="@+id/ppInsuranceWebview"
             android:background="@color/Unify_N0"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/spacing_lvl4"
             android:scrollbars="none" />
     </androidx.core.widget.NestedScrollView>

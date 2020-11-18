@@ -6,6 +6,7 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -17,15 +18,18 @@ import com.tokopedia.webview.TkpdWebView
 
 class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
-    companion object {
-        const val KEY_SPONSOR_URL = "sponsorUrl"
+    init {
+        setShowListener {
+            bottomSheet.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onSlide(view: View, slideOffset: Float) {
+                }
 
-        fun newInstance(sponsorUrl: String) = FtPDPInsuranceBottomSheet().apply {
-
-            val bundleData = Bundle().apply {
-                putString(KEY_SPONSOR_URL, sponsorUrl)
-            }
-            arguments = bundleData
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                        dismiss()
+                    }
+                }
+            })
         }
     }
 
@@ -52,9 +56,8 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
     }
 
     private fun initViews(childView: View) {
-        webView = childView.findViewById<TkpdWebView>(R.id.swd_tnc_webview)
+        webView = childView.findViewById<TkpdWebView>(R.id.ppInsuranceWebview)
         progressBar = childView.findViewById<LoaderUnify>(R.id.progressBar)
-
     }
 
     private fun configWebView(url: String) {
@@ -76,7 +79,7 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
         showCloseIcon = false
         showKnob = true
         showHeader = false
-        customPeekHeight = (getScreenHeight() * 9 / 16).toDp()
+        customPeekHeight = (getScreenHeight() / 2).toDp()
     }
 
     private inner class MyWebViewClient : WebViewClient() {
@@ -98,6 +101,19 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
                 webView.visible()
             }
             super.onProgressChanged(view, newProgress)
+        }
+    }
+
+    companion object {
+        const val KEY_SPONSOR_URL = "sponsorUrl"
+
+        fun newInstance(sponsorUrl: String): FtPDPInsuranceBottomSheet {
+            return FtPDPInsuranceBottomSheet().apply {
+                val bundleData = Bundle().apply {
+                    putString(KEY_SPONSOR_URL, sponsorUrl)
+                }
+                arguments = bundleData
+            }
         }
     }
 
