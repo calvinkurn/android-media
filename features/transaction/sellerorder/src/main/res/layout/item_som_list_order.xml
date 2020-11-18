@@ -6,8 +6,10 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:paddingTop="@dimen/som_list_order_item_padding"
         android:paddingBottom="@dimen/som_list_order_item_padding">
 

@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
+import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -40,6 +41,10 @@ class SomListOrderViewHolder(
     }
 
     private var shouldContinueDraw = false
+
+    init {
+        itemView?.container?.layoutTransition?.enableTransitionType(CHANGING)
+    }
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
