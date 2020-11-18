@@ -33,12 +33,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_marginRight="@dimen/dp_5"
                 android:text="@string/product_review_label_by"
                 style="@style/TextView.Small.BlackSecondary"/>
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 style="@style/TextView.Small.Bold"
                 android:ellipsize="end"
                 android:id="@+id/reviewer_name"
@@ -46,7 +46,7 @@
                 tools:text="Sarah Elizabeth" />
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             style="@style/TextView.Micro.BlackDisabled"
             android:id="@+id/review_time"
             android:layout_below="@+id/container_reply"
@@ -64,7 +64,7 @@
 
     </RelativeLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         style="@style/TextView.Small.BlackSecondary"
         android:enabled="true"
         android:id="@+id/review"

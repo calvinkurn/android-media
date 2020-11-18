@@ -17,7 +17,7 @@
         android:layout_gravity="center_vertical"
         tools:src="@color/Unify_N700" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
         style="@style/TextView.Small.Bold"
         android:layout_marginLeft="@dimen/dp_10"
