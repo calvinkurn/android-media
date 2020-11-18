@@ -18,10 +18,10 @@
             android:id="@+id/card_bg"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_180"
-            android:background="@drawable/ic_topads_added_ads_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="@drawable/ic_topads_added_ads_bg" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/card_icon"
