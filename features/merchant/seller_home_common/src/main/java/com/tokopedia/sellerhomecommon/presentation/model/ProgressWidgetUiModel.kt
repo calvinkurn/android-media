@@ -15,6 +15,7 @@ class ProgressWidgetUiModel(
         override val tooltip: TooltipUiModel?,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: ProgressDataUiModel?,
         override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,

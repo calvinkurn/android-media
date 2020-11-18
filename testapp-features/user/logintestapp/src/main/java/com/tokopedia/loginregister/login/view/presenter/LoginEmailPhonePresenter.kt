@@ -72,6 +72,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                         { view.onSuccessLoginEmail() },
                         view.onErrorLoginEmail(email),
                         {},
+                        {},
                         {}))
             } else {
                 viewEmailPhone.stopTrace()
@@ -85,6 +86,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                     userSession, validateToken), LoginTokenSubscriber(userSession,
                     { getUserInfoAddPin() },
                     view.onErrorReloginAfterSQ(validateToken),
+                    {},
                     {},
                     view.onGoToSecurityQuestionAfterRelogin()))
         }

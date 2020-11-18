@@ -99,9 +99,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
         minimumBid = minBid
         list.forEach {
             it.keywordData.forEach { data ->
-                if (selectedKeywords?.isEmpty() == true)
-                    data.onChecked = true
-                else if (selectedKeywords?.find { it -> it.keyword == data.keyword } != null)
+                if (selectedKeywords?.isEmpty() == true || selectedKeywords?.find { it -> it.keyword == data.keyword } != null)
                     data.onChecked = true
                 items.add(data)
             }

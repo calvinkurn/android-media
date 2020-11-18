@@ -102,7 +102,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.showErrorSnackbar(e.getMessage());
+                        mView.showErrorToaster(e.getMessage());
                     }
 
                     @Override
@@ -129,7 +129,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.showErrorSnackbar(e.getMessage());
+                        mView.showErrorToaster(e.getMessage());
                     }
 
                     @Override
@@ -170,7 +170,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
                             if (messageError.isEmpty()) {
                                 messageError = DEFAULT_ERROR_MESSAGE;
                             }
-                            mView.showErrorSnackbar(messageError);
+                            mView.showErrorToaster(messageError);
                         }
                     }
                 });
@@ -215,7 +215,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onTimeout() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -223,7 +223,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onError(String error) {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar(error);
+                mView.showErrorToaster(error);
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -231,7 +231,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onNullData() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
 
@@ -239,7 +239,7 @@ public class AddAddressPresenterImpl implements AddAddressContract.Presenter {
             public void onNoNetworkConnection() {
                 mView.finishLoading();
                 mView.errorSaveAddress();
-                mView.showErrorSnackbar("");
+                mView.showErrorToaster("");
                 if (!isEditOperation) mView.stopPerformaceMonitoring();
             }
         };
