@@ -1,0 +1,29 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.paylater">
+
+
+    <application>
+       <!-- <activity
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
+            android:label="@string/saldo_detail_title_activity_people_deposit"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_global"
+                    android:path="@string/path_saldo_deposit"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>-->
+
+
+    </application>
+</manifest>
