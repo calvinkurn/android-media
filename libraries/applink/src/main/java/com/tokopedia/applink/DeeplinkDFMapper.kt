@@ -188,6 +188,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_GROUPCHAT = "df_user_groupchat"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
+    const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
@@ -360,6 +361,21 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_DAILY_GIFT) ||
                         it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
             }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification))
+
+            add(DFP({
+                it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DIGITAL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_FLIGHT) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DEALS) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DEALS) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_HOTEL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_UMROH) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_UMROH) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_EVENT) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
+            }, DF_PROMO_CHECKOUT, R.string.title_promo_checkout))
 
             //Entertainment
             add(DFP({ it.startsWith(EVENT_HOME) ||
