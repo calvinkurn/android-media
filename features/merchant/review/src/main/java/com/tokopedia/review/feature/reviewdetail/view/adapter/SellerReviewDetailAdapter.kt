@@ -101,20 +101,4 @@ class SellerReviewDetailAdapter(
     override val endlessDataSize: Int
         get() = productReviewDetailFeedback.size
 
-    override fun hideLoading() {
-        if (visitables.contains(loadingModel)) {
-            val itemPosition = visitables.indexOf(loadingModel)
-            visitables.remove(loadingModel)
-            if(itemPosition != -1) {
-                notifyItemRemoved(itemPosition)
-            }
-        } else if (visitables.contains(loadingMoreModel)) {
-            val itemPosition = visitables.indexOf(loadingMoreModel)
-            visitables.remove(loadingMoreModel)
-            if(itemPosition != -1) {
-                notifyItemRemoved(itemPosition)
-            }
-        }
-    }
-
 }
