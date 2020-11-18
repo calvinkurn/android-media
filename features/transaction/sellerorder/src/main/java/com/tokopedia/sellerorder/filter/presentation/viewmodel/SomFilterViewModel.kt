@@ -6,12 +6,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DATE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -101,9 +103,9 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                 somFilterUiModel.addAll(somFilterResult)
             }
 
-            somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.onEach { chips ->
-                if (chips.name == orderStatus) {
-                    chips.isSelected = true
+            somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.map { chips ->
+                if(chips.key != STATUS_ALL_ORDER) {
+                    chips.isSelected = chips.name == orderStatus
                 }
             }
 
@@ -124,7 +126,8 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             val updateChipsSelected = chipType == ChipsUnify.TYPE_SELECTED
             somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.map { it.isSelected = false }
             somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData?.getOrNull(position)?.isSelected = !updateChipsSelected
-            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
+            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
+                    ?: listOf()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }, onError = {
             _updateFilterSelected.postValue(Fail(it))
@@ -140,7 +143,8 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                     chipsFiler.isSelected = !updateChipsSelected
                 }
             }
-            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
+            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
+                    ?: listOf()
             updateIsRequestCancelFilterApplied()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }, onError = {
@@ -152,7 +156,8 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                               somSubFilterList: List<SomFilterChipsUiModel>) {
         launchCatchError(block = {
             somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData = somSubFilterList
-            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
+            val chipsUiModelList = somFilterUiModel.find { it.nameFilter == idFilter }?.somFilterData
+                    ?: listOf()
             _updateFilterSelected.postValue(Success(Pair(chipsUiModelList, idFilter)))
         }, onError = {
             _updateFilterSelected.postValue(Fail(it))
