@@ -343,7 +343,7 @@ data class DataItem(
         val thresholdInterest: String? = null,
 
         @SerializedName("notify_me")
-        var notifyMe: Boolean = false,
+        var notifyMe: Boolean? = null,
 
         @SerializedName("campaign_id")
         val campaignId: String = "",

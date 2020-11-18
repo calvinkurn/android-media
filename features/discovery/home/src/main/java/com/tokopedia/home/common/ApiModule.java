@@ -11,13 +11,17 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.core.OkHttpFactory;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
+import com.tokopedia.home.beranda.di.HomeScope;
 import com.tokopedia.home.constant.BerandaUrl;
+import com.tokopedia.network.CommonNetwork;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
@@ -116,21 +120,14 @@ public class ApiModule {
     }
 
     @HomeAceQualifier
+    @HomeScope
     @Provides
-    public Retrofit provideAceRetrofit(@HomeAceQualifier OkHttpClient okHttpClient) {
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-        return new Retrofit.Builder()
-                .baseUrl(BerandaUrl.ACE_URL)
-                .addConverterFactory(new GeneratedHostConverter())
-                .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .build();
+    public Retrofit provideAceRetrofit(@ApplicationContext Context context, UserSessionInterface userSession) {
+        return CommonNetwork.createRetrofit(
+                context,
+                TokopediaUrl.getInstance().getACE(),
+                (NetworkRouter) context,
+                (UserSession) userSession
+        );
     }
 }

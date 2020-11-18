@@ -75,6 +75,10 @@ fun <T : Any> List<T>.each(action: T.() -> Unit) {
 
 fun String.removeDecimalSuffix(): String = this.removeSuffix(".00")
 
+fun joinToString(strings: List<String>, separator: String): String = strings.joinToString(separator)
+
+fun joinToStringFromListInt(ints: List<Int>, separator: String): String = ints.joinToString(separator)
+
 const val DEFAULT_DEBOUNCE_IN_MILIS = 250L
 fun rxViewClickDebounce(view: View, timeout: Long = DEFAULT_DEBOUNCE_IN_MILIS): Observable<Boolean> =
         Observable.create({ emitter: Emitter<Boolean> ->
