@@ -181,8 +181,8 @@
     <ImageView
         android:id="@+id/fab_detail_pdp"
         android:contentDescription="@string/content_desc_fab_detail_pdp"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintEnd_toEndOf="parent"
@@ -192,9 +192,9 @@
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/share_product_pdp"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
-        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_8"
         android:visibility="gone"
         app:icon_name="SHARE_MOBILE"
         app:layout_constraintBottom_toBottomOf="@id/fab_detail_pdp"
