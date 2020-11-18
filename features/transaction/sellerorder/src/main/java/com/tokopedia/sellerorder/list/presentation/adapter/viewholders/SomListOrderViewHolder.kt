@@ -43,6 +43,8 @@ class SomListOrderViewHolder(
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
     }
 
+    private var shouldContinueDraw = false
+
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
             itemView.setOnClickListener {
@@ -70,6 +72,11 @@ class SomListOrderViewHolder(
                 listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
             }
         }
+    }
+
+    override fun onViewRecycled() {
+        shouldContinueDraw = true
+        super.onViewRecycled()
     }
 
     private fun touchCheckBox(element: SomListOrderUiModel) {
@@ -106,9 +113,10 @@ class SomListOrderViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupCourierInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
-            tvSomListCourierValue.text = element.courierName
+            tvSomListCourierValue.text = "${element.courierName}${" - ${element.courierProductName}".takeIf { element.courierProductName.isNotBlank() }.orEmpty()}"
             tvSomListCourierLabel.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
             tvSomListCourierValue.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
         }
@@ -128,7 +136,7 @@ class SomListOrderViewHolder(
             tvSomListProductName.apply {
                 element.orderProduct.firstOrNull()?.let { product ->
                     val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
-                    val productVariant = product.productName.split(" - ").lastOrNull().orEmpty().trim()
+                    val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
                     text = composeProductName(productName, productVariant)
                     val layoutParams = layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.verticalBias = if (element.orderProduct.size == 1) {
@@ -136,19 +144,26 @@ class SomListOrderViewHolder(
                     } else 0f
                     this.layoutParams = layoutParams
                     viewTreeObserver.addOnPreDrawListener {
-                        val currentText = text?.toString()?.replace("($productVariant)", "")?.replace("...", "").orEmpty().trim()
                         val lineCount = layout.lineCount
                         for (i in 0 until lineCount) {
                             val ellipsisCount = layout.getEllipsisCount(i)
                             if (ellipsisCount > 0) {
-                                val croppedProductName = "${currentText.removeRange(currentText.length - ellipsisCount - 3, currentText.length).trim()}..."
-                                text = composeProductName(croppedProductName, productVariant)
-                                return@addOnPreDrawListener false
+                                if (text.contains(composeProductName(productName, productVariant))) {
+                                    val start = productName.length - ellipsisCount
+                                    val end = productName.length
+                                    if (start in 0..end) {
+                                        val croppedProductName = "${productName.removeRange(start, end).trim()}..."
+                                        text = composeProductName(croppedProductName, productVariant)
+                                        return@addOnPreDrawListener false
+                                    }
+                                }
                             }
                         }
 
+                        viewTreeObserver.removeOnPreDrawListener(this)
                         true
                     }
+                    return@apply
                 }
             }
             tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
@@ -220,6 +235,7 @@ class SomListOrderViewHolder(
         with(itemView) {
             checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
             checkBoxSomListMultiSelect.isChecked = element.isChecked
+            checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (element.cancelRequest == 0) {
@@ -263,7 +279,7 @@ class SomListOrderViewHolder(
     }
 
     private fun composeProductName(productName: String, variant: String): SpannableString {
-        val rawText = "$productName ($variant)"
+        val rawText = "$productName${" ($variant)".takeIf { variant.isNotBlank() }.orEmpty()}"
         if (variant.isBlank()) return SpannableString(rawText)
         return itemView.context?.run {
             val variantColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)

@@ -449,15 +449,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        viewModel.setSearchParam(text.orEmpty())
-        shouldScrollToTop = true
-        loadFilters(false)
-        if (shouldReloadOrderListImmediately()) {
-            refreshOrderList()
-        } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
+        if (textChangeJob?.isActive == false && getSwipeRefreshLayout(view)?.isRefreshing == false) {
+            skipSearch = true
+            textChangeJob?.cancel()
+            viewModel.setSearchParam(text.orEmpty())
+            shouldScrollToTop = true
+            loadFilters(false)
+            if (shouldReloadOrderListImmediately()) {
+                refreshOrderList()
+            } else {
+                getSwipeRefreshLayout(view)?.isRefreshing = true
+            }
+            SomAnalytics.eventSubmitSearch(text.orEmpty())
         }
-        SomAnalytics.eventSubmitSearch(text.orEmpty())
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -1213,12 +1217,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
+        skipSearch = false
         hideLoading()
         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.isEmpty()) {
             showEmptyState()
             multiEditViews.gone()
+            toggleBulkActionButtonVisibility()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText.orEmpty()) {
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
@@ -1226,6 +1232,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
+                toggleBulkActionButtonVisibility()
                 if (shouldScrollToTop) {
                     shouldScrollToTop = false
                     rvSomList.addOneTimeGlobalLayoutListener {
