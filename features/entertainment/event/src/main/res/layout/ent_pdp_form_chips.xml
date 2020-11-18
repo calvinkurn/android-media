@@ -14,13 +14,12 @@
         app:typographyType="body_3"
         />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:id="@+id/rv_event_form_chip"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_width="match_parent"
+    <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
+        android:id="@+id/chip_event_form"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginTop="@dimen/spacing_lvl2"
         />
 
 </LinearLayout>

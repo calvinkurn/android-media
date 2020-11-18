@@ -19,8 +19,7 @@ import java.util.regex.Pattern
 
 class EventPDPFormAdapter(val userSession: UserSessionInterface,
                           val onClickFormListener: OnClickFormListener,
-                          val textFormListener: EventPDPTextFieldViewHolder.TextFormListener,
-                          val datePickerListener: EventPDPDatePickerViewHolder.Listener
+                          val textFormListener: EventPDPTextFieldViewHolder.TextFormListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var formData: MutableList<Form> = mutableListOf()
@@ -34,9 +33,12 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         return when(viewType) {
             TEXT_TYPE -> EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
                     ::addOrRemoveData, userSession, onClickFormListener, textFormListener)
-            CHECKBOX_TYPE -> EventPDPCheckBoxViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPCheckBoxViewHolder.LAYOUT_CHECKBOX, parent, false))
-            DATEPICKER_TYPE -> EventPDPDatePickerViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPDatePickerViewHolder.LAYOUT_DATE_PICKER, parent, false), datePickerListener)
-            CHIP_TYPE -> EventPDPChipsViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPChipsViewHolder.LAYOUT_CHIPS, parent, false))
+            CHECKBOX_TYPE -> EventPDPCheckBoxViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPCheckBoxViewHolder.LAYOUT_CHECKBOX, parent, false),
+                    ::addOrRemoveData)
+            DATEPICKER_TYPE -> EventPDPDatePickerViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPDatePickerViewHolder.LAYOUT_DATE_PICKER, parent, false), 
+                    ::addOrRemoveData, onClickFormListener)
+            CHIP_TYPE -> EventPDPChipsViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPChipsViewHolder.LAYOUT_CHIPS, parent, false),
+                    ::addOrRemoveData)
             else -> EventPDPTextFieldViewHolder(LayoutInflater.from(parent.context).inflate(EventPDPTextFieldViewHolder.LAYOUT_TEXT, parent, false),
                 ::addOrRemoveData, userSession, onClickFormListener, textFormListener)
         }

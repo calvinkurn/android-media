@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.pdp.data.Form
+import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.toFormattedString
 import kotlinx.android.synthetic.main.ent_pdp_form_date_picker_item.view.*
 import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
@@ -13,7 +14,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class EventPDPDatePickerViewHolder (val view: View,
-                                    val listener: Listener
+                                    val addOrRemoveData: (Int, String, String) -> Unit,
+                                    val listener: OnClickFormListener
 ) : RecyclerView.ViewHolder(view){
 
     fun bind(element: Form, position: Int){
@@ -36,19 +38,17 @@ class EventPDPDatePickerViewHolder (val view: View,
             }
 
             if(listener.getDate() != null){
-                val dateTime = listener.getDate()?.time?.toFormattedString("dd MMMM yyyy", LocaleUtils.getIDLocale())
-                val dateValue = SimpleDateFormat("yyyy-MM-dd").format(listener.getDate()?.time)
+                val dateTime = listener.getDate()?.time?.toFormattedString(SHOW_FORMAT, LocaleUtils.getIDLocale())
+                val dateValue = SimpleDateFormat(VALUE_FORMAT).format(listener.getDate()?.time)
                 tg_event_date_picker.textFieldInput.setText(dateTime)
+                addOrRemoveData(position, dateValue, "")
             }
         }
     }
 
     companion object {
+        const val VALUE_FORMAT = "yyyy-MM-dd"
+        const val SHOW_FORMAT = "dd MMMM yyyy"
         val LAYOUT_DATE_PICKER = R.layout.ent_pdp_form_date_picker_item
-    }
-
-    interface Listener {
-        fun getDate(): Calendar?
-        fun clickDatePicker(title: String, position: Int)
     }
 }

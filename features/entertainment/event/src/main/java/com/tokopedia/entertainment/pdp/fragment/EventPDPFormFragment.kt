@@ -31,9 +31,6 @@ import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.ent_pdp_form_fragment.*
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.EMPTY_TYPE
-import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter.Companion.REGEX_TYPE
-import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPDatePickerViewHolder
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventPDPTextFieldViewHolder
 import com.tokopedia.entertainment.pdp.data.checkout.AdditionalType
 import com.tokopedia.entertainment.pdp.data.checkout.EventCheckoutAdditionalData
@@ -47,13 +44,13 @@ import java.util.*
 import kotlin.collections.LinkedHashMap
 
 class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
-        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener,
-        EventPDPDatePickerViewHolder.Listener{
+        EventPDPTextFieldViewHolder.TextFormListener, EventFormBottomSheetAdapter.Listener{
 
     private var urlPDP = ""
     private var keyActiveBottomSheet = ""
     private var positionActiveForm = 0
     private var selectedCalendar: Calendar? = null
+    private var selectedCheckBox: Boolean = false
     var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
     var listBottomSheetTemp : LinkedHashMap<String, String> = linkedMapOf()
     val bottomSheets = BottomSheetUnify()
@@ -90,7 +87,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     }
 
     private fun setupAdapter() {
-        formAdapter = EventPDPFormAdapter(userSession, this, this, this)
+        formAdapter = EventPDPFormAdapter(userSession, this, this)
     }
 
     private fun setupView() {
