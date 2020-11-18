@@ -23,10 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalPayment
-import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.*
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -41,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
@@ -55,6 +53,7 @@ import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
 import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopUpWebViewActivity
@@ -722,6 +721,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             showPreferenceListBottomSheet()
         }
 
+        override fun onAddAddress(token: Token?) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2).apply {
+                putExtra(AddressListFragment.EXTRA_IS_FULL_FLOW, true)
+                putExtra(AddressListFragment.EXTRA_IS_LOGISTIC_LABEL, false)
+                putExtra(CheckoutConstant.KERO_TOKEN, token)
+            }, REQUEST_CODE_ADD_ADDRESS)
+        }
+
+        override fun onAddressChange(addressId: String) {
+            viewModel.chooseAddress(addressId)
+        }
+
         override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
             orderSummaryAnalytics.eventChooseCourierSelectionOSP(shippingCourierViewModel.productData.shipperId.toString())
             viewModel.chooseCourier(shippingCourierViewModel)
@@ -739,7 +750,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         override fun chooseAddress() {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
-                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment)
+                newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, viewModel.getAddressCornerUseCase.get())
             }
         }
 
@@ -1236,6 +1247,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_CREDIT_CARD_ERROR = 16
 
         const val REQUEST_CODE_OVO_TOP_UP = 17
+
+        const val REQUEST_CODE_ADD_ADDRESS = 18
 
         const val QUERY_PRODUCT_ID = "product_id"
 

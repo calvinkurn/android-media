@@ -19,10 +19,13 @@ import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.CourierConstant
+import com.tokopedia.logisticdata.data.entity.address.Token
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.AddressListBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -124,8 +127,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         val shipping = shipment
 
-        tickerShippingPromo?.gone()
-
         if (shipping == null || shipping.serviceName.isNullOrEmpty()) {
             // loading?
         } else {
@@ -153,8 +154,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-//                        tvBboPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
-//                        tvShippingSlashPrice?.gone()
                         tvShippingDiscountPrice?.gone()
                     } else {
                         val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
@@ -166,13 +165,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         tvShippingDiscountPrice?.text = span
                         tvShippingDiscountPrice?.visible()
-//                        tvBboPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-//                        tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-//                        tvShippingSlashPrice?.paintFlags?.let {
-//                            tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
-//                        }
-//                        tvShippingSlashPrice?.visible()
                     }
+                } else {
+                    tvShippingDiscountPrice?.gone()
                 }
             } else {
                 tvShippingDuration?.text = "Pengiriman"
@@ -187,27 +182,11 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 }
                 btnReloadShipping?.visible()
                 iconReloadShipping?.visible()
+                tvShippingDiscountPrice?.gone()
+                tickerShippingPromo?.gone()
             }
         }
     }
-
-//    private fun renderBbo(shipping: OrderShipment, tvBboPrice: Typography?) {
-//        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
-//            tvShippingName?.text = view.context.getString(R.string.lbl_osp_free_shipping)
-//            tvShippingDuration?.text = generateServiceDuration(shipping.logisticPromoViewModel.title)
-//            if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-//                tvBboPrice?.text = view.context.getString(R.string.lbl_osp_free_shipping_only_price)
-//                tvShippingSlashPrice?.gone()
-//            } else {
-//                tvBboPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
-//                tvShippingSlashPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
-//                tvShippingSlashPrice?.paintFlags?.let {
-//                    tvShippingSlashPrice?.paintFlags = it or Paint.STRIKE_THRU_TEXT_FLAG
-//                }
-//                tvShippingSlashPrice?.visible()
-//            }
-//        }
-//    }
 
     private fun renderBboTicker(shipping: OrderShipment) {
         if (shipping.logisticPromoTickerMessage?.isNotEmpty() == true && shipping.shippingRecommendationData?.logisticPromo != null) {
@@ -424,8 +403,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment) {
+    fun showAddressBottomSheet(fragment: OrderSummaryPageFragment, usecase: GetAddressCornerUseCase) {
+        AddressListBottomSheet(usecase, object : AddressListBottomSheet.AddressListBottomSheetListener {
+            override fun onSelect(addressId: String) {
+                listener.onAddressChange(addressId)
+            }
 
+            override fun onAddAddress(token: Token?) {
+                listener.onAddAddress(token)
+            }
+        }).show(fragment, preference.preference.address.addressId.toString())
     }
 
     fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
@@ -507,6 +494,10 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     interface OrderPreferenceCardListener {
 
         fun onChangePreferenceClicked()
+
+        fun onAddAddress(token: Token?)
+
+        fun onAddressChange(addressId: String)
 
         fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel)
 

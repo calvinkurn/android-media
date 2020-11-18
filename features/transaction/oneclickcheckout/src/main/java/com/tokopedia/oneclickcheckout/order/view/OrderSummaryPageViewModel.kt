@@ -8,6 +8,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
@@ -38,6 +39,7 @@ import javax.inject.Inject
 
 class OrderSummaryPageViewModel @Inject constructor(private val executorDispatchers: ExecutorDispatchers,
                                                     val getPreferenceListUseCase: Lazy<GetPreferenceListUseCase>,
+                                                    val getAddressCornerUseCase: Lazy<GetAddressCornerUseCase>,
                                                     private val cartProcessor: OrderSummaryPageCartProcessor,
                                                     private val logisticProcessor: OrderSummaryPageLogisticProcessor,
                                                     private val checkoutProcessor: OrderSummaryPageCheckoutProcessor,
@@ -311,6 +313,25 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
                 globalEvent.value = newGlobalEvent
             }
+        }
+    }
+
+    fun chooseAddress(addressId: String) {
+        launch(executorDispatchers.main) {
+            var param = generateUpdateCartParam()
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
+            }
+            param = param.copy(profile = UpdateCartOccProfileRequest(
+                    addressId = addressId
+            ))
+            globalEvent.value = OccGlobalEvent.Loading
+            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
+            if (isSuccess) {
+                clearBboIfExist()
+            }
+            globalEvent.value = newGlobalEvent
         }
     }
 

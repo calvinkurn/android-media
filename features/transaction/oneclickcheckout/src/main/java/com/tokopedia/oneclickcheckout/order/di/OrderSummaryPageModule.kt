@@ -12,6 +12,8 @@ import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
@@ -62,6 +64,12 @@ open class OrderSummaryPageModule(private val activity: Activity) {
     @Provides
     fun providesGetPreferenceListUseCase(graphqlRepository: GraphqlRepository): GetPreferenceListUseCase {
         return GetPreferenceListUseCaseImpl(GraphqlUseCase(graphqlRepository), PreferenceModelMapper)
+    }
+
+    @OrderSummaryPageScope
+    @Provides
+    fun provideGetAddressCornerUseCase(context: Context, graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase, mapper: AddressCornerMapper): GetAddressCornerUseCase {
+        return GetAddressCornerUseCase(context, graphqlUseCase, mapper)
     }
 
     @OrderSummaryPageScope
