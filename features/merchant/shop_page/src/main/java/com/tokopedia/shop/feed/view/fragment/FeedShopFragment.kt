@@ -294,7 +294,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onResume() {
         super.onResume()
-        if (userVisibleHint && isLoadingInitialData) {
+        if (isLoadingInitialData) {
             loadInitialData()
         }
     }
