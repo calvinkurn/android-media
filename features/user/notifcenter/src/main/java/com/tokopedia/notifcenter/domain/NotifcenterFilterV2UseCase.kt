@@ -2,13 +2,15 @@ package com.tokopedia.notifcenter.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.state.Resource
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class NotifcenterFilterV2UseCase @Inject constructor(
-        private val gqlUseCase: GraphqlUseCase<NotifcenterFilterResponse>
+        private val gqlUseCase: GraphqlUseCase<NotifcenterFilterResponse>,
+        private val cacheManager: NotifcenterCacheManager
 ) {
 
     fun getFilter(
@@ -28,8 +30,18 @@ class NotifcenterFilterV2UseCase @Inject constructor(
         emit(Resource.success(networkFilter, isNeedUpdate))
     }
 
+    private fun getFilterFromCache(role: Int): NotifcenterFilterResponse? {
+        val cacheKey = getCacheKey(role)
+        return cacheManager.loadCache(cacheKey, NotifcenterFilterResponse::class.java)
+    }
+
     private fun saveToCache(role: Int, networkFilter: NotifcenterFilterResponse) {
-        //TODO: Impl later
+        val cacheKey = getCacheKey(role)
+        cacheManager.saveCache(cacheKey, networkFilter)
+    }
+
+    private fun getCacheKey(role: Int): String {
+        return "role - ${javaClass.name}"
     }
 
     private suspend fun getFilterFromNetwork(
@@ -70,10 +82,6 @@ class NotifcenterFilterV2UseCase @Inject constructor(
             }
         }
         return false
-    }
-
-    private fun getFilterFromCache(role: Int): NotifcenterFilterResponse? {
-        return null
     }
 
     companion object {

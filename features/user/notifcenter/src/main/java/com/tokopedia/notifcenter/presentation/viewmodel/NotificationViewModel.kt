@@ -116,7 +116,7 @@ class NotificationViewModel @Inject constructor(
                     }
                 },
                 {
-
+                    _filterList.postValue(Resource.error(it, null))
                 }
         )
     }

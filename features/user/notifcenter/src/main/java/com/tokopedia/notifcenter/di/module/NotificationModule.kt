@@ -3,6 +3,8 @@ package com.tokopedia.notifcenter.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.notifcenter.common.network.NotifcenterCacheManager
+import com.tokopedia.notifcenter.common.network.NotifcenterCacheManagerImpl
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
@@ -36,7 +38,9 @@ class NotificationModule {
     @Provides
     @NotificationScope
     @Named("recommendationQuery")
-    fun provideRecommendationRawQuery(@NotificationContext context: Context): String {
+    fun provideRecommendationRawQuery(
+            @NotificationContext context: Context
+    ): String {
         return GraphqlHelper.loadRawString(
                 context.resources,
                 com.tokopedia.recommendation_widget_common.R.raw.query_recommendation_widget
@@ -57,6 +61,18 @@ class NotificationModule {
             @NotificationContext context: Context
     ): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @NotificationScope
+    @Provides
+    internal fun provideTopchatCacheManager(
+            @NotificationContext context: Context
+    ): NotifcenterCacheManager {
+        val topchatCachePref = context.getSharedPreferences(
+                "prefs_notifcenter",
+                Context.MODE_PRIVATE
+        )
+        return NotifcenterCacheManagerImpl(topchatCachePref)
     }
 
 }

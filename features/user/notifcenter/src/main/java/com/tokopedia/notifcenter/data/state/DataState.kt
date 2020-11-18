@@ -10,7 +10,7 @@ enum class Status {
 class Resource<out T> private constructor(
         val status: Status,
         val data: T?,
-        val message: String?,
+        val throwable: Throwable?,
         val needUpdate: Boolean = true
 ) {
     companion object {
@@ -18,8 +18,8 @@ class Resource<out T> private constructor(
             return Resource(Status.SUCCESS, data, null)
         }
 
-        fun <T> error(msg: String, data: T?): Resource<T> {
-            return Resource(Status.ERROR, data, msg)
+        fun <T> error(throwable: Throwable, data: T?): Resource<T> {
+            return Resource(Status.ERROR, data, throwable)
         }
 
         fun <T> loading(data: T?): Resource<T> {

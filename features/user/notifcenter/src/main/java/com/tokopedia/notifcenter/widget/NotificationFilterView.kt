@@ -48,6 +48,7 @@ class NotificationFilterView : LinearLayout {
         when (dataState.status) {
             Status.LOADING -> rvFilterAdapter?.showLoading(dataState.data)
             Status.SUCCESS -> rvFilterAdapter?.successLoading(dataState.data, dataState.needUpdate)
+            Status.ERROR -> rvFilterAdapter?.errorLoading(dataState.data)
         }
     }
 

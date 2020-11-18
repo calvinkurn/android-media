@@ -23,6 +23,10 @@ class NotificationFilterAdapter constructor(
     private val defaultFilter = FilterUiModel()
     private var selectedFilter = defaultFilter
 
+    fun reset() {
+        selectedFilter = defaultFilter
+    }
+
     fun showLoading(data: NotifcenterFilterResponse?) {
         if (data == null) {
             visitables.clear()
@@ -40,8 +44,16 @@ class NotificationFilterAdapter constructor(
         }
     }
 
-    fun reset() {
-        selectedFilter = defaultFilter
+    fun errorLoading(data: NotifcenterFilterResponse?) {
+        if (isLoadingStateView()) {
+            visitables.clear()
+            notifyDataSetChanged()
+        }
+    }
+
+    private fun isLoadingStateView(): Boolean {
+        val firstItem = visitables.getOrNull(0)
+        return visitables.size == 1 && firstItem != null && firstItem is FilterLoadingUiModel
     }
 
     override fun onCreateViewHolder(
