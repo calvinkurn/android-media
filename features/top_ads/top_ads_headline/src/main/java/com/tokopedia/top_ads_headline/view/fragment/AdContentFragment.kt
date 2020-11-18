@@ -32,6 +32,7 @@ import javax.inject.Inject
 
 private const val SELECT_PRODUCT_REQUEST_CODE = 1001
 private const val MAX_PRODUCT_PREVIEW = 3
+private const val MIN_PROMOTIONAL_MSG_COUNT = 20
 
 class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
@@ -137,8 +138,6 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         when {
             selectedTopAdsProducts.isEmpty() -> {
                 productPickerErrorText.show()
-            }
-            promotionalMessageInputText.textFieldInput.text.toString().isBlank() -> {
                 view?.let { it1 -> Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
             }
             else -> {
@@ -177,6 +176,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             it.slogan = promotionalMessage
             showTopAdsBannerPreview()
         }
+        btnSubmit.isEnabled = promotionalMessage.length >= MIN_PROMOTIONAL_MSG_COUNT
     }
 
     private fun setUpSelectedText() {
@@ -201,7 +201,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         selectedTopAdsProducts.forEach {
             imageList.add(it.productImage)
         }
-        if (selectedTopAdsProducts.size >= MAX_PRODUCT_PREVIEW) {
+        if (selectedTopAdsProducts.size >= MAX_PRODUCT_PREVIEW - 1) {
             showTopAdsBannerPreview()
         }
         productImagePreviewWidget.setSelectedProductList(imageList)
