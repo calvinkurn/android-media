@@ -307,6 +307,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun observeLiveData() {
         viewModelProductReviewDetail?.reviewInitialData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
+            hidePageLoading()
             when (it) {
                 is Success -> {
                     swipeToRefresh?.isRefreshing = false
