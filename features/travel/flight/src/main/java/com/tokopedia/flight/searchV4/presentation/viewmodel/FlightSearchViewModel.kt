@@ -300,6 +300,8 @@ class FlightSearchViewModel @Inject constructor(
                 filterModel.priceMax < priceFilterStatistic.second) {
             counter++
         }
+        if (filterModel.canFilterSeatDistancing && filterModel.isSeatDistancing) counter++
+        if (filterModel.canFilterFreeRapidTest && filterModel.isFreeRapidTest) counter++
 
         return counter
     }
@@ -320,6 +322,15 @@ class FlightSearchViewModel @Inject constructor(
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             searchNotFoundSent = true
         }
+    }
+
+    fun getQuickFilterItemSize(): Int {
+        var quickFilterItemSize = FILTER_SORT_ITEM_SIZE
+
+        if (filterModel.canFilterSeatDistancing) quickFilterItemSize++
+        if (filterModel.canFilterFreeRapidTest) quickFilterItemSize++
+
+        return quickFilterItemSize
     }
 
     private fun deleteAllSearchData() {
@@ -450,6 +461,7 @@ class FlightSearchViewModel @Inject constructor(
     companion object {
         private const val DEFAULT_PROGRESS_VALUE = 0
         private const val MAX_PROGRESS = 100
+        private const val FILTER_SORT_ITEM_SIZE = 4
     }
 
 }

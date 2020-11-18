@@ -1,5 +1,6 @@
 package com.tokopedia.recentview.view.adapter;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -11,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.recentview.R;
-import com.tokopedia.recentview.view.viewmodel.LabelsViewModel;
+import com.tokopedia.recentview.view.viewmodel.LabelsDataModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
 
     private static final String DEFAULT_WHITE = "#ffffff";
     private static final double MEDIAN_VALUE = 135;
-    private List<LabelsViewModel> listLabel;
+    private List<LabelsDataModel> listLabel;
 
     public LabelsAdapter() {
         this.listLabel = new ArrayList<>();
@@ -49,17 +50,21 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
                     .getColor()));
             background.setStroke(0, 0);
         } else {
-            background.setColor(Color.WHITE);
-            background.setStroke(1, Color.GRAY);
+            if (holder.itemView.getContext() != null) {
+                background.setColor(androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
+                background.setStroke(1, androidx.core.content.ContextCompat.getColor(holder.itemView.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N300));
+            }
 
         }
+
+        if (holder.itemView.getContext() == null) return;
         holder.label.setTextColor(getInverseColor(Color.parseColor(listLabel.get(position)
-                .getColor())));
+                .getColor()), holder.itemView.getContext()));
     }
 
-    private int getInverseColor(int color) {
+    private int getInverseColor(int color, Context context) {
         double y = (299 * Color.red(color) + 587 * Color.green(color) + 114 * Color.blue(color)) / 1000;
-        return y >= MEDIAN_VALUE ? Color.BLACK : Color.WHITE;
+        return y >= MEDIAN_VALUE ? androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700) : androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0);
     }
 
     @Override
@@ -67,7 +72,7 @@ public class LabelsAdapter extends RecyclerView.Adapter<LabelsAdapter.ViewHolder
         return listLabel.size();
     }
 
-    public void setList(List<LabelsViewModel> list) {
+    public void setList(List<LabelsDataModel> list) {
         this.listLabel = list;
         notifyDataSetChanged();
     }

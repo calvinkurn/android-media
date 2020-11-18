@@ -22,7 +22,7 @@ public interface AddAddressContract {
 
         void finishActivity();
 
-        void showErrorSnackbar(String errorMessage);
+        void showErrorToaster(String errorMessage);
 
         boolean isValidAddress();
 

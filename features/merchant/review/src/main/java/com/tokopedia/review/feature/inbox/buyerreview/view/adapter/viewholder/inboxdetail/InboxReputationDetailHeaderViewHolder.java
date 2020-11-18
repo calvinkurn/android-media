@@ -177,22 +177,6 @@ public class InboxReputationDetailHeaderViewHolder extends
         }
     }
 
-    private void setFavorite(RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel) {
-        if (revieweeBadgeSellerViewModel.getIsFavorited() == 1) {
-            MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
-                    .getContext(), R.drawable.white_button_rounded));
-            favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
-                    .grey_500));
-            favoriteText.setText(R.string.already_favorite);
-        } else {
-            MethodChecker.setBackground(favoriteButton, MethodChecker.getDrawable(favoriteButton
-                    .getContext(), R.drawable.green_button_rounded));
-            favoriteText.setTextColor(MethodChecker.getColor(favoriteText.getContext(), R.color
-                    .white));
-            favoriteText.setText(R.string.favorite_button);
-        }
-    }
-
     private void setSmileyOpponent(InboxReputationDetailHeaderViewModel element) {
 
         opponentSmileyText.setText(getOpponentSmileyPromptText(element));
@@ -210,7 +194,7 @@ public class InboxReputationDetailHeaderViewHolder extends
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_bad);
                     break;
                 case SMILEY_NEUTRAL:
-                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.ic_smiley_neutral);
+                    ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_neutral);
                     break;
                 case SMILEY_GOOD:
                     ImageHandler.loadImageWithIdWithoutPlaceholder(opponentSmiley, R.drawable.review_ic_smiley_good);

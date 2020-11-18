@@ -24,7 +24,7 @@ import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -89,6 +89,10 @@ class RegisterInitialViewModel @Inject constructor(
     private val mutableValidateToken = MutableLiveData<String>()
     val validateToken: LiveData<String>
         get() = mutableValidateToken
+
+    private val mutableShowPopup = MutableLiveData<PopupError>()
+    val showPopup: LiveData<PopupError>
+        get() = mutableShowPopup
 
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
@@ -169,6 +173,7 @@ class RegisterInitialViewModel @Inject constructor(
                         userSession,
                         onSuccessLoginTokenFacebook(),
                         onFailedLoginTokenFacebook(),
+                        {showPopup().invoke(it.loginToken.popupError)},
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
                 )
@@ -185,6 +190,7 @@ class RegisterInitialViewModel @Inject constructor(
                         userSession,
                         onSuccessLoginTokenFacebookPhone(),
                         onFailedLoginTokenFacebookPhone(),
+                        { showPopup().invoke(it.loginToken.popupError) },
                         onGoToSecurityQuestion("")
                 )
         )
@@ -200,6 +206,7 @@ class RegisterInitialViewModel @Inject constructor(
                         userSession,
                         onSuccessLoginTokenGoogle(),
                         onFailedLoginTokenGoogle(),
+                        {showPopup().invoke(it.loginToken.popupError)},
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
                 )
@@ -295,6 +302,7 @@ class RegisterInitialViewModel @Inject constructor(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
                 onSuccessLoginTokenAfterSQ(),
                 onFailedLoginTokenAfterSQ(validateToken),
+                {showPopup().invoke(it.loginToken.popupError)},
                 onGoToActivationPageAfterRelogin(validateToken),
                 onGoToSecurityQuestionAfterRelogin("")))
     }
@@ -486,6 +494,12 @@ class RegisterInitialViewModel @Inject constructor(
         return {
             userSession.clearToken()
             mutableActivateUserResponse.value = Fail(it)
+        }
+    }
+
+    private fun showPopup(): (PopupError) -> Unit {
+        return {
+            mutableShowPopup.value = it
         }
     }
 

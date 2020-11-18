@@ -7,10 +7,16 @@ mutation login_email($grant_type: String!, $username: String!, $password: String
     sid
     token_type
     sq_check
+    action
     errors {
       name
       message
     }
     event_code
+    popup_error {
+      header
+      body
+      action
+    }
   }
 }

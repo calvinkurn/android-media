@@ -12,202 +12,6 @@
           },
           "services": [
             {
-              "service_name": "Same Day (6-8 jam)",
-              "service_id": 1002,
-              "service_order": 0,
-              "status": 400,
-              "is_promo": 0,
-              "range_price": {
-                "min_price": 0,
-                "max_price": 0
-              },
-              "etd": {
-                "min_etd": 0,
-                "max_etd": 0
-              },
-              "texts": {
-                "text_range_price": "",
-                "text_etd": "",
-                "text_notes": "",
-                "text_service_desc": " "
-              },
-              "order_priority": {
-                "is_now": false,
-                "inactive_message": "",
-                "price": 0,
-                "formatted_price": "",
-                "static_messages": {
-                  "duration_message": "",
-                  "checkbox_message": "",
-                  "warningbox_message": "",
-                  "fee_message": "",
-                  "pdp_message": ""
-                }
-              },
-              "error": {
-                "error_id": "502",
-                "error_message": "Jarak pengiriman melebihi batas maks. 40 km."
-              },
-              "cod": {
-                "is_cod": 0,
-                "cod_text": ""
-              },
-              "products": [
-                {
-                  "shipper_name": "Gojek",
-                  "shipper_id": 10,
-                  "shipper_product_id": 20,
-                  "shipper_product_name": "Same Day",
-                  "shipper_product_desc": "Layanan pengiriman dengan durasi pengiriman beberapa jam (6 jam) sejak serah terima paket ke kurir dan akan sampai di hari yang sama.",
-                  "is_show_map": 0,
-                  "shipper_weight": 0,
-                  "status": 400,
-                  "recommend": false,
-                  "checksum": "YkpN%2FBEQRXa1FI4NukP0WfiB2k8%3D",
-                  "ut": "1596441505",
-                  "promo_code": "",
-                  "price": {
-                    "price": 0,
-                    "formatted_price": ""
-                  },
-                  "etd": {
-                    "min_etd": 0,
-                    "max_etd": 0
-                  },
-                  "texts": {
-                    "text_price": "",
-                    "text_etd": ""
-                  },
-                  "insurance": {
-                    "insurance_price": 0,
-                    "insurance_type": 0,
-                    "insurance_type_info": "",
-                    "insurance_used_type": 0,
-                    "insurance_used_info": "",
-                    "insurance_used_default": 0
-                  },
-                  "error": {
-                    "error_id": "502",
-                    "error_message": "Jarak pengiriman melebihi batas maks. 40 km."
-                  },
-                  "cod": {
-                    "is_cod_available": 0,
-                    "cod_price": 0,
-                    "cod_text": "",
-                    "formatted_price": ""
-                  },
-                  "features": {
-                    "ontime_delivery_guarantee": {
-                      "available": false,
-                      "value": 0,
-                      "text_label": "",
-                      "text_detail": "",
-                      "url_detail": "",
-                      "icon_url": ""
-                    }
-                  }
-                }
-              ]
-            },
-            {
-              "service_name": "Next Day (1 hari)",
-              "service_id": 1003,
-              "service_order": 0,
-              "status": 200,
-              "is_promo": 0,
-              "range_price": {
-                "min_price": 38000,
-                "max_price": 38000
-              },
-              "etd": {
-                "min_etd": 0,
-                "max_etd": 0
-              },
-              "texts": {
-                "text_range_price": "Rp38.000",
-                "text_etd": "1 hari",
-                "text_notes": "",
-                "text_service_desc": ""
-              },
-              "order_priority": {
-                "is_now": false,
-                "inactive_message": "",
-                "price": 0,
-                "formatted_price": "",
-                "static_messages": {
-                  "duration_message": "",
-                  "checkbox_message": "",
-                  "warningbox_message": "",
-                  "fee_message": "",
-                  "pdp_message": ""
-                }
-              },
-              "error": {
-                "error_id": "",
-                "error_message": ""
-              },
-              "cod": {
-                "is_cod": 0,
-                "cod_text": ""
-              },
-              "products": [
-                {
-                  "shipper_name": "JNE",
-                  "shipper_id": 1,
-                  "shipper_product_id": 6,
-                  "shipper_product_name": "YES",
-                  "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
-                  "is_show_map": 0,
-                  "shipper_weight": 1000,
-                  "status": 200,
-                  "recommend": true,
-                  "checksum": "dvGccL96BJpr21%2FsaNTEYZsCQEo%3D",
-                  "ut": "1596441505",
-                  "promo_code": "",
-                  "price": {
-                    "price": 38000,
-                    "formatted_price": "Rp38.000"
-                  },
-                  "etd": {
-                    "min_etd": 86400,
-                    "max_etd": 86400
-                  },
-                  "texts": {
-                    "text_price": "Rp38.000",
-                    "text_etd": "1 hari"
-                  },
-                  "insurance": {
-                    "insurance_price": 0,
-                    "insurance_type": 3,
-                    "insurance_type_info": "Must insurance",
-                    "insurance_used_type": 2,
-                    "insurance_used_info": "Pembelian Produk di Official Store akan mendapatkan jaminan ganti rugi dari asuransi tanpa tambahan biaya",
-                    "insurance_used_default": 2
-                  },
-                  "error": {
-                    "error_id": "",
-                    "error_message": ""
-                  },
-                  "cod": {
-                    "is_cod_available": 0,
-                    "cod_price": 0,
-                    "cod_text": "",
-                    "formatted_price": ""
-                  },
-                  "features": {
-                    "ontime_delivery_guarantee": {
-                      "available": false,
-                      "value": 0,
-                      "text_label": "",
-                      "text_detail": "",
-                      "url_detail": "",
-                      "icon_url": ""
-                    }
-                  }
-                }
-              ]
-            },
-            {
               "service_name": "Kargo (2-4 hari)",
               "service_id": 1001,
               "service_order": 0,
@@ -225,7 +29,9 @@
                 "text_range_price": "Rp40.000",
                 "text_etd": "2-4 hari",
                 "text_notes": "",
-                "text_service_desc": "Rekomendasi berat di atas 5kg"
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "",
+                "error_code": 0
               },
               "order_priority": {
                 "is_now": false,
@@ -301,6 +107,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 }
               ]
@@ -323,7 +133,9 @@
                 "text_range_price": "Rp7.000 - Rp13.000",
                 "text_etd": "3-4 hari",
                 "text_notes": "",
-                "text_service_desc": ""
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 0
               },
               "order_priority": {
                 "is_now": false,
@@ -399,6 +211,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 },
                 {
@@ -455,6 +271,10 @@
                       "url_detail": "",
                       "icon_url": ""
                     }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 0
                   }
                 }
               ]
@@ -489,6 +309,10 @@
               "formatted_price": "",
               "tnc_text": "",
               "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 0
             }
           },
           "info": {

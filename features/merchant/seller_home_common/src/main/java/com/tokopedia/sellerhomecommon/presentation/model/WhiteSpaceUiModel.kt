@@ -15,8 +15,9 @@ class WhiteSpaceUiModel(
         override val appLink: String = "",
         override val dataKey: String = "",
         override val ctaText: String = "",
+        override val isShowEmpty: Boolean = false,
         override var data: BaseDataUiModel? = null,
-        override val impressHolder: ImpressHolder = ImpressHolder(),
+        override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean = true,
         override var isLoading: Boolean = false,
         override var isFromCache: Boolean = false
