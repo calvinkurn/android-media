@@ -81,7 +81,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvMvc = itemView.findViewById(R.id.tv_mvc_text);
         tvMvcError = itemView.findViewById(R.id.tv_mvc_error);
         layoutMvc = itemView.findViewById(R.id.layout_mvc);
-        flDisableContainer = itemView.findViewById(R.id.fl_image_container);
+        flDisableContainer = itemView.findViewById(R.id.fl_container);
     }
 
     public void bindData(ShippingDurationUiModel shippingDurationUiModel,
