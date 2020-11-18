@@ -1583,12 +1583,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
                 presenter.submitVisorToken(token)
-                Log.d("visor init visor success", "success")
+                Log.d("visor init success", "success")
                 Toast.makeText(context, "token : "+ token, Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailedInitToken(error: String) {
-                Log.d("visor init visor failed", error)
+                Log.d("visor initfailed", error)
                 Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                 SnackbarManager.make(activity, error,Snackbar.LENGTH_SHORT)
             }
@@ -1596,12 +1596,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onSuccessSubmitVisorToken(message: String) {
-        Log.d("visor update data to backend success", message)
+        Log.d("visor update success", message)
         SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
     }
 
     override fun onErrorSubmitVisorToken(message: String) {
-        Log.d("visor update data to backend error", message)
+        Log.d("visor update error", message)
         SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
     }
 
