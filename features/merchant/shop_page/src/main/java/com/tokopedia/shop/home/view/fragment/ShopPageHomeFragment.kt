@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -1615,7 +1616,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 //                startActivity(
 //                        requireActivity().packageManager.getLaunchIntentForPackage(CUSTOMER_APP_PACKAGE)
 //                )
-                RouteManager.route(context, appLink)
+//                RouteManager.route(context, appLink)
+                startActivity(Intent(Intent.ACTION_VIEW).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    data = Uri.parse(appLink)
+                })
             } else {
                 widgetWatchDialogContainer.openPlayStore(requireContext())
             }
