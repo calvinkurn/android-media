@@ -57,7 +57,7 @@
             android:id="@+id/klik"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/topads_headline_klik"
+            android:text="@string/topads_common_headline_klik"
             app:typographyType="body_3"
             app:layout_constraintTop_toTopOf="@id/keywordBid"
             app:layout_constraintBottom_toBottomOf="@id/keywordBid"

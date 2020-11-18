@@ -55,6 +55,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     private var deleteCancel = false
     private var singleAction = false
     private lateinit var adapter: KeywordAdapter
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -81,7 +82,7 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(resources.getLayout(R.layout.topads_dash_fragment_keyword_list), container, false)
-        adapter = KeywordAdapter(KeywordAdapterTypeFactoryImpl(::onCheckedChange, ::setSelectMode, ::startEditActivity))
+        adapter = KeywordAdapter(KeywordAdapterTypeFactoryImpl(::onCheckedChange, ::setSelectMode, ::startEditActivity, true))
         recyclerView = view.findViewById(R.id.key_list)
         setAdapterView()
         return view
@@ -276,11 +277,11 @@ class TopAdsHeadlineKeyFragment : BaseDaggerFragment() {
     private fun onEmpty() {
         adapter.items.add(KeywordEmptyViewModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
-            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
+            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
             btn_submit?.isEnabled = false
             btnAddItem.visibility = View.GONE
         } else {
-            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW,true)
+            adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, true)
         }
         setFilterCount()
         (activity as TopAdsHeadlineAdDetailViewActivity).setKeywordCount(0)

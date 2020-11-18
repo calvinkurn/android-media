@@ -115,7 +115,7 @@ object Utils {
     fun validateKeyword(context: Context?, text: CharSequence?): CharSequence? {
         return if (!text.isNullOrBlank() && text.split(" ").size > 5) {
             context?.getString(R.string.error_max_length_keyword)
-        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9]*$".toRegex())) {
+        } else if (!text.isNullOrBlank() && !text.matches("^[A-Za-z0-9 ]*$".toRegex())) {
             context?.getString(R.string.error_keyword)
         } else if (text?.length ?: 0 > 70) {
             context?.getString(R.string.error_max_length)

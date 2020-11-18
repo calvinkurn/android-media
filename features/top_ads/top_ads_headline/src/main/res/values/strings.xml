@@ -65,7 +65,6 @@
     <string name="topads_headline_enter_keyword_hint">Ketik kata kunci</string>
     <string name="topads_headline_add_button">Tambah</string>
     <string name="topads_headline_keyword_desc">%s orang mencari ini /bulan</string>
-    <string name="topads_headline_klik">/klik</string>
     <string name="topads_headline_keyword_recommended_keyword">REKOMENDASI KATA KUNCI</string>
     <string name="topads_headline_keyword_bottomsheet_desc1">Kata kunci akan menentukan di halaman pencarian kata kunci mana saja iklan </string>
     <string name="topads_headline_keyword_bottomsheet_desc2">Sesuaikan kata kunci dengan nama produk.</string>
@@ -82,10 +81,11 @@
     <string name="topads_headline_schedule_advertising_cost_text">Biaya ini akan dikenakan bila iklanmu tampil di halaman kategori, feed, dan toko favorit.</string>
     <string name="topads_headline_schedule_tooltip_text">Tips atur jadwal dan anggaran</string>
     <string name="topads_headline_schedule_header">Tetapkan jadwal iklan</string>
+    <string name="topads_headline_daily_budget_header">Batasi Anggaran Iklan</string>
     <string name="topads_headline_schedule_warning_text">Tanpa jadwal, iklan akan ditampilkan terus menerus tanpa batasan waktu.</string>
     <string name="topads_headline_schedule_start_date">Mulai</string>
     <string name="topads_headline_schedule_end_date">Selesai</string>
-    <string name="topads_headline_schedule_add_appearance_message">Iklan akan tampil selama 30 hari</string>
+    <string name="topads_headline_schedule_add_appearance_message">Iklan akan tampil selama %d hari</string>
     <string name="topads_headline_schedule_budget_cost_message">Iklan akan tampil seharian sampai biaya iklan yang dikeluarkan mencapai Rp%d per harinya.</string>
     <string name="topads_headline_hari">/hari</string>
     <string name="topads_headline_start_date_header">Pilih tanggal dan jam mulai</string>
