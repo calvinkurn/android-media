@@ -55,7 +55,7 @@ object DynamicProductDetailTracking {
 
         fun eventClickShareFromContent(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_SHARE_FROM_CONTENT,
                     "")
@@ -69,7 +69,7 @@ object DynamicProductDetailTracking {
 
         fun eventClickReportFromComponent(productInfo: DynamicProductInfoP1?, userId: String, componentTrackDataModel: ComponentTrackDataModel?) {
             val mapEvent = TrackAppUtils.gtmData(
-                    "",
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Action.CLICK_REPORT_FROM_COMPONENT,
                     "")
