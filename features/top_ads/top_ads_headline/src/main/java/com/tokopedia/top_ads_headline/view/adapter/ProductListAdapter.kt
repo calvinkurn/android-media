@@ -90,7 +90,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
             selectedProductList.remove(product)
             productConst = PRODUCT_REMOVED
         } else {
-            if (selectedProductList.size == MAX_PRODUCT_SELECTION) {
+            if (selectedProductList.size >= MAX_PRODUCT_SELECTION) {
                 productListAdapterListener?.onProductOverSelect()
             } else {
                 selectedProductList.add(product)

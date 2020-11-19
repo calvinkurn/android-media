@@ -6,6 +6,7 @@
     <string name="topads_headline_ad_detail_name_header">Nama Iklan Toko</string>
     <string name="topads_headline_ad_detail_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
     <string name="topads_headline_ad_detail_name_hint">Masukkan nama iklan</string>
+    <string name="topads_headline_ad_detail_dummy_headline_name">Headline-1</string>
     <string name="topads_headline_continue">Lanjutkan</string>
     <string name="topads_headline_ad_name_required">Nama iklan harus diisi</string>
     <string name="topads_headline_ad_content_name_header">Produk yang ditampilkan</string>
@@ -87,7 +88,7 @@
     <string name="topads_headline_schedule_start_date">Mulai</string>
     <string name="topads_headline_schedule_end_date">Selesai</string>
     <string name="topads_headline_schedule_add_appearance_message">Iklan akan tampil selama %d hari</string>
-    <string name="topads_headline_schedule_budget_cost_message">Iklan akan tampil seharian sampai biaya iklan yang dikeluarkan mencapai Rp%d per harinya.</string>
+    <string name="topads_headline_schedule_budget_cost_message">Iklan akan tampil seharian sampai biaya iklan yang dikeluarkan mencapai Rp%s per harinya.</string>
     <string name="topads_headline_hari">/hari</string>
     <string name="topads_headline_start_date_header">Pilih tanggal dan jam mulai</string>
     <string name="topads_headline_end_date_header">Pilih tanggal dan jam selesai</string>
@@ -96,7 +97,8 @@
     <string name="topads_headline_preview_btn">Preview</string>
     <string name="topads_headline_budget_warning_text">Tanpa anggaran iklan, iklan akan tampil sesuai sisa kredit TopAds-mu.</string>
     <string name="topads_headline_preview_bottomsheet_header">Preview %s</string>
-    <string name="topads_headline_budget_cost_error">Batas minimum Rp%s</string>
+    <string name="topads_headline_min_budget_cost_error">Batas minimum Rp%s</string>
+    <string name="topads_headline_max_budget_cost_error">Batas maksimum Rp%s</string>
     <string name="topads_headline_success_title_message">Yay, %s diiklankan!</string>
     <string name="topads_headline_success_subtitle_message">Performa iklanmu dapat dilihat lebih efektif setelah 7 hari iklan berjalan di Dashboard TopAds </string>
     <string name="topads_headline_success_button_message">Kembali ke Dashboard</string>

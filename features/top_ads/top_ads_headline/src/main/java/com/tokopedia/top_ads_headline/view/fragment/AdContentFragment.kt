@@ -138,7 +138,10 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         when {
             selectedTopAdsProducts.isEmpty() -> {
                 productPickerErrorText.show()
-                view?.let { it1 -> Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show() }
+                view?.let { it1 ->
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
+                    Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
             }
             else -> {
                 gotoNextPage()

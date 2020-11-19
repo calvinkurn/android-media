@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.promotional_message_bottom_sheet_layout.*
 
 class PromotionalMessageBottomSheet : BottomSheetUnify() {
     private var storeName: String = ""
+    private val promoMsgRange = 1..19
 
     init {
         showCloseIcon = false
@@ -81,7 +82,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
                             promotionalMessageInputText.setError(true)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_empty_error))
                         }
-                        it.length in 1..19 -> {
+                        it.length in promoMsgRange -> {
                             promotionalMessageInputText.setError(true)
                             promotionalMessageInputText.setMessage(getString(R.string.topads_headline_promotional_message_length_error))
                         }

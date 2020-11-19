@@ -35,6 +35,7 @@ import com.tokopedia.topads.dashboard.view.fragment.BerandaTabFragment
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsProductIklanFragment
 import com.tokopedia.topads.dashboard.view.fragment.insight.TopAdsRecommendationFragment
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDashboardPresenter
+import com.tokopedia.topads.dashboard.view.sheet.NoProductBottomSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineBaseFragment
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.topads_dash_activity_base_layout.*
@@ -53,6 +54,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
     private var tracker: TopAdsDashboardTracking? = null
     private val INSIGHT_PAGE = 2
     private var adType = "-1"
+    private var isNoProduct = false
 
     @Inject
     lateinit var topAdsDashboardPresenter: TopAdsDashboardPresenter
@@ -69,8 +71,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         renderTabAndViewPager()
         header_toolbar?.actionTextView?.setOnClickListener {
             if (GlobalConfig.isSellerApp()) {
-                val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
-                startActivityForResult(intent, AUTO_ADS_DISABLED)
+                navigateToAdTypeSelection()
             }
             TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsEvent(CLICK_BUAT_IKLAN, "")
         }
@@ -92,8 +93,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
             finish()
         })
         createAd.setOnClickListener {
-            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
-            startActivityForResult(intent, AUTO_ADS_DISABLED)
+            navigateToAdTypeSelection()
         }
         createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val height = createAd?.measuredHeight
@@ -255,11 +255,25 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         }
     }
 
+    override fun onNoProduct(isNoProduct: Boolean) {
+        this.isNoProduct = isNoProduct
+    }
+
     override fun setAppBarStateHeadline(state: TopAdsProductIklanFragment.State?) {
         if (state == TopAdsProductIklanFragment.State.COLLAPSED) {
             app_bar_layout.setExpanded(false)
         } else if (state == TopAdsProductIklanFragment.State.EXPANDED) {
             app_bar_layout.setExpanded(true)
+        }
+    }
+
+    private fun navigateToAdTypeSelection() {
+        if (isNoProduct) {
+            val noProductBottomSheet = NoProductBottomSheet.newInstance()
+            noProductBottomSheet.show(supportFragmentManager, "")
+        } else {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_ADS_SELECTION)
+            startActivityForResult(intent, AUTO_ADS_DISABLED)
         }
     }
 }

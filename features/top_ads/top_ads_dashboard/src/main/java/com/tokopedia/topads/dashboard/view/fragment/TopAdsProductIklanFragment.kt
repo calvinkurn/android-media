@@ -345,6 +345,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
     }
 
     private fun noProduct() {
+        adTypeCallBack?.onNoProduct(true)
         adTypeCallBack?.adInfo(MANUAL_AD)
         if (adCurrentState == STATUS_ACTIVE || adCurrentState == STATUS_NOT_DELIVERED) {
             autoAds()
@@ -687,6 +688,7 @@ class TopAdsProductIklanFragment : BaseDaggerFragment(), TopAdsDashboardView, Cu
 
     interface AdInfo {
         fun adInfo(adInfo: String)
+        fun onNoProduct(isNoProduct: Boolean)
     }
 
     interface AppBarAction {

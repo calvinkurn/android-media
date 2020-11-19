@@ -219,6 +219,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         keywordSelectedAdapter.setDefaultValues(data.firstOrNull()?.maxBid,
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
         keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
+        stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0
     }
 
     private fun setAdapter() {

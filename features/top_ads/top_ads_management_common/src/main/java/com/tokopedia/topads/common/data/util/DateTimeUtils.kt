@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.datepicker.LocaleUtils
 import java.util.*
 
-object DateTImeUtils {
+object DateTimeUtils {
 
     fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
 

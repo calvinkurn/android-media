@@ -24,10 +24,10 @@ import com.tokopedia.topads.common.activity.EXTRA_TITLE
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.common.data.internal.ParamObject.HEADLINE_SOURCE
-import com.tokopedia.topads.common.data.util.DateTImeUtils.getSpecifiedDateFromStartDate
-import com.tokopedia.topads.common.data.util.DateTImeUtils.getSpecifiedDateFromToday
-import com.tokopedia.topads.common.data.util.DateTImeUtils.getToday
-import com.tokopedia.topads.common.data.util.Utils
+import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
+import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromToday
+import com.tokopedia.topads.common.data.util.DateTimeUtils.getToday
+import com.tokopedia.topads.common.data.util.Utils.convertToCurrency
 import com.tokopedia.topads.common.data.util.Utils.removeCommaRawString
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -58,7 +58,7 @@ private const val MULTIPLIER = 3
 class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>() {
 
     private val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
-    private var selectedStartDate: Calendar? = context?.getToday()
+    private var selectedStartDate: Calendar? = null
     private var selectedEndDate: Calendar? = null
 
     @Inject
@@ -187,12 +187,12 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
 
     private fun setMinBid() {
         stepperModel?.minBid?.let {
-            val cost = Utils.convertToCurrency(it.toLong())
+            val cost = convertToCurrency(it.toLong())
             advertisingCost.textFieldInput.setText(cost)
             advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
             val budget = it * MULTIPLIER
             stepperModel?.dailyBudget = budget
-            budgetCost.textFieldInput.setText(Utils.convertToCurrency(budget.toLong()))
+            budgetCost.textFieldInput.setText(convertToCurrency(budget.toLong()))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
             budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget)
         }
@@ -203,18 +203,27 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                if (input < stepperModel?.minBid ?: 0) {
-                    advertisingCost.setError(true)
-                    advertisingCost.setMessage(String.format(getString(R.string.topads_headline_budget_cost_error), stepperModel?.minBid
-                            ?: "0"))
-                    btnNext.isEnabled = false
-                } else {
-                    stepperModel?.dailyBudget = input * MULTIPLIER
-                    btnNext.isEnabled = true
-                    advertisingCost.setMessage("")
-                    advertisingCost.setError(false)
-                    budgetCost.textFieldInput.setText(Utils.convertToCurrency(stepperModel?.dailyBudget?.toLong()
-                            ?: 0))
+                when {
+                    input < stepperModel?.minBid ?: 0 -> {
+                        advertisingCost.setError(true)
+                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.minBid?.toLong()
+                                ?: 0)))
+                        btnNext.isEnabled = false
+                    }
+                    input >= stepperModel?.maxBid ?: 0 -> {
+                        advertisingCost.setError(true)
+                        advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), convertToCurrency(stepperModel?.maxBid?.toLong()
+                                ?: 0)))
+                        btnNext.isEnabled = false
+                    }
+                    else -> {
+                        stepperModel?.dailyBudget = input * MULTIPLIER
+                        btnNext.isEnabled = true
+                        advertisingCost.setMessage("")
+                        advertisingCost.setError(false)
+                        budgetCost.textFieldInput.setText(convertToCurrency(stepperModel?.dailyBudget?.toLong()
+                                ?: 0))
+                    }
                 }
             }
         }
@@ -225,7 +234,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
                 val input = number.toInt()
-                budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, input)
+                budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, convertToCurrency(input.toLong()))
                 val minBid = if (advertisingCost.isTextFieldError) {
                     stepperModel?.minBid ?: 0
                 } else {
@@ -234,8 +243,8 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                 if (input < minBid * MULTIPLIER
                         && budgetCost.isVisible) {
                     budgetCost.setError(true)
-                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_budget_cost_error), stepperModel?.dailyBudget
-                            ?: "0"))
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.dailyBudget?.toLong()
+                            ?: 0)))
                     btnNext.isEnabled = false
                 } else {
                     stepperModel?.dailyBudget = input
@@ -301,6 +310,8 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
     private fun setDate() {
         context?.run {
             if (selectedStartDate == null || selectedEndDate == null) {
+                selectedStartDate = getToday()
+                selectedEndDate = getSpecifiedDateFromToday(month = 1)
                 val startDateString = getToday().time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)
                 startDate.textFieldInput.setText(startDateString)
                 val endDateString = getSpecifiedDateFromToday(month = 1).time.toFormattedString(HEADLINE_DATETIME_FORMAT1, localeID)

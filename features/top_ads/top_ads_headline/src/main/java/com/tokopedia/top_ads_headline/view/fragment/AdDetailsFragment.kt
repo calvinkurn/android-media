@@ -43,7 +43,6 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_ad_details, container, false)
     }
 
@@ -107,6 +106,7 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             Utils.dismissKeyboard(context, v)
             true
         }
+        headlineAdNameInput.textFieldInput.setText(getString(R.string.topads_headline_ad_detail_dummy_headline_name))
         headlineAdNameInput.getFirstIcon().setOnClickListener {
             headlineAdNameInput.textFieldInput.setText("")
             it.hide()
