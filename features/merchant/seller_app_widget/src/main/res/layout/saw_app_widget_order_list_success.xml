@@ -73,7 +73,8 @@
         android:layout_alignTop="@+id/tvSawOrderShopName"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="@dimen/unify_space_12"
-        android:background="@color/transparent" />
+        android:background="@color/transparent"
+        tools:src="@drawable/ic_saw_refresh" />
 
     <ListView
         android:id="@+id/lvSawOrderList"
@@ -85,6 +86,19 @@
         android:divider="@null"
         tools:itemCount="4"
         tools:listitem="@layout/saw_app_widget_order_item" />
+
+    <include
+        layout="@layout/saw_app_widget_order_list_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/containerSawOrderSwitch"
+        android:layout_below="@+id/icSawOrderMoreOrder" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/containerSawOrderSwitch"
+        android:background="@color/Unify_N50" />
 
     <LinearLayout
         android:id="@+id/containerSawOrderSwitch"
@@ -98,7 +112,8 @@
             android:id="@+id/imgSawOrderSwitchLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/saw_dimen_6dp" />
+            android:layout_marginEnd="@dimen/saw_dimen_6dp"
+            tools:src="@drawable/ic_saw_arrow_left" />
 
         <TextView
             android:id="@+id/tvSawOrderSwitch"
@@ -115,6 +130,7 @@
             android:id="@+id/imgSawOrderSwitchRight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/saw_dimen_6dp" />
+            android:layout_marginStart="@dimen/saw_dimen_6dp"
+            tools:src="@drawable/ic_saw_arrow_right" />
     </LinearLayout>
 </RelativeLayout>

@@ -7,4 +7,6 @@
     <dimen name="saw_dimen_6dp">6dp</dimen>
     <dimen name="saw_dimen_18dp">18dp</dimen>
     <dimen name="saw_dimen_46dp">46dp</dimen>
+    <dimen name="saw_dimen_142dp">142dp</dimen>
+    <dimen name="saw_dimen_106dp">106dp</dimen>
 </resources>

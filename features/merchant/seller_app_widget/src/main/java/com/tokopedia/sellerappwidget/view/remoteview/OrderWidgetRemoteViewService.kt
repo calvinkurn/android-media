@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import timber.log.Timber
 
@@ -39,14 +38,12 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
         }
 
         override fun onCreate() {
-            println("items -> item : ${items.size}")
+
         }
 
         override fun getViewAt(position: Int): RemoteViews {
             val item = items[position]
-            println("items -> item : $item")
-
-            val remoteViews = RemoteViews(context.packageName, R.layout.saw_app_widget_order_item).apply {
+            return RemoteViews(context.packageName, R.layout.saw_app_widget_order_item).apply {
                 setTextViewText(R.id.tvSawOrderItemProductName, item.product?.productName.orEmpty())
                 setTextViewText(R.id.tvSawOrderItemDeadlineText, item.deadLineText)
 
@@ -59,12 +56,19 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
                 setOnClickFillInIntent(R.id.containerSawOrderItem, fillIntent)
 
                 if (item.productCount > 1) {
-                    setInt(R.id.tvSawOrderItemOtherOrder, "setVisibility", View.VISIBLE)
-                    val otherProducts = "+${item.productCount.minus(1)} produk"
+                    setInt(R.id.tvSawOrderItemOtherOrder, Const.Method.SET_VISIBILITY, View.VISIBLE)
+                    val otherProducts = "+${item.productCount.minus(1)} ${context.getString(R.string.saw_product)}"
                     setTextViewText(R.id.tvSawOrderItemOtherOrder, otherProducts)
                 } else {
-                    setInt(R.id.tvSawOrderItemOtherOrder, "setVisibility", View.GONE)
+                    setInt(R.id.tvSawOrderItemOtherOrder, Const.Method.SET_VISIBILITY, View.GONE)
                 }
+
+                val gridLineVisibility = if (position == items.size.minus(1)) {
+                    View.INVISIBLE
+                } else {
+                    View.VISIBLE
+                }
+                setInt(R.id.horLineSawOrderItem, Const.Method.SET_VISIBILITY, gridLineVisibility)
 
                 val px46 = context.pxToDp(46).toInt()
                 val radius = context.pxToDp(6).toInt()
@@ -80,8 +84,6 @@ class OrderWidgetRemoteViewService : RemoteViewsService() {
                     Timber.i(e)
                 }
             }
-
-            return remoteViews
         }
 
         override fun getLoadingView(): RemoteViews? {

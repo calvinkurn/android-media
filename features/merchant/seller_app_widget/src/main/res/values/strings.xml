@@ -2,4 +2,8 @@
 <resources>
     <string name="saw_ready_to_ship">Siap Dikirim</string>
     <string name="saw_new_order">Pesanan Baru</string>
+    <string name="saw_product">produk</string>
+    <string name="saw_updated">Diperbarui</string>
+    <string name="saw_order_on_empty_message">Belum ada pesanan baru</string>
+    <string name="saw_order_on_empty_sub_message">Yuk, respons pesanan siap dikirim.</string>
 </resources>
