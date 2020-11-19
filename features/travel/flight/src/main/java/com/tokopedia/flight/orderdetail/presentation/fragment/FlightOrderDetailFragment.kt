@@ -400,7 +400,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun navigateToWebview(title: String, htmlContent: String) {
         context?.let {
-            startActivity(FlightOrderDetailBrowserActivity.getIntent(it, title, htmlContent))
+            startActivity(FlightOrderDetailBrowserActivity.getIntent(it,
+                    title,
+                    flightOrderDetailViewModel.orderId,
+                    htmlContent))
         }
     }
 

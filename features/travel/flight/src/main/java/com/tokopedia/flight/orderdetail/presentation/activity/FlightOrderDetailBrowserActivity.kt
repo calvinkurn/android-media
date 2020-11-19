@@ -3,6 +3,8 @@ package com.tokopedia.flight.orderdetail.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.flight.R
@@ -11,19 +13,27 @@ import com.tokopedia.flight.orderdetail.presentation.fragment.FlightOrderDetailB
 class FlightOrderDetailBrowserActivity : BaseSimpleActivity() {
 
     private lateinit var title: String
+    private lateinit var invoiceId: String
     private lateinit var htmlContent: String
 
-    override fun getNewFragment(): Fragment? =
-            FlightOrderDetailBrowserFragment.getInstance(htmlContent)
+    private lateinit var orderDetailFragment: FlightOrderDetailBrowserFragment
+
+    override fun getNewFragment(): Fragment? {
+        orderDetailFragment = FlightOrderDetailBrowserFragment.getInstance(invoiceId, htmlContent)
+        return orderDetailFragment
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setContentView(R.layout.activity_flight_order_detail_browser)
 
         title = intent.getStringExtra(EXTRA_TITLE) ?: ""
+        invoiceId = intent.getStringExtra(EXTRA_INVOICE_ID) ?: ""
         htmlContent = intent.getStringExtra(EXTRA_HTML_CONTENT) ?: ""
 
         savedInstanceState?.let {
             title = it.getString(EXTRA_TITLE, "")
+            invoiceId = it.getString(EXTRA_INVOICE_ID, "")
             htmlContent = it.getString(EXTRA_HTML_CONTENT, "")
         }
 
@@ -38,13 +48,32 @@ class FlightOrderDetailBrowserActivity : BaseSimpleActivity() {
         outState.putString(EXTRA_TITLE, title)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        menuInflater.inflate(R.menu.menu_flight_e_ticket, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_flight_download -> {
+                if (::orderDetailFragment.isInitialized)
+                    orderDetailFragment.printETicket()
+                return true
+            }
+        }
+        return false
+    }
+
     companion object {
         private const val EXTRA_TITLE = "EXTRA_TITLE"
+        private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_HTML_CONTENT = "EXTRA_HTML_CONTENT"
 
-        fun getIntent(context: Context, title: String, htmlContent: String): Intent =
+        fun getIntent(context: Context, title: String, invoiceId: String, htmlContent: String): Intent =
                 Intent(context, FlightOrderDetailBrowserActivity::class.java)
                         .putExtra(EXTRA_TITLE, title)
+                        .putExtra(EXTRA_INVOICE_ID, invoiceId)
                         .putExtra(EXTRA_HTML_CONTENT, htmlContent)
     }
 }
