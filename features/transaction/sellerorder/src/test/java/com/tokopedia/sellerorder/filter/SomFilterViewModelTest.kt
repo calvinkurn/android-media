@@ -134,10 +134,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
         runBlocking {
             somFilterViewModel.resetFilterSelected()
             val somFilterSuccess = (somFilterViewModel.resetFilterResult.value as Success).data
-            val somFilterDataList = somFilterSuccess.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
-            assertNotNull(somFilterDataList)
-            assertNotNull(filterDate)
+            assertNotNull(somFilterSuccess)
         }
     }
 }
