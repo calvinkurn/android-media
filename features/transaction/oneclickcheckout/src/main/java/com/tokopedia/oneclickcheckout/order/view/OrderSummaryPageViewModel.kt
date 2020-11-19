@@ -248,6 +248,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearBboIfExist()
             _orderShipment = it
             orderShipment.value = _orderShipment
+            updateCart()
             validateUsePromo()
         }
     }
@@ -267,6 +268,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderShipment.value = _orderShipment
             sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
             if (it.serviceErrorMessage.isNullOrEmpty()) {
+                updateCart()
                 validateUsePromo()
             } else {
                 calculateTotal(forceButtonState = OccButtonState.DISABLE)
@@ -326,7 +328,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             param = param.copy(profile = UpdateCartOccProfileRequest(
-                    addressId = addressId
+                    addressId = addressId,
+                    serviceId = orderShipment.value.getRealShipperId()
             ))
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)

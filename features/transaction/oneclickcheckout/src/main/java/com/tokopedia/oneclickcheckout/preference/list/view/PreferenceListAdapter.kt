@@ -5,11 +5,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 
-class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : RecyclerView.Adapter<PreferenceListViewHolder>() {
+class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var list: ArrayList<ProfilesItemModel> = ArrayList()
 
-    fun submitList(newList: List<ProfilesItemModel>?) {
+    private var isNewLayout: Boolean = false
+
+    fun submitList(newList: List<ProfilesItemModel>?, isNewLayout: Boolean) {
+        this.isNewLayout = isNewLayout
         list.clear()
         if (newList != null) {
             list.addAll(newList)
@@ -17,14 +20,40 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener,
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PreferenceListViewHolder {
-        return PreferenceListViewHolder(
-                LayoutInflater.from(parent.context).inflate(PreferenceListViewHolder.LAYOUT, parent, false),
-                listener)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            NewMainPreferenceListViewHolder.LAYOUT -> NewMainPreferenceListViewHolder(
+                    LayoutInflater.from(parent.context).inflate(NewMainPreferenceListViewHolder.LAYOUT, parent, false),
+                    listener)
+            NewPreferenceListViewHolder.LAYOUT -> NewPreferenceListViewHolder(
+                    LayoutInflater.from(parent.context).inflate(NewPreferenceListViewHolder.LAYOUT, parent, false),
+                    listener)
+            else -> PreferenceListViewHolder(
+                    LayoutInflater.from(parent.context).inflate(PreferenceListViewHolder.LAYOUT, parent, false),
+                    listener)
+        }
     }
 
-    override fun onBindViewHolder(holder: PreferenceListViewHolder, position: Int) {
-        holder.bind(list[position], currentProfileId, itemCount)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is PreferenceListViewHolder -> {
+                holder.bind(list[position], currentProfileId, itemCount)
+            }
+            is NewMainPreferenceListViewHolder -> {
+                holder.bind(list[position], currentProfileId, itemCount)
+            }
+            is NewPreferenceListViewHolder -> {
+                holder.bind(list[position], currentProfileId, itemCount)
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (!isNewLayout) {
+            return PreferenceListViewHolder.LAYOUT
+        }
+        val mainProfile = list[position].status == 2
+        return if (mainProfile) NewMainPreferenceListViewHolder.LAYOUT else NewPreferenceListViewHolder.LAYOUT
     }
 
     override fun getItemCount(): Int {

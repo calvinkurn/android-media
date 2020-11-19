@@ -100,4 +100,6 @@
     <string name="button_ok_message_ovo_activation">Oke</string>
 
     <string name="message_new_occ_onboarding">Hanya satu klik untuk langsung beli barang ini, jangan lupa cek lagi ulang ya!</string>
+
+    <string name="lbl_new_occ_profile_name">Template Beli Langsung</string>
 </resources>

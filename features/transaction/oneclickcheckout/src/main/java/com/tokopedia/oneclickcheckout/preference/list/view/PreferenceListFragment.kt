@@ -113,7 +113,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     mainContent?.visible()
                     val profiles = it.data.profiles
                     val maxProfiles = it.data.maxProfile
-                    adapter.submitList(profiles)
+                    adapter.submitList(profiles, false)
                     if (profiles.isEmpty()) {
                         ImageHandler.LoadImage(ivEmptyState, EMPTY_STATE_PREFERENCE_PICT)
                         tvHeaderEmptyState?.setText(R.string.preference_list_empty_header)

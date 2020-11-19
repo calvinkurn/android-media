@@ -939,6 +939,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val updateCartParam = viewModel.generateUpdateCartParam()
         if (profileId > 0 && updateCartParam != null) {
             PreferenceListBottomSheet(
+                    isNewFlow = viewModel.isNewFlow,
                     paymentProfile = viewModel.getPaymentProfile(),
                     getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {

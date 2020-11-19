@@ -110,8 +110,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     private fun showHeader() {
         if (preference.profileRecommendation.isNullOrEmpty()) {
-            val profileIndex = preference.profileIndex
-            tvCardHeader?.text = profileIndex
+            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
             if (preference.preference.status == 2) {
                 lblMainPreference?.visible()
             } else {
