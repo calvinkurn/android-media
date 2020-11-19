@@ -52,7 +52,6 @@ import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottom
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
-import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
 import com.tokopedia.sellerorder.list.presentation.adapter.typefactories.SomListAdapterTypeFactory
@@ -402,7 +401,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         adapter.hideLoading()
     }
 
-    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean) {
+    override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         tabActive = if (status.isChecked) {
             viewModel.setStatusOrderFilter(status.id)
             SomAnalytics.eventClickStatusFilter(status.key, status.status)
@@ -422,8 +421,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             checkBoxBulkAction.setIndeterminate(false)
         }
         this.shouldScrollToTop = shouldScrollToTop
-        loadFilters(false)
-        if (shouldReloadOrderListImmediately()) {
+        if (refreshFilter) {
+            loadFilters(false)
+        }
+        if (shouldReloadOrderListImmediately() || !refreshFilter) {
             refreshOrderList()
         } else {
             getSwipeRefreshLayout(view)?.isRefreshing = true
@@ -703,8 +704,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     if (tabActive.isNotBlank() && tabActive != SomConsts.STATUS_ALL_ORDER) {
                         result.data.statusList.find { it.key == tabActive }?.let { activeFilter ->
                             activeFilter.isChecked = true
-                            somListSortFilterTab.selectTab(activeFilter)
-                            refreshOrderList()
+                            onTabClicked(activeFilter, shouldScrollToTop, false)
                         }
                     }
                     somListSortFilterTab.show(result.data)
@@ -1458,22 +1458,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             it.isSelected
         }?.key
         tabActive = selectedStatusFilterKey.orEmpty()
-        val somListFilter = FilterResultMapper.convertToMapSomListFilterUiModel(
-                somFilterUiModelList, idFilter, somListSortFilterTab.getSomListFilterUiModel())
-        somListFilter.statusList.find { it.key == selectedStatusFilterKey }.let {
-            if (it != null) {
-                somListSortFilterTab.selectTab(it)
-            } else {
-                somListSortFilterTab.selectTabReset()
-                somListSortFilterTab.show(somListFilter)
-                somListSortFilterTab.updateCounterFilter()
-            }
-            loadFilters(false)
-            if (shouldReloadOrderListImmediately()) {
-                refreshOrderList()
-            } else {
-                getSwipeRefreshLayout(view)?.isRefreshing = true
-            }
+        loadFilters(false)
+        if (shouldReloadOrderListImmediately()) {
+            refreshOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
         }
         setDefaultSortByValue()
     }
