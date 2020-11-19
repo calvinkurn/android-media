@@ -75,7 +75,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        contactViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        contactViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
@@ -114,9 +114,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         til_contact_name.editText.setText(contactData.name)
         til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
-        til_contact_email.setLabel(getString(R.string.travel_contact_data_email_title))
-        til_contact_email.editText.setText(contactData.email)
-        til_contact_email.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_email.textFieldInput.setText(contactData.email)
 
         til_contact_phone_number.editText.setText(contactData.phone)
         til_contact_phone_number.setErrorTextAppearance(R.style.ErrorTextAppearance)
@@ -153,7 +151,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         if (contact != null) {
             selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
 
-            til_contact_email.editText.setText(contact.email)
+            til_contact_email.textFieldInput.setText(contact.email)
             til_contact_phone_number.editText.setText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
@@ -167,7 +165,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     private fun onSaveButtonClicked() {
         if (validateData()) {
             contactData.name = til_contact_name.editText.text.toString()
-            contactData.email = til_contact_email.editText.text.toString()
+            contactData.email = til_contact_email.textFieldInput.text.toString()
             contactData.phone = til_contact_phone_number.editText.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
@@ -194,8 +192,9 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
             til_contact_name.error = getString(R.string.travel_contact_data_name_alphabet_only)
             isValid = false
         }
-        if (!isValidEmail(til_contact_email.editText.text.toString())) {
-            til_contact_email.error = getString(R.string.travel_contact_data_email_error)
+        if (!isValidEmail(til_contact_email.textFieldInput.text.toString())) {
+            til_contact_email.setError(true)
+            til_contact_email.setMessage(getString(R.string.travel_contact_data_email_error))
             isValid = false
         }
         if (til_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
@@ -210,7 +209,9 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
     }
 
     private fun resetEditTextError() {
-        til_contact_email.error = ""
+        til_contact_email.setMessage("")
+        til_contact_email.setError(false)
+
         til_contact_name.error = ""
         til_contact_phone_number.error = ""
     }

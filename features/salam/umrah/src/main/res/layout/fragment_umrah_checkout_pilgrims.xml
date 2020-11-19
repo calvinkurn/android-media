@@ -42,7 +42,7 @@
         app:layout_constraintTop_toBottomOf="@+id/rv_umrah_checkout_pilgrims_title"
         >
 
-        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
+        <com.tokopedia.travel.passenger.presentation.widget.InstantAutoCompleteTextView
             android:id="@+id/ac_umrah_checkout_pilgrims_contact_first_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

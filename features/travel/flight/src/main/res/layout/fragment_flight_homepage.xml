@@ -40,20 +40,19 @@
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/margin_top_flight_dashboard"
             android:layout_marginRight="@dimen/spacing_lvl4"
-            android:background="@color/Unify_N0"
-            app:cardCornerRadius="@dimen/spacing_lvl3"
-            app:cardElevation="@dimen/spacing_lvl2"
-            app:cardUseCompatPadding="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner">
+            app:layout_constraintTop_toTopOf="@+id/ivFlightHomepageBanner"
+            app:cardCornerRadius="@dimen/spacing_lvl3"
+            app:cardElevation="@dimen/spacing_lvl2"
+            app:cardUseCompatPadding="false"
+            >
 
             <com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
                 android:id="@+id/flightHomepageSearchForm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_lvl4"
-                android:layout_marginRight="@dimen/spacing_lvl4" />
+                android:paddingHorizontal="@dimen/spacing_lvl4"/>
 
         </androidx.cardview.widget.CardView>
 
