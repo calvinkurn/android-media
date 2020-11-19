@@ -513,7 +513,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     override fun onStartAdvertiseButtonClicked() {
         SomAnalytics.eventClickStartAdvertise(
                 somListSortFilterTab.getSelectedFilterStatus(),
-                somListSortFilterTab.getSelectedFilterSatusName())
+                somListSortFilterTab.getSelectedFilterStatusName())
     }
 
     override fun onOrderClicked(order: SomListOrderUiModel) {
@@ -862,7 +862,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     }
                     SomAnalytics.eventBulkAcceptOrder(
                             somListSortFilterTab.getSelectedFilterStatus(),
-                            somListSortFilterTab.getSelectedFilterSatusName(),
+                            somListSortFilterTab.getSelectedFilterStatusName(),
                             successCount,
                             userSession.userId,
                             userSession.shopId)
@@ -1124,8 +1124,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun resetOrderSelectedStatus() {
-        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }
-        adapter.notifyDataSetChanged()
+        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }.run {
+            adapter.notifyItemRangeChanged(0, size, Bundle().apply { putBoolean(SomListOrderViewHolder.TOGGLE_SELECTION, true) })
+        }
     }
 
     private fun checkAllOrder() {

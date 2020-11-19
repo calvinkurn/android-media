@@ -16,10 +16,6 @@ class SomListSortFilterTab(
         private val listener: SomListSortFilterTabClickListener
 ) {
 
-    companion object {
-        private const val SWIPE_TAB_ANIMATION_DELAY = 500L
-    }
-
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
     private var somListFilterUiModel: SomListFilterUiModel? = null
@@ -156,7 +152,7 @@ class SomListSortFilterTab(
     fun isNewOrderFilterSelected(): Boolean = selectedTab?.key == STATUS_NEW_ORDER
     fun getSelectedFilterOrderCount(): Int = selectedTab?.amount.orZero()
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
-    fun getSelectedFilterSatusName(): String = selectedTab?.status.orEmpty()
+    fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
 
     fun getSelectedTab() = selectedTab
 

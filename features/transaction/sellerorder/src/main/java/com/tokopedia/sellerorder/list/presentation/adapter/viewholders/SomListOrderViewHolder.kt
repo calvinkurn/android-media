@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
+import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -36,15 +37,13 @@ class SomListOrderViewHolder(
     companion object {
         val LAYOUT = R.layout.item_som_list_order
 
+        const val TOGGLE_SELECTION = "toggle_selection"
+
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
     }
 
     private var shouldContinueDraw = false
-
-    init {
-        itemView?.container?.layoutTransition?.enableTransitionType(CHANGING)
-    }
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
@@ -71,6 +70,18 @@ class SomListOrderViewHolder(
                     element.buttons.firstOrNull()?.key == KEY_ACCEPT_ORDER &&
                     itemView.btnQuickAction.isVisible) {
                 listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
+            }
+        }
+    }
+
+    override fun bind(element: SomListOrderUiModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        payloads.firstOrNull()?.let {
+            it as Bundle
+            if (it.containsKey(TOGGLE_SELECTION)) {
+                itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
+                bind(element)
+                itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
             }
         }
     }
