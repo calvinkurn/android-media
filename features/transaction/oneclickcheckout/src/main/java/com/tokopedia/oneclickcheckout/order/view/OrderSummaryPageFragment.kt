@@ -758,7 +758,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun reloadShipping() {
-            viewModel.getRates()
+            viewModel.updateProduct(null, shouldReloadRates = true)
         }
 
         override fun chooseAddress() {
@@ -781,6 +781,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 newOrderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
+        }
+
+        override fun choosePayment() {
+
         }
 
         override fun onPreferenceEditClicked(preference: OrderPreference) {

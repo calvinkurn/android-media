@@ -59,6 +59,9 @@ class AddressListBottomSheet(private val useCase: GetAddressCornerUseCase, priva
                     setTitle(context.getString(R.string.bottom_sheet_title_choose_address))
                     val child = View.inflate(context, R.layout.bottom_sheet_address_list, null)
                     setupChild(context, child)
+                    fragment.view?.height?.div(2)?.let { height ->
+                        customPeekHeight = height
+                    }
                     setChild(child)
                     setAction(context.getResDrawable(R.drawable.ic_add_grey)) {
                         this@AddressListBottomSheet.bottomSheet?.dismiss()

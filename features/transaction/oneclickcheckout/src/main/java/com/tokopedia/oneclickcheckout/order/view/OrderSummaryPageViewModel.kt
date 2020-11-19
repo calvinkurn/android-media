@@ -126,10 +126,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
-        orderCart.product = product
+    fun updateProduct(product: OrderProduct?, shouldReloadRates: Boolean = true) {
+        product?.let {
+            orderCart.product = it
+        }
         if (shouldReloadRates) {
-            if (!product.quantity.isStateError) {
+            if (product == null) {
+                orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
+                updateCart()
+                if (_orderPreference.isValid && _orderPreference.preference.shipment.serviceId > 0) {
+                    getRates()
+                }
+            } else if (!product.quantity.isStateError) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
                 debounce()
             } else {
