@@ -17,7 +17,10 @@ data class DiscoveryResponse(
         val title: String,
 
         @SerializedName("additional_info")
-        val additionalInfo: AdditionalInfo?
+        val additionalInfo: AdditionalInfo?,
+
+        @SerializedName("creative_name")
+        val creativeName: String?
 
 ) {
     lateinit var componentMap: MutableMap<String, ComponentsItem>
