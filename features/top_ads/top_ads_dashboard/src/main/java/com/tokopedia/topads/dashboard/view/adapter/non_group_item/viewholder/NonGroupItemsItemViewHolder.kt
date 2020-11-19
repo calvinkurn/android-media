@@ -34,7 +34,7 @@ class NonGroupItemsItemViewHolder(val view: View,
         var LAYOUT = R.layout.topads_dash_item_non_group_card
     }
 
-    private  val sheet: TopadsSelectActionSheet? by lazy {
+    private  val sheet: TopadsSelectActionSheet? by lazy(LazyThreadSafetyMode.NONE) {
         TopadsSelectActionSheet.newInstance()
     }
 

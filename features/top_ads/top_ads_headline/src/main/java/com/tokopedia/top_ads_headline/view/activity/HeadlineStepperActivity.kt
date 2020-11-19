@@ -15,7 +15,6 @@ class HeadlineStepperActivity : BaseStepperActivity() {
                 AdContentFragment.newInstance(),
                 TopAdsHeadlineKeyFragment.createInstance(),
                 AdScheduleAndBudgetFragment.createInstance())
-        return fragmentList!!
+        return fragmentList as MutableList<Fragment>
     }
-
 }

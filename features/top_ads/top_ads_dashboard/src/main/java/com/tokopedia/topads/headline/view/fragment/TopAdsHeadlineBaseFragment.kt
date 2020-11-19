@@ -19,6 +19,7 @@ import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGro
 import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.GROUP_TYPE_HEADLINE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.HEADLINE_UPADTED
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.CountDataItem
@@ -77,16 +78,13 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     companion object {
         private const val CUREENTY_ACTIVATED = 1
-        private const val GROUP_TYPE_HEADLINE = 3
         fun createInstance(): TopAdsHeadlineBaseFragment {
             return TopAdsHeadlineBaseFragment()
         }
     }
 
     private val groupFilterSheet: TopadsGroupFilterSheet by lazy {
-        context.run {
-            TopadsGroupFilterSheet.newInstance(context!!)
-        }
+        TopadsGroupFilterSheet.newInstance(context)
     }
 
     override fun getLayoutId(): Int {
@@ -397,7 +395,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         loader.visibility = View.VISIBLE
         adapter.items.clear()
         adapter.notifyDataSetChanged()
-        presenter.getGroupData(resources, 1, searchBar?.searchBarTextField?.text.toString(),
+        presenter.getGroupData(resources, currentPageNum, searchBar?.searchBarTextField?.text.toString(),
                 groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
                 Utils.format.format(startDate), Utils.format.format(endDate), GROUP_TYPE_HEADLINE,
                 this::onSuccessGroupResult)

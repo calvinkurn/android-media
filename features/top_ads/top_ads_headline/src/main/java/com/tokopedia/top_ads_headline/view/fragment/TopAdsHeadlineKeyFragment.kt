@@ -132,6 +132,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                         else
                             editText?.setMessage(errMax.toString())
                     }
+                } else {
+                    addBtn?.isEnabled = false
                 }
             }
         })

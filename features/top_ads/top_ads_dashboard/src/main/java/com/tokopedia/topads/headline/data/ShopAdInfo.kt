@@ -10,7 +10,7 @@ data class ShopAdInfo(
 
 data class TopadsGetShopInfoV2(
         @SerializedName("data")
-        val `data`: Data = Data(),
+        val data: Data = Data(),
         @SerializedName("errors")
         val errors: List<Any> = listOf()
 )

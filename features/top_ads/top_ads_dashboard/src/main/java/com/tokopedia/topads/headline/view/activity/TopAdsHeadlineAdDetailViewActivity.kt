@@ -24,6 +24,9 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
@@ -50,7 +53,6 @@ import com.tokopedia.topads.dashboard.view.model.GroupDetailViewModel
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineKeyFragment
-import com.tokopedia.topads.headline.view.fragment.TopAdsHeadlineNegKeyFragment
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_layout.*
 import kotlinx.android.synthetic.main.topads_dash_headline_detail_view_widget.*
@@ -132,7 +134,6 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         val bundle = Bundle()
         bundle.putInt(GROUP_ID, groupId ?: 0)
         list.add(TopAdsHeadlineKeyFragment.createInstance(bundle))
-        list.add(TopAdsHeadlineNegKeyFragment.createInstance(bundle))
         detailPagerAdapter = TopAdsDashGroupDetailPagerAdapter(supportFragmentManager, 0)
         detailPagerAdapter.setList(list)
         return detailPagerAdapter
@@ -325,9 +326,9 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
 
     private fun setDateRangeText(position: Int) {
         when (position) {
-            1 -> current_date.text = getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> current_date.text = getString(R.string.topads_dash_hari_ini)
-            2 -> current_date.text = getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+            CONST_1 -> current_date.text = getString(com.tokopedia.datepicker.range.R.string.yesterday)
+            CONST_0 -> current_date.text = getString(R.string.topads_dash_hari_ini)
+            CONST_2 -> current_date.text = getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = outputFormat.format(startDate) + " - " + outputFormat.format(endDate)
                 current_date.text = text
@@ -383,11 +384,11 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), 0)
+        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_0)
     }
 
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), 1)
+        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_1)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
