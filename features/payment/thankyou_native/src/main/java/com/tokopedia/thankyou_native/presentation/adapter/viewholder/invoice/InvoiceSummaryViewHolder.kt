@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.presentation.adapter.viewholder
+package com.tokopedia.thankyou_native.presentation.adapter.viewholder.invoice
 
 import android.view.LayoutInflater
 import android.view.View
