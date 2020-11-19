@@ -1039,6 +1039,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     fun resetPromo() {
         analytics.eventClickResetPromo(getPageSource())
+        resetSelectedPromo()
+    }
+
+    private fun resetSelectedPromo() {
         val promoList = ArrayList<Visitable<*>>()
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel) {
@@ -1206,6 +1210,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     fun applyRecommendedPromo() {
+        resetSelectedPromo()
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             analytics.eventClickPilihPromoRecommendation(getPageSource(), it.uiData.promoCodes)
