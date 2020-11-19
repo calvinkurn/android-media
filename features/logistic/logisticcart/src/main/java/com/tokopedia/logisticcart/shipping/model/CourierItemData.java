@@ -61,6 +61,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String etaText;
     private int etaErrorCode;
     private String shipperName;
+    private MerchantVoucherProductModel merchantVoucherProductModel;
 
     public CourierItemData() {
     }
@@ -567,5 +568,13 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
 
     public void setShipperName(String shipperName) {
         this.shipperName = shipperName;
+    }
+
+    public MerchantVoucherProductModel getMerchantVoucherProductModel() {
+        return merchantVoucherProductModel;
+    }
+
+    public void setMerchantVoucherProductModel(MerchantVoucherProductModel merchantVoucherProductModel) {
+        this.merchantVoucherProductModel = merchantVoucherProductModel;
     }
 }

@@ -56,7 +56,9 @@ class HotelDestinationViewModel @Inject constructor(
             if (popularPropertyData.isNotEmpty()) popularSearch.postValue(Success(popularPropertyData))
 
             if (userSessionInterface.isLoggedIn) {
-               val recentSearchData = getHotelRecentSearchUseCase.executeOnBackground()
+                val params = mapOf(PARAM_USER_ID to userSessionInterface.userId.toInt())
+                getHotelRecentSearchUseCase.params = params
+                val recentSearchData = getHotelRecentSearchUseCase.executeOnBackground()
                 if (recentSearchData.isNotEmpty()) recentSearch.postValue(Success(recentSearchData))
             }
         }) {

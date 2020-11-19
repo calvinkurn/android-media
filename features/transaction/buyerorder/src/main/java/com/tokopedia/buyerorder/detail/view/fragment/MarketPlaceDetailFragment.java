@@ -42,7 +42,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -60,6 +59,7 @@ import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
 import com.tokopedia.buyerorder.detail.data.ContactUs;
 import com.tokopedia.buyerorder.detail.data.Detail;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
 import com.tokopedia.buyerorder.detail.data.Invoice;
@@ -206,6 +206,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private String boughtDate;
     private Boolean isRequestedCancel;
     private String _helplink;
+    private View dividerDiscount;
+    private LinearLayout llDiscount;
 
     @Override
     protected String getScreenName() {
@@ -273,6 +275,8 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         recommendationList = view.findViewById(R.id.recommendation_list);
         recommendListTitle = view.findViewById(R.id.recommend_title);
         viewRecomendItems = view.findViewById(R.id.recommend_items);
+        dividerDiscount = view.findViewById(R.id.divider_discount);
+        llDiscount = view.findViewById(R.id.ll_info_discount);
         setMainViewVisible(View.GONE);
         itemsRecyclerView.setNestedScrollingEnabled(false);
         setUpScrollChangeListener();
@@ -427,7 +431,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             myClipboard.setPrimaryClip(myClip);
                             if (getView() != null && getContext() != null) {
                                 Toaster.build(getView(), getContext().getResources().getString(R.string.awb_number_copied),
-                                        Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+                                        Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -518,6 +522,25 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
+    public void setDiscount(Discount discount) {
+        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
+        doubleTextView.setTopText(discount.getLabel());
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_secondary_54));
+        doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setBottomText(discount.getValue());
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
+        doubleTextView.setBottomGravity(Gravity.END);
+        llDiscount.addView(doubleTextView);
+    }
+
+    @Override
+    public void setDiscountVisibility(int visibility) {
+        dividerDiscount.setVisibility(visibility);
+        llDiscount.setVisibility(visibility);
+    }
+
+    @Override
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
@@ -605,14 +628,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void showSuccessMessage(String message) {
         if (getView() != null) {
             Toaster.build(getView(), message,
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{}).show();
+                    Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{}).show();
         }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL,
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
                 getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
         }
     }
@@ -620,7 +643,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void showErrorMessage(String message) {
         if (getView() != null) {
-            Toaster.build(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {}).show();
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR,"", v -> {}).show();
         }
     }
 
@@ -633,6 +656,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         totalPrice.removeAllViews();
         actionBtnLayout.removeAllViews();
         paymentMethod.removeAllViews();
+        llDiscount.removeAllViews();
     }
 
     @Override
@@ -1128,14 +1152,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         });
         itemsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         itemsRecyclerView.setAdapter(new ProductItemAdapter(getContext(), items, presenter, isTradeIn, status));
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
     }
 
     @Override

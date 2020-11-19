@@ -88,6 +88,7 @@ ext {
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             globalNavWidget                 : ":features:discovery:global_nav_widget",
             globalNavWidgetSamples          : ":features:discovery:global_nav_widget_samples",
+            shopWidget                      : ":features:discovery:shopwidget",
 
             homecredit                      : ":features:fintech:home_credit",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
@@ -210,7 +211,6 @@ ext {
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",
             chatcommon                      : ":features:user:chat_common",
-            groupchat                       : ":features:user:groupchat",
             logout                          : ":features:user:logout",
             loginphone                      : ":features:user:loginphone",
             loginregister                   : ":features:user:loginregister",
