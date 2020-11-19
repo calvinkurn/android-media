@@ -40,6 +40,7 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
+import com.tokopedia.buyerorder.detail.domain.GetOrderDetailUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
@@ -112,6 +113,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     SendEventNotificationUseCase sendEventNotificationUseCase;
     @Inject
     AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
+    @Inject
+    GetOrderDetailUseCase getOrderDetailUseCase;
     @Inject
     UserSessionInterface userSessionInterface;
 
