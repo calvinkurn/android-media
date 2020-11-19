@@ -175,7 +175,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
-        userVisibleHint = false
         super.onViewCreated(view, savedInstanceState)
         activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
         isLoadingInitialData = true
@@ -294,7 +293,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onResume() {
         super.onResume()
-        if (isLoadingInitialData) {
+        if (userVisibleHint && isLoadingInitialData) {
             loadInitialData()
         }
     }
