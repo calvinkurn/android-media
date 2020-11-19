@@ -1,0 +1,16 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click status filter chips",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ],
+  "readme": "UOH Click Filter Status Item"
+}

@@ -86,7 +86,7 @@ object UohAnalytics {
     private const val CLICK_STATUS_FILTER_CHIPS = "click status filter chips"
     private const val CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS = "click terapkan on status filter chips"
     private const val CLICK_CATEGORY_FILTER_CHIPS = "click category filter chips"
-    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click category filter chips"
+    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click terapkan on category filter chips"
     private const val CLICK_X_CHIPS_TO_CLEAR_FILTER = "click x chips to clear filter"
     private const val CLICK_PRIMARY_BUTTON_ON_ORDER_CARD = "click primary button on order card "
     private const val CLICK_THREE_DOTS_MENU = "click three dot menu "

@@ -2,15 +2,25 @@ package com.tokopedia.buyerorder
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.HorizontalScrollView
+import android.widget.ScrollView
+import androidx.core.widget.NestedScrollView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ScrollToAction
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.MatcherAssert
+import org.hamcrest.Matchers.anyOf
 import org.hamcrest.TypeSafeMatcher
 
 
@@ -46,6 +56,24 @@ fun nthChildOf(parentMatcher: Matcher<View?>, childPosition: Int): Matcher<View?
             return (parentMatcher.matches(parent)
                     && parent.childCount > childPosition && parent.getChildAt(childPosition) == view)
         }
+    }
+}
+
+var customScrollTo: ViewAction = object : ViewAction {
+    override fun getConstraints(): Matcher<View> {
+        return allOf(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE), isDescendantOfA(anyOf(
+                isAssignableFrom(ScrollView::class.java),
+                isAssignableFrom(HorizontalScrollView::class.java),
+                isAssignableFrom(NestedScrollView::class.java)))
+        )
+    }
+
+    override fun getDescription(): String? {
+        return null
+    }
+
+    override fun perform(uiController: UiController?, view: View?) {
+        ScrollToAction().perform(uiController, view)
     }
 }
 
