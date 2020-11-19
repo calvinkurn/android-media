@@ -99,9 +99,9 @@ object GetSomFilterMapper {
         }?.isSelected ?: false
     }
 
-    fun List<SomFilterUiModel>.getIndexShouldSelectRequestCancelFilter(chipsType: String,
-                                                                       updateFilterManySelected: (String, String, Int) -> Unit,
-                                                                       updateParamSom: (String) -> Unit) {
+    fun List<SomFilterUiModel>.getShouldSelectRequestCancelFilter(chipsType: String,
+                                                                  updateFilterManySelected: (String, String, Int) -> Unit,
+                                                                  updateParamSom: (String) -> Unit) {
         val section = this.find { it.nameFilter == FILTER_TYPE_ORDER }
         section?.somFilterData?.indexOfFirst { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }?.let {
             section.somFilterData[it].run {
