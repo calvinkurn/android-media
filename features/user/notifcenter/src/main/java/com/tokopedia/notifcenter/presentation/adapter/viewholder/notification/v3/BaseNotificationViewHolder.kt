@@ -48,6 +48,27 @@ abstract class BaseNotificationViewHolder constructor(
         bindClick(element)
     }
 
+    protected open fun bindClick(element: NotificationUiModel) {
+        container?.setOnClickListener {
+            if (!element.isRead()) {
+                markNotificationAsRead(element)
+            }
+            if (isLongerContent(element)) {
+                showLongerContent(element)
+            } else {
+                RouteManager.route(itemView.context, element.dataNotification.appLink)
+            }
+        }
+    }
+
+    protected open fun showLongerContent(element: NotificationUiModel) {
+        listener?.showLongerContent(element)
+    }
+
+    protected open fun isLongerContent(element: NotificationUiModel): Boolean {
+        return element.isLongerContent
+    }
+
     private fun bindContainer(element: NotificationUiModel) {
         if (!element.isRead()) {
             container?.setBackgroundColor(clickedColor)
@@ -102,19 +123,6 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindTime(element: NotificationUiModel) {
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnix)
-    }
-
-    private fun bindClick(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            if (!element.isRead()) {
-                markNotificationAsRead(element)
-            }
-            if (element.isLongerContent) {
-                listener?.showLongerContent(element)
-            } else {
-                RouteManager.route(itemView.context, element.dataNotification.appLink)
-            }
-        }
     }
 
     private fun markNotificationAsRead(element: NotificationUiModel) {

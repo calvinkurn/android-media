@@ -15,26 +15,16 @@ class SingleProductNotificationViewHolder constructor(
             R.id.pc_single
     )
 
+    override fun isLongerContent(element: NotificationUiModel) = false
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindProductData(element)
-        bindClickItem(element)
     }
 
     private fun bindProductData(element: NotificationUiModel) {
         val product = element.product
         productContainer?.bindProductData(product, listener)
-    }
-
-    private fun bindClickItem(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            listener?.showProductBottomSheet(element)
-            // TODO: Implement longer content
-//            if (element.isLongerContent) {
-//            } else {
-//                productContainer?.goToPdp(element.product)
-//            }
-        }
     }
 
     companion object {

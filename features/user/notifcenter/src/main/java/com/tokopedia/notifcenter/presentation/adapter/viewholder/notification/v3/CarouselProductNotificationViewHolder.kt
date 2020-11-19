@@ -10,8 +10,8 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
-import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 import com.tokopedia.notifcenter.widget.CarouselProductRecyclerView
+import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 
 class CarouselProductNotificationViewHolder constructor(
         itemView: View?,
@@ -43,11 +43,12 @@ class CarouselProductNotificationViewHolder constructor(
         }
     }
 
+    override fun isLongerContent(element: NotificationUiModel): Boolean = true
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindCarouselProduct(element)
         bindScrollState(element)
-        bindClickItem(element)
     }
 
     private fun bindCarouselProduct(element: NotificationUiModel) {
@@ -58,10 +59,8 @@ class CarouselProductNotificationViewHolder constructor(
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
     }
 
-    private fun bindClickItem(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            notificationItemListener?.showProductBottomSheet(element)
-        }
+    override fun showLongerContent(element: NotificationUiModel) {
+        notificationItemListener?.showProductBottomSheet(element)
     }
 
     companion object {
