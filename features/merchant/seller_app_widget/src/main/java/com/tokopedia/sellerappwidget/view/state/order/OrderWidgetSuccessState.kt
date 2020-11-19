@@ -31,7 +31,7 @@ object OrderWidgetSuccessState {
 
             //setup widget list view
             val orderItemsByType = ArrayList(widgetItems.filter { it.statusId == orderStatusId })
-            val randomNumber = (Math.random() * 1000).toInt()
+            val randomNumber = (Math.random() * 10000).toInt()
 
             val intent = Intent(context, OrderWidgetRemoteViewService::class.java).apply {
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
@@ -121,7 +121,7 @@ object OrderWidgetSuccessState {
 
 
     fun setLastUpdated(context: Context) {
-        val updatedFmt = Utils.formatDate(Date(), "hh:mm")
+        val updatedFmt = Utils.formatDate(Date(), "hh:mm:ss")
         val updated = context.getString(R.string.saw_updated)
 
         val rv = AppWidgetHelper.getRemoteView(context, R.layout.saw_app_widget_order)
