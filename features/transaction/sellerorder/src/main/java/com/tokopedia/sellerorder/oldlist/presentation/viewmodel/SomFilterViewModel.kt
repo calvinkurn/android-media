@@ -56,30 +56,4 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             _filterListResult.postValue(Fail(it))
         })
     }
-
-    fun loadSomFilterDataOld(filterQuery: String) {
-        // launch { getFilterList(filterQuery) }
-    }
-
-    /*suspend fun getFilterList(rawQuery: String) {
-        launchCatchError(block = {
-            val filterListData = withContext(Dispatchers.IO) {
-                val filterRequest = GraphqlRequest(rawQuery, POJO_FILTER_ALL)
-                graphqlRepository.getReseponse(listOf(filterRequest))
-                        .getSuccessData<SomListAllFilter.Data>()
-            }
-            _shippingListResult.postValue(Success(filterListData.orderShippingList.toMutableList()))
-            _statusOrderListResult.postValue(Success(filterListData.orderFilterSomSingle.statusList.toMutableList()))
-            _orderTypeListResult.postValue(Success(filterListData.orderTypeList.toMutableList()))
-
-        }, onError = {
-            _shippingListResult.postValue(Fail(it))
-            _statusOrderListResult.postValue(Fail(it))
-            _orderTypeListResult.postValue(Fail(it))
-        })
-    }
-
-    companion object {
-        private val POJO_FILTER_ALL = SomListAllFilter.Data::class.java
-    }*/
 }
