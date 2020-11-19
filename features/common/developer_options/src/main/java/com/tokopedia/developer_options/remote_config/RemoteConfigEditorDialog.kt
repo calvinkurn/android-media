@@ -31,7 +31,9 @@ class RemoteConfigEditorDialog : BottomSheetDialogFragment() {
         val editorValueInput: AppCompatEditText = view.findViewById(R.id.new_config_value)
 
         val selectedKey = arguments?.getString(RemoteConfigFragmentActivity.ARGS_SELECTED_KEY) ?: "-"
+        val selectedValue  = arguments?.getString(RemoteConfigFragmentActivity.ARGS_SELECTED_VALUE) ?: ""
         editedKeyView.text = selectedKey
+        editorValueInput.setText(selectedValue)
 
         editorSendButton.setOnClickListener {
             listener.onEditorSaveButtonClick(selectedKey, editorValueInput.text.toString().trim())

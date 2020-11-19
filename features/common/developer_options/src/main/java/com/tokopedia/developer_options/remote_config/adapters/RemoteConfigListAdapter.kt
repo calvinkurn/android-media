@@ -6,13 +6,15 @@ import androidx.recyclerview.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.LinearLayout
 
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.remote_config.RemoteConfigListener
 import com.tokopedia.remoteconfig.RemoteConfig
 
-class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<RemoteConfigListAdapter.RemoteConfigItemViewHolder>() {
+class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<RemoteConfigListAdapter.RemoteConfigItemViewHolder>(), Filterable {
 
     private var configListData = arrayListOf<Pair<String, String>>()
 
@@ -56,7 +58,7 @@ class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<Remo
         init {
             val itemContainer: LinearLayout = itemView.findViewById(R.id.config_container)
             itemContainer.setOnClickListener {
-                listener.onListItemClick(keyTextView.text.toString().trim())
+                listener.onListItemClick(keyTextView.text.toString().trim(), valueTextView.text.toString().trim())
             }
         }
 
@@ -64,5 +66,9 @@ class RemoteConfigListAdapter(val listener: RemoteConfigListener) : Adapter<Remo
             keyTextView.text = itemData.first
             valueTextView.text = itemData.second
         }
+    }
+
+    override fun getFilter(): Filter {
+        TODO("Not yet implemented")
     }
 }

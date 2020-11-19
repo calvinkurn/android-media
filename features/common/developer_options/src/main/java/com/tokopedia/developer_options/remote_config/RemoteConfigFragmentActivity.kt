@@ -19,6 +19,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
 
     companion object {
         const val ARGS_SELECTED_KEY = "selected_key"
+        const val ARGS_SELECTED_VALUE = "selected_value"
     }
 
     private lateinit var listAdapter: RemoteConfigListAdapter
@@ -32,9 +33,10 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
         initView()
     }
 
-    override fun onListItemClick(selectedConfigKey: String) {
+    override fun onListItemClick(selectedConfigKey: String, editedConfigValue: String) {
         val fragmentBundle = Bundle()
         fragmentBundle.putString(ARGS_SELECTED_KEY, selectedConfigKey)
+        fragmentBundle.putString(ARGS_SELECTED_VALUE, editedConfigValue)
 
         val dialog = RemoteConfigEditorDialog()
         dialog.arguments = fragmentBundle
@@ -54,7 +56,7 @@ class RemoteConfigFragmentActivity : FragmentActivity(), RemoteConfigListener {
 
         remoteConfig?.let {
             for (prefix in prefixes) {
-                keysSet.apply { addAll(remoteConfig!!.getKeysByPrefix(prefix) ?: setOf()) }
+                keysSet.apply { addAll(remoteConfig?.getKeysByPrefix(prefix) ?: setOf()) }
             }
         }
 
