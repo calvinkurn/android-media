@@ -85,7 +85,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         formData.forEachIndexed {index, it ->
             if (it.required == 1) {
                 if (((it.value.isBlank() || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form)))
-                                && it.elementType.equals(ELEMENT_TEXT)) ||
+                                && !it.elementType.equals(ELEMENT_LIST)) ||
                         (it.valuePosition.equals(BLANK_LIST) && it.elementType.equals(ELEMENT_LIST))) {
                     listError.add(Pair(it.title, EMPTY_TYPE))
                     it.isError = true

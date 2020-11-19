@@ -4,8 +4,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
 import com.tokopedia.entertainment.pdp.data.Form
 import kotlinx.android.synthetic.main.ent_pdp_form_chips.view.*
+import kotlinx.android.synthetic.main.ent_pdp_form_date_picker_item.view.*
 import java.util.*
 
 class EventPDPChipsViewHolder (val view: View,
@@ -22,11 +24,21 @@ class EventPDPChipsViewHolder (val view: View,
                 }
             }
 
+            val valuePosition = if (!element.value.isNotEmpty() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) 0 else getId(chipsList(element.helpText), element.value)
+            addOrRemoveData(position, chipsList(element.helpText).get(valuePosition),"")
             chip_event_form.setItem(ArrayList(chipsList(element.helpText)),
-                    initialSelectedItemPos = if (!element.value.isNotEmpty() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) 0 else getId(chipsList(element.helpText), element.value))
+                    initialSelectedItemPos = valuePosition)
 
             chip_event_form.selectOnlyOneChip(true)
             chip_event_form.canDiselectAfterSelect(false)
+
+            if (element.isError) {
+                if (element.errorType == EventPDPFormAdapter.EMPTY_TYPE) {
+                    tg_chips_form_event_error.text = resources.getString(R.string.ent_pdp_form_error_all_msg, element.title)
+                } else if (element.errorType == EventPDPFormAdapter.REGEX_TYPE) {
+                    tg_chips_form_event_error.text = element.errorMessage
+                }
+            }
         }
     }
 

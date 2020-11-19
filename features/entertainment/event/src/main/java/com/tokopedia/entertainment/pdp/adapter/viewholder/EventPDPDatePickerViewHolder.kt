@@ -5,6 +5,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.entertainment.R
+import com.tokopedia.entertainment.pdp.adapter.EventPDPFormAdapter
+import com.tokopedia.entertainment.pdp.common.util.EventConst
 import com.tokopedia.entertainment.pdp.data.Form
 import com.tokopedia.entertainment.pdp.listener.OnClickFormListener
 import com.tokopedia.kotlin.extensions.toFormattedString
@@ -26,7 +28,7 @@ class EventPDPDatePickerViewHolder (val view: View,
             tg_event_date_picker.textFieldInput.apply {
                 keyListener = null
                 if(element.value.isNullOrEmpty() || element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
-                    setText(element.title)
+                    setText(resources.getString(R.string.ent_pdo_form_date_picker_placeholder))
                 } else {
                     val format = SimpleDateFormat(VALUE_FORMAT)
                     val date = format.parse(element.value)
@@ -51,6 +53,23 @@ class EventPDPDatePickerViewHolder (val view: View,
                 tg_event_date_picker.textFieldInput.setText(dateTime)
                 addOrRemoveData(position, dateValue, "")
             }
+
+            if(!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))){
+                tg_event_date_picker.setMessage(element.helpText)
+                tg_event_date_picker.setError(false)
+                element.isError = false
+            }
+
+            if (element.isError) {
+                if (element.errorType == EventPDPFormAdapter.EMPTY_TYPE) {
+                    tg_event_date_picker.setMessage(resources.getString(R.string.ent_pdp_form_error_all_msg, element.title))
+                } else if (element.errorType == EventPDPFormAdapter.REGEX_TYPE) {
+                    tg_event_date_picker.setMessage(element.errorMessage)
+                }
+                tg_event_date_picker.setError(true)
+            }
+
+
         }
     }
 

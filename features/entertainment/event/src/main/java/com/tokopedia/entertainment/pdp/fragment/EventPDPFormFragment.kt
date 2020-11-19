@@ -50,7 +50,6 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     private var keyActiveBottomSheet = ""
     private var positionActiveForm = 0
     private var selectedCalendar: Calendar? = null
-    private var selectedCheckBox: Boolean = false
     var eventCheckoutAdditionalData = EventCheckoutAdditionalData()
     var listBottomSheetTemp : LinkedHashMap<String, String> = linkedMapOf()
     val bottomSheets = BottomSheetUnify()
@@ -287,9 +286,23 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
 
     override fun clickDatePicker(title: String, position: Int) {
         context?.let{
-            val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
-            val minDate = GregorianCalendar(YEAR_END, MONTH_END, DAY_END)
-            var datepickerObject = DateTimePickerUnify(it, minDate, maxDate, maxDate).apply {
+            val calMax = Calendar.getInstance()
+            calMax.add(Calendar.MONTH, X_MONTH);
+            val yearMax = calMax.get(Calendar.YEAR)
+            val monthMax = calMax.get(Calendar.MONTH)
+            val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
+
+            val maxDate = GregorianCalendar(yearMax, monthMax, dayMax)
+            val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
+
+            val calMin = Calendar.getInstance()
+            calMin.add(Calendar.MONTH, X_MONTH);
+            val yearMin = calMin.get(Calendar.YEAR)
+            val monthMin = calMin.get(Calendar.MONTH)
+            val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
+
+            val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
+            var datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
                  setTitle(title)
                  datePickerButton.let { button ->
                     button.setOnClickListener {
@@ -321,9 +334,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         const val SEARCH_PAGE_LIMIT = 10
         const val DELAY_CONST: Long = 100
 
-        const val YEAR_END = 1900
-        const val DAY_END = 1
-        const val MONTH_END = 1
+        const val X_MONTH = 3
     }
 
     fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =
