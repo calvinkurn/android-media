@@ -16,6 +16,8 @@ object WidgetType {
     const val TABLE = "searchTable"
     const val PIE_CHART = "pieChart"
     const val BAR_CHART = "barChart"
+    const val MULTI_LINE_GRAPH = "multiTrendline"
+    const val ANNOUNCEMENT = "announcement"
 
     fun isValidWidget(widgetType: String): Boolean {
         return getWidgetList().contains(widgetType)
@@ -32,7 +34,9 @@ object WidgetType {
                 SECTION,
                 TABLE,
                 PIE_CHART,
-                BAR_CHART
+                BAR_CHART,
+                MULTI_LINE_GRAPH,
+                ANNOUNCEMENT
         )
     }
 }

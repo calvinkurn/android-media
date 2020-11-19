@@ -15,8 +15,9 @@ data class BarChartWidgetUiModel(
         override val appLink: String,
         override val dataKey: String,
         override val ctaText: String,
+        override val isShowEmpty: Boolean,
         override var data: BarChartDataUiModel?,
-        override val impressHolder: ImpressHolder = ImpressHolder(),
+        override var impressHolder: ImpressHolder = ImpressHolder(),
         override var isLoaded: Boolean,
         override var isLoading: Boolean,
         override var isFromCache: Boolean

@@ -33,7 +33,7 @@ internal class RefreshPopularSearchTest: InitialStatePresenterTestFixtures() {
         val refreshedPopularSearchData = popularSearchCommonResponse.jsonToObject<InitialStateUniverse>().data
         `Test Refresh Popular Search`(multiplePopularSearchData, refreshedPopularSearchData)
 
-        `Then verify refreshPopularSearch view behavior`(5)
+        `Then verify refreshPopularSearch view behavior`(4)
         `Then verify visitable list after refresh dynamic initial state data`(multiplePopularSearchData, refreshedPopularSearchData)
     }
 
