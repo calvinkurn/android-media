@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.imagepreview.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.common.util.ReviewConstants.UNANSWERED_VALUE
 import com.tokopedia.review.common.util.ReviewConstants.prefixRating
 import com.tokopedia.review.common.util.ReviewConstants.prefixStatus
@@ -26,9 +26,9 @@ import java.util.*
 import javax.inject.Inject
 
 class InboxReviewViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getInboxReviewUseCase: GetInboxReviewUseCase,
-        val userSession: UserSessionInterface
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getInboxReviewUseCase: GetInboxReviewUseCase,
+    val userSession: UserSessionInterface
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _inboxReview = MutableLiveData<Result<InboxReviewUiModel>>()

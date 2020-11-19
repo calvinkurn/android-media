@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.model.deletehistory.DeleteHistorySearchUiModel
 import com.tokopedia.seller.search.feature.initialsearch.view.model.initialsearch.InitialSearchUiModel
@@ -17,9 +17,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class InitialSearchViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getSellerSearchUseCase: GetSellerSearchUseCase,
-        private val deleteSuggestionHistoryUseCase: DeleteSuggestionHistoryUseCase
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getSellerSearchUseCase: GetSellerSearchUseCase,
+    private val deleteSuggestionHistoryUseCase: DeleteSuggestionHistoryUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _deleteHistorySearch = MutableLiveData<Result<DeleteHistorySearchUiModel>>()

@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.reputation.common.data.source.cloud.model.ProductrevReviewTabCount
 import com.tokopedia.reputation.common.domain.usecase.ProductrevReviewTabCounterUseCase
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.inbox.container.data.ReviewInboxTabs
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -17,9 +17,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewInboxContainerViewModel @Inject constructor(
-        private val userSessionInterface: UserSessionInterface,
-        private val dispatchers: CoroutineDispatchers,
-        private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase
+    private val userSessionInterface: UserSessionInterface,
+    private val dispatchers: CoroutineDispatchers,
+    private val productrevReviewTabCounterUseCase: ProductrevReviewTabCounterUseCase
 ) : BaseViewModel(dispatchers.io){
 
     private val _reviewTabs = MutableLiveData<Result<ProductrevReviewTabCount>>()

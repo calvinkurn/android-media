@@ -18,7 +18,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembers
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -40,23 +40,23 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopPageProductListViewModel @Inject constructor(
-        private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
-        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
-        private val getMembershipUseCase: GetMembershipUseCaseNew,
-        private val userSession: UserSessionInterface,
-        private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
-        private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val getShopProductUseCase: GqlGetShopProductUseCase,
-        @ShopProductGetHighlightProductQualifier
+    private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
+    private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
+    private val getMembershipUseCase: GetMembershipUseCaseNew,
+    private val userSession: UserSessionInterface,
+    private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
+    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+    private val addWishListUseCase: AddWishListUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    @ShopProductGetHighlightProductQualifier
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-        private val shopProductSortMapper: ShopProductSortMapper
+    private val removeWishlistUseCase: RemoveWishListUseCase,
+    private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper
 ) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {

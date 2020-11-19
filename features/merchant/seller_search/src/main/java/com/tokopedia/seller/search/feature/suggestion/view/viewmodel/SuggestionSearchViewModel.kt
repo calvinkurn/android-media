@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
 import com.tokopedia.seller.search.common.domain.mapper.GlobalSearchSellerMapper
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.search.feature.suggestion.domain.usecase.InsertSuccessSearchUseCase
 import com.tokopedia.seller.search.feature.suggestion.view.model.BaseSuggestionSearchSeller
 import com.tokopedia.seller.search.feature.suggestion.view.model.registersearch.RegisterSearchUiModel
@@ -17,9 +17,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SuggestionSearchViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getSellerSearchUseCase: GetSellerSearchUseCase,
-        private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getSellerSearchUseCase: GetSellerSearchUseCase,
+    private val insertSellerSearchUseCase: InsertSuccessSearchUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _getSearchSeller = MutableLiveData<Result<List<BaseSuggestionSearchSeller>>>()

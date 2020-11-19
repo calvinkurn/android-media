@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.vouchercreation.common.domain.model.UpdateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.usecase.*
@@ -23,12 +23,12 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class ReviewVoucherViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val createVoucherUseCase: CreateVoucherUseCase,
-        private val updateVoucherUseCase: UpdateVoucherUseCase,
-        private val uploadVoucherUseCase: UploadVoucherUseCase,
-        private val saveBannerVoucherUseCase: SaveBannerVoucherUseCase,
-        private val saveSquareVoucherUseCase: SaveSquareVoucherUseCase) : BaseViewModel(dispatchers.main) {
+    private val dispatchers: CoroutineDispatchers,
+    private val createVoucherUseCase: CreateVoucherUseCase,
+    private val updateVoucherUseCase: UpdateVoucherUseCase,
+    private val uploadVoucherUseCase: UploadVoucherUseCase,
+    private val saveBannerVoucherUseCase: SaveBannerVoucherUseCase,
+    private val saveSquareVoucherUseCase: SaveSquareVoucherUseCase) : BaseViewModel(dispatchers.main) {
 
     private val mCreateVoucherResponseLiveData = MutableLiveData<Result<Int>>()
     val createVoucherResponseLiveData: LiveData<Result<Int>>

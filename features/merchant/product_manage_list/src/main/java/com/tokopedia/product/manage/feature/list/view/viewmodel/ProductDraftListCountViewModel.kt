@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.manage.common.draft.domain.usecase.ClearAllDraftProductsUseCase
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllDraftProductsCountUseCase
 import com.tokopedia.usecase.RequestParams

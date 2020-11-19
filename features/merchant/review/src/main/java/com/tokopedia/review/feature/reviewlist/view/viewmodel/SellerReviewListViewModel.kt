@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.review.feature.reviewlist.domain.GetReviewProductListUseCase
@@ -19,9 +19,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SellerReviewListViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
-        private val getReviewProductListUseCase: GetReviewProductListUseCase
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getProductRatingOverallUseCase: GetProductRatingOverallUseCase,
+    private val getReviewProductListUseCase: GetReviewProductListUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     private val _reviewProductList = MutableLiveData<Result<Pair<Boolean, List<ProductReviewUiModel>>>>()

@@ -9,7 +9,7 @@ import com.tokopedia.review.common.data.Fail
 import com.tokopedia.review.common.data.LoadingView
 import com.tokopedia.review.common.data.ReviewViewState
 import com.tokopedia.review.common.data.Success
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants
 import com.tokopedia.review.feature.inbox.history.data.ProductrevFeedbackHistoryResponse
 import com.tokopedia.review.feature.inbox.history.domain.usecase.ProductrevFeedbackHistoryUseCase
@@ -18,9 +18,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ReviewHistoryViewModel @Inject constructor(
-        private val dispatchers: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val productrevFeedbackHistoryUseCase: ProductrevFeedbackHistoryUseCase
+    private val dispatchers: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val productrevFeedbackHistoryUseCase: ProductrevFeedbackHistoryUseCase
 ) : BaseViewModel(dispatchers.io) {
 
     private val _reviewList = MediatorLiveData<ReviewViewState<ProductrevFeedbackHistoryResponse>>()

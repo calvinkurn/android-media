@@ -14,8 +14,8 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.seller.menu.common.analytics.SellerMenuTracker
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.seller.menu.di.scope.SellerMenuScope
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSession

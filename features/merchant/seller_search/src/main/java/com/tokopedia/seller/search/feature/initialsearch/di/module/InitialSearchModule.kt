@@ -3,8 +3,8 @@ package com.tokopedia.seller.search.feature.initialsearch.di.module
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.seller.search.common.util.GlobalSearchConfig
 import com.tokopedia.seller.search.feature.initialsearch.di.scope.InitialSearchScope
 import com.tokopedia.user.session.UserSession

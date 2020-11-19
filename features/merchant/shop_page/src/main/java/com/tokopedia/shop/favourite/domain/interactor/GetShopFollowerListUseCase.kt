@@ -1,6 +1,6 @@
 package com.tokopedia.shop.favourite.domain.interactor
 
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.favourite.data.pojo.shopfollowerlist.GetShopFollowerListData

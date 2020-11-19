@@ -1,4 +1,4 @@
-package com.tokopedia.coroutines.dispatcher
+package com.tokopedia.abstraction.common.dispatcher
 
 import kotlinx.coroutines.Dispatchers
 

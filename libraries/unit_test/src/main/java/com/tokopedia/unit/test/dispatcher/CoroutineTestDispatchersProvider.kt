@@ -1,6 +1,6 @@
 package com.tokopedia.unit.test.dispatcher
 
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
 
 object CoroutineTestDispatchersProvider: CoroutineDispatchers {

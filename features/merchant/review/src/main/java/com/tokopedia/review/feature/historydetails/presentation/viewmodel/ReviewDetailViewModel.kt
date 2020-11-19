@@ -8,9 +8,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.review.common.data.*
 import com.tokopedia.review.common.domain.usecase.ProductrevGetReviewDetailUseCase
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
-import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputation
-import com.tokopedia.review.feature.historydetails.data.InboxReviewInsertReputationResponseWrapper
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.historydetails.domain.InboxReviewInsertReputationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext

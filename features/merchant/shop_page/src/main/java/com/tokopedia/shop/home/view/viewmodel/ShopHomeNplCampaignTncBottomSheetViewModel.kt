@@ -11,7 +11,7 @@ import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCa
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeCampaignNplTncUiModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,11 +22,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopHomeNplCampaignTncBottomSheetViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
-        private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
-        private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase,
+    private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
+    private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     val userSessionShopId: String

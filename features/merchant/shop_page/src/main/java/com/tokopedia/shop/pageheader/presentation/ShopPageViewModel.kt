@@ -34,7 +34,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOper
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isHasNextPage
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.*

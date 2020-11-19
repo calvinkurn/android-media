@@ -10,7 +10,7 @@ import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import javax.inject.Inject
 import javax.inject.Named
 

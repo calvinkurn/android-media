@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
@@ -23,11 +23,11 @@ import java.util.*
 import javax.inject.Inject
 
 class SellerReviewReplyViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
-        private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
-        private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
-        private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getReviewTemplateListUseCase: GetReviewTemplateListUseCase,
+    private val insertSellerResponseUseCase: InsertSellerResponseUseCase,
+    private val updateSellerResponseUseCase: UpdateSellerResponseUseCase,
+    private val insertTemplateReviewReplyUseCase: InsertTemplateReviewReplyUseCase)
     : BaseViewModel(dispatcherProvider.main) {
 
     private val DATE_REVIEW_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"

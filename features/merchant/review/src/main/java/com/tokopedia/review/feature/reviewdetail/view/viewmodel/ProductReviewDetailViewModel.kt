@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.review.common.util.*
 import com.tokopedia.review.feature.inboxreview.domain.mapper.InboxReviewMapper
@@ -23,10 +23,10 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductReviewDetailViewModel @Inject constructor(
-        private val dispatcherProvider: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val getProductReviewInitialUseCase: GetProductReviewInitialUseCase,
-        private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val userSession: UserSessionInterface,
+    private val getProductReviewInitialUseCase: GetProductReviewInitialUseCase,
+    private val getProductFeedbackDetailListUseCase: GetProductFeedbackDetailListUseCase
 ) : BaseViewModel(dispatcherProvider.main) {
 
     var filterPeriod: String = ""
