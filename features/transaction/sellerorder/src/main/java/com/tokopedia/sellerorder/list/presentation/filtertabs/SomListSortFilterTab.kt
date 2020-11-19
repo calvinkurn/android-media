@@ -106,6 +106,7 @@ class SomListSortFilterTab(
         this.somListFilterUiModel = somListFilterUiModel
         updateTabs(somListFilterUiModel.statusList)
         sortFilter.show()
+        updateCounter(selectedCount)
     }
 
     fun selectTab(status: SomListFilterUiModel.Status) {
