@@ -32,8 +32,8 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     private val _filterResult = MutableLiveData<Result<List<BaseSomFilter>>>()
     val filterResult: LiveData<Result<List<BaseSomFilter>>> = _filterResult
 
-    private val _resetFilterResult = MutableLiveData<Result<List<BaseSomFilter>>>()
-    val resetFilterResult: LiveData<Result<List<BaseSomFilter>>> = _resetFilterResult
+    private val _resetFilterResult = MutableLiveData<Result<List<SomFilterUiModel>>>()
+    val resetFilterResult: LiveData<Result<List<SomFilterUiModel>>> = _resetFilterResult
 
     private val _updateFilterSelected = MutableLiveData<Result<Pair<List<SomFilterChipsUiModel>, String>>>()
     val updateFilterSelected: LiveData<Result<Pair<List<SomFilterChipsUiModel>, String>>> = _updateFilterSelected
@@ -202,11 +202,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                 }
             }
             somListGetOrderListParam = SomListGetOrderListParam()
-            val somFilterVisitable = mutableListOf<BaseSomFilter>()
-            somFilterDate = SomFilterDateUiModel(nameFilter = FILTER_DATE, date = "")
-            somFilterVisitable.addAll(somFilterUiModel)
-            somFilterDate?.let { somFilterVisitable.add(it) }
-            _resetFilterResult.postValue(Success(somFilterVisitable))
+            _resetFilterResult.postValue(Success(somFilterUiModel))
         }, onError = {
             _resetFilterResult.postValue(Fail(it))
         })
