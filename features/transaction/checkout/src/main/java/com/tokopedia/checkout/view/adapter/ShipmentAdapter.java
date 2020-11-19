@@ -12,30 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopViewHolder;
-import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
-import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.logisticcart.shipping.model.CartItemModel;
-import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
-import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShopItems;
-import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops;
-import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
-import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel;
-import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
-import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder;
-import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
-import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper;
 import com.tokopedia.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.ShipmentFragment;
@@ -47,6 +23,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNotifierModel;
+import com.tokopedia.checkout.view.uimodel.ShippingCompletionTickerModel;
 import com.tokopedia.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentCostViewHolder;
@@ -56,9 +33,31 @@ import com.tokopedia.checkout.view.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentNotifierViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentRecipientAddressViewHolder;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
+import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
+import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceCartShopViewHolder;
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceItemActionListener;
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct;
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShopItems;
+import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartShops;
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.DetailsItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.SummariesItemUiModel;
+import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener;
+import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackModel;
+import com.tokopedia.purchase_platform.common.feature.sellercashback.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
+import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementViewHolder;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
 import com.tokopedia.showcase.ShowCaseBuilder;
@@ -224,7 +223,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShipmentNotifierViewHolder) holder).bind((ShipmentNotifierModel) data);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
-                    showCaseObjectList, cartIds);
+                    showCaseObjectList);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
@@ -690,7 +689,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void checkDropshipperValidation(int requestCode) {
-        boolean hasSelectAllCourier = checkHasSelectAllCourier(true);
+        boolean hasSelectAllCourier = checkHasSelectAllCourier(true, -1, "");
         if (hasSelectAllCourier) {
             boolean availableCheckout = true;
             int errorPosition = DEFAULT_ERROR_POSITION;
@@ -755,14 +754,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (index > 0) {
             notifyItemChanged(getShipmentCostPosition());
             notifyItemChanged(index);
-            checkHasSelectAllCourier(false);
+            checkHasSelectAllCourier(false, index, shipmentCartItemModel.getCartString());
             if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
                 updateShippingCompletionTickerVisibility();
             }
         }
     }
 
-    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData newCourierItemData, boolean isForceReload) {
         ShipmentCartItemModel shipmentCartItemModel = null;
         Object currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
@@ -792,8 +791,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
-        checkHasSelectAllCourier(false);
+        int tmpPosition = isForceReload ? position : -1;
         if (shipmentCartItemModel != null && shipmentCartItemModel.isEligibleNewShippingExperience()) {
+            checkHasSelectAllCourier(false, tmpPosition, shipmentCartItemModel.getCartString());
             updateShippingCompletionTickerVisibility();
         }
 
@@ -873,7 +873,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick) {
+    public boolean checkHasSelectAllCourier(boolean passCheckShipmentFromPaymentClick,
+                                            int lastSelectedCourierOrderIndex,
+                                            String lastSelectedCourierOrdercartString) {
         int cartItemCounter = 0;
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -887,7 +889,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 RequestData requestData = getRequestData(null, null, false);
                 if (!passCheckShipmentFromPaymentClick) {
-                    shipmentAdapterActionListener.onFinishChoosingShipment();
+                    shipmentAdapterActionListener.onFinishChoosingShipment(lastSelectedCourierOrderIndex, lastSelectedCourierOrdercartString);
                 }
                 shipmentAdapterActionListener.updateCheckoutRequest(requestData.getCheckoutRequestData());
                 return true;
@@ -1138,31 +1140,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentCartItemModelList != null) {
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 shipmentCartItemModel.setStateHasLoadCourierState(false);
-            }
-        }
-    }
-
-    private void updateFirstInvoiceItemMargin(int iteration, ShipmentCartItemModel shipmentCartItemModel, boolean hasExtraMarginTop) {
-        if (shipmentCartItemModel.getRecipientAddressModel() != null && shipmentCartItemModelList != null &&
-                shipmentCartItemModelList.get(0) != null &&
-                shipmentCartItemModel.getShopId() == shipmentCartItemModelList.get(0).getShopId()) {
-            shipmentCartItemModel.setStateHasExtraMarginTop(hasExtraMarginTop);
-
-            notifyItemChanged(iteration);
-        }
-    }
-
-    public void cancelAutoApplyCoupon(String variant) {
-        for (int i = 0; i < shipmentDataList.size(); i++) {
-            Object shipmentData = shipmentDataList.get(i);
-            if (shipmentData instanceof PromoStackingData) {
-                ((PromoStackingData) shipmentData).setState(TickerPromoStackingCheckoutView.State.EMPTY);
-                if (!variant.isEmpty() && variant.equalsIgnoreCase("merchant_voucher")) {
-                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.MERCHANT);
-                } else {
-                    ((PromoStackingData) shipmentData).setVariant(TickerPromoStackingCheckoutView.Variant.GLOBAL);
-                }
-                notifyItemChanged(i);
             }
         }
     }

@@ -19,6 +19,6 @@ public interface ShippingCourierBottomsheetListener {
 
     void onCourierShipmentRecpmmendationCloseClicked();
 
-    void onRetryReloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList);
+    void onRetryReloadCourier(ShipmentCartItemModel shipmentCartItemModel, int cartPosition);
 
 }

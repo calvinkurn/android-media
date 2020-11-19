@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.createticket.widget.LinearLayoutManager
 import com.tokopedia.contactus.inboxticket2.data.model.InboxTicketListResponse
+import com.tokopedia.contactus.inboxticket2.domain.usecase.ChipTopBotStatusUseCase
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract
 import io.mockk.*
@@ -27,6 +28,7 @@ class InboxListPresenterTest {
     var rule = InstantTaskExecutorRule()
 
     private lateinit var getTicketListUseCase: GetTicketListUseCase
+    private lateinit var topBotStatusUseCase: ChipTopBotStatusUseCase
 
     private lateinit var presenter: InboxListPresenter
     private lateinit var view: InboxListContract.InboxListView
@@ -38,7 +40,8 @@ class InboxListPresenterTest {
         MockKAnnotations.init(this)
         Dispatchers.setMain(TestCoroutineDispatcher())
         getTicketListUseCase = mockk(relaxed = true)
-        presenter = spyk(InboxListPresenter(getTicketListUseCase, mockk(relaxed = true)))
+        topBotStatusUseCase = mockk(relaxed = true)
+        presenter = spyk(InboxListPresenter(getTicketListUseCase, topBotStatusUseCase, mockk(relaxed = true)))
         view = mockk(relaxed = true)
         presenter.attachView(view)
     }

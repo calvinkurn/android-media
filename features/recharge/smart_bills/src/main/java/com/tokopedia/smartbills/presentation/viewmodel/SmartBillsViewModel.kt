@@ -40,9 +40,12 @@ class SmartBillsViewModel @Inject constructor(
     val multiCheckout: LiveData<Result<RechargeMultiCheckoutResponse>>
         get() = mutableMultiCheckout
 
-    fun getStatementMonths(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getStatementMonths(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementMonths.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_MONTHS_QUERY,
+                    RechargeStatementMonths.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()
@@ -60,9 +63,12 @@ class SmartBillsViewModel @Inject constructor(
         }
     }
 
-    fun getStatementBills(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+    fun getStatementBills(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val graphqlRequest = GraphqlRequest(rawQuery, RechargeStatementBills.Response::class.java, mapParams)
+            val graphqlRequest = GraphqlRequest(
+                    SmartBillsQueries.STATEMENT_BILLS_QUERY,
+                    RechargeStatementBills.Response::class.java, mapParams
+            )
             val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(
                     if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST
             ).setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build()

@@ -10,21 +10,21 @@ import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.ApplinkConstant
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
 import com.tokopedia.officialstore.official.presentation.widget.BannerOfficialStore
 import kotlinx.android.synthetic.main.viewmodel_official_banner.view.*
 
-class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerViewModel>(view),
+class OfficialBannerViewHolder(view: View): AbstractViewHolder<OfficialBannerDataModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener {
 
     private var banner: BannerOfficialStore? = null
-    private var elementBanner: OfficialBannerViewModel? = null
+    private var elementBanner: OfficialBannerDataModel? = null
 
     private var officialStoreTracking: OfficialStoreTracking? = null
 
-    override fun bind(element: OfficialBannerViewModel) {
+    override fun bind(element: OfficialBannerDataModel) {
         elementBanner = element
         itemView.banner_official.run {
             setPromoList(element.banner.map { it.imageUrl })
