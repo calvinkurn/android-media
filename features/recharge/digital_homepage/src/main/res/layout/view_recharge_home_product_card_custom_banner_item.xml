@@ -46,7 +46,7 @@
                 android:layout_height="@dimen/layout_lvl3"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_recharge_product_title"
                 app:layout_constraintRight_toRightOf="parent"
-                android:scaleType="centerCrop"
+                android:scaleType="fitCenter"
                 app:layout_constraintTop_toTopOf="@+id/tv_recharge_product_title"
                 android:background="@drawable/bg_custom_banner_iv_rounded"
                 />
