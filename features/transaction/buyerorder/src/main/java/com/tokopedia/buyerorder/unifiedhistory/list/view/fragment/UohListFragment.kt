@@ -194,6 +194,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultEndDate = ""
     private var defaultEndDateStr = ""
     private var arrayFilterDate = arrayOf<String>()
+    private var arraySubLabelExperiment = arrayOf<String>()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
@@ -323,6 +324,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         paramUohOrder.page = 1
         activity?.let {
             arrayFilterDate = it.resources?.getStringArray(R.array.filter_date) as Array<String>
+            arraySubLabelExperiment = it.resources?.getStringArray(R.array.filter_status) as Array<String>
         }
     }
 
@@ -636,48 +638,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun renderChipsFilter() {
         val chips = arrayListOf<SortFilterItem>()
 
-        val typeDate = if (isReset || isFirstLoad) {
-            ChipsUnify.TYPE_NORMAL
-        } else {
-            ChipsUnify.TYPE_SELECTED
-        }
-
-        filter1 = SortFilterItem(ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
-        filter1?.listener = {
-            onClickFilterDate()
-        }
-        filter1?.let {
-            chips.add(it)
-        }
-
-        val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
-                || filterStatus.equals(PARAM_MARKETPLACE, true)
-                || filterStatus.equals(PARAM_DIGITAL, true)
-                || filterStatus.equals(PARAM_EVENTS, true)
-                || filterStatus.equals(PARAM_DEALS, true)
-                || filterStatus.equals(PARAM_PESAWAT, true)
-                || filterStatus.equals(PARAM_GIFTCARDS, true)
-                || filterStatus.equals(PARAM_INSURANCE, true)
-                || filterStatus.equals(PARAM_MODALTOKO, true)
-                || filterStatus.equals(PARAM_HOTEL, true)
-                || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
-            ChipsUnify.TYPE_NORMAL
-        } else {
-            ChipsUnify.TYPE_SELECTED
-        }
-        filter2 = SortFilterItem(ALL_STATUS, typeStatus, ChipsUnify.SIZE_SMALL)
-        filter2?.listener = {
-            onClickFilterStatus()
-        }
-        if (filterStatus.isNotEmpty() && !isReset) {
-            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
-                filter2?.title = ALL_STATUS
-            } else {
-                filter2?.title = currFilterStatusLabel
-            }
-        }
-        filter2?.let { chips.add(it) }
-
+        // status
         val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
                 filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
                 filterStatus.equals(PARAM_DIGITAL, true) ||
@@ -714,10 +675,54 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             filter3?.title = orderList.categories[2].label
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
-                filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
+                        filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
             filter3?.title = orderList.categories[3].label
         }
         filter3?.let { chips.add(it) }
+
+        // product
+        val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
+                || filterStatus.equals(PARAM_MARKETPLACE, true)
+                || filterStatus.equals(PARAM_DIGITAL, true)
+                || filterStatus.equals(PARAM_EVENTS, true)
+                || filterStatus.equals(PARAM_DEALS, true)
+                || filterStatus.equals(PARAM_PESAWAT, true)
+                || filterStatus.equals(PARAM_GIFTCARDS, true)
+                || filterStatus.equals(PARAM_INSURANCE, true)
+                || filterStatus.equals(PARAM_MODALTOKO, true)
+                || filterStatus.equals(PARAM_HOTEL, true)
+                || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
+        }
+        filter2 = SortFilterItem(ALL_STATUS, typeStatus, ChipsUnify.SIZE_SMALL)
+        filter2?.listener = {
+            onClickFilterStatus()
+        }
+        if (filterStatus.isNotEmpty() && !isReset) {
+            if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)) {
+                filter2?.title = ALL_STATUS
+            } else {
+                filter2?.title = currFilterStatusLabel
+            }
+        }
+        filter2?.let { chips.add(it) }
+
+        // date
+        val typeDate = if (isReset || isFirstLoad) {
+            ChipsUnify.TYPE_NORMAL
+        } else {
+            ChipsUnify.TYPE_SELECTED
+        }
+
+        filter1 = SortFilterItem(ALL_DATE, typeDate, ChipsUnify.SIZE_SMALL)
+        filter1?.listener = {
+            onClickFilterDate()
+        }
+        filter1?.let {
+            chips.add(it)
+        }
 
         uoh_sort_filter?.addItem(chips)
         uoh_sort_filter?.sortFilterPrefix?.setOnClickListener {
@@ -741,21 +746,24 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterDate() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
-        val arrayListMapDate = arrayListOf<HashMap<String, String>>()
-        var i = 0
+        val arrayListDateFilterBundle = arrayListOf<UohFilterBundle>()
         if (arrayFilterDate.isNotEmpty()) {
-            arrayFilterDate.forEach { optionDate ->
-                val mapKey = HashMap<String, String>()
-                mapKey["$i"] = optionDate
-                arrayListMapDate.add(mapKey)
-                i++
+            arrayFilterDate.forEachIndexed { index, s ->
+                arrayListDateFilterBundle.add(UohFilterBundle(key = index.toString(), value = s, type = 0))
+                if (index == 1) {
+                    if (arraySubLabelExperiment.isNotEmpty()) {
+                        arraySubLabelExperiment.forEachIndexed { subIndex, subLabel ->
+                            arrayListDateFilterBundle.add(UohFilterBundle(key = subIndex.toString(), value = subLabel, type = 1))
+                        }
+                    }
+                }
             }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapDate
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListDateFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
         uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -765,17 +773,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterStatus() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
-        val arrayListMapStatus = arrayListOf<HashMap<String, String>>()
+        val arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
         orderList.filters.forEach { option ->
-            val mapKey = HashMap<String, String>()
-            mapKey[option] = option
-            arrayListMapStatus.add(mapKey)
+            arrayListStatusFilterBundle.add(UohFilterBundle(key = option, value = option, type = 0))
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = SEMUA_TRANSAKSI
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapStatus
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
         uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -785,16 +791,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterCategory() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
-        val arrayListMapCategory = arrayListOf<HashMap<String, String>>()
-        val mapKeyDefault = HashMap<String, String>()
-        mapKeyDefault[ALL_CATEGORIES] = ALL_CATEGORIES_TRANSACTION
-        arrayListMapCategory.add(mapKeyDefault)
+        val arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
         orderList.categories.forEach { category ->
-            val mapKey = HashMap<String, String>()
-            mapKey[category.value] = category.label
-            arrayListMapCategory.add(mapKey)
+            arrayListStatusFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
         }
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapCategory
+        uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
