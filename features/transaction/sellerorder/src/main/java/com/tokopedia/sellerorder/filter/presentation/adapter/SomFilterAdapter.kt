@@ -1,6 +1,5 @@
 package com.tokopedia.sellerorder.filter.presentation.adapter
 
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.sellerorder.filter.presentation.model.*
@@ -19,10 +18,15 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
         diffResult.dispatchUpdatesTo(this)
     }
 
-    fun resetFilterSelected(dataList: List<BaseSomFilter>) {
-        visitables.clear()
-        visitables.addAll(dataList)
-        notifyDataSetChanged()
+    fun resetFilterSelected(dataList: List<SomFilterUiModel>) {
+        visitables.filterIsInstance<SomFilterUiModel>().mapIndexed { index, somFilter ->
+            val chipsIndex = visitables.indexOf(somFilter)
+            somFilter.somFilterData = dataList[index].somFilterData
+            if(chipsIndex != -1) {
+                notifyItemChanged(chipsIndex)
+            }
+        }
+        updateDateFilterText()
     }
 
     fun setEmptyState(emptyData: SomFilterEmptyUiModel) {
@@ -43,7 +47,7 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
         }
     }
 
-    fun updateDateFilterText(date: String) {
+    fun updateDateFilterText(date: String = "") {
         val dateIndex = visitables.indexOfFirst { it is SomFilterDateUiModel }
         visitables.find { it is SomFilterDateUiModel }?.also {
             (it as SomFilterDateUiModel).date = date
