@@ -2,6 +2,7 @@ package com.tokopedia.attachproduct.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -44,7 +45,7 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        toolbar.setBackgroundColor(getResources().getColor(R.color.Unify_N0));
+        toolbar.setBackgroundColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0));
     }
 
     @Override

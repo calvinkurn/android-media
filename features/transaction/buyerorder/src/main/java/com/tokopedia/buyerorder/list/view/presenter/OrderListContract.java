@@ -35,7 +35,7 @@ public class OrderListContract {
 
         void renderEmptyList(int typeRequest, long elapsedDays);
 
-        Context getAppContext();
+        Context getActivity();
 
         void setLastOrderId(int orderid);
 
@@ -79,7 +79,7 @@ public class OrderListContract {
     public interface Presenter extends CustomerPresenter<View> {
         void getAllOrderData(Context context, String orderCategory, int typeRequest, int page, int orerId);
 
-        void processGetRecommendationData(int page, boolean isFirstTime);
+        void processGetRecommendationData(Context Context, int page, boolean isFirstTime);
 
         void onRefresh();
     }

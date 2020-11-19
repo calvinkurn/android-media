@@ -158,6 +158,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendMessage: String = ""
     private var delaySendSticker: Sticker? = null
 
+    //This used only for set extra in finish activity
+    private var isFavoriteShop: Boolean? = null
+
     private val REQUEST_GO_TO_SHOP = 111
     private val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     private val REQUEST_GO_TO_SETTING_TEMPLATE = 113
@@ -1119,6 +1122,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     onSuccessUnFollowShopFromBcHandler()
                     addBroadCastSpamHandler(isFollow)
                 }
+                isFavoriteShop = isFollow
             }
         }
     }
@@ -1246,6 +1250,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             bundle.putParcelable(TopChatInternalRouter.Companion.RESULT_LAST_ITEM, getViewState().getLastItem())
             bundle.putString(ApplinkConst.Chat.MESSAGE_ID, messageId)
             bundle.putInt(TopChatInternalRouter.Companion.RESULT_INBOX_CHAT_PARAM_INDEX, indexFromInbox)
+            isFavoriteShop?.let {
+                bundle.putString(ApplinkConst.Chat.SHOP_FOLLOWERS_CHAT_KEY, it.toString())
+            }
             intent.putExtras(bundle)
             it.setResult(RESULT_OK, intent)
             it.finish()
@@ -1493,6 +1500,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     element.stopFollowShop()
                     onSuccessFollowShopFromBcHandler()
                     adapter.removeBroadcastHandler(element)
+                    isFavoriteShop = true
                 },
                 onError = {
                     element.stopFollowShop()
