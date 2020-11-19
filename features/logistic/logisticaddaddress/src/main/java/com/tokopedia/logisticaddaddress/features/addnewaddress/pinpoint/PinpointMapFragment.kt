@@ -837,6 +837,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     }
 
                     override fun onPermissionGranted() {
+                        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                         googleMap?.isMyLocationEnabled = true
                     }
 
