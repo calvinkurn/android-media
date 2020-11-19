@@ -50,7 +50,6 @@ include "features:transaction:atc_common"
 include "libraries:videoplayer"
 include "features:discovery:carousel_productcard"
 include "features:user:chat_common"
-include "features:user:attachproduct"
 include "features:merchant:variant_common"
 include ':libraries:annotation_proc_central'
 include "libraries:image_picker"
