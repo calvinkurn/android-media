@@ -8,7 +8,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainS
 import com.tokopedia.shop.open.data.model.*
 import com.tokopedia.shop.open.domain.*
 import com.tokopedia.shop.open.presentation.viewmodel.ShopOpenRevampViewModel
-import com.tokopedia.coroutines.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK

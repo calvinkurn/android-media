@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.cashback
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import io.mockk.MockKAnnotations

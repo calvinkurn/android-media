@@ -1,7 +1,7 @@
 package com.tokopedia.talk.feature.inbox
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.talk.feature.inbox.analytics.TalkInboxTracking
 import com.tokopedia.talk.feature.inbox.domain.usecase.TalkInboxListUseCase
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel

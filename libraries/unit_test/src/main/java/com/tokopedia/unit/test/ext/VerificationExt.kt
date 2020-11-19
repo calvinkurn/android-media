@@ -1,4 +1,4 @@
-package com.tokopedia.coroutines.test.ext
+package com.tokopedia.unit.test.ext
 
 import androidx.lifecycle.LiveData
 import com.tokopedia.usecase.coroutines.Fail

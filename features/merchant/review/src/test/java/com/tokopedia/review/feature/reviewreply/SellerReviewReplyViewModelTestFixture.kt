@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reviewreply
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase

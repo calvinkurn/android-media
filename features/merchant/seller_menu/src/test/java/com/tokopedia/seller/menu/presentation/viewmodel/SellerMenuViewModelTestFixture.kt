@@ -1,7 +1,7 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.coroutines.test.rule.CoroutineTestRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaData

@@ -131,7 +131,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation project(rootProject.ext.libraries.coroutinesTest)
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     //Ui Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner

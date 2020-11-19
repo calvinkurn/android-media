@@ -1,6 +1,6 @@
-package com.tokopedia.coroutines.test.rule
+package com.tokopedia.unit.test.rule
 
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScope

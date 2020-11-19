@@ -25,7 +25,7 @@ project.ext {
     artifactId = 'coroutines-test'
     groupId = 'com.tokopedia.library'
     versionName = "0.0.1"
-    artifactName = "coroutines_test-release"
+    artifactName = "unit_test-release"
 }
 
 apply from: '../../publish_local.gradle'

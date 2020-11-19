@@ -107,6 +107,6 @@ ext {
             analyticAnnotationCentral   : ":libraries:annotation_proc_central",
             screenRecorder          : ":libraries:screen_recorder",
             coroutinesDispatcher    : ":libraries:coroutines_dispatcher",
-            coroutinesTest          : ":libraries:coroutines_test"
+            unitTest                : ":libraries:unit_test"
     ]
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.talk.feature.reading
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionAggregateUseCase
 import com.tokopedia.talk.feature.reading.domain.usecase.GetDiscussionDataUseCase
 import com.tokopedia.talk.feature.reading.presentation.viewmodel.TalkReadingViewModel

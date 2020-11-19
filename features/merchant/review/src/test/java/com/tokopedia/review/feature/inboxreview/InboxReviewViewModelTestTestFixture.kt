@@ -3,7 +3,7 @@ package com.tokopedia.review.feature.inboxreview
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.inboxreview.domain.usecase.GetInboxReviewUseCase
 import com.tokopedia.review.feature.inboxreview.presentation.viewmodel.InboxReviewViewModel
 import com.tokopedia.user.session.UserSessionInterface

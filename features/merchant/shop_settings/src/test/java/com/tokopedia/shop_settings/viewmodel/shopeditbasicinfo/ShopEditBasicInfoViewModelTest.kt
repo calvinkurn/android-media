@@ -5,7 +5,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ValidateDomainS
 import com.tokopedia.shop.settings.basicinfo.data.AllowShopNameDomainChanges
 import com.tokopedia.shop.settings.basicinfo.domain.GetAllowShopNameDomainChanges
 import com.tokopedia.shop_settings.common.util.LiveDataUtil.observeAwaitValue
-import com.tokopedia.coroutines.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.mockkObject
 import junit.framework.TestCase.assertNotNull

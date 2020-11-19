@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleRegistry
 import androidx.lifecycle.LiveData
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewdetail.domain.GetProductFeedbackDetailListUseCase
 import com.tokopedia.review.feature.reviewdetail.domain.GetProductReviewInitialUseCase
 import com.tokopedia.review.feature.reviewdetail.view.viewmodel.ProductReviewDetailViewModel

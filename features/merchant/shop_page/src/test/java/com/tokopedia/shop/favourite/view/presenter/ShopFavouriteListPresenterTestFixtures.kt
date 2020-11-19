@@ -1,7 +1,7 @@
 package com.tokopedia.shop.favourite.view.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.favourite.domain.interactor.GetShopFollowerListUseCase
 import com.tokopedia.shop.favourite.view.listener.ShopFavouriteListView

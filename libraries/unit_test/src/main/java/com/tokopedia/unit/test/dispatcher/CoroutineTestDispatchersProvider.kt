@@ -1,4 +1,4 @@
-package com.tokopedia.coroutines.test.dispatcher
+package com.tokopedia.unit.test.dispatcher
 
 import com.tokopedia.coroutines.dispatcher.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers

@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.reviewlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewlist.domain.GetProductRatingOverallUseCase
 import com.tokopedia.review.feature.reviewlist.domain.GetReviewProductListUseCase
 import com.tokopedia.review.feature.reviewlist.view.viewmodel.SellerReviewListViewModel

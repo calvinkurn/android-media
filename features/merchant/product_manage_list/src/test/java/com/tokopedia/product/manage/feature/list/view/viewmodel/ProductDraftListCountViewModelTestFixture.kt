@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.manage.common.draft.domain.usecase.ClearAllDraftProductsUseCase
 import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllDraftProductsCountUseCase
-import com.tokopedia.coroutines.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
