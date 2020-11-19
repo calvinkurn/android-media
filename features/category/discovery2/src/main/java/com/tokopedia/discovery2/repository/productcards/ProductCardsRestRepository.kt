@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.discovery2.ComponentNames
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DiscoveryResponse
@@ -22,9 +23,15 @@ class ProductCardsRestRepository @Inject constructor() : BaseRepository(), Produ
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
         val creativeName = response.data.component?.creativeName ?: ""
+        val templateType = componentProperties?.template ?: GRID
         return when (productComponentName) {
-            ComponentNames.ProductCardRevamp.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName)
+            ComponentNames.ProductCardRevamp.componentName -> {
+                if (templateType == GRID) {
+                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName)
+                } else {
+                    DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.MasterProductCardItemList.componentName, componentProperties, creativeName)
+                }
+            }
             ComponentNames.ProductCardCarousel.componentName ->
                 DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties, creativeName)
             ComponentNames.ProductCardSprintSale.componentName ->
