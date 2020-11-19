@@ -34,8 +34,10 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxComponent
 import com.tokopedia.talk.feature.inbox.di.TalkInboxComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxAdapterTypeFactory
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.BaseTalkInboxUiModel
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
@@ -49,7 +51,7 @@ import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
 import javax.inject.Inject
 
-class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
+class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
         HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract, TalkInboxViewHolderListener, InboxFragment {
 
     companion object {
@@ -89,7 +91,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
-        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB, this)
+        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB, this, isOldView())
     }
 
     override fun getScreenName(): String {
@@ -100,12 +102,8 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         component?.inject(this)
     }
 
-    override fun onItemClicked(talkUiModel: TalkInboxUiModel?) {
-        talkUiModel?.inboxDetail?.let {
-            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
-                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
-            goToReply(it.questionID)
-        }
+    override fun onItemClicked(talkOldUiModel: BaseTalkInboxUiModel?) {
+        // No Op
     }
 
     override fun loadData(page: Int) {
@@ -156,11 +154,25 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         talkInboxTracking.eventItemImpress(inboxType, talkId, viewModel.getUserId(), position, isUnread, trackingQueue)
     }
 
+    override fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?) {
+        talkInboxUiModel?.inboxDetail?.let {
+            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
+                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+            goToReply(it.questionID)
+        }
+        talkInboxOldUiModel?.inboxDetail?.let {
+            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
+                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+            goToReply(it.questionID)
+        }
+    }
+
     override fun onRoleChanged(role: Int) {
         when(role) {
             RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
             RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
         }
+        clearAllData()
         setInboxType()
     }
 
@@ -246,7 +258,11 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                                 return@Observer
                             }
                         }
-                        renderData(inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
+                        if(isOldView()) {
+                            renderOldData(inbox.map { inbox -> TalkInboxOldUiModel(inbox) }, it.data.hasNext)
+                        } else {
+                            renderData(inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
+                        }
                     }
 
                 }
@@ -265,6 +281,12 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                 }
             }
         })
+    }
+
+    private fun renderOldData(data: List<TalkInboxOldUiModel>, hasNext: Boolean) {
+        hideEmpty()
+        talkInboxRecyclerView.show()
+        renderList(data, hasNext)
     }
 
     private fun renderData(data: List<TalkInboxUiModel>, hasNext: Boolean) {
@@ -378,6 +400,10 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private fun setInboxType()  {
         viewModel.setInboxType(inboxType)
+    }
+
+    private fun isOldView(): Boolean {
+        return false
     }
 
 }
