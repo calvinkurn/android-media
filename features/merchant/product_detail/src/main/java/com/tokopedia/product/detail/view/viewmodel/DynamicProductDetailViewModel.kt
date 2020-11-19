@@ -77,6 +77,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.concurrent.timerTask
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,
@@ -259,7 +260,15 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     }
 
     fun getPPTitleName(): String {
-        return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.titlePDP ?: ""
+        var pdpTitle = ""
+        p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.run {
+            if(title?.isNotEmpty() == true) {
+                pdpTitle = title ?: ""
+            } else if (titlePDP?.isNotEmpty() == true) {
+                pdpTitle = titlePDP ?: ""
+            }
+        }
+        return pdpTitle
     }
 
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
