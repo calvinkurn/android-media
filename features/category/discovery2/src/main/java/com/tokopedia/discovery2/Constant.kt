@@ -19,4 +19,9 @@ object Constant {
         const val OFFICIAL_STORE_URL =  "https://ecs7.tokopedia.net/img/official_store_badge.png"
         const val POWER_MERCHANT_URL = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
     }
+
+    object ProductTemplate {
+        const val GRID =  "grid"
+        const val LIST = "list"
+    }
 }
