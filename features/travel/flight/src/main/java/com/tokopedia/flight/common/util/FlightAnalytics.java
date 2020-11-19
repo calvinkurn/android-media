@@ -891,6 +891,19 @@ public class FlightAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(params);
     }
 
+    public void eventDownloadETicketOrderDetail(String eventLabel,
+                                            String userId) {
+        Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_DOWNLOAD_ETICKET,
+                String.format("%s - %s", Label.FLIGHT_SMALL, eventLabel));
+        params.put(USER_ID, userId);
+        params.put(SCREEN_NAME, Screen.ORDER_DETAIL);
+        buildGeneralFlightParams(params);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(params);
+    }
+
     public void eventWebCheckInOrderDetail(String eventLabel,
                                            String userId) {
         Map<String, Object> params = TrackAppUtils.gtmData(FLIGHT_CLICK_EVENT,
@@ -1026,6 +1039,7 @@ public class FlightAnalytics {
         static String DIGITAL_FLIGHT = "digital - flight";
         static String VIEW_ORDER_DETAIL = "view order detail";
         static String CLICK_SEND_ETICKET = "click send eticket";
+        static String CLICK_DOWNLOAD_ETICKET = "click download eticket";
         static String CLICK_WEB_CHECKIN = "click web checkin";
         static String CLICK_CANCEL_TICKET = "click cancel ticket";
         static String CLICK_CHECKIN_DEPARTURE = "click checkin on depart route";

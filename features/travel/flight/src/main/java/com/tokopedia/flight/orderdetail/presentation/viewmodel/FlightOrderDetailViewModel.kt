@@ -244,6 +244,11 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         return totalAmount
     }
 
+    fun getOrderDetailStatus(): String =
+            orderDetailData.value?.let {
+                (it as Success).data.statusString
+            } ?: ""
+
     fun trackOpenOrderDetail(statusString: String) {
         flightAnalytics.openOrderDetail(
                 "$statusString - $orderId",

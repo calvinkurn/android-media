@@ -124,7 +124,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         flightOrderDetailViewModel.eticketData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    navigateToWebview("E-Ticket", it.data)
+                    navigateToWebview(E_TICKET_TITLE, it.data)
                 }
                 is Fail -> {
                 }
@@ -403,7 +403,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             startActivity(FlightOrderDetailBrowserActivity.getIntent(it,
                     title,
                     flightOrderDetailViewModel.orderId,
-                    htmlContent))
+                    htmlContent,
+                    flightOrderDetailViewModel.getOrderDetailStatus()))
         }
     }
 
@@ -428,6 +429,8 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        private const val E_TICKET_TITLE = "E-Ticket"
+
         private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
         private const val EXTRA_REQUEST_CANCEL = "EXTRA_REQUEST_CANCEL"
