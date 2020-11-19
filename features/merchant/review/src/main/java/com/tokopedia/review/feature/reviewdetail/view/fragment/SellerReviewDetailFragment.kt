@@ -167,7 +167,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         reviewSellerDetailAdapter.clearAllElements()
         rvRatingDetail?.show()
         globalError_reviewDetail?.hide()
-        showLoading()
+        showPageLoading()
         viewModelProductReviewDetail?.getProductRatingDetail(
                 productID,
                 viewModelProductReviewDetail?.sortBy.orEmpty())
