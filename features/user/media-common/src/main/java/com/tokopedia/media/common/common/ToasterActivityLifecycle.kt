@@ -57,11 +57,12 @@ class ToasterActivityLifecycle(
                             view = it,
                             text = getString(R.string.media_toaster_title),
                             actionText = getString(R.string.media_toaster_cta),
+                            duration = Toaster.LENGTH_LONG,
                             type = Toaster.TYPE_NORMAL,
                             clickListener = View.OnClickListener {
                                 startActivity(RouteManager.getIntent(this, IMAGE_QUALITY_SETTING))
                             }
-                    ).setDuration(4000).show()
+                    ).show()
                 }
             }
         }, DELAY_PRE_SHOW_TOAST)
