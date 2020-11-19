@@ -1341,6 +1341,14 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun refreshOrderList() {
+        if (viewModel.isMultiSelectEnabled) {
+            viewModel.isMultiSelectEnabled = false
+            resetOrderSelectedStatus()
+            toggleBulkActionButtonVisibility()
+            toggleBulkActionCheckboxVisibility()
+            checkBoxBulkAction.isChecked = false
+            checkBoxBulkAction.setIndeterminate(false)
+        }
         scrollViewErrorState.gone()
         isLoadingInitialData = true
         loadOrderList()
