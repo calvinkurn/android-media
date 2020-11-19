@@ -21,7 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_PAGE
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.dialog.DialogUnify
@@ -51,7 +50,7 @@ import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewMode
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
