@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -122,7 +123,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        val whiteColor = ContextCompat.getColor(
+                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+        )
+        window.decorView.setBackgroundColor(whiteColor)
     }
 
     private fun setupNotificationBar() {
