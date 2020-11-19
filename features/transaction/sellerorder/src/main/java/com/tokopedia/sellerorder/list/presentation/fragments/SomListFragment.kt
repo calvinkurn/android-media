@@ -1,5 +1,8 @@
 package com.tokopedia.sellerorder.list.presentation.fragments
 
+import android.animation.Animator
+import android.animation.LayoutTransition.CHANGING
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -98,6 +101,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     companion object {
         private const val DELAY_SEARCH = 500L
         private const val DELAY_COACHMARK = 500L
+        private const val BUTTON_ENTER_LEAVE_ANIMATION_DURATION = 300L
 
         private const val TAG_BOTTOM_SHEET_BULK_ACCEPT = "bulkAcceptBottomSheet"
 
@@ -199,9 +203,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private var currentNewOrderWithCoachMark: Int = -1
+    private var bulkAcceptButtonEnterAnimation: ValueAnimator? = null
+    private var bulkAcceptButtonLeaveAnimation: ValueAnimator? = null
     private var isWaitingPaymentOrderPageOpened: Boolean = false
     private var isRefreshingSelectedOrder: Boolean = false
+    private var currentNewOrderWithCoachMark: Int = -1
     private var shouldShowCoachMark: Boolean = false
     private var shouldScrollToTop: Boolean = false
     private var filterOrderType: Int = 0
@@ -288,7 +294,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             } else {
                 showWaitingPaymentOrderListMenu()
             }
-            isWaitingPaymentOrderPageOpened = !isWaitingPaymentOrderPageOpened
         } else {
             showWaitingPaymentOrderListMenuShimmer()
         }
@@ -356,6 +361,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         dismissCoachMark()
         super.onPause()
+        bulkAcceptButtonEnterAnimation?.end()
+        bulkAcceptButtonLeaveAnimation?.end()
     }
 
     override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
@@ -449,15 +456,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        viewModel.setSearchParam(text.orEmpty())
-        shouldScrollToTop = true
-        loadFilters(false)
-        if (shouldReloadOrderListImmediately()) {
-            refreshOrderList()
-        } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
+        if (textChangeJob?.isActive == false && getSwipeRefreshLayout(view)?.isRefreshing == false) {
+            skipSearch = true
+            textChangeJob?.cancel()
+            viewModel.setSearchParam(text.orEmpty())
+            shouldScrollToTop = true
+            loadFilters(false)
+            if (shouldReloadOrderListImmediately()) {
+                refreshOrderList()
+            } else {
+                getSwipeRefreshLayout(view)?.isRefreshing = true
+            }
+            SomAnalytics.eventSubmitSearch(text.orEmpty())
         }
-        SomAnalytics.eventSubmitSearch(text.orEmpty())
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -641,6 +652,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun setupViews() {
         showWaitingPaymentOrderListMenuShimmer()
         rvSomList.layoutManager = somListLayoutManager
+        rvSomList.setItemViewCacheSize(6)
+        bulkActionCheckBoxContainer.layoutTransition.enableTransitionType(CHANGING)
         setupListeners()
     }
 
@@ -1008,6 +1021,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             updateOrderCounter()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
+            checkBoxBulkAction.skipAnimation()
             toggleTvSomListBulkText()
         }
 
@@ -1110,8 +1124,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun resetOrderSelectedStatus() {
-        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }
-        adapter.notifyDataSetChanged()
+        adapter.data.filterIsInstance<SomListOrderUiModel>().onEach { it.isChecked = false }.run {
+            adapter.notifyItemRangeChanged(0, size, Bundle().apply { putBoolean(SomListOrderViewHolder.TOGGLE_SELECTION, true) })
+        }
     }
 
     private fun checkAllOrder() {
@@ -1121,7 +1136,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun toggleBulkActionButtonVisibility() {
         val isAnyCheckedOrder = adapter.data.filterIsInstance<SomListOrderUiModel>().find { it.isChecked } != null
-        containerBtnBulkAction.showWithCondition(viewModel.isMultiSelectEnabled && isAnyCheckedOrder)
+        if (viewModel.isMultiSelectEnabled && isAnyCheckedOrder) {
+            animateBulkAcceptOrderButtonEnter()
+        } else {
+            animateBulkAcceptOrderButtonLeave()
+        }
     }
 
     private fun toggleBulkActionCheckboxVisibility() {
@@ -1211,18 +1230,22 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun renderOrderList(data: List<SomListOrderUiModel>) {
+        skipSearch = false
         hideLoading()
         if (rvSomList.visibility != View.VISIBLE) rvSomList.show()
         // show only if current order list is based on current search keyword
         if (isLoadingInitialData && data.isEmpty()) {
             showEmptyState()
             multiEditViews.gone()
+            toggleBulkActionButtonVisibility()
         } else if (data.firstOrNull()?.searchParam == searchBarSomList.searchText.orEmpty()) {
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab.getSelectedFilterOrderCount())
                 multiEditViews.showWithCondition(somListSortFilterTab.shouldShowBulkAction())
+                toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
+                toggleBulkActionButtonVisibility()
                 if (shouldScrollToTop) {
                     shouldScrollToTop = false
                     rvSomList.addOneTimeGlobalLayoutListener {
@@ -1236,7 +1259,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 }
             } else {
                 adapter.addMoreData(data)
-                updateBulkActionCheckboxStatus()
+                rvSomList.post {
+                    updateBulkActionCheckboxStatus()
+                }
             }
             rvSomList?.postDelayed({
                 reshowNewOrderCoachMark(data)
@@ -1613,5 +1638,41 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
             shouldShowCoachMark = false
         }
+    }
+
+    private fun View?.animateSlide(from: Float, to: Float): ValueAnimator {
+        val animator = ValueAnimator.ofFloat(from, to)
+        animator.duration = BUTTON_ENTER_LEAVE_ANIMATION_DURATION
+        animator.addUpdateListener { valueAnimator ->
+            context?.let {
+                this?.translationY = (valueAnimator.animatedValue as? Float).orZero()
+            }
+        }
+        animator.start()
+        return animator
+    }
+
+    private fun animateBulkAcceptOrderButtonEnter() {
+        if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
+        containerBtnBulkAction?.visible()
+        bulkAcceptButtonEnterAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.height?.toFloat()
+                ?: 0f, 0f)
+    }
+
+    private fun animateBulkAcceptOrderButtonLeave() {
+        if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
+        bulkAcceptButtonLeaveAnimation = containerBtnBulkAction?.animateSlide(0f, containerBtnBulkAction?.height?.toFloat()
+                ?: 0f)
+        bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animation: Animator?) {}
+
+            override fun onAnimationEnd(animation: Animator?) {
+                containerBtnBulkAction?.gone()
+            }
+
+            override fun onAnimationCancel(animation: Animator?) {}
+
+            override fun onAnimationStart(animation: Animator?) {}
+        })
     }
 }

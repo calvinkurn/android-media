@@ -64,6 +64,7 @@ class SomListGetOrderListUseCase @Inject constructor(
                   cancel_request_origin_note
                   destination_province
                   courier_name
+                  courier_product_name
                   order_product {
                     product_id
                     product_name

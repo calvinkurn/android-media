@@ -37,8 +37,8 @@ class SomEditRefNumUseCase @Inject constructor(private val useCase: GraphqlUseCa
 
     companion object {
         private val QUERY = """
-            mutation {
-              mpLogisticEditRefNum(input: {order_id: "#orderId", shipping_ref:"#shippingRef"}) {
+            mutation MpLogisticEditRefNum(${'$'}input: MPLogisticEditRefNumInputs!){
+              mpLogisticEditRefNum(input: ${'$'}input) {
                 message
               }
             }

@@ -6,8 +6,10 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:paddingTop="@dimen/som_list_order_item_padding"
         android:paddingBottom="@dimen/som_list_order_item_padding">
 
@@ -142,16 +144,36 @@
             android:layout_marginStart="9dp"
             android:layout_marginEnd="@dimen/som_list_order_item_padding"
             android:ellipsize="end"
-            android:maxLines="2"
-            android:paddingBottom="1.5dp"
+            android:maxLines="1"
+            android:singleLine="true"
             android:textColor="@color/Unify_N700_96"
-            app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
+            app:layout_constraintBottom_toTopOf="@id/tvSomListProductVariant"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
             app:layout_constraintTop_toTopOf="@id/ivSomListProduct"
             app:layout_constraintVertical_bias="0"
+            app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="heading_6"
-            tools:text="Air Jorda Gym Red Satin Original Produk Hoops Malaysia Tunai Dong... (Red)" />
+            tools:text="Air Jorda Gym Red Satin Original" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvSomListProductVariant"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginEnd="@dimen/som_list_order_item_padding"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingBottom="1.5dp"
+            android:singleLine="true"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
+            app:layout_constraintTop_toBottomOf="@id/tvSomListProductName"
+            app:layout_constraintVertical_bias="0"
+            app:typographyType="heading_6"
+            tools:text="(Red)" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvSomListProductExtra"
@@ -164,7 +186,7 @@
             app:layout_constraintBottom_toBottomOf="@id/ivSomListProduct"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/ivSomListProduct"
-            app:layout_constraintTop_toBottomOf="@id/tvSomListProductName"
+            app:layout_constraintTop_toBottomOf="@id/tvSomListProductVariant"
             app:layout_constraintVertical_bias="0"
             app:typographyType="body_3"
             tools:text="+2 produk lainnya" />

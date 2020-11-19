@@ -386,6 +386,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         somFilterViewModel.setIsRequestCancelFilterApplied(false)
         filterDate = ""
+        somFilterViewModel.setIsRequestCancelFilterApplied(false)
     }
 
     private fun checkIsSelected(): Boolean {

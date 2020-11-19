@@ -70,6 +70,9 @@ data class SomListOrderListResponse(
                     @SerializedName("courier_name")
                     @Expose
                     val courierName: String = "",
+                    @SerializedName("courier_product_name")
+                    @Expose
+                    val courierProductName: String = "",
                     @SerializedName("ticker_info")
                     @Expose
                     val tickerInfo: TickerInfo = TickerInfo(),

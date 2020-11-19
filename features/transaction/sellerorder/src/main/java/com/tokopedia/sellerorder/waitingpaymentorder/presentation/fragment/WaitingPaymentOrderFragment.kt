@@ -189,7 +189,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
             }
             if (intent != null) {
                 eventClickCheckAndSetStockButton(
-                        adapter.itemCount,
+                        adapter.data.filterIsInstance<WaitingPaymentOrderUiModel>().size,
                         userSession.userId,
                         userSession.shopId
                 )

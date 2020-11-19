@@ -16,10 +16,6 @@ class SomListSortFilterTab(
         private val listener: SomListSortFilterTabClickListener
 ) {
 
-    companion object {
-        private const val SWIPE_TAB_ANIMATION_DELAY = 500L
-    }
-
     private var selectedTab: SomListFilterUiModel.Status? = null
     private var filterItems: ArrayList<SortFilterItem> = arrayListOf()
     private var somListFilterUiModel: SomListFilterUiModel? = null

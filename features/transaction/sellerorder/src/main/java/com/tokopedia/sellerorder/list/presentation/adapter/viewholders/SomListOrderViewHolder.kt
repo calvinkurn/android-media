@@ -1,16 +1,14 @@
 package com.tokopedia.sellerorder.list.presentation.adapter.viewholders
 
+import android.animation.LayoutTransition.CHANGING
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.ColorFilter
 import android.graphics.LightingColorFilter
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
+import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -39,9 +37,13 @@ class SomListOrderViewHolder(
     companion object {
         val LAYOUT = R.layout.item_som_list_order
 
+        const val TOGGLE_SELECTION = "toggle_selection"
+
         private val completedOrderStatusCodes = intArrayOf(690, 691, 695, 698, 699, 700, 701)
         private val cancelledOrderStatusCodes = intArrayOf(0, 4, 6, 10, 11, 15)
     }
+
+    private var shouldContinueDraw = false
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
@@ -70,6 +72,23 @@ class SomListOrderViewHolder(
                 listener.onFinishBindNewOrder(itemView.btnQuickAction, adapterPosition.takeIf { it != RecyclerView.NO_POSITION }.orZero())
             }
         }
+    }
+
+    override fun bind(element: SomListOrderUiModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        payloads.firstOrNull()?.let {
+            it as Bundle
+            if (it.containsKey(TOGGLE_SELECTION)) {
+                itemView.container?.layoutTransition?.enableTransitionType(CHANGING)
+                bind(element)
+                itemView.container?.layoutTransition?.disableTransitionType(CHANGING)
+            }
+        }
+    }
+
+    override fun onViewRecycled() {
+        shouldContinueDraw = true
+        super.onViewRecycled()
     }
 
     private fun touchCheckBox(element: SomListOrderUiModel) {
@@ -106,9 +125,10 @@ class SomListOrderViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupCourierInfo(element: SomListOrderUiModel, orderEnded: Boolean) {
         with(itemView) {
-            tvSomListCourierValue.text = element.courierName
+            tvSomListCourierValue.text = "${element.courierName}${" - ${element.courierProductName}".takeIf { element.courierProductName.isNotBlank() }.orEmpty()}"
             tvSomListCourierLabel.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
             tvSomListCourierValue.showWithCondition(element.courierName.isNotBlank() && !orderEnded)
         }
@@ -125,30 +145,34 @@ class SomListOrderViewHolder(
                     setMargin(12.toPx(), 11f.dpToPx().toInt(), 0, 0)
                 }
             }
-            tvSomListProductName.apply {
-                element.orderProduct.firstOrNull()?.let { product ->
-                    val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
-                    val productVariant = product.productName.split(" - ").lastOrNull().orEmpty().trim()
-                    text = composeProductName(productName, productVariant)
+            element.orderProduct.firstOrNull()?.let { product ->
+                val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
+                val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
+
+                tvSomListProductName.apply {
+                    if (productVariant.isBlank()) {
+                        maxLines = 2
+                        isSingleLine = false
+                        if (element.orderProduct.size > 1) {
+                            setPadding(0, 0, 0, 0)
+                        } else {
+                            setPadding(0, 0, 0, 1.5f.dpToPx().toInt())
+                        }
+                    } else {
+                        maxLines = 1
+                        isSingleLine = true
+                    }
+                    text = productName
                     val layoutParams = layoutParams as ConstraintLayout.LayoutParams
                     layoutParams.verticalBias = if (element.orderProduct.size == 1) {
                         0.5f
                     } else 0f
                     this.layoutParams = layoutParams
-                    viewTreeObserver.addOnPreDrawListener {
-                        val currentText = text?.toString()?.replace("($productVariant)", "")?.replace("...", "").orEmpty().trim()
-                        val lineCount = layout.lineCount
-                        for (i in 0 until lineCount) {
-                            val ellipsisCount = layout.getEllipsisCount(i)
-                            if (ellipsisCount > 0) {
-                                val croppedProductName = "${currentText.removeRange(currentText.length - ellipsisCount - 3, currentText.length).trim()}..."
-                                text = composeProductName(croppedProductName, productVariant)
-                                return@addOnPreDrawListener false
-                            }
-                        }
-
-                        true
-                    }
+                    return@apply
+                }
+                tvSomListProductVariant.apply {
+                    text = "($productVariant)"
+                    showWithCondition(productVariant.isNotBlank())
                 }
             }
             tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
@@ -220,6 +244,7 @@ class SomListOrderViewHolder(
         with(itemView) {
             checkBoxSomListMultiSelect.showWithCondition(listener.isMultiSelectEnabled())
             checkBoxSomListMultiSelect.isChecked = element.isChecked
+            checkBoxSomListMultiSelect.skipAnimation()
             checkBoxSomListMultiSelect.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
                     if (element.cancelRequest == 0) {
@@ -260,18 +285,6 @@ class SomListOrderViewHolder(
                 KEY_UBAH_NO_RESI -> listener.onEditAwbButtonClicked(element.orderId)
             }
         }
-    }
-
-    private fun composeProductName(productName: String, variant: String): SpannableString {
-        val rawText = "$productName ($variant)"
-        if (variant.isBlank()) return SpannableString(rawText)
-        return itemView.context?.run {
-            val variantColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
-            val foregroundColorSpan = ForegroundColorSpan(variantColor)
-            SpannableString(rawText).apply {
-                setSpan(foregroundColorSpan, rawText.lastIndexOf('('), rawText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            }
-        } ?: SpannableString(rawText)
     }
 
     interface SomListOrderItemListener {
