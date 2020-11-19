@@ -27,10 +27,6 @@ class SomListSortFilterTab(
         selectParentFilter()
     }
 
-    fun selectTabReset() {
-        selectedTab = null
-    }
-
     private fun updateTabs(statusList: List<SomListFilterUiModel.Status>) {
         val isAnyDifference = checkDiff(statusList)
         if (isAnyDifference) {
@@ -46,6 +42,7 @@ class SomListSortFilterTab(
                         }
                     }
         }
+        updateSelectedTab(statusList.find { it.isChecked })
     }
 
     private fun recreateTabs(statusList: List<SomListFilterUiModel.Status>) {
@@ -124,8 +121,8 @@ class SomListSortFilterTab(
         updateCounter(selectedCount)
     }
 
-    fun updateCounterFilter() {
-        updateCounter(selectedCount)
+    private fun updateSelectedTab(status: SomListFilterUiModel.Status?) {
+        selectedTab = status
     }
 
     private fun selectParentFilter() {
@@ -154,7 +151,6 @@ class SomListSortFilterTab(
     fun getSelectedFilterStatus(): String = selectedTab?.key.orEmpty()
     fun getSelectedFilterStatusName(): String = selectedTab?.status.orEmpty()
 
-    fun getSomListFilterUiModel() = somListFilterUiModel
 
     fun getSomFilterUi() = somFilterUiModelList
 
@@ -188,8 +184,12 @@ class SomListSortFilterTab(
         }
     }
 
+    fun isEmpty(): Boolean {
+        return filterItems.isEmpty()
+    }
+
     interface SomListSortFilterTabClickListener {
         fun onParentSortFilterClicked()
-        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean)
+        fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean = true)
     }
 }
