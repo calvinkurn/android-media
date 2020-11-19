@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.text.TkpdTextInputLayout;
+import com.tokopedia.common.travel.widget.TkpdHintTextInputLayout;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
@@ -35,7 +35,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
     private AppCompatTextView txtSend;
     private AppCompatTextView txtCancel;
     private AppCompatEditText edtEmail;
-    private TkpdTextInputLayout containerEmail;
+    private TkpdHintTextInputLayout containerEmail;
 
     @Inject
     FlightResendETicketPresenter flightResendETicketPresenter;

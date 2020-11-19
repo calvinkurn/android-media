@@ -46,7 +46,7 @@
                     android:text="@string/flight_passenger_data_diri_label"
                     app:typographyType="heading_3"/>
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_first_name"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -68,9 +68,9 @@
                         android:nextFocusForward="@+id/et_last_name"
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_last_name"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -88,7 +88,7 @@
                         android:imeOptions="actionDone"
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="match_parent"
@@ -107,7 +107,7 @@
                     android:layout_marginLeft="@dimen/spacing_lvl2"
                     android:layout_marginBottom="@dimen/spacing_lvl4" />
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_birth_date"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -127,7 +127,7 @@
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/birthdate_helper_text"
@@ -177,7 +177,7 @@
                     android:paddingRight="@dimen/padding_16"
                     android:text="@string/flight_passenger_data_passport_description" />
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_passport_no"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -197,10 +197,10 @@
                         android:hint="@string/flight_passenger_passport_number_secondary_hint"
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_passport_expiration_date"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -226,7 +226,7 @@
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/passport_expiration_helper_text"
@@ -238,7 +238,7 @@
                     app:typographyType="body_3" />
 
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_nationality"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -266,10 +266,10 @@
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
 
-                <com.tokopedia.flight.widget.TkpdHintTextInputLayout
+                <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_passport_issuer_country"
                     style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
@@ -297,7 +297,7 @@
                         android:singleLine="true"
                         android:textColor="@color/Unify_N700_68"
                         app:editTextDrawableRightCompat="@drawable/ic_system_action_dropdown_grayscale_24" />
-                </com.tokopedia.flight.widget.TkpdHintTextInputLayout>
+                </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
             </LinearLayout>
 
             <LinearLayout

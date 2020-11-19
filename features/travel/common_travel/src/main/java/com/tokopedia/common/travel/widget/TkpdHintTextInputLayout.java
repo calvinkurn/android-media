@@ -1,4 +1,4 @@
-package com.tokopedia.flight.widget;
+package com.tokopedia.common.travel.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -19,7 +19,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -36,7 +35,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 
 import com.google.android.material.internal.CheckableImageButton;
-import com.tokopedia.flight.R;
+import com.tokopedia.common.travel.R;
 
 import java.util.Locale;
 
@@ -234,7 +233,7 @@ public class TkpdHintTextInputLayout extends LinearLayout {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.flight_hint_text_input_layout, this);
+        View view = inflate(getContext(), R.layout.widget_hint_text_input_layout, this);
         mFrameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
         mTvLabel = (TextView) view.findViewById(R.id.tv_label);
         mTvHelper = (TextView) view.findViewById(R.id.tv_helper);

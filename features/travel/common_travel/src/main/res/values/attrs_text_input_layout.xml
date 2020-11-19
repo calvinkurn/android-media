@@ -41,7 +41,6 @@
         <!-- TextAppearance of the character counter when the text is longer than the max. -->
         <attr name="counterOverflowTextAppearance" format="reference"/>
 
-
         <!-- Whether the view will display a toggle when the EditText has a password. -->
         <attr name="passwordToggleEnabled" format="boolean"/>
         <!-- Drawable to use as the password input visibility toggle icon. -->
@@ -50,7 +49,6 @@
         <attr name="passwordToggleContentDescription" format="string"/>
         <!-- Icon to use for the password input visibility toggle -->
         <attr name="passwordToggleTint" format="color"/>
-
     </declare-styleable>
 
 </resources>

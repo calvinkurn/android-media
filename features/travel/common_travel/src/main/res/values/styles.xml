@@ -43,4 +43,12 @@
         <item name="android:textColor">@color/red_pink</item>
     </style>
 
+    <style name="helperTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/Unify_N700_44</item>
+        <item name="android:lineSpacingExtra">5sp</item>
+    </style>
+
+    <style name="successTextAppearance" parent="TextAppearance.Design.Error">
+        <item name="android:textColor">@color/Unify_G500</item>
+    </style>
 </resources>
