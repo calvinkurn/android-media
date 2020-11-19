@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
+import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheckoutRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 
 object DataProvider {
@@ -11,6 +12,10 @@ object DataProvider {
 
     fun provideValidateUseResponse(): ValidateUseResponse {
         return gson.fromJson(fileUtil.getJsonFromAsset("assets/apply_promo_global_and_merchant_response_success.json"), ValidateUseResponse::class.java)
+    }
+
+    fun provideSingleDataCheckoutRequest(): DataCheckoutRequest {
+        return gson.fromJson(fileUtil.getJsonFromAsset("assets/single_data_checkout_request.json"), DataCheckoutRequest::class.java)
     }
 
 }

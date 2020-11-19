@@ -1318,6 +1318,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (shopProductCheckoutRequest.promoCodes != null &&
                                     shopProductCheckoutRequest.promoCodes.size() > 0 &&
                                     !shopProductCheckoutRequest.promoCodes.contains(voucherOrder.getCode())) {
+                                // This section logic's seems to be invalid, since promo will always be cleared on previous logic
                                 shopProductCheckoutRequest.promoCodes.add(voucherOrder.getCode());
                             } else {
                                 ArrayList<String> codes = new ArrayList<>();
@@ -1328,6 +1329,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (voucherOrder.getCode().length() > 0 && voucherOrder.getType().length() > 0) {
                                 if (shopProductCheckoutRequest.promos != null && shopProductCheckoutRequest.promos.size() > 0 &&
                                         !hasInsertPromo(shopProductCheckoutRequest.promos, voucherOrder.getCode())) {
+                                    // This section logic's seems to be invalid, since promo will always be cleared on previous logic
                                     PromoRequest promoRequest = new PromoRequest();
                                     promoRequest.setCode(voucherOrder.getCode());
                                     promoRequest.setType(voucherOrder.getType());

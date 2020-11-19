@@ -289,7 +289,9 @@ class ShipmentPresenterCheckoutTest {
         // Given
         val validateUseResponse = DataProvider.provideValidateUseResponse()
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        dataCheckoutRequest.shopProducts[0].cartString = "239594-0-301643"
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
 
         // When
         val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
