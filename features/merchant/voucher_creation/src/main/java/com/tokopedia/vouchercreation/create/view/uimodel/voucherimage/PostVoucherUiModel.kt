@@ -17,7 +17,8 @@ class PostVoucherUiModel(
         override val shopName: String,
         val promoCode: String,
         val promoPeriod: String,
-        var postBaseUiModel: PostBaseUiModel) : VoucherDetailUiModel, VoucherImage {
+        var postBaseUiModel: PostBaseUiModel,
+        val isPublic: Boolean? = null) : VoucherDetailUiModel, VoucherImage {
 
     companion object {
         @JvmStatic
@@ -40,7 +41,8 @@ class PostVoucherUiModel(
                                     VoucherUrl.POST_IMAGE_URL,
                                     VoucherUrl.FREE_DELIVERY_URL,
                                     VoucherUrl.CASHBACK_URL,
-                                    VoucherUrl.CASHBACK_UNTIL_URL)
+                                    VoucherUrl.CASHBACK_UNTIL_URL),
+                            isPublic = isPublic
                     )
                 }
             }

@@ -43,7 +43,7 @@ class SquareVoucherPainter(private val context: Context,
         private const val PROMO_CODE_Y = 0.87f
         private const val PROMO_PERIOD_Y = 0.93f
 
-
+        private const val DASH = "-"
         private const val ASTERISK = "*"
         private const val PERCENT = "%"
     }
@@ -146,7 +146,13 @@ class SquareVoucherPainter(private val context: Context,
     fun drawInfo(postVoucherUiModel: PostVoucherUiModel) {
         postVoucherUiModel.run {
             canvas.run {
-                drawTextInformation(shopName, promoName, promoCode, promoPeriod)
+                val displayedPromoCode =
+                        if (isPublic == true) {
+                            DASH
+                        } else {
+                            promoCode
+                        }
+                drawTextInformation(shopName, promoName, displayedPromoCode, promoPeriod)
                 drawShopAvatar(shopAvatar)
                 drawPromoInfo(imageType, postBaseUiModel)
             }
