@@ -19,6 +19,7 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.TkpdIdlingResource
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
@@ -47,7 +48,7 @@ class LoginActivityInstrumentedTest {
 
     val trackerPath = "tracker/user/loginregister/login_register_p1.json"
 
-    private var idlingResource: IdlingResource? = null
+    private var tkpdIdlingResource: IdlingResource? = null
 
     @get:Rule
     var mActivityTestRule = ActivityTestRule(LoginEmailPhoneActivityStub::class.java)
@@ -75,15 +76,17 @@ class LoginActivityInstrumentedTest {
         activity = mActivityTestRule.activity
         fragment = activity.setupTestFragment() as LoginEmailPhoneFragmentStub
 
-        idlingResource = LoginIdlingResource.getIdlingResource()
-        IdlingRegistry.getInstance().register(idlingResource)
+        val idlingResource = TkpdIdlingResource("login_idling_resource")
+        tkpdIdlingResource = idlingResource.countingIdlingResource
+
+        IdlingRegistry.getInstance().register(tkpdIdlingResource)
         setupGraphqlMockResponse(LoginMockResponse())
     }
 
     @After
     fun afterSetup() {
         Intents.release()
-        IdlingRegistry.getInstance().unregister(idlingResource)
+        IdlingRegistry.getInstance().unregister(tkpdIdlingResource)
         mActivityTestRule.finishActivity()
     }
 
