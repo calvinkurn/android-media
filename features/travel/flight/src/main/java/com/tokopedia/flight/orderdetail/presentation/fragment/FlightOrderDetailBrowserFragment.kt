@@ -52,6 +52,7 @@ class FlightOrderDetailBrowserFragment : Fragment() {
         wvFlightOrderDetail.settings.builtInZoomControls = true
         wvFlightOrderDetail.settings.displayZoomControls = false
         wvFlightOrderDetail.settings.loadWithOverviewMode = true
+        wvFlightOrderDetail.settings.useWideViewPort = true
         wvFlightOrderDetail.loadData(htmlContent, MIME_TYPE, ENCODING)
     }
 
@@ -68,6 +69,7 @@ class FlightOrderDetailBrowserFragment : Fragment() {
                 val printAdapter = wvFlightOrderDetail.createPrintDocumentAdapter("Tokopedia_Tiket_$invoiceId")
                 val jobName = "Tokopedia_Flight_$invoiceId"
                 printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
+                wvFlightOrderDetail.setInitialScale(1)
             }
         }
     }
