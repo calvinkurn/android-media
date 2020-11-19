@@ -22,7 +22,7 @@ class SomFilterAdapter(adapterTypeFactory: SomFilterAdapterTypeFactory) : BaseAd
         visitables.filterIsInstance<SomFilterUiModel>().mapIndexed { index, somFilter ->
             val chipsIndex = visitables.indexOf(somFilter)
             somFilter.somFilterData = dataList[index].somFilterData
-            if(chipsIndex != - 1) {
+            if(chipsIndex != -1) {
                 notifyItemChanged(chipsIndex)
             }
         }
