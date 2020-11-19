@@ -171,6 +171,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorProfileNameClicked(element: AccountHeaderViewModel) {
+        viewModel.reloadUserData()
     }
 
     override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {

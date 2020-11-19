@@ -12,10 +12,14 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -24,16 +28,22 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
         private val remoteConfig: RemoteConfig,
         private val userSession: UserSessionInterface,
         private val localCacheHandler: LocalCacheHandler
-) : UseCase<WalletBalanceModel>() {
+) : UseCase<Result<WalletBalanceModel>>() {
 
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(WalletBalanceResponse::class.java)
     }
-    override suspend fun executeOnBackground(): WalletBalanceModel = withContext(Dispatchers.IO){
-        graphqlUseCase.clearCache()
-        graphqlUseCase.setRequestParams(getParams().parameters)
-        mapper(graphqlUseCase.executeOnBackground().wallet)
+    override suspend fun executeOnBackground(): Result<WalletBalanceModel> {
+        return try {
+            Success(withContext(Dispatchers.IO) {
+                graphqlUseCase.clearCache()
+                graphqlUseCase.setRequestParams(getParams().parameters)
+                mapper(graphqlUseCase.executeOnBackground().wallet)
+            })
+        } catch (e: Exception) {
+            Fail(e)
+        }
     }
 
     fun getParams(): RequestParams {

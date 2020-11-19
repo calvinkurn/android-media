@@ -6,7 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class SaldoPojo(
         @SerializedName("balance")
         @Expose
-        var saldo: Saldo = Saldo()
+        var saldo: Saldo = Saldo(),
+        var isError: Boolean = false,
+        var errorString: String = ""
 ) {
 
     data class Saldo(

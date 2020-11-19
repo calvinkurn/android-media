@@ -3,8 +3,12 @@ package com.tokopedia.homenav.mainnav.data.factory
 import android.content.Context
 import android.content.SharedPreferences
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
+import com.tokopedia.homenav.common.util.convertPriceValueToIdrFormat
 import com.tokopedia.homenav.mainnav.data.mapper.toVisitable
+import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
+import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
@@ -17,22 +21,50 @@ class MainNavDataFactoryImpl(
 ): MainNavDataFactory {
 
     private var visitableList: MutableList<Visitable<*>> = mutableListOf()
-    private lateinit var userPojo: UserPojo
 
-    override fun buildVisitableList(userPojo: UserPojo): MainNavDataFactory {
+    override fun buildVisitableList(): MainNavDataFactory {
         visitableList.clear()
-        this.userPojo = userPojo
         return this
     }
 
-    override fun addProfileSection(): MainNavDataFactory {
+    override fun addProfileSection(userPojo: UserPojo?,
+                                   walletBalanceModel: WalletBalanceModel?,
+                                   saldoPojo: SaldoPojo?,
+                                   membershipPojo: MembershipPojo?,
+                                   shopInfoPojo: ShopInfoPojo?): MainNavDataFactory {
         when (val loginState = getLoginState()) {
             AccountHeaderViewModel.LOGIN_STATE_LOGIN -> {
-                visitableList.add(AccountHeaderViewModel(
-                        userName = userPojo.profile.name,
-                        userImage = userPojo.profile.profilePicture,
-                        loginState = loginState,
-                        shopId = userSession.shopId))
+                val data = AccountHeaderViewModel()
+                userPojo?.let {
+                    data.setProfileData(
+                            userName = userPojo.profile.name,
+                            userImage = userPojo.profile.profilePicture,
+                            loginState = loginState
+                    )
+                }
+                walletBalanceModel?.let{
+                    data.setWalletData(
+                            ovo = it.cashBalance,
+                            point = it.pointBalance)
+                }
+                saldoPojo?.let {
+                    data.setSaldoData(
+                            saldo = convertPriceValueToIdrFormat(it.saldo.buyerUsable + it.saldo.sellerUsable, false) ?: ""
+                    )
+                }
+                membershipPojo?.let {
+                    data.setUserBadge(
+                            badge = it.tokopoints.status.tier.imageUrl
+                    )
+                }
+                shopInfoPojo?.let {
+                    data.setUserShopName(
+                            shopName = it.info.shopName,
+                            shopId =  it.info.shopId
+                    )
+                }
+
+                visitableList.add(data)
             }
             AccountHeaderViewModel.LOGIN_STATE_LOGIN_AS,
             AccountHeaderViewModel.LOGIN_STATE_NON_LOGIN -> {

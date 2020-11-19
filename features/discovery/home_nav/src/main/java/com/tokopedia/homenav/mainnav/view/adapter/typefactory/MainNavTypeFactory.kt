@@ -12,13 +12,7 @@ interface MainNavTypeFactory {
 
     fun type(transactionListItemViewModel: TransactionListItemViewModel) : Int
 
-    fun type(initialShimmerAccountDataModel: InitialShimmerAccountDataModel) : Int
-
-    fun type(initialShimmerTransactionDataModel: InitialShimmerTransactionDataModel) : Int
-
-    fun type(initialShimmerBuListDataModel: InitialShimmerBuListDataModel) : Int
-
-    fun type(initialShimmerMenuDataModel: InitialShimmerMenuDataModel) : Int
+    fun type(initialShimmerDataModel: InitialShimmerDataModel) : Int
 
     fun createViewHolder(view: View, viewType: Int) : AbstractViewHolder<*>
 }
