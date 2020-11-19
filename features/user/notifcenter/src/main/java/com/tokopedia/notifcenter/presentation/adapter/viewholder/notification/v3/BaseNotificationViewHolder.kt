@@ -47,9 +47,7 @@ abstract class BaseNotificationViewHolder constructor(
 
     protected open fun bindClick(element: NotificationUiModel) {
         container?.setOnClickListener {
-            if (!element.isRead()) {
-                markNotificationAsRead(element)
-            }
+            markAsReadIfUnread(element)
             if (isLongerContent(element)) {
                 showLongerContent(element)
             } else {

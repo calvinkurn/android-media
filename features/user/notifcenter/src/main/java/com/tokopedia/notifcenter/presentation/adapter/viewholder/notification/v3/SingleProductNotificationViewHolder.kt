@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -20,11 +22,24 @@ class SingleProductNotificationViewHolder constructor(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindProductData(element)
+        bindItemTouch(element)
     }
 
     private fun bindProductData(element: NotificationUiModel) {
         val product = element.product
         productContainer?.bindProductData(product, listener)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun bindItemTouch(element: NotificationUiModel) {
+        productContainer?.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_UP -> {
+                    markAsReadIfUnread(element)
+                }
+            }
+            false
+        }
     }
 
     companion object {
