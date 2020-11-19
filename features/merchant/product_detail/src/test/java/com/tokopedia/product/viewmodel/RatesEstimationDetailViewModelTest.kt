@@ -12,6 +12,7 @@ import com.tokopedia.product.util.BaseProductViewModelTest
 import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Assert
 import org.junit.Test
@@ -57,9 +58,11 @@ class RatesEstimationDetailViewModelTest : BaseProductViewModelTest() {
             expectedResponse
         }
 
-        viewModel.getCostEstimation(1F, "", "", "", "")
+        viewModel.getCostEstimation(productWeight = 1F, shopId = "shopId", productId = "123456", origin = null)
 
-        waitForData(3000)
+        coVerify {
+            graphqlRepository.getReseponse(any(), any())
+        }
 
         Assert.assertTrue(viewModel.rateEstResp.value is Success)
     }

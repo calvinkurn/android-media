@@ -21,6 +21,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 
@@ -44,10 +45,12 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
 
+    private val dispatchers =  TestDispatcherProvider()
+
     private val viewModel by lazy {
         AddToCartDoneViewModel(userSessionInterface, addWishListUseCase,
                 removeWishListUseCase, getRecommendationUseCase,
-                addToCartUseCase, TestDispatcherProvider())
+                addToCartUseCase, dispatchers)
     }
 
     @Test
@@ -69,7 +72,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         } throws Throwable()
 
         viewModel.getRecommendationProduct("123")
-        waitForData(3000)
 
         coVerify {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -89,8 +91,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
 
         viewModel.getRecommendationProduct("123")
 
-        waitForData(3000)
-
         coVerify {
             getRecommendationUseCase.createObservable(any())
         }
@@ -105,8 +105,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         } returns null
 
         viewModel.getRecommendationProduct("123")
-
-        waitForData(3000)
 
         coVerify {
             getRecommendationUseCase.createObservable(any())
@@ -124,8 +122,8 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         }
 
         viewModel.addWishList(productId) { it, throwable ->
-            Assert.assertEquals(it ,true)
-            Assert.assertEquals(throwable,null)
+            Assert.assertEquals(it, true)
+            Assert.assertEquals(throwable, null)
         }
     }
 
@@ -156,8 +154,8 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         }
 
         viewModel.removeWishList(productId) { it, throwable ->
-            Assert.assertEquals(it ,true)
-            Assert.assertEquals(throwable,null)
+            Assert.assertEquals(it, true)
+            Assert.assertEquals(throwable, null)
         }
     }
 
@@ -171,13 +169,13 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         }
 
         viewModel.removeWishList(productId) { it, throwable ->
-            Assert.assertEquals(it ,false)
+            Assert.assertEquals(it, false)
             Assert.assertTrue(throwable?.message == errorMessage)
         }
     }
 
     @Test
-    fun `add to cart success`() {
+    fun `add to cart success`() = runBlocking {
         val data = AddToCartDoneRecommendationItemDataModel(RecommendationItem(), true)
         val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1), status = "OK")
 
@@ -186,7 +184,6 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
         } returns atcResponseSuccess
 
         viewModel.addToCart(data)
-        waitForData(3000)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
     }

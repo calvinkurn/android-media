@@ -51,7 +51,6 @@ class ProductInstallmentViewModelTest : BaseProductViewModelTest() {
 
         viewModel.transformedInstallment.observeForever { }
         viewModel.loadInstallment(1F)
-        waitForData(2000)
 
         viewModel.transformedInstallment.verifySuccessEquals(expectedResponse.getSuccessData<InstallmentResponse>().asSuccess())
     }

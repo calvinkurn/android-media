@@ -12,7 +12,6 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProv
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -21,7 +20,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         @Named(RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION)
         private val rawQuery: String,
-        dispatcher: DynamicProductDetailDispatcherProvider): BaseViewModel(dispatcher.ui()){
+        private val dispatcher: DynamicProductDetailDispatcherProvider): BaseViewModel(dispatcher.ui()){
 
     val rateEstResp =  MutableLiveData<Result<RatesEstimationModel>>()
 
@@ -36,7 +35,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
 
         launchCatchError(block = {
-            val result = withContext(Dispatchers.IO){
+            val result = withContext(dispatcher.io()){
                 val resp = graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<RatesEstimationModel.Response>().data?.data ?: throw NullPointerException()
 

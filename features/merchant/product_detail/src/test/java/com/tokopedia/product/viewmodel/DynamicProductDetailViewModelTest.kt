@@ -42,6 +42,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -176,6 +177,13 @@ class DynamicProductDetailViewModelTest {
         val cartRedirection = viewModel.getCartTypeByProductId()
 
         Assert.assertNull(cartRedirection)
+    }
+
+    @Test
+    fun `get multi origin but p1 data is null`(){
+        spykViewModel.getDynamicProductInfoP1 = null
+        val data = viewModel.getMultiOriginByProductId()
+        Assert.assertEquals(data.id, "")
     }
 
     @Test
@@ -529,12 +537,15 @@ class DynamicProductDetailViewModelTest {
     fun `success get recommendation with exist list`() {
         val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
         val listOfRecom = arrayListOf(recomWidget)
+        val recomDataModel = ProductRecommendationDataModel(filterData = listOf(AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(isActivated = true)
+        )))
 
         coEvery {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
         } returns listOfRecom
 
-        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+        viewModel.getRecommendation(recomDataModel, AnnotationChip(), 1, 1)
 
         coVerify {
             getRecommendationUseCase.createObservable(any()).toBlocking().first()
@@ -659,7 +670,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNotNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
-
+        Assert.assertTrue(viewModel.topAdsImageView.value is Success)
         Assert.assertFalse(viewModel.enableCaching)
 
         val p1Result = (viewModel.productLayout.value as Success).data
@@ -713,6 +724,10 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         } returns ProductInfoP2Other()
+
+        coEvery {
+            topAdsImageViewUseCase.getImageData(any())
+        } returns arrayListOf(TopAdsImageViewModel())
     }
 
     @Test

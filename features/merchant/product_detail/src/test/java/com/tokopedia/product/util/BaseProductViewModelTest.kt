@@ -17,8 +17,4 @@ abstract class BaseProductViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
     }
-
-    fun waitForData(ms: Long) {
-        Thread.sleep(ms)
-    }
 }

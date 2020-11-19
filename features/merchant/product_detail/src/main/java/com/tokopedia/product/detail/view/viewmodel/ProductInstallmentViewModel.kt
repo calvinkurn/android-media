@@ -17,14 +17,13 @@ import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProv
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductInstallmentViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val rawQueries: Map<String, String>,
-        dispatcher: DynamicProductDetailDispatcherProvider
+        private val dispatcher: DynamicProductDetailDispatcherProvider
 ): BaseViewModel(dispatcher.ui()){
 
     private val installmentResp = MutableLiveData<Result<List<InstallmentBank>>>()
@@ -46,7 +45,7 @@ class ProductInstallmentViewModel @Inject constructor(
             val installmentRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSTALLMENT],
                     InstallmentResponse::class.java, installmentParams)
             val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-            val result = withContext(Dispatchers.IO){
+            val result = withContext(dispatcher.io()){
                 val gqlResponse = graphqlRepository.getReseponse(listOf(installmentRequest), cacheStrategy)
                 gqlResponse.getSuccessData<InstallmentResponse>().result
             }
