@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
+import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.base.viewmodel.HomeNavMenuViewModel
 import com.tokopedia.homenav.common.dispatcher.NavDispatcherProvider
@@ -25,15 +26,20 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_SUBSCR
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TOKOPEDIA_CARE
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLIST_MENU
+import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
+import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -62,6 +68,10 @@ class MainNavViewModel @Inject constructor(
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
     private var _mainNavListVisitable = mutableListOf<Visitable<*>>()
+
+    val onboardingListLiveData: LiveData<List<Visitable<*>>>
+        get() = _onboardingListLiveData
+    private val _onboardingListLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData()
 
     val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
         get() = _businessListLiveData
@@ -152,10 +162,17 @@ class MainNavViewModel @Inject constructor(
         if (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME) removeHomeBackButtonMenu()
     }
 
+    fun setOnboardingSuccess(isSuccess: Boolean) {
+        if (!isSuccess) {
+            launch {
+                delay(500)
+                _onboardingListLiveData.postValue(_mainNavListVisitable)
+            }
+        }
+    }
+
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
-            removeInitialStateAccount()
-            removeInitialStateBuList()
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
             _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
         } catch (e: Exception) {
@@ -170,38 +187,17 @@ class MainNavViewModel @Inject constructor(
 
     private fun setInitialState() {
         addWidgetList(listOf(
-                InitialShimmerAccountDataModel(),
-                InitialShimmerBuListDataModel(),
-                InitialShimmerTransactionDataModel()
+                InitialShimmerDataModel()
         ))
     }
 
-    private fun removeInitialStateAccount() {
-        launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerAccountDataModel }?.let {
-                deleteWidget(it)
-            }
-        }
-    }
-
     private fun removeInitialStateData() {
-//        launch{
-//            _mainNavListVisitable.find { it is InitialShimmerDataModel }?.let {
-//                deleteWidget(it)
-//            }
-//        }
-    }
-
-    private fun removeInitialStateUserMenu() {
         launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerMenuDataModel }?.let {
+            _mainNavListVisitable.find { it is InitialShimmerDataModel }?.let {
                 deleteWidget(it)
             }
         }
     }
-
 
     private fun getMainNavData() {
         launch {
@@ -223,6 +219,7 @@ class MainNavViewModel @Inject constructor(
                 it.printStackTrace()
             }
             p2DataJob.join()
+            _onboardingListLiveData.postValue(_mainNavListVisitable)
         }
     }
 
@@ -259,15 +256,6 @@ class MainNavViewModel @Inject constructor(
         updateNavData(resultWithUpdatedList)
     }
 
-    private suspend fun getUserMenu() {
-        removeInitialStateUserMenu()
-        addWidgetList(buildUserMenuList())
-    }
-
-    private suspend fun getTransactionMenu() {
-        addWidgetList(buildTransactionMenuList())
-    }
-
     private suspend fun getOngoingTransaction() {
         launchCatchError(coroutineContext, block = {
             val paymentList = async { getPaymentOrdersNavUseCase.get().executeOnBackground() }.await()
@@ -282,7 +270,6 @@ class MainNavViewModel @Inject constructor(
                 val firstTransactionMenu = _mainNavListVisitable.find {
                     it is HomeNavMenuViewModel && it.sectionId == MainNavConst.Section.ORDER
                 }
-                removeInitialStateTransaction()
                 val indexOfFirstTransactionMenu = _mainNavListVisitable.indexOf(firstTransactionMenu)
                 addWidget(transactionListItemViewModel, indexOfFirstTransactionMenu)
             }
@@ -353,12 +340,16 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getShopData(shopId: Int, accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getShopInfoUseCase.get().params = GetShopInfoUseCase.createParam(partnerId = shopId)
-                getShopInfoUseCase.get().executeOnBackground()
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getShopInfoUseCase.get().executeOnBackground()
+                }
             }
             val newData = accountData.copy()
-            newData.shopName = result.shopCore.name
+            val result = (call.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
+            result?.let {
+                newData.setUserShopName(it.info.shopName, it.info.shopId)
+            }
             updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             _shopResultListener.postValue(Fail(it))
@@ -367,11 +358,17 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getUserBadgeImage(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getUserMembershipUseCase.get().executeOnBackground()
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getUserMembershipUseCase.get().executeOnBackground()
+                }
             }
-            accountData.badge = result.tokopoints.status.tier.imageUrl
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<MembershipPojo>)?.data
+            result?.let {
+                newData.setUserBadge(it.tokopoints.status.tier.imageUrl)
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             _membershipResultListener.postValue(Fail(it))
         }
@@ -379,12 +376,17 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getOvoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getWalletUseCase.get().executeOnBackground()
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getWalletUseCase.get().executeOnBackground()
+                }
             }
-            accountData.ovoSaldo = result.cashBalance
-            accountData.ovoPoint = result.pointBalance
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<WalletBalanceModel>)?.data
+            result?.let {
+                newData.setWalletData(it.cashBalance, it.pointBalance)
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             //post error get ovo with new livedata
 
@@ -398,11 +400,18 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getSaldoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
-            val result = withContext(baseDispatcher.get().io()) {
-                getSaldoUseCase.get().executeOnBackground()
+            val call =  async {
+                withContext(baseDispatcher.get().io()) {
+                    getSaldoUseCase.get().executeOnBackground()
+                }
             }
-            accountData.saldo = convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: ""
-            updateWidget(accountData.copy(), INDEX_MODEL_ACCOUNT)
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
+            result?.let {
+                newData.setSaldoData(
+                        convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: "")
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){
             val newAccountData = accountData.copy(
                     saldo = AccountHeaderViewModel.ERROR_TEXT
@@ -446,6 +455,12 @@ class MainNavViewModel @Inject constructor(
     fun reloadShopData(shopId: Int,accountData: AccountHeaderViewModel) {
         launch(coroutineContext, block = {
             getShopData(shopId, accountData)
+        })
+    }
+
+    fun reloadUserData() {
+        launch(coroutineContext, block = {
+            getMainNavContent()
         })
     }
 

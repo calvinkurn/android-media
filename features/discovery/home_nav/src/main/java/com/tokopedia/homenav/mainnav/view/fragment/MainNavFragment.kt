@@ -174,7 +174,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         })
 
         viewModel.onboardingListLiveData.observe(viewLifecycleOwner, Observer {
-            viewModel.setOnBoardingSuccess(showNavigationPageOnboarding(it))
+            viewModel.setOnboardingSuccess(showNavigationPageOnboarding(it))
         })
     }
 
