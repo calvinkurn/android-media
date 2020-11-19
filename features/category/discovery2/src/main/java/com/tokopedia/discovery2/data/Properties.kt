@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
 
 data class Properties(
         @SerializedName("columns")
@@ -43,6 +44,6 @@ data class Properties(
         val targetId: String?,
 
         @SerializedName("template")
-        val template: String = "grid"
+        val template: String = GRID
 
 )

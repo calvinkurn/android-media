@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
+import com.tokopedia.discovery2.analytics.LIST
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryListViewModel
@@ -88,8 +88,8 @@ class DiscoveryRecycleAdapter(private val fragment: Fragment, private val parent
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
             layoutParams.isFullSpan = when (holder) {
                 is ProductCardItemViewHolder -> false
-                is MasterProductCardItemViewHolder -> if(template == null) false else template != GRID
-                is ShimmerProductCardViewHolder -> if(template == null) false else template != GRID
+                is MasterProductCardItemViewHolder -> template == LIST
+                is ShimmerProductCardViewHolder -> template == LIST
                 else -> true
             }
         }
