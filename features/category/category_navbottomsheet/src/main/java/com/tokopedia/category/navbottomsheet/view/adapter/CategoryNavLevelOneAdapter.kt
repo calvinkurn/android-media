@@ -60,14 +60,14 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
         holder.parentLayout.setOnClickListener {
             listener.onItemClicked(item.id
                     ?: "", position, item.name
-                    ?: "", item.applinks)
+                    ?: "")
 
         }
         if (item.isSelected) {
-            holder.categoryImage.loadImage(item.iconImageUrl?:"", R.drawable.square_shimmer)
+            holder.categoryImage.loadImage(item.iconImageUrl ?:"", R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
         } else {
-            holder.categoryImage.loadImage(item.iconImageUrlGray?:"", R.drawable.square_shimmer)
+            holder.categoryImage.loadImage(item.iconImageUrlGray ?:"", R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
         }
 
@@ -101,6 +101,6 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
 
 
     interface CategorySelectListener {
-        fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?)
+        fun onItemClicked(id: String, position: Int, categoryName: String)
     }
 }

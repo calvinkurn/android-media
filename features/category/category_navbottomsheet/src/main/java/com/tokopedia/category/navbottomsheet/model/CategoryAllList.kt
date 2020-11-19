@@ -6,5 +6,8 @@ import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 data class CategoryAllList(
 
         @field:SerializedName("categories")
-        val categories: List<CategoriesItem?>? = null
+        val categories: List<CategoriesItem?>? = null,
+
+        @field:SerializedName("categoryDetailData")
+        var categoryDetailData: CategoryDetailData? = null
 )

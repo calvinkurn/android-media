@@ -7,29 +7,30 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.category.navbottomsheet.CategoryNavViewModel
+import com.tokopedia.category.navbottomsheet.CategoryNavBottomViewModel
 import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.di.DaggerCategoryNavigationBottomSheetComponent
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryLevelTwoExpandableAdapter
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryNavLevelOneAdapter
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottom_sheet_cat_nav.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
-class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomSheetUnify(), CategoryNavLevelOneAdapter.CategorySelectListener {
-
-    private var selectedLevelOnePosition: Int = 0
-    private lateinit var categoryLevelOneAdapter: CategoryNavLevelOneAdapter
+class CategoryNavBottomSheet(private val listener: CategorySelected, private val catId: String, private val shouldHideL1: Boolean = false) : BottomSheetUnify(), CategoryNavLevelOneAdapter.CategorySelectListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var categoryNavViewModel: CategoryNavViewModel
-    private val categoryList = ArrayList<CategoriesItem>()
+    private lateinit var categoryNavBottomViewModel: CategoryNavBottomViewModel
+    private val categoryList = LinkedList<CategoriesItem>()
     private var selectedLevelOneID = "-1"
+    private var selectedLevelOnePosition: Int = 0
     private var lastExpandedPosition = -1
 
     init {
@@ -52,25 +53,24 @@ class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomShe
         val component = DaggerCategoryNavigationBottomSheetComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
         component.inject(this)
         initView()
-        categoryNavViewModel = ViewModelProvider(this, viewModelFactory).get(CategoryNavViewModel::class.java)
-        categoryNavViewModel.getCategoriesFromServer()
+        categoryNavBottomViewModel = ViewModelProvider(this, viewModelFactory).get(CategoryNavBottomViewModel::class.java)
+        categoryNavBottomViewModel.getCategoriesFromServer(catId)
 
-        categoryNavViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
+        categoryNavBottomViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     categoryList.clear()
                     categoryList.addAll(it.data.categories as ArrayList<CategoriesItem>)
-                    var selectedPosition = 0
                     if (selectedLevelOneID != "-1") {
-                        selectedPosition = getPositionFromCategoryId(categoryList)
-                        categoryList[selectedPosition].isSelected = true
-                    } else {
-                        categoryList[selectedPosition].isSelected = true
+                        if (shouldHideL1)
+                            selectedLevelOnePosition = getPositionFromCategoryId(categoryList, selectedLevelOneID)
+                        else
+                            moveSelectedCatToFirst(categoryList, getPositionFromCategoryId(categoryList, selectedLevelOneID))
                     }
+                    categoryList[selectedLevelOnePosition].isSelected = true
                     master_list.adapter?.notifyDataSetChanged()
-                    master_list.layoutManager?.scrollToPosition(selectedPosition)
-
-                    initiateLevelTwoView(selectedPosition)
+                    master_list.layoutManager?.scrollToPosition(selectedLevelOnePosition)
+                    initiateLevelTwoView(selectedLevelOnePosition)
                 }
                 is Fail -> {
 //                    TODO:: Failure Case Handling
@@ -95,16 +95,22 @@ class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomShe
         }
     }
 
-    private fun getPositionFromCategoryId(categoryList: ArrayList<CategoriesItem>): Int {
+    private fun getPositionFromCategoryId(categoryList: LinkedList<CategoriesItem>, selectedLevelOneID: String): Int {
         for (i in 0 until categoryList.size) {
             categoryList[i].id?.let {
                 if (it == selectedLevelOneID) {
-                    selectedLevelOnePosition = i
                     return i
                 }
             }
         }
         return 0
+    }
+
+    private fun moveSelectedCatToFirst(categoryList: LinkedList<CategoriesItem>, positionToMove: Int) {
+        if (positionToMove != 0 && positionToMove < categoryList.size) {
+            val item = categoryList.removeAt(positionToMove)
+            categoryList.addFirst(item)
+        }
     }
 
     private fun initView() {
@@ -113,8 +119,12 @@ class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomShe
             master_list.layoutManager = LinearLayoutManager(it)
         }
 //        addShimmerItems(categoryList)
-        categoryLevelOneAdapter = CategoryNavLevelOneAdapter(categoryList, this)
-        master_list.adapter = categoryLevelOneAdapter
+        if (shouldHideL1) {
+            master_list.hide()
+            separator_guideline.setGuidelinePercent(0.0f)
+        } else {
+            master_list.adapter = CategoryNavLevelOneAdapter(categoryList, this)
+        }
         slave_list.setOnGroupExpandListener(OnGroupExpandListener { groupPosition ->
             if (lastExpandedPosition != -1 && groupPosition != lastExpandedPosition) {
                 slave_list.collapseGroup(lastExpandedPosition)
@@ -125,17 +135,17 @@ class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomShe
         slave_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
             if (childPosition == 0)
                 categoryList[selectedLevelOnePosition].child?.get(groupPosition)?.id?.let {
-                    listener.onCategorySelected(it.toInt(), 2)
+                    listener.onCategorySelected(it, 2)
                 }
             else
                 categoryList[selectedLevelOnePosition].child?.get(groupPosition)?.child?.get(childPosition)?.id?.let {
-                    listener.onCategorySelected(it.toInt(), 3)
+                    listener.onCategorySelected(it, 3)
                 }
             return@setOnChildClickListener true
         }
     }
 
-    override fun onItemClicked(id: String, position: Int, categoryName: String, applink: String?) {
+    override fun onItemClicked(id: String, position: Int, categoryName: String) {
         if (selectedLevelOnePosition != position) {
             categoryList[selectedLevelOnePosition].isSelected = false
             categoryList[position].isSelected = true
@@ -148,6 +158,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected) : BottomShe
     }
 
     interface CategorySelected {
-        fun onCategorySelected(catId: Int, depth: Int)
+        fun onCategorySelected(catId: String, depth: Int)
     }
+
 }

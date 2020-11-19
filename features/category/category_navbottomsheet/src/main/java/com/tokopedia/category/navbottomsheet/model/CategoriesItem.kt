@@ -8,37 +8,19 @@ data class CategoriesItem(
         @field:SerializedName("type")
         var type: Int = 1,
 
-        @field:SerializedName("identifier")
-        val identifier: String? = null,
-
-        @field:SerializedName("hexColor")
-        val hexColor: String? = null,
-
-        @field:SerializedName("parentName")
-        val parentName: String? = null,
-
-        @field:SerializedName("iconImageUrl")
+        @field:SerializedName("i")
         val iconImageUrl: String? = null,
 
-        @field:SerializedName("applinks")
-        val applinks: String? = null,
-
-        @field:SerializedName("name")
+        @field:SerializedName("n")
         val name: String? = null,
 
         @field:SerializedName("id")
         val id: String? = null,
 
-        @field:SerializedName("iconBannerURL")
-        val iconBannerURL: String? = null,
-
-        @field:SerializedName("url")
-        val url: String? = null,
-
-        @field:SerializedName("iconImageUrlGray")
+        @field:SerializedName("ig")
         val iconImageUrlGray: String? = null,
 
-        @field:SerializedName("child")
+        @field:SerializedName("c")
         val child: List<ChildItem?>? = null,
 
         @field:SerializedName("isSelected")
@@ -46,6 +28,4 @@ data class CategoriesItem(
 
         @field:SerializedName("position")
         var position: Int = 0
-
-
 )

@@ -11,10 +11,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.category.navbottomsheet.model.CategoryAllListResponse
+import com.tokopedia.category.navbottomsheet.model.CategoryDetailResponse
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import javax.inject.Inject
 
-class CategoryNavViewModel @Inject constructor(): ViewModel() {
+class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
     private var categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
 
     @Inject
@@ -25,12 +27,17 @@ class CategoryNavViewModel @Inject constructor(): ViewModel() {
         return categoryListLiveData
     }
 
-    fun getCategoriesFromServer() {
+    fun getCategoriesFromServer(categoryID: String) {
 
         viewModelScope.launchCatchError(
                 block = {
-                    val response = repository.getCategoryListItems(getRequestParams().parameters)
-                    response?.let {
+                    val response = repository.getCategoryListWithCategoryDetail(categoryID)
+                    val item: CategoryAllList? =
+                            response?.getData<CategoryAllListResponse>(CategoryAllListResponse::class.java)?.categoryAllList
+                    response?.getData<CategoryDetailResponse>(CategoryDetailResponse::class.java)?.categoryDetailQuery?.data?.let {
+                        item?.categoryDetailData = it
+                    }
+                    item?.let {
                         categoryListLiveData.value = Success(it)
                     }
                 },
@@ -38,12 +45,6 @@ class CategoryNavViewModel @Inject constructor(): ViewModel() {
                     categoryListLiveData.value = Fail(it)
                 }
         )
-    }
-
-    fun getRequestParams(): RequestParams {
-        return RequestParams().apply {
-//            putInt("categoryId", 0)
-        }
     }
 
 

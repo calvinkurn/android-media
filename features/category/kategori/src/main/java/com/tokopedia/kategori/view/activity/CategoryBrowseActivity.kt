@@ -115,7 +115,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
 //        (slaveFragment as Listener).refreshView(id, categoryName, applink)
-        val sheet = CategoryNavBottomSheet(this)
+        val sheet = CategoryNavBottomSheet(this,"783")
         sheet.show(supportFragmentManager,"Testing")
     }
 
@@ -182,7 +182,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         pageLoadTimePerformanceMonitoring = null
     }
 
-    override fun onCategorySelected(catId: Int, depth: Int) {
+    override fun onCategorySelected(catId: String, depth: Int) {
         Log.e("TESTINGBOTTOM","catId $catId depth $depth")
     }
 }
