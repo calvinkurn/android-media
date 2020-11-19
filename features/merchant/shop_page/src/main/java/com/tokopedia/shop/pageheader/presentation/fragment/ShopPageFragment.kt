@@ -916,6 +916,7 @@ class ShopPageFragment :
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
+            shopPageFragmentHeaderViewHolder.hideFollowButton()
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
     }
@@ -958,6 +959,7 @@ class ShopPageFragment :
             updateFavouriteResult(shopPageHeaderContentData.favoriteData.alreadyFavorited == 1)
             shopPageFragmentHeaderViewHolder.bind(shopPageHeaderDataModel, isMyShop, remoteConfig)
             shopPageFragmentHeaderViewHolder.updateFavoriteData(shopPageHeaderContentData.favoriteData)
+            shopPageFragmentHeaderViewHolder.setupFollowButton(isMyShop)
             if (!shopPageHeaderDataModel.isOfficial) {
                 shopPageFragmentHeaderViewHolder.showShopReputationBadges(shopPageHeaderContentData.shopBadge)
             }
