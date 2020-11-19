@@ -162,24 +162,38 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Hide shadow and adjust padding
      */
-    fun hideShadow() {
+    fun hideShadow(lineShadow: Boolean = false) {
         if(shadowApplied){
             shadowApplied = false
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
-            navToolbar?.background = ColorDrawable(getLightIconColor())
-            navToolbar?.updatePadding(bottom = pB)
+            if (lineShadow) {
+                dividerUnify?.visibility = View.INVISIBLE
+                navToolbar?.background = ColorDrawable(getLightIconColor())
+                setBackgroundAlpha(0f)
+                navToolbar?.updatePadding(bottom = 0)
+            } else {
+                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                navToolbar?.background = ColorDrawable(getLightIconColor())
+                navToolbar?.updatePadding(bottom = pB)
+            }
         }
     }
 
     /**
      * Show shadow and adjust padding
      */
-    fun showShadow() {
+    fun showShadow(lineShadow: Boolean = false) {
         if(!shadowApplied && toolbarAlwaysShowShadow){
             shadowApplied = true
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
-            navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-            navToolbar?.updatePadding(bottom = pB)
+
+            if (lineShadow) {
+                setBackgroundAlpha(225f)
+                dividerUnify?.visibility = View.VISIBLE
+                navToolbar?.updatePadding(bottom = 0)
+            } else {
+                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+                navToolbar?.updatePadding(bottom = pB)
+            }
         }
     }
 
@@ -310,6 +324,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun setToolbarPageName(pageName: String) {
         toolbarPageName = pageName
+    }
+
+    //this needed to enable coachmark on homepage
+    fun getGlobalNavIconView(): View? {
+        val globalNavPosition = navIconAdapter?.getGlobalNavIconPosition()
+        globalNavPosition?.let {
+            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {

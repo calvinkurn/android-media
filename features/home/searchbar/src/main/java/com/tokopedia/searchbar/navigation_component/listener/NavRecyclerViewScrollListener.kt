@@ -9,7 +9,8 @@ class NavRecyclerViewScrollListener(
         val navToolbar: NavToolbar,
         var startTransitionPixel: Int = 0,
         var toolbarTransitionRangePixel: Int = 0,
-        val navScrollCallback: NavScrollCallback? = null
+        val navScrollCallback: NavScrollCallback? = null,
+        val switchThemeOnScroll: Boolean = true
 ): RecyclerView.OnScrollListener() {
     private val statusBarUtil = navToolbar.statusBarUtil
 
@@ -30,18 +31,22 @@ class NavRecyclerViewScrollListener(
             offsetAlpha = 0f
         }
         if (offsetAlpha >= 150) {
-            navToolbar.switchToLightToolbar()
-            darkModeCondition(
-                    lightCondition = { statusBarUtil?.requestStatusBarLight() },
-                    nightCondition = { statusBarUtil?.requestStatusBarDark() }
-            )
+            if (switchThemeOnScroll) {
+                navToolbar.switchToLightToolbar()
+                darkModeCondition(
+                        lightCondition = { statusBarUtil?.requestStatusBarLight() },
+                        nightCondition = { statusBarUtil?.requestStatusBarDark() }
+                )
+            }
             navScrollCallback?.onSwitchToLightToolbar()
         } else {
-            navToolbar.switchToDarkToolbar()
-            darkModeCondition(
-                    lightCondition = { statusBarUtil?.requestStatusBarDark() },
-                    nightCondition = { statusBarUtil?.requestStatusBarLight() }
-            )
+            if (switchThemeOnScroll) {
+                navToolbar.switchToDarkToolbar()
+                darkModeCondition(
+                        lightCondition = { statusBarUtil?.requestStatusBarDark() },
+                        nightCondition = { statusBarUtil?.requestStatusBarLight() }
+                )
+            }
             navScrollCallback?.onSwitchToDarkToolbar()
         }
         if (offsetAlpha >= 255) {

@@ -48,6 +48,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.design.bottomsheet.BottomSheetView
 import com.tokopedia.design.bottomsheet.BottomSheetView.BottomSheetField.BottomSheetFieldBuilder
 import com.tokopedia.design.countdown.CountDownView.CountDownListener
@@ -131,6 +133,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.HomeMainToolbar
 import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION
+import com.tokopedia.searchbar.navigation_component.NavConstant.KEY_FIRST_VIEW_NAVIGATION_ONBOARDING
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -142,6 +146,7 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
@@ -152,6 +157,7 @@ import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
 import com.tokopedia.weaver.Weaver.Companion.executeWeaveCoRoutineWithFirebase
 import dagger.Lazy
+import kotlinx.android.synthetic.main.view_onboarding_navigation.view.*
 import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
@@ -549,6 +555,44 @@ open class HomeFragment : BaseDaggerFragment(),
         setupHomeRecyclerView()
         initEggDragListener()
         return view
+    }
+
+    private fun showNavigationOnboarding() {
+        activity?.let {
+            var bottomSheet = BottomSheetUnify()
+            val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
+            onboardingView.onboarding_button.setOnClickListener {
+                val coachMarkItem = ArrayList<CoachMark2Item>()
+                val coachMark = CoachMark2(requireContext())
+
+                val globalNavIcon = navToolbar?.getGlobalNavIconView()
+                globalNavIcon?.let {
+                    coachMarkItem.add(
+                            CoachMark2Item(
+                                    globalNavIcon,
+                                    getString(R.string.onboarding_coachmark_title),
+                                    getString(R.string.onboarding_coachmark_description)
+                            )
+                    )
+                }
+                coachMark.container?.setOnClickListener {
+                    RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
+                    coachMark.dismissCoachMark()
+                }
+                bottomSheet.dismiss()
+                coachMark.showCoachMark(step = coachMarkItem, index =  0)
+            }
+
+            bottomSheet.setTitle("")
+            bottomSheet.setFullPage(false)
+            bottomSheet.setChild(onboardingView)
+            bottomSheet.clearAction()
+            bottomSheet.setCloseClickListener {
+                bottomSheet.dismiss()
+            }
+            childFragmentManager.run { bottomSheet.show(this,"onboarding navigation") }
+            saveFirstViewNavigation(false)
+        }
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -1553,6 +1597,29 @@ open class HomeFragment : BaseDaggerFragment(),
         editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LAT, latitude.toString())
         editor.putString(ConstantKey.LocationCache.KEY_LOCATION_LONG, longitude.toString())
         editor.apply()
+    }
+
+    private fun saveFirstViewNavigation(boolean: Boolean) {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+            sharedPrefs.run {
+                edit()
+                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, boolean)
+                        .apply()
+            }
+        }
+    }
+
+    private fun isFirstViewNavigation(): Boolean {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE)
+            val firstViewNavigation = sharedPrefs.getBoolean(
+                    KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true)
+            return firstViewNavigation
+        }
+        return true
     }
 
     private fun saveFirstInstallTime() {
