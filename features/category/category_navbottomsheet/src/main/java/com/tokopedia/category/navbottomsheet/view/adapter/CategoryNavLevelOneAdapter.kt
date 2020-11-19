@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import kotlinx.android.synthetic.main.item_cat_level_one.view.*
 
-class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>,
+class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem?>,
                               private val listener: CategorySelectListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -58,20 +58,20 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
         val item = categoryList[position]
 
         holder.parentLayout.setOnClickListener {
-            listener.onItemClicked(item.id
-                    ?: "", position, item.name
+            listener.onItemClicked(item?.id
+                    ?: "", position, item?.name
                     ?: "")
 
         }
-        if (item.isSelected) {
+        if (item?.isSelected == true) {
             holder.categoryImage.loadImage(item.iconImageUrl ?:"", R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
         } else {
-            holder.categoryImage.loadImage(item.iconImageUrlGray ?:"", R.drawable.square_shimmer)
+            holder.categoryImage.loadImage(item?.iconImageUrlGray ?:"", R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
         }
 
-        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item.name ?: ""), R.string.content_desc_category_name)}
+        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item?.name ?: ""), R.string.content_desc_category_name)}
     }
 
 
@@ -80,7 +80,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
     }
 
     override fun getItemViewType(position: Int): Int {
-        return categoryList[position].type
+        return categoryList[position]?.type?:0
     }
 
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {

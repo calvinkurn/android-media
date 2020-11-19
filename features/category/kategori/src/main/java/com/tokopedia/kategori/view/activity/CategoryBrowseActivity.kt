@@ -25,7 +25,7 @@ import kotlinx.android.synthetic.main.activity_category_browse.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener, CategoryNavBottomSheet.CategorySelected{
+open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener, CategoryNavBottomSheet.CategorySelected {
 
     private val trackingQueue: TrackingQueue by lazy {
         TrackingQueue(this)
@@ -57,7 +57,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
                 CATEGORY_PLT_PREPARE_METRICS,
                 CATEGORY_PLT_NETWORK_METRICS,
-                CATEGORY_PLT_RENDER_METRICS,0,0,0,0,null
+                CATEGORY_PLT_RENDER_METRICS, 0, 0, 0, 0, null
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(CATEGORY_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
@@ -115,8 +115,9 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
 //        (slaveFragment as Listener).refreshView(id, categoryName, applink)
-        val sheet = CategoryNavBottomSheet(this,"783")
-        sheet.show(supportFragmentManager,"Testing")
+        var cateId = "3439"
+        val sheet = CategoryNavBottomSheet(this, cateId)
+        sheet.show(supportFragmentManager, "Testing")
     }
 
     override fun onError(e: Throwable) {
@@ -183,7 +184,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     override fun onCategorySelected(catId: String, depth: Int) {
-        Log.e("TESTINGBOTTOM","catId $catId depth $depth")
+        Log.e("TESTINGBOTTOM", "catId $catId depth $depth")
     }
 }
 
