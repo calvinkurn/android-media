@@ -21,6 +21,8 @@ class CarouselProductNotificationViewHolder constructor(
         private val adapterListener: NotificationAdapterListener?
 ) : BaseNotificationViewHolder(itemView, notificationItemListener) {
 
+    private var touchListener: RecyclerView.OnItemTouchListener? = null
+
     interface Listener {
         fun saveProductCarouselState(position: Int, state: Parcelable?)
         fun getSavedCarouselState(position: Int): Parcelable?
@@ -53,6 +55,12 @@ class CarouselProductNotificationViewHolder constructor(
         bindItemTouch(element)
     }
 
+    override fun onViewRecycled() {
+        touchListener?.let {
+            rv?.removeOnItemTouchListener(it)
+        }
+    }
+
     private fun bindCarouselProduct(element: NotificationUiModel) {
         rvAdapter.notification = element
     }
@@ -62,7 +70,7 @@ class CarouselProductNotificationViewHolder constructor(
     }
 
     private fun bindItemTouch(element: NotificationUiModel) {
-        rv?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+        touchListener = object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
                 when (e.action) {
                     MotionEvent.ACTION_UP -> {
@@ -74,7 +82,10 @@ class CarouselProductNotificationViewHolder constructor(
 
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
             override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
-        })
+        }
+        touchListener?.let {
+            rv?.addOnItemTouchListener(it)
+        }
     }
 
     override fun showLongerContent(element: NotificationUiModel) {
