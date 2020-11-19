@@ -19,7 +19,6 @@ import com.tokopedia.cassavatest.getAnalyticsWithQuery
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.login.common.LoginIdlingResourceTestRule
 import com.tokopedia.loginregister.login.stub.LoginEmailPhoneFragmentStub
 import com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub
 import com.tokopedia.loginregister.login.stub.response.LoginMockResponse
@@ -49,9 +48,6 @@ class LoginActivityInstrumentedTest {
     val trackerPath = "tracker/user/loginregister/login_register_p1.json"
 
     private var idlingResource: IdlingResource? = null
-
-    @get:Rule
-    val loginIdlingResourceRule = LoginIdlingResourceTestRule()
 
     @get:Rule
     var mActivityTestRule = ActivityTestRule(LoginEmailPhoneActivityStub::class.java)
@@ -110,19 +106,6 @@ class LoginActivityInstrumentedTest {
         )
     }
 
-    fun restartActivity(){
-        Intents.init()
-        Dispatchers.setMain(TestCoroutineDispatcher())
-        userSession = mActivityTestRule.activity.stubUserSession
-        fingerprintSetting = mActivityTestRule.activity.stubFingerprintSetting
-        activity = mActivityTestRule.activity
-        fragment = activity.setupTestFragment() as LoginEmailPhoneFragmentStub
-
-        idlingResource = LoginIdlingResource.getIdlingResource()
-        IdlingRegistry.getInstance().register(idlingResource)
-        setupGraphqlMockResponse(LoginMockResponse())
-    }
-
     /* Show socmed container if socmed button clicked */
     fun onSocmedBtnClick() {
         onView(allOf(withText(R.string.social_media), withContentDescription(R.string.content_desc_socmed_btn_phone))).perform(click())
@@ -175,13 +158,6 @@ class LoginActivityInstrumentedTest {
         onView(allOf(withId(R.id.register_button), withContentDescription(R.string.content_desc_register_button_phone))).perform(click())
     }
 
-//    @Test
-//    fun validateTracker(){
-//        assertThat(
-//                getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
-//                hasAllSuccess()
-//        )
-//    }
 //    @Test
 //    /* Go to register initial if clicked */
 //    fun onRegisterToolbarClick(){
