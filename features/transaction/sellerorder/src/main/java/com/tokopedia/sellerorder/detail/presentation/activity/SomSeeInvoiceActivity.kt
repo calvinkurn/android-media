@@ -71,7 +71,7 @@ open class SomSeeInvoiceActivity : BaseSimpleWebViewActivity() {
         builder.setMediaSize(PrintAttributes.MediaSize.ISO_A4)
         try {
             printManager?.print(jobName, printAdapter, builder.build())
-        } catch (e: ActivityNotFoundException) {
+        } catch (e: Throwable) {
             e.printStackTrace()
         }
         SomAnalytics.eventClickButtonDownloadInvoice(orderCode)

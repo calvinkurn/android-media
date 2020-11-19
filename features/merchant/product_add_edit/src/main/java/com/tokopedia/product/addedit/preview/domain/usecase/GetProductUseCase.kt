@@ -93,13 +93,7 @@ class GetProductUseCase @Inject constructor(
                         isAdult
                       }
                     }
-                    menu{
-                      menuID
-                      name
-                      url
-                      alias
-                      productCount
-                    }
+                    menus
                     pictures{
                       picID
                       description

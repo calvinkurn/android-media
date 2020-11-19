@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import timber.log.Timber
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -34,7 +36,7 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     interface ActionListener {
-        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order)
+        fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
         fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
         fun onTickerDetailInfoClicked(url: String)
@@ -100,19 +102,19 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
         val element = listTypeData[position]
         when (holder) {
             is UohOrderListViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohTickerItemViewHolder -> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohEmptyStateViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationTitleViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
             is UohRecommendationItemViewHolder-> {
-                holder.bind(element, position)
+                holder.bind(element, holder.adapterPosition)
             }
         }
     }
@@ -126,23 +128,25 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun getDataAtIndex(index: Int): UohListOrder.Data.UohOrders.Order {
-        // prevent crash
-        // Fatal Exception: java.lang.IndexOutOfBoundsException
-        // Index: 1, Size: 1
-
-        var actualIndex = index
-        if (index == listTypeData.size) actualIndex = index - 1
-        return listTypeData[actualIndex].dataObject as UohListOrder.Data.UohOrders.Order
+        return listTypeData[index].dataObject as UohListOrder.Data.UohOrders.Order
     }
 
     fun showLoaderAtIndex(index: Int) {
-        listTypeData[index] = UohTypeData("", TYPE_LOADER)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData("", TYPE_LOADER)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.w("P2#ORDER_HISTORY#error_show;err='${Log.getStackTraceString(ex)}'")
+        }
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
-        listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.w("P2#ORDER_HISTORY#error_update;err='${Log.getStackTraceString(ex)}'")
+        }
     }
 
     fun addList(list: List<UohTypeData>) {
@@ -158,5 +162,9 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
 
     fun setActionListener(fragment: UohListFragment) {
         this.actionListener = fragment
+    }
+
+    fun getRecommendationItemAtIndex(index: Int): RecommendationItem {
+        return listTypeData[index].dataObject as RecommendationItem
     }
 }

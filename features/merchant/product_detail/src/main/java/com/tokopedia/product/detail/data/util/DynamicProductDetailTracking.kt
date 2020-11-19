@@ -53,6 +53,19 @@ object DynamicProductDetailTracking {
 
     object Click {
 
+        fun eventClickFollowNpl(productInfo: DynamicProductInfoP1?, userId: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Action.CLICK_NPL_FOLLOWERS,
+                    productInfo?.basic?.shopID ?: "")
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] = ProductTrackingConstant.Tracking.BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_CURRENT_SITE] = ProductTrackingConstant.Tracking.CURRENT_SITE
+            mapEvent[ProductTrackingConstant.Tracking.KEY_USER_ID_VARIANT] = userId
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
+        }
+
         fun eventClickCustomInfo(title: String, userId: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel?) {
             val componentTitle = "component title: $title"
             val mapEvent = TrackAppUtils.gtmData(
@@ -450,15 +463,31 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_SEE_ALL_MERCHANT_VOUCHER)
         }
 
-        fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, swipeDirection: String, imagePosition: Int, componentTrackDataModel: ComponentTrackDataModel) {
-            val mapEvent = TrackAppUtils.gtmData(
-                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                    ProductTrackingConstant.Category.PDP,
-                    ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
-                    "$swipeDirection - " + ProductTrackingConstant.Label.PDP + " - $imagePosition"
-            )
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE)
-
+        fun eventProductImageOnSwipe(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel, trackingQueue: TrackingQueue?, type: String, imageUrl: String, position: Int) {
+            val productId = productInfo?.basic?.productID ?: ""
+            val mapEvent = DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, ProductTrackingConstant.MerchantVoucher.PROMO_VIEW,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, ProductTrackingConstant.Category.PDP,
+                    ProductTrackingConstant.Tracking.KEY_ACTION, ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE,
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY_ID, productId,
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "",
+                    "categoryId", "productId : $productId",
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    "promoView", DataLayer.mapOf(
+                    "promotions", DataLayer.listOf(
+                    DataLayer.mapOf(
+                            "id", imageUrl,
+                            "name", "product detail page - $productId - pdp",
+                            "creative", "media type:$type;",
+                            "creative_url", imageUrl,
+                            "position", position
+                    )
+            ))))
+            mapEvent[ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT] =  ProductTrackingConstant.Tracking.SWIPE_IMAGE_BUSINESS_UNIT
+            mapEvent[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID] = productId
+            mapEvent[ProductTrackingConstant.Tracking.KEY_LAYOUT] = "layout:${productInfo?.layoutName};catName:${productInfo?.basic?.category?.name};catId:${productInfo?.basic?.category?.id};"
+            mapEvent[ProductTrackingConstant.Tracking.KEY_COMPONENT] = "comp:${componentTrackDataModel.componentType};temp:${componentTrackDataModel.componentName};elem:${ProductTrackingConstant.Action.SWIPE_PRODUCT_PICTURE};cpos:${componentTrackDataModel.adapterPosition};"
+            trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
 
         fun eventProductImageClicked(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
@@ -1024,9 +1053,9 @@ object DynamicProductDetailTracking {
     }
 
     object Branch {
-        fun eventBranchItemView(productInfo: DynamicProductInfoP1?, userId: String?, description: String) {
+        fun eventBranchItemView(productInfo: DynamicProductInfoP1?, userId: String?) {
             if (productInfo != null) {
-                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, TrackingUtil.createLinkerData(productInfo, userId, description)))
+                LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, TrackingUtil.createLinkerDataForViewItem(productInfo, userId)))
             }
         }
 
@@ -1399,6 +1428,50 @@ object DynamicProductDetailTracking {
                             )))
 
             trackingQueue.putEETracking(mapEvent)
+        }
+    }
+
+    object TradeIn {
+        fun eventAddToCartFinalPrice(phoneType: String, phonePrice:String, deviceId:String, userId: String, productInfo: DynamicProductInfoP1?) {
+            val productId = productInfo?.basic?.productID ?: ""
+            val shopId = productInfo?.basic?.shopID ?: ""
+            val productName = productInfo?.data?.name ?: ""
+            val productPrice = productInfo?.finalPrice.toString()
+            val shopType = productInfo?.shopTypeString ?: ""
+            val shopName = productInfo?.basic?.shopName ?: ""
+
+            val categoryName = productInfo?.basic?.category?.detail?.map {
+                it.name
+            }?.joinToString("/", postfix = "/ ${productInfo.basic.category.id}") ?: ""
+
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.KEY_EVENT, "addToCart",
+                    ProductTrackingConstant.Tracking.KEY_CATEGORY, "harga final trade in",
+                    ProductTrackingConstant.Tracking.KEY_ACTION, "click beli sekarang",
+                    ProductTrackingConstant.Tracking.KEY_LABEL, "phone type : $phoneType - phone price : $phonePrice - diagnostic id : $deviceId",
+                    ProductTrackingConstant.Tracking.KEY_PRODUCT_ID, productId,
+                    ProductTrackingConstant.Tracking.KEY_SCREEN_NAME, "trade in - final price page",
+                    ProductTrackingConstant.Tracking.KEY_CURRENT_SITE, ProductTrackingConstant.Tracking.CURRENT_SITE,
+                    ProductTrackingConstant.Tracking.KEY_USER_ID, userId,
+                    ProductTrackingConstant.Tracking.KEY_BUSINESS_UNIT, "trade-in",
+                    ProductTrackingConstant.Tracking.KEY_ISLOGGIN, (userId.isNotEmpty()).toString(),
+                    ProductTrackingConstant.Tracking.KEY_ECOMMERCE, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.CURRENCY_CODE, ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE,
+                    ProductTrackingConstant.Tracking.KEY_ADD, DataLayer.mapOf(
+                    ProductTrackingConstant.Tracking.PRODUCTS, DataLayer.listOf(
+                    DataLayer.mapOf(
+                            ProductTrackingConstant.Tracking.NAME, productName,
+                            ProductTrackingConstant.Tracking.ID, productId,
+                            ProductTrackingConstant.Tracking.PRICE, productPrice,
+                            ProductTrackingConstant.Tracking.BRAND, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.CATEGORY, categoryName,
+                            ProductTrackingConstant.Tracking.VARIANT, ProductTrackingConstant.Tracking.VALUE_NONE_OTHER,
+                            ProductTrackingConstant.Tracking.QUANTITY, "1",
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_79, shopId,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_81, shopType,
+                            ProductTrackingConstant.Tracking.KEY_DIMENSION_80, shopName
+                    )))))
+            )
         }
     }
 }

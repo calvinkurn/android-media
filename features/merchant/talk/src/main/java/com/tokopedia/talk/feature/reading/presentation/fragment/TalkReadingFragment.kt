@@ -590,11 +590,4 @@ class TalkReadingFragment : BaseListFragment<TalkReadingUiModel,
         return viewModel.filterCategories.value?.filter { it.isSelected }?.joinToString(separator = ",") { it.displayName } ?: ""
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform? {
-        if (remoteConfigInstance == null) {
-            remoteConfigInstance = RemoteConfigInstance(this.activity?.application)
-        }
-        return remoteConfigInstance?.abTestPlatform
-    }
-
 }
