@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -257,7 +258,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViews(view: View) {
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let {
+            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        }
         swipeRefreshLayout?.isRefreshing = true
         orderProductCard = OrderProductCard(view, this, orderSummaryAnalytics)
         newOrderPreferenceCard = NewOrderPreferenceCard(view, getNewOrderPreferenceCardListener(), orderSummaryAnalytics)
@@ -345,7 +348,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
 
         viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
-            orderTotalPaymentCard.setupPayment(it)
+            orderTotalPaymentCard.setupPayment(it, viewModel.isNewFlow)
         })
 
         viewModel.orderPromo.observe(viewLifecycleOwner, Observer {

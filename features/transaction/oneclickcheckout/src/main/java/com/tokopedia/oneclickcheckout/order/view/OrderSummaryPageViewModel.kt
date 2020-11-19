@@ -512,7 +512,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun calculateTotal(forceButtonState: OccButtonState? = null) {
         launch(executorDispatchers.main) {
-            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value, forceButtonState)
+            val (newOrderPayment, newOrderTotal) = calculator.calculateTotal(orderCart, _orderPreference, _orderShipment, validateUsePromoRevampUiModel, _orderPayment, orderTotal.value, forceButtonState, isNewFlow)
             _orderPayment = newOrderPayment
             orderPayment.value = _orderPayment
             orderTotal.value = newOrderTotal

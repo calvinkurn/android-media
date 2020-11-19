@@ -20,7 +20,9 @@ data class OrderPayment(
         // flag to determine continue using ovo flow
         val isOvoOnlyCampaign: Boolean = false,
         val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
-        val ovoErrorData: OrderPaymentOvoErrorData? = null
+        val ovoErrorData: OrderPaymentOvoErrorData? = null,
+        val customErrorMessage: String = "",
+        val customErrorButton: String = ""
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")

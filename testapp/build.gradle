@@ -48,7 +48,7 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
         versionCode 299900000
-        versionName "3.105"
+        versionName "3.90"
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86"
@@ -112,5 +112,4 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-	implementation project(rootProject.ext.features.oneclickcheckout)
 }

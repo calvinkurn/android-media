@@ -2,12 +2,12 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
-import android.text.style.RelativeSizeSpan
-import android.text.style.StrikethroughSpan
-import android.text.style.StyleSpan
+import android.text.TextPaint
+import android.text.style.*
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -238,63 +238,83 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
             if (!payment.isError()) {
                 tvPaymentErrorMessage?.gone()
-//                tvPaymentErrorAction?.gone()
-//                tvPaymentOvoErrorAction?.gone()
                 setPaymentActiveAlpha()
 
                 setupPaymentSelector(payment)
 
                 setupPaymentInstallment(payment.creditCard.selectedTerm)
-//                (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_detail
             } else {
-                if (payment.errorMessage.message.isNotEmpty()) {
-                    tvPaymentErrorMessage?.text = payment.errorMessage.message
+                if (payment.customErrorMessage.isNotEmpty()) {
+                    val message = payment.customErrorMessage
+                    val button = payment.customErrorButton
+
+                    val span = SpannableString("$message $button")
+                    if (button.isNotBlank()) {
+                        span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        view.context?.let {
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        tvPaymentErrorMessage?.setOnClickListener {
+                            listener.choosePayment(preference)
+                        }
+                    }
+                    tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
-                    val actionText = payment.errorMessage.button.text
-//                    if (actionText.isNotEmpty()) {
-//                        tvPaymentErrorAction?.text = actionText
-//                        tvPaymentErrorAction?.setOnClickListener {
-//                            if (payment.hasCreditCardOption()) {
-//                                listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
-//                            } else {
-//                                listener.onPreferenceEditClicked(preference)
-//                            }
-//                        }
-//                        tvPaymentErrorAction?.visible()
-//                    } else {
-//                        tvPaymentErrorAction?.gone()
-//                    }
-//                    tvPaymentOvoErrorAction?.gone()
+                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                    tvPaymentDetail?.setOnClickListener {
+                        //do nothing
+                    }
+                    setPaymentErrorAlpha(false)
+                } else if (payment.errorMessage.message.isNotEmpty()) {
+                    val message = payment.errorMessage.message
+                    val button = payment.errorMessage.button.text
+
+                    val span = SpannableString("$message $button")
+                    if (button.isNotBlank()) {
+                        span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        view.context?.let {
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        tvPaymentErrorMessage?.setOnClickListener {
+                            if (payment.hasCreditCardOption()) {
+                                listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+                            } else {
+                                listener.onPreferenceEditClicked(preference)
+                            }
+                        }
+                    }
+                    tvPaymentErrorMessage?.text = span
+                    tvPaymentErrorMessage?.visible()
                     tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                     tvPaymentDetail?.setOnClickListener {
                         //do nothing
                     }
                     setPaymentErrorAlpha(payment.isCalculationError)
-//                    (ivPayment?.layoutParams as ConstraintLayout.LayoutParams).bottomToBottom = R.id.tv_payment_detail
                 } else if (payment.ovoErrorData != null) {
-                    if (payment.ovoErrorData.message.isNotBlank()) {
-                        tvPaymentErrorMessage?.text = payment.ovoErrorData.message
-                        tvPaymentErrorMessage?.visible()
-//                        (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_error_message
+                    val message = payment.ovoErrorData.message
+                    val button = payment.ovoErrorData.buttonTitle
+
+                    val span = SpannableString("$message $button")
+                    if (button.isNotBlank()) {
+                        span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        view.context?.let {
+                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        tvPaymentErrorMessage?.setOnClickListener {
+                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
+                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            }
+                        }
                     } else {
-                        tvPaymentErrorMessage?.gone()
-//                        (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_ovo_error_action
+                        tvPaymentErrorMessage?.setOnClickListener {
+                            /* no-op */
+                        }
                     }
-//                    if (payment.ovoErrorData.buttonTitle.isNotBlank()) {
-//                        tvPaymentOvoErrorAction?.text = payment.ovoErrorData.buttonTitle
-//                        tvPaymentOvoErrorAction?.setOnClickListener {
-//                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
-//                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
-//                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
-//                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
-//                            }
-//                        }
-//                        tvPaymentOvoErrorAction?.visible()
-//                    } else {
-//                        tvPaymentOvoErrorAction?.gone()
-//                    }
+                    tvPaymentErrorMessage?.text = span
+                    tvPaymentErrorMessage?.visible()
                     tvPaymentDetail?.gone()
-//                    tvPaymentErrorAction?.gone()
                     if (payment.ovoErrorData.isBlockingError) {
                         setPaymentErrorAlpha(true)
                     } else {
@@ -302,10 +322,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                 } else {
                     tvPaymentErrorMessage?.gone()
-//                    tvPaymentErrorAction?.gone()
-//                    tvPaymentOvoErrorAction?.gone()
                     setPaymentErrorAlpha(payment.isCalculationError)
-//                    (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_detail
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
