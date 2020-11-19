@@ -8,7 +8,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -59,6 +61,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
+    private var navToolbar: NavToolbar? = null
+
     private lateinit var userSession: UserSessionInterface
     val args: MainNavFragmentArgs by navArgs()
 
@@ -90,6 +94,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         activity?.findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
             it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_CLOSE)
+            navToolbar = it
         }
         return inflater.inflate(R.layout.fragment_main_nav, container, false)
     }
@@ -171,6 +176,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     override fun onErrorProfileNameClicked(element: AccountHeaderViewModel) {
+        viewModel.reloadUserData()
     }
 
     override fun onErrorProfileOVOClicked(element: AccountHeaderViewModel) {

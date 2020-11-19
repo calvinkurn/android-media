@@ -185,21 +185,12 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun removeInitialStateBuList() {
-        launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerBuListDataModel }?.let {
-                deleteWidget(it)
-            }
-        }
-    }
-    private fun removeInitialStateTransaction() {
-        launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerTransactionDataModel }?.let {
-                deleteWidget(it)
-            }
-        }
+    private fun removeInitialStateData() {
+//        launch{
+//            _mainNavListVisitable.find { it is InitialShimmerDataModel }?.let {
+//                deleteWidget(it)
+//            }
+//        }
     }
 
     private fun removeInitialStateUserMenu() {
@@ -215,7 +206,6 @@ class MainNavViewModel @Inject constructor(
     private fun getMainNavData() {
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
-                getHomeBackButtonMenu()
                 getMainNavContent()
                 onlyForLoggedInUser { getUserSection() }
             }) {
@@ -225,12 +215,10 @@ class MainNavViewModel @Inject constructor(
             p1DataJob.join()
 
             val p2DataJob = launchCatchError(context = coroutineContext, block = {
-                getTransactionMenu()
                 onlyForLoggedInUser {
                     getOngoingTransaction()
                     getNotification()
                 }
-                getUserMenu()
             }) {
                 Timber.d("P2 error")
                 it.printStackTrace()
@@ -239,15 +227,19 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun getHomeBackButtonMenu() {
+    private fun MutableList<Visitable<*>>.addHomeBackButtonMenu() {
         if (pageSource != ApplinkConsInternalNavigation.SOURCE_HOME) {
-            addWidgetList(
-                    listOf(
-                            SeparatorViewModel(sectionId = MainNavConst.Section.HOME),
-                            clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME)
-                    )
-            )
+            this.add(1, SeparatorViewModel(sectionId = MainNavConst.Section.HOME))
+            this.add(2, clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
         }
+    }
+
+    private fun MutableList<Visitable<*>>.addTransactionMenu() {
+        this.addAll(buildTransactionMenuList())
+    }
+
+    private fun MutableList<Visitable<*>>.addUserMenu() {
+        this.addAll(buildUserMenuList())
     }
 
     private fun removeHomeBackButtonMenu() {
@@ -260,7 +252,12 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getMainNavContent() {
         val result = getMainNavDataUseCase.get().executeOnBackground()
-        updateNavData(result)
+        _mainNavListVisitable = result.dataList.toMutableList()
+        _mainNavListVisitable.addHomeBackButtonMenu()
+        _mainNavListVisitable.addTransactionMenu()
+        _mainNavListVisitable.addUserMenu()
+        val resultWithUpdatedList = result.copy(dataList = _mainNavListVisitable)
+        updateNavData(resultWithUpdatedList)
     }
 
     private suspend fun getUserMenu() {

@@ -5,17 +5,22 @@ import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 
 data class AccountHeaderViewModel(
         val id: Int = 999,
-        val loginState: Int = 0,
+        var loginState: Int = 0,
         var userName: String = "",
-        val userImage: String = "",
+        var userImage: String = "",
         var badge: String = "",
         var ovoSaldo: String = "",
         var ovoPoint: String = "",
         var saldo: String = "",
         var shopName: String = "",
-        val shopId: String = "",
-        val shopNotifCount: String = "",
-        val shopApplink: String = ""
+        var shopId: String = "",
+        var shopNotifCount: String = "",
+        var shopApplink: String = "",
+        var isGetUserNameError: Boolean = true,
+        var isGetOvoError: Boolean = true,
+        var isGetSaldoError: Boolean = true,
+        var isGetUserMembershipError: Boolean = true,
+        var isGetShopError: Boolean = true
 ): MainNavVisitable, ImpressHolder() {
     override fun id(): Any = id
 
@@ -58,4 +63,34 @@ data class AccountHeaderViewModel(
                 shopApplink
         )
     }
+
+    fun setProfileData(userName: String, userImage: String, loginState: Int) {
+        this.userImage = userImage
+        this.userName = userName
+        this.loginState = loginState
+        this.isGetUserNameError = false
+    }
+
+    fun setWalletData(ovo: String, point: String) {
+        this.ovoSaldo = ovo
+        this.ovoPoint = point
+        this.isGetOvoError = false
+    }
+
+    fun setSaldoData(saldo: String) {
+        this.saldo = saldo
+        this.isGetSaldoError = false
+    }
+
+    fun setUserBadge(badge: String) {
+        this.badge = badge
+        this.isGetUserMembershipError = false
+    }
+
+    fun setUserShopName(shopName: String, shopId: String) {
+        this.shopName = shopName
+        this.shopId = shopId
+        this.isGetShopError = false
+    }
+
 }

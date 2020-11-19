@@ -371,7 +371,6 @@ open class HomeFragment : BaseDaggerFragment(),
         fragmentCreatedForFirstTime = true
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.home_searchbar_transition_range)
         startToTransitionOffset = resources.getDimensionPixelSize(R.dimen.banner_background_height) / 2
-        getAbTestPlatform().fetch(null)
         registerBroadcastReceiverTokoCash()
     }
 
@@ -682,7 +681,6 @@ open class HomeFragment : BaseDaggerFragment(),
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
-        RemoteConfigInstance.getInstance().abTestPlatform.fetch(null)
         getHomeViewModel().setRollanceNavigationType(RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 HomeRollanceConst.Navigation.EXP_NAME, HomeRollanceConst.Navigation.VARIANT_OLD
         ))
@@ -706,7 +704,6 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     override fun onResume() {
-        getAbTestPlatform().fetch(null)
         playWidgetOnVisibilityChanged(isViewResumed = true)
         super.onResume()
         createAndCallSendScreen()
@@ -1460,6 +1457,9 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun onPageLoadTimeEnd() {
         stickyContent
+        navAbTestCondition(ifNavRevamp = {
+            if (isFirstViewNavigation()) showNavigationOnboarding()
+        })
     }
 
     private fun needToShowGeolocationComponent() {
