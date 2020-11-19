@@ -11,7 +11,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
+import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -30,7 +32,8 @@ import javax.inject.Inject
 class AddEditProductDescriptionViewModel @Inject constructor(
         coroutineDispatcher: CoroutineDispatcher,
         private val resource: ResourceProvider,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase
+        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+        private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 ) : BaseViewModel(coroutineDispatcher) {
 
     private var _productInputModel = MutableLiveData(ProductInputModel())
@@ -61,6 +64,9 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     var urlToFetch: MutableMap<Int, String> = mutableMapOf()
     var fetchedUrl: MutableMap<Int, String> = mutableMapOf()
 
+    private var _descriptionValidationMessage = MutableLiveData<String>()
+    val descriptionValidationMessage: LiveData<String> get() = _descriptionValidationMessage
+
     init {
         videoYoutube.addSource(_videoYoutubeNew) { pair ->
             val position = pair.first
@@ -75,6 +81,22 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         _productInputModel.value = productInputModel
     }
 
+    fun validateProductDescriptionInput(productDescriptionInput: String) {
+        // remote product sku validation
+        launchCatchError(block = {
+            val response = withContext(Dispatchers.IO) {
+                validateProductDescriptionUseCase.setParams(productDescriptionInput)
+                validateProductDescriptionUseCase.executeOnBackground()
+            }
+            val validationMessage = response.productValidateV3.data.validationResults
+                    .joinToString("\n")
+            _descriptionValidationMessage.value = validationMessage
+        }, onError = {
+            // log error
+            AddEditProductErrorHandler.logExceptionToCrashlytics(it)
+        })
+    }
+
     fun getVideoYoutube(videoUrl: String, position: Int) {
         launchCatchError( block = {
             getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
@@ -87,32 +109,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         }, onError = {
             _videoYoutubeNew.value = Pair(position, Fail(it))
         })
-    }
-
-    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
-        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
-    }
-
-    private fun getIdYoutubeUrl(videoUrl: String): String? {
-        return try {
-            // add https:// prefix to videoUrl
-            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
-                videoUrl
-            } else {
-                WEB_PREFIX_HTTPS + videoUrl
-            }
-            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
-
-            val uri = Uri.parse(webVideoUrl)
-            when (uri.host) {
-                "youtu.be" -> uri.lastPathSegment
-                "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
-                else -> throw MessageErrorException("")
-            }
-        } catch (e: NullPointerException) {
-            throw MessageErrorException(e.message)
-        }
     }
 
     fun validateDuplicateVideo(inputUrls: MutableList<VideoLinkModel>, url: String): String {
@@ -156,5 +152,31 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun getIsAddMode(): Boolean {
         return isAddMode && !isDraftMode
+    }
+
+    private fun convertToYoutubeResponse(typeRestResponseMap: Map<Type, RestResponse>): YoutubeVideoDetailModel {
+        return typeRestResponseMap[YoutubeVideoDetailModel::class.java]?.getData() as YoutubeVideoDetailModel
+    }
+
+    private fun getIdYoutubeUrl(videoUrl: String): String? {
+        return try {
+            // add https:// prefix to videoUrl
+            var webVideoUrl = if (videoUrl.startsWith(WEB_PREFIX_HTTP) || videoUrl.startsWith(WEB_PREFIX_HTTPS)) {
+                videoUrl
+            } else {
+                WEB_PREFIX_HTTPS + videoUrl
+            }
+            webVideoUrl = webVideoUrl.replace("(www\\.|m\\.)".toRegex(), "")
+
+            val uri = Uri.parse(webVideoUrl)
+            when (uri.host) {
+                "youtu.be" -> uri.lastPathSegment
+                "youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                "www.youtube.com" -> uri.getQueryParameter(KEY_YOUTUBE_VIDEO_ID)
+                else -> throw MessageErrorException("")
+            }
+        } catch (e: NullPointerException) {
+            throw MessageErrorException(e.message)
+        }
     }
 }

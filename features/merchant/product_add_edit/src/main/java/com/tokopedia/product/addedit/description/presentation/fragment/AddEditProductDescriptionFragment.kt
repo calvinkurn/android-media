@@ -223,6 +223,7 @@ class AddEditProductDescriptionFragment:
                     textFieldDescription.setMessage("")
                     textFieldDescription.setError(false)
                 }
+                descriptionViewModel.validateProductDescriptionInput(it)
             }
         }
 
@@ -290,6 +291,7 @@ class AddEditProductDescriptionFragment:
         hideKeyboardWhenTouchOutside()
 
         observeProductInputModel()
+        observeDescriptionValidation()
         observeProductVideo()
 
         // PLT Monitoring
@@ -426,6 +428,13 @@ class AddEditProductDescriptionFragment:
     private fun observeProductInputModel() {
         descriptionViewModel.productInputModel.observe(viewLifecycleOwner, Observer {
             updateVariantLayout()
+        })
+    }
+
+    private fun observeDescriptionValidation() {
+        descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner, Observer {
+            textFieldDescription.setMessage(it)
+            textFieldDescription.setError(it.isNotEmpty())
         })
     }
 
