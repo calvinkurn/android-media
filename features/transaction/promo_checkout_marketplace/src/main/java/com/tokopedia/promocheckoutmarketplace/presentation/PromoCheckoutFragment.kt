@@ -19,7 +19,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -258,7 +257,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun initializeRecyclerViewScrollListener() {
-        val lastHeaderUiModel: PromoListHeaderUiModel? = null
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
@@ -270,7 +268,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 } else {
                     setToolbarShadowVisibility(false)
                 }
-                handleStickyPromoHeader(recyclerView, lastHeaderUiModel)
+                renderStickyPromoHeader(recyclerView)
             }
         })
     }
@@ -344,29 +342,30 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         }
     }
 
-    private fun handleStickyPromoHeader(recyclerView: RecyclerView, lastHeaderUiModel: PromoListHeaderUiModel?) {
+    private fun renderStickyPromoHeader(recyclerView: RecyclerView) {
         if (adapter.data.isNotEmpty()) {
-            var tmpLastHeaderUiModel = lastHeaderUiModel
+            var lastHeaderUiModel: PromoListHeaderUiModel? = null
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             if (topItemPosition == RecyclerView.NO_POSITION) return
             val lastData = adapter.data[topItemPosition]
+            if (lastData == lastHeaderUiModel) return
 
             val isShow: Boolean
             if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
-                tmpLastHeaderUiModel = lastData
+                lastHeaderUiModel = lastData
                 isShow = true
-            } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel &&
-                    lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId &&
+            } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel &&
+                    lastData.uiData.parentIdentifierId == lastHeaderUiModel.uiData.identifierId &&
                     lastData.uiState.isParentEnabled) {
                 isShow = true
             } else if (lastData is PromoListItemUiModel && lastData.uiState.isParentEnabled) {
-                if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
+                if (lastHeaderUiModel != null && lastData.uiData.parentIdentifierId == lastHeaderUiModel.uiData.identifierId) {
                     isShow = true
                 } else {
                     var foundHeader = false
                     adapter.data.forEach {
                         if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
-                            tmpLastHeaderUiModel = it
+                            lastHeaderUiModel = it
                             foundHeader = true
                             return@forEach
                         }
@@ -378,10 +377,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
 
             // View logic here should be same as view logic on #PromoListHeaderEnabledViewHolder
-            if (tmpLastHeaderUiModel != null) {
+            if (lastHeaderUiModel != null) {
                 sectionImagePromoListHeader?.let { sectionImagePromoListHeader ->
-                    if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
-                        ImageHandler.loadImageRounded2(context, sectionImagePromoListHeader, tmpLastHeaderUiModel?.uiData?.iconUrl)
+                    if (lastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
+                        ImageHandler.loadImageRounded2(context, sectionImagePromoListHeader, lastHeaderUiModel?.uiData?.iconUrl)
                         sectionImagePromoListHeader.show()
                     } else {
                         sectionImagePromoListHeader.gone()
@@ -389,10 +388,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     setImageFilterNormal(sectionImagePromoListHeader)
                 }
 
-                sectionLabelPromoListHeaderTitle?.text = tmpLastHeaderUiModel?.uiData?.title
-                sectionLabelPromoListHeaderSubTitle?.text = tmpLastHeaderUiModel?.uiData?.subTitle
+                sectionLabelPromoListHeaderTitle?.text = lastHeaderUiModel?.uiData?.title
+                activity?.let {
+                    if (lastHeaderUiModel?.uiState?.hasSelectedPromoItem == true) {
+                        sectionLabelPromoListHeaderSubTitle?.text = it.getString(R.string.label_subtitle_promo_selected)
+                        sectionLabelPromoListHeaderSubTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.light_T500))
+                    } else {
+                        sectionLabelPromoListHeaderSubTitle?.text = it.getString(R.string.label_subtitle_only_one_promo)
+                        sectionLabelPromoListHeaderSubTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.purchase_platform.common.R.color.n_700_44))
+                    }
+                }
 
-                if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
+                if (lastHeaderUiModel?.uiState?.isCollapsed == false) {
                     sectionImageChevron?.rotation = 180f
                 } else {
                     sectionImageChevron?.rotation = 0f
@@ -401,8 +408,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 sectionLabelPromoListHeaderSubTitle?.show()
                 sectionImageChevron?.show()
                 headerPromoSection?.setOnClickListener {
-                    if (tmpLastHeaderUiModel != null) {
-                        onClickPromoListHeader(tmpLastHeaderUiModel!!)
+                    if (lastHeaderUiModel != null) {
+                        onClickPromoListHeader(lastHeaderUiModel!!)
                     }
                 }
             }
@@ -911,6 +918,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoListItem(element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
+        renderStickyPromoHeader(recyclerView)
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
