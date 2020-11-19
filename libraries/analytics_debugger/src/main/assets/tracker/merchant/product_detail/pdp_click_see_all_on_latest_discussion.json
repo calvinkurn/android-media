@@ -1,5 +1,5 @@
 {
-  "readme": "Product Detail - click thread detail on discussion",
+  "readme": "Product Detail - click see all on latest discussion",
   "mode": "exact",
   "query": [
     {
@@ -27,15 +27,15 @@
     },
     {
       "event" : "clickPDP",
-      "eventCategory": "product detail page",
-      "eventAction" : "click - thread detail on diskusi",
-      "eventLabel" : "{{talk id:.*;count thread:.*;}}",
+      "eventCategory" : "product detail page",
+      "eventAction" : "{{.*}}",
+      "eventLabel" : "{{count thread:.*;}}",
       "screenName" : "{{.*}}",
       "currentSite" : "{{.*}}",
       "userId" : "{{.*}}",
+      "sessionIris": "{{.{1,}}}",
       "businessUnit" : "{{.*}}",
       "productId" : "{{\\d{1,}}}",
-      "sessionIris": "{{.{1,}}}",
       "layout" : "{{layout:.*;catName:.*;catId:\\d{1,};}}",
       "component" : "{{comp:.*;temp:.*;elem:.*;cpos:\\d{1,};}}"
     }

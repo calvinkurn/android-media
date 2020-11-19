@@ -221,5 +221,8 @@ class ProductDetailActivityTest {
         const val BUTTON_BUY_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_login.json"
         const val BUTTON_BUY_NON_LOGIN_PATH = "tracker/merchant/product_detail/pdp_button_buy_now_choose_variant_non_login.json"
         const val GUIDE_ON_SIZE_CHART_PATH = "tracker/merchant/product_detail/pdp_guide_on_size_chart.json"
+        const val SEE_ALL_ON_LATEST_DISCUSSION_PATH = "tracker/merchant/product_detail/pdp_click_see_all_on_latest_discussion.json"
+        const val THREAD_DETAIL_ON_DISCUSSION_PATH = "tracker/merchant/product_detail/pdp_click_thread_detail_on_discussion.json"
+        const val DISCUSSION_PRODUCT_TAB_PATH = "tracker/merchant/product_detail/pdp_click_discussion_product_tab.json"
     }
 }
