@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.homenav.R
@@ -31,7 +32,13 @@ class OrderProductViewHolder(itemView: View, val mainNavListener: MainNavListene
 
         //image
         if (productModel.navProductModel.imageUrl.isNotEmpty()) {
-            itemView.order_product_image.loadImage(productModel.navProductModel.imageUrl)
+            val imageView = itemView.order_product_image
+            Glide.with(imageView.context)
+                    .load(productModel.navProductModel.imageUrl)
+                    .placeholder(com.tokopedia.kotlin.extensions.R.drawable.ic_loading_placeholder)
+                    .dontAnimate()
+                    .fitCenter()
+                    .into(imageView)
         }
 
         //description
