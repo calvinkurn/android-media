@@ -32,7 +32,7 @@ import rx.Observable
 import rx.subscriptions.CompositeSubscription
 import java.io.IOException
 
-class ShipmentPresenterInitialLoadTest {
+class ShipmentPresenterLoadShipmentAddressFormTest {
 
     @MockK
     private lateinit var validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase
@@ -217,4 +217,42 @@ class ShipmentPresenterInitialLoadTest {
             view.stopTrace()
         }
     }
+
+    @Test
+    fun `WHEN reload checkout page success THEN should render checkout page`(){
+        // Given
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(GroupAddress())))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.resetPromoBenefit()
+            view.clearTotalBenefitPromoStacking()
+            view.hideLoading()
+            view.renderCheckoutPage(any(), any(), any())
+            view.stopTrace()
+        }
+    }
+
+    @Test
+    fun `WHEN reload checkout page failed THEN should render checkout page`(){
+        // Given
+        val errorMessage = "error"
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.hideLoading()
+            view.showToastError(errorMessage)
+            view.stopTrace()
+        }
+    }
+
 }

@@ -1224,6 +1224,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             return null;
         }
 
+        // Set promo merchant request data
         if (validateUsePromoRevampUiModel != null) {
             if (dataCheckoutRequestList != null) {
                 setCheckoutRequestPromoData(dataCheckoutRequestList);
@@ -1259,6 +1260,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             builder.cornerData(cornerData);
         }
 
+        // Set promo global request data
         if (validateUsePromoRevampUiModel != null) {
             // Clear data first
             builder.promos(null);

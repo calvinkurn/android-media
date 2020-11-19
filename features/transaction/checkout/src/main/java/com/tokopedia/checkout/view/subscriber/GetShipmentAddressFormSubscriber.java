@@ -75,7 +75,7 @@ public class GetShipmentAddressFormSubscriber extends Subscriber<CartShipmentAdd
                 view.showToastError(cartShipmentAddressFormData.getErrorMessage());
             }
         } else {
-            if (cartShipmentAddressFormData.getGroupAddress() == null || cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
+            if (cartShipmentAddressFormData.getGroupAddress().isEmpty()) {
                 view.renderNoRecipientAddressShipmentForm(cartShipmentAddressFormData);
             } else {
                 shipmentPresenter.initializePresenterData(cartShipmentAddressFormData);

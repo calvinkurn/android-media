@@ -26,6 +26,8 @@ import com.tokopedia.purchase_platform.common.feature.checkout.request.DataCheck
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.ValidateUsePromoCheckoutMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
@@ -280,5 +282,20 @@ class ShipmentPresenterCheckoutTest {
             view.showToastError(any())
             getShipmentAddressFormGqlUseCase.createObservable(any())
         }
+    }
+
+    @Test
+    fun `WHEN generate checkout request with applied promo THEN request should contains promo data`() {
+        // Given
+        val validateUseResponse = DataProvider.provideValidateUseResponse()
+        presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
+        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+
+        // Then
+        assert(checkoutRequest.promos.isNotEmpty())
+        assert(checkoutRequest.promoCodes.isNotEmpty())
     }
 }
