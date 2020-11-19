@@ -171,7 +171,7 @@ class SomListOrderViewHolder(
                     return@apply
                 }
                 tvSomListProductVariant.apply {
-                    text = "($productVariant)"
+                    text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
             }
