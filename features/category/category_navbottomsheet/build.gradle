@@ -33,7 +33,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.discoveryCommon)
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.features.seamlesslogin)
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

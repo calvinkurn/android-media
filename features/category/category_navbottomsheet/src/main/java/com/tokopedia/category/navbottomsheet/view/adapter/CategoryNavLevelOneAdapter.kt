@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import kotlinx.android.synthetic.main.item_cat_level_one.view.*
 
-class CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>,
+class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>,
                               private val listener: CategorySelectListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
