@@ -69,7 +69,7 @@ abstract class BaseNotificationItemViewHolder(
 
     protected open fun bindNotificationBackgroundColor(element: NotificationItemViewBean) {
         val color: Int = if (element.isRead) {
-            MethodChecker.getColor(container.context, R.color.white)
+            MethodChecker.getColor(container.context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         } else {
             MethodChecker.getColor(container.context, Green_G100)
         }

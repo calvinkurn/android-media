@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="Jordan x Tokopedia Exclusive Launch"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_2"
             app:typographyWeight="bold" />
 
@@ -30,7 +30,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             tools:text="Dapatkan kesempatan mendapatkan sneakers terbaru Air Jordan I Retro"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_1" />
 
         <include layout="@layout/item_notification_product_reminder" />
@@ -41,7 +41,7 @@
             android:layout_marginTop="@dimen/notif_dp_16"
             android:text="@string/notifcenter_title_product_highlight"
             android:layout_marginBottom="@dimen/notif_dp_8"
-            android:textColor="@color/charcoal_grey_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_3"
             app:typographyWeight="bold" />
 

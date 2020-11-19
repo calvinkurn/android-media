@@ -18,14 +18,12 @@
         android:paddingHorizontal="@dimen/spacing_lvl4"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <ImageView
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iv_setting_notif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/notif_dp_48"
+        android:layout_height="@dimen/notif_dp_48"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/notif_dp_6"
-        android:background="?selectableItemBackgroundBorderless"
-        android:paddingHorizontal="@dimen/notif_dp_6"
-        android:paddingVertical="@dimen/notif_dp_6"
-        app:srcCompat="@drawable/ic_notifcenter_setting" />
+        android:layout_marginEnd="@dimen/spacing_lvl2"
+        android:padding="@dimen/notif_dp_12"
+        app:icon_name="SETTING" />
 </merge>

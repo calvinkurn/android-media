@@ -32,10 +32,10 @@ abstract class BaseNotificationViewHolder constructor(
     protected val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
 
     protected val clickedColor = MethodChecker.getColor(
-            itemView?.context, com.tokopedia.unifycomponents.R.color.Green_G100
+            itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_G100
     )
     protected val clickedColorIcon = MethodChecker.getColor(
-            itemView?.context, com.tokopedia.unifycomponents.R.color.Green_G500
+            itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_G500
     )
 
     override fun bind(element: NotificationUiModel) {

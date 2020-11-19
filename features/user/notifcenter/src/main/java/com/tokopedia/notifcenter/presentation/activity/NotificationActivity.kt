@@ -222,7 +222,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
             }
         })
 
-        tabLayout.setBackgroundResource(R.color.white)
+        tabLayout.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         tabLayout.tabMode = TabLayout.MODE_FIXED
         tabLayout.getTabAt(initialIndexPage)?.select()
     }
@@ -299,7 +299,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
     }
 
     private fun setWindowBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     override fun onDestroy() {

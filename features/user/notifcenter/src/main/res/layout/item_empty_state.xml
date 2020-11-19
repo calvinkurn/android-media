@@ -34,7 +34,7 @@
             app:typographyWeight="bold"
             android:layout_marginBottom="@dimen/notif_dp_16"
             android:layout_marginTop="@dimen/notif_dp_8"
-            android:textColor="@color/chorcoal_black"/>
+            android:textColor="@color/Unify_N700"/>
 
     </LinearLayout>
 

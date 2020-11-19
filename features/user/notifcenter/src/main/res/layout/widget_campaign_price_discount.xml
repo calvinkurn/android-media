@@ -26,7 +26,7 @@
         android:id="@+id/tv_discount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         android:textSize="@dimen/notif_sp_10"
         tools:text="50%" />
 
