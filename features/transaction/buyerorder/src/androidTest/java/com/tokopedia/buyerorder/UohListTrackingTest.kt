@@ -86,7 +86,7 @@ class UohListTrackingTest {
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, QUERY_SEARCH), hasAllSuccess())
 
         // click filter date
-        onView(withId(com.tokopedia.buyerorder.R.id.uoh_sort_filter)).perform(ViewActions.click())
+        onView(nthChildOf(withId(com.tokopedia.sortfilter.R.id.sort_filter_items),0)).perform(ViewActions.click())
         onView(withId(com.tokopedia.buyerorder.R.id.rv_option)).perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(1, ViewActions.click()))
         assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, QUERY_CLICK_FILTER_DATE), hasAllSuccess())
 
