@@ -34,9 +34,6 @@ abstract class BaseNotificationViewHolder constructor(
     protected val clickedColor = MethodChecker.getColor(
             itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_G100
     )
-    protected val clickedColorIcon = MethodChecker.getColor(
-            itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_G500
-    )
 
     override fun bind(element: NotificationUiModel) {
         bindContainer(element)
@@ -75,6 +72,12 @@ abstract class BaseNotificationViewHolder constructor(
         } else {
             container?.background = null
         }
+    }
+
+    protected fun markNotificationAsRead(element: NotificationUiModel) {
+        element.markNotificationAsRead()
+        bindContainer(element)
+        listener?.markNotificationAsRead(element)
     }
 
     private fun bindTitle(element: NotificationUiModel) {
@@ -123,12 +126,6 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindTime(element: NotificationUiModel) {
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnix)
-    }
-
-    private fun markNotificationAsRead(element: NotificationUiModel) {
-        element.markNotificationAsRead()
-        bindContainer(element)
-        listener?.markNotificationAsRead(element)
     }
 
     private fun getStringResource(stringId: Int): String {
