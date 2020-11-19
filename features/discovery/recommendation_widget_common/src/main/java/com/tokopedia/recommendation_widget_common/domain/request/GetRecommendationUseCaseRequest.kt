@@ -41,6 +41,8 @@ internal class GetRecommendationUseCaseRequest {
                           id
                           name
                           city
+                          isGold
+                          isOfficial
                         }
                         departmentId
                         labels {

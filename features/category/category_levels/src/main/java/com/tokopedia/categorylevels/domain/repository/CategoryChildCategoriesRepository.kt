@@ -12,8 +12,6 @@ import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.RequestParams
 
-private const val KEY_DEPTH = "depth"
-private const val KEY_DEPTH_VALUE = 2
 private const val KEY_CATEGORY_ID = "categoryID"
 
 class CategoryChildCategoriesRepository : BaseRepository(), ChildCategoryRepository {
@@ -26,7 +24,6 @@ class CategoryChildCategoriesRepository : BaseRepository(), ChildCategoryReposit
 
     private fun createRequestParams(id: Int): Map<String, Any> {
         val requestParams = RequestParams.create()
-        requestParams.putInt(KEY_DEPTH, KEY_DEPTH_VALUE)
         requestParams.putInt(KEY_CATEGORY_ID, id)
         return requestParams.parameters
     }

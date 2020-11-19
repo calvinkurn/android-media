@@ -107,7 +107,7 @@ class ProductCardItemViewModel(val application: Application, val components: Com
     fun getFreeOngkirImage(dataItem: DataItem): String {
         val isBebasActive = dataItem.freeOngkir?.isActive
         return if (isBebasActive == true) {
-            dataItem.freeOngkir.freeOngkirImageUrl
+            dataItem.freeOngkir?.freeOngkirImageUrl ?: ""
         } else {
             ""
         }

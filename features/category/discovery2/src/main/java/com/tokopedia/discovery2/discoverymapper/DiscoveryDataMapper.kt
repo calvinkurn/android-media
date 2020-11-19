@@ -161,7 +161,17 @@ class DiscoveryDataMapper {
                 } else {
                     ""
                 },
-                countSoldRating = dataItem.averageRating,
+                countSoldRating = if (dataItem.isOldRating) {
+                    ""
+                } else {
+                    dataItem.averageRating
+                },
+                ratingCount = if (dataItem.isOldRating) {
+                    dataItem.rating.toIntOrZero()
+                } else 0,
+                reviewCount = if (dataItem.isOldRating) {
+                    dataItem.countReview.toIntOrZero()
+                } else 0,
                 productImageUrl = dataItem.imageUrlMobile ?: "",
                 isTopAds = dataItem.isTopads ?: false,
                 freeOngkir = ProductCardModel.FreeOngkir(imageUrl = dataItem.freeOngkir?.freeOngkirImageUrl

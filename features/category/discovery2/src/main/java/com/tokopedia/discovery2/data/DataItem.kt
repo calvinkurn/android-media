@@ -265,10 +265,10 @@ data class DataItem(
         var isTopads: Boolean? = false,
 
         @SerializedName("discounted_price")
-        val discountedPrice: String? = "",
+        var discountedPrice: String? = "",
 
         @SerializedName("gold_merchant")
-        val goldMerchant: Boolean? = false,
+        var goldMerchant: Boolean? = false,
 
         @SerializedName("price")
         var price: String? = "",
@@ -295,19 +295,19 @@ data class DataItem(
         val productId: String? = "",
 
         @SerializedName("count_review")
-        val countReview: String? = "",
+        var countReview: String? = "",
 
         @SerializedName("rating")
         var rating: String? = "",
 
         @SerializedName("rating_average")
-        val averageRating: String = "",
+        var averageRating: String = "",
 
         @SerializedName("shop_logo")
         val shopLogo: String? = "",
 
         @SerializedName("official_store")
-        val officialStore: Boolean? = false,
+        var officialStore: Boolean? = false,
 
         @SerializedName("stock")
         val stock: String? = "",
@@ -319,7 +319,7 @@ data class DataItem(
         val topadsClickUrl: String? = "",
 
         @SerializedName("free_ongkir")
-        val freeOngkir: FreeOngkir? = null,
+        var freeOngkir: FreeOngkir? = null,
 
         @SerializedName("pdp_view")
         val pdpView: String = "0",
@@ -376,7 +376,9 @@ data class DataItem(
 
         var positionForParentItem: Int = 0,
 
-        var typeProductCard: String? = ""
+        var typeProductCard: String? = "",
+
+        var isOldRating: Boolean = false
 ) {
     val leftMargin: Int
         get() {

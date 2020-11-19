@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories
 
 import android.view.View
+import android.widget.ImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -15,8 +16,9 @@ import com.tokopedia.discovery2.viewcontrollers.customview.SpaceItemDecoration
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setMargin
 
-class ChildCategoriesViewHolder (itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ChildCategoriesViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val categoriesRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
+    private val dropdownArrow: ImageView = itemView.findViewById(R.id.dropdown_arrow)
     private var categoriesRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
     private lateinit var childCategoriesViewModel: ChildCategoriesViewModel
 
@@ -27,6 +29,9 @@ class ChildCategoriesViewHolder (itemView: View, private val fragment: Fragment)
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         childCategoriesViewModel = discoveryBaseViewModel as ChildCategoriesViewModel
         getSubComponent().inject(childCategoriesViewModel)
+        dropdownArrow.setOnClickListener {
+
+        }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
