@@ -104,9 +104,7 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }
 
             somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.map { chips ->
-                if(chips.key != STATUS_ALL_ORDER) {
-                    chips.isSelected = chips.name == orderStatus
-                }
+                chips.isSelected = chips.name == orderStatus
             }
 
             shouldSelectRequestCancelFilter()
