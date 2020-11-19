@@ -44,7 +44,6 @@ class PromoCheckoutViewModelUICallbackTest {
         viewModel.initFragmentUiModel(PAGE_CART)
     }
 
-    //////////////////// UI Calback
     @Test
     fun `WHEN has any promo selected THEN should return true`() {
         //given
