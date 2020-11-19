@@ -23,6 +23,7 @@
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:background="@color/Unify_N0" />
 
 </LinearLayout>
