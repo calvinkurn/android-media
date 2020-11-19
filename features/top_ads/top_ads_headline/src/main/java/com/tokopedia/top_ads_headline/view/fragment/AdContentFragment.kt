@@ -170,7 +170,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     private fun openPromotionalMessageBottomSheet() {
         val promotionalMessageBottomSheet = PromotionalMessageBottomSheet.newInstance(userSession.shopName,
                 this::onPromotionalBottomSheetDismiss)
-        promotionalMessageBottomSheet.show(fragmentManager!!, "")
+        promotionalMessageBottomSheet.show(childFragmentManager, "")
     }
 
     private fun onPromotionalBottomSheetDismiss(promotionalMessage: String) {

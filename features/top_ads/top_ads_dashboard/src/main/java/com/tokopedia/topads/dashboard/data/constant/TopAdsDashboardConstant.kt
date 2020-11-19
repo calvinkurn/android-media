@@ -80,4 +80,15 @@ object TopAdsDashboardConstant {
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
     const val SEVEN_DAYS_RANGE_INDEX = 2
     const val DATE_PICKER_SHEET = "datepicker"
+    const val GROUP_TYPE_HEADLINE = 3
+    const val GROUP_TYPE_PRODUCT = 1
+    const val CONST_0 = 0
+    const val CONST_1 = 1
+    const val CONST_2 = 2
+    const val CONST_3 = 3
+    const val CONST_4 = 4
+    const val CONST_5 = 5
+    const val CONST_6 = 6
+    const val CONST_7 = 7
+
 }

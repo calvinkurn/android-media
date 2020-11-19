@@ -39,12 +39,12 @@ class TopAdsDashGroupDetailPagerAdapter(fm: FragmentManager, behavior: Int) : Fr
         notifyDataSetChanged()
     }
 
-    fun setTitleKeyword(title: String,index:Int) {
+    fun setTitleKeyword(title: String, index: Int) {
         this.title[index] = title
         notifyDataSetChanged()
     }
 
-    fun setTitleNegKeyword(title: String,index:Int) {
+    fun setTitleNegKeyword(title: String, index: Int) {
         this.title[index] = title
         notifyDataSetChanged()
     }

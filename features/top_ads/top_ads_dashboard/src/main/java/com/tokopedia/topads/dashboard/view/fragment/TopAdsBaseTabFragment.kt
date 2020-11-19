@@ -16,6 +16,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
@@ -31,15 +34,15 @@ import java.util.*
  * Created by Pika on 4/11/20.
  */
 
-abstract class TopAdsBaseTabFragment :BaseDaggerFragment(), CustomDatePicker.ActionListener{
+abstract class TopAdsBaseTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionListener {
 
     internal var startDate: Date? = null
     internal var endDate: Date? = null
-    lateinit var currentDate:TextView
+    lateinit var currentDate: TextView
     private var datePickerSheet: DatePickerSheet? = null
-    lateinit var selectDate:ConstraintLayout
-    lateinit var rvTab:RecyclerView
-    lateinit var statsGraphPager:ViewPager
+    lateinit var selectDate: ConstraintLayout
+    lateinit var rvTab: RecyclerView
+    lateinit var statsGraphPager: ViewPager
 
     private val pagerAdapter: TopAdsStatisticPagerAdapter? by lazy {
         val fragmentList = listOf(
@@ -98,9 +101,9 @@ abstract class TopAdsBaseTabFragment :BaseDaggerFragment(), CustomDatePicker.Act
 
     private fun setDateRangeText(position: Int) {
         when (position) {
-            1 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            0 -> currentDate.text = context?.getString(R.string.topads_dash_hari_ini)
-            2 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+            CONST_1 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
+            CONST_0 -> currentDate.text = context?.getString(R.string.topads_dash_hari_ini)
+            CONST_2 -> currentDate.text = context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
             else -> {
                 val text = Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
                 currentDate.text = text
@@ -139,23 +142,26 @@ abstract class TopAdsBaseTabFragment :BaseDaggerFragment(), CustomDatePicker.Act
 
     private fun showBottomSheet() {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE)
-        val index = sharedPref?.getInt(TopAdsDashboardConstant.DATE_RANGE_BERANDA, 2)
+        val index = sharedPref?.getInt(TopAdsDashboardConstant.DATE_RANGE_BERANDA, CONST_2)
         val customStartDate = sharedPref?.getString(TopAdsDashboardConstant.START_DATE_BERANDA, "")
         val customEndDate = sharedPref?.getString(TopAdsDashboardConstant.END_DATE_BERANDA, "")
         val dateRange: String
-        dateRange = if (customStartDate?.isNotEmpty()!!) {
+        dateRange = if (customStartDate?.isNotEmpty() == true) {
             "$customStartDate - $customEndDate"
         } else
             context?.getString(R.string.topads_dash_custom_date_desc) ?: ""
-        datePickerSheet = DatePickerSheet.newInstance(context!!, index ?: 2, dateRange)
-        datePickerSheet?.show()
-        datePickerSheet?.onItemClick = { date1, date2, position ->
-            handleDate(date1, date2, position)
-        }
-        datePickerSheet?.customDatepicker = {
-            startCustomDatePicker()
+        context?.let {
+            datePickerSheet = DatePickerSheet.newInstance(it, index ?: CONST_2, dateRange)
+            datePickerSheet?.show()
+            datePickerSheet?.onItemClick = { date1, date2, position ->
+                handleDate(date1, date2, position)
+            }
+            datePickerSheet?.customDatepicker = {
+                startCustomDatePicker()
+            }
         }
     }
+
     private fun handleDate(date1: Long, date2: Long, position: Int) {
         val sharedPref = activity?.getPreferences(Context.MODE_PRIVATE) ?: return
         with(sharedPref.edit()) {

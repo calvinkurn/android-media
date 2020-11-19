@@ -230,7 +230,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
                 add(TipsUiRowModel(R.string.topads_headline_tips_name_and_photo_correct, R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, getString(R.string.topads_headline_tips_choosing_product), tipsList) }
-            tipsListSheet?.show(fragmentManager!!, "")
+            tipsListSheet?.show(childFragmentManager, "")
         }
     }
 

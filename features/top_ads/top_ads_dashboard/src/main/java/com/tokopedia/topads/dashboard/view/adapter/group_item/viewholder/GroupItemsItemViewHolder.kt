@@ -39,7 +39,7 @@ class GroupItemsItemViewHolder(val view: View, var selectMode: ((select: Boolean
         var LAYOUT = R.layout.topads_dash_item_with_group_card
     }
 
-    private val sheet: TopadsSelectActionSheet? by lazy {
+    private val sheet: TopadsSelectActionSheet? by lazy(LazyThreadSafetyMode.NONE) {
         TopadsSelectActionSheet.newInstance()
     }
 

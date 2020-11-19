@@ -1,6 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment.stats
 
 import androidx.fragment.app.Fragment
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_5
 import com.tokopedia.topads.dashboard.view.fragment.TopAdsDashStatisticFragment
 
 /**
@@ -14,6 +15,6 @@ class TopAdsStatsConversionFragment : TopAdsDashStatisticFragment() {
     }
 
     override fun getIndex(): Int {
-        return 5
+        return CONST_5
     }
 }
