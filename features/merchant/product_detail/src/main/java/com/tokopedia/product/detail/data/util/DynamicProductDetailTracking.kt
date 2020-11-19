@@ -1339,7 +1339,7 @@ object DynamicProductDetailTracking {
                             null,
                             productInfo?.isProductVariant().toString(),
                             productInfo?.data?.campaign?.campaignID,
-                            productInfo?.basic?.status?.toLowerCase() + ";shopStatus:${shopInfo?.statusInfo?.shopStatus};",
+                            "product status:${productInfo?.basic?.status?.toLowerCase()};" + "shop status:${shopInfo?.statusInfo?.shopStatus};",
                             productInfo?.getFinalStock()?.toString()
                     )
         }
