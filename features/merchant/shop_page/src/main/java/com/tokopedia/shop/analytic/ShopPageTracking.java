@@ -93,6 +93,22 @@ public class ShopPageTracking {
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
     }
 
+    protected void sendGeneralEventNplFollower(String event, String category, String action, String label,
+                                    String businessUnit, String currentSite, String userId,
+                                    CustomDimensionShopPage customDimensionShopPage) {
+        HashMap<String, Object> eventMap = createMap(
+                event,
+                category,
+                action,
+                label,
+                customDimensionShopPage
+        );
+        eventMap.put(ShopPageTrackingConstant.BUSINESS_UNIT, businessUnit);
+        eventMap.put(ShopPageTrackingConstant.CURRENT_SITE, currentSite);
+        eventMap.put(ShopPageTrackingConstant.USER_ID, userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventMap);
+    }
+
     public void sendAllTrackingQueue() {
         trackingQueue.sendAll();
     }

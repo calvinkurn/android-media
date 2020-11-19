@@ -20,7 +20,7 @@ import org.junit.Test
 class OrderSummaryPageActivityCreditCardTest {
 
     @get:Rule
-    var activityRule = IntentsTestRule(OrderSummaryPageActivity::class.java, false, false)
+    var activityRule = IntentsTestRule(TestOrderSummaryPageActivity::class.java, false, false)
 
     @get:Rule
     val freshIdlingResourceTestRule = FreshIdlingResourceTestRule()
@@ -248,6 +248,37 @@ class OrderSummaryPageActivityCreditCardTest {
                         shippingPrice = "Rp15.000",
                         paymentFee = "Rp375",
                         totalPrice = "Rp25.375"
+                )
+                closeBottomSheet()
+            }
+        } pay {
+            assertGoToPayment(
+                    redirectUrl = "https://www.tokopedia.com/payment",
+                    queryString = "transaction_id=123",
+                    method = "POST"
+            )
+        }
+    }
+
+    @Test
+    fun happyFlow_DebitCard() {
+        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_DEBIT_CARD_RESPONSE_PATH
+
+        activityRule.launchActivity(null)
+        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
+
+        orderSummaryPage {
+
+            assertInstallment(null)
+
+            assertPayment("Rp116.725", "Bayar")
+
+            clickButtonOrderDetail {
+                assertSummary(
+                        productPrice = "Rp100.000",
+                        shippingPrice = "Rp15.000",
+                        paymentFee = "Rp1.725",
+                        totalPrice = "Rp116.725"
                 )
                 closeBottomSheet()
             }
