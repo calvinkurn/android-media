@@ -287,7 +287,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
     override fun clickDatePicker(title: String, position: Int) {
         context?.let{
             val calMax = Calendar.getInstance()
-            calMax.add(Calendar.MONTH, X_MONTH);
+            calMax.add(Calendar.YEAR, MAX_YEAR);
             val yearMax = calMax.get(Calendar.YEAR)
             val monthMax = calMax.get(Calendar.MONTH)
             val dayMax = calMax.get(Calendar.DAY_OF_MONTH)
@@ -296,7 +296,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
 
             val calMin = Calendar.getInstance()
-            calMin.add(Calendar.MONTH, X_MONTH);
+            calMin.add(Calendar.YEAR, MIN_YEAR);
             val yearMin = calMin.get(Calendar.YEAR)
             val monthMin = calMin.get(Calendar.MONTH)
             val dayMin = calMin.get(Calendar.DAY_OF_MONTH)
@@ -334,7 +334,8 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         const val SEARCH_PAGE_LIMIT = 10
         const val DELAY_CONST: Long = 100
 
-        const val X_MONTH = 3
+        const val MAX_YEAR = 10
+        const val MIN_YEAR = -90
     }
 
     fun LinkedHashMap<String, String>.getKeyByPosition(position: Int) =
