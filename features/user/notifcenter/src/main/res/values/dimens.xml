@@ -26,6 +26,7 @@
     <dimen name="notif_dp_50">50dp</dimen>
     <dimen name="notif_dp_56">56dp</dimen>
     <dimen name="notif_dp_72">72dp</dimen>
+    <dimen name="notif_dp_85">85dp</dimen>
     <dimen name="notif_dp_96">96dp</dimen>
     <dimen name="notif_dp_128">128dp</dimen>
     <dimen name="notif_dp_145">145dp</dimen>

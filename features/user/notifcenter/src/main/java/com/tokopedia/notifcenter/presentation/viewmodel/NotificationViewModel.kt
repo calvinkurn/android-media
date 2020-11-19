@@ -6,13 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.notifcenter.common.NotificationFilterType
+import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
+import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -28,6 +30,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -38,6 +41,7 @@ interface INotificationViewModel {
 
 class NotificationViewModel @Inject constructor(
         private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
+        private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addWishListUseCase: AddWishListUseCase,
@@ -47,8 +51,7 @@ class NotificationViewModel @Inject constructor(
         private val dispatcher: DispatcherProvider
 ) : BaseViewModel(dispatcher.io()), INotificationViewModel {
 
-    @NotificationFilterType
-    var filter = NotificationFilterType.NONE
+    var filter = NotifcenterDetailUseCase.FILTER_NONE
         set(value) {
             field = value
             cancelAllUseCase()
@@ -66,8 +69,12 @@ class NotificationViewModel @Inject constructor(
     val recommendations: LiveData<RecommendationDataModel>
         get() = _recommendations
 
+    private val _filterList = MutableLiveData<Resource<NotifcenterFilterResponse>>()
+    val filterList: LiveData<Resource<NotifcenterFilterResponse>>
+        get() = _filterList
+
     fun hasFilter(): Boolean {
-        return filter != NotificationFilterType.NONE
+        return filter != NotifcenterDetailUseCase.FILTER_NONE
     }
 
     fun cancelAllUseCase() {
@@ -92,9 +99,24 @@ class NotificationViewModel @Inject constructor(
                 },
                 {
                     _mutateNotificationItems.value = Fail(it)
-                    if (!hasFilter() && role == RoleType.BUYER) {
-                        loadTopAdsBannerData()
+                }
+        )
+    }
+
+
+    fun loadNotificationFilter(
+            @RoleType
+            role: Int?
+    ) {
+        if (role == null) return
+        launchCatchError(dispatcher.io(),
+                {
+                    notifcenterFilterUseCase.getFilter(role).collect {
+                        _filterList.postValue(it)
                     }
+                },
+                {
+                    _filterList.postValue(Resource.error(it, null))
                 }
         )
     }
@@ -139,34 +161,6 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-    /**
-     * TODO: combine with [loadRecommendations]
-     */
-//    private fun getFirstRecommendationData() {
-//        launchCatchError(dispatcher.io(),
-//                {
-//                    val params = getRecommendationUseCase.getRecomParams(
-//                            0,
-//                            RECOM_WIDGET,
-//                            RECOM_SOURCE_INBOX_PAGE,
-//                            emptyList()
-//                    )
-//                    val recommendationWidget = getRecommendationUseCase.createObservable(params)
-//                            .toBlocking()
-//                            .single()[0]
-////                        visitables.add(RecomTitle(recommendationWidget?.title))
-//                    withContext(dispatcher.ui()) {
-//                        _recommendations.value = getRecommendationVisitables(recommendationWidget)
-//                    }
-////                        inboxView?.hideLoadMoreLoading()
-////                        inboxView?.onRenderRecomInbox(visitables)
-//                },
-//                {
-//
-//                }
-//        )
-//    }
-
     fun loadRecommendations(page: Int) {
         launchCatchError(dispatcher.io(),
                 {
@@ -179,19 +173,20 @@ class NotificationViewModel @Inject constructor(
                     val recommendationWidget = getRecommendationUseCase.createObservable(params)
                             .toBlocking()
                             .single()[0]
-//                        visitables.add(RecomTitle(recommendationWidget?.title))
                     withContext(dispatcher.ui()) {
                         _recommendations.value = getRecommendationVisitables(
                                 page, recommendationWidget
                         )
                     }
-//                        inboxView?.hideLoadMoreLoading()
-//                        inboxView?.onRenderRecomInbox(visitables)
                 },
                 {
 
                 }
         )
+    }
+
+    fun reset() {
+        filter = NotifcenterDetailUseCase.FILTER_NONE
     }
 
     override fun addWishlist(

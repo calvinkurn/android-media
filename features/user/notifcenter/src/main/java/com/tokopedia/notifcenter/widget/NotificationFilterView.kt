@@ -3,26 +3,27 @@ package com.tokopedia.notifcenter.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.View.OnClickListener
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.common.NotificationFilterType
-import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
+import com.tokopedia.notifcenter.data.state.Resource
+import com.tokopedia.notifcenter.data.state.Status
+import com.tokopedia.notifcenter.presentation.adapter.NotificationFilterAdapter
+import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationFilterTypeFactoryImpl
 
 class NotificationFilterView : LinearLayout {
 
-    private var transaction: ChipsUnify? = null
-    private var promo: ChipsUnify? = null
-    private var info: ChipsUnify? = null
-    private var selectedFilter: ChipsUnify? = null
+    private var rvFilter: RecyclerView? = null
     private var settingBtn: ImageView? = null
-    var filterListener: FilterListener? = null
+    private var rvFilterAdapter: NotificationFilterAdapter? = null
 
     interface FilterListener {
-        fun onFilterChanged(@NotificationFilterType filterType: Int)
+        fun onFilterChanged(filterType: Int)
     }
 
     constructor(context: Context?) : super(context) {
@@ -43,46 +44,28 @@ class NotificationFilterView : LinearLayout {
         initViewInflation(context)
     }
 
-    private val clickListener = OnClickListener { chip ->
-        if (chip is ChipsUnify) {
-            modifyChipState(chip)
-            notifyFilterListener()
+    fun updateFilterState(dataState: Resource<NotifcenterFilterResponse>) {
+        when (dataState.status) {
+            Status.LOADING -> rvFilterAdapter?.showLoading(dataState.data)
+            Status.SUCCESS -> rvFilterAdapter?.successLoading(dataState.data, dataState.needUpdate)
+            Status.ERROR -> rvFilterAdapter?.errorLoading(dataState.data)
         }
     }
 
-    private fun modifyChipState(clickedChip: ChipsUnify) {
-        selectedFilter?.chipType = ChipsUnify.TYPE_NORMAL
-        if (clickedChip == selectedFilter) {
-            clickedChip.chipType = ChipsUnify.TYPE_NORMAL
-            selectedFilter = null
-        } else {
-            clickedChip.chipType = ChipsUnify.TYPE_SELECTED
-            selectedFilter = clickedChip
-        }
+    fun setFilterListener(filterListener: FilterListener) {
+        rvFilterAdapter?.filterListener = filterListener
     }
 
-    private fun notifyFilterListener() {
-        val selectedFilterType = when (selectedFilter?.id) {
-            R.id.filter_transaction -> NotificationFilterType.TRANSACTION
-            R.id.filter_promo -> NotificationFilterType.PROMOTION
-            R.id.filter_info -> NotificationFilterType.INFO
-            else -> NotificationFilterType.NONE
-        }
-        filterListener?.onFilterChanged(selectedFilterType)
+    fun reset() {
+        rvFilterAdapter?.reset()
     }
 
     private fun initViewInflation(context: Context?) {
         View.inflate(context, R.layout.item_notifcenter_filter, this)?.apply {
             bindView(this)
-            bindClickFilter()
             bindClickNavigation()
+            initRecyclerView()
         }
-    }
-
-    private fun bindClickFilter() {
-        transaction?.setOnClickListener(clickListener)
-        promo?.setOnClickListener(clickListener)
-        info?.setOnClickListener(clickListener)
     }
 
     private fun bindClickNavigation() {
@@ -91,11 +74,21 @@ class NotificationFilterView : LinearLayout {
         }
     }
 
+    private fun initRecyclerView() {
+        val typeFactory = NotificationFilterTypeFactoryImpl()
+        rvFilterAdapter = NotificationFilterAdapter(typeFactory)
+        rvFilter?.apply {
+            setHasFixedSize(true)
+            layoutManager = LinearLayoutManager(
+                    context, LinearLayoutManager.HORIZONTAL, false
+            )
+            adapter = rvFilterAdapter
+        }
+    }
+
     private fun bindView(view: View) {
-        transaction = view.findViewById(R.id.filter_transaction)
-        promo = view.findViewById(R.id.filter_promo)
-        info = view.findViewById(R.id.filter_info)
         settingBtn = view.findViewById(R.id.iv_setting_notif)
+        rvFilter = view.findViewById(R.id.rv_filter)
     }
 
 }

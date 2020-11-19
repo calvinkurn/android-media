@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -52,12 +53,20 @@ class NotificationTypeFactoryImpl constructor(
         return RecommendationViewHolder.LAYOUT
     }
 
+    override fun type(emptyNotificationUiModel: EmptyNotificationUiModel): Int {
+        return EmptyNotificationViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: LoadingModel?): Int {
         return NotificationLoadingViewHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingMoreModel): Int {
         return NotificationLoadMoreViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: EmptyModel): Int {
+        return EmptyNotificationWithRecomViewHolder.LAYOUT
     }
 
     @LayoutRes
@@ -80,7 +89,7 @@ class NotificationTypeFactoryImpl constructor(
     }
 
     /**
-     * All ViewHolder that need adapter interface need to created from this
+     * All ViewHolder that need [NotificationAdapterListener] interface need to created from this
      */
     override fun onCreateViewHolder(
             parent: ViewGroup,
@@ -94,6 +103,10 @@ class NotificationTypeFactoryImpl constructor(
                     adapterListener as? CarouselProductNotificationViewHolder.Listener,
                     adapterListener as? NotificationAdapterListener
             )
+            BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(
+                    view,
+                    adapterListener as? NotificationAdapterListener
+            )
             else -> createViewHolder(view, viewType)
         }
     }
@@ -102,10 +115,13 @@ class NotificationTypeFactoryImpl constructor(
         return when (type) {
             SectionTitleViewHolder.LAYOUT -> SectionTitleViewHolder(view)
             RecommendationTitleViewHolder.LAYOUT -> RecommendationTitleViewHolder(view)
-            BigDividerViewHolder.LAYOUT -> BigDividerViewHolder(view)
             NotificationTopAdsBannerViewHolder.LAYOUT -> NotificationTopAdsBannerViewHolder(view)
             NotificationLoadMoreViewHolder.LAYOUT -> NotificationLoadMoreViewHolder(view)
             NotificationLoadingViewHolder.LAYOUT -> NotificationLoadingViewHolder(view)
+            EmptyNotificationViewHolder.LAYOUT -> EmptyNotificationViewHolder(view)
+            EmptyNotificationWithRecomViewHolder.LAYOUT -> EmptyNotificationWithRecomViewHolder(
+                    view
+            )
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(
                     view, recommendationListener
             )

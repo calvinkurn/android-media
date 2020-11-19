@@ -22,13 +22,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.inboxcommon.InboxFragment
 import com.tokopedia.inboxcommon.InboxFragmentContainer
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationAnalytic
-import com.tokopedia.notifcenter.common.NotificationFilterType
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
@@ -49,6 +50,7 @@ import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -90,7 +92,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     override fun loadData(page: Int) {
-        viewModel.loadFirstPageNotification(containerListener?.role)
+        if (page == 1) {
+            viewModel.loadFirstPageNotification(containerListener?.role)
+        }
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -104,6 +108,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
+        viewModel.loadNotificationFilter(containerListener?.role)
     }
 
     private fun initRecommendationComponent() {
@@ -146,6 +151,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         return rvScrollListener!!
     }
 
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        if (viewModel.hasFilter() || containerListener?.role == RoleType.SELLER) {
+            return EmptyNotificationUiModel()
+        }
+        return super.getEmptyDataViewModel()
+    }
+
     private fun initView(view: View) {
         rv = view.findViewById(R.id.recycler_view)
         filter = view.findViewById(R.id.sv_filter)
@@ -153,8 +165,11 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     private fun setupObserver() {
         viewModel.notificationItems.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                renderNotifications(it.data)
+            when (it) {
+                is Success -> renderNotifications(it.data)
+                is Fail -> showGetListError(it.throwable)
+                else -> {
+                }
             }
         })
 
@@ -164,6 +179,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
         viewModel.recommendations.observe(viewLifecycleOwner, Observer {
             renderRecomList(it)
+        })
+
+        viewModel.filterList.observe(viewLifecycleOwner, Observer {
+            filter?.updateFilterState(it)
         })
     }
 
@@ -200,12 +219,14 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     }
 
     private fun setupFilter() {
-        filter?.filterListener = object : NotificationFilterView.FilterListener {
-            override fun onFilterChanged(@NotificationFilterType filterType: Int) {
-                viewModel.filter = filterType
-                loadInitialData()
-            }
-        }
+        filter?.setFilterListener(
+                object : NotificationFilterView.FilterListener {
+                    override fun onFilterChanged(filterType: Int) {
+                        viewModel.filter = filterType
+                        loadInitialData()
+                    }
+                }
+        )
     }
 
     override fun onSwipeRefresh() {
@@ -217,7 +238,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreNew(containerListener?.role,
                 {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it.items)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
                 },
                 {
                     rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
@@ -233,7 +254,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         rvAdapter?.loadMore(lastKnownPosition, element)
         viewModel.loadMoreEarlier(containerListener?.role,
                 {
-                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it.items)
+                    rvAdapter?.insertNotificationData(lastKnownPosition, element, it)
                 },
                 {
                     rvAdapter?.failLoadMoreNotification(lastKnownPosition, element)
@@ -252,6 +273,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun onRoleChanged(role: Int) {
         viewModel.cancelAllUseCase()
+        viewModel.reset()
+        filter?.reset()
+        viewModel.loadNotificationFilter(role)
         loadInitialData()
     }
 
