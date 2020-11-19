@@ -83,6 +83,7 @@ class AddEditProductDescriptionFragment:
         const val MAX_VIDEOS = 3
         const val MAX_DESCRIPTION_CHAR = 2000
         const val VIDEO_REQUEST_DELAY = 250L
+        const val VALIDATE_REQUEST_DELAY = 250L
     }
 
     private lateinit var userSession: UserSessionInterface
@@ -223,7 +224,7 @@ class AddEditProductDescriptionFragment:
                     textFieldDescription.setMessage("")
                     textFieldDescription.setError(false)
                 }
-                descriptionViewModel.validateProductDescriptionInput(it)
+                validateDescriptionText(it)
             }
         }
 
@@ -433,8 +434,7 @@ class AddEditProductDescriptionFragment:
 
     private fun observeDescriptionValidation() {
         descriptionViewModel.descriptionValidationMessage.observe(viewLifecycleOwner, Observer {
-            textFieldDescription.setMessage(it)
-            textFieldDescription.setError(it.isNotEmpty())
+            updateDescriptionFieldErrorMessage(it)
         })
     }
 
@@ -527,6 +527,18 @@ class AddEditProductDescriptionFragment:
                 }
             }
         }
+    }
+
+    private fun validateDescriptionText(it: String) {
+        view?.postDelayed({
+            descriptionViewModel.validateProductDescriptionInput(it)
+        }, VALIDATE_REQUEST_DELAY)
+    }
+
+    private fun updateDescriptionFieldErrorMessage(message: String) {
+        textFieldDescription.setMessage(message)
+        textFieldDescription.setError(message.isNotEmpty())
+        btnSave.isEnabled = message.isEmpty()
     }
 
     private fun applyEditMode() {
