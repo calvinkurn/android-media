@@ -61,7 +61,7 @@ class RechargeHomepageActivity : BaseSimpleActivity(), HasComponent<RechargeHome
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
 
         fun getCallingIntent(context: Context, platformID: String,
-                             enablePersonalize: String = "true"): Intent {
+                             enablePersonalize: Boolean = true): Intent {
             val intent = Intent(context, RechargeHomepageActivity::class.java)
             intent.putExtra(PARAM_PLATFORM_ID, platformID)
             intent.putExtra(PARAM_ENABLE_PERSONALIZE, enablePersonalize)
