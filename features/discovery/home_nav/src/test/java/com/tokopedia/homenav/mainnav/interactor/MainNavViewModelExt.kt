@@ -11,6 +11,7 @@ import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.rule.TestDispatcherProvider
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
@@ -28,8 +29,10 @@ fun createViewModel (
         getSaldoUseCase: GetSaldoUseCase? = null,
         getNavNotification: GetNavNotification? = null,
         getUohOrdersNavUseCase: GetUohOrdersNavUseCase? = null,
-        getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null
+        getPaymentOrdersNavUseCase: GetPaymentOrdersNavUseCase? = null,
+        getUserInfoUseCase: GetUserInfoUseCase? = null
 ): MainNavViewModel {
+    val getUserInfoUseCaseMock = getOrUseDefault(getUserInfoUseCase) {}
     val getWalletBalanceUseCaseMock = getOrUseDefault(getWalletBalanceUseCase) {}
     val getUserMembershipUseCaseMock = getOrUseDefault(getUserMembershipUseCase) {}
     val getShopInfoUseCaseMock = getOrUseDefault(getShopInfoUseCase) {}
@@ -68,7 +71,8 @@ fun createViewModel (
             getMainNavDataUseCase = getMainNavDataUseCaseMock,
             getNavNotification = getNavNotificationMock,
             getUohOrdersNavUseCase = getUohOrdersNavUseCaseMock,
-            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock
+            getPaymentOrdersNavUseCase = getPaymentOrdersNavUseCaseMock,
+            getUserInfoUseCase = getUserInfoUseCaseMock
     )
 }
 
@@ -85,7 +89,7 @@ inline fun <reified T : Any> getOrUseDefault(any: T?, runObjectMockSetup: (obj: 
 fun GetUserInfoUseCase.getBasicData() {
     coEvery {
         executeOnBackground()
-    } returns UserPojo(ProfilePojo(name = "Joko", profilePicture = "Tingkir"))
+    } returns Success(UserPojo(ProfilePojo(name = "Joko", profilePicture = "Tingkir")))
 }
 
 fun GetMainNavDataUseCase.getBasicData() {

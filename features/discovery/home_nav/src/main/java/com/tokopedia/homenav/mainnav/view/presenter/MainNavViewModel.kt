@@ -29,6 +29,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_WISHLI
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopInfoPojo
+import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
 import com.tokopedia.homenav.mainnav.domain.usecases.*
 import com.tokopedia.homenav.mainnav.view.viewmodel.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -48,6 +49,7 @@ import javax.inject.Inject
 class MainNavViewModel @Inject constructor(
         private val userSession: Lazy<UserSessionInterface>,
         private val baseDispatcher: Lazy<NavDispatcherProvider>,
+        private val getUserInfoUseCase: Lazy<GetUserInfoUseCase>,
         private val getUserMembershipUseCase: Lazy<GetUserMembershipUseCase>,
         private val getShopInfoUseCase: Lazy<GetShopInfoUseCase>,
         private val getWalletUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
@@ -374,6 +376,30 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUserData(accountData: AccountHeaderViewModel) {
+        launchCatchError(coroutineContext, block = {
+            val call = async {
+                withContext(baseDispatcher.get().io()) {
+                    getUserInfoUseCase.get().executeOnBackground()
+                }
+            }
+            val newData = accountData.copy()
+            val result = (call.await().takeIf { it is Success } as? Success<UserPojo>)?.data
+            result?.let {
+                newData.setProfileData(it.profile.name, it.profile.profilePicture, AccountHeaderViewModel.LOGIN_STATE_LOGIN)
+            }
+            updateWidget(newData, INDEX_MODEL_ACCOUNT)
+        }){
+            //post error get ovo with new livedata
+
+            val newAccountData = accountData.copy(
+                    ovoSaldo = AccountHeaderViewModel.ERROR_TEXT,
+                    ovoPoint = AccountHeaderViewModel.ERROR_TEXT
+            )
+            updateWidget(newAccountData, INDEX_MODEL_ACCOUNT)
+        }
+    }
+
     private suspend fun getOvoData(accountData: AccountHeaderViewModel) {
         launchCatchError(coroutineContext, block = {
             val call = async {
@@ -458,9 +484,9 @@ class MainNavViewModel @Inject constructor(
         })
     }
 
-    fun reloadUserData() {
+    fun reloadUserData(accountData: AccountHeaderViewModel) {
         launch(coroutineContext, block = {
-            getMainNavContent()
+            getUserData(accountData)
         })
     }
 
