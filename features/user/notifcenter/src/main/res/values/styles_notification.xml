@@ -6,6 +6,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/notif_dp_10</item>
         <item name="android:paddingBottom">@dimen/notif_dp_12</item>
+        <item name="android:foreground">?selectableItemBackground</item>
     </style>
 
     <style name="BaseNotification_Icon">
