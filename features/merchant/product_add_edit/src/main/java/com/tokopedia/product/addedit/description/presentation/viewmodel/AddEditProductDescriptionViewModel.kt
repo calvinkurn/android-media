@@ -82,7 +82,6 @@ class AddEditProductDescriptionViewModel @Inject constructor(
     }
 
     fun validateProductDescriptionInput(productDescriptionInput: String) {
-        // remote product sku validation
         launchCatchError(block = {
             val response = withContext(Dispatchers.IO) {
                 validateProductDescriptionUseCase.setParams(productDescriptionInput)
