@@ -74,6 +74,12 @@ abstract class BaseNotificationViewHolder constructor(
         }
     }
 
+    protected fun markAsReadIfUnread(element: NotificationUiModel) {
+        if (!element.isRead()) {
+            markNotificationAsRead(element)
+        }
+    }
+
     protected fun markNotificationAsRead(element: NotificationUiModel) {
         element.markNotificationAsRead()
         bindContainer(element)

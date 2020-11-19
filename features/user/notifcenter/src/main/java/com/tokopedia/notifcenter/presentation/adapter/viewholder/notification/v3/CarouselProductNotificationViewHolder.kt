@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.os.Parcelable
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -49,6 +50,7 @@ class CarouselProductNotificationViewHolder constructor(
         super.bind(element)
         bindCarouselProduct(element)
         bindScrollState(element)
+        bindItemTouch(element)
     }
 
     private fun bindCarouselProduct(element: NotificationUiModel) {
@@ -57,6 +59,22 @@ class CarouselProductNotificationViewHolder constructor(
 
     private fun bindScrollState(element: NotificationUiModel) {
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
+    }
+
+    private fun bindItemTouch(element: NotificationUiModel) {
+        rv?.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_UP -> {
+                        markAsReadIfUnread(element)
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        })
     }
 
     override fun showLongerContent(element: NotificationUiModel) {
