@@ -4,10 +4,11 @@ import com.tokopedia.sellerorder.filter.domain.SomFilterResponse
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.util.TestHelper
+import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -53,16 +54,22 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when get som filter data should return success`() {
         runBlocking {
             val baseSomFilterList = mutableListOf<BaseSomFilter>()
+            val mockCancelFilterApplied = true
             coEvery {
                 getSomOrderFilterUseCase.execute()
             } returns baseSomFilterList
 
             somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
+            somFilterViewModel.setIsRequestCancelFilterApplied(mockCancelFilterApplied)
+            val shouldSelectRequestCancelFilterMethod = SomFilterViewModel::class.java.getDeclaredMethod("shouldSelectRequestCancelFilter")
+            shouldSelectRequestCancelFilterMethod.isAccessible = true
+            shouldSelectRequestCancelFilterMethod.invoke(somFilterViewModel)
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
-            assertTrue(somFilterViewModel.filterResult.value is Success)
-            assertNotNull(somFilterViewModel.filterResult.value)
+            assertTrue(somFilterViewModel.filterResult.observeAwaitValue() is Success)
+            assertNotNull(somFilterViewModel.filterResult.observeAwaitValue())
+            assertEquals(mockCancelFilterApplied, somFilterViewModel.isRequestCancelFilterApplied())
         }
     }
 
@@ -86,10 +93,8 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
             val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.first.filterIsInstance<SomFilterDateUiModel>()?.firstOrNull()
-            assertTrue(somFilterViewModel.somFilterOrderListParam.value is Success)
+            assertTrue(somFilterViewModel.somFilterOrderListParam.observeAwaitValue() is Success)
             assertNotNull(somFilterDataList)
-            assertNotNull(filterDate)
         }
     }
 
@@ -97,13 +102,14 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when update filter many selected should return success`() {
         runBlocking {
             somFilterViewModel.updateFilterManySelected(mockIdFilter, ChipsUnify.TYPE_NORMAL, 2)
+            val updateIsRequestCancelFilterAppliedMethod = SomFilterViewModel::class.java.getDeclaredMethod("updateIsRequestCancelFilterApplied")
+            updateIsRequestCancelFilterAppliedMethod.isAccessible = true
+            updateIsRequestCancelFilterAppliedMethod.invoke(somFilterViewModel)
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
             val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.first.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
-            assertTrue(somFilterViewModel.somFilterOrderListParam.value is Success)
+            assertTrue(somFilterViewModel.somFilterOrderListParam.observeAwaitValue() is Success)
             assertNotNull(somFilterDataList)
-            assertNotNull(filterDate)
         }
     }
 
@@ -122,10 +128,8 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
             val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()
-            val filterDate = somFilterSuccess.first.filterIsInstance<SomFilterDateUiModel>().firstOrNull()
-            assertNotNull(somFilterViewModel.somFilterOrderListParam.value)
+            assertNotNull(somFilterViewModel.somFilterOrderListParam.observeAwaitValue())
             assertNotNull(somFilterDataList)
-            assertNotNull(filterDate)
         }
     }
 
@@ -133,7 +137,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when reset all of som filter should return success`() {
         runBlocking {
             somFilterViewModel.resetFilterSelected()
-            val somFilterSuccess = (somFilterViewModel.resetFilterResult.value as Success).data
+            val somFilterSuccess = (somFilterViewModel.resetFilterResult.observeAwaitValue() as Success).data
             assertNotNull(somFilterSuccess)
         }
     }

@@ -14,6 +14,8 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper.getIndexShouldSelectRequestCancelFilter
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper.getIsRequestCancelApplied
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
@@ -48,24 +50,15 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
 
     private fun shouldSelectRequestCancelFilter() {
         if (isRequestCancelFilterApplied) {
-            val section = somFilterUiModel.find {
-                it.nameFilter == FILTER_TYPE_ORDER
-            }
-            section?.somFilterData?.indexOfFirst {
-                it.id == FILTER_CANCELLATION_REQUEST
-            }?.let {
-                section.somFilterData[it].run {
-                    updateFilterManySelected(idFilter, ChipsUnify.TYPE_NORMAL, it)
-                    updateParamSom(idFilter)
-                }
-            }
+            somFilterUiModel.getIndexShouldSelectRequestCancelFilter(
+                    ChipsUnify.TYPE_NORMAL,
+                    ::updateFilterManySelected,
+                    ::updateParamSom)
         }
     }
 
     private fun updateIsRequestCancelFilterApplied() {
-        isRequestCancelFilterApplied = somFilterUiModel.find {
-            it.nameFilter == FILTER_TYPE_ORDER
-        }?.somFilterData?.find { it.id == FILTER_CANCELLATION_REQUEST }?.isSelected ?: false
+        isRequestCancelFilterApplied = somFilterUiModel.getIsRequestCancelApplied()
     }
 
     fun setIsRequestCancelFilterApplied(value: Boolean) {

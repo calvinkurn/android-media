@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.filter.domain.mapper
 
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT
 import com.tokopedia.sellerorder.common.util.SomConsts.ALREADY_PRINT_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.CHIPS_SORT_ASC
@@ -19,6 +20,7 @@ import com.tokopedia.sellerorder.filter.presentation.model.BaseSomFilter
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterDateUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.unifycomponents.ChipsUnify
 
 object GetSomFilterMapper {
 
@@ -31,10 +33,10 @@ object GetSomFilterMapper {
 
     fun mapToSomFilterUiModel(data: SomFilterResponse): List<SomFilterUiModel> {
         return mutableListOf<SomFilterUiModel>().apply {
-            add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(), canSelectMany =  false, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_SORT, somFilterData = mapToFilterSortUiModel(), canSelectMany = false, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_STATUS_ORDER, somFilterData = mapToFilterStatusUiModel(data.orderFilterSom.statusList), canSelectMany = true, isDividerVisible = true))
-            add(SomFilterUiModel(nameFilter = FILTER_TYPE_ORDER, somFilterData = mapToFilterTypeUiModel(data.orderTypeList), canSelectMany =  true, isDividerVisible = true))
-            add(SomFilterUiModel(nameFilter = FILTER_COURIER, somFilterData = mapToFilterCourierUiModel(data.orderFilterSom.shippingList), canSelectMany =  true, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_TYPE_ORDER, somFilterData = mapToFilterTypeUiModel(data.orderTypeList), canSelectMany = true, isDividerVisible = true))
+            add(SomFilterUiModel(nameFilter = FILTER_COURIER, somFilterData = mapToFilterCourierUiModel(data.orderFilterSom.shippingList), canSelectMany = true, isDividerVisible = true))
             add(SomFilterUiModel(nameFilter = FILTER_LABEL, somFilterData = mapToFilterLabelUiModel(), canSelectMany = false, isDividerVisible = true))
         }
     }
@@ -87,6 +89,24 @@ object GetSomFilterMapper {
         return mutableListOf<SomFilterChipsUiModel>().apply {
             typeList.map {
                 add(SomFilterChipsUiModel(id = it.id, key = it.key.orEmpty(), name = it.name.orEmpty(), idFilter = FILTER_TYPE_ORDER))
+            }
+        }
+    }
+
+    fun List<SomFilterUiModel>.getIsRequestCancelApplied(): Boolean {
+        return find { it.nameFilter == FILTER_TYPE_ORDER }?.somFilterData?.find {
+            it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
+        }?.isSelected ?: false
+    }
+
+    fun List<SomFilterUiModel>.getIndexShouldSelectRequestCancelFilter(chipsType: String,
+                                                                       updateFilterManySelected: (String, String, Int) -> Unit,
+                                                                       updateParamSom: (String) -> Unit) {
+        val section = this.find { it.nameFilter == FILTER_TYPE_ORDER }
+        section?.somFilterData?.indexOfFirst { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }?.let {
+            section.somFilterData[it].run {
+                updateFilterManySelected.invoke(idFilter, chipsType, it)
+                updateParamSom.invoke(idFilter)
             }
         }
     }
