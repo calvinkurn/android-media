@@ -31,7 +31,7 @@ object FeatureRecommendationMapper {
             featureEngineItems.forEach { featureEngineItem ->
                 try {
                     val jsonObject = JSONObject(featureEngineItem.detail)
-                    when (jsonObject[KEY_TYPE]) {
+                    when (jsonObject[KEY_TYPE].toString().toLowerCase()) {
                         TYPE_LIST -> {
                             add(getFeatureRecommendationListItem(featureEngineItem))
                         }

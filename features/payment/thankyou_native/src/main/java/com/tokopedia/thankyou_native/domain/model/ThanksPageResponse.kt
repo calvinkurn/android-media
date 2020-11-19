@@ -147,7 +147,7 @@ data class ShopOrder(
         @SerializedName("logistic_type")
         val logisticType: String,
         @SerializedName("store_name")
-        val storeName: String,
+        val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
         @SerializedName("shipping_amount")
