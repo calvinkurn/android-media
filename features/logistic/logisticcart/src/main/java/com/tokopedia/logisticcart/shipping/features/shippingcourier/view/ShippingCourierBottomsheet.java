@@ -92,15 +92,14 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
-                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel,
-                                             List<ShopShipment> shopShipmentList) {
+                                             int cartPosition, ShipmentCartItemModel shipmentCartItemModel) {
         hideLoading();
         if (shippingCourierUiModels != null && shippingCourierUiModels.size() > 0) {
             mCourierModelList = shippingCourierUiModels;
             setupRecyclerView(cartPosition);
             updateHeight();
         } else {
-            showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition, shopShipmentList);
+            showErrorPage("Terjadi kesalahan", shipmentCartItemModel, cartPosition);
             updateHeight();
         }
     }
@@ -221,7 +220,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         llContent.setVisibility(View.VISIBLE);
     }
 
-    private void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
+    private void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition) {
         pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
@@ -231,7 +230,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
                     public void onRetryClicked() {
                         showLoading();
                         if (shippingCourierBottomsheetListener != null) {
-                            shippingCourierBottomsheetListener.onRetryReloadCourier(shipmentCartItemModel, cartPosition, shopShipmentList);
+                            shippingCourierBottomsheetListener.onRetryReloadCourier(shipmentCartItemModel, cartPosition);
                         }
                     }
                 });

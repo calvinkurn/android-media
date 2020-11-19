@@ -1,6 +1,8 @@
 package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
 import com.tokopedia.shop.home.domain.GetShopHomeCampaignNplTncUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -25,9 +27,14 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
     lateinit var getCampaignNplTncUseCase: GetShopHomeCampaignNplTncUseCase
+    @RelaxedMockK
+    lateinit var gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
+    @RelaxedMockK
+    lateinit var toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase
 
-    private val dispatcherProvider = TestCoroutineDispatcherProviderImpl
-
+    private val testCoroutineDispatcherProvider by lazy {
+        TestCoroutineDispatcherProviderImpl
+    }
     private lateinit var viewModel: ShopHomeNplCampaignTncBottomSheetViewModel
 
 
@@ -35,9 +42,11 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ShopHomeNplCampaignTncBottomSheetViewModel(
-                dispatcherProvider,
+                testCoroutineDispatcherProvider,
                 userSession,
-                getCampaignNplTncUseCase
+                getCampaignNplTncUseCase,
+                gqlGetShopFavoriteStatusUseCase,
+                toggleFavouriteShopUseCase
         )
     }
 
@@ -55,19 +64,21 @@ class ShopHomeNplCampaignTncBottomSheetViewModelTest {
     }
 
     @Test
-    fun `check whether _campaignTncLiveData post success data`() = runBlocking {
+    fun `check whether _campaignTncLiveData post success data`() {
         val sampleCampaignId = "1234"
+        val shopId = "12345"
         coEvery { getCampaignNplTncUseCase.executeOnBackground() } returns ShopHomeCampaignNplTncModel()
-        viewModel.getTnc(sampleCampaignId)
+        viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
         coVerify { getCampaignNplTncUseCase.executeOnBackground() }
         assert(viewModel.campaignTncLiveData.value is Success)
     }
 
     @Test
-    fun `check whether _campaignTncLiveData post fail data`() = runBlocking {
+    fun `check whether _campaignTncLiveData post fail data`() {
         val sampleCampaignId = "1234"
-        coEvery { getCampaignNplTncUseCase.executeOnBackground() } throws Throwable()
-        viewModel.getTnc(sampleCampaignId)
+        val shopId = "12345"
+        coEvery { getCampaignNplTncUseCase.executeOnBackground() } throws Exception()
+        viewModel.getTncBottomSheetData(sampleCampaignId, shopId, false)
         coVerify { getCampaignNplTncUseCase.executeOnBackground() }
         assert(viewModel.campaignTncLiveData.value is Fail)
     }

@@ -21,9 +21,9 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAd
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticdata.data.autocomplete.Place
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticdata.domain.model.Place
 import com.tokopedia.logisticdata.util.rxEditText
 import com.tokopedia.logisticdata.util.toCompositeSubs
 import rx.Subscriber

@@ -20,8 +20,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tg_widget_umrah_pdp_item_title"
             app:layout_constraintBottom_toBottomOf="@+id/tg_widget_umrah_pdp_item_desc"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
+            android:layout_width="@dimen/spacing_lvl6"
+            android:layout_height="@dimen/spacing_lvl6"
             android:background="@drawable/umrah_bg_pdp_travel_agent" />
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -33,29 +33,29 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tg_widget_umrah_pdp_item_title"
             app:layout_constraintBottom_toBottomOf="@+id/tg_widget_umrah_pdp_item_desc"
-            android:minHeight="@dimen/dp_24"
-            android:minWidth="@dimen/dp_24"
-            android:maxHeight="@dimen/dp_32"
-            android:maxWidth="@dimen/dp_32" />
+            android:minHeight="@dimen/spacing_lvl5"
+            android:minWidth="@dimen/spacing_lvl5"
+            android:maxHeight="@dimen/spacing_lvl6"
+            android:maxWidth="@dimen/spacing_lvl6" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:visibility="gone"
             android:id="@+id/iv_umrah_verified_blue"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/unify_space_12"
+            android:layout_height="@dimen/unify_space_12"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_pdp_item_desc"
             app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item"
             app:srcCompat="@drawable/ic_umrah_verified_blue"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_widget_umrah_pdp_item_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl1"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_pdp_item_desc"
             app:layout_constraintLeft_toRightOf="@+id/iv_umrah_verified_blue"
@@ -64,14 +64,14 @@
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Patuna Tour Travel"
-            android:layout_marginStart="@dimen/dp_8" />
+            android:layout_marginStart="@dimen/spacing_lvl3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_widget_umrah_pdp_item_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/Neutral_N700_44"
-            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@+id/iv_widget_umrah_pdp_item"
             app:layout_constraintTop_toBottomOf="@+id/tg_widget_umrah_pdp_item_title"

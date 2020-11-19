@@ -48,9 +48,6 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
-    <!-- Dynamic feature for Groupchat-->
-    <string name="title_groupchat_df">Play</string>
-
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
 
@@ -334,4 +331,7 @@
     <!-- Seller Menu -->
     <string name="title_seller_menu">Toko Saya</string>
     <string name="title_seller_settings">Pengaturan Toko</string>
+
+    <!--Dynamic feature for profile-->
+    <string name="title_profile_df">Profile</string>
 </resources>
