@@ -24,6 +24,14 @@ class SomListSortFilterTab(
 
     init {
         sortFilter.chipItems = arrayListOf()
+        sortFilter.indicatorNotifView.viewTreeObserver.addOnPreDrawListener {
+            val count = selectedCount + if (selectedTab != null && selectedTab?.key != SomConsts.STATUS_ALL_ORDER) 1 else 0
+            if (count != sortFilter.indicatorCounter) {
+                sortFilter.indicatorCounter = count
+                return@addOnPreDrawListener false
+            }
+            true
+        }
         selectParentFilter()
     }
 
@@ -106,6 +114,7 @@ class SomListSortFilterTab(
         this.somListFilterUiModel = somListFilterUiModel
         updateTabs(somListFilterUiModel.statusList)
         sortFilter.show()
+        updateCounter(selectedCount)
     }
 
     fun selectTab(status: SomListFilterUiModel.Status) {
