@@ -162,6 +162,7 @@ private fun LinearLayout.addLabelVariantSize(
 
 private fun LinearLayout.addLabelVariantCustom(labelVariant: ProductCardModel.LabelGroupVariant, marginStart: Int) {
     val layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+    layoutParams.topMargin = 1.toPx() // Small hack to make custom label center
     layoutParams.marginStart = marginStart
 
     val typography = Typography(context)
