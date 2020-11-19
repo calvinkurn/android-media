@@ -1561,7 +1561,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     // 3. and there is any new order (we can tell by check get filter result, and we need to scroll through until new order card is showed)
     // only call this method after rendering order list
     private fun reshowNewOrderCoachMark(newOrders: List<SomListOrderUiModel>) {
-        if (shouldShowCoachMark && coachMarkIndexToShow == 0 &&
+        if (!globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 0 &&
                 (tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER) &&
                 !somListSortFilterTab.isFilterApplied() && searchBarSomList.searchText.toString().isBlank()) {
             // check whether the user has any new order
@@ -1602,7 +1602,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun reshowStatusFilterCoachMark() {
-        if (shouldShowCoachMark && coachMarkIndexToShow == 1 && sortFilterSomList.isVisible) {
+        if (globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 1 && sortFilterSomList.isVisible) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1612,7 +1612,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun reshowWaitingPaymentOrderListCoachMark() {
         val waitingPaymentOrderListCountResult = viewModel.waitingPaymentCounterResult.value
-        if (shouldShowCoachMark && coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
+        if (globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1621,7 +1621,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun reshowBulkAcceptOrderCoachMark() {
-        if (shouldShowCoachMark && coachMarkIndexToShow == 3 && tvSomListBulk.isVisible) {
+        if (globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 3 && tvSomListBulk.isVisible) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
