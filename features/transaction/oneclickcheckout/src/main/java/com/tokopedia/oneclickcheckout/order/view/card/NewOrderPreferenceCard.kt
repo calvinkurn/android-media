@@ -233,7 +233,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         if (payment != null) {
 
             setMultiViewsOnClickListener(ivPayment, tvPaymentName, btnChangePayment) {
-                listener.choosePayment()
+                listener.choosePayment(preference)
             }
 
             if (!payment.isError()) {
@@ -522,7 +522,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         fun chooseDuration(isDurationError: Boolean)
 
-        fun choosePayment()
+        fun choosePayment(preference: OrderPreference)
 
         fun onPreferenceEditClicked(preference: OrderPreference)
 

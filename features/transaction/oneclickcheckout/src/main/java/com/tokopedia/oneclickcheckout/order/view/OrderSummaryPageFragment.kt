@@ -171,6 +171,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(resultCode, data)
                 REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
                 REQUEST_CODE_OVO_TOP_UP -> refresh()
+                REQUEST_CODE_EDIT_PAYMENT -> onResultFromEditPayment(resultCode, data)
             }
         }
     }
@@ -233,6 +234,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val metadata = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_METADATA)
         if (metadata != null) {
             viewModel.updateCreditCard(metadata)
+        }
+    }
+
+    private fun onResultFromEditPayment(resultCode: Int, data: Intent?) {
+        val gateway = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY)
+        val metadata = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA)
+        if (gateway != null && metadata != null) {
+            viewModel.choosePayment(gateway, metadata)
         }
     }
 
@@ -783,8 +792,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun choosePayment() {
-
+        override fun choosePayment(preference: OrderPreference) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preference.profileIndex)
+                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
+                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
+                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
+                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
+                putExtra(PreferenceEditActivity.EXTRA_DIRECT_PAYMENT_STEP, true)
+            }
+            startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
         }
 
         override fun onPreferenceEditClicked(preference: OrderPreference) {
@@ -1267,6 +1287,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CODE_OVO_TOP_UP = 17
 
         const val REQUEST_CODE_ADD_ADDRESS = 18
+
+        const val REQUEST_CODE_EDIT_PAYMENT = 19
 
         const val QUERY_PRODUCT_ID = "product_id"
 

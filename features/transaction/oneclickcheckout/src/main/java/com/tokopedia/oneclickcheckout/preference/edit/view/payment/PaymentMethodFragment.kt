@@ -1,7 +1,9 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view.payment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.net.http.SslError
@@ -31,6 +33,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.data.payment.PaymentListingParamRequest
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditParent
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -239,7 +242,13 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditParent) {
             parent.setGatewayCode(gatewayCode)
             parent.setPaymentQuery(metadata)
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+            if (parent.isDirectPaymentStep()) {
+                parent.setResult(Activity.RESULT_OK, Intent().apply {
+                    putExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY, gatewayCode)
+                    putExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA, metadata)
+                })
+                parent.finish()
+            } else if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.goBack()
             } else {
                 parent.addFragment(PreferenceSummaryFragment.newInstance())

@@ -574,6 +574,23 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
+    fun choosePayment(gatewayCode: String, metadata: String) {
+        launch(executorDispatchers.main) {
+            var param = generateUpdateCartParam()
+            if (param == null) {
+                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
+                return@launch
+            }
+            param = param.copy(profile = param.profile.copy(gatewayCode = gatewayCode, metadata = metadata))
+            globalEvent.value = OccGlobalEvent.Loading
+            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
+            if (isSuccess) {
+                clearBboIfExist()
+            }
+            globalEvent.value = newGlobalEvent
+        }
+    }
+
     private fun validateSelectedTerm(): Boolean {
         val creditCard = _orderPayment.creditCard
         val selectedTerm = creditCard.selectedTerm

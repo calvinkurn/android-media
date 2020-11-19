@@ -42,6 +42,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
     private var _fromFlow = FROM_FLOW_PREF
+    private var _directPaymentStep = false
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -79,6 +80,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
         _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
+        _directPaymentStep = intent.getBooleanExtra(EXTRA_DIRECT_PAYMENT_STEP, false)
 
         val ft = supportFragmentManager.beginTransaction()
         val fragments = supportFragmentManager.fragments
@@ -87,7 +89,9 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
                 ft.remove(fragment)
             }
         }
-        if (_profileId == 0) {
+        if (_directPaymentStep) {
+            ft.replace(R.id.container, PaymentMethodFragment.newInstance(true)).commit()
+        } else if (_profileId == 0) {
             ft.replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             ft.replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
@@ -274,6 +278,10 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         return _paymentProfile
     }
 
+    override fun isDirectPaymentStep(): Boolean {
+        return _directPaymentStep
+    }
+
     companion object {
 
         const val EXTRA_PREFERENCE_INDEX = "preference_index"
@@ -291,6 +299,11 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val FROM_FLOW_OSP = 1
         const val FROM_FLOW_PREF = 0
 
+        const val EXTRA_DIRECT_PAYMENT_STEP = "direct_payment_step"
+
         const val EXTRA_RESULT_MESSAGE = "RESULT_MESSAGE"
+
+        const val EXTRA_RESULT_GATEWAY = "RESULT_GATEWAY"
+        const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
     }
 }
