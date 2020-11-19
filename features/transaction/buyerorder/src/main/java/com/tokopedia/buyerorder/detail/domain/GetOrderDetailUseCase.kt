@@ -15,9 +15,9 @@ import javax.inject.Inject
  */
 class GetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlUseCase<DetailsData>) {
 
-    suspend fun execute(query: String, requestCancelParam: BuyerRequestCancelParam): Result<BuyerRequestCancelData.Data> {
+    suspend fun execute(query: String, requestCancelParam: BuyerRequestCancelParam): Result<DetailsData> {
         useCase.setGraphqlQuery(query)
-        useCase.setTypeClass(BuyerRequestCancelData.Data::class.java)
+        useCase.setTypeClass(DetailsData::class.java)
         useCase.setRequestParams(generateParam(requestCancelParam))
 
         return try {
