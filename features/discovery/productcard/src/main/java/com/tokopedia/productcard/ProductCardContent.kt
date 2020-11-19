@@ -15,6 +15,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -185,10 +187,29 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
+    moveLabelPriceConstraint(productCardModel)
+
     if (productCardModel.isShowDiscountOrSlashPrice())
         labelPrice?.initLabelGroup(null)
     else
         labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+}
+
+private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
+    val shouldMoveConstraint = productCardModel.discountPercentage.isNotEmpty() && productCardModel.slashedPrice.isEmpty()
+
+    if (!shouldMoveConstraint) return
+
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.let {
+        val constraintSet = ConstraintSet().apply { clone(it) }
+
+        constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, R.id.labelDiscount, ConstraintSet.BOTTOM)
+
+        constraintSet.applyTo(it)
+    }
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
@@ -219,29 +240,15 @@ private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
 private fun View.renderRating(productCardModel: ProductCardModel) {
     when {
         !productCardModel.willShowRatingAndReviewCount() -> hideRating()
-        productCardModel.ratingString.isNotEmpty() -> renderRatingFloat(productCardModel)
         productCardModel.ratingCount > 0 -> renderRatingStars(productCardModel)
     }
 }
 
 private fun View.hideRating() {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-    linearLayoutImageRating?.gone()
-}
-
-private fun View.renderRatingFloat(productCardModel: ProductCardModel) {
-    imageRatingString?.visible()
-    textViewRatingString?.visible()
-    textViewRatingString?.text = productCardModel.ratingString
-
     linearLayoutImageRating?.gone()
 }
 
 private fun View.renderRatingStars(productCardModel: ProductCardModel) {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-
     linearLayoutImageRating?.visible()
     setImageRating(productCardModel.ratingCount)
 }
