@@ -362,8 +362,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         }
         dismissCoachMark()
         super.onPause()
-        bulkAcceptButtonEnterAnimation?.end()
-        bulkAcceptButtonLeaveAnimation?.end()
+        if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
+        if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
     }
 
     override fun getEndlessLayoutManagerListener(): EndlessLayoutManagerListener? {
@@ -656,7 +656,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private fun setupViews() {
         showWaitingPaymentOrderListMenuShimmer()
         rvSomList.layoutManager = somListLayoutManager
-        rvSomList.setItemViewCacheSize(6)
         bulkActionCheckBoxContainer.layoutTransition.enableTransitionType(CHANGING)
         setupListeners()
     }
@@ -1255,13 +1254,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         rvSomList.smoothScrollToPosition(0)
                     }
                 }
-                if (coachMark?.currentIndex == 0) {
-                    dismissCoachMark(true)
-                } else if (coachMark?.currentIndex == 3 && !multiEditViews.isVisible) {
+                if (coachMark?.currentIndex == 0 || (coachMark?.currentIndex == 3 && !multiEditViews.isVisible)) {
                     dismissCoachMark(true)
                 }
             } else {
-                adapter.addMoreData(data)
+                (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
                 rvSomList.post {
                     updateBulkActionCheckboxStatus()
                 }
