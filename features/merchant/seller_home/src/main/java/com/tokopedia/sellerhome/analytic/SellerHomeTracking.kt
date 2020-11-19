@@ -197,6 +197,18 @@ object SellerHomeTracking {
         TrackingHelper.sendEnhanceEcommerceEvent(eventMap)
     }
 
+    fun sendTableClickHyperlinkEvent(dataKey: String, url: String, isEmpty: Boolean) {
+        val state = if (isEmpty) TrackingConstant.EMPTY else TrackingConstant.NOT_EMPTY
+
+        val map = TrackingHelper.createMap(
+                event = TrackingConstant.CLICK_SELLER_WIDGET,
+                category = arrayOf(TrackingConstant.SELLER_APP, TrackingConstant.HOME).joinToString(" - "),
+                action = arrayOf(TrackingConstant.CLICK_WIDGET_ADVANCE_TABLE, dataKey).joinToString(" - "),
+                label = arrayOf(state, url).joinToString(" - ")
+        )
+        TrackingHelper.sendGeneralEvent(map)
+    }
+
     fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel, position: Int) {
         val value = model.data?.data?.summary?.value?.toString().orEmpty()
 

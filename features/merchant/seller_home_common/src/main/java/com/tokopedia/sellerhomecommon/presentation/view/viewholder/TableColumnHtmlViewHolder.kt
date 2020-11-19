@@ -16,7 +16,8 @@ import kotlinx.android.synthetic.main.shc_item_table_column_html.view.*
  * Created By @ilhamsuaib on 01/07/20
  */
 
-class TableColumnHtmlViewHolder(itemView: View?) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
+class TableColumnHtmlViewHolder(itemView: View?,
+                                private val listener: Listener) : AbstractViewHolder<TableRowsUiModel.RowColumnHtml>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,7 +26,8 @@ class TableColumnHtmlViewHolder(itemView: View?) : AbstractViewHolder<TableRowsU
 
     override fun bind(element: TableRowsUiModel.RowColumnHtml) {
         with(itemView) {
-            tvTableColumnHtml.setClickableUrlHtml(element.valueStr) { url ->
+            tvTableColumnHtml?.setClickableUrlHtml(element.valueStr) { url ->
+                listener.onHyperlinkClicked(url)
                 try {
                     val myIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context?.startActivity(myIntent)
@@ -39,5 +41,9 @@ class TableColumnHtmlViewHolder(itemView: View?) : AbstractViewHolder<TableRowsU
                 tvTableColumnHtml.gravity = Gravity.END
             }
         }
+    }
+
+    interface Listener {
+        fun onHyperlinkClicked(url: String)
     }
 }

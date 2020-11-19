@@ -478,6 +478,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
     }
 
+    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
+        SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty)
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)

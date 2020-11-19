@@ -65,6 +65,9 @@ class TableViewHolder(
                     shcTableView.addOnSlideImpressionListener { position, isEmpty ->
                         listener.sendTableImpressionEvent(element, position, isEmpty)
                     }
+                    shcTableView?.addOnHtmlClickListener { url, isEmpty ->
+                        listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
+                    }
                 }
             } else {
                 setOnTableEmpty(element)
@@ -135,5 +138,7 @@ class TableViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
+        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
+
     }
 }
