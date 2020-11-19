@@ -113,7 +113,19 @@
             android:name=".booking.presentation.activity.HotelBookingActivity"
             android:label="@string/hotel_booking_activity_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White" >
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_hotel"
+                    android:pathPattern="@string/path_hotel_booking"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".booking.presentation.activity.HotelContactDataActivity"
             android:label="@string/travel_contact_data_activity_title"

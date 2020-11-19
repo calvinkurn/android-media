@@ -145,9 +145,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId,
-                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
-                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId))
                     }
                 }
                 is Fail -> {

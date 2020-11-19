@@ -103,15 +103,13 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomDetailViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
+        roomDetailViewModel.addCartResponseResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     val cartId = it.data.response.cartId
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId,
-                                addToCartParam.destinationType, addToCartParam.destinationName,
-                                addToCartParam.roomCount, addToCartParam.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, cartId))
                     }
                 }
                 is Fail -> {
