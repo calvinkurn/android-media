@@ -32,7 +32,7 @@ abstract class BaseNotificationViewHolder constructor(
     protected val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
 
     protected val clickedColor = MethodChecker.getColor(
-            itemView?.context, com.tokopedia.unifyprinciples.R.color.Unify_G100
+            itemView?.context, R.color.notifcenter_dms_unread_notification
     )
 
     override fun bind(element: NotificationUiModel) {
