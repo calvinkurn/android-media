@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.*
@@ -35,6 +34,7 @@ import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTyp
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
@@ -109,6 +109,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         observeSomFilter()
         observeUpdateFilterSelected()
         observeOrderListParam()
+        observeResetFilter()
         bottomSheetReset()
         adjustBottomSheetPadding()
     }
@@ -144,11 +145,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                                       position: Int, chipType: String, orderStatus: String) {
         when (idFilter) {
             FILTER_SORT, FILTER_LABEL, FILTER_STATUS_ORDER -> {
-                somFilterViewModel.updateFilterSelected(idFilter, position, chipType, filterDate)
+                somFilterViewModel.updateFilterSelected(idFilter, position, chipType)
                 somFilterViewModel.updateParamSom(idFilter)
             }
             FILTER_TYPE_ORDER, FILTER_COURIER -> {
-                somFilterViewModel.updateFilterManySelected(idFilter, chipType, position, filterDate)
+                somFilterViewModel.updateFilterManySelected(idFilter, chipType, position)
                 somFilterViewModel.updateParamSom(idFilter)
             }
         }
@@ -178,12 +179,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                     somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
                             ?: SomListGetOrderListParam())
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
-                    val filterDate = data?.getStringExtra(SomSubFilterActivity.KEY_FILTER_DATE)
                             ?: ""
                     val somSubFilterList =
                             data?.getParcelableArrayListExtra<SomFilterChipsUiModel>(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS)?.toList()
                                     ?: listOf()
-                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList, filterDate)
+                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList)
                 }
             }
         }
@@ -223,6 +223,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         removeObservers(somFilterViewModel.filterResult)
         removeObservers(somFilterViewModel.updateFilterSelected)
         removeObservers(somFilterViewModel.somFilterOrderListParam)
+        removeObservers(somFilterViewModel.resetFilterResult)
         undoStatusBarColor()
         super.onDestroy()
     }
@@ -318,7 +319,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 when (it) {
                     is Success -> {
                         if (it.data.isEmpty()) {
-                            somFilterAdapter?.setEmptyState(EmptyModel())
+                            somFilterAdapter?.setEmptyState(SomFilterEmptyUiModel())
                         } else {
                             somFilterAdapter?.updateData(it.data)
                             showHideBottomSheetReset()
@@ -340,10 +341,21 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     private fun observeUpdateFilterSelected() = observe(somFilterViewModel.updateFilterSelected) {
         when (it) {
             is Success -> {
-                somFilterAdapter?.updateData(it.data)
+                somFilterAdapter?.updateChipsSelected(it.data.first, it.data.second)
                 showHideBottomSheetReset()
             }
             is Fail -> { }
+        }
+    }
+
+
+    private fun observeResetFilter() = observe(somFilterViewModel.resetFilterResult) {
+        when (it) {
+            is Success -> {
+                somFilterAdapter?.resetFilterSelected(it.data)
+                showHideBottomSheetReset()
+            }
+            else -> {}
         }
     }
 
@@ -372,6 +384,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         somListOrderParam?.startDate = ""
         somListOrderParam?.endDate = ""
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
+        somFilterViewModel.setIsRequestCancelFilterApplied(false)
         filterDate = ""
         somFilterViewModel.setIsRequestCancelFilterApplied(false)
     }

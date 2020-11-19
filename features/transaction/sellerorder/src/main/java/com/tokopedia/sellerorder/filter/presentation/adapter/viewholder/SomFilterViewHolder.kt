@@ -59,7 +59,7 @@ class SomFilterViewHolder(view: View, private val filterListener: SomFilterListe
                 it.layoutManager = layoutManagerChips
                 ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR)
                 it.adapter = somFilterItemChipsAdapter
-                somFilterItemChipsAdapter?.setChipsFilter(data)
+                somFilterItemChipsAdapter?.setChipsFilter(data.somFilterData, data.nameFilter)
             }
         }
     }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:layout_marginTop="@dimen/spacing_lvl1"
     android:layout_marginStart="@dimen/dp_12"
     android:layout_marginEnd="@dimen/dp_12">
 
@@ -67,7 +67,7 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cv_product_img"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@id/cv_product_img"
             app:typographyType="heading_6"
             tools:text="Fujifilm Instax Square Fujifilm Instax Square Fujifilm Instax Square" />
 

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.detail_products_item.view.*
 /**
  * Created by fwidjaja on 2019-10-04.
  */
-class SomDetailProductsViewHolder(itemView: View, private val actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
+class SomDetailProductsViewHolder(itemView: View, actionListener: SomDetailAdapter.ActionListener?) : SomDetailAdapter.BaseViewHolder<SomDetailData>(itemView) {
     private val somDetailProductsCardAdapter = SomDetailProductsCardAdapter(actionListener)
 
     override fun bind(item: SomDetailData, position: Int) {
