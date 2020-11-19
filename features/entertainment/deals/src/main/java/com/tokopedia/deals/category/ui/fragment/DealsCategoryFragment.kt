@@ -25,7 +25,6 @@ import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.listener.*
 import com.tokopedia.deals.common.model.LoadingMoreUnifyModel
 import com.tokopedia.deals.common.ui.activity.DealsBaseActivity
-import com.tokopedia.deals.common.ui.adapter.DealsProductCardAdapter
 import com.tokopedia.deals.common.ui.dataview.*
 import com.tokopedia.deals.common.ui.fragment.DealsBaseFragment
 import com.tokopedia.deals.common.ui.viewmodel.DealsBaseViewModel
@@ -296,7 +295,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun getInitialLayout(): Int = R.layout.fragment_deals_category
-    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.recycler_view)
+    override fun getRecyclerView(view: View): RecyclerView = view.findViewById(R.id.deals_category_recycler_view)
 
     private var additionalSelectedFilterCount = 0
 
@@ -370,6 +369,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         categoryID = arguments?.getString(DealsCategoryActivity.EXTRA_CATEGORY_ID, "") ?: ""
+        getRecyclerView(view).tag = arguments?.getString(EXTRA_TAB_NAME, "") ?: ""
 
         (activity as DealsBaseActivity).searchBarActionListener = this
 
@@ -399,8 +399,8 @@ class DealsCategoryFragment : DealsBaseFragment(),
     }
 
     override fun onClickSearchBar() {
-        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
         analytics.eventClickSearchCategoryPage()
+        startActivityForResult(Intent(activity, DealsSearchActivity::class.java), DEALS_SEARCH_REQUEST_CODE)
     }
 
     override fun afterSearchBarTextChanged(text: String) { /* do nothing */
@@ -447,11 +447,14 @@ class DealsCategoryFragment : DealsBaseFragment(),
         const val DEFAULT_MIN_ITEMS = 21
         const val INITIAL_SIZE_BASE_ITEM_VIEW = 2
 
-        fun getInstance(categoryId: String?): DealsCategoryFragment = DealsCategoryFragment().also {
+        private const val EXTRA_TAB_NAME = ""
+
+        fun getInstance(categoryId: String?, tabName: String = ""): DealsCategoryFragment = DealsCategoryFragment().also {
             it.arguments = Bundle().apply {
                 categoryId?.let { id ->
                     putString(DealsCategoryActivity.EXTRA_CATEGORY_ID, id)
                 }
+                putString(EXTRA_TAB_NAME, tabName)
             }
         }
     }
