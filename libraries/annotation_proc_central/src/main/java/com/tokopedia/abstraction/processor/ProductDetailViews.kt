@@ -51,7 +51,19 @@ data class ProductDetailViews(
         val businessUnit: String?,
         @DefaultValueString("")
         @Key("screenName")
-        val screenName: String?
+        val screenName: String?,
+        @DefaultValueString("")
+        @Key("variant")
+        val variant: String?,
+        @DefaultValueString("")
+        @Key("campaignCode")
+        val campaignCode: String?,
+        @DefaultValueString("")
+        @Key("productStatus")
+        val productStatus: String?,
+        @DefaultValueString("")
+        @Key("stockAmount")
+        val stockAmount: String?
 
 )
 
