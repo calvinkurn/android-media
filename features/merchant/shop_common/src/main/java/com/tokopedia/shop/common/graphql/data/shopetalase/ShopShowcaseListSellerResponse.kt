@@ -1,14 +1,14 @@
 package com.tokopedia.shop.common.graphql.data.shopetalase
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
-
-data class ShopShowcaseListResponse(
-        @SerializedName("shopShowcasesByShopID")
-        val shopShowcasesByShopID: ShopShowcasesByShopID = ShopShowcasesByShopID()
+data class ShopShowcaseListSellerResponse(
+        @SerializedName("shopShowcases")
+        val shopShowcases: shopShowcases = shopShowcases()
 )
 
-data class ShopShowcasesByShopID(
+data class shopShowcases(
         @SerializedName("error")
         val error: Error = Error(),
         @SerializedName("result")
