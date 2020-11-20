@@ -6,6 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBarRemoteConfig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl3"/>
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/empty_message"
         android:layout_width="match_parent"
