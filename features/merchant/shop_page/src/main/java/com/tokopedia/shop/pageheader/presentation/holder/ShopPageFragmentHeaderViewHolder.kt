@@ -49,6 +49,11 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         get() = R.drawable.ic_shop_follower.takeIf {
             isUsingNewNavigation()
         } ?: R.drawable.ic_shop_follower_old
+    private val followButton : UnifyButton
+        get() = view.shop_page_follow_unfollow_button.takeIf {
+            isUsingNewNavigation()
+        } ?: view.shop_page_follow_unfollow_button_old
+
     companion object {
         private const val LABEL_FREE_ONGKIR_DEFAULT_TITLE = "Toko ini Bebas Ongkir"
     }
@@ -84,9 +89,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         }
         TextAndContentDescriptionUtil.setTextAndContentDescription(view.shop_page_main_profile_name, MethodChecker.fromHtml(shopPageHeaderDataModel.shopName).toString(), view.shop_page_main_profile_name.context.getString(R.string.content_desc_shop_page_main_profile_name))
         if (isMyShop) {
-            displayAsSeller(shopPageHeaderDataModel)
-        } else {
-            displayAsBuyer()
+            setupSgcPlayWidget(shopPageHeaderDataModel)
         }
 
         if (shopPageHeaderDataModel.isFreeOngkir)
@@ -107,6 +110,24 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
             view.shop_page_main_profile_name.setOnClickListener (null)
             view.shop_page_chevron_shop_info.hide()
         }
+    }
+
+    fun setupFollowButton(isMyShop: Boolean){
+        if (isMyShop) {
+            hideFollowButton()
+        } else {
+            showFollowButton()
+            view.play_seller_widget_container.visibility = View.GONE
+            updateFavoriteButton()
+        }
+    }
+
+    fun hideFollowButton(){
+        followButton.visibility = View.GONE
+    }
+
+    fun showFollowButton(){
+        followButton.visibility = View.VISIBLE
     }
 
     private fun setupTextContentSgcWidget(){
@@ -228,37 +249,26 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         view.tickerShopStatus.hide()
     }
 
-    private fun displayAsBuyer() {
-        view.shop_page_follow_unfollow_button.visibility = View.VISIBLE
-        view.play_seller_widget_container.visibility = View.GONE
-        updateFavoriteButton()
-    }
-
     fun isShopFavourited() = isShopFavorite
 
     fun updateFavoriteButton() {
-        view.shop_page_follow_unfollow_button.isLoading = false
-        view.shop_page_follow_unfollow_button.setOnClickListener {
-            if (!view.shop_page_follow_unfollow_button.isLoading) {
-                view.shop_page_follow_unfollow_button.isLoading = true
+        followButton.isLoading = false
+        followButton.setOnClickListener {
+            if (!followButton.isLoading) {
+                followButton.isLoading = true
                 listener.toggleFavorite(!isShopFavorite)
             }
         }
         if (isShopFavorite) {
-            view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.GHOST
-            view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.ALTERNATE
-            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_following)
+            followButton.buttonVariant = UnifyButton.Variant.GHOST
+            followButton.buttonType = UnifyButton.Type.ALTERNATE
+            followButton.text = context.getString(R.string.shop_header_action_following)
 
         } else {
-            view.shop_page_follow_unfollow_button.buttonVariant = UnifyButton.Variant.FILLED
-            view.shop_page_follow_unfollow_button.buttonType = UnifyButton.Type.MAIN
-            view.shop_page_follow_unfollow_button.text = context.getString(R.string.shop_header_action_follow)
+            followButton.buttonVariant = UnifyButton.Variant.FILLED
+            followButton.buttonType = UnifyButton.Type.MAIN
+            followButton.text = context.getString(R.string.shop_header_action_follow)
         }
-    }
-
-    private fun displayAsSeller(shopPageHeaderDataModel: ShopPageHeaderDataModel) {
-        view.shop_page_follow_unfollow_button.visibility = View.GONE
-        setupSgcPlayWidget(shopPageHeaderDataModel)
     }
 
     fun showShopReputationBadges(shopBadge: ShopBadge) {
