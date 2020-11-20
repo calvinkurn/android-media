@@ -780,7 +780,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                 is Fail -> {
                     val message = it.throwable.message.toString()
                     if (message.isNotEmpty()) {
-                        showToasterError(view, message)
+                        showToasterError(view, message, getString(R.string.som_list_button_ok))
                     } else {
                         it.throwable.showErrorToaster()
                     }
@@ -1203,7 +1203,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         somListLoading.gone()
         rvSomList.gone()
         multiEditViews.gone()
-        btnBulkAction.gone()
+        containerBtnBulkAction.gone()
         getSwipeRefreshLayout(view)?.apply {
             isRefreshing = false
             isEnabled = false
@@ -1244,7 +1244,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction() ?: false)
+                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()
+                        ?: false)
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 toggleBulkActionButtonVisibility()
@@ -1354,7 +1355,10 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         loadOrderList()
     }
 
-    private fun showToasterError(view: View?, message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded)) {
+    private fun showToasterError(
+            view: View?,
+            message: String = getString(R.string.som_list_error_some_information_cannot_be_loaded),
+            buttonMessage: String = getString(R.string.btn_reload)) {
         if (errorToaster == null) {
             view?.let {
                 errorToaster = Toaster.build(
@@ -1362,7 +1366,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                         message,
                         Toaster.LENGTH_INDEFINITE,
                         Toaster.TYPE_ERROR,
-                        getString(R.string.btn_reload),
+                        buttonMessage,
                         View.OnClickListener {
                             refreshFailedRequests()
                         })
@@ -1650,24 +1654,28 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun animateBulkAcceptOrderButtonEnter() {
-        if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.end()
+        if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.cancel()
+        if (bulkAcceptButtonEnterAnimation?.isRunning == true || containerBtnBulkAction?.isVisible == true) return
         containerBtnBulkAction?.visible()
-        bulkAcceptButtonEnterAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.height?.toFloat()
-                ?: 0f, 0f)
+        bulkAcceptButtonEnterAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.translationY.orZero(), 0f)
     }
 
     private fun animateBulkAcceptOrderButtonLeave() {
-        if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.end()
-        bulkAcceptButtonLeaveAnimation = containerBtnBulkAction?.animateSlide(0f, containerBtnBulkAction?.height?.toFloat()
-                ?: 0f)
+        if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.cancel()
+        if (bulkAcceptButtonLeaveAnimation?.isRunning == true || containerBtnBulkAction?.isVisible != true) return
+        bulkAcceptButtonLeaveAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.translationY.orZero(),
+                containerBtnBulkAction?.height?.toFloat() ?: 0f)
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
             override fun onAnimationRepeat(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
                 containerBtnBulkAction?.gone()
+                bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator?) {
+                bulkAcceptButtonLeaveAnimation?.removeListener(this)
+            }
 
             override fun onAnimationStart(animation: Animator?) {}
         })
