@@ -508,7 +508,8 @@ public class SearchActivity extends BaseActivity
                 this::onSearchNavigationSearchBarClicked,
                 null,
                 0,
-                true
+                true,
+                false
         );
     }
 
