@@ -14,6 +14,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.revamp.common.cameraview.CameraViewMode
+import com.tokopedia.updateinactivephone.revamp.common.utils.convertBitmapToImageFile
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.utils.permission.request
@@ -155,16 +156,10 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessTakePicture(pictureResult: PictureResult) {
-        val file = File(filePath())
-        if (file.exists()) {
-            file.delete()
-        }
-
-        pictureResult.toFile(file) {
-            if (it != null) {
-                showPreview(it)
-            } else {
-                onError(getString(R.string.text_camera_error_make_file))
+        pictureResult.toBitmap { bitmap ->
+            bitmap?.let {
+                val file = convertBitmapToImageFile(it, 100, filePath())
+                showPreview(file)
             }
         }
     }
@@ -172,7 +167,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
     override fun onStop() {
         super.onStop()
         // https://stackoverflow.com/questions/43972053/cameraview-black-on-when-being-used-for-second-time/63629326#63629326
-
         cameraView?.close()
     }
 
