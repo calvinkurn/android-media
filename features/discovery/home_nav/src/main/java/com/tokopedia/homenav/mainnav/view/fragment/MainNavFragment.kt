@@ -43,6 +43,7 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
@@ -61,6 +62,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private var sharedPrefs: SharedPreferences? = null
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var viewModel: MainNavViewModel
@@ -251,7 +255,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), remoteConfig)
         adapter = MainNavListAdapter(mainNavFactory)
 
         var windowHeight = 0
