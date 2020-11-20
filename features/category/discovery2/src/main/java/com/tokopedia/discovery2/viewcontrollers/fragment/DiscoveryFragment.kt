@@ -298,6 +298,10 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun setPageInfo(data: PageInfo?) {
+        if(!data?.redirectionUrl.isNullOrEmpty()){
+            RouteManager.route(context, data?.redirectionUrl)
+            activity?.finish()
+        }
         typographyHeader.text = data?.name
         ivSearch.setOnClickListener {
             getDiscoveryAnalytics().trackSearchClick()

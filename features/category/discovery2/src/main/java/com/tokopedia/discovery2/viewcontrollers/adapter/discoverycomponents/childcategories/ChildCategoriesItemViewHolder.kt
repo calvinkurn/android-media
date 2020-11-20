@@ -8,16 +8,17 @@ import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.unifyprinciples.Typography
 
 class ChildCategoriesItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val childCategory: Typography = itemView.findViewById(R.id.child_category)
-    private lateinit var childCategoriesItemViewModel: ChildCategoriesItemViewModel
+    private lateinit var childCategoriesItemViewModel: DefaultComponentViewModel
     private var positionForParentAdapter: Int = -1
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        childCategoriesItemViewModel = discoveryBaseViewModel as ChildCategoriesItemViewModel
+        childCategoriesItemViewModel = discoveryBaseViewModel as DefaultComponentViewModel
         childCategoriesItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             val itemData = item.data?.get(0)
             positionForParentAdapter = itemData?.positionForParentItem ?: -1

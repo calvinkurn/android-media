@@ -2,7 +2,6 @@ package com.tokopedia.discovery2.di
 
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.multibanners.MultiBannerViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.chips.ChipsFilterViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.claimcoupon.ClaimCouponItemViewModel

@@ -1,8 +1,6 @@
 package com.tokopedia.categorylevels.domain.repository
 
 import com.tokopedia.basemvvm.repository.BaseRepository
-import com.tokopedia.common_category.data.raw.GQL_NAV_CATEGORY_DETAIL_V3
-import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -14,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
@@ -25,10 +22,6 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
     companion object {
         //TODO niranjan move query params to repo
         private const val RPC_PAGE_NUMBER = "rpc_page_number"
-
-        const val INTERMEDIARY = "intermediary"
-        const val IDENTIFIER = "identifier"
-        const val SAFESEARCH = "safeSearch"
     }
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
@@ -38,17 +31,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
         }
         val recommendationData =
                 recommendationUseCase.getData(createRequestParams(page, pageEndPoint, parentComponent?.chipSelectionData?.id))
-        val categoryV3Response =
-                getGQLData(GQL_NAV_CATEGORY_DETAIL_V3, BannedCategoryResponse::class.java, createRequestParameterCategory(pageEndPoint))
         return mapRecommendationToDiscoveryResponse(recommendationData)
-    }
-
-    private fun createRequestParameterCategory(categoryId: String): Map<String, Any> {
-        val request = RequestParams.create()
-        request.putString(IDENTIFIER, categoryId)
-        request.putBoolean(INTERMEDIARY, false)
-        request.putBoolean(SAFESEARCH, false)
-        return request.parameters
     }
 
     private fun createRequestParams(page: String, componentId: String, queryParam: String?): GetRecommendationRequestParam {

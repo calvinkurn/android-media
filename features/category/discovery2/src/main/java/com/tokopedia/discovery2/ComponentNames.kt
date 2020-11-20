@@ -68,4 +68,7 @@ enum class ComponentNames(val componentName: String) {
     ChildCategories("child_categories"),
     ChildCategoryItem("child_categories_item"),
 
+    //Banned View
+    BannedView("banned_view")
+
 }

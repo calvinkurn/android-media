@@ -71,4 +71,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Child Categories
     ChildCategory(R.layout.child_category_view, ComponentNames.ChildCategories.componentName),
     ChildCategoryItem(R.layout.child_category_item, ComponentNames.ChildCategoryItem.componentName),
+
+    //Banned View
+    BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),
 }

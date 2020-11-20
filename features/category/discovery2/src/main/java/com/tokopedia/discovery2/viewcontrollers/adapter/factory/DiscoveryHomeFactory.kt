@@ -26,7 +26,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.cate
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.categorynavigation.CategoryNavigationViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesItemViewHolder
-import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.bannedview.BannedViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories.ChildCategoriesViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickfilter.QuickFilterViewHolder
@@ -160,7 +161,10 @@ class DiscoveryHomeFactory {
 
             //Child Categories
             initializeComponent(ComponentsList.ChildCategory, ::ChildCategoriesViewHolder, ::ChildCategoriesViewModel)
-            initializeComponent(ComponentsList.ChildCategoryItem, ::ChildCategoriesItemViewHolder, ::ChildCategoriesItemViewModel)
+            initializeComponent(ComponentsList.ChildCategoryItem, ::ChildCategoriesItemViewHolder, ::DefaultComponentViewModel)
+
+            //Banned View
+            initializeComponent(ComponentsList.BannedView, ::BannedViewViewHolder, ::DefaultComponentViewModel)
         }
 
         private fun <E : AbstractViewHolder, T : DiscoveryBaseViewModel> initializeComponent(component: ComponentsList, componentViewHolder:(v: View, fragment: Fragment) -> E,

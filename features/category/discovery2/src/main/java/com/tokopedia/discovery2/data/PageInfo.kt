@@ -31,5 +31,7 @@ data class PageInfo(
         @SerializedName("campaign_code")
         val campaignCode: String? = null,
 
-        var additionalInfo: AdditionalInfo? = null
+        var additionalInfo: AdditionalInfo? = null,
+
+        var redirectionUrl: String? = null
 )

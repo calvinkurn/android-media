@@ -19,6 +19,10 @@ data class RecommendationFilterChipsEntity (
             val name: String = "",
             @SerializedName("value")
             val value: String = "",
+            @SerializedName("title")
+            val title: String = "",
+            @SerializedName("templateName")
+            val templateName: String = "",
             @SerializedName("inputType")
             val inputType: String = "",
             @SerializedName("isActivated")
@@ -32,6 +36,10 @@ data class RecommendationFilterChipsEntity (
             val name: String = "",
             @SerializedName("value")
             val value: String = "",
+            @SerializedName("key")
+            val key: String = "",
+            @SerializedName("icon")
+            val icon: String = "",
             @SerializedName("inputType")
             val inputType: String = "",
             @SerializedName("isActivated")

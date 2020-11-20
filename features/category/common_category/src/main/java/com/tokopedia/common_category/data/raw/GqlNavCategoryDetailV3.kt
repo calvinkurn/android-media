@@ -8,7 +8,7 @@ const val GQL_NAV_CATEGORY_DETAIL_V3: String = """query CategoryDetailQueryV3(${
       message
     }
         data{
-      redirectionURL
+      appRedirectionURL
       isAdult
  	  isBanned
       bannedMsg

@@ -1,6 +1,6 @@
 package com.tokopedia.categorylevels.di
 
-import com.tokopedia.categorylevels.domain.repository.CategoryChipFilterRepository
+import com.tokopedia.categorylevels.domain.repository.CategoryQuickFilterRepository
 import com.tokopedia.categorylevels.domain.repository.CategoryProductCardsGqlRepository
 import dagger.Component
 
@@ -8,5 +8,5 @@ import dagger.Component
 @Component(modules = [CategoryRevampModule::class])
 interface CategoryRevampComponent {
     fun getCategoryProductCardsGqlRepository(): CategoryProductCardsGqlRepository
-    fun getCategoryChipFilterRepository(): CategoryChipFilterRepository
+    fun getCategoryQuickFilterRepository(): CategoryQuickFilterRepository
 }

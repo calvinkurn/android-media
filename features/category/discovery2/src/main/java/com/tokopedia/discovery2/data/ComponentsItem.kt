@@ -74,7 +74,8 @@ data class ComponentsItem(
         var showVerticalLoader: Boolean = false,
         var rpc_PinnedProduct: String? = "",
         var loadForHorizontal: Boolean = false,
-        var pageLoadedCounter: Int = 1) {
+        var pageLoadedCounter: Int = 1,
+        var description : String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 

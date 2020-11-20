@@ -5,11 +5,12 @@ import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 
 interface RepositoryProvider {
     fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface
     fun provideDiscoveryPageRepository(getGQLString: (Int) -> String): DiscoveryPageRepository
     fun provideProductCardsRepository(): ProductCardsRepository
-    fun provideChipFilterRepository(): ChipFilterRepository
+    fun provideQuickFilterRepository(): QuickFilterRepository
     fun provideChildCategoryRepository(): ChildCategoryRepository
 }

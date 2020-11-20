@@ -7,9 +7,9 @@ import com.tokopedia.categorylevels.domain.repository.CategoryGqlPageRepository
 import com.tokopedia.categorylevels.view.activity.CategoryNavActivity
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
-import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
 
 class CategoryRepoProvider(val departmentName: String, val departmentId: String, val categoryUrl: String?) : RepositoryProvider {
     override fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
@@ -28,8 +28,8 @@ class CategoryRepoProvider(val departmentName: String, val departmentId: String,
         return DaggerCategoryRevampComponent.builder().build().getCategoryProductCardsGqlRepository()
     }
 
-    override fun provideChipFilterRepository(): ChipFilterRepository {
-        return DaggerCategoryRevampComponent.builder().build().getCategoryChipFilterRepository()
+    override fun provideQuickFilterRepository(): QuickFilterRepository {
+        return DaggerCategoryRevampComponent.builder().build().getCategoryQuickFilterRepository()
     }
 
     override fun provideChildCategoryRepository(): ChildCategoryRepository {

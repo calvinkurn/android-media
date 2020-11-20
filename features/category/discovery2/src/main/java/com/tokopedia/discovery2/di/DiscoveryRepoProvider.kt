@@ -11,6 +11,8 @@ import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLReposit
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRestRepository
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
@@ -32,8 +34,8 @@ class DiscoveryRepoProvider : RepositoryProvider {
         return ProductCardsRestRepository()
     }
 
-    override fun provideChipFilterRepository(): ChipFilterRepository {
-        return ChipFilterRestRepository()
+    override fun provideQuickFilterRepository(): QuickFilterRepository {
+        return QuickFilterRestRepository()
     }
 
     override fun provideChildCategoryRepository(): ChildCategoryRepository {

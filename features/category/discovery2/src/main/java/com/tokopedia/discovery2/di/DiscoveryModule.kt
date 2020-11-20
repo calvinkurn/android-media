@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeGQ
 import com.tokopedia.discovery2.repository.campaignsubscribe.CampaignSubscribeRepo
 import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
+import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponGQLRepository
 import com.tokopedia.discovery2.repository.claimCoupon.ClaimCouponRestRepository
 import com.tokopedia.discovery2.repository.claimCoupon.IClaimCouponGqlRepository
@@ -92,7 +93,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideChipFilterRepository(): ChipFilterRepository {
-        return repoProvider.provideChipFilterRepository()
+        return ChipFilterRestRepository()
     }
 
     @Provides
@@ -145,7 +146,7 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
 
     @Provides
     fun provideQuickFilterRestRepository(): QuickFilterRepository {
-        return QuickFilterRestRepository()
+        return repoProvider.provideQuickFilterRepository()
     }
 
     @DiscoveryScope
