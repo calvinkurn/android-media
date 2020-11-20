@@ -143,7 +143,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         }
 
         ImageButton backBtn = view.findViewById(R.id.action_back);
-        if(getActivity() instanceof AccountHomeActivity) {
+        if(getActivity() != null && getActivity() instanceof AccountHomeActivity) {
             backBtn.setVisibility(View.VISIBLE);
             backBtn.setOnClickListener(v -> {
                 getActivity().onBackPressed();
