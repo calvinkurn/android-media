@@ -30,6 +30,7 @@ import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_ALL_TR
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_COMPLAIN
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_REVIEW
 import com.tokopedia.homenav.common.util.ClientMenuGenerator.Companion.ID_TICKET
+import com.tokopedia.homenav.common.util.NpaLayoutManager
 import com.tokopedia.homenav.di.DaggerBaseNavComponent
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.di.DaggerMainNavComponent
@@ -69,7 +70,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
     lateinit var recyclerView: RecyclerView
-    lateinit var layoutManager: LinearLayoutManager
+    lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
     private var navToolbar: NavToolbar? = null
@@ -265,7 +266,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
             windowHeight = displayMetrics.heightPixels
         }
 
-        layoutManager = LinearLayoutManager(requireContext())
+        layoutManager = NpaLayoutManager(requireContext())
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
     }
@@ -442,10 +443,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
                     )
                 }
             }
-            coachMark.onFinishListener = {
+            if (coachMarkItem.isNotEmpty()) {
+                coachMark.showCoachMark(step = coachMarkItem, scrollView = scrollView)
                 saveFirstViewNavigationNavPagP2(false)
             }
-            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, scrollView = scrollView)
         }
         return true
     }
