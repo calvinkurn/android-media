@@ -215,7 +215,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     private lateinit var remoteConfig: RemoteConfig
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
 
     // This productId is only use for backend hit
     private var productId: String? = null
@@ -3147,10 +3146,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun getAbTestPlatform(): AbTestPlatform? {
         return try {
-            if (!::remoteConfigInstance.isInitialized) {
-                remoteConfigInstance = RemoteConfigInstance(activity?.application)
-            }
-            remoteConfigInstance.abTestPlatform
+            RemoteConfigInstance.getInstance().abTestPlatform
         } catch (e: java.lang.IllegalStateException) {
             null
         }
