@@ -42,7 +42,8 @@ class ProductManageFilterViewModel @Inject constructor(
     fun getData(shopId: String, isNeedToReloadEtalaseData: Boolean) {
         launchCatchError(block = {
             val combinedResponse = withContext(dispatcher.io) {
-                getProductManageFilterOptionsUseCase.params = GetProductManageFilterOptionsUseCase.createRequestParams(shopId, isMyShop(shopId), isNeedToReloadEtalaseData)
+                getProductManageFilterOptionsUseCase.isNeedToReloadEtalaseData = isNeedToReloadEtalaseData
+                getProductManageFilterOptionsUseCase.params = GetProductManageFilterOptionsUseCase.createRequestParams(shopId, isMyShop(shopId))
                 getProductManageFilterOptionsUseCase.executeOnBackground()
             }
             combinedResponse.let {
