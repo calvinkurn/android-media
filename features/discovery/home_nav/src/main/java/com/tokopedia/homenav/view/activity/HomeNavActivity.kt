@@ -16,6 +16,7 @@ class HomeNavActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         setContentView(R.layout.activity_main_nav)
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         findViewById<NavToolbar>(R.id.toolbar)?.let {

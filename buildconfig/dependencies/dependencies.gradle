@@ -357,6 +357,7 @@ ext {
             header          : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
-            carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar"
+            carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar",
+            icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar"
     ]
 }
