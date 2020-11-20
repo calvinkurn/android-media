@@ -470,6 +470,19 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         }
         return Pair(null, OccGlobalEvent.Error(errorMessage = OrderSummaryPageViewModel.FAIL_APPLY_BBO_ERROR_MESSAGE))
     }
+
+    fun getRecommendedShipmentFromServiceId(orderShipment: OrderShipment, serviceId: Int): Pair<Int, Int>? {
+        val shippingRecommendationData = orderShipment.shippingRecommendationData
+        if (shippingRecommendationData != null) {
+            val newDuration = shippingRecommendationData.shippingDurationViewModels.firstOrNull { it.serviceData.serviceId == serviceId }
+            if (newDuration != null && newDuration.shippingCourierViewModelList.isNotEmpty()) {
+                val newCourier = newDuration.shippingCourierViewModelList.firstOrNull { it.isSelected || it.productData.isRecommend }
+                        ?: newDuration.shippingCourierViewModelList.first()
+                return newCourier.productData.shipperId to newCourier.productData.shipperProductId
+            }
+        }
+        return null
+    }
 }
 
 class ResultRates(

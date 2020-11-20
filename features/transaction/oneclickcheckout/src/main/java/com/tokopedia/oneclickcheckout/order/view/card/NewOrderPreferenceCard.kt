@@ -172,14 +172,44 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         listener.chooseCourier()
                     }
                 }
+            } else if (shipping.serviceErrorMessage.isNotBlank() && shipping.shippingRecommendationData != null) {
+                tvShippingDuration?.text = "Pengiriman ${shipping.serviceName}"
+                tvShippingDuration?.visible()
+                setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
+                    /* no-op */
+                }
+                btnChangeDuration?.gone()
+                val button = "Ubah"
+                val span = SpannableString("${shipping.serviceErrorMessage} $button")
+                span.setSpan(StyleSpan(BOLD), shipping.serviceErrorMessage.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                view.context?.let {
+                    span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), shipping.serviceErrorMessage.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+                tvShippingErrorMessage?.text = span
+                tvShippingErrorMessage?.visible()
+                tvShippingErrorMessage?.setOnClickListener {
+                    listener.chooseDuration(true)
+                }
+                tvShippingCourier?.gone()
+                btnChangeCourier?.gone()
+                btnReloadShipping?.gone()
+                iconReloadShipping?.gone()
+                tvShippingDiscountPrice?.gone()
+                tickerShippingPromo?.gone()
             } else {
                 tvShippingDuration?.text = "Pengiriman"
                 tvShippingDuration?.visible()
                 btnChangeDuration?.gone()
+                setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
+                    /* no-op */
+                }
                 tvShippingCourier?.gone()
                 btnChangeCourier?.gone()
                 tvShippingErrorMessage?.text = shipping.serviceErrorMessage
                 tvShippingErrorMessage?.visible()
+                tvShippingErrorMessage?.setOnClickListener {
+                    /* no-op */
+                }
                 setMultiViewsOnClickListener(iconReloadShipping, btnReloadShipping) {
                     listener.reloadShipping()
                 }

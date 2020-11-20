@@ -658,7 +658,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         orderInsuranceCard.setGroupInsuranceVisible(false)
 
         if (viewModel.isNewFlow) {
-            buttonAturPilihan?.text = "+ Template Beli Langsung"
+            buttonAturPilihan?.text = getString(R.string.lbl_add_new_occ_profile_name)
         } else {
             buttonAturPilihan?.text = getString(R.string.atur_pilihan)
         }

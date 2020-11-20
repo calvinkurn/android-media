@@ -131,7 +131,7 @@ class PreferenceListBottomSheet(
             }
         })
         if (isNewFlow) {
-            btnAddPreference?.text = "+ Template Beli Langsung"
+            btnAddPreference?.text = child.context?.getString(R.string.lbl_add_new_occ_profile_name)
         }
         btnAddPreference?.setOnClickListener {
             bottomSheet?.dismiss()

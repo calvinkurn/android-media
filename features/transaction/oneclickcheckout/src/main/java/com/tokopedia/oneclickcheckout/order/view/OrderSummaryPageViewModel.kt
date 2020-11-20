@@ -339,8 +339,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 return@launch
             }
             param = param.copy(profile = UpdateCartOccProfileRequest(
-                    addressId = addressId,
-                    serviceId = orderShipment.value.getRealShipperId()
+                    addressId = addressId
             ))
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
@@ -368,13 +367,18 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = UpdateCartOccProfileRequest(
-                    profileId = preference.profileId.toString(),
-                    addressId = preference.addressModel.addressId.toString(),
-                    serviceId = preference.shipmentModel.serviceId,
-                    gatewayCode = preference.paymentModel.gatewayCode,
-                    metadata = preference.paymentModel.metadata
-            ))
+            val recommendedShipping = logisticProcessor.getRecommendedShipmentFromServiceId(_orderShipment, preference.shipmentModel.serviceId)
+            val cart = param.cart.first().copy(shippingId = recommendedShipping?.first
+                    ?: 0, spId = recommendedShipping?.second ?: 0)
+            param = param.copy(
+                    cart = arrayListOf(cart),
+                    profile = UpdateCartOccProfileRequest(
+                            profileId = preference.profileId.toString(),
+                            addressId = preference.addressModel.addressId.toString(),
+                            serviceId = preference.shipmentModel.serviceId,
+                            gatewayCode = preference.paymentModel.gatewayCode,
+                            metadata = preference.paymentModel.metadata
+                    ))
             globalEvent.value = OccGlobalEvent.Loading
             val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
             if (isSuccess) {
