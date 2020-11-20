@@ -54,9 +54,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     @Inject
     lateinit var somFilterViewModel: SomFilterViewModel
 
-    @Inject
-    lateinit var userSession: UserSessionInterface
-
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
     private var somFilterAdapter: SomFilterAdapter? = null
@@ -176,8 +173,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             REQUEST_CODE_FILTER_SEE_ALL -> {
                 if (resultCode == RESULT_CODE_FILTER_SEE_ALL) {
                     this.somListOrderParam = cacheManager?.get(KEY_SOM_ORDER_PARAM_CACHE, SomListGetOrderListParam::class.java)
-                    somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
-                            ?: SomListGetOrderListParam())
+                    somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
                             ?: ""
                     val somSubFilterList: SomSubFilterListWrapper? = cacheManager?.get(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
@@ -279,7 +275,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         btnShowOrder?.setOnClickListener {
             isApplyFilter = true
             SomAnalytics.eventClickTerapkanOnFilterPage(getFilterTextReset())
-            somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
             val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel()
             somListOrderParam?.let {
                 somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate, somFilterViewModel.isRequestCancelFilterApplied())
