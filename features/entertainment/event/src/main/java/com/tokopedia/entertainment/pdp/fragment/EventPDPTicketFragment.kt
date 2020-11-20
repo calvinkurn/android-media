@@ -128,7 +128,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         endDate = arguments?.getString(END_DATE, "") ?: ""
         super.onCreate(savedInstanceState)
 
-        TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 
@@ -407,6 +407,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         const val DATE_MULTIPLICATION = 1000
         const val IS_HIBURAN = 8192
         const val DATE_TICKET = "EEE, dd MMM yyyy"
+        const val GMT = "GMT+7"
 
         private const val PREFERENCES_NAME = "event_ticket_preferences"
         private const val SHOW_COACH_MARK_KEY = "show_coach_mark_key_event_ticket"

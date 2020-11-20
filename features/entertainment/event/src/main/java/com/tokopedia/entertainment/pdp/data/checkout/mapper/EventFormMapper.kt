@@ -91,7 +91,7 @@ object EventFormMapper {
                         PHONE_TYPE, MOBILE_TYPE -> userSession.phoneNumber
                         else -> nullableData
                     }
-                }
+                } else if((this.valuePosition.isNullOrEmpty() || this.valuePosition.equals("-1")) && this.elementType.equals(ELEMENT_LIST)) this.valueList = nullableData
             }
         }
 
