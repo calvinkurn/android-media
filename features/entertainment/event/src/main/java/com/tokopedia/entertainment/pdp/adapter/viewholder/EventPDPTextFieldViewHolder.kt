@@ -46,7 +46,7 @@ class EventPDPTextFieldViewHolder(val view: View,
             positionActiveForm = position
             if (position > 0) txtValue.setMargin(0, context.resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).toPx().toInt(), 0, 0)
 
-            if (element.elementType.equals(ELEMENT_TEXT)) {
+            if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) {
                 txtValue.textFieldWrapper.hint = element.title
                 txtValue.setMessage(element.helpText)
                 txtValue.textFieldInput.addTextChangedListener(object : TextWatcher {
@@ -80,7 +80,7 @@ class EventPDPTextFieldViewHolder(val view: View,
 
 
             if (element.value.isNotBlank() && !element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
-                if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
+                if (element.elementType.equals(ELEMENT_TEXT) || !element.elementType.equals(ELEMENT_LIST)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     txtValue.setMessage(element.title)
                     val list = getList(element.options)

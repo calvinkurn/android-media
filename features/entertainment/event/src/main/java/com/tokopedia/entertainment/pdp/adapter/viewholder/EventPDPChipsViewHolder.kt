@@ -24,7 +24,7 @@ class EventPDPChipsViewHolder(val view: View,
                     if (isSelected) {
                         addOrRemoveData(position, string, "")
                         if (!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form)) || element.value.isNullOrEmpty()) {
-                            tg_chips_form_event_error.hide()
+                            tg_chips_form_event_error.visibility = View.INVISIBLE
                             element.isError = false
                         }
                     }

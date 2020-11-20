@@ -23,7 +23,7 @@ class EventPDPCheckBoxViewHolder(val view: View,
                 addOrRemoveData(position, value.toString(), "")
 
                 if (!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form)) || element.value.isNullOrEmpty()) {
-                    tg_cb_form_event_error.hide()
+                    tg_cb_form_event_error.visibility = View.INVISIBLE
                     element.isError = false
                 }
             }
