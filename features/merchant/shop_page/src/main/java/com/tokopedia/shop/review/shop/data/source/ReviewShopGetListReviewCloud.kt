@@ -14,7 +14,7 @@ import java.util.*
 class ReviewShopGetListReviewCloud(private val reviewProductService: ReviewProductService) {
     fun getReviewShopList(params: HashMap<String?, String?>?): Observable<DataResponseReviewShop> {
         return reviewProductService.api!!.getReviewShopList(params).map(GetData())
-                .map { dataResponseReviewShopDataResponse -> dataResponseReviewShopDataResponse.data }
+                .map { dataResponseReviewShopDataResponse -> dataResponseReviewShopDataResponse?.data }
     }
 
 }
