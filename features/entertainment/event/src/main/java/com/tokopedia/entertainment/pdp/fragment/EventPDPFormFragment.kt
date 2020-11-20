@@ -284,7 +284,7 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
         bottomSheets.dismiss()
     }
 
-    override fun clickDatePicker(title: String, position: Int) {
+    override fun clickDatePicker(title: String, helpText: String,  position: Int) {
         context?.let{
             val calMax = Calendar.getInstance()
             calMax.add(Calendar.YEAR, MAX_YEAR);
@@ -304,6 +304,8 @@ class EventPDPFormFragment : BaseDaggerFragment(), OnClickFormListener,
             val minDate = GregorianCalendar(yearMin, monthMin, dayMin)
             var datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
                  setTitle(title)
+                 setInfo(helpText)
+                 setInfoVisible(true)
                  datePickerButton.let { button ->
                     button.setOnClickListener {
                         selectedCalendar = getDate()

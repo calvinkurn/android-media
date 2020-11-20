@@ -15,22 +15,21 @@ import kotlinx.android.synthetic.main.ent_pdp_form_edittext_item.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class EventPDPDatePickerViewHolder (val view: View,
-                                    val addOrRemoveData: (Int, String, String) -> Unit,
-                                    val listener: OnClickFormListener
-) : RecyclerView.ViewHolder(view){
+class EventPDPDatePickerViewHolder(val view: View,
+                                   val addOrRemoveData: (Int, String, String) -> Unit,
+                                   val listener: OnClickFormListener
+) : RecyclerView.ViewHolder(view) {
 
-    fun bind(element: Form, position: Int){
-        with(itemView){
+    fun bind(element: Form, position: Int) {
+        with(itemView) {
 
             tg_event_date_picker.textFieldWrapper.hint = element.title
-            tg_event_date_picker.setMessage(element.helpText)
             tg_event_date_picker.textFieldInput.apply {
                 keyListener = null
-                if(element.value.isNullOrEmpty() || element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
+                if (element.value.isNullOrEmpty() || element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
                     setText(resources.getString(R.string.ent_pdo_form_date_picker_placeholder))
                 } else {
-                    val format = SimpleDateFormat(VALUE_FORMAT)
+                    val format = SimpleDateFormat(element.options)
                     val date = format.parse(element.value)
                     val dateShow = date.toFormattedString(SHOW_FORMAT, LocaleUtils.getIDLocale())
                     setText(dateShow)
@@ -39,7 +38,7 @@ class EventPDPDatePickerViewHolder (val view: View,
                     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                         when (event?.action) {
                             MotionEvent.ACTION_DOWN -> {
-                                listener.clickDatePicker(element.title, position)
+                                listener.clickDatePicker(element.title, element.helpText, position)
                             }
                         }
                         return v?.onTouchEvent(event) ?: true
@@ -47,15 +46,14 @@ class EventPDPDatePickerViewHolder (val view: View,
                 })
             }
 
-            if(listener.getDate() != null){
+            if (listener.getDate() != null) {
                 val dateTime = listener.getDate()?.time?.toFormattedString(SHOW_FORMAT, LocaleUtils.getIDLocale())
-                val dateValue = SimpleDateFormat(VALUE_FORMAT).format(listener.getDate()?.time)
+                val dateValue = SimpleDateFormat(element.options).format(listener.getDate()?.time)
                 tg_event_date_picker.textFieldInput.setText(dateTime)
                 addOrRemoveData(position, dateValue, "")
             }
 
-            if(!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))){
-                tg_event_date_picker.setMessage(element.helpText)
+            if (!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) {
                 tg_event_date_picker.setError(false)
                 element.isError = false
             }

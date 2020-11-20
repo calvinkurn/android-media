@@ -84,8 +84,8 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         val listError = mutableListOf<Pair<String, Int>>()
         formData.forEachIndexed {index, it ->
             if (it.required == 1) {
-                if (((it.value.isBlank() || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form)))
-                                && !it.elementType.equals(ELEMENT_LIST)) ||
+                if (((it.value.isBlank() || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) && !it.elementType.equals(ELEMENT_LIST)) ||
+                     ((it.value.isBlank() || (it.value.equals("0")) || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) && it.elementType.equals(CHECKBOX_TYPE_TEXT))  ||
                         (it.valuePosition.equals(BLANK_LIST) && it.elementType.equals(ELEMENT_LIST))) {
                     listError.add(Pair(it.title, EMPTY_TYPE))
                     it.isError = true

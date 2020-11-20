@@ -83,7 +83,7 @@ class EventPDPTextFieldViewHolder(val view: View,
                 if (element.elementType.equals(ELEMENT_TEXT)) txtValue.textFieldInput.setText(element.value)
                 if (element.elementType.equals(ELEMENT_LIST)) {
                     txtValue.setMessage(element.title)
-                    val list = getList(element.value)
+                    val list = getList(element.options)
                     if (list.isNotEmpty()) {
 
                         val value = if (keyActiveBottomSheet.isNullOrEmpty()) {
