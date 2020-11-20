@@ -49,6 +49,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/header_title"
         tools:text="Lihat Detail" />
 
     <com.tokopedia.unifycomponents.ticker.Ticker
@@ -112,6 +113,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/header_invoice"
+        app:layout_constraintBottom_toBottomOf="@id/header_invoice"
         app:typographyType="heading_6"
         tools:text="@string/see_invoice" />
 
@@ -133,13 +135,12 @@
         android:id="@+id/header_buyer_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_16"
         android:textIsSelectable="true"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="@+id/header_buyer_label"
-        app:layout_constraintTop_toBottomOf="@id/header_see_invoice"
+        app:layout_constraintTop_toTopOf="@id/header_buyer_label"
         app:typographyType="body_3"
         tools:text="Mesut Ozil" />
 
@@ -161,12 +162,11 @@
         android:id="@+id/header_date_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/dp_16"
         android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="@color/Neutral_N700_96"
-        app:layout_constraintTop_toBottomOf="@id/header_buyer_value"
+        app:layout_constraintTop_toTopOf="@id/header_date_label"
         app:layout_constraintBottom_toBottomOf="@+id/header_date_label"
         app:typographyType="body_3"
         tools:text="25 Des 2018, 05:00 WIB" />
@@ -188,13 +188,12 @@
         android:id="@+id/due_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/dp_16"
         android:background="@drawable/bg_due_response"
         app:cardCornerRadius="3dp"
         app:cardElevation="@dimen/dp_0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/header_date_value"
+        app:layout_constraintTop_toTopOf="@id/header_deadline_label"
         app:layout_constraintBottom_toBottomOf="@id/header_deadline_label">
 
         <RelativeLayout

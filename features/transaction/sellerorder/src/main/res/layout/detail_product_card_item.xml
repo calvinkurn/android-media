@@ -40,7 +40,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_10"/>
 
-        <androidx.cardview.widget.CardView
+        <com.tokopedia.unifycomponents.CardUnify
             android:id="@+id/cv_product_img"
             android:layout_width="@dimen/som_list_product_image_size"
             android:layout_height="@dimen/som_list_product_image_size"
@@ -57,7 +57,7 @@
                 android:layout_height="@dimen/som_list_product_image_size"
                 tools:ignore="ContentDescription" />
 
-        </androidx.cardview.widget.CardView>
+        </com.tokopedia.unifycomponents.CardUnify>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_name"
