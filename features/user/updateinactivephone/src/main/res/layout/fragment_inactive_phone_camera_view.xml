@@ -123,7 +123,7 @@
     android:layout_marginStart="@dimen/layout_lvl6"
     android:padding="@dimen/spacing_lvl3"
     android:visibility="visible"
-    app:srcCompat="@drawable/ic_flip_camera"
+    app:srcCompat="@drawable/ic_flip_camera_inactive_phone"
     app:layout_constraintBottom_toBottomOf="@+id/btnShutter"
     app:layout_constraintLeft_toRightOf="@+id/btnShutter"
     app:layout_constraintRight_toRightOf="parent"
