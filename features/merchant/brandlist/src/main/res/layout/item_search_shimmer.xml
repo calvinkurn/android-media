@@ -9,7 +9,7 @@
         android:id="@+id/search_shimmer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="@dimen/dp_4"
         app:cardElevation="@dimen/dp_4"
         app:cardUseCompatPadding="true"

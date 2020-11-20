@@ -93,10 +93,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".attachproduct.view.activity.BroadcastMessageAttachProductActivity"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".chatroom.view.activity.TopchatReportWebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />

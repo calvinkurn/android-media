@@ -902,7 +902,7 @@ class ShopPageFragment :
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
         viewPagerAdapter.notifyDataSetChanged()
-        var selectedPosition = getSelectedTabPosition()
+        var selectedPosition = viewPager.currentItem
         if (shouldOverrideTabToHome) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
@@ -987,18 +987,6 @@ class ShopPageFragment :
                     iconTabReview,
                     shopReviewFragment
             ))
-        }
-    }
-
-    private fun getSelectedTabPosition(): Int {
-        return if (isShowHomeTab()) {
-            if (isShowNewHomeTab()) {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            }
-        } else {
-            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
         }
     }
 
