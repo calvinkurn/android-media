@@ -17,7 +17,7 @@ class UohListActivity: BaseSimpleActivity() {
 
     override fun getNewFragment(): UohListFragment? {
         val bundle = Bundle()
-        // scanPathQuery(intent.data)
+        scanPathQuery(intent.data)
         if (intent != null && intent.extras != null) {
             bundle.putAll(intent.extras)
         }
