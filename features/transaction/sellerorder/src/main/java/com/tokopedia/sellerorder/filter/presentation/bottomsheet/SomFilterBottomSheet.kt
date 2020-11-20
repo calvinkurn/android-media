@@ -22,9 +22,12 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.StatusBarColorUtil
+import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.copyInt
 import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
+import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
 import com.tokopedia.sellerorder.filter.di.SomFilterComponent
 import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity
@@ -381,8 +384,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     private fun actionResetFilter() {
         somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
-        somListOrderParam?.startDate = ""
-        somListOrderParam?.endDate = ""
+        somListOrderParam?.startDate = Utils.getNPastMonthTimeText(3)
+        somListOrderParam?.endDate = Utils.getNowTimeStamp().formatDate(PATTERN_DATE_PARAM)
         somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         somFilterViewModel.setIsRequestCancelFilterApplied(false)
         filterDate = ""

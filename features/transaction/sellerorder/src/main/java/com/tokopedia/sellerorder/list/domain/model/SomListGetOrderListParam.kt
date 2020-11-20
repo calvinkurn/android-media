@@ -4,6 +4,8 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -13,10 +15,10 @@ data class SomListGetOrderListParam(
         var search: String = "",
         @SerializedName("start_date")
         @Expose
-        var startDate: String = "01/01/2010",
+        var startDate: String = Utils.getNPastMonthTimeText(3),
         @SerializedName("end_date")
         @Expose
-        var endDate: String = "",
+        var endDate: String = Utils.getNowTimeStamp().formatDate(SomConsts.PATTERN_DATE_PARAM),
         @SerializedName("filter_status")
         @Expose
         var filterStatus: Int = 999,
