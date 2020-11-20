@@ -2,14 +2,13 @@ package com.tokopedia.updateinactivephone.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.updateinactivephone.revamp.domain.data.ImageUploadDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.data.InactivePhoneSubmitDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.data.PhoneValidationDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.data.UploadHostDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.ImageUploadUseCase
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.PhoneValidationUseCase
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.SubmitDataUseCase
-import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneDataUploadViewModel
+import com.tokopedia.updateinactivephone.domain.data.ImageUploadDataModel
+import com.tokopedia.updateinactivephone.domain.data.InactivePhoneSubmitDataModel
+import com.tokopedia.updateinactivephone.domain.data.PhoneValidationDataModel
+import com.tokopedia.updateinactivephone.domain.usecase.ImageUploadUseCase
+import com.tokopedia.updateinactivephone.domain.usecase.PhoneValidationUseCase
+import com.tokopedia.updateinactivephone.domain.usecase.SubmitDataUseCase
+import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneDataUploadViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -172,7 +171,7 @@ class InactivePhoneDataUploadViewModelTest {
             firstArg<(InactivePhoneSubmitDataModel) -> Unit>().invoke(mockResponse)
         }
 
-        viewmodel.submitForm("email", "newPhone", 1, "idCardObj", "selfieObj")
+        viewmodel.submitForm("email", phoneNumber, phoneNumber, 1, "idCardObj", "selfieObj")
 
         verify {
             observerSubmitData.onChanged(any())
@@ -192,7 +191,7 @@ class InactivePhoneDataUploadViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewmodel.submitForm("email", "newPhone", 1, "idCardObj", "selfieObj")
+        viewmodel.submitForm("email", phoneNumber, phoneNumber, 1, "idCardObj", "selfieObj")
 
         verify {
             observerSubmitData.onChanged(any())

@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"/>
       
-      <com.tokopedia.updateinactivephone.revamp.common.ThumbnailFileView
+      <com.tokopedia.updateinactivephone.common.ThumbnailFileView
         android:id="@+id/imgIdCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
       
-      <com.tokopedia.updateinactivephone.revamp.common.ThumbnailFileView
+      <com.tokopedia.updateinactivephone.common.ThumbnailFileView
         android:id="@+id/imgSelfie"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
       
-      <com.tokopedia.updateinactivephone.revamp.common.ThumbnailFileView
+      <com.tokopedia.updateinactivephone.common.ThumbnailFileView
         android:id="@+id/imgSavingBook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
       
-      <com.tokopedia.updateinactivephone.revamp.common.PhoneNumberView
+      <com.tokopedia.updateinactivephone.common.PhoneNumberView
         android:id="@+id/textPhoneNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

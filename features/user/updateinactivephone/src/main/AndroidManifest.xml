@@ -10,27 +10,8 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
-
-        <activity
-            android:name="com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneActivity"
-            android:label="Masuk"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-
-        <activity
-            android:name="com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity"
-            android:label="Masuk"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan">
-        </activity>
-
-        <activity
-            android:name="com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneRequestSubmittedActivity"
-            android:label="Masuk"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
-  
-        <activity android:name=".revamp.view.activity.InactivePhoneOnboardingActivity"
+      
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneActivity"
           android:label="Inactive Phone"
           android:theme="@style/Theme.White"
           android:screenOrientation="portrait"
@@ -47,15 +28,15 @@
   
           </intent-filter>
         </activity>
-        <activity android:name=".revamp.view.activity.InactivePhoneImagePickerActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneImagePickerActivity"
           android:screenOrientation="portrait"/>
-        <activity android:name=".revamp.view.activity.InactivePhoneAccountListActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneAccountListActivity"
           android:screenOrientation="portrait"/>
-        <activity android:name=".revamp.view.activity.InactivePhoneDataUploadActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneDataUploadActivity"
           android:windowSoftInputMode="adjustResize"
           android:screenOrientation="portrait"
           android:theme="@style/Theme.White"/>
-        <activity android:name=".revamp.view.activity.InactivePhoneSuccessPageActivity"
+        <activity android:name="com.tokopedia.updateinactivephone.view.activity.InactivePhoneSuccessPageActivity"
           android:screenOrientation="portrait"
           android:theme="@style/Theme.White"/>
     </application>

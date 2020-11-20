@@ -2,9 +2,9 @@ package com.tokopedia.updateinactivephone.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.updateinactivephone.revamp.domain.data.AccountListDataModel
-import com.tokopedia.updateinactivephone.revamp.domain.usecase.GetAccountListUseCase
-import com.tokopedia.updateinactivephone.revamp.view.viewmodel.InactivePhoneAccountListViewModel
+import com.tokopedia.updateinactivephone.domain.data.AccountListDataModel
+import com.tokopedia.updateinactivephone.domain.usecase.GetAccountListUseCase
+import com.tokopedia.updateinactivephone.view.viewmodel.InactivePhoneAccountListViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
