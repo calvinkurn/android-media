@@ -2,11 +2,9 @@ package com.tokopedia.sellerorder.filter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -19,9 +17,9 @@ import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterCheckbo
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomSubFilterRadioButtonAdapter
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomSubFilterListWrapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import kotlinx.android.synthetic.main.activity_som_sub_filter.*
-import kotlinx.android.synthetic.main.item_widget_filter_date.view.*
 
 class SomSubFilterActivity : BaseSimpleActivity(),
         SomSubFilterCheckboxAdapter.SomSubCheckboxFilterListener, SomSubFilterRadioButtonAdapter.SomSubRadioButtonFilterListener {
@@ -112,9 +110,9 @@ class SomSubFilterActivity : BaseSimpleActivity(),
             val intent = Intent()
             intent.putExtra(KEY_FILTER_DATE, filterDate)
             intent.putExtra(KEY_ID_FILTER, idFilter)
-            intent.putParcelableArrayListExtra(KEY_SOM_LIST_FILTER_CHIPS, somSubFilterList?.let { it1 -> ArrayList(it1) })
             intent.putExtra(KEY_CACHE_MANAGER_ID, cacheManagerId)
             cacheManager.put(KEY_SOM_ORDER_PARAM_CACHE, somListGetOrderListParam)
+            cacheManager.put(KEY_SOM_LIST_FILTER_CHIPS, somSubFilterList?.let { it1 -> SomSubFilterListWrapper(it1) })
             setResult(SomFilterBottomSheet.RESULT_CODE_FILTER_SEE_ALL, intent)
             this.finish()
         }

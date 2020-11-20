@@ -58,8 +58,8 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
                 cb_filter.isChecked = data.isChecked
 
                 subChildFilterList.filter { it.isChecked }.forEach {
-                    val id = it.childId.firstOrNull() ?: 0
-                    idList.add(id)
+                    val id = it.childId.firstOrNull()
+                    if(id != null) idList.add(id)
                 }
 
                 cb_filter.setOnCheckedChangeListener { _, isChecked ->
@@ -73,8 +73,13 @@ class SomSubFilterChildCheckBoxAdapter(private val somSubChildFilterListener: So
         }
 
         private fun checkBoxClicked(isChecked: Boolean) {
-            val id = subChildFilterList[adapterPosition].childId.firstOrNull() ?: 0
-            if (isChecked) idList.add(id) else idList.remove(id)
+            val id = subChildFilterList[adapterPosition].childId.firstOrNull()
+            if(id != null) {
+                if (isChecked)
+                    idList.add(id)
+                else
+                    idList.remove(id)
+            }
             updateCheckboxFilter(isChecked, adapterPosition)
             somSubChildFilterListener.onCheckboxChildItemClicked(idList.toList(), adapterPosition,
                     keyFilter, subChildFilterList)

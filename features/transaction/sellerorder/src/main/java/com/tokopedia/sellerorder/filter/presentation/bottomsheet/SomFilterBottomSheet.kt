@@ -35,10 +35,7 @@ import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivi
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.*
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -47,7 +44,6 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SomFilterBottomSheet : BottomSheetUnify(),
@@ -56,9 +52,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
 
     @Inject
     lateinit var somFilterViewModel: SomFilterViewModel
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     private var rvSomFilter: RecyclerView? = null
     private var btnShowOrder: UnifyButton? = null
@@ -179,14 +172,10 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             REQUEST_CODE_FILTER_SEE_ALL -> {
                 if (resultCode == RESULT_CODE_FILTER_SEE_ALL) {
                     this.somListOrderParam = cacheManager?.get(KEY_SOM_ORDER_PARAM_CACHE, SomListGetOrderListParam::class.java)
-                    somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
-                            ?: SomListGetOrderListParam())
+                    somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
-                            ?: ""
-                    val somSubFilterList =
-                            data?.getParcelableArrayListExtra<SomFilterChipsUiModel>(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS)?.toList()
-                                    ?: listOf()
-                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList)
+                    val somSubFilterList: SomSubFilterListWrapper? = cacheManager?.get(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
+                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList?.somSubFilterList ?: listOf())
                 }
             }
         }
@@ -284,7 +273,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         btnShowOrder?.setOnClickListener {
             isApplyFilter = true
             SomAnalytics.eventClickTerapkanOnFilterPage(getFilterTextReset())
-            somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
             val copySomFilterUiModel = somFilterViewModel.getSomFilterUiModel()
             somListOrderParam?.let {
                 somFilterFinishListener?.onClickShowOrderFilter(it, copySomFilterUiModel, FILTER_STATUS_ORDER, filterDate, somFilterViewModel.isRequestCancelFilterApplied())

@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.datepicker.DatePickerUnify
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
@@ -105,7 +106,10 @@ import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetC
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectReasonsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetStockEmptyAdapter
+import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailLogisticInfoFragment.Companion.KEY_ID_CACHE_MANAGER_INFO_ALL
+import com.tokopedia.sellerorder.detail.presentation.model.LogisticInfoAllWrapper
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
+import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.list.presentation.navigator.SomListNavigator.goToTrackingPage
 import com.tokopedia.sellerorder.requestpickup.data.model.SomProcessReqPickup
 import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
@@ -1391,7 +1395,10 @@ class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onShowInfoLogisticAll(logisticInfoList: List<SomDetailOrder.Data.GetSomDetail.LogisticInfo.All>) {
         startActivity(Intent(activity, SomDetailLogisticInfoActivity::class.java).apply {
-            putParcelableArrayListExtra(PARAM_LOGISTIC_INFO_ALL, ArrayList(logisticInfoList))
+            val logisticInfo = LogisticInfoAllWrapper(ArrayList(logisticInfoList))
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+            cacheManager?.put(SomDetailLogisticInfoFragment.KEY_SOM_LOGISTIC_INFO_ALL, logisticInfo)
+            putExtra(KEY_ID_CACHE_MANAGER_INFO_ALL, cacheManager?.id)
         })
     }
 
