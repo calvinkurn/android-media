@@ -1184,7 +1184,11 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private boolean isRollanceTestingUsingNavigationRevamp() {
-        String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
-        return rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
+        try{
+            String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
+            return rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
+        }catch (Exception e){
+            return false
+        }
     }
 }
