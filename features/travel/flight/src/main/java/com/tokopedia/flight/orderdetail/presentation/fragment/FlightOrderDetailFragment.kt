@@ -104,9 +104,17 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     checkIfShouldGoToCancellation(it.data)
                 }
                 is Fail -> {
-                    val gson = Gson()
-                    val errorData = gson.fromJson<FlightOrderDetailErrorModel>(it.throwable.message, FlightOrderDetailErrorModel::class.java)
-                    renderErrorView(errorData.title, errorData.message)
+                    var title = ""
+                    var message = ""
+                    try {
+                        val gson = Gson()
+                        val errorData = gson.fromJson<FlightOrderDetailErrorModel>(it.throwable.message, FlightOrderDetailErrorModel::class.java)
+                        title = errorData.title
+                        message = errorData.message
+                    } catch (t: Throwable) {
+                        message = it.throwable.message ?: ""
+                    }
+                    renderErrorView(title, message)
                 }
             }
         })
