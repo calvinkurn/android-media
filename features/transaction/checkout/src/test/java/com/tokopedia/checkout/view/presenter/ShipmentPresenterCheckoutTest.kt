@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.CartItemModel
@@ -19,6 +20,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
+import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
@@ -300,4 +302,73 @@ class ShipmentPresenterCheckoutTest {
         assert(checkoutRequest.promos.isNotEmpty())
         assert(checkoutRequest.promoCodes.isNotEmpty())
     }
+
+    @Test
+    fun `WHEN generate checkout request with insurance THEN request should contains insurance flag true`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, true, 0, "")
+
+        // Then
+        assert(checkoutRequest.hasMacroInsurance)
+    }
+
+    @Test
+    fun `WHEN generate checkout request with donation THEN request should contains donation flag true`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 1, "")
+
+        // Then
+        assert(checkoutRequest.isDonation == 1)
+    }
+
+    @Test
+    fun `WHEN generate checkout request with egold THEN request should contains egold data`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        val egoldAmount = 10000L
+        presenter.egoldAttributeModel = EgoldAttributeModel().apply {
+            isChecked = true
+            isEligible = true
+            buyEgoldValue = egoldAmount
+        }
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+
+        // Then
+        assert(checkoutRequest.egoldData.isEgold)
+        assert(checkoutRequest.egoldData.egoldAmount == egoldAmount)
+    }
+
+    @Test
+    fun `WHEN generate checkout request with corner address THEN request should contains corner address data`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        val tmpUserCornerId = "123"
+        val tmpCornerId = "456"
+        presenter.recipientAddressModel = RecipientAddressModel().apply {
+            isCornerAddress = true
+            userCornerId = tmpUserCornerId
+            cornerId = tmpCornerId
+        }
+
+        // When
+        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+
+        // Then
+        assert(checkoutRequest.cornerData.isTokopediaCorner)
+        assert(checkoutRequest.cornerData.cornerId == tmpCornerId.toInt())
+        assert(checkoutRequest.cornerData.userCornerId == tmpUserCornerId)
+    }
+
 }
