@@ -53,6 +53,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             } else {
                 countDownView.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             }
+            countDownView?.timerTextWidth=TimerUnifySingle.TEXT_WRAP
             if (!countDownInfo?.label.isNullOrEmpty()) {
                 (timerMessage as TextView).text = countDownInfo?.label
             } else {
