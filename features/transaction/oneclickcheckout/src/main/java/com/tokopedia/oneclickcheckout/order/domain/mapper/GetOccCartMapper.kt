@@ -39,7 +39,8 @@ class GetOccCartMapper @Inject constructor() {
                 mapProfile(data.profileResponse),
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
-                mapPrompt(data.prompt))
+                mapPrompt(data.prompt),
+                OccRevampData(true, 1, "testing"))
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {

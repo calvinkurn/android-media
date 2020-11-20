@@ -76,7 +76,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private var hasSentViewOspEe = false
 
-    var isNewFlow = false
+    var revampData: OccRevampData = OccRevampData()
+    val isNewFlow
+        get() = revampData.isEnable
 
     fun getCurrentProfileId(): Int {
         return _orderPreference.preference.profileId
@@ -101,6 +103,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         launch(executorDispatchers.main) {
             globalEvent.value = OccGlobalEvent.Normal
             val result = cartProcessor.getOccCart(source)
+            revampData = result.revampData
             orderCart = result.orderCart
             _orderPreference = result.orderPreference
             orderPreference.value = if (result.throwable == null) OccState.FirstLoad(_orderPreference) else OccState.Failed(Failure(result.throwable))

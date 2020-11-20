@@ -288,7 +288,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 it.data.preference.payment.gatewayCode.isNotEmpty()) {
                             showPreferenceCard()
                             orderPreferenceCard.setPreference(it.data)
-                            newOrderPreferenceCard.setPreference(it.data)
+                            newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
                         } else {
                             showEmptyPreferenceCard()
                         }
@@ -311,7 +311,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                     it.data.preference.payment.gatewayCode.isNotEmpty()) {
                                 showPreferenceCard()
                                 orderPreferenceCard.setPreference(it.data)
-                                newOrderPreferenceCard.setPreference(it.data)
+                                newOrderPreferenceCard.setPreference(it.data, viewModel.revampData)
                             } else {
                                 showEmptyPreferenceCard()
                             }
@@ -777,6 +777,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onChangePreferenceClicked() {
             orderSummaryAnalytics.eventChangesProfile()
             showPreferenceListBottomSheet()
+        }
+
+        override fun onAddPreferenceClicked(preference: OrderPreference) {
+            val preferenceIndex = "${getString(R.string.preference_number_summary)} 2"
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
+                putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
+                putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, true)
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, preferenceIndex)
+                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
+                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
+            }
+            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
 
         override fun onAddAddress(token: Token?) {

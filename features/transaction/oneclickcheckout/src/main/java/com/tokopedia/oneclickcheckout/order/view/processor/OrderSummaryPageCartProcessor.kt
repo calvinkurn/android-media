@@ -58,7 +58,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPayment = orderData.payment,
                         orderPromo = orderData.promo.copy(state = OccButtonState.NORMAL),
                         globalEvent = if (orderData.prompt.shouldShowPrompt()) OccGlobalEvent.Prompt(orderData.prompt) else null,
-                        throwable = null
+                        throwable = null,
+                        revampData = orderData.revampData
                 )
             } catch (t: Throwable) {
                 Timber.d(t)
@@ -68,7 +69,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                         orderPayment = OrderPayment(),
                         orderPromo = OrderPromo(),
                         globalEvent = null,
-                        throwable = t
+                        throwable = t,
+                        revampData = OccRevampData()
                 )
             }
         }
@@ -198,5 +200,6 @@ class ResultGetOccCart(
         var orderPayment: OrderPayment,
         var orderPromo: OrderPromo,
         var globalEvent: OccGlobalEvent?,
-        var throwable: Throwable?
+        var throwable: Throwable?,
+        var revampData: OccRevampData
 )

@@ -2,11 +2,12 @@ package com.tokopedia.oneclickcheckout.order.view.card
 
 import android.graphics.Typeface.BOLD
 import android.text.SpannableString
-import android.text.TextPaint
-import android.text.style.*
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StrikethroughSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -33,7 +34,6 @@ import com.tokopedia.oneclickcheckout.order.view.bottomsheet.InstallmentDetailBo
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifycomponents.CardUnify
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
@@ -76,9 +76,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
 
-    fun setPreference(preference: OrderPreference) {
+    fun setPreference(preference: OrderPreference, revampData: OccRevampData) {
         this.preference = preference
-        showPreference()
+        showPreference(revampData)
     }
 
     fun setShipment(shipment: OrderShipment?) {
@@ -95,33 +95,30 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    private fun showPreference() {
-        showHeader()
+    private fun showPreference(revampData: OccRevampData) {
+        showHeader(revampData)
 
         showAddress()
 
         showShipping()
 
         showPayment()
-
-        tvChoosePreference?.setOnClickListener {
-            listener.onChangePreferenceClicked()
-        }
     }
 
-    private fun showHeader() {
-        if (preference.profileRecommendation.isNullOrEmpty()) {
-            tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
-            if (preference.preference.status == 2) {
-                lblDefaultPreference?.visible()
-            } else {
-                lblDefaultPreference?.gone()
-            }
-            tvChoosePreference?.text = view.context.getString(R.string.label_choose_other_preference)
+    private fun showHeader(revampData: OccRevampData) {
+        tvCardHeader?.text = view.context.getString(R.string.lbl_new_occ_profile_name)
+        if (preference.preference.status == 2) {
+            lblDefaultPreference?.visible()
         } else {
-            tvCardHeader?.text = preference.profileRecommendation
             lblDefaultPreference?.gone()
-            tvChoosePreference?.text = view.context.getString(R.string.label_create_other_preference)
+        }
+        tvChoosePreference?.text = revampData.changeTemplateText
+        tvChoosePreference?.setOnClickListener {
+            if (revampData.totalProfile > 1) {
+                listener.onChangePreferenceClicked()
+            } else {
+                listener.onAddPreferenceClicked(preference)
+            }
         }
     }
 
@@ -520,6 +517,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     interface OrderPreferenceCardListener {
 
         fun onChangePreferenceClicked()
+
+        fun onAddPreferenceClicked(preference: OrderPreference)
 
         fun onAddAddress(token: Token?)
 
