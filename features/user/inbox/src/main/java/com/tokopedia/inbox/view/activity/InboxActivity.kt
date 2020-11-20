@@ -69,6 +69,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setupInitialPage()
     }
 
+    override fun clearNotificationCounter() {
+        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
+    }
+
     private fun setupInjector() {
         DaggerInboxComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
