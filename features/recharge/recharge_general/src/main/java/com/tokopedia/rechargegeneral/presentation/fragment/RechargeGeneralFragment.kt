@@ -698,7 +698,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.getUnifyTabLayout().addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
                         product_view_pager.setCurrentItem(tab.position, true)
-                        if (listProductTab[tab.position].title == getString(R.string.promo_tab_title)) {
+                        val promoListIndex = listProductTab.indexOfFirst { it.title == getString(R.string.promo_tab_title) }
+                        if (tab.position == promoListIndex) {
                             rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
                         }
                     }
