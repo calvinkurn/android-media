@@ -182,7 +182,7 @@ class GetOccCartMapper @Inject constructor() {
         val payment = data.profileResponse.payment
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
-                mapPaymentCreditCard(payment.creditCard, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
+                mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
     }
 
@@ -192,10 +192,11 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapPaymentCreditCard(creditCard: PaymentCreditCard, data: GetOccCartData?): OrderPaymentCreditCard {
+    private fun mapPaymentCreditCard(payment: Payment, data: GetOccCartData): OrderPaymentCreditCard {
+        val creditCard = payment.creditCard
         val availableTerms = mapPaymentInstallmentTerm(creditCard.availableTerms)
         return OrderPaymentCreditCard(mapPaymentCreditCardNumber(creditCard.numberOfCards), availableTerms, creditCard.bankCode, creditCard.cardType,
-                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data))
+                creditCard.isExpired, creditCard.tncInfo, availableTerms.firstOrNull { it.isSelected }, mapPaymentCreditCardAdditionalData(data), payment.gatewayCode == OrderPaymentCreditCard.DEBIT_GATEWAY_CODE)
     }
 
     private fun mapPaymentCreditCardNumber(numberOfCards: PaymentCreditCardsNumber): OrderPaymentCreditCardsNumber {
@@ -203,10 +204,7 @@ class GetOccCartMapper @Inject constructor() {
                 numberOfCards.totalCards)
     }
 
-    private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData?): OrderPaymentCreditCardAdditionalData {
-        if (data == null) {
-            return OrderPaymentCreditCardAdditionalData()
-        }
+    private fun mapPaymentCreditCardAdditionalData(data: GetOccCartData): OrderPaymentCreditCardAdditionalData {
         return OrderPaymentCreditCardAdditionalData(data.customerData.id, data.customerData.name, data.customerData.email, data.customerData.msisdn,
                 data.paymentAdditionalData.merchantCode, data.paymentAdditionalData.profileCode, data.paymentAdditionalData.signature,
                 data.paymentAdditionalData.changeCcLink, data.paymentAdditionalData.callbackUrl)

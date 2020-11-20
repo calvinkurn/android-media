@@ -1,12 +1,9 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -24,7 +21,6 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
@@ -32,13 +28,12 @@ import com.tokopedia.logisticaddaddress.di.ActivityContext;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper;
 import com.tokopedia.logisticaddaddress.utils.LocationCache;
-import com.tokopedia.logisticdata.data.constant.LogisticConstant;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill;
-import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill;
+import com.tokopedia.logisticCommon.data.utils.GeoLocationUtils;
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 
