@@ -162,7 +162,7 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
         } else {
             navToolbar.visibility = View.VISIBLE
             oldToolbar.visibility = View.GONE
-            navToolbar.setOnBackButtonClickListener(::handleBackPress)
+            navToolbar.setOnBackButtonClickListener(backButtonClickListener = ::handleBackPress)
         }
     }
 

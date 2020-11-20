@@ -6,7 +6,6 @@ import android.view.View.VISIBLE
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.Ease
@@ -16,14 +15,14 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import kotlinx.android.synthetic.main.nav_main_toolbar.view.*
 import kotlinx.coroutines.*
-import java.net.URLEncoder
 import kotlin.coroutines.CoroutineContext
 
 class NavSearchbarController(val view: View,
                              val applink: String = "",
                              val searchbarClickCallback: ((hint: String)-> Unit)?,
                              val searchbarImpressionCallback: ((hint: String)-> Unit)?,
-                             val topNavComponentListener: TopNavComponentListener
+                             val topNavComponentListener: TopNavComponentListener,
+                             val disableDefaultGtmTracker: Boolean = false
 ) : CoroutineScope {
     init {
         view.layout_search.visibility = VISIBLE
@@ -56,12 +55,14 @@ class NavSearchbarController(val view: View,
     private fun setHintSingle(hint: HintData) {
         etSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         etSearch.setOnClickListener {
-            NavToolbarTracking.clickNavToolbarComponent(
-                    pageName = topNavComponentListener.getPageName(),
-                    componentName = IconList.NAME_SEARCH_BAR,
-                    userId = topNavComponentListener.getUserId(),
-                    keyword = hint.keyword
-            )
+            if (!disableDefaultGtmTracker) {
+                NavToolbarTracking.clickNavToolbarComponent(
+                        pageName = topNavComponentListener.getPageName(),
+                        componentName = IconList.NAME_SEARCH_BAR,
+                        userId = topNavComponentListener.getUserId(),
+                        keyword = hint.keyword
+                )
+            }
             if (searchbarClickCallback == null) {
                 onClickHint()
             } else {
@@ -106,11 +107,13 @@ class NavSearchbarController(val view: View,
                 })
                 etSearch.startAnimation(slideOutUp)
                 etSearch.setOnClickListener {
-                    NavToolbarTracking.clickNavToolbarComponent(
-                            pageName = topNavComponentListener.getPageName(),
-                            componentName = IconList.NAME_SEARCH_BAR,
-                            userId = topNavComponentListener.getUserId()
-                    )
+                    if (!disableDefaultGtmTracker) {
+                        NavToolbarTracking.clickNavToolbarComponent(
+                                pageName = topNavComponentListener.getPageName(),
+                                componentName = IconList.NAME_SEARCH_BAR,
+                                userId = topNavComponentListener.getUserId()
+                        )
+                    }
                     if (searchbarClickCallback == null) {
                         onClickHint()
                     } else {

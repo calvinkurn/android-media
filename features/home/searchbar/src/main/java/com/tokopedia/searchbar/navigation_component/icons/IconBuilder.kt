@@ -10,7 +10,7 @@ class IconBuilder(val builderFlags: IconBuilderFlag = IconBuilderFlag()) {
     }
 
     //image icon
-    fun addIcon(iconId: Int, disableRouteManager: Boolean = false, onClick: ()->Unit, disableDefaultGtmTracker: Boolean = false): IconBuilder {
+    fun addIcon(iconId: Int, disableRouteManager: Boolean = false, disableDefaultGtmTracker: Boolean = false, onClick: ()->Unit): IconBuilder {
         when(iconId) {
             //image
             IconList.ID_MESSAGE -> listIcon.add(IconList.MessageIcon.get(builderFlags.pageSource, disableRouteManager, disableDefaultGtmTracker, onClick))
