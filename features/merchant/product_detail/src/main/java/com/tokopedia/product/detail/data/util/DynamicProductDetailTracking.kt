@@ -828,12 +828,12 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentOvoTracker(mapEvent, productId, userId)
         }
 
-        fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+        fun eventAddToCartRecommendationClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String) {
             val valueLoginOrNotLogin = if (!isSessionActive)
                 " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
             else ""
             val listValue = ProductTrackingConstant.Tracking.LIST_PRODUCT_AFTER_ATC + pageName + ProductTrackingConstant.Tracking.LIST_RECOMMENDATION + valueLoginOrNotLogin +
-                    product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                    product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
             val actionValuePostfix = if (!isSessionActive)
                 " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
             else

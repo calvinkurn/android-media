@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
 import android.view.View
-import android.widget.AutoCompleteTextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
 import com.tokopedia.hotel.R
@@ -44,13 +43,13 @@ class HotelAutoCompleteTextField @JvmOverloads constructor(context: Context, att
 
     fun setError(message: String) {
         til_hotel_autocomplete.error = message
-        til_hotel_autocomplete.setErrorTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Red_R500)))
+        til_hotel_autocomplete.setErrorTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)))
         til_hotel_autocomplete.isErrorEnabled = true
     }
 
     fun setHelper(message: String) {
         til_hotel_autocomplete.helperText = message
-        til_hotel_autocomplete.setHelperTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_44)))
+        til_hotel_autocomplete.setHelperTextColor(ColorStateList.valueOf(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)))
         til_hotel_autocomplete.isErrorEnabled  = false
     }
 }
