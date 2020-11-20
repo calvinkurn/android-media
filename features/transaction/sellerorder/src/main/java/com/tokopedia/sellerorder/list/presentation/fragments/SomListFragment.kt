@@ -1436,7 +1436,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun Throwable.showErrorToaster() {
-        if (globalErrorSomList.isVisible) {
+        if (!scrollViewErrorState.isVisible) {
             if (this is UnknownHostException || this is SocketTimeoutException) {
                 showNoInternetConnectionToaster()
             } else {
@@ -1573,7 +1573,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     // 3. and there is any new order (we can tell by check get filter result, and we need to scroll through until new order card is showed)
     // only call this method after rendering order list
     private fun reshowNewOrderCoachMark(newOrders: List<SomListOrderUiModel>) {
-        if (!globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 0 &&
+        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 0 &&
                 (tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER) &&
                 somListSortFilterTab?.isFilterApplied() != true && searchBarSomList.searchText.toString().isBlank()) {
             // check whether the user has any new order
@@ -1614,7 +1614,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun reshowStatusFilterCoachMark() {
-        if (!globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 1 && sortFilterSomList.isVisible) {
+        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 1 && sortFilterSomList.isVisible) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1624,7 +1624,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun reshowWaitingPaymentOrderListCoachMark() {
         val waitingPaymentOrderListCountResult = viewModel.waitingPaymentCounterResult.value
-        if (!globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
+        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1633,7 +1633,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun reshowBulkAcceptOrderCoachMark() {
-        if (!globalErrorSomList.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 3 && tvSomListBulk.isVisible) {
+        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 3 && tvSomListBulk.isVisible) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1655,14 +1655,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun animateBulkAcceptOrderButtonEnter() {
         if (bulkAcceptButtonLeaveAnimation?.isRunning == true) bulkAcceptButtonLeaveAnimation?.cancel()
-        if (bulkAcceptButtonEnterAnimation?.isRunning == true || containerBtnBulkAction?.isVisible == true) return
         containerBtnBulkAction?.visible()
         bulkAcceptButtonEnterAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.translationY.orZero(), 0f)
     }
 
     private fun animateBulkAcceptOrderButtonLeave() {
         if (bulkAcceptButtonEnterAnimation?.isRunning == true) bulkAcceptButtonEnterAnimation?.cancel()
-        if (bulkAcceptButtonLeaveAnimation?.isRunning == true || containerBtnBulkAction?.isVisible != true) return
         bulkAcceptButtonLeaveAnimation = containerBtnBulkAction?.animateSlide(containerBtnBulkAction?.translationY.orZero(),
                 containerBtnBulkAction?.height?.toFloat() ?: 0f)
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
