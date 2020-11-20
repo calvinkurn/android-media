@@ -1595,11 +1595,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val visorInstance = VisorFingerprintInstance()
         visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
-                tokenStatus.text = "visor init success : " + token
+                runOnUiThread(object : java.lang.Runnable {
+                    open fun run(): kotlin.Unit {
+                        tokenStatus.text = "visor init success : " + token
+                    }
+                })
             }
 
             override fun onFailedInitToken(error: String) {
-                tokenStatus.text = "visor init failed : " + error
+                runOnUiThread(object : java.lang.Runnable {
+                    open fun run(): kotlin.Unit {
+                        tokenStatus.text = "visor init failed : " + error
+                    }
+                })
             }
         })
     }
