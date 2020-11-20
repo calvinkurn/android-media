@@ -3,7 +3,6 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.review.common.util.DataEndlessScrollListener
-import com.tokopedia.review.feature.reviewdetail.view.adapter.diffutil.SellerReviewDetailDiffUtil
 import com.tokopedia.review.feature.reviewdetail.view.model.*
 
 class SellerReviewDetailAdapter(
