@@ -5,16 +5,18 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.tokopedia.common.travel.R
 import com.tokopedia.design.text.Chips
+import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
  * @author by jessica on 18/04/19
  */
 
 class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
-                  val onResetChipListener: ResetChipListener,
-                  @ColorRes val selectedColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_G300)
+                        private val onResetChipListener: ResetChipListener,
+                        @ColorRes val selectedColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_G300)
     : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
@@ -28,19 +30,21 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
-            chips.text = list.get(position)
+            chips.chipSize = ChipsUnify.SIZE_MEDIUM
+
+            chips.chipText = list[position]
             if (initialPositionSelected != null && position == initialPositionSelected) selectChip()
-            else chips.isSelected = false
+            else chips.chipType = ChipsUnify.TYPE_NORMAL
 
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
                 if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected
                 else if (!chips.isSelected) chips.isSelected = true
                 if (selectedColor > 0) {
-                    if (chips.isSelected) setTextColor(selectedColor)
-                    else setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+                    if (chips.isSelected) chips.chipType = ChipsUnify.TYPE_SELECTED
+                    else chips.chipType = ChipsUnify.TYPE_NORMAL
                 }
-                listener.onChipClickListener(chips.text.toString(), chips.isSelected)
+                listener.onChipClickListener(chips.chipText.toString(), chips.isSelected)
             }
         }
     }
@@ -51,15 +55,10 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
     }
 
     inner class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-        val chips: Chips = view.findViewById(R.id.chips)
-
-        fun setTextColor(txtColor: Int) {
-            chips.setTextColor(view.getResources().getColor(txtColor))
-        }
+        val chips: ChipsUnify = view.findViewById(R.id.chips)
 
         fun selectChip() {
-            chips.isSelected = true
-            this.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_G300)
+            chips.chipType = ChipsUnify.TYPE_SELECTED
         }
     }
 

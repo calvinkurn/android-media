@@ -116,8 +116,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
 
         til_contact_email.textFieldInput.setText(contactData.email)
 
-        til_contact_phone_number.editText.setText(contactData.phone)
-        til_contact_phone_number.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_phone_number.textFieldInput.setText(contactData.phone)
 
         val initialPhoneCode = getString(R.string.phone_code_format, contactData.phoneCode)
         if (contactData.phoneCode != 0) spinnerData += initialPhoneCode
@@ -152,7 +151,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
             selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
 
             til_contact_email.textFieldInput.setText(contact.email)
-            til_contact_phone_number.editText.setText(contact.phoneNumber)
+            til_contact_phone_number.textFieldInput.setText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
@@ -166,7 +165,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         if (validateData()) {
             contactData.name = til_contact_name.editText.text.toString()
             contactData.email = til_contact_email.textFieldInput.text.toString()
-            contactData.phone = til_contact_phone_number.editText.text.toString()
+            contactData.phone = til_contact_phone_number.textFieldInput.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
             contactViewModel.updateContactList(GraphqlHelper.loadRawString(resources, R.raw.query_upsert_travel_contact_list),
@@ -197,8 +196,9 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
             til_contact_email.setMessage(getString(R.string.travel_contact_data_email_error))
             isValid = false
         }
-        if (til_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
-            til_contact_phone_number.error = getString(R.string.travel_contact_data_phone_number_error)
+        if (til_contact_phone_number.textFieldInput.text.length < MIN_PHONE_NUMBER_DIGIT) {
+            til_contact_phone_number.setError(true)
+            til_contact_phone_number.setMessage(getString(R.string.travel_contact_data_phone_number_error))
             isValid = false
         }
         return isValid
@@ -213,7 +213,8 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         til_contact_email.setError(false)
 
         til_contact_name.error = ""
-        til_contact_phone_number.error = ""
+        til_contact_phone_number.setMessage("")
+        til_contact_email.setError(false)
     }
 
     private fun isValidEmail(contactEmail: String): Boolean {
