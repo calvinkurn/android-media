@@ -1461,6 +1461,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             idFilter: String, filterDate: String, isRequestCancelFilterApplied: Boolean) {
         this.filterDate = filterDate
         this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
+        this.shouldScrollToTop = true
         viewModel.updateGetOrderListParams(filterData)
         somListSortFilterTab?.updateSomListFilterUi(somFilterUiModelList)
         somListSortFilterTab?.updateCounterSortFilter(filterDate)
