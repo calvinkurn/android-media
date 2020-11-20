@@ -102,7 +102,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.travelDestinationCityModel.observe(this, Observer {
+        destinationViewModel.travelDestinationCityModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     cityId = it.data.cityId
@@ -119,14 +119,14 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             }
         })
 
-        destinationViewModel.travelDestinationItemList.observe(this, Observer {
+        destinationViewModel.travelDestinationItemList.observe(viewLifecycleOwner, Observer {
             clearAllData()
             it?.run {
                 if (it.isEmpty()) showNetworkErrorLayout()
                 else renderList(this) }
         })
 
-        destinationViewModel.isAllError.observe(this, Observer {
+        destinationViewModel.isAllError.observe(viewLifecycleOwner, Observer {
             it?.let { isAllError ->
                 if (isAllError) showNetworkErrorLayout()
             }

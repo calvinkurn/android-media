@@ -1,7 +1,6 @@
 package com.tokopedia.imagepreviewslider.presentation.view
 
 import android.content.Context
-import android.graphics.Color
 import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,6 +50,7 @@ class ImagePreviewViewer {
         overlayView = ImageOverlayView(context).apply {
 
             val overlayBackButton = btn_arrow_back
+            overlayBackButton.setBackgroundResource(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
             overlayBackButton.setOnClickListener {
                 viewer.close()
             }
