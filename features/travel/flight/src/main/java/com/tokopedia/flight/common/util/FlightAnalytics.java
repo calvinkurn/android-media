@@ -404,6 +404,40 @@ public class FlightAnalytics {
         );
     }
 
+    public void eventProductViewV2EnchanceEcommerce(FlightSearchPassDataModel searchPassDataViewModel,
+                                                    List<FlightJourneyModel> listJourneyViewModel,
+                                                    String screenName,
+                                                    String userId) {
+
+        List<Object> products = new ArrayList<>();
+        int position = 0;
+        for (FlightJourneyModel item : listJourneyViewModel) {
+            position++;
+            products.add(transformSearchProductViewV2(searchPassDataViewModel, item, position));
+        }
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PRODUCT_VIEW_EVENT,
+                        EVENT_CATEGORY, Category.DIGITAL_FLIGHT,
+                        EVENT_ACTION, Action.PRODUCT_VIEW_ACTION_V2,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                (searchPassDataViewModel.getDepartureAirport().getAirportCode() == null || searchPassDataViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
+                                        searchPassDataViewModel.getDepartureAirport().getCityCode() :
+                                        searchPassDataViewModel.getDepartureAirport().getAirportCode(),
+                                (searchPassDataViewModel.getArrivalAirport().getAirportCode() == null || searchPassDataViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
+                                        searchPassDataViewModel.getArrivalAirport().getCityCode() :
+                                        searchPassDataViewModel.getArrivalAirport().getAirportCode()),
+                        ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, DEFAULT_CURRENCY_CODE, IMPRESSIONS, products)
+                )
+        );
+    }
+
     public void eventSearchProductClickFromList(FlightSearchPassDataModel flightSearchPassData,
                                                 FlightJourneyModel viewModel,
                                                 String screenName,
@@ -442,6 +476,68 @@ public class FlightAnalytics {
                                                 String userId) {
         List<Object> products = new ArrayList<>();
         products.add(transformSearchProductClick(flightSearchPassData, viewModel, adapterPosition));
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Action.PRODUCT_CLICK_SEARCH_LIST,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                viewModel.getDepartureAirport(),
+                                viewModel.getArrivalAirport()),
+                        ECOMMERCE, DataLayer.mapOf(
+                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
+                                "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/flight"),
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])))
+                        )
+                )
+        );
+    }
+
+    public void eventSearchProductClickV2FromList(FlightSearchPassDataModel flightSearchPassData,
+                                                  FlightJourneyModel viewModel,
+                                                  String screenName,
+                                                  String userId) {
+        List<Object> products = new ArrayList<>();
+        products.add(transformSearchProductClickV2(flightSearchPassData, viewModel, 0));
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
+                        EVENT_CATEGORY, GENERIC_CATEGORY,
+                        EVENT_ACTION, Action.PRODUCT_CLICK_SEARCH_LIST,
+                        SCREEN_NAME, screenName,
+                        CURRENT_SITE, FLIGHT_CURRENT_SITE,
+                        CLIENT_ID, TrackApp.getInstance().getGTM().getClientIDString(),
+                        BUSSINESS_UNIT, FLIGHT_BU,
+                        CATEGORY, Label.FLIGHT_SMALL,
+                        USER_ID, userId,
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                viewModel.getDepartureAirport(),
+                                viewModel.getArrivalAirport()),
+                        ECOMMERCE, DataLayer.mapOf(
+                                CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
+                                "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/flight"),
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])))
+                        )
+                )
+        );
+
+    }
+
+    public void eventSearchProductClickV2FromList(FlightSearchPassDataModel flightSearchPassData,
+                                                  FlightJourneyModel viewModel,
+                                                  int adapterPosition,
+                                                  String screenName,
+                                                  String userId) {
+        List<Object> products = new ArrayList<>();
+        products.add(transformSearchProductClickV2(flightSearchPassData, viewModel, adapterPosition));
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
@@ -512,6 +608,53 @@ public class FlightAnalytics {
         return product;
     }
 
+    private Object transformSearchProductViewV2(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
+        String isRefundable = "false";
+        for (Route route : journeyViewModel.getRouteList()) {
+            if (route.getRefundable()) {
+                isRefundable = "true";
+                break;
+            }
+        }
+
+        long totalAdultPrice, totalChildPrice, totalInfantPrice;
+        if (journeyViewModel.getFare().getAdultNumericCombo() > 0) {
+            totalAdultPrice = journeyViewModel.getFare().getAdultNumericCombo() * searchPassDataViewModel.getFlightPassengerModel().getAdult();
+            totalChildPrice = journeyViewModel.getFare().getChildNumericCombo() * searchPassDataViewModel.getFlightPassengerModel().getChildren();
+            totalInfantPrice = journeyViewModel.getFare().getInfantNumericCombo() * searchPassDataViewModel.getFlightPassengerModel().getInfant();
+        } else {
+            totalAdultPrice = journeyViewModel.getFare().getAdultNumeric() * searchPassDataViewModel.getFlightPassengerModel().getAdult();
+            totalChildPrice = journeyViewModel.getFare().getChildNumeric() * searchPassDataViewModel.getFlightPassengerModel().getChildren();
+            totalInfantPrice = journeyViewModel.getFare().getInfantNumeric() * searchPassDataViewModel.getFlightPassengerModel().getInfant();
+        }
+
+        Object product = DataLayer.mapOf(
+                EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
+                EnhanceEccomerce.PRICE, totalAdultPrice + totalChildPrice + totalInfantPrice,
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
+                EnhanceEccomerce.DIMENSION69, "",
+                EnhanceEccomerce.DIMENSION70, isRefundable,
+                EnhanceEccomerce.DIMENSION71, journeyViewModel.getTotalTransit() > 0 ? "true" : "false",
+                EnhanceEccomerce.DIMENSION72, journeyViewModel.getBeforeTotal().equals("") ? "normal" : "strike",
+                EnhanceEccomerce.DIMENSION73, searchPassDataViewModel.getFlightPassengerModel().getAdult() + " - " +
+                        searchPassDataViewModel.getFlightPassengerModel().getChildren() + " - " + searchPassDataViewModel.getFlightPassengerModel().getInfant(),
+                EnhanceEccomerce.ID, journeyViewModel.getId(),
+                EnhanceEccomerce.BRAND, journeyViewModel.getRouteList().get(0).getAirlineName(),
+                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getAirline() + " - " + journeyViewModel.getRouteList().get(0).getFlightNumber(),
+                EnhanceEccomerce.CATEGORY, Label.FLIGHT,
+                EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
+                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime() + ((journeyViewModel.getAddDayArrival() > 0) ? String.format(" +%s", journeyViewModel.getAddDayArrival()) : ""),
+                EnhanceEccomerce.DIMENSION107, String.format("%s|%s", journeyViewModel.isSeatDistancing(), journeyViewModel.getHasFreeRapidTest()),
+                EnhanceEccomerce.POSITIONS, position,
+                EnhanceEccomerce.VARIANT, totalAdultPrice + " - " + totalChildPrice + " - " + totalInfantPrice,
+                EnhanceEccomerce.LIST, "/flight"
+        );
+
+        return product;
+    }
+
     private Object transformSearchProductClick(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
         String isRefundable = "false";
         for (Route route : journeyViewModel.getRouteList()) {
@@ -550,6 +693,53 @@ public class FlightAnalytics {
                 EnhanceEccomerce.CATEGORY, Label.FLIGHT,
                 EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
                 EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime() + ((journeyViewModel.getAddDayArrival() > 0) ? String.format(" +%s", journeyViewModel.getAddDayArrival()) : ""),
+                EnhanceEccomerce.POSITIONS, position,
+                EnhanceEccomerce.VARIANT, totalAdultPrice + " - " + totalChildPrice + " - " + totalInfantPrice,
+                EnhanceEccomerce.LIST, "/flight"
+        );
+
+        return product;
+    }
+
+    private Object transformSearchProductClickV2(FlightSearchPassDataModel searchPassDataViewModel, FlightJourneyModel journeyViewModel, int position) {
+        String isRefundable = "false";
+        for (Route route : journeyViewModel.getRouteList()) {
+            if (route.getRefundable()) {
+                isRefundable = "true";
+                break;
+            }
+        }
+
+        long totalAdultPrice, totalChildPrice, totalInfantPrice;
+        if (journeyViewModel.getFare().getAdultNumericCombo() > 0) {
+            totalAdultPrice = journeyViewModel.getFare().getAdultNumericCombo() * searchPassDataViewModel.getFlightPassengerModel().getAdult();
+            totalChildPrice = journeyViewModel.getFare().getChildNumericCombo() * searchPassDataViewModel.getFlightPassengerModel().getChildren();
+            totalInfantPrice = journeyViewModel.getFare().getInfantNumericCombo() * searchPassDataViewModel.getFlightPassengerModel().getInfant();
+        } else {
+            totalAdultPrice = journeyViewModel.getFare().getAdultNumeric() * searchPassDataViewModel.getFlightPassengerModel().getAdult();
+            totalChildPrice = journeyViewModel.getFare().getChildNumeric() * searchPassDataViewModel.getFlightPassengerModel().getChildren();
+            totalInfantPrice = journeyViewModel.getFare().getInfantNumeric() * searchPassDataViewModel.getFlightPassengerModel().getInfant();
+        }
+
+        Object product = DataLayer.mapOf(
+                EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
+                EnhanceEccomerce.PRICE, totalAdultPrice + totalChildPrice + totalInfantPrice,
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
+                EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
+                EnhanceEccomerce.DIMENSION69, "",
+                EnhanceEccomerce.DIMENSION70, isRefundable,
+                EnhanceEccomerce.DIMENSION71, journeyViewModel.getTotalTransit() > 0 ? "true" : "false",
+                EnhanceEccomerce.DIMENSION72, journeyViewModel.getBeforeTotal().equals("") ? "normal" : "strike",
+                EnhanceEccomerce.DIMENSION73, searchPassDataViewModel.getFlightPassengerModel().getAdult() + " - " +
+                        searchPassDataViewModel.getFlightPassengerModel().getChildren() + " - " + searchPassDataViewModel.getFlightPassengerModel().getInfant(),
+                EnhanceEccomerce.ID, journeyViewModel.getId(),
+                EnhanceEccomerce.BRAND, journeyViewModel.getRouteList().get(0).getAirlineName(),
+                EnhanceEccomerce.DIMENSION74, journeyViewModel.getRouteList().get(0).getAirline() + " - " + journeyViewModel.getRouteList().get(0).getFlightNumber(),
+                EnhanceEccomerce.CATEGORY, Label.FLIGHT,
+                EnhanceEccomerce.DIMENSION75, journeyViewModel.getDepartureTime(),
+                EnhanceEccomerce.DIMENSION76, journeyViewModel.getArrivalTime() + ((journeyViewModel.getAddDayArrival() > 0) ? String.format(" +%s", journeyViewModel.getAddDayArrival()) : ""),
+                EnhanceEccomerce.DIMENSION107, String.format("%s|%s", journeyViewModel.isSeatDistancing(), journeyViewModel.getHasFreeRapidTest()),
                 EnhanceEccomerce.POSITIONS, position,
                 EnhanceEccomerce.VARIANT, totalAdultPrice + " - " + totalChildPrice + " - " + totalInfantPrice,
                 EnhanceEccomerce.LIST, "/flight"
@@ -915,6 +1105,7 @@ public class FlightAnalytics {
         static String PRODUCT_CLICK_SEARCH_LIST = "product click";
         static String PRODUCT_CLICK_SEARCH_DETAIL = "click pilih on flight detail";
         static String PRODUCT_VIEW_ACTION = "product impressions";
+        static String PRODUCT_VIEW_ACTION_V2 = "product impressions v2";
         static String WIDGET_CLICK_FILTER = "click widget filter";
         static String CLICK_CHANGE_SEARCH = "click change search";
     }
@@ -965,6 +1156,7 @@ public class FlightAnalytics {
         static String DIMENSION74 = "dimension74";
         static String DIMENSION75 = "dimension75";
         static String DIMENSION76 = "dimension76";
+        static String DIMENSION107 = "dimension107";
 
         static String POSITIONS = "positions";
         static String LIST = "list";

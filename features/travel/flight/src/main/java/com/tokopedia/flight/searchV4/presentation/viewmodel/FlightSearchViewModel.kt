@@ -241,8 +241,14 @@ class FlightSearchViewModel @Inject constructor(
                 flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
                         FlightAnalytics.Screen.SEARCH,
                         if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+                flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
+                        FlightAnalytics.Screen.SEARCH,
+                        if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             } else {
                 flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+                        adapterPosition, FlightAnalytics.Screen.SEARCH,
+                        if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+                flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
                         adapterPosition, FlightAnalytics.Screen.SEARCH,
                         if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
             }
@@ -271,6 +277,9 @@ class FlightSearchViewModel @Inject constructor(
                 journeyList.value?.let { journeyResult ->
                     if (journeyResult is Success) {
                         flightAnalytics.eventProductViewEnchanceEcommerce(flightSearchPassData, journeyResult.data,
+                                FlightAnalytics.Screen.SEARCH,
+                                if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
+                        flightAnalytics.eventProductViewV2EnchanceEcommerce(flightSearchPassData, journeyResult.data,
                                 FlightAnalytics.Screen.SEARCH,
                                 if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
                         isSearchImpressionSent = true
