@@ -65,7 +65,6 @@ import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.performance.PerformanceData;
-import com.tokopedia.navigation.appupdate.FirebaseRemoteAppUpdate;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.customview.BottomMenu;
 import com.tokopedia.navigation.presentation.customview.IBottomClickListener;

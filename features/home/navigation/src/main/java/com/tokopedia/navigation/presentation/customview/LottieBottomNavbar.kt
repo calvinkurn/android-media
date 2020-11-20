@@ -3,7 +3,9 @@ package com.tokopedia.navigation.presentation.customview
 import android.animation.Animator
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Handler
+import android.provider.Settings
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -212,9 +214,15 @@ class LottieBottomNavbar : LinearLayout {
             icon.tag = context.getString(R.string.tag_lottie_animation_view)+bottomMenu.id
             icon.layoutParams = imgLayoutParam
             icon.setPadding(DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING, DEFAULT_ICON_PADDING)
-            bottomMenu.animName?.let {
-                icon.setAnimation(bottomMenu.animName)
-                icon.speed = bottomMenu.animSpeed
+            if (!isDeviceAnimationDisabled()) {
+                bottomMenu.animName?.let {
+                    icon.setAnimation(bottomMenu.animName)
+                    icon.speed = bottomMenu.animSpeed
+                }
+            } else {
+                bottomMenu.imageEnabledName?.let {
+                    icon.setImageResource(it)
+                }
             }
             if (bottomMenu.animName == null) {
                 bottomMenu.imageName?.let {
@@ -350,6 +358,21 @@ class LottieBottomNavbar : LinearLayout {
             return
         }
 
+        //when device animation disabled, only use image resource to prevent stackoverflow error
+        //https://github.com/airbnb/lottie-android/issues/1534
+        if (isDeviceAnimationDisabled()) {
+            val pairSelectedItem = iconList[selectedItem ?: 0]
+            menu[selectedItem ?: 0].imageEnabledName?.let {
+                pairSelectedItem.first.setImageResource(it)
+            }
+
+            val pairNewItem = iconList[newPosition ?: 0]
+            menu[newPosition ?: 0].imageName?.let {
+                pairNewItem.first.setImageResource(it)
+            }
+            return
+        }
+
         if (iconList[selectedItem?:0].second) {
             val pair = iconList[selectedItem?:0]
             pair.first.cancelAnimation()
@@ -416,6 +439,18 @@ class LottieBottomNavbar : LinearLayout {
     fun setNavbarPositionTop() {
         layoutContent()
         invalidate()
+    }
+
+    fun isDeviceAnimationDisabled() = getAnimationScale(context) == 0f
+
+    fun getAnimationScale(context: Context): Float {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            Settings.Global.getFloat(context.contentResolver,
+                    Settings.Global.ANIMATOR_DURATION_SCALE, 1.0f)
+        } else {
+            Settings.System.getFloat(context.contentResolver,
+                    Settings.System.ANIMATOR_DURATION_SCALE, 1.0f)
+        }
     }
 }
 
