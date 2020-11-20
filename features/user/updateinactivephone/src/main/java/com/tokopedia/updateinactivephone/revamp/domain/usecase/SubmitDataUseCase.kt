@@ -23,9 +23,10 @@ class SubmitDataUseCase @Inject constructor(
         }
     }
 
-    fun setParam(email: String, newPhone: String, userIndex: Int, idCardObj: String, selfieObj: String) {
+    fun setParam(email: String, oldPhone: String, newPhone: String, userIndex: Int, idCardObj: String, selfieObj: String) {
         params = mapOf(
                 PARAM_EMAIL to email,
+                PARAM_OLD_PHONE to oldPhone,
                 PARAM_NEW_PHONE to newPhone,
                 PARAM_USER_INDEX to userIndex,
                 PARAM_ID_CARD_IAMEG to idCardObj,
@@ -40,14 +41,15 @@ class SubmitDataUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_EMAIL = "email"
+        private const val PARAM_OLD_PHONE = "oldMsisdn"
         private const val PARAM_NEW_PHONE = "newMsisdn"
         private const val PARAM_USER_INDEX = "index"
         private const val PARAM_ID_CARD_IAMEG = "fileKtp"
         private const val PARAM_SELFIE_IMAGE = "fileSelfie"
 
         private val query = """
-            mutation submitInactivePhoneUser (${'$'}email: String!, ${'$'}newMsisdn: String!, ${'$'}index: Int!, ${'$'}fileKtp: String!, ${'$'}fileSelfie: String!) {
-              submitInactivePhoneUser(email: ${'$'}email, newMsisdn: ${'$'}newMsisdn, index: ${'$'}index, fileKtp: ${'$'}fileKtp, fileSelfie: ${'$'}fileSelfie){
+            mutation submitInactivePhoneUser (${'$'}email: String!, ${'$'}oldMsisdn: String!, ${'$'}newMsisdn: String!, ${'$'}index: Int!, ${'$'}fileKtp: String!, ${'$'}fileSelfie: String!) {
+              submitInactivePhoneUser(email: ${'$'}email, oldMsisdn: ${'$'}oldMsisdn, newMsisdn: ${'$'}newMsisdn, index: ${'$'}index, fileKtp: ${'$'}fileKtp, fileSelfie: ${'$'}fileSelfie){
                 isSuccess
                 errorMessage
               }

@@ -49,7 +49,7 @@ class InactivePhoneDataUploadActivity : BaseSimpleActivity() {
     }
 
     private fun gotoOnboardingPage() {
-        startActivity(InactivePhoneOnboardingActivity.getIntent(this))
+        startActivity(InactivePhoneActivity.getIntent(this))
     }
 
     companion object {

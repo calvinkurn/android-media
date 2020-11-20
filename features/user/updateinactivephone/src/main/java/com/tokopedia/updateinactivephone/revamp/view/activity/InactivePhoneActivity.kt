@@ -2,18 +2,16 @@ package com.tokopedia.updateinactivephone.revamp.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.revamp.common.FragmentTransactionInterface
-import com.tokopedia.updateinactivephone.revamp.common.addFragment
 import com.tokopedia.updateinactivephone.revamp.common.replaceFragment
 import com.tokopedia.updateinactivephone.revamp.view.fragment.InactivePhoneOnboardingFragment
 
-class InactivePhoneOnboardingActivity : BaseSimpleActivity(), FragmentTransactionInterface {
+class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface {
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -49,7 +47,7 @@ class InactivePhoneOnboardingActivity : BaseSimpleActivity(), FragmentTransactio
 
     companion object {
         fun getIntent(context: Context): Intent {
-            return Intent(context, InactivePhoneOnboardingActivity::class.java)
+            return Intent(context, InactivePhoneActivity::class.java)
         }
     }
 }

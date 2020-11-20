@@ -71,6 +71,9 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
             phoneNumber = replaceRegionPhoneCode(it.getString(PARAM_PHONE, ""))
             email = it.getString(PARAM_EMAIL, "")
+
+            if (email.isNotEmpty()) userDataTemp.setEmail(email)
+            if (phoneNumber.isNotEmpty()) userDataTemp.setOldPhone(phoneNumber)
         }
     }
 
@@ -79,13 +82,7 @@ class InactivePhoneOnboardingFragment : BaseDaggerFragment() {
 
         btnNext?.setOnClickListener {
             showLoading()
-            if (email.isNotEmpty() || userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_EMAIL) {
-                userDataTemp.setEmail(email)
-                viewModel.phoneValidation(phoneNumber, email)
-            } else if (phoneNumber.isNotEmpty() || userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_PHONE) {
-                userDataTemp.setOldPhone(phoneNumber)
-                viewModel.phoneValidation(phoneNumber, email)
-            }
+            viewModel.phoneValidation(userDataTemp.getOldPhone(), userDataTemp.getEmail())
         }
     }
 

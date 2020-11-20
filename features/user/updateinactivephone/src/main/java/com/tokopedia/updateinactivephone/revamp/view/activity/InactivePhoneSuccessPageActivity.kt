@@ -10,9 +10,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.revamp.common.UserDataTemporary
 import kotlinx.android.synthetic.main.activity_inactive_phone_succcess_page.*
+import javax.inject.Inject
 
 class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
+
+    lateinit var userDataTemp: UserDataTemporary
 
     override fun getLayoutRes(): Int = R.layout.activity_inactive_phone_succcess_page
 
@@ -35,11 +39,20 @@ class InactivePhoneSuccessPageActivity : BaseSimpleActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        userDataTemp = UserDataTemporary(this)
+
         btnGotoHome?.setOnClickListener {
+            userDataTemp.delete()
             gotoHome()
         }
 
-        textDescription?.text = MethodChecker.fromHtml(getString(R.string.text_success_description_single_account))
+        val desc = if (userDataTemp.getEmail().isEmpty()) {
+            String.format(getString(R.string.text_success_description_has_no_email), userDataTemp.getNewPhone())
+        } else {
+            String.format(getString(R.string.text_success_description_single_account), userDataTemp.getEmail(), userDataTemp.getNewPhone())
+        }
+
+        textDescription?.text = MethodChecker.fromHtml(desc)
     }
 
     override fun onBackPressed() {
