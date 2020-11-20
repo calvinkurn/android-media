@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.adapter.CatalogListCarouselAdapter
@@ -18,7 +19,6 @@ import com.tokopedia.tokopoints.view.adapter.NonCarouselItemDecoration
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
-import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -27,6 +27,7 @@ import java.util.*
 class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeViewModel)
     : RecyclerView.ViewHolder(view) {
     val countDownView = view.findViewById<TimerUnifySingle>(R.id.tp_count_down_view_column)
+    val timerMessage = view.findViewById<View>(R.id.timer_msg)
     val layoutManager: LinearLayoutManager by lazy { LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false) }
     fun bind(content: SectionContent) {
 
@@ -41,6 +42,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
                 countDownView.timer!!.cancel()
             }
             countDownView?.show()
+            timerMessage?.show()
             val countDownInfo = content.layoutCatalogAttr?.countdownInfo
             val timerValue = countDownInfo?.countdownUnix
             val timerStr = countDownInfo?.countdownStr
@@ -51,18 +53,14 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             } else {
                 countDownView.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             }
-            if (countDownInfo?.label.isNullOrEmpty()) {
-                val params = countDownView.layoutParams
-                if (params != null) {
-                    params.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                    countDownView.layoutParams = params
-                }
+            if (!countDownInfo?.label.isNullOrEmpty()) {
+                (timerMessage as TextView).text = countDownInfo?.label
             } else {
-                countDownView.timerText = countDownInfo?.label
+                timerMessage.hide()
             }
             if (content.layoutCatalogAttr?.countdownInfo != null) {
                 if (timerStr != null && timerType != null && timerValue != null)
-                    setTimer(86400, timerStr, timerType)
+                    setTimer(timerValue, timerStr, timerType)
             }
             countDownView?.onFinish = {
                 if (content.layoutCatalogAttr.countdownInfo?.countdownUnix!! > 0) {
@@ -74,6 +72,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             }
             view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_180)
         } else {
+            countDownView?.hide()
             view.findViewById<View>(R.id.text_title_column).layoutParams.width = view.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_280)
         }
         if (!content.cta.isEmpty) {
