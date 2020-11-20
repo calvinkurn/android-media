@@ -67,7 +67,7 @@ ext {
     firebaseAuthVersion = '17.0.0'
     playServiceAds = '17.0.0'
     playServiceFirebaseCore = '16.0.6'
-    playServiceTagManager = '16.0.6'
+    playServiceTagManager = '17.0.0'
     playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '16.0.5'
     playServiceMeasurementApi = '16.0.4'
