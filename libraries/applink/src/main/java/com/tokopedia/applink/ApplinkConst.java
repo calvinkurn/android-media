@@ -268,7 +268,7 @@ public interface ApplinkConst {
     String ADD_NAME_PROFILE = "tokopedia://addname";
     String RESET_PASSWORD = "tokopedia://resetpassword";
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
-    String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone?userId={userId}&phone={phone}&email={email}";
+    String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
     String ADD_FINGERPRINT_ONBOARDING = "tokopedia://add-fingerprint-onboarding";
 
