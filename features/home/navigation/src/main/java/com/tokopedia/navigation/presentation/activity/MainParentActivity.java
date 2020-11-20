@@ -1188,7 +1188,7 @@ public class MainParentActivity extends BaseActivity implements
             String rollanceNavType = RemoteConfigInstance.getInstance().getABTestPlatform().getString(ROLLANCE_EXP_NAME, ROLLANCE_VARIANT_OLD);
             return rollanceNavType.equalsIgnoreCase(ROLLANCE_VARIANT_REVAMP);
         }catch (Exception e){
-            return false
+            return false;
         }
     }
 }
