@@ -1588,23 +1588,25 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     private fun setPOCFingerprint() {
         val visorInstance = VisorFingerprintInstance()
-        visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
-            override fun onSuccessInitToken(token: String) {
-                activity?.let {
-                    it.runOnUiThread(Runnable {
-                        tokenStatus.text = "visor init success : " + token
-                    })
+        context?.let {
+            visorInstance.initToken(it.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
+                override fun onSuccessInitToken(token: String) {
+                    activity?.let {act ->
+                        act.runOnUiThread(Runnable {
+                            tokenStatus.text = "visor init success : " + token
+                        })
+                    }
                 }
-            }
 
-            override fun onFailedInitToken(error: String) {
-                activity?.let {
-                    it.runOnUiThread(Runnable {
-                        tokenStatus.text = "visor init failed : " + error
-                    })
+                override fun onFailedInitToken(error: String) {
+                    activity?.let {act ->
+                        act.runOnUiThread(Runnable {
+                            tokenStatus.text = "visor init failed : " + error
+                        })
+                    }
                 }
-            }
-        })
+            })
+        }
     }
 
     private fun sendTokenToBackend() {

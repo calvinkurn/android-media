@@ -8,7 +8,7 @@ class VisorFingerprintInstance {
 
     lateinit var visorInstance : DVTokenClient
     private var visorToken = ""
-    private var isTokenInit = false
+    private var errorCode = 0
 
 
     private fun getVisorInstance(applicationContext: Context) {
@@ -16,26 +16,27 @@ class VisorFingerprintInstance {
         visorInstance.setDVCustomDomain(VisorObject.Key.APP_DOMAIN)
     }
 
-    fun initToken(applicationContext: Context, customUserDimension: Map<String, String>? = null, listener: onVisorInitListener ) {
+    fun initToken(applicationContext: Context, customUserDimension: Map<String, String>? = null, listener: onVisorInitListener? = null ) {
         if (!this::visorInstance.isInitialized) {
             getVisorInstance(applicationContext)
         }
-        if (!isTokenInit) {
-            visorInstance.initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
-                if (nResultCode == 0) {
-                    isTokenInit = true
-                    visorToken = strToken
-                    listener.onSuccessInitToken(token = strToken)
-                } else {
-                    listener.onFailedInitToken(error = "failed to init visor token code : " + nResultCode)
-                }
+        visorInstance.initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
+            if (nResultCode == 0) {
+                visorToken = strToken
+                listener?.onSuccessInitToken(token = strToken)
+            } else {
+                errorCode = nResultCode
+                listener?.onFailedInitToken(error = "failed to init visor token code : " + nResultCode)
             }
         }
     }
 
     fun getVisorToken(): String {
-        return if(visorToken.isNotEmpty()) visorToken
-        else visorInstance.dvToken
+        return when {
+            visorToken.isNotEmpty() -> visorToken
+            this::visorInstance.isInitialized -> visorInstance.dvToken
+            else -> ""
+        }
     }
 
     interface onVisorInitListener {
