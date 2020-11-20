@@ -28,7 +28,7 @@ abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent
             setDisplayShowTitleEnabled(false)
             setDisplayHomeAsUpEnabled(true)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@BaseOtpActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@BaseOtpActivity, R.color.Unify_N0)))
         }
     }
 
@@ -44,7 +44,7 @@ abstract class BaseOtpActivity : BaseSimpleActivity(), HasComponent<OtpComponent
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.Unify_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

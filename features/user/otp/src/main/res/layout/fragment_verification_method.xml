@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -25,7 +25,7 @@
                 android:layout_marginTop="@dimen/spacing_lvl4"
                 android:gravity="center_horizontal"
                 android:text="@string/choose_verification_method"
-                android:textColor="@color/Neutral_N700"
+                android:textColor="@color/Unify_N700"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,7 @@
                 android:layout_marginEnd="@dimen/spacing_lvl5"
                 android:gravity="center_horizontal"
                 android:text="@string/pick_one_of_these_method_to_get_verification_code"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/title"
@@ -63,7 +63,7 @@
                 android:gravity="center_horizontal"
                 android:padding="@dimen/spacing_lvl5"
                 android:text="@string/my_phone_number_is_inactive"
-                android:textColor="@color/Green_G500"
+                android:textColor="@color/Unify_G500"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/method_list"
                 app:typographyType="body_2"

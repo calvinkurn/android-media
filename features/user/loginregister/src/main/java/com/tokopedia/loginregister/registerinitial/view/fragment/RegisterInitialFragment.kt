@@ -52,6 +52,7 @@ import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -62,6 +63,7 @@ import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegist
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -77,6 +79,7 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -405,8 +408,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             }
         })
         registerInitialViewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                onSuccessReloginAfterSQ()
+            when (it) {
+                is Success -> onSuccessReloginAfterSQ()
+                is Fail -> {
+                    if (it.throwable is AkamaiErrorException) {
+                        showPopupErrorAkamai()
+                    }
+                }
             }
         })
         combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
@@ -444,6 +452,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 is Success -> onSuccessActivateUser(it.data)
                 is Fail -> onFailedActivateUser(it.throwable)
             }
+        })
+        registerInitialViewModel.showPopup.observe(viewLifecycleOwner, Observer {
+            if (it != null) showPopupError(it.header, it.body, it.action)
         })
         registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner, Observer {
             if (it != null) onGoToActivationPage(it)
@@ -543,8 +554,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterFacebook(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            onErrorRegister(errorMessage)
+        }
     }
 
     private fun onSuccessRegisterFacebookPhone(loginTokenPojo: LoginTokenPojo) {
@@ -556,8 +571,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterFacebookPhone(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            onErrorRegister(errorMessage)
+        }
     }
 
     private fun onSuccessRegisterGoogle() {
@@ -566,8 +585,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedRegisterGoogle(throwable: Throwable) {
         logoutGoogleAccountIfExist()
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        onErrorRegister(errorMessage)
+        if (throwable is AkamaiErrorException) {
+            showPopupErrorAkamai()
+        } else {
+            val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+            onErrorRegister(errorMessage)
+        }
     }
 
     private fun onSuccessGetUserInfo(profileInfoData: ProfileInfoData) {
@@ -1331,6 +1354,32 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
+    private fun showPopupError(header: String, body: String, url: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(header)
+            dialog.setDescription(body)
+            dialog.setPrimaryCTAText(getString(R.string.check_full_information))
+            dialog.setSecondaryCTAText(getString(R.string.close_popup))
+            dialog.setPrimaryCTAClickListener {
+                RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.hide()
+            }
+            dialog.show()
+        }
+    }
+
+
+    private fun showPopupErrorAkamai() {
+        showPopupError(
+                getString(R.string.popup_error_title),
+                getString(R.string.popup_error_desc),
+                TokopediaUrl.getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
+        )
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         registerInitialViewModel.getProviderResponse.removeObservers(this)
@@ -1396,7 +1445,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
-
+      
+        private const val TOKOPEDIA_CARE_PATH = "help"
+      
         private const val REGEX_REMOVE_SYMBOL_PHONE = "[+| |-]"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
