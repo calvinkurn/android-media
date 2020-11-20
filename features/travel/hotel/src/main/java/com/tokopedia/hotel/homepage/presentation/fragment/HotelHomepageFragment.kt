@@ -148,7 +148,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hidePromoContainer()
         loadPromoData()
         loadPopularCitiesData()
-        fetchVideoBannerData()
+
         if (hotelHomepageModel.locName.isEmpty()) {
             homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
         }
@@ -201,6 +201,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         })
 
         homepageViewModel.popularCitiesLiveData.observe(viewLifecycleOwner, Observer {
+            fetchVideoBannerData()
             when (it) {
                 is Success -> {
                     renderPopularCities(it.data)
@@ -216,6 +217,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
                 is Success -> renderVideoBanner(it.data)
                 is Fail -> showHotelHomepageVideoBanner(false)
             }
+
         })
 
 

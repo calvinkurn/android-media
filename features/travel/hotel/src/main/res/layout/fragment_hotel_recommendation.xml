@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:fillViewport="true">
 
     <LinearLayout
@@ -25,7 +25,7 @@
                 android:drawablePadding="@dimen/layout_lvl1"
                 android:gravity="center_vertical"
                 android:text="@string/hotel_destination_nearest_location"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:drawableLeftCompat="@drawable/ic_system_action_currentlocation_grayscale_24"
                 app:typographyType="body_2"/>
         </FrameLayout>
@@ -57,7 +57,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_destination_recent_search_title"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="heading_4"
                     />
 
@@ -69,7 +69,7 @@
                     android:layout_alignParentRight="true"
                     android:gravity="end"
                     android:text="@string/hotel_destination_recent_search_delete_all"
-                    android:textColor="@color/Green_G500"
+                    android:textColor="@color/Unify_G500"
                     app:typographyType="body_3"/>
             </RelativeLayout>
 
@@ -99,7 +99,7 @@
                 android:id="@+id/popular_search_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Neutral_N0"
+                android:background="@color/Unify_N0"
                 android:paddingStart="@dimen/layout_lvl2"
                 android:paddingLeft="@dimen/layout_lvl2"
                 android:paddingTop="@dimen/layout_lvl3"
@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/hotel_destination_popular_search_title"
                     app:typographyType="heading_4"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     />
             </RelativeLayout>
 

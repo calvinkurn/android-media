@@ -16,8 +16,10 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
@@ -40,7 +42,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
-import com.tokopedia.buyerorder.unifiedhistory.common.di.UohComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
@@ -106,6 +107,8 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListComponentInstance
+import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohItemAdapter
@@ -318,7 +321,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        arrayFilterDate = resources.getStringArray(R.array.filter_date)
+        activity?.let {
+            arrayFilterDate = it.resources?.getStringArray(R.array.filter_date) as Array<String>
+        }
     }
 
     private fun observingData() {
@@ -736,19 +741,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterDate() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val arrayListMapDate = arrayListOf<HashMap<String, String>>()
         var i = 0
-        arrayFilterDate.forEach { optionDate ->
-            val mapKey = HashMap<String, String>()
-            mapKey["$i"] = optionDate
-            arrayListMap.add(mapKey)
-            i++
+        if (arrayFilterDate.isNotEmpty()) {
+            arrayFilterDate.forEach { optionDate ->
+                val mapKey = HashMap<String, String>()
+                mapKey["$i"] = optionDate
+                arrayListMapDate.add(mapKey)
+                i++
+            }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapDate
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_DATE
         uohBottomSheetOptionAdapter.selectedKey = currFilterDateKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -758,17 +765,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterStatus() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val arrayListMapStatus = arrayListOf<HashMap<String, String>>()
         orderList.filters.forEach { option ->
             val mapKey = HashMap<String, String>()
             mapKey[option] = option
-            arrayListMap.add(mapKey)
+            arrayListMapStatus.add(mapKey)
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = SEMUA_TRANSAKSI
 
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapStatus
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
         uohBottomSheetOptionAdapter.selectedKey = currFilterStatusKey
         uohBottomSheetOptionAdapter.isReset = isReset
@@ -778,16 +785,16 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private fun onClickFilterCategory() {
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
-        val arrayListMap = arrayListOf<HashMap<String, String>>()
+        val arrayListMapCategory = arrayListOf<HashMap<String, String>>()
         val mapKeyDefault = HashMap<String, String>()
         mapKeyDefault[ALL_CATEGORIES] = ALL_CATEGORIES_TRANSACTION
-        arrayListMap.add(mapKeyDefault)
+        arrayListMapCategory.add(mapKeyDefault)
         orderList.categories.forEach { category ->
             val mapKey = HashMap<String, String>()
             mapKey[category.value] = category.label
-            arrayListMap.add(mapKey)
+            arrayListMapCategory.add(mapKey)
         }
-        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMap
+        uohBottomSheetOptionAdapter.uohItemMapKeyList = arrayListMapCategory
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
@@ -929,10 +936,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun initInjector() {
         activity?.let {
             DaggerUohListComponent.builder()
-                    .uohComponent(UohComponentInstance.getUohComponent(it.application))
+                    .baseAppComponent(getBaseAppComponent())
+                    .uohListModule(context?.let { UohListModule(it)})
                     .build()
                     .inject(this)
         }
+    }
+
+    private fun getBaseAppComponent(): BaseAppComponent {
+        return (activity?.application as BaseMainApplication).baseAppComponent
     }
 
     private fun showBottomSheetFilterOptions(title: String) {
@@ -1542,13 +1554,13 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         userSession?.userId?.let {
             UohAnalytics.productViewRecommendation(it, ECommerceImpressions.Impressions(
-                name = productName,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString(),
-                list = list
-        ), topAds)
+                    name = productName,
+                    id = recommendationItem.productId.toString(),
+                    price = recommendationItem.price,
+                    category = recommendationItem.categoryBreadcrumbs,
+                    position = index.toString(),
+                    list = list
+            ), topAds)
         }
     }
 
@@ -1561,11 +1573,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         userSession?.userId?.let {
             UohAnalytics.productClickRecommendation(ECommerceClick.Products(
-                name = productName,
-                id = recommendationItem.productId.toString(),
-                price = recommendationItem.price,
-                category = recommendationItem.categoryBreadcrumbs,
-                position = index.toString()), topAds, it)
+                    name = productName,
+                    id = recommendationItem.productId.toString(),
+                    price = recommendationItem.price,
+                    category = recommendationItem.categoryBreadcrumbs,
+                    position = index.toString()), topAds, it)
         }
 
         if (topAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, clickUrl, productId, productName, imageUrl) }
@@ -1615,7 +1627,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val arrayListProduct = arrayListOf<ECommerceAddRecommendation.Add.ActionField.Product>()
         arrayListProduct.add(product)
 
-        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it,listProduct = arrayListProduct, isTopads = isTopAds) }
+        userSession?.userId?.let { UohAnalytics.productAtcRecommendation(userId = it, listProduct = arrayListProduct, isTopads = isTopAds) }
         if (isTopAds) activity?.let { TopAdsUrlHitter(it).hitClickUrl(UohListFragment::class.qualifiedName, url, productId, productName, imageUrl) }
     }
 
@@ -1666,7 +1678,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 ))
             }
 
-            uohListViewModel.doAtcMulti(userSession?.userId ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
+            uohListViewModel.doAtcMulti(userSession?.userId
+                    ?: "", GraphqlHelper.loadRawString(resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti)
 
             // analytics
             val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
