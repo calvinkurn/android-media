@@ -11,10 +11,10 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,9 +25,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
-import com.tokopedia.coachmark.CoachMark
-import com.tokopedia.coachmark.CoachMarkBuilder
-import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.coachmark.*
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
@@ -115,6 +113,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private val newOnboardingCard by lazy { view?.findViewById<View>(R.id.layout_new_occ_onboarding) }
     private val ivNewOnboarding by lazy { view?.findViewById<ImageUnify>(R.id.iv_new_occ_onboarding) }
+    private val tvNewOnboardingMessage by lazy { view?.findViewById<Typography>(R.id.tv_new_occ_onboarding_message) }
 
     private val tvHeader2 by lazy { view?.findViewById<Typography>(R.id.tv_header_2) }
     private val tvHeader3 by lazy { view?.findViewById<Typography>(R.id.tv_header_3) }
@@ -523,14 +522,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader2?.text = getString(R.string.lbl_osp_secondary_header)
             tvHeader2?.visible()
             tvHeader3?.gone()
-
-            if (viewModel.isNewFlow) {
-                onboardingCard?.gone()
-                newOnboardingCard?.visible()
-                ivNewOnboarding?.setImageUrl(BELI_LANGSUNG_CART_IMAGE)
-            }
         } else {
-            tvHeader2?.text = getString(R.string.lbl_osp_secondary_header_intro)
+            tvHeader2?.text = if (viewModel.isNewFlow) getString(R.string.lbl_osp_secondary_header) else getString(R.string.lbl_osp_secondary_header_intro)
             val spannableString = SpannableString("${preference.onboardingHeaderMessage} Info")
             spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             tvHeader3?.text = spannableString
@@ -560,15 +553,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 btnOnboardingAction?.gone()
             }
             onboardingCard?.visible()
+            newOnboardingCard?.gone()
+        } else if (viewModel.isNewFlow && orderPreference.onboarding.isShowOnboardingTicker) {
+            onboardingCard?.gone()
+            newOnboardingCard?.visible()
+            ivNewOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
+            tvNewOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
+            tvNewOnboardingMessage?.setOnClickListener {
+                showNewOnboarding(orderPreference.onboarding)
+            }
         } else {
             onboardingCard?.gone()
+            newOnboardingCard?.gone()
         }
     }
 
     private fun showOnboarding(onboarding: OccMainOnboarding) {
         view?.let {
             it.post {
-                val scrollview = it.findViewById<NestedScrollView>(R.id.nested_scroll_view)
+                val scrollview = it.findViewById<ScrollView>(R.id.nested_scroll_view)
                 val layoutPayment = it.findViewById<View>(R.id.layout_payment)
                 val coachMarkItems = ArrayList<CoachMarkItem>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
@@ -602,6 +605,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
+    private fun showNewOnboarding(onboarding: OccMainOnboarding) {
+        view?.let {
+            it.post {
+                val scrollview = it.findViewById<ScrollView>(R.id.nested_scroll_view)
+                val coachMarkItems = ArrayList<CoachMark2Item>()
+                for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
+                    val view: View = when (detailIndexed.index) {
+                        0 -> it.findViewById(R.id.tv_header_2)
+                        1 -> it.findViewById(R.id.btn_new_change_address)
+                        2 -> it.findViewById(R.id.tv_new_choose_preference)
+                        3 -> it.findViewById(R.id.btn_new_change_duration)
+                        4 -> it.findViewById(R.id.button_atur_pilihan)
+                        else -> it.findViewById(R.id.new_preference_card)
+                    }
+                    coachMarkItems.add(CoachMark2Item(view, detailIndexed.value.title, detailIndexed.value.message))
+                }
+                val coachMark = CoachMark2(it.context)
+                coachMark.showCoachMark(coachMarkItems, scrollview)
+                orderSummaryAnalytics.eventViewOnboardingTicker()
+            }
+        }
+    }
+
     private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
         if (onboarding?.isForceShowCoachMark == true) {
             showOnboarding(onboarding)
@@ -611,8 +637,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun showPreferenceCard() {
         emptyPreferenceCard?.gone()
-        preferenceCard?.gone()
-        newPreferenceCard?.visible()
+        if (viewModel.isNewFlow) {
+            preferenceCard?.gone()
+            newPreferenceCard?.visible()
+        } else {
+            newPreferenceCard?.gone()
+            preferenceCard?.visible()
+        }
         orderTotalPaymentCard.setPaymentVisible(true)
         btnPromoCheckout?.visible()
     }
@@ -625,6 +656,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         orderTotalPaymentCard.setPaymentVisible(false)
         btnPromoCheckout?.gone()
         orderInsuranceCard.setGroupInsuranceVisible(false)
+
+        if (viewModel.isNewFlow) {
+            buttonAturPilihan?.text = "+ Template Beli Langsung"
+        } else {
+            buttonAturPilihan?.text = getString(R.string.atur_pilihan)
+        }
 
         buttonAturPilihan?.setOnClickListener {
             orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
