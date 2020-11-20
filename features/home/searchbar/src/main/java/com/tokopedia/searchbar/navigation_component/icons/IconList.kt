@@ -10,6 +10,7 @@ import com.tokopedia.searchbar.R
 internal interface IconConfigItem { fun get(
         pageSource: String = "",
         disableRouteManager: Boolean = false,
+        disableDefaultGtmTracker: Boolean,
         onClick: ()-> Unit = {}): IconToolbar }
 
 object IconList {
@@ -35,13 +36,14 @@ object IconList {
 
     //Image icon
     internal object MessageIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_MESSAGE,
                     applink = ApplinkConst.INBOX,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
-                    name = NAME_MESSAGE
+                    name = NAME_MESSAGE,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -49,13 +51,14 @@ object IconList {
     }
 
     internal object NotificationIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NOTIFICATION,
                     applink = ApplinkConst.NOTIFICATION,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
-                    name = NAME_NOTIFICATION
+                    name = NAME_NOTIFICATION,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -63,13 +66,14 @@ object IconList {
     }
 
     internal object CartIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_CART,
                     applink = ApplinkConst.CART,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
-                    name = NAME_CART
+                    name = NAME_CART,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -77,7 +81,7 @@ object IconList {
     }
 
     internal object NavGlobalIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_GLOBAL,
                     applink = ApplinkConst.HOME_NAVIGATION,
@@ -86,7 +90,8 @@ object IconList {
                     bundle = Bundle().run {
                         this.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, pageSource)
                         this
-                    }
+                    },
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -94,13 +99,14 @@ object IconList {
     }
 
     internal object WishlistIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_WISHLIST,
                     applink = ApplinkConst.NEW_WISHLIST,
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
-                    name = NAME_WISHLIST
+                    name = NAME_WISHLIST,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -108,12 +114,13 @@ object IconList {
     }
 
     internal object ShareIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_SHARE,
                     applink = "",
                     disableRouteManager = disableRouteManager,
-                    name = NAME_SHARE
+                    name = NAME_SHARE,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -121,12 +128,13 @@ object IconList {
     }
 
     internal object SettingIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_SETTING,
                     applink = ApplinkConstInternalGlobal.GENERAL_SETTING,
                     disableRouteManager = disableRouteManager,
-                    name = NAME_SETTING
+                    name = NAME_SETTING,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }
@@ -135,7 +143,7 @@ object IconList {
 
     //Lottie icon
     internal object LottieWishlistIcon: IconConfigItem {
-        override fun get(pageSource: String, disableRouteManager: Boolean, onClick: ()-> Unit): IconToolbar {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
             return IconToolbar(
                     id = ID_NAV_LOTTIE_WISHLIST,
                     imageRes = R.raw.toolbar_lottie_wishlist,
@@ -144,7 +152,8 @@ object IconList {
                     disableRouteManager = disableRouteManager,
                     nonLoginApplink = ApplinkConst.LOGIN,
                     name = NAME_WISHLIST,
-                    paddingEndRes = R.dimen.lottie_wishlist_padding_end
+                    paddingEndRes = R.dimen.lottie_wishlist_padding_end,
+                    disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()
             }

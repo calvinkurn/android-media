@@ -2,8 +2,10 @@ package com.tokopedia.homenav.mainnav.view.adapter.viewholder
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Typeface.BOLD
 import android.text.Spannable
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -143,6 +145,7 @@ class AccountHeaderViewHolder(itemView: View,
                 val str = tvShopInfo.text as Spannable
                 val i = fulltext.indexOf(subtext)
                 str.setSpan(ForegroundColorSpan(itemView.context.getResColor(R.color.green_shop)), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                str.setSpan(StyleSpan(BOLD), i, i + subtext.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 tvShopInfo.setOnClickListener { onShopClicked(element.shopId) }
             }
         }

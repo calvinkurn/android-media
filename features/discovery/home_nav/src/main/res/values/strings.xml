@@ -40,7 +40,7 @@
     <string name="transaction_item_default_status">Menunggu pembayaran</string>
     <string name="transaction_item_total_product">%s\nBarang</string>
     <string name="transaction_others_count">%s Transaksi\nLainnya</string>
-    <string name="transaction_rupiah_value">Rp %s</string>
+    <string name="transaction_rupiah_value">Rp%s</string>
 
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
     <string name="menu_user_menu_shop_ticker_description">Yuk, jemput suksesmu dengan buka toko di Tokopedia. &lt;a href="#"&gt;Buka Toko Gratis&lt;/a&gt;</string>
@@ -48,7 +48,7 @@
     <string name="category_back_menu">Kembali</string>
 
     <string name="onboarding_login_p1_s1_title">Halo, sekarang Akunmu di sini~</string>
-    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun seperti biasa &#38; cek saldo  OVO! Buat kamu yang punya toko bisa akses di sini.</string>
+    <string name="onboarding_login_p1_s1_description">Kamu bisa atur Akun seperti biasa &#38; cek saldo OVO! Buat kamu yang punya toko bisa akses di sini.</string>
 
     <string name="onboarding_login_p1_s2_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
     <string name="onboarding_login_p1_s2_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>

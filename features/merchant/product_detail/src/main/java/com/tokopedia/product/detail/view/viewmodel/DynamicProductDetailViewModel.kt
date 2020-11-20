@@ -486,7 +486,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 it
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
                 it
-            } else if (it.name() == ProductDetailConstant.REPORT && isUseOldNav && !GlobalConfig.isSellerApp()) {
+            } else if (it.name() == ProductDetailConstant.REPORT && isUseOldNav && isShopOwner()) {
                 it
             } else {
                 null
