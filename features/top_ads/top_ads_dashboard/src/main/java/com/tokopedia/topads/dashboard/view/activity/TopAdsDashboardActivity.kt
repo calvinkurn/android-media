@@ -98,14 +98,13 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
         createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val height = createAd?.measuredHeight
         view_pager?.setPadding(0, 0, 0, height ?: 0)
-
-        tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        tab_layout?.getUnifyTabLayout()?.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(p0: TabLayout.Tab?) {}
 
             override fun onTabUnselected(p0: TabLayout.Tab?) {}
 
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                if (tab.position == 0) {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                if (tab?.position == 0) {
                     bottom.visibility = View.VISIBLE
                     createAd?.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
                     val height = createAd?.measuredHeight
@@ -150,7 +149,7 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
                 }
             }
         })
-        tab_layout.setupWithViewPager(view_pager)
+        tab_layout?.setupWithViewPager(view_pager)
     }
 
 
@@ -168,6 +167,12 @@ class TopAdsDashboardActivity : BaseActivity(), HasComponent<TopAdsDashboardComp
 
     private fun getViewPagerAdapter(): PagerAdapter {
         val list: MutableList<FragmentTabItem> = mutableListOf()
+        tab_layout?.getUnifyTabLayout()?.removeAllTabs()
+        tab_layout?.addNewTab(getString(R.string.topads_dash_beranda))
+        tab_layout?.addNewTab(getString(R.string.topads_dash_iklan_produck))
+        tab_layout?.addNewTab(getString(R.string.topads_dash_headline_title))
+        tab_layout?.addNewTab(getString(R.string.topads_dash_recommend))
+        tab_layout?.customTabMode = TabLayout.MODE_SCROLLABLE
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_beranda), BerandaTabFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_iklan_produck), TopAdsProductIklanFragment.createInstance()))
         list.add(FragmentTabItem(resources.getString(R.string.topads_dash_headline_title), TopAdsHeadlineBaseFragment.createInstance()))

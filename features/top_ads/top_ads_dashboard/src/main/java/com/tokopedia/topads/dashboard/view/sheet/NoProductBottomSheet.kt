@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.dashboard.R
@@ -25,8 +26,7 @@ class NoProductBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         addProductBtn.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+            RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
         }
     }
-
 }

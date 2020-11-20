@@ -125,8 +125,8 @@ class TopAdsHeadlineAdDetailViewActivity : BaseActivity(), HasComponent<TopAdsDa
         viewPagerHeadline.adapter = getViewPagerAdapter()
         viewPagerHeadline.offscreenPageLimit = 2
         viewPagerHeadline.currentItem = 0
-        viewPagerHeadline.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
-        tab_layout.setupWithViewPager(viewPagerHeadline)
+      //  viewPagerHeadline.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
+        tab_layout?.setupWithViewPager(viewPagerHeadline)
     }
 
     private fun getViewPagerAdapter(): PagerAdapter {

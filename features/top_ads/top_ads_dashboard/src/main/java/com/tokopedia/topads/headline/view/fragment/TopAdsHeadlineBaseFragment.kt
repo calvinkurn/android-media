@@ -208,14 +208,16 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
         val intent = Intent(context, TopAdsHeadlineAdDetailViewActivity::class.java)
         intent.putExtra(TopAdsDashboardConstant.GROUP_ID, id)
         intent.putExtra(TopAdsDashboardConstant.PRICE_SPEND, priceSpent)
-        startActivityForResult(intent,HEADLINE_UPADTED)
+        startActivityForResult(intent, HEADLINE_UPADTED)
     }
 
     private fun showEmptyView() {
         app_bar_layout_2?.visibility = View.GONE
         headlinList?.visibility = View.GONE
         empty_view?.visibility = View.VISIBLE
-        mulai_beriklan?.isEnabled = false
+        mulai_beriklan?.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
+        }
         empty_view.image_empty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dashboard_empty_product))
         text_title.text = getString(R.string.topads_headline_empty_state_title)
         text_desc.text = getString(R.string.topads_headline_empty_state_desc)
@@ -403,8 +405,8 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == HEADLINE_UPADTED){
-            if(resultCode == Activity.RESULT_OK)
+        if (requestCode == HEADLINE_UPADTED) {
+            if (resultCode == Activity.RESULT_OK)
                 fetchData()
         }
     }

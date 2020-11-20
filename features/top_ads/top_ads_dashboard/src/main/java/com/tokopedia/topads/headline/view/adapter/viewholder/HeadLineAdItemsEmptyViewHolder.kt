@@ -23,15 +23,14 @@ class HeadLineAdItemsEmptyViewHolder(val view: View) : HeadLineAdItemsViewHolder
     }
 
     override fun bind(item: HeadLineAdItemsEmptyViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
-        if(!fromSearch) {
-            view.text_title.text = view.context.getString(R.string.topads_dash_empty_group_title)
-            view.text_desc.text = view.context.getString(R.string.topads_dash_empty_group_desc)
+        if (!fromSearch) {
+            view.text_title.text = view.context.getString(R.string.topads_headlin_Search_empty_title)
+            view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             view.btn_submit.visibility = View.VISIBLE
             view.btn_submit.setOnClickListener {
-                RouteManager.route(view.context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS)
+                RouteManager.route(view.context, ApplinkConstInternalTopAds.TOPADS_HEADLINE_ADS_CREATION)
             }
-        }
-        else{
+        } else {
             view.text_title.text = view.context.getString(R.string.topads_headlin_Search_empty_title)
             view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             view.btn_submit.visibility = View.GONE

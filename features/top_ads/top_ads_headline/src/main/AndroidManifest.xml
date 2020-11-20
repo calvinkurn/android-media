@@ -20,7 +20,7 @@
 
                 <data
                     android:host="@string/host_topads"
-                    android:path="@string/path_topads_headline_ads"
+                    android:path="@string/path_topads_headline_ads_creation"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

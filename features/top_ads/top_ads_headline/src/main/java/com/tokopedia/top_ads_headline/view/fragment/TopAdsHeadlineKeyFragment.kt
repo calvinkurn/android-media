@@ -232,8 +232,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun addManualKeywords() {
-        if (keywordSelectedAdapter.items.find { it.keyword == editText.textFieldInput.text.toString() } == null) {
-            if (keywordListAdapter.items.find { it.keyword == editText.textFieldInput.text.toString() } == null) {
+        if (keywordSelectedAdapter.items.find { it.keyword.trim() == editText.textFieldInput.text.toString().trim() } == null) {
+            if (keywordListAdapter.items.find { it.keyword.trim() == editText.textFieldInput.text.toString().trim() } == null) {
                 selectedTitle.visibility = View.VISIBLE
                 val item = KeywordDataItem()
                 item.keyword = editText.textFieldInput.text.toString()
