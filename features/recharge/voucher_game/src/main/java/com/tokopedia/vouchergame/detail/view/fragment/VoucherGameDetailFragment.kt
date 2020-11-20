@@ -509,12 +509,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun showProductInfo(title: String = "", desc: String, imageUrl: String = "") {
         activity?.let {
-//            val operatorInfoBottomSheets = OperatorInfoBottomSheets()
-//            operatorInfoBottomSheets.title = title
-//            operatorInfoBottomSheets.description = desc
-//            operatorInfoBottomSheets.imageUrl = imageUrl
-//            operatorInfoBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
-
             val productInfoBottomSheet = BottomSheetUnify()
             productInfoBottomSheet.setCloseClickListener {
                 productInfoBottomSheet.dismiss()
@@ -560,15 +554,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onDetailClicked(product: VoucherGameProduct) {
         activity?.let {
-//            val productDetailBottomSheets = ProductDetailBottomSheets()
-//            with(product.attributes) {
-//                productDetailBottomSheets.title = desc
-//                productDetailBottomSheets.description = detail
-//                productDetailBottomSheets.urlLabel = detailUrlText
-//                productDetailBottomSheets.url = detailUrl
-//            }
-//            productDetailBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
-
             val productDetailBottomSheet = BottomSheetUnify()
             with(product.attributes) {
                 productDetailBottomSheet.setTitle(desc)
@@ -577,7 +562,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 }
 
                 val productDetailWidget = ProductDetailWidget(it)
-//                productDetailWidget.title = desc
                 productDetailWidget.description = detail
                 productDetailWidget.url = detailUrl
                 productDetailWidget.urlLabel = detailUrlText

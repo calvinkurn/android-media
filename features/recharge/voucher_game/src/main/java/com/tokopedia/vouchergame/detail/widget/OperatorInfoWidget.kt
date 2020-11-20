@@ -74,18 +74,5 @@ class OperatorInfoWidget: BaseCustomView {
             infoTitle = findViewById(R.id.info_title)
             infoDescription = findViewById(R.id.info_desc)
         }
-
-//        if (imageUrl.isEmpty()) {
-//            imageContainer.visibility = View.GONE
-//        } else {
-//            imageContainer.visibility = View.VISIBLE
-//            ImageHandler.LoadImage(imageView, imageUrl)
-//        }
-//        if (title.isEmpty()) {
-//            infoTitle.visibility = View.GONE
-//        } else {
-//            infoTitle.text = title
-//        }
-//        infoDescription.text = MethodChecker.fromHtml(description)
     }
 }

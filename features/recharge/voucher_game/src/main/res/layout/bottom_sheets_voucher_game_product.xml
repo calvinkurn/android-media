@@ -30,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/vg_product_detail_url"
-        android:textColor="@color/main_green"
+        android:textColor="@color/Green_G500"
         app:typographyType="body_2"
         app:typographyWeight="bold" />
 

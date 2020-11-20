@@ -3,7 +3,6 @@ package com.tokopedia.vouchergame.detail.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -16,17 +15,8 @@ import com.tokopedia.vouchergame.R
  */
 class ProductDetailWidget: BaseCustomView {
 
-//    private lateinit var detailTitle: TextView
     private lateinit var detailDescription: TextView
     private lateinit var detailUrl: TextView
-
-//    var title: String = ""
-//    set(value) {
-//        field = value
-//        if (title.isNotEmpty() && ::detailTitle.isInitialized) {
-//            detailTitle.text = title
-//        }
-//    }
 
     var description: String = ""
     set(value) {
@@ -68,18 +58,8 @@ class ProductDetailWidget: BaseCustomView {
     private fun init(context: Context) {
         val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheets_voucher_game_product, this, true)
         with (view) {
-//            detailTitle = findViewById(R.id.detail_title)
             detailDescription = findViewById(R.id.detail_desc)
             detailUrl = findViewById(R.id.detail_url)
         }
-
-//        if(title.isNotEmpty()) detailTitle.text = title
-//        detailDescription.text = MethodChecker.fromHtml(description)
-//        if (url.isEmpty()) {
-//            detailUrl.visibility = View.GONE
-//        } else {
-//            if (urlLabel.isNotEmpty()) detailUrl.text = urlLabel
-//            detailUrl.setOnClickListener { RouteManager.route(context, url) }
-//        }
     }
 }
