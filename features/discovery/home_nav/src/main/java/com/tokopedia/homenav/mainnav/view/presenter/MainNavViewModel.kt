@@ -40,6 +40,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -69,6 +70,10 @@ class MainNavViewModel @Inject constructor(
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel())
     private var _mainNavListVisitable = mutableListOf<Visitable<*>>()
+
+    val onboardingListLiveData: LiveData<List<Visitable<*>>>
+        get() = _onboardingListLiveData
+    private val _onboardingListLiveData: MutableLiveData<List<Visitable<*>>> = MutableLiveData()
 
     val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
         get() = _businessListLiveData
@@ -159,9 +164,17 @@ class MainNavViewModel @Inject constructor(
         if (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME) removeHomeBackButtonMenu()
     }
 
+    fun setOnboardingSuccess(isSuccess: Boolean) {
+        if (!isSuccess) {
+            launch {
+                delay(500)
+                _onboardingListLiveData.postValue(_mainNavListVisitable)
+            }
+        }
+    }
+
     suspend fun updateNavData(navigationDataModel: MainNavigationDataModel) {
         try {
-            removeInitialStateData()
             _mainNavListVisitable = navigationDataModel.dataList.toMutableList()
             _mainNavLiveData.postValue(navigationDataModel.copy(dataList = _mainNavListVisitable))
         } catch (e: Exception) {
@@ -175,13 +188,14 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     private fun setInitialState() {
-        addWidget(InitialShimmerDataModel())
+        addWidgetList(listOf(
+                InitialShimmerDataModel()
+        ))
     }
 
     private fun removeInitialStateData() {
         launch{
-            val mainNavigationDataModel: MainNavigationDataModel? = _mainNavLiveData.value
-            mainNavigationDataModel?.dataList?.find { it is InitialShimmerDataModel }?.let {
+            _mainNavListVisitable.find { it is InitialShimmerDataModel }?.let {
                 deleteWidget(it)
             }
         }
@@ -191,8 +205,6 @@ class MainNavViewModel @Inject constructor(
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
                 getMainNavContent()
-//                onlyForLoggedInUser { getUserSection() }
-                getHomeBackButtonMenu()
             }) {
                 Timber.d("P1 error")
                 it.printStackTrace()
@@ -200,29 +212,32 @@ class MainNavViewModel @Inject constructor(
             p1DataJob.join()
 
             val p2DataJob = launchCatchError(context = coroutineContext, block = {
-                getTransactionMenu()
                 onlyForLoggedInUser {
                     getOngoingTransaction()
                     getNotification()
                 }
-                getUserMenu()
             }) {
                 Timber.d("P2 error")
                 it.printStackTrace()
             }
             p2DataJob.join()
+            _onboardingListLiveData.postValue(_mainNavListVisitable)
         }
     }
 
-    private fun getHomeBackButtonMenu() {
+    private fun MutableList<Visitable<*>>.addHomeBackButtonMenu() {
         if (pageSource != ApplinkConsInternalNavigation.SOURCE_HOME) {
-            addWidgetList(
-                    listOf(
-                            SeparatorViewModel(sectionId = MainNavConst.Section.HOME),
-                            clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME)
-                    )
-            )
+            this.add(1, SeparatorViewModel(sectionId = MainNavConst.Section.HOME))
+            this.add(2, clientMenuGenerator.get().getMenu(menuId = ID_HOME, sectionId = MainNavConst.Section.HOME))
         }
+    }
+
+    private fun MutableList<Visitable<*>>.addTransactionMenu() {
+        this.addAll(buildTransactionMenuList())
+    }
+
+    private fun MutableList<Visitable<*>>.addUserMenu() {
+        this.addAll(buildUserMenuList())
     }
 
     private fun removeHomeBackButtonMenu() {
@@ -235,15 +250,12 @@ class MainNavViewModel @Inject constructor(
 
     private suspend fun getMainNavContent() {
         val result = getMainNavDataUseCase.get().executeOnBackground()
-        updateNavData(result)
-    }
-
-    private suspend fun getUserMenu() {
-        addWidgetList(buildUserMenuList())
-    }
-
-    private suspend fun getTransactionMenu() {
-        addWidgetList(buildTransactionMenuList())
+        _mainNavListVisitable = result.dataList.toMutableList()
+        _mainNavListVisitable.addHomeBackButtonMenu()
+        _mainNavListVisitable.addTransactionMenu()
+        _mainNavListVisitable.addUserMenu()
+        val resultWithUpdatedList = result.copy(dataList = _mainNavListVisitable)
+        updateNavData(resultWithUpdatedList)
     }
 
     private suspend fun getOngoingTransaction() {
@@ -335,7 +347,6 @@ class MainNavViewModel @Inject constructor(
                     getShopInfoUseCase.get().executeOnBackground()
                 }
             }
-
             val newData = accountData.copy()
             val result = (call.await().takeIf { it is Success } as? Success<ShopInfoPojo>)?.data
             result?.let {
@@ -423,8 +434,8 @@ class MainNavViewModel @Inject constructor(
             val newData = accountData.copy()
             val result = (call.await().takeIf { it is Success } as? Success<SaldoPojo>)?.data
             result?.let {
-               newData.setSaldoData(
-                       convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: "")
+                newData.setSaldoData(
+                        convertPriceValueToIdrFormat(result.saldo.buyerUsable + result.saldo.sellerUsable, false) ?: "")
             }
             updateWidget(newData, INDEX_MODEL_ACCOUNT)
         }){

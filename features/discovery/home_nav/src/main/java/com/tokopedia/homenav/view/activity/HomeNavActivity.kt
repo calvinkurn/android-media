@@ -1,6 +1,5 @@
 package com.tokopedia.homenav.view.activity
 
-import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
@@ -8,10 +7,8 @@ import androidx.navigation.findNavController
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.mainnav.view.fragment.MainNavFragmentArgs
-import com.tokopedia.kotlin.extensions.view.setStatusBarColor
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import kotlinx.android.synthetic.main.activity_main_nav.*
-
 
 class HomeNavActivity: AppCompatActivity() {
 
@@ -19,7 +16,6 @@ class HomeNavActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(R.anim.slide_top, R.anim.nav_fade_out)
         setContentView(R.layout.activity_main_nav)
         pageSource = intent.getStringExtra(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE)?:""
         findViewById<NavToolbar>(R.id.toolbar)?.let {

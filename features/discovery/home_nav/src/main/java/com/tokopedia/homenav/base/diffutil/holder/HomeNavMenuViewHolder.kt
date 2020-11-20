@@ -21,6 +21,7 @@ class HomeNavMenuViewHolder(
 
     override fun bind(element: HomeNavMenuViewModel) {
         itemView.menu_title?.text = element.itemTitle
+        itemView.menu_title?.tag = element.id
         if (element.srcIconId != null) {
             itemView.menu_image.setImage(newIconId = element.srcIconId)
         } else {

@@ -26,7 +26,7 @@ class ClientMenuGenerator(val context: Context, val userSession: UserSessionInte
         val ID_OPEN_SHOP_TICKER = 801
     }
 
-    val APPLINK_MY_BILLS = "tokopedia://mybills"
+    val APPLINK_MY_BILLS = "tokopedia://webview?url=https://www.tokopedia.com/mybills/"
     val APPLINK_COMPLAIN = "https://m.tokopedia.com/resolution-center/inbox/buyer/mobile"
     val APPLINK_TICKET = "tokopedia-android-internal://order/unified?filter=etiket"
 

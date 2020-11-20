@@ -29,7 +29,9 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_TITLE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_DARK_TYPE
 import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
+import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
 import com.tokopedia.searchbar.navigation_component.util.StatusBarUtil
 import com.tokopedia.user.session.UserSession
@@ -83,7 +85,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     private var toolbarPageName: String = DEFAULT_PAGE_NAME
 
     //helper variable
-    private var shadowApplied: Boolean = false
+    var shadowApplied: Boolean = false
     private var userSessionInterface: UserSessionInterface? = null
 
     //controller variable
@@ -160,24 +162,38 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Hide shadow and adjust padding
      */
-    fun hideShadow() {
+    fun hideShadow(lineShadow: Boolean = false) {
         if(shadowApplied){
             shadowApplied = false
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
-            navToolbar?.background = ColorDrawable(getLightIconColor())
-            navToolbar?.updatePadding(bottom = pB)
+            if (lineShadow) {
+                dividerUnify?.visibility = View.INVISIBLE
+                navToolbar?.background = ColorDrawable(getLightIconColor())
+                setBackgroundAlpha(0f)
+                navToolbar?.updatePadding(bottom = 0)
+            } else {
+                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                navToolbar?.background = ColorDrawable(getLightIconColor())
+                navToolbar?.updatePadding(bottom = pB)
+            }
         }
     }
 
     /**
      * Show shadow and adjust padding
      */
-    fun showShadow() {
+    fun showShadow(lineShadow: Boolean = false) {
         if(!shadowApplied && toolbarAlwaysShowShadow){
             shadowApplied = true
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
-            navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
-            navToolbar?.updatePadding(bottom = pB)
+
+            if (lineShadow) {
+                setBackgroundAlpha(225f)
+                dividerUnify?.visibility = View.VISIBLE
+                navToolbar?.updatePadding(bottom = 0)
+            } else {
+                val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+                navToolbar?.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
+                navToolbar?.updatePadding(bottom = pB)
+            }
         }
     }
 
@@ -227,7 +243,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navSearchBarController = NavSearchbarController(
                 this,
                 applinkForController,
-                searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback)
+                searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback, topNavComponentListener = this)
         navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
     }
 
@@ -240,7 +256,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     }
 
     fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
-        nav_icon_back.setOnClickListener { backButtonClickListener.invoke() }
+        nav_icon_back.setOnClickListener {
+            NavToolbarTracking.clickNavToolbarComponent(
+                    toolbarPageName,
+                    IconList.NAME_BACK_BUTTON,
+                    getUserId()
+            )
+            backButtonClickListener.invoke()
+        }
     }
 
     fun setToolbarContentType(toolbarContentType: Int) {
@@ -271,6 +294,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             nav_icon_back.tag = backType
             if (context is Activity) {
                 nav_icon_back.setOnClickListener {
+                    NavToolbarTracking.clickNavToolbarComponent(
+                            toolbarPageName,
+                            IconList.NAME_BACK_BUTTON,
+                            getUserId()
+                    )
                     (context as? Activity)?.onBackPressed()
                 }
             }
@@ -296,6 +324,16 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
 
     fun setToolbarPageName(pageName: String) {
         toolbarPageName = pageName
+    }
+
+    //this needed to enable coachmark on homepage
+    fun getGlobalNavIconView(): View? {
+        val globalNavPosition = navIconAdapter?.getGlobalNavIconPosition()
+        globalNavPosition?.let {
+            val viewholder = rv_icon_list.findViewHolderForAdapterPosition(it)
+            return viewholder?.itemView
+        }
+        return null
     }
 
     internal fun setBackgroundAlpha(alpha: Float) {
@@ -328,7 +366,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         }
     }
 
-    private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = paddingTop, right: Int = paddingRight, bottom: Int = paddingBottom) {
+    private fun Toolbar.updatePadding(left: Int = paddingLeft, top: Int = ViewHelper.getStatusBarHeight(context), right: Int = paddingRight, bottom: Int = paddingBottom) {
         setPadding(left, top, right, bottom)
     }
 

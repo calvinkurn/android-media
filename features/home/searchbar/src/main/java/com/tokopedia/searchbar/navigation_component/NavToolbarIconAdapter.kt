@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.searchbar.R
 import com.tokopedia.searchbar.navigation_component.analytics.NavToolbarTracking
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconToolbar.Companion.TYPE_LOTTIE
 import com.tokopedia.searchbar.navigation_component.listener.TopNavComponentListener
@@ -98,6 +99,12 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
     fun setThemeState(newState: Int) {
         this.themeState = newState
         notifyDataSetChanged()
+    }
+
+    fun getGlobalNavIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_NAV_GLOBAL }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
     }
 }
 
