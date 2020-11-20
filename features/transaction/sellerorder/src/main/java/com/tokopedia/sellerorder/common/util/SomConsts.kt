@@ -208,6 +208,7 @@ object SomConsts {
     const val FILTER_LABEL = "Label"
     const val FILTER_DEADLINE = "Jatuh Tempo"
     const val FILTER_DATE = "Tanggal"
+    const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
 
     // Order list sort by value
     const val SORT_BY_PAYMENT_DATE_ASCENDING = 0

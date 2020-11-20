@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet.Companion.SOM_FILTER_DATE_BOTTOM_SHEET_TAG
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -21,7 +22,6 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val PATTERN_DATE = "EEE, dd MMM"
-        const val PATTERN_DATE_PARAM = "dd/MM/yyyy"
         const val PATTER_DATE_EDT = "dd MMM yyyy"
         const val TITLE_FILTER_DATE = "Pilih Tanggal"
 
