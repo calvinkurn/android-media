@@ -590,13 +590,16 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             view?.swipeRefreshLayout?.isRefreshing = true
         } else {
             val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
-            val newWidgets = mostWidgetData.mapIndexed { i, widget ->
-                val newWidget = widgets.getOrNull(i)
-                // "if" is true only on the first load, "else" is always true when we reload
-                if (newWidget != null && isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
-                    widget.apply { isFromCache = false }
-                } else {
-                    newWidget
+            val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
+            mostWidgetData.forEachIndexed { i, widget ->
+                widgets.getOrNull(i)?.let { newWidget ->
+                    // "if" is true only on the first load, "else" is always true when we reload
+                    if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
+                        widget.apply { isFromCache = false }
+                        newWidgets.add(widget)
+                    } else {
+                        newWidgets.add(newWidget)
+                    }
                 }
             }
 
