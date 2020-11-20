@@ -1,0 +1,16 @@
+{
+  "mode": "exact",
+  "query": [
+    {
+      "businessUnit": "order management",
+      "eventCategory": "order list",
+      "currentSite": "tokopediamarketplace",
+      "event": "clickOrderList",
+      "userId": "{{.*}}",
+      "eventAction": "click three dot menu marketplace",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ],
+  "readme": "UOH Click Three Dots Menu"
+}
