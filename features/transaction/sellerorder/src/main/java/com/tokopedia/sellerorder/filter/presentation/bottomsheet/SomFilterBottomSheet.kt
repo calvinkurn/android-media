@@ -44,7 +44,6 @@ import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class SomFilterBottomSheet : BottomSheetUnify(),
@@ -175,7 +174,6 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                     this.somListOrderParam = cacheManager?.get(KEY_SOM_ORDER_PARAM_CACHE, SomListGetOrderListParam::class.java)
                     somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
-                            ?: ""
                     val somSubFilterList: SomSubFilterListWrapper? = cacheManager?.get(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
                     somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList?.somSubFilterList ?: listOf())
                 }
