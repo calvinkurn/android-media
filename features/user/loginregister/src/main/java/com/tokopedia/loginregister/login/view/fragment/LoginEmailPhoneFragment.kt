@@ -170,6 +170,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var callTokopediaCare: Typography
     private lateinit var sharedPrefs: SharedPreferences
 
+    private lateinit var btnInitVisor: UnifyButton
+    private lateinit var btnSendBackend: UnifyButton
+    private lateinit var tokenStatus: Typography
+
+
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
     }
@@ -246,7 +251,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         callbackManager = CallbackManager.Factory.create()
-
         activity?.run {
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getGoogleClientId(this))
@@ -274,6 +278,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
+        btnInitVisor = view.findViewById(R.id.btnInitVisor)
+        btnSendBackend = view.findViewById(R.id.btnSubmitBackend)
+        tokenStatus = view.findViewById(R.id.tokenStatus)
         return view
     }
 
@@ -307,6 +314,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+        btnInitVisor.setOnClickListener{
+            setPOCFingerprint()
+        }
+        btnSendBackend.setOnClickListener{
+            sendTokenToBackend()
+        }
     }
 
     private fun fetchRemoteConfig() {
@@ -693,7 +706,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo) {
-        setPOCFingerprint()
         setSmartLock()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
         if (ScanFingerprintDialog.isFingerprintAvailable(activity)) presenter.getUserInfoFingerprint()
@@ -1582,24 +1594,26 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         val visorInstance = VisorFingerprintInstance()
         visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
-                Log.d("visor init success", "success")
-                presenter.submitVisorToken(token)
+                tokenStatus.text = "visor init success : " + token
             }
 
             override fun onFailedInitToken(error: String) {
-                Log.d("visor initfailed", error)
+                tokenStatus.text = "visor init failed : " + error
             }
         })
     }
 
+    private fun sendTokenToBackend() {
+        val visorInstance = VisorFingerprintInstance()
+        presenter.submitVisorToken(visorInstance.getVisorToken())
+    }
+
     override fun onSuccessSubmitVisorToken(message: String) {
-        Log.d("visor update success", message)
-        SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
+        tokenStatus.text = "visor update backend success : " + message
     }
 
     override fun onErrorSubmitVisorToken(message: String) {
-        Log.d("visor update error", message)
-        SnackbarManager.make(activity, message,Snackbar.LENGTH_SHORT)
+        tokenStatus.text = "visor update backend error : " + message
     }
 
     companion object {
