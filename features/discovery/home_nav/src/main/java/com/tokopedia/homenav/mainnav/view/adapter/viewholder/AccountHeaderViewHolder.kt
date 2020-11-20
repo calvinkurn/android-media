@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,8 +34,9 @@ import java.util.*
 
 
 class AccountHeaderViewHolder(itemView: View,
-                               private val mainNavListener: MainNavListener,
-                               private val userSession: UserSessionInterface
+                              private val mainNavListener: MainNavListener,
+                              private val remoteConfig: RemoteConfig,
+                              private val userSession: UserSessionInterface
 ): AbstractViewHolder<AccountHeaderViewModel>(itemView), CoroutineScope {
 
 
@@ -95,6 +97,10 @@ class AccountHeaderViewHolder(itemView: View,
         val tvShopInfo: Typography = layoutLogin.findViewById(R.id.usr_shop_info)
         val tvShopNotif: Typography = layoutLogin.findViewById(R.id.usr_shop_notif)
 
+        val cdnUrl = remoteConfig.getString(MainNavConst.ImageUrl.KEY_IMAGE_HOST, MainNavConst.ImageUrl.CDN_URL)
+        val saldoImageUrl = cdnUrl + MainNavConst.ImageUrl.SALDO_IMG
+        val ovoImageUrl = cdnUrl + MainNavConst.ImageUrl.OVO_IMG
+
         userImage.loadImageCircle(element.userImage)
 
         if (element.isGetUserNameError) {
@@ -110,18 +116,18 @@ class AccountHeaderViewHolder(itemView: View,
             tvOvo.setOnClickListener{
                 mainNavListener.onErrorProfileOVOClicked(element)
             }
-            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
+            usrOvoBadge.loadImage(ovoImageUrl)
         } else if (element.isGetOvoError && !element.isGetSaldoError) {
             tvOvo.text = element.saldo
             tvOvo.setOnClickListener(null)
-            usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
+            usrOvoBadge.loadImage(saldoImageUrl)
         } else {
             tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
             tvOvo.setOnClickListener(null)
             if (element.ovoSaldo.isNotEmpty()) {
-                usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_ovo)
+                usrOvoBadge.loadImage(ovoImageUrl)
             } else if (element.saldo.isNotEmpty()) {
-                usrOvoBadge.loadImageDrawable(R.drawable.ic_nav_saldo)
+                usrOvoBadge.loadImage(saldoImageUrl)
             }
         }
 
@@ -142,6 +148,7 @@ class AccountHeaderViewHolder(itemView: View,
         }
 
         layoutLogin.setOnClickListener {
+            TrackingProfileSection.onClickProfileSection(userSession.userId)
             mainNavListener.onProfileSectionClicked()
         }
     }
@@ -177,7 +184,8 @@ class AccountHeaderViewHolder(itemView: View,
         val name = getSharedPreference().getString(AccountHeaderViewModel.KEY_USER_NAME, "") ?: ""
         val profilePic = getSharedPreference().getString(AccountHeaderViewModel.KEY_PROFILE_PICTURE, "") ?: ""
         imgUserLoginAs.loadImageCircle(profilePic)
-        btnLoginAs.text = String.format(TEXT_LOGIN_AS, name)
+        val nameTrimmed = name.split(" ")
+        btnLoginAs.text = String.format(TEXT_LOGIN_AS, nameTrimmed[0])
 
         btnLoginAs.setOnClickListener {
             TrackingProfileSection.onClickLoginReminderButton("")

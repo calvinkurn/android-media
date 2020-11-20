@@ -38,6 +38,7 @@ import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
@@ -52,6 +53,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         private const val REQUEST_LOGIN = 1234
         private const val REQUEST_REGISTER = 2345
     }
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     @Inject
     lateinit var viewModel: MainNavViewModel
@@ -227,7 +231,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun initAdapter() {
-        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession())
+        val mainNavFactory = MainNavTypeFactoryImpl(this, getUserSession(), remoteConfig)
         adapter = MainNavListAdapter(mainNavFactory)
         layoutManager = NpaLayoutManager(activity)
         recyclerView.layoutManager = layoutManager

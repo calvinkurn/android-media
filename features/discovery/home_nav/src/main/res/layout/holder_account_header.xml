@@ -104,8 +104,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/usr_badge"
-            android:layout_width="@dimen/dp_14"
-            android:layout_height="@dimen/dp_14"
+            android:layout_width="@dimen/dp_12"
+            android:layout_height="@dimen/dp_12"
             android:layout_marginLeft="@dimen/dp_10"
             android:scaleType="fitCenter"
 
