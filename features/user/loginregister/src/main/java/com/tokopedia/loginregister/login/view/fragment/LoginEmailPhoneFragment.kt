@@ -1613,11 +1613,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun onSuccessSubmitVisorToken(message: String) {
-        tokenStatus.text = "visor update backend success : " + message
+        activity?.let {
+            it.runOnUiThread(Runnable {
+                tokenStatus.text = "visor update backend success : " + message
+            })
+        }
     }
 
     override fun onErrorSubmitVisorToken(message: String) {
-        tokenStatus.text = "visor update backend error : " + message
+        activity?.let {
+            it.runOnUiThread(Runnable {
+                tokenStatus.text = "visor update backend error : " + message
+            })
+        }
     }
 
     companion object {
