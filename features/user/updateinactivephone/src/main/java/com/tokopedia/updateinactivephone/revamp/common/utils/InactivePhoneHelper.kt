@@ -4,6 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import androidx.exifinterface.media.ExifInterface
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 
 
@@ -34,4 +37,25 @@ fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
     val matrix = Matrix()
     matrix.preScale(if (horizontal) -1f else 1f, if (vertical) -1f else 1f)
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+}
+
+
+@Throws(IOException::class)
+fun convertBitmapToImageFile(bitmap: Bitmap, quality: Int, filePath: String): File {
+    val file = File(filePath)
+    if (file.exists()) {
+        file.delete()
+    }
+
+    try {
+        val bytes = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bytes)
+        val fo = FileOutputStream(file)
+        fo.write(bytes.toByteArray())
+        fo.flush()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    return file
 }
