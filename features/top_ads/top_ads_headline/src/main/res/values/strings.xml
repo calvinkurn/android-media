@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">top_ads_headline</string>
+    <string name="topads_headline_app_name">top_ads_headline</string>
     <string name="topads_headline_ad_detail_fragment_label">Isi Detail Iklan</string>
     <string name="topads_headline_ad_content_fragment_label">Isi Konten Iklan</string>
     <string name="topads_headline_ad_schedule_and_budget_fragment_label">Atur Jadwal &amp; Anggaran</string>

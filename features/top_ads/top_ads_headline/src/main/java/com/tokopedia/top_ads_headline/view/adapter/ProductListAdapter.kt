@@ -29,10 +29,12 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
                          private val productListAdapterListener: ProductListAdapterListener? = null) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var showShimmer = true
+    private var isRecommendedCategory = false
 
-    fun setProductList(list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
+    fun setProductList(list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>, isRecommendedCategory: Boolean) {
         showShimmer = false
         this.list = list
+        this.isRecommendedCategory = isRecommendedCategory
         notifyDataSetChanged()
     }
 
@@ -62,13 +64,20 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
             viewHolder.productPrice.text = product.productPrice
             viewHolder.productImage.loadImage(product.productImage)
             viewHolder.checkBox.isChecked = selectedProductList.contains(product)
+            setProductRating(product.productRating, product.productReviewCount, viewHolder.ratingView)
+            viewHolder.recommendationTag.showWithCondition(isRecommendedCategory)
+            if (product.isRecommended) {
+                if (selectedProductList.contains(product)) {
+                    productListAdapterListener?.onRecommendedProductChange(product, true)
+                }else{
+                    productListAdapterListener?.onRecommendedProductChange(product, false)
+                }
+            }
             viewHolder.itemView.setOnClickListener {
                 val checked = selectedProductList.contains(product)
                 onItemSelection(checked, product)
                 viewHolder.checkBox.isChecked = selectedProductList.contains(product)
             }
-            setProductRating(product.productRating, product.productReviewCount, viewHolder.ratingView)
-            viewHolder.recommendationTag.showWithCondition(product.isRecommended)
         }
     }
 
@@ -143,7 +152,7 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         init {
             itemView.topadsShimmer.run {
                 layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.item_product_card_height)
+                layoutParams.height = context.resources.getDimensionPixelSize(R.dimen.topads_headline_item_product_card_height)
             }
         }
     }
@@ -187,5 +196,6 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
     interface ProductListAdapterListener {
         fun onProductOverSelect()
         fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data, added: Int)
+        fun onRecommendedProductChange(product: ResponseProductList.Result.TopadsGetListProduct.Data, isAdded: Boolean)
     }
 }

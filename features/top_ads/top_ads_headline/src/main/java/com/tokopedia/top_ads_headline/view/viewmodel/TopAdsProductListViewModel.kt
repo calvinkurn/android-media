@@ -15,7 +15,7 @@ import com.tokopedia.topads.common.domain.usecase.GetEtalaseListUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetListProductUseCase
 import javax.inject.Inject
 
-private const val DEFAULT_RECOMMENDATION_CATEGORY_NAME = "Rekomendasi"
+const val DEFAULT_RECOMMENDATION_CATEGORY_NAME = "Rekomendasi"
 const val DEFAULT_RECOMMENDATION_CATEGORY_ID = "-1"
 
 class TopAdsProductListViewModel @Inject constructor(private val getEtalaseListUseCase: GetEtalaseListUseCase,
@@ -23,6 +23,7 @@ class TopAdsProductListViewModel @Inject constructor(private val getEtalaseListU
                                                      private val getRecommendedHeadlineProductsUseCase: GetRecommendedHeadlineProductsUseCase) : ViewModel() {
 
     private var etalaseListLiveData: MutableLiveData<ArrayList<TopAdsCategoryDataModel>> = MutableLiveData()
+    private var recommendedTopAdsProduct = HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>()
 
     fun getEtalaseListLiveData(): LiveData<ArrayList<TopAdsCategoryDataModel>> = etalaseListLiveData
 
@@ -69,6 +70,7 @@ class TopAdsProductListViewModel @Inject constructor(private val getEtalaseListU
                     } else {
                         topAdsGetListProductUseCase.setParams(keyword, etalaseId, sortBy, isPromoted, rows, start, shopId)
                         val response = topAdsGetListProductUseCase.executeOnBackground()
+                        checkIfRecommended(response)
                         onSuccess(response.topadsGetListProduct.data, response.topadsGetListProduct.eof)
                     }
                 },
@@ -79,6 +81,12 @@ class TopAdsProductListViewModel @Inject constructor(private val getEtalaseListU
         )
     }
 
+    private fun checkIfRecommended(response: ResponseProductList.Result) {
+        response.topadsGetListProduct.data.forEach {
+            it.isRecommended = recommendedTopAdsProduct.contains(it)
+        }
+    }
+
     private fun getResponseInProductModel(response: GetRecommendedHeadlineProductsData.Data): List<ResponseProductList.Result.TopadsGetListProduct.Data> {
         val list = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
         response.topadsGetRecommendedHeadlineProducts.recommendedProducts.products.forEach {
@@ -87,6 +95,7 @@ class TopAdsProductListViewModel @Inject constructor(private val getEtalaseListU
                     productReviewCount = it.reviewCount.toIntOrZero(), departmentId = it.category.id.toIntOrZero(), departmentName = it.category.name, isRecommended = true
             ))
         }
+        recommendedTopAdsProduct.addAll(list)
         return list
     }
 }

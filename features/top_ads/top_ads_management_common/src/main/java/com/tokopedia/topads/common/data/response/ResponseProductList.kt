@@ -60,8 +60,7 @@ data class ResponseProductList(
                     var isRecommended: Boolean = false
             ) : Parcelable {
                 override fun equals(other: Any?): Boolean {
-                    return other is Data && other.productID == this.productID && other.productName == this.productName &&
-                            other.departmentId == this.departmentId && other.departmentName == this.departmentName
+                    return other is Data && other.productID == this.productID && other.productName == this.productName
                 }
 
                 override fun hashCode(): Int {

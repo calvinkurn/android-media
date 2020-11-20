@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.CpmModelMapper
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
+import com.tokopedia.top_ads_headline.data.TopAdsCategoryDataModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
@@ -131,7 +132,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun fetchProductsForPreview() {
-        viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", MAX_PRODUCT_PREVIEW, 0, this::showTopAdsBannerPreview, this::onError)
+        if (selectedTopAdsProducts.isEmpty()) {
+            viewModel.getTopAdsProductList(userSession.shopId.toIntOrZero(), "", "", "", "", MAX_PRODUCT_PREVIEW, 0, this::showTopAdsBannerPreview, this::onError)
+        }
     }
 
     private fun onClickSubmit() {
@@ -150,7 +153,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun showTopAdsBannerPreview(responseProductList: List<ResponseProductList.Result.TopadsGetListProduct.Data> = emptyList()) {
-        val cpmModel = if (responseProductList.isEmpty()) {
+        val cpmModel = if (selectedTopAdsProducts.isNotEmpty()) {
             cpmModelMapper.getCpmModelResponse(selectedTopAdsProducts.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
                     ?: "")
         } else {
@@ -189,8 +192,10 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SELECT_PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            selectedTopAdsProducts = data?.getParcelableArrayListExtra<ResponseProductList.Result.TopadsGetListProduct.Data>(SELECTED_PRODUCT_LIST) as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>
-            if (data.getBooleanExtra(IS_EDITED, false)) {
+            stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<TopAdsCategoryDataModel, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>
+                    ?: HashMap()
+            selectedTopAdsProducts = getSelectedProducts()
+            if (data?.getBooleanExtra(IS_EDITED, false) == true) {
                 onProductsSelectionChange()
             }
             if (selectedTopAdsProducts.isNotEmpty()) {
@@ -212,6 +217,12 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     override fun onDeletePreview(position: Int) {
+        val product = selectedTopAdsProducts[position]
+        stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
+            if (arrayList.contains(product)) {
+                arrayList.remove(product)
+            }
+        }
         selectedTopAdsProducts.removeAt(position)
         setUpSelectedText()
     }
@@ -219,8 +230,18 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun onClickPreview(position: Int) {
         if (position == 0) {
             val intent = Intent(activity, TopAdsProductListActivity::class.java)
-            intent.putExtra(SELECTED_PRODUCT_LIST, selectedTopAdsProducts)
+            intent.putExtra(SELECTED_PRODUCT_LIST, stepperModel?.selectedTopAdsProductMap)
             startActivityForResult(intent, SELECT_PRODUCT_REQUEST_CODE)
         }
+    }
+
+    private fun getSelectedProducts(): ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data> {
+        val result = HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>()
+        stepperModel?.selectedTopAdsProductMap?.forEach { (_, value) ->
+            if (value.size > 1) {
+                result.addAll(value)
+            }
+        }
+        return result.toCollection(ArrayList())
     }
 }

@@ -22,6 +22,8 @@ import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
 import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.adapter.CategoryListAdapter
+import com.tokopedia.top_ads_headline.view.adapter.PRODUCT_ADDED
+import com.tokopedia.top_ads_headline.view.adapter.PRODUCT_REMOVED
 import com.tokopedia.top_ads_headline.view.adapter.ProductListAdapter
 import com.tokopedia.top_ads_headline.view.viewmodel.DEFAULT_RECOMMENDATION_CATEGORY_ID
 import com.tokopedia.top_ads_headline.view.viewmodel.TopAdsProductListViewModel
@@ -62,7 +64,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
     private var isDataEnded = false
     private var linearLayoutManager = LinearLayoutManager(context)
-    private var categoryCount = 0
+    private var selectedTopAdsProductMap: HashMap<TopAdsCategoryDataModel, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>> = HashMap()
 
     companion object {
         fun newInstance(): TopAdsProductListFragment = TopAdsProductListFragment()
@@ -99,12 +101,15 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun getKeyword() = searchInputView.searchBarTextField.text.toString()
 
-    private fun getSelectedProducts() = selectedTopAdsProduct.toCollection(ArrayList())
-
     private fun getDataFromArguments() {
         arguments?.run {
-            getParcelableArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>(SELECTED_PRODUCT_LIST)?.toHashSet()?.let {
-                selectedTopAdsProduct = it
+            getSerializable(SELECTED_PRODUCT_LIST)?.let { it ->
+                (it as? HashMap<TopAdsCategoryDataModel, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>?)?.let { map ->
+                    selectedTopAdsProductMap = map
+                }
+            }
+            selectedTopAdsProductMap.forEach { (_, arrayList) ->
+                selectedTopAdsProduct.addAll(arrayList)
             }
         }
     }
@@ -187,14 +192,17 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun setUpSelectProductCheckBox() {
         selectProductCheckBox.setOnClickListener {
             val isChecked = selectProductCheckBox.isChecked
+            selectedTopAdsProductMap.forEach { (topAdsCategoryDataModel, _) ->
+                selectedTopAdsProductMap[topAdsCategoryDataModel]?.clear()
+            }
+            selectedTopAdsProduct.clear()
             if (isChecked) {
                 productsListAdapter.list.let {
+                    selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
+                        addAll(it.take(MAX_PRODUCT_SELECTION))
+                    }
                     selectedTopAdsProduct.addAll(it.take(MAX_PRODUCT_SELECTION))
-                    categoryCount = selectedTopAdsProduct.size
                 }
-            } else {
-                selectedTopAdsProduct.clear()
-                categoryCount = 0
             }
             setSelectProductText()
             productsListAdapter.notifyDataSetChanged()
@@ -204,6 +212,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     private fun setTickerAndBtn() {
+        val categoryCount = selectedTopAdsProductMap[selectedCategoryDataModel]?.size ?: 0
         ticker.showWithCondition(categoryCount < MIN_PRODUCT_SELECTION)
         btnNext.isEnabled = categoryCount >= MIN_PRODUCT_SELECTION
     }
@@ -243,13 +252,21 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun setUpObservers() {
         viewModel.getEtalaseListLiveData().observe(viewLifecycleOwner, Observer {
             categoryListAdapter.setItems(it)
+            addCategoryToMap(it)
             it.first().let { topAdsCategory ->
                 selectedCategoryDataModel = topAdsCategory
-                categoryCount = 0
                 setProductSelectCbText()
                 fetchTopAdsProducts()
             }
         })
+    }
+
+    private fun addCategoryToMap(categoryList: ArrayList<TopAdsCategoryDataModel>) {
+        categoryList.forEach {
+            if (selectedTopAdsProductMap[it] == null) {
+                selectedTopAdsProductMap[it] = ArrayList()
+            }
+        }
     }
 
     private fun setProductSelectCbText() {
@@ -268,26 +285,19 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         if (data.isEmpty()) {
             selectProductCheckBox.hide()
             ticker.hide()
-        } else if (data.size == selectedTopAdsProduct.size && selectedTopAdsProduct == HashSet(data)) {
-            selectProductCheckBox.show()
-            selectProductCheckBox.setIndeterminate(false)
-            selectProductCheckBox.isChecked = true
-            categoryCount = selectedTopAdsProduct.size
-            setTickerAndBtn()
         } else {
             selectProductCheckBox.show()
-            if (selectedTopAdsProduct.isNotEmpty()) {
-                var count = 0
-                for (product in data) {
-                    if (selectedTopAdsProduct.contains(product)) {
-                        selectProductCheckBox.setIndeterminate(true)
-                        selectProductCheckBox.isChecked = true
-                        count++
-                    }
-                }
-                categoryCount = count
-            }
+            checkIfDeterminate()
             setTickerAndBtn()
+        }
+    }
+
+    private fun checkIfDeterminate() {
+        selectProductCheckBox.isChecked = !selectedTopAdsProductMap[selectedCategoryDataModel].isNullOrEmpty()
+        if (selectedCategoryDataModel?.count == selectedTopAdsProductMap[selectedCategoryDataModel]?.size) {
+            selectProductCheckBox.setIndeterminate(false)
+        } else {
+            selectProductCheckBox.setIndeterminate(true)
         }
     }
 
@@ -306,7 +316,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     private fun onSuccessGetProductList(data: List<ResponseProductList.Result.TopadsGetListProduct.Data>, eof: Boolean) {
         if (data.isNotEmpty() || selectedCategoryDataModel?.id == DEFAULT_RECOMMENDATION_CATEGORY_ID) {
-            productsListAdapter.setProductList(data as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>)
+            productsListAdapter.setProductList(data as ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>, selectedCategoryDataModel?.id == DEFAULT_RECOMMENDATION_CATEGORY_ID)
             prepareForNextFetch(eof)
             setSelectProductCbCheck(data)
         } else {
@@ -329,10 +339,10 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         }
     }
 
-    fun setResultAndFinish() {
+    private fun setResultAndFinish() {
         val intent = Intent()
         intent.putExtra(IS_EDITED, isProductSelectedListEdited)
-        intent.putExtra(SELECTED_PRODUCT_LIST, getSelectedProducts())
+        intent.putExtra(SELECTED_PRODUCT_LIST, selectedTopAdsProductMap)
         activity?.run {
             setResult(Activity.RESULT_OK, intent)
             finish()
@@ -341,15 +351,45 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     override fun onProductOverSelect() {
         view?.let {
+            Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
             Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
     override fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data, added: Int) {
+        when (added) {
+            PRODUCT_ADDED -> {
+                selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
+                    add(product)
+                }
+            }
+            PRODUCT_REMOVED -> {
+                selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
+                    remove(product)
+                }
+            }
+        }
         isProductSelectedListEdited = true
-        selectProductCheckBox.setIndeterminate(true)
+        checkIfDeterminate()
         setSelectProductText()
-        categoryCount += added
+        setTickerAndBtn()
+    }
+
+    override fun onRecommendedProductChange(product: ResponseProductList.Result.TopadsGetListProduct.Data, isAdded: Boolean) {
+        if (isAdded) {
+            selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
+                if (!this.contains(product)) {
+                    add(product)
+                }
+            }
+        } else {
+            selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
+                if (this.contains(product)) {
+                    remove(product)
+                }
+            }
+        }
+        checkIfDeterminate()
         setTickerAndBtn()
     }
 }

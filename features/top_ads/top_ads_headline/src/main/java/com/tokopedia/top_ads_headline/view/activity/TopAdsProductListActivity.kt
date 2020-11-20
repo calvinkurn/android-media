@@ -12,13 +12,9 @@ class TopAdsProductListActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         val fragment = TopAdsProductListFragment.newInstance()
         val bundle = Bundle()
-        bundle.putParcelableArrayList(SELECTED_PRODUCT_LIST, intent.getParcelableArrayListExtra(SELECTED_PRODUCT_LIST))
+        bundle.putSerializable(SELECTED_PRODUCT_LIST, intent.getSerializableExtra(SELECTED_PRODUCT_LIST))
         fragment.arguments = bundle
         return fragment
     }
 
-    override fun onBackPressed() {
-        (fragment as? TopAdsProductListFragment)?.setResultAndFinish()
-        super.onBackPressed()
-    }
 }
