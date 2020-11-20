@@ -106,7 +106,7 @@
                     android:inputType="none"
                     android:focusable="false"
                     android:enabled="true"
-                    android:textSize="@dimen/sp_16"
+                    android:textSize="@dimen/sp_14"
                     android:maxLines="1"
                     android:textColorHint="@color/Neutral_N700_68"
                     android:background="@null"
