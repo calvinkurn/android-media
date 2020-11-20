@@ -182,6 +182,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 sendViewShippingErrorMessage(result.shippingErrorId)
                 calculateTotal(forceButtonState = OccButtonState.DISABLE)
             }
+            updateCart()
         }
     }
 
@@ -229,6 +230,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     validateUsePromoRevampUiModel = resultValidateUse
                     globalEvent.value = OccGlobalEvent.Normal
                     updatePromoState(resultValidateUse.promoUiModel)
+                    updateCart()
                     return@launch
                 }
             }
@@ -238,11 +240,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 validateUsePromoRevampUiModel = resultValidateUse
                 globalEvent.value = OccGlobalEvent.Normal
                 updatePromoState(resultValidateUse.promoUiModel)
+                updateCart()
                 return@launch
             }
             orderPromo.value = orderPromo.value.copy(state = OccButtonState.DISABLE)
             globalEvent.value = newGlobalEvent
             calculateTotal(forceButtonState = OccButtonState.DISABLE)
+            updateCart()
         }
     }
 
@@ -259,8 +263,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             clearBboIfExist()
             _orderShipment = it
             orderShipment.value = _orderShipment
-            updateCart()
             validateUsePromo()
+            updateCart()
         }
     }
 
@@ -279,8 +283,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderShipment.value = _orderShipment
             sendPreselectedCourierOption(selectedShippingCourierUiModel.productData.shipperProductId.toString())
             if (it.serviceErrorMessage.isNullOrEmpty()) {
-                updateCart()
                 validateUsePromo()
+                updateCart()
             } else {
                 calculateTotal(forceButtonState = OccButtonState.DISABLE)
             }
@@ -321,12 +325,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                     validateUsePromoRevampUiModel = resultValidateUse
                     updatePromoState(resultValidateUse.promoUiModel)
                     globalEvent.value = newEvent
+                    updateCart()
                     return@launch
                 }
                 resultValidateUse?.let {
                     validateUsePromoRevampUiModel = it
                 }
                 globalEvent.value = newGlobalEvent
+                updateCart()
             }
         }
     }
@@ -350,7 +356,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
     }
 
-    fun updateCart(shouldValidatePrompt: Boolean = false) {
+    fun updateCart() {
         launch(executorDispatchers.main) {
             cartProcessor.updateCartIgnoreResult(orderCart, _orderPreference, _orderShipment, _orderPayment)
         }

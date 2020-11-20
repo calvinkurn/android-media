@@ -193,12 +193,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
                 is OccState.Loading -> {
                     if (progressDialog == null) {
-                        progressDialog = AlertDialog.Builder(context!!)
-                                .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
-                                .setCancelable(false)
-                                .create()
+                        context?.let { ctx ->
+                            progressDialog = AlertDialog.Builder(ctx)
+                                    .setView(com.tokopedia.purchase_platform.common.R.layout.purchase_platform_progress_dialog_view)
+                                    .setCancelable(false)
+                                    .create()
+                        }
                     }
-                    progressDialog?.show()
+                    if (progressDialog?.isShowing == false) {
+                        progressDialog?.show()
+                    }
                 }
             }
         })
