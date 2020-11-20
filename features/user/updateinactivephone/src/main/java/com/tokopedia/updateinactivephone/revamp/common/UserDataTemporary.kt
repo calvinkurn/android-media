@@ -34,6 +34,14 @@ class UserDataTemporary constructor(
         getSharedPReference().edit().putString(KEY_OLD_PHONE, value).apply()
     }
 
+    fun getNewPhone(): String {
+        return getSharedPReference().getString(KEY_NEW_PHONE, "") ?: ""
+    }
+
+    fun setNewPhone(value: String) {
+        getSharedPReference().edit().putString(KEY_NEW_PHONE, value).apply()
+    }
+
     fun getIndex(): Int {
         return getSharedPReference().getInt(KEY_USER_INDEX, 0)
     }
@@ -54,6 +62,7 @@ class UserDataTemporary constructor(
         private const val KEY_USER_ID = "userId"
         private const val KEY_EMAIL = "email"
         private const val KEY_OLD_PHONE = "oldPhone"
+        private const val KEY_NEW_PHONE = "newPhone"
         private const val KEY_USER_INDEX = "userIndex"
     }
 }
