@@ -1,11 +1,11 @@
-package com.tokopedia.thankyou_native.presentation.adapter
+package com.tokopedia.thankyou_native.presentation.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.thankyou_native.presentation.adapter.model.*
-import com.tokopedia.thankyou_native.presentation.adapter.viewholder.*
+import com.tokopedia.thankyou_native.presentation.adapter.viewholder.invoice.*
 
 class InvoiceTypeFactory : BaseAdapterTypeFactory() {
 

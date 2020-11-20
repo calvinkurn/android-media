@@ -17,12 +17,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.AttachProduct.*
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -76,6 +76,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         const val TOASTER_ERROR_WITH_ATTACHED_PRODUCTS_HEIGHT = 150
         const val NOT_IN_VIEWHOLDER = false
         const val MINIMUM_TEXT_LENGTH = 5
+        const val SOURCE_TALK = "talk"
 
         @JvmStatic
         fun createNewInstance(questionId: String, shopId: String, source: String, inboxType: String): TalkReplyFragment =
@@ -161,10 +162,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                     }
                 }
                 ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE -> {
-                    if (!it.hasExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
+                    if (!it.hasExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)) {
                         return
                     }
-                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
+                    val resultProducts: ArrayList<ResultProduct> = it.getParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)
                     setAttachedProducts(TalkReplyMapper.mapResultProductsToAttachedProducts(resultProducts))
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)
@@ -312,7 +313,11 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     private fun goToAttachProductActivity() {
-        val intent = context?.let { AttachProductActivity.createInstance(it, shopId, "", viewModel.isMyShop, AttachProductActivity.SOURCE_TALK) }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, viewModel.isMyShop)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TALK)
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }
 
