@@ -141,11 +141,13 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
         }
 
         iconImage.setOnClickListener {
-            NavToolbarTracking.clickNavToolbarComponent(
-                    pageName = topNavComponentListener.getPageName(),
-                    componentName = iconToolbar.name,
-                    userId = topNavComponentListener.getUserId()
-            )
+            if (!iconToolbar.disableDefaultGtmTracker) {
+                NavToolbarTracking.clickNavToolbarComponent(
+                        pageName = topNavComponentListener.getPageName(),
+                        componentName = iconToolbar.name,
+                        userId = topNavComponentListener.getUserId()
+                )
+            }
             iconToolbar.onIconClicked.invoke()
             val isLoggedIn = topNavComponentListener.isLoggedIn()
             if (!iconToolbar.disableRouteManager && iconToolbar.applink.isNotEmpty() && isLoggedIn) {
@@ -179,11 +181,13 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
         iconImage.progress = 0f
         iconToolbar.imageRes?.let { iconImage.setAnimation(iconToolbar.imageRes) }
         iconImage.setOnClickListener {
-            NavToolbarTracking.clickNavToolbarComponent(
-                    pageName = topNavComponentListener.getPageName(),
-                    componentName = iconToolbar.name,
-                    userId = topNavComponentListener.getUserId()
-            )
+            if (!iconToolbar.disableDefaultGtmTracker) {
+                NavToolbarTracking.clickNavToolbarComponent(
+                        pageName = topNavComponentListener.getPageName(),
+                        componentName = iconToolbar.name,
+                        userId = topNavComponentListener.getUserId()
+                )
+            }
             iconToolbar.onIconClicked.invoke()
             val isLoggedIn = topNavComponentListener.isLoggedIn()
             if (!iconToolbar.disableRouteManager && iconToolbar.applink.isNotEmpty() && isLoggedIn) {
