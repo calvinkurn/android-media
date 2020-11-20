@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.reviewdetail.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.review.common.util.DataEndlessScrollListener
+import com.tokopedia.review.feature.reviewdetail.view.adapter.diffutil.SellerReviewDetailDiffUtil
 import com.tokopedia.review.feature.reviewdetail.view.model.*
 
 class SellerReviewDetailAdapter(
@@ -18,10 +19,11 @@ class SellerReviewDetailAdapter(
     private var productReviewDetailFeedback: MutableList<FeedbackUiModel> = mutableListOf()
 
     fun setFeedbackListData(feedbackListUiModel: List<FeedbackUiModel>, reviewCount: Int) {
+        val lastIndex = visitables.size
         updateReviewCount(reviewCount)
         productReviewDetailFeedback.addAll(feedbackListUiModel)
         visitables.addAll(feedbackListUiModel)
-        notifyDataSetChanged()
+        notifyItemRangeInserted(lastIndex, feedbackListUiModel.size)
     }
 
     private fun updateReviewCount(reviewCount: Int) {
@@ -87,6 +89,7 @@ class SellerReviewDetailAdapter(
     fun removeReviewNotFound() {
         if (visitables.getOrNull(lastIndex) is ProductFeedbackErrorUiModel) {
             visitables.removeAt(lastIndex)
+            notifyItemRemoved(lastIndex)
         }
     }
 
