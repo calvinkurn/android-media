@@ -156,6 +156,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val chatListHeightMap = mutableMapOf<ChatHeightMapKey, Float>()
 
     private var mMaxTopChatMode: Int? = null
+    private var toasterBottomMargin = 0
 
     /**
      * Animation
@@ -945,8 +946,13 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun showLinkCopiedToaster() {
+        if (toasterBottomMargin == 0) {
+            val offset24 = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
+           toasterBottomMargin = likeView.clickAreaView.height + offset24
+        }
+        Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
-                requireView(),
+                container,
                 getString(R.string.play_link_copied),
                 type = Toaster.TYPE_NORMAL).show()
     }
