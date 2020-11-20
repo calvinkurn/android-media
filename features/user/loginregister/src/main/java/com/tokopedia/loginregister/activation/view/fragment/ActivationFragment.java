@@ -181,7 +181,7 @@ public class ActivationFragment extends BaseDaggerFragment
                               @Override
                               public void updateDrawState(TextPaint ds) {
                                   ds.setColor(MethodChecker.getColor(getActivity(),
-                                          R.color.tkpd_main_green));
+                                          com.tokopedia.unifyprinciples.R.color.Unify_G400));
                               }
                           }
                 , getString(R.string.activation_resend_email_2).indexOf("Kirim")
@@ -239,12 +239,12 @@ public class ActivationFragment extends BaseDaggerFragment
                     activateButton.setEnabled(true);
                     MethodChecker.setBackground(activateButton,
                             MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded));
-                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
+                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0));
                 } else {
                     activateButton.setEnabled(false);
                     MethodChecker.setBackground(activateButton,
                             MethodChecker.getDrawable(getActivity(), R.drawable.grey_button_rounded));
-                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
+                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N700_20));
                 }
             }
         });
