@@ -91,7 +91,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         return data
     }
 
-    suspend fun getRates(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>): ResultRates {
+    suspend fun getRates(orderCart: OrderCart, orderPreference: OrderPreference, orderShipment: OrderShipment, listShopShipment: List<ShopShipment>, isNewFlow: Boolean): ResultRates {
         OccIdlingResource.increment()
         val result: ResultRates = withContext(executorDispatchers.io) {
             try {
@@ -160,7 +160,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         OrderShipment(
                                 serviceName = orderPreference.preference.shipment.serviceName,
                                 serviceDuration = orderPreference.preference.shipment.serviceDuration,
-                                serviceErrorMessage = OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE,
+                                serviceErrorMessage = if (isNewFlow) OrderSummaryPageViewModel.FAIL_GET_RATES_ERROR_MESSAGE else OrderSummaryPageViewModel.NO_COURIER_SUPPORTED_ERROR_MESSAGE,
                                 shippingRecommendationData = null
                         ),
                         "",

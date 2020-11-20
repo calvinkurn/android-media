@@ -76,7 +76,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private var hasSentViewOspEe = false
 
-    var isNewFlow = true
+    var isNewFlow = false
 
     fun getCurrentProfileId(): Int {
         return _orderPreference.preference.profileId
@@ -161,7 +161,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun getRates() {
         launch(executorDispatchers.main) {
-            val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment())
+            val result = logisticProcessor.getRates(orderCart, _orderPreference, _orderShipment, generateListShopShipment(), isNewFlow)
             if (result.clearOldPromoCode.isNotEmpty()) {
                 clearOldLogisticPromo(result.clearOldPromoCode)
             }
