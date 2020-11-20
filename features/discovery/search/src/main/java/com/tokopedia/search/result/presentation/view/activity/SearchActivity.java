@@ -512,7 +512,7 @@ public class SearchActivity extends BaseActivity
         );
     }
 
-    private Unit onSearchNavigationSearchBarClicked() {
+    private Unit onSearchNavigationSearchBarClicked(String keyword) {
         moveToAutoCompleteActivity();
         return Unit.INSTANCE;
     }
