@@ -151,7 +151,7 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             if (!iconToolbar.disableRouteManager && iconToolbar.applink.isNotEmpty() && isLoggedIn) {
                 RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
             } else if (!iconToolbar.disableRouteManager && iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
-                RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
+                RouteManager.route(context, iconToolbar.bundle, iconToolbar.nonLoginApplink, null)
             }
         }
 
@@ -189,7 +189,7 @@ internal class LottieIconHolder(view: View, val topNavComponentListener: TopNavC
             if (!iconToolbar.disableRouteManager && iconToolbar.applink.isNotEmpty() && isLoggedIn) {
                 RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
             } else if (!iconToolbar.disableRouteManager && iconToolbar.nonLoginApplink.isNotEmpty() && !isLoggedIn){
-                RouteManager.route(context, iconToolbar.bundle, iconToolbar.applink, null)
+                RouteManager.route(context, iconToolbar.bundle, iconToolbar.nonLoginApplink, null)
             }
         }
 
