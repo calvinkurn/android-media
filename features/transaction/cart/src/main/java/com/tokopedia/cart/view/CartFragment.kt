@@ -842,7 +842,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 setOnBackButtonClickListener { onBackPressed() }
                 setIcon(
                         IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
-                                .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, ::onNavigationToolbarWishlistClicked)
+                                .addIcon(IconList.ID_NAV_LOTTIE_WISHLIST, false, false, ::onNavigationToolbarWishlistClicked)
                                 .addIcon(IconList.ID_NAV_GLOBAL) {}
                 )
 

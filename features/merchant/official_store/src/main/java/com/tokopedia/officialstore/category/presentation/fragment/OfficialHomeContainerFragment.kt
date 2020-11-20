@@ -281,8 +281,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                                 .addIcon(IconList.ID_NAV_GLOBAL) {}
                 )
                 setupSearchbar(
-                        listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                        ApplinkConstant.OFFICIAL_SEARCHBAR
+                        hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
+                        applink = ApplinkConstant.OFFICIAL_SEARCHBAR
                 )
                 show()
             }
