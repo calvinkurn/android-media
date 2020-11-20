@@ -7,6 +7,5 @@ package com.tokopedia.review.feature.reviewdetail.data
 data class ProductReviewInitialDataResponse(
         var productFeedBackResponse : ProductFeedbackDetailResponse? = null,
         var productReviewDetailOverallResponse: ProductReviewDetailOverallResponse? = null,
-        var productReviewFilterResponse: ProductFeedbackFilterResponse? = null,
-        var failResult: Throwable? = null
+        var productReviewFilterResponse: ProductFeedbackFilterResponse? = null
 )
