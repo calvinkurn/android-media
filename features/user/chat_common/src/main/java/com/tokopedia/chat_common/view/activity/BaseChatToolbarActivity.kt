@@ -38,7 +38,7 @@ abstract class BaseChatToolbarActivity : BaseChatActivity() {
         setSupportActionBar(toolbar)
 
         supportActionBar?.run {
-            setBackgroundDrawable(ColorDrawable(resources.getColor(R.color.Unify_N0)))
+            setBackgroundDrawable(ColorDrawable(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0)))
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
             setHomeButtonEnabled(true)

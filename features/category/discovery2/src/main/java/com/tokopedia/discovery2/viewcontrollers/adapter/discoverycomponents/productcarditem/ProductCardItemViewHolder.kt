@@ -210,9 +210,11 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showNotifyMe(dataItem: DataItem) {
-        if (productCardItemViewModel.notifyMeVisibility() == true) {
-            notifyMeView.show()
-            updateNotifyMeState(dataItem.notifyMe)
+        if (productCardItemViewModel.notifyMeVisibility()) {
+            dataItem.notifyMe?.let {
+                notifyMeView.show()
+                updateNotifyMeState(it)
+            }
         } else {
             notifyMeView.hide()
         }

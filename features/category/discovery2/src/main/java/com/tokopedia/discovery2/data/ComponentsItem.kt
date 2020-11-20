@@ -75,14 +75,17 @@ data class ComponentsItem(
         var rpc_PinnedProduct: String? = "",
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
+        var tabName: String? = "",
         var description : String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 
-    fun setComponentsItem(listComponents: List<ComponentsItem>?) {
+    fun setComponentsItem(listComponents: List<ComponentsItem>?, tabName: String? = "") {
         listComponents?.forEach {
             it.parentComponentId = this.id
             it.pageEndPoint = this.pageEndPoint
+            it.tabName = tabName
+            it.data?.firstOrNull()?.tabName = tabName
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
         componentsItem = listComponents

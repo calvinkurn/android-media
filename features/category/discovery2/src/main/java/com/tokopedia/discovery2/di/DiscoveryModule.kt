@@ -130,11 +130,6 @@ class DiscoveryModule(val repoProvider: RepositoryProvider) {
     }
 
     @Provides
-    fun provideDiscoveryUIConfigQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_discovery_ui_config)
-    }
-
-    @Provides
     fun provideQuickCouponGQLRepository(@ApplicationContext context: Context): QuickCouponRepository {
         return QuickCouponGQLRepository(provideGetStringMethod(context))
     }

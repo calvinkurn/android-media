@@ -121,9 +121,10 @@ class ThankYouPageAnalytics @Inject constructor(
     }
 
     private fun getActionFieldNode(orderedItem: ShopOrder): Map<String, Any?> {
+        val storeName = orderedItem.storeName?:""
         return mapOf(
                 ParentTrackingKey.KEY_ID to orderedItem.orderId,
-                ActionFieldNodeTrackingKey.KEY_AFFILIATION to orderedItem.storeName,
+                ActionFieldNodeTrackingKey.KEY_AFFILIATION to storeName,
                 ActionFieldNodeTrackingKey.KEY_REVENUE to orderedItem.revenue.toString(),
                 ActionFieldNodeTrackingKey.KEY_TAX to if (orderedItem.tax > 0) orderedItem.tax else null,
                 ActionFieldNodeTrackingKey.KEY_SHIPPING to orderedItem.shippingAmount.toString(),

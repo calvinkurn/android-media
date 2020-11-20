@@ -78,6 +78,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                             private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                             private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+                                            private val followShopUseCase: FollowShopUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
@@ -1403,6 +1404,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.add(
                 setCartlistCheckboxStateUseCase.createObservable(requestParams)
                         .subscribe(SetCartlistCheckboxStateSubscriber())
+        )
+    }
+
+    override fun followShop(shopId: String) {
+        view?.showProgressLoading()
+        val requestParams = followShopUseCase.buildRequestParams(shopId)
+        compositeSubscription.add(followShopUseCase.createObservable(requestParams)
+                .subscribe(FollowShopSubscriber(view, this))
         )
     }
 }

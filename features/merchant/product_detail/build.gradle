@@ -29,7 +29,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         google()
     }
     dependencies {
@@ -80,7 +80,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.features.carouselProductCard)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.variantCommon)
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation project(rootProject.ext.libraries.analyticAnnotationCentral)

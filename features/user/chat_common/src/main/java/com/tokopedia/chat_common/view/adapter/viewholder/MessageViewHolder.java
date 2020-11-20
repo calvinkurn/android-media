@@ -1,20 +1,19 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
-import com.tokopedia.chat_common.R;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * @author by nisie on 5/16/18.
@@ -120,8 +119,8 @@ public class MessageViewHolder extends BaseChatViewHolder<MessageViewModel> {
                 .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
-        message.setTextColor(MethodChecker.getColor(context, R.color.Unify_N0));
-        message.setLinkTextColor(MethodChecker.getColor(context, R.color.Unify_N0));
+        message.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        message.setLinkTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
         chatStatus.setVisibility(View.VISIBLE);
     }
 

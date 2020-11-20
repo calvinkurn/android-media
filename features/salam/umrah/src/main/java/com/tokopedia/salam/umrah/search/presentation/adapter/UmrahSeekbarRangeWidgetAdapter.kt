@@ -60,9 +60,9 @@ class UmrahSeekbarRangeWidgetAdapter : RecyclerView.Adapter<UmrahSeekbarRangeWid
                     text = item.toString()
                 }
                 if (isSelected){
-                    number.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
+                    number.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G400))
                 } else {
-                    number.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.light_secondary))
+                    number.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                 }
             }
         }
