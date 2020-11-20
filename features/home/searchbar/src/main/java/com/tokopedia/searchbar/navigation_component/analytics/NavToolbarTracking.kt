@@ -11,13 +11,13 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object NavToolbarTracking: BaseTrackerConst() {
     private const val ACTION_CLICK_ON_TOP_NAV = "click %s nav"
 
-    fun clickNavToolbarComponent(pageName: String, componentName: String, userId: String) {
+    fun clickNavToolbarComponent(pageName: String, componentName: String, userId: String, keyword: String = "") {
         val trackingBuilder = BaseTrackerBuilder()
         trackingBuilder.constructBasicGeneralClick(
                 event = EVENT_CLICK_NAVIGATION_DRAWER,
                 eventCategory = String.format(CATEGORY_TOP_NAV, pageName),
                 eventAction = String.format(ACTION_CLICK_ON_TOP_NAV, componentName),
-                eventLabel = DEFAULT_EMPTY
+                eventLabel = keyword
         )
         trackingBuilder.appendCurrentSite(DEFAULT_CURRENT_SITE)
         trackingBuilder.appendUserId(userId)
