@@ -27,7 +27,7 @@ class VisorFingerprintInstance {
                     visorToken = strToken
                     listener.onSuccessInitToken(token = strToken)
                 } else {
-                    listener.onFailedInitToken(error = "failed to init visor token")
+                    listener.onFailedInitToken(error = "failed to init visor token code : " + nResultCode)
                 }
             }
         }
