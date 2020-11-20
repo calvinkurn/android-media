@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ANNOUNCEMENT
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_ERROR
 import com.tokopedia.sellerorder.common.util.SomConsts.UNIFY_TICKER_TYPE_INFO
@@ -104,6 +105,11 @@ object Utils {
         return sdf.format(timeMillis)
     }
 
+    fun Long.formatDate(pattern: String, locale: Locale = getLocale()): String {
+        val sdf = SimpleDateFormat(pattern, locale)
+        return sdf.format(this)
+    }
+
     fun getNPastDaysTimestamp(daysBefore: Long): Long {
         return Calendar.getInstance(getLocale()).timeInMillis.minus(TimeUnit.DAYS.toMillis(daysBefore))
     }
@@ -112,6 +118,22 @@ object Utils {
         val date = Calendar.getInstance(getLocale())
         date.set(Calendar.YEAR, date.get(Calendar.YEAR) - yearBefore)
         return date.time
+    }
+
+    fun getNPastMonthTimeStamp(monthBefore: Int): Long {
+        val date = Calendar.getInstance(getLocale())
+        date.set(Calendar.MONTH, date.get(Calendar.MONTH) - monthBefore)
+        return date.timeInMillis
+    }
+
+    fun getNowTimeStamp(): Long {
+        val date = Calendar.getInstance(getLocale())
+        return date.timeInMillis
+    }
+
+    fun getNPastMonthTimeText(monthBefore: Int): String {
+        val pastTwoYear = getNPastMonthTimeStamp(monthBefore)
+        return format(pastTwoYear, PATTERN_DATE_PARAM)
     }
 
     fun getNNextDaysTimestamp(daysNext: Long): Long {

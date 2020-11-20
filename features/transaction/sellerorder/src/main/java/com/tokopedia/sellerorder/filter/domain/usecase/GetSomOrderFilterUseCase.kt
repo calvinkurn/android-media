@@ -36,10 +36,6 @@ class GetSomOrderFilterUseCase @Inject constructor(repository: GraphqlRepository
                     is_checked
                   }
                 }
-                waiting_payment_counter{
-                  text
-                  amount
-                }
                 shipping_list{
                   shipping_id
                   shipping_code

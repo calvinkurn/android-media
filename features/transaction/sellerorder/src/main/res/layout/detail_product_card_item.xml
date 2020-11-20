@@ -44,7 +44,7 @@
             android:id="@+id/cv_product_img"
             android:layout_width="@dimen/som_list_product_image_size"
             android:layout_height="@dimen/som_list_product_image_size"
-            app:cardCornerRadius="6dp"
+            app:cardCornerRadius="@dimen/dp_6"
             app:cardElevation="@dimen/dp_0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
