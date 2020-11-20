@@ -57,9 +57,10 @@ class NavSearchbarController(val view: View,
         etSearch.hint = if (hint.placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else hint.placeholder
         etSearch.setOnClickListener {
             NavToolbarTracking.clickNavToolbarComponent(
-                    topNavComponentListener.getPageName(),
-                    IconList.NAME_SEARCH_BAR,
-                    topNavComponentListener.getUserId()
+                    pageName = topNavComponentListener.getPageName(),
+                    componentName = IconList.NAME_SEARCH_BAR,
+                    userId = topNavComponentListener.getUserId(),
+                    keyword = hint.keyword
             )
             if (searchbarClickCallback == null) {
                 onClickHint()
@@ -106,9 +107,9 @@ class NavSearchbarController(val view: View,
                 etSearch.startAnimation(slideOutUp)
                 etSearch.setOnClickListener {
                     NavToolbarTracking.clickNavToolbarComponent(
-                            topNavComponentListener.getPageName(),
-                            IconList.NAME_SEARCH_BAR,
-                            topNavComponentListener.getUserId()
+                            pageName = topNavComponentListener.getPageName(),
+                            componentName = IconList.NAME_SEARCH_BAR,
+                            userId = topNavComponentListener.getUserId()
                     )
                     if (searchbarClickCallback == null) {
                         onClickHint()

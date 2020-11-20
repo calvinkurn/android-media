@@ -258,9 +258,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
         nav_icon_back.setOnClickListener {
             NavToolbarTracking.clickNavToolbarComponent(
-                    toolbarPageName,
-                    IconList.NAME_BACK_BUTTON,
-                    getUserId()
+                    pageName = toolbarPageName,
+                    componentName = IconList.NAME_BACK_BUTTON,
+                    userId = getUserId()
             )
             backButtonClickListener.invoke()
         }
@@ -295,9 +295,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
             if (context is Activity) {
                 nav_icon_back.setOnClickListener {
                     NavToolbarTracking.clickNavToolbarComponent(
-                            toolbarPageName,
-                            IconList.NAME_BACK_BUTTON,
-                            getUserId()
+                            pageName = toolbarPageName,
+                            componentName = IconList.NAME_BACK_BUTTON,
+                            userId = getUserId()
                     )
                     (context as? Activity)?.onBackPressed()
                 }

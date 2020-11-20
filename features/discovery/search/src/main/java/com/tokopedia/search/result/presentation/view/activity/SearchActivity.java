@@ -513,10 +513,6 @@ public class SearchActivity extends BaseActivity
     }
 
     private Unit onSearchNavigationSearchBarClicked(String keyword) {
-        keyword = "";
-        if (searchParameter != null) keyword = searchParameter.getSearchQuery();
-
-        SearchTracking.trackEventClickSearchBar(keyword);
         moveToAutoCompleteActivity();
         return Unit.INSTANCE;
     }
