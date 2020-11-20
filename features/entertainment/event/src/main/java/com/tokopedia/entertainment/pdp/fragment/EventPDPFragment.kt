@@ -114,6 +114,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializePerformance()
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
     }
 

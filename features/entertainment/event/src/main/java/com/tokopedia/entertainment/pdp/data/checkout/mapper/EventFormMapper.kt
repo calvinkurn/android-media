@@ -101,7 +101,7 @@ object EventFormMapper {
     fun isEmptyForms(list: List<Form>, emptyString: String): Boolean {
         var status = false
         loop@ for (i in 0..list.size - 1) {
-            if (list.get(i).value.isNullOrEmpty() || list.get(i).value.equals(emptyString)) {
+            if ((list.get(i).value.isNullOrEmpty() || list.get(i).value.equals(emptyString) && list.get(i).required==1) ) {
                 status = true
                 break@loop
             }

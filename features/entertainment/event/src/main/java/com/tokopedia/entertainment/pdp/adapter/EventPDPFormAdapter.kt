@@ -85,7 +85,7 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         formData.forEachIndexed {index, it ->
             if (it.required == 1) {
                 if (((it.value.isBlank() || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) && !it.elementType.equals(ELEMENT_LIST)) ||
-                     ((it.value.isBlank() || (it.value.equals("0")) || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) && it.elementType.equals(CHECKBOX_TYPE_TEXT))  ||
+                     ((it.value.isBlank() || (it.value.equals(CHECKBOX_FALSE)) || it.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form))) && it.elementType.equals(CHECKBOX_TYPE_TEXT))  ||
                         (it.valuePosition.equals(BLANK_LIST) && it.elementType.equals(ELEMENT_LIST))) {
                     listError.add(Pair(it.title, EMPTY_TYPE))
                     it.isError = true
@@ -127,6 +127,8 @@ class EventPDPFormAdapter(val userSession: UserSessionInterface,
         const val CHECKBOX_TYPE = 2
         const val DATEPICKER_TYPE = 3
         const val CHIP_TYPE = 4
+
+        const val CHECKBOX_FALSE = "0"
 
         const val TEXT_TYPE_TEXT = "text"
         const val LIST_TYPE_TEXT = "list"

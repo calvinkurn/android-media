@@ -128,6 +128,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicketModel, PackageType
         endDate = arguments?.getString(END_DATE, "") ?: ""
         super.onCreate(savedInstanceState)
 
+        TimeZone.setDefault(TimeZone.getTimeZone("GMT+7"));
         localCacheHandler = LocalCacheHandler(context, PREFERENCES_NAME)
     }
 

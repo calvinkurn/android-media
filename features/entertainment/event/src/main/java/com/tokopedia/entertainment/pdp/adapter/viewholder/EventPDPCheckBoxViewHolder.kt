@@ -19,7 +19,7 @@ class EventPDPCheckBoxViewHolder(val view: View,
         with(itemView) {
             tg_cb_form_event.text = element.title
             cb_form_event.setOnCheckedChangeListener { _, isChecked ->
-                val value = if (isChecked) 1 else 0
+                val value = if (isChecked) CHECKBOX_TRUE_VALUE else CHECKBOX_FALSE_VALUE
                 addOrRemoveData(position, value.toString(), "")
 
                 if (!element.value.equals(resources.getString(R.string.ent_checkout_data_nullable_form)) || element.value.isNullOrEmpty()) {
@@ -28,8 +28,8 @@ class EventPDPCheckBoxViewHolder(val view: View,
                 }
             }
 
-            cb_form_event.isChecked = element.value.equals("1")
-            val value = if (element.value.equals("1")) 1 else 0
+            cb_form_event.isChecked = element.value.equals(CHECKBOX_TRUE)
+            val value = if (element.value.equals(CHECKBOX_TRUE)) CHECKBOX_TRUE_VALUE else CHECKBOX_FALSE_VALUE
             addOrRemoveData(position, value.toString(), "")
 
             if (element.isError) {
@@ -45,5 +45,9 @@ class EventPDPCheckBoxViewHolder(val view: View,
 
     companion object {
         val LAYOUT_CHECKBOX = R.layout.ent_pdp_form_check_box_item
+
+        const val CHECKBOX_TRUE = "1"
+        const val CHECKBOX_TRUE_VALUE = 1
+        const val CHECKBOX_FALSE_VALUE = 0
     }
 }

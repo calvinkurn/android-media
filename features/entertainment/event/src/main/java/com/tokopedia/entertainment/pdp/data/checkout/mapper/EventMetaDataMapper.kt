@@ -53,7 +53,10 @@ object EventMetaDataMapper {
     }
 
     private fun getValueForm(form: Form):String{
-        return if(form.elementType.equals(ELEMENT_LIST)) form.valuePosition else form.value
+        return if(form.elementType.equals(ELEMENT_LIST)) form.valuePosition
+        else if(form.value.equals("Data belum diisi", false)) ""
+        else form.value
+
     }
 
     fun getCheckoutParam(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2Params {
