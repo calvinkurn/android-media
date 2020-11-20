@@ -50,7 +50,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
         tv_payment_success_check_order.text = getString(R.string.thank_cod_payment_check_order)
 
         if(thanksPageData.gatewayImage.isNotEmpty()){
-            ivPayment.scaleType = ImageView.ScaleType.CENTER
+            ivPayment.scaleType = ImageView.ScaleType.CENTER_INSIDE
             ivPayment.setImageUrl(thanksPageData.gatewayImage)
         }
 

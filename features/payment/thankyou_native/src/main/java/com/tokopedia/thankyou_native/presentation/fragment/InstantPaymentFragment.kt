@@ -103,7 +103,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
         }
 
         if (thanksPageData.gatewayImage.isNotEmpty()) {
-            ivPayment.scaleType = ImageView.ScaleType.CENTER
+            ivPayment.scaleType = ImageView.ScaleType.CENTER_INSIDE
             ivPayment.setImageUrl(thanksPageData.gatewayImage)
         }
 
