@@ -108,20 +108,32 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         get() = _getPromoLastSeenResponse
 
     // Page source : CART, CHECKOUT, OCC
-    private fun getPageSource(): Int {
+    fun getPageSource(): Int {
         return fragmentUiModel.value?.uiData?.pageSource ?: 0
     }
 
+    // Used for mocking _fragmentUiModel value.
+    // Should only be called from unit test.
+    fun setFragmentUiModelValue(value: FragmentUiModel) {
+        _fragmentUiModel.value = value
+    }
+
     // Used for mocking _promoListUiModel value.
-    // Called from unit test.
+    // Should only be called from unit test.
     fun setPromoListValue(value: ArrayList<Visitable<*>>) {
         _promoListUiModel.value = value
     }
 
     // Used for mocking _promoRecommendationUiModel value.
-    // Called from unit test.
+    // Should only be called from unit test.
     fun setPromoRecommendationValue(value: PromoRecommendationUiModel) {
         _promoRecommendationUiModel.value = value
+    }
+
+    // Used for mocking _promoInputUiModel value.
+    // Should only be called from unit test.
+    fun setPromoInputUiModelValue(value: PromoInputUiModel) {
+        _promoInputUiModel.value = value
     }
 
 
@@ -1027,6 +1039,10 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
 
     fun resetPromo() {
         analytics.eventClickResetPromo(getPageSource())
+        resetSelectedPromo()
+    }
+
+    private fun resetSelectedPromo() {
         val promoList = ArrayList<Visitable<*>>()
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel) {
@@ -1194,6 +1210,7 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
     }
 
     fun applyRecommendedPromo() {
+        resetSelectedPromo()
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             analytics.eventClickPilihPromoRecommendation(getPageSource(), it.uiData.promoCodes)
@@ -1617,55 +1634,4 @@ class PromoCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun sendAnalyticsClickLihatDetailKupon(promoCode: String) {
-        analytics.eventClickLihatDetailKupon(getPageSource(), promoCode)
-    }
-
-    fun sendAnalyticsClickRemovePromoCode() {
-        analytics.eventClickRemovePromoCode(getPageSource())
-    }
-
-    fun sendAnalyticsViewPopupSavePromo() {
-        analytics.eventViewPopupSavePromo(getPageSource())
-    }
-
-    fun sendAnalyticsClickKeluarHalaman() {
-        analytics.eventClickKeluarHalaman(getPageSource())
-    }
-
-    fun sendAnalyticsClickSimpanPromoBaru() {
-        analytics.eventClickSimpanPromoBaru(getPageSource())
-    }
-
-    fun sendAnalyticsClickButtonVerifikasiNomorHp() {
-        analytics.eventClickButtonVerifikasiNomorHp(getPageSource())
-    }
-
-    fun sendAnalyticsViewErrorPopup() {
-        analytics.eventViewErrorPopup(getPageSource())
-    }
-
-    fun sendAnalyticsClickCobaLagi() {
-        analytics.eventClickCobaLagi(getPageSource())
-    }
-
-    fun sendAnalyticsClickPakaiPromoFailed(errorMessage: String) {
-        analytics.eventClickPakaiPromoFailed(getPageSource(), errorMessage)
-    }
-
-    fun sendAnalyticsClickBeliTanpaPromo() {
-        analytics.eventClickBeliTanpaPromo(getPageSource())
-    }
-
-    fun sendAnalyticsDismissLastSeen() {
-        analytics.eventDismissLastSeen(getPageSource())
-    }
-
-    fun sendAnalyticsClickPromoInputField() {
-        analytics.eventClickInputField(getPageSource(), userSession.userId)
-    }
-
-    fun sendAnalyticsViewLastSeenPromo() {
-        analytics.eventShowLastSeenPopUp(getPageSource(), userSession.userId)
-    }
 }

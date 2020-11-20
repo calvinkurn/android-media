@@ -502,13 +502,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void disableDoneView() {
-        tvDone.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+        tvDone.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
         tvDone.setEnabled(false);
     }
 
     private void enableDoneView() {
         if (!tvDone.isEnabled()) {
-            tvDone.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            tvDone.setTextColor(ContextCompat.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
             tvDone.setEnabled(true);
         }
     }

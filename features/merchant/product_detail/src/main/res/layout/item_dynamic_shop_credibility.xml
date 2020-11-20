@@ -10,7 +10,7 @@
         android:id="@+id/shop_credibility_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_8"
-        android:background="@color/grey_separator"
+        android:background="@color/Unify_N50"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -32,7 +32,7 @@
             app:layout_constraintEnd_toStartOf="@+id/iv_badge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/tkpd_main_green" />
+            tools:src="@color/Unify_G400" />
 
         <ImageView
             android:id="@+id/iv_badge"
@@ -81,7 +81,7 @@
             android:paddingTop="@dimen/dp_3"
             android:paddingRight="@dimen/dp_4"
             android:paddingBottom="@dimen/dp_3"
-            android:textColor="@color/light_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/shop_name"
             app:layout_constraintEnd_toEndOf="parent"
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:layout_marginStart="@dimen/dp_12"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@+id/shop_ava"
             app:layout_constraintTop_toBottomOf="@+id/shop_name"
             app:layout_goneMarginStart="@dimen/dp_0"
@@ -114,7 +114,7 @@
             android:layout_marginStart="@dimen/dp_4"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/shop_last_active"
             app:layout_constraintTop_toTopOf="@+id/shop_last_active"
@@ -155,7 +155,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:gravity="center"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 tools:text="1 menit" />
 
@@ -167,7 +167,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingTop="@dimen/dp_1"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3"
                 tools:text="chat dibalas" />
         </LinearLayout>
@@ -206,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:gravity="center"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 tools:text="1.234" />
 
@@ -218,14 +218,14 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:paddingTop="@dimen/dp_1"
-                android:textColor="@color/Neutral_N700_68"
+                android:textColor="@color/Unify_N700_68"
                 app:typographyType="body_3"
                 tools:text="produk terjual" />
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_follow"
-            android:layout_width="@dimen/dp_88"
+            android:layout_width="@dimen/product_detail_dp_88"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="@string/label_follow"

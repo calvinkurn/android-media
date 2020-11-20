@@ -31,7 +31,7 @@ object ProductTrackingConstant {
         const val KEY_BUSINESS_UNIT = "businessUnit"
         const val KEY_CURRENT_SITE = "currentSite"
         const val KEY_SCREEN_NAME = "screenName"
-        const val KEY_TICKER_TYPE = "tickerType"
+        const val KEY_TICKER_TYPE = "ticker type"
         const val KEY_GROUP_NAME = "productGroupName"
         const val KEY_GROUP_ID = "productGroupId"
         const val KEY_CATEGORY_ID = "categoryId"
@@ -152,6 +152,7 @@ object ProductTrackingConstant {
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
         const val CLICK_CUSTOM_INFO = "click - custom info component"
+        const val CLICK_NPL_FOLLOWERS = "click - follow shop on bottom sheet"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
@@ -174,6 +175,8 @@ object ProductTrackingConstant {
 
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
+        const val VIEW_TICKER_OOS = "view - ticker on pdp"
+        const val CLICK_BUTTON_OOS = "click - %s on pdp"
     }
 
 
@@ -184,6 +187,8 @@ object ProductTrackingConstant {
         const val DISCUSSION_EMPTY_QUESTION = "count thread:0;variant selected:%s;variant available:%s;"
         const val DISCUSSION_SEE_ALL ="count thread:%s;"
         const val DISCUSSION_DETAIL = "talk id:%s;count thread:%s;"
+        const val TICKER_OOS = "ticker type:%s;ticker title:%s;ticker message:%s;"
+        const val BUTTON_OOS = "fitur : OOS; is_variant:%s;"
     }
 
     object Report {
