@@ -3145,14 +3145,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
+    private fun getAbTestPlatform(): AbTestPlatform? {
+        return try {
+            if (!::remoteConfigInstance.isInitialized) {
+                remoteConfigInstance = RemoteConfigInstance(activity?.application)
+            }
+            remoteConfigInstance.abTestPlatform
+        } catch (e: java.lang.IllegalStateException) {
+            null
         }
-        return remoteConfigInstance.abTestPlatform
     }
 
-    override fun isNavOld(): Boolean = getAbTestPlatform().getString(ProductDetailConstant.EXP_TOP_NAV, ProductDetailConstant.VARIANT_OLD) == ProductDetailConstant.VARIANT_OLD || GlobalConfig.isSellerApp()
+    override fun isNavOld(): Boolean = getAbTestPlatform()?.getString(ProductDetailConstant.EXP_TOP_NAV, ProductDetailConstant.VARIANT_OLD) == ProductDetailConstant.VARIANT_OLD || GlobalConfig.isSellerApp()
 
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (!isNavOld()) {
