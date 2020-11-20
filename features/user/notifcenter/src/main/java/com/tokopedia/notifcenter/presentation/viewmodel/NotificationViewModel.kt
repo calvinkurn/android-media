@@ -103,8 +103,10 @@ class NotificationViewModel @Inject constructor(
         notifcenterDetailUseCase.getFirstPageNotification(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
-                    if (!hasFilter() && role == RoleType.BUYER) {
-                        loadTopAdsBannerData()
+                    if (!hasFilter()) {
+                        if (role == RoleType.BUYER) {
+                            loadTopAdsBannerData()
+                        }
                         clearNotifCounter(role)
                     }
                 },
