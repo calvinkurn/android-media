@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.show
@@ -49,7 +48,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     tv_shipping_name.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
                 }
                 val numberPhone = if (item.dataObject.receiverPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
-                    item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
+                    item.dataObject.receiverPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                 } else {
                     item.dataObject.receiverPhone
                 }
@@ -148,7 +147,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
                     rl_drop_shipper.visibility = View.VISIBLE
                     tv_som_dropshipper_name?.show()
                     val numberPhoneDropShipper = if (item.dataObject.dropshipperPhone.startsWith(NUMBER_PHONE_SIX_TWO)) {
-                        item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ONE, true)
+                        item.dataObject.dropshipperPhone.replaceFirst(NUMBER_PHONE_SIX_TWO, NUMBER_PHONE_ZERO, true)
                     } else {
                         item.dataObject.dropshipperPhone
                     }
@@ -164,6 +163,6 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
     companion object {
         const val NUMBER_PHONE_SIX_TWO = "62"
-        const val NUMBER_PHONE_ONE = "0"
+        const val NUMBER_PHONE_ZERO = "0"
     }
 }

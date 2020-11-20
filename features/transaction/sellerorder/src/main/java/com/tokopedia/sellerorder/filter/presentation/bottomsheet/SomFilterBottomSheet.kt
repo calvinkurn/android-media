@@ -35,10 +35,7 @@ import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivi
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterEmptyUiModel
-import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.*
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -183,10 +180,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                             ?: SomListGetOrderListParam())
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
                             ?: ""
-                    val somSubFilterList =
-                            data?.getParcelableArrayListExtra<SomFilterChipsUiModel>(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS)?.toList()
-                                    ?: listOf()
-                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList)
+                    val somSubFilterList: SomSubFilterListWrapper? = cacheManager?.get(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
+                    somFilterViewModel.updateSomFilterSeeAll(idFilter, somSubFilterList?.somSubFilterList ?: listOf())
                 }
             }
         }
