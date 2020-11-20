@@ -105,7 +105,7 @@ ext {
             navigationCommon                : ":features:home:navigation-common",
             searchbar                       : ":features:home:searchbar",
 
-            logisticdata                    : ":features:logistic:logisticdata",
+            logisticCommon                  : ":features:logistic:logisticCommon",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             dropOff                         : ":features:logistic:dropoff",
             logisticorder                   : ":features:logistic:logisticorder",
