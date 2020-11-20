@@ -23,8 +23,8 @@ class GetShopEtalaseUseCase @Inject constructor(
             putBoolean(WITH_DEFAULT, withDefault)
         }
 
-        private const val QUERY = "query shopShowcases {\n" +
-                "  shopShowcases(withDefault: false) {\n" +
+        private const val QUERY = "query shopShowcases(\$withDefault: Boolean) {\n" +
+                "  shopShowcases(withDefault:\$withDefault) {\n" +
                 "    result {\n" +
                 "      id\n" +
                 "      name\n" +
