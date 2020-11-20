@@ -102,7 +102,7 @@ class ProductManageFilterFragment(private var onFinishedListener: OnFinishedList
         observeCombinedResponse()
         observeFilterData()
         initView()
-        productManageFilterViewModel.getData(userSession.shopId, true)
+        productManageFilterViewModel.getData(userSession.shopId)
         showLoading()
     }
 
