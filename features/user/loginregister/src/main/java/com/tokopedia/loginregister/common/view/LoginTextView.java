@@ -80,7 +80,7 @@ public class LoginTextView extends LinearLayout {
         try {
 
             customText = a.getString(R.styleable.LoginTextView_customText);
-            textColor = a.getColor(R.styleable.LoginTextView_textColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+            textColor = a.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
             borderColor = a.getInt(R.styleable.LoginTextView_borderColor, 0);
             cornerSize = a.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, 3);
             borderSize = a.getInt(R.styleable.LoginTextView_borderSize, 1);
@@ -122,7 +122,7 @@ public class LoginTextView extends LinearLayout {
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadii(new float[]{3, 3, 3, 3, 3, 3, 3, 3});
         shape.setColor(getBackgroundColor());
-        if (getBackgroundColor() == androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape.setStroke(1,
+        if (getBackgroundColor() == MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) shape.setStroke(1,
                 MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_32));
     }
 

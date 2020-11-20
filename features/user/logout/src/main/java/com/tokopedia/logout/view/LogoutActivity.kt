@@ -226,7 +226,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearWebView() {
-        WebView(this).clearCache(true)
+        WebView(applicationContext).clearCache(true)
         val cookieManager: CookieManager
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             CookieSyncManager.createInstance(this)

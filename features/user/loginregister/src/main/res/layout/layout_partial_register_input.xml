@@ -133,7 +133,10 @@
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/register"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+            app:unifyButtonSize="large"
+            app:unifyButtonType="main"
+            app:unifyButtonVariant="filled"/>
 
     </RelativeLayout>
 

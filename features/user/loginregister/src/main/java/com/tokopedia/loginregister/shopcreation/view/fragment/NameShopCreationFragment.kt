@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -121,6 +122,9 @@ class NameShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     private fun initView() {
         textFieldName.textFieldInput.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
+        context?.let {
+            textFieldName.textFieldWrapper.setHelperTextColor(ContextCompat.getColorStateList(it, com.tokopedia.unifycomponents.R.color.Unify_N700_68))
+        }
         textFieldName.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
 

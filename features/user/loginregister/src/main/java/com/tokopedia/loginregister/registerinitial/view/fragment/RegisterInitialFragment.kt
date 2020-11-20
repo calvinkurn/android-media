@@ -330,7 +330,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             optionTitle.setText(R.string.register_option_title)
 
             context?.let {
-                registerButton.setColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                registerButton.setColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
             registerButton.setBorderColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
             registerButton.setRoundCorner(10)

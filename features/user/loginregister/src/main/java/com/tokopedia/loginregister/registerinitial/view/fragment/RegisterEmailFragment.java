@@ -34,6 +34,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -214,7 +215,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             @Override
             public void updateDrawState(@NonNull TextPaint textPaint) {
                 super.updateDrawState(textPaint);
-                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
+                textPaint.setColor(MethodChecker.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
         };
 
@@ -232,7 +233,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             @Override
             public void updateDrawState(@NonNull TextPaint textPaint) {
                 super.updateDrawState(textPaint);
-                textPaint.setColor(ContextCompat.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
+                textPaint.setColor(MethodChecker.getColor(registerNextTAndC.getContext(), com.tokopedia.unifyprinciples.R.color.Unify_G400));
             }
         };
 

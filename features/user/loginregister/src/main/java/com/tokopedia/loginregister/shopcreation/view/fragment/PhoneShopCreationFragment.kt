@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -327,14 +326,14 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
         errorMessage.text = message
         context?.let {
             errorMessage.text = message
-            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Unify_R500))
+            errorMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
     }
 
     private fun clearMessageFieldPhone() {
         context?.let {
             errorMessage.text = getString(R.string.desc_phone_shop_creation)
-            errorMessage.setTextColor(ContextCompat.getColor(it, R.color.Unify_N500))
+            errorMessage.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
         }
     }
 

@@ -21,8 +21,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
-import androidx.annotation.Nullable
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -35,7 +33,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -62,7 +59,6 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
-import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
@@ -71,15 +67,11 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.data.DynamicBannerConstant
 import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
-import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
-import com.tokopedia.loginregister.login.di.DaggerLoginComponent
 import com.tokopedia.loginregister.login.di.LoginComponentBuilder
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
-import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
-import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.login.router.LoginRouter
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
@@ -104,6 +96,7 @@ import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -111,7 +104,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
@@ -162,7 +154,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
-    private lateinit var partialActionButton: TextView
+    private lateinit var partialActionButton: UnifyButton
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var bannerLogin: ImageView
@@ -403,7 +395,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
 
-        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
+        partialActionButton.text = getString(R.string.next)
+        partialActionButton.contentDescription = getString(R.string.content_desc_register_btn)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
             analytics.trackClickOnNext(emailPhoneEditText.text.toString())
@@ -499,7 +492,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         emailPhoneEditText.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
+        partialActionButton.text = getString(R.string.next)
+        partialActionButton.contentDescription = getString(R.string.content_desc_register_btn)
         partialActionButton.setOnClickListener { registerCheck(emailPhoneEditText.text.toString()) }
         partialRegisterInputView.showDefaultView()
     }

@@ -1,10 +1,7 @@
 package com.tokopedia.loginregister.shopcreation.view.activity
 
 import android.os.Bundle
-import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.shopcreation.view.fragment.LandingShopCreationFragment
 
 /**
