@@ -102,9 +102,10 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
         mutableCancellationData.value = orderDetailCancellationMapper.transform(journeyList)
     }
 
-    fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Boolean {
+    fun isWebCheckInAvailable(flightOrderDetailData: FlightOrderDetailDataModel): Pair<Boolean, String> {
         var checkInAvailable = false
         val today = FlightDateUtil.getCurrentDate()
+        var subtitle: String = ""
 
         if (FlightOrderDetailStatusMapper.getStatusOrder(flightOrderDetailData.status) == FlightOrderDetailStatusMapper.SUCCESS) {
             for (journey in flightOrderDetailData.journeys) {
@@ -112,12 +113,17 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
                 val webCheckInCloseTime = FlightDateUtil.stringToDate(journey.webCheckIn.endTime)
                 if (webCheckInOpenTime.before(today) && webCheckInCloseTime.after(today)) {
                     checkInAvailable = true
+                    subtitle = journey.webCheckIn.subtitle
                     break
+                }
+
+                if (!checkInAvailable) {
+                    subtitle = journey.webCheckIn.subtitle
                 }
             }
         }
 
-        return checkInAvailable
+        return Pair(checkInAvailable, subtitle)
     }
 
     fun buildPaymentDetailData(): List<FlightOrderDetailSimpleModel> {
