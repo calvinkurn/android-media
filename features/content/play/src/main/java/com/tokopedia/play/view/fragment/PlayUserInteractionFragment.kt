@@ -947,8 +947,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun showLinkCopiedToaster() {
         if (toasterBottomMargin == 0) {
-            val offset24 = resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5)
-           toasterBottomMargin = likeView.clickAreaView.height + offset24
+            val likeAreaBottomMargin = (likeView.clickAreaView.layoutParams as? ViewGroup.MarginLayoutParams)?.bottomMargin?:0
+            toasterBottomMargin = likeView.clickAreaView.height + likeAreaBottomMargin
         }
         Toaster.toasterCustomBottomHeight = toasterBottomMargin
         Toaster.build(
