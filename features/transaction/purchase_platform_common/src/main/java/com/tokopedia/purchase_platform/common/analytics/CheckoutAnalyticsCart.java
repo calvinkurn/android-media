@@ -1195,4 +1195,17 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
+    public void eventClickFollowShop(String userId, String errorType, String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION,
+                errorType + " - " + shopId
+        );
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
 }

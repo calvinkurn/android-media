@@ -58,6 +58,8 @@ object ApplinkConstInternalGlobal {
     val PARAM_MESSAGE_TITLE = "messageTitle"
     @JvmField
     val PARAM_MESSAGE_BODY = "messageBody"
+    @JvmField
+    val PARAM_STATUS = "status"
 
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"

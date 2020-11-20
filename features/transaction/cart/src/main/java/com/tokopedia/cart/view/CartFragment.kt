@@ -1472,6 +1472,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartPageAnalytics.eventClickMoreLikeThis()
     }
 
+    override fun onFollowShopClicked(shopId: String, errorType: String) {
+        cartPageAnalytics.eventClickFollowShop(userSession.userId, errorType, shopId)
+        dPresenter.followShop(shopId)
+    }
+
     override fun onSeeErrorProductsClicked() {
         cartRecyclerView.layoutManager?.let {
             val linearSmoothScroller = object : LinearSmoothScroller(cartRecyclerView.context) {
@@ -2597,6 +2602,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
+    override fun showToastMessageRed(throwable: Throwable, ctaText: String, ctaClickListener: View.OnClickListener?) {
+        var errorMessage = throwable.message ?: ""
+        if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
+            errorMessage = ErrorHandler.getErrorMessage(activity, throwable)
+        }
+
+        showToastMessageRed(errorMessage, ctaText, ctaClickListener)
+    }
+
     override fun showToastMessageRed(throwable: Throwable) {
         var errorMessage = throwable.message ?: ""
         if (!(throwable is CartResponseErrorException || throwable is AkamaiErrorException)) {
@@ -2619,12 +2633,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener) {
+    override fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener?) {
         val toasterInfo = Toaster
         view?.let { v ->
             if (action.isNotBlank()) {
+                var tmpCtaClickListener = View.OnClickListener { }
+
+                if (onClickListener != null) {
+                    tmpCtaClickListener = onClickListener
+                }
+
                 toasterInfo.toasterCustomCtaWidth = v.resources.getDimensionPixelOffset(R.dimen.dp_100)
-                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, onClickListener)
+                toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, action, tmpCtaClickListener)
             } else {
                 toasterInfo.make(v, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
             }

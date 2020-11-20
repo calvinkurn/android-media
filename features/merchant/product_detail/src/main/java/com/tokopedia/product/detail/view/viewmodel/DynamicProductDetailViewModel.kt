@@ -142,8 +142,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val moveToEtalaseResult: LiveData<Result<Boolean>>
         get() = _moveToEtalaseResult
 
-    private val _toggleFavoriteResult = MutableLiveData<Result<Boolean>>()
-    val toggleFavoriteResult: LiveData<Result<Boolean>>
+    private val _toggleFavoriteResult = MutableLiveData<Result<Pair<Boolean, Boolean>>>()
+    val toggleFavoriteResult: LiveData<Result<Pair<Boolean, Boolean>>>
         get() = _toggleFavoriteResult
 
     private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, List<Media>>>()
@@ -417,9 +417,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
-            _p2Data.postValue(p2DataDeffered.await())
-            updateTradeinParams(_p2Data.value?.validateTradeIn ?: ValidateTradeIn())
-
+            p2DataDeffered.await()?.let {
+                _p2Data.postValue(it)
+                updateTradeinParams(it.validateTradeIn)
+            }
             p2LoginDeferred?.let {
                 _p2Login.postValue(it.await())
             }
@@ -494,12 +495,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             initialLayoutData.removeAll(removedData)
     }
 
-    fun toggleFavorite(shopID: String) {
-        launchCatchError(block = {
-            toggleFavoriteUseCase.get().createRequestParam(shopID)
-            _toggleFavoriteResult.value = toggleFavoriteUseCase.get().executeOnBackground().followShop.isSuccess.asSuccess()
+    fun toggleFavorite(shopID: String, isNplFollowerType: Boolean = false) {
+        launchCatchError(dispatcher.io(), block = {
+            val requestParams = ToggleFavoriteUseCase.createParams(shopID, if (isNplFollowerType) ToggleFavoriteUseCase.FOLLOW_ACTION else null)
+            val favoriteData = toggleFavoriteUseCase.get().executeOnBackground(requestParams).followShop
+            if (favoriteData.isSuccess) {
+                _toggleFavoriteResult.postValue((favoriteData.isSuccess to isNplFollowerType).asSuccess())
+            } else {
+                _toggleFavoriteResult.postValue(Throwable(favoriteData.message).asFail())
+            }
         }) {
-            _toggleFavoriteResult.value = it.asFail()
+            _toggleFavoriteResult.postValue(it.asFail())
         }
     }
 
@@ -750,6 +756,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.productName = it.getProductName
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
+            tradeInParams.weight = it.basic.weight
+            if(it.data.getImagePath().isNotEmpty()) {
+                tradeInParams.productImage = it.data.getImagePath()[0]
+            } else {
+                tradeInParams.productImage = it.data.getFirstProductImage()
+            }
         }
     }
 

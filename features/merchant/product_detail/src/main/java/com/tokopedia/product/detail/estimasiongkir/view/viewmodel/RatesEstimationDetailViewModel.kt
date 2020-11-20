@@ -8,11 +8,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.util.getSuccessData
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimationModel
+import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Named
@@ -21,8 +20,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         @Named(RawQueryKeyConstant.QUERY_GET_RATE_ESTIMATION)
         private val rawQuery: String,
-        @Named("Main")
-        val dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+        private val dispatcher: DynamicProductDetailDispatcherProvider): BaseViewModel(dispatcher.ui()){
 
     val rateEstResp =  MutableLiveData<Result<RatesEstimationModel>>()
 
@@ -37,7 +35,7 @@ class RatesEstimationDetailViewModel @Inject constructor(
         val request = GraphqlRequest(rawQuery, RatesEstimationModel.Response::class.java, params)
 
         launchCatchError(block = {
-            val result = withContext(Dispatchers.IO){
+            val result = withContext(dispatcher.io()){
                 val resp = graphqlRepository.getReseponse(listOf(request))
                     .getSuccessData<RatesEstimationModel.Response>().data?.data ?: throw NullPointerException()
 

@@ -114,7 +114,7 @@ class HotelBookingFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.hotelCartResult.observe(this, androidx.lifecycle.Observer {
+        bookingViewModel.hotelCartResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     hotelCart = it.data.response
@@ -165,7 +165,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
-        bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        bookingViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }
@@ -556,7 +556,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = price
-        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, R.color.hotel_orange_607)) }
+        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Y500)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -575,7 +575,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             context?.run {
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G200)),
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G200)),
                         spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 

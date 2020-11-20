@@ -26,12 +26,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
 
-    fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+    fun eventAddToCartRecommendationATCClick(product: RecommendationItem, position: Int, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
-                product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
         val actionValuePostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else
@@ -60,12 +60,12 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, trackingQueue: TrackingQueue) {
+    fun eventAddToCartRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, mainProductId: String, trackingQueue: TrackingQueue) {
         val valueLoginOrNotLogin = if (!isSessionActive)
             " ${ProductTrackingConstant.Tracking.USER_NON_LOGIN} - "
         else ""
         val listValue = LIST_PRODUCT_AFTER_ATC + pageName + LIST_RECOMMENDATION + valueLoginOrNotLogin +
-                product.recommendationType + (if (product.isTopAds) " - product topads" else "")
+                product.recommendationType + (if (product.isTopAds) " - product topads - $mainProductId" else " - $mainProductId")
         val valueActionPostfix = if (!isSessionActive)
             " - ${ProductTrackingConstant.Tracking.USER_NON_LOGIN}"
         else ""

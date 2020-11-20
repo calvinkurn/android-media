@@ -69,12 +69,18 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
 import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_ACTIVITY_PREPARE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_CONTENT_DATA_RENDER
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
+import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
@@ -89,7 +95,6 @@ import com.tokopedia.shop.pageheader.presentation.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
-import com.tokopedia.shop.pageheader.presentation.listener.ShopPageHeaderPerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.listener.ShopPagePerformanceMonitoringListener
 import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.product.view.fragment.HomeProductFragment
@@ -126,17 +131,11 @@ class ShopPageFragment :
         const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
-        const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
-        const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
-        const val TAB_POSITION_OS_HOME = -1
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
-        const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
-        const val SHOP_NAME_PLACEHOLDER = "{{shop_name}}"
-        const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
@@ -144,13 +143,8 @@ class ShopPageFragment :
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
-
         private const val PAGE_LIMIT = 2
-
         private const val SOURCE_SHOP = "shop"
-
-        private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
-
         private const val CART_LOCAL_CACHE_NAME = "CART"
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
         private const val PATH_HOME = "home"
@@ -160,7 +154,6 @@ class ShopPageFragment :
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
         private const val START_PAGE = 1
-        private const val DEFAULT_SORT_ID = 0
 
         @JvmStatic
         fun createInstance() = ShopPageFragment()
@@ -171,7 +164,6 @@ class ShopPageFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var shopViewModel: ShopPageViewModel
-
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var cartLocalCacheHandler: LocalCacheHandler
     var shopPageTracking: ShopPageTrackingBuyer? = null
@@ -234,7 +226,6 @@ class ShopPageFragment :
     private var shouldOverrideTabToReview: Boolean = false
     private var shouldOverrideTabToProduct: Boolean = false
     private var shouldOverrideTabToFeed: Boolean = false
-
     private var listShopPageTabModel = listOf<ShopPageTabModel>()
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
         CustomDimensionShopPage.create(
@@ -248,6 +239,7 @@ class ShopPageFragment :
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -277,6 +269,7 @@ class ShopPageFragment :
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
+        shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
     }
@@ -364,7 +357,7 @@ class ShopPageFragment :
             val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
-            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
+            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
                 val intent = SellerMigrationActivity.createIntent(
@@ -389,7 +382,8 @@ class ShopPageFragment :
 
     private fun observeLiveData(owner: LifecycleOwner) {
         shopViewModel.shopPageP1Data.observe(owner, Observer { result ->
-            startShopPageHeaderMonitoringPltRenderPage()
+            stopMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
             when (result) {
                 is Success -> {
                     onSuccessGetShopPageTabData(result.data)
@@ -405,11 +399,12 @@ class ShopPageFragment :
                     )
                 }
             }
-            stopPerformanceMonitoring()
-            stopShopPageHeaderMonitoringPltRenderPage()
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER)
         })
 
         shopViewModel.shopPageHeaderContentData.observe(owner, Observer { result ->
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE)
+            startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_CONTENT_DATA_RENDER)
             when (result) {
                 is Success -> {
                     onSuccessGetShopPageHeaderContentData(result.data)
@@ -418,6 +413,8 @@ class ShopPageFragment :
                     onErrorGetShopPageHeaderContentData(result.throwable)
                 }
             }
+            stopMonitoringPltCustomMetric(SHOP_TRACE_HEADER_CONTENT_DATA_RENDER)
+            stopMonitoringPerformance()
         })
 
         shopViewModel.shopIdFromDomainData.observe(owner, Observer { result ->
@@ -473,28 +470,14 @@ class ShopPageFragment :
     }
 
     private fun getShopPageHeaderContentData() {
+        startMonitoringPltCustomMetric(SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE)
         shopViewModel.getShopPageHeaderContentData(shopId, shopDomain ?: "", isRefresh)
-    }
-
-    private fun stopShopPageHeaderMonitoringPltRenderPage() {
-        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltRenderPage(it)
-            }
-        }
-    }
-
-    private fun startShopPageHeaderMonitoringPltRenderPage() {
-        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
-                shopPageActivity.startMonitoringPltRenderPage(it)
-            }
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        stopPreparePltShopPage()
+        stopMonitoringPltPreparePage()
+        stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -536,10 +519,11 @@ class ShopPageFragment :
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+            shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
-            startPltNetworkPerformanceMonitoring()
+            observeShopPageFollowingStatusSharedViewModel()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
             if (!swipeToRefresh.isRefreshing) {
@@ -555,19 +539,53 @@ class ShopPageFragment :
         })
     }
 
+    private fun observeShopPageFollowingStatusSharedViewModel() {
+        shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
+            shopPageFragmentHeaderViewHolder.setFavoriteValue(it)
+            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
+        })
+    }
+
     private fun getSavedInstanceStateData(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
             initialProductFilterParameter = it.getParcelable(SAVED_INITIAL_FILTER)
         }
     }
 
-    private fun startPltNetworkPerformanceMonitoring() {
-        (activity as? ShopPageHeaderPerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageHeaderLoadTimePerformanceCallback()?.let {
+    private fun stopMonitoringPltPreparePage() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.stopMonitoringPltPreparePage(it)
+            }
+        }
+    }
+
+    private fun startMonitoringPltNetworkRequest() {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
                 shopPageActivity.startMonitoringPltNetworkRequest(it)
             }
         }
+    }
+
+    private fun startMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.startCustomMetric(it, tag)
+            }
+        }
+    }
+
+    private fun stopMonitoringPltCustomMetric(tag: String) {
+        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
+            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
+                shopPageActivity.stopCustomMetric(it, tag)
+            }
+        }
+    }
+
+    private fun stopMonitoringPerformance() {
+        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     private fun initStickyLogin(view: View) {
@@ -597,8 +615,9 @@ class ShopPageFragment :
     }
 
     private fun getInitialData() {
+        startMonitoringPltNetworkRequest()
+        startMonitoringPltCustomMetric(SHOP_TRACE_P1_MIDDLE)
         isFirstLoading = true
-        startMonitoringNetworkPltShopPage()
         if (shopId.isEmpty()) {
             shopViewModel.getShopIdFromDomain(shopDomain.orEmpty())
         } else {
@@ -921,22 +940,6 @@ class ShopPageFragment :
         }
     }
 
-    protected fun stopPreparePltShopPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                shopPageActivity.stopMonitoringPltPreparePage(it)
-            }
-        }
-    }
-
-    protected fun startMonitoringNetworkPltShopPage() {
-        (activity as? ShopPagePerformanceMonitoringListener)?.let { shopPageActivity ->
-            shopPageActivity.getShopPageLoadTimePerformanceCallback()?.let {
-                shopPageActivity.startMonitoringPltNetworkRequest(it)
-            }
-        }
-    }
-
     private fun onSuccessGetShopPageHeaderContentData(shopPageHeaderContentData: ShopPageHeaderContentData) {
         shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             shopPageHeaderDataModel.location = shopPageHeaderContentData.shopInfo.location
@@ -988,7 +991,7 @@ class ShopPageFragment :
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
         viewPagerAdapter.notifyDataSetChanged()
-        var selectedPosition = getSelectedTabPosition()
+        var selectedPosition = viewPager.currentItem
         if (shouldOverrideTabToHome) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
@@ -1077,18 +1080,6 @@ class ShopPageFragment :
                     iconTabReviewActive,
                     shopReviewFragment
             ))
-        }
-    }
-
-    private fun getSelectedTabPosition(): Int {
-        return if (isShowHomeTab()) {
-            if (isShowNewHomeTab()) {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            }
-        } else {
-            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
         }
     }
 
@@ -1191,10 +1182,6 @@ class ShopPageFragment :
                 goToCart()
             }
         }
-    }
-
-    private fun stopPerformanceMonitoring() {
-        (activity as? ShopPageActivity)?.stopShopHeaderPerformanceMonitoring()
     }
 
     fun refreshData() {
