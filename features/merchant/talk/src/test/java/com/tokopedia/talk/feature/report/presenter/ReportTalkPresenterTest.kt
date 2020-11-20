@@ -1,11 +1,12 @@
 package com.tokopedia.talk.feature.report.presenter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.talk_old.common.view.BaseActionTalkViewModel
-import com.tokopedia.talk_old.reporttalk.domain.ReportTalkUseCase
-import com.tokopedia.talk_old.reporttalk.view.listener.ReportTalkContract
-import com.tokopedia.talk_old.reporttalk.view.presenter.ReportTalkPresenter
-import com.tokopedia.talk_old.reporttalk.view.viewmodel.TalkReportOptionViewModel
+import com.tokopedia.talk.feature.reporttalk.domain.usecase.ReportTalkUseCase
+import com.tokopedia.talk.feature.reporttalk.view.listener.ReportTalkContract
+import com.tokopedia.talk.feature.reporttalk.view.presenter.ReportTalkPresenter
+import com.tokopedia.talk.feature.reporttalk.view.uimodel.BaseActionTalkUiModel
+import com.tokopedia.talk.feature.reporttalk.view.uimodel.TalkReportOptionUiModel
+
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.After
@@ -47,9 +48,9 @@ class ReportTalkPresenterTest {
 
     @Test
     fun `when reportCommentTalk success should execute expected usecase and perform expected view  action`() {
-        val expectedReturn = mockk<BaseActionTalkViewModel>(relaxed = true)
-        val selectedOption = TalkReportOptionViewModel(isChecked = true)
-        val testSubscriber: TestSubscriber<BaseActionTalkViewModel> = TestSubscriber()
+        val expectedReturn = mockk<BaseActionTalkUiModel>(relaxed = true)
+        val selectedOption = TalkReportOptionUiModel(isChecked = true)
+        val testSubscriber: TestSubscriber<BaseActionTalkUiModel> = TestSubscriber()
 
         every {
             reportTalkUseCase.execute(any(), any())
@@ -70,8 +71,8 @@ class ReportTalkPresenterTest {
     @Test
     fun `when reportCommentTalk fail should execute expected usecase and perform expected view  action`() {
         val expectedReturn = mockk<Throwable>(relaxed = true)
-        val selectedOption = TalkReportOptionViewModel(isChecked = true)
-        val testSubscriber: TestSubscriber<BaseActionTalkViewModel> = TestSubscriber()
+        val selectedOption = TalkReportOptionUiModel(isChecked = true)
+        val testSubscriber: TestSubscriber<BaseActionTalkUiModel> = TestSubscriber()
 
         every {
             reportTalkUseCase.execute(any(), any())
@@ -90,9 +91,9 @@ class ReportTalkPresenterTest {
 
     @Test
     fun `when reportTalk success should execute expected usecase and perform expected view  action`() {
-        val expectedReturn = mockk<BaseActionTalkViewModel>(relaxed = true)
-        val selectedOption = TalkReportOptionViewModel(isChecked = true)
-        val testSubscriber: TestSubscriber<BaseActionTalkViewModel> = TestSubscriber()
+        val expectedReturn = mockk<BaseActionTalkUiModel>(relaxed = true)
+        val selectedOption = TalkReportOptionUiModel(isChecked = true)
+        val testSubscriber: TestSubscriber<BaseActionTalkUiModel> = TestSubscriber()
 
         every {
             reportTalkUseCase.execute(any(), any())
@@ -113,8 +114,8 @@ class ReportTalkPresenterTest {
     @Test
     fun `when reportTalk fail should execute expected usecase and perform expected view  action`() {
         val expectedReturn = mockk<Throwable>(relaxed = true)
-        val selectedOption = TalkReportOptionViewModel(isChecked = true)
-        val testSubscriber: TestSubscriber<BaseActionTalkViewModel> = TestSubscriber()
+        val selectedOption = TalkReportOptionUiModel(isChecked = true)
+        val testSubscriber: TestSubscriber<BaseActionTalkUiModel> = TestSubscriber()
 
         every {
             reportTalkUseCase.execute(any(), any())
@@ -133,9 +134,9 @@ class ReportTalkPresenterTest {
 
     @Test
     fun `when reportCommentTalk but isChecked is false, should not do anything`() {
-        val expectedReturn = mockk<BaseActionTalkViewModel>(relaxed = true)
-        val selectedOption = TalkReportOptionViewModel(isChecked = false)
-        val testSubscriber: TestSubscriber<BaseActionTalkViewModel> = TestSubscriber()
+        val expectedReturn = mockk<BaseActionTalkUiModel>(relaxed = true)
+        val selectedOption = TalkReportOptionUiModel(isChecked = false)
+        val testSubscriber: TestSubscriber<BaseActionTalkUiModel> = TestSubscriber()
 
         every {
             reportTalkUseCase.execute(any(), any())
@@ -152,9 +153,9 @@ class ReportTalkPresenterTest {
 
     @Test
     fun `when reportTalk but isChecked is false, should not do anything`() {
-        val expectedReturn = mockk<BaseActionTalkViewModel>(relaxed = true)
-        val selectedOption = TalkReportOptionViewModel(isChecked = false)
-        val testSubscriber: TestSubscriber<BaseActionTalkViewModel> = TestSubscriber()
+        val expectedReturn = mockk<BaseActionTalkUiModel>(relaxed = true)
+        val selectedOption = TalkReportOptionUiModel(isChecked = false)
+        val testSubscriber: TestSubscriber<BaseActionTalkUiModel> = TestSubscriber()
 
         every {
             reportTalkUseCase.execute(any(), any())
