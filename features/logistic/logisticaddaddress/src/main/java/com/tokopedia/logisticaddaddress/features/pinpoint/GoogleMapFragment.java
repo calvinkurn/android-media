@@ -50,9 +50,9 @@ import com.tokopedia.logisticaddaddress.data.IMapsRepository;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
-import com.tokopedia.logisticdata.data.constant.LogisticConstant;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.util.LocationHelperKt;
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.util.LocationHelperKt;
 import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
