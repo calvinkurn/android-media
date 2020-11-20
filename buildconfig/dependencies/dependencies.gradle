@@ -119,7 +119,6 @@ ext {
     unifyIconNotificationVersion = '1.0.0'
     unifyCarouselVersion = '1.0.4'
     unifyListVersion = '1.0.5'
-    newUnifyIconVersion = '1.0.0'
 
     gradlePlugin = [
             crashlytics   : "com.google.firebase:firebase-crashlytics-gradle:${crashlyticsGradleVersion}",
@@ -344,7 +343,6 @@ ext {
 
     unifyDependencies = [
             icon            : "com.tokopedia.unify:icon:${unifyIconVersion}@aar",
-            icons           : "com.tokopedia.unify:icons:${unifyIconsVersion}@aar",
             principles      : "com.tokopedia.unify:principles:${unifyPrinciplesVersion}@aar",
             components      : "com.tokopedia.unify:components:${unifyComponentsVersion}@aar",
             coach_mark      : "com.tokopedia.unify.compositions:coach_mark:${unifyCoachMarkVersion}@aar",
