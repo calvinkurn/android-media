@@ -721,7 +721,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NotNull
-    private Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
+    public Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
                                                        boolean isTradeIn,
                                                        boolean isTradeInDropOff,
                                                        String deviceId,

@@ -371,4 +371,38 @@ class ShipmentPresenterCheckoutTest {
         assert(checkoutRequest.cornerData.userCornerId == tmpUserCornerId)
     }
 
+    @Test
+    fun `WHEN generate checkout params trade in laku 6 THEN request should contains trade in laku 6 data`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        val deviceId = "12345"
+        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+
+        // When
+        val checkoutParams = presenter.generateCheckoutParams(true, true, false, deviceId, checkoutRequest)
+
+        // Then
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] == true)
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] == false)
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_DEV_ID] == deviceId)
+    }
+
+    @Test
+    fun `WHEN generate checkout params trade in indopaket THEN request should contains trade in indopaket data`() {
+        // Given
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        val deviceId = "12345"
+        val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
+
+        // When
+        val checkoutParams = presenter.generateCheckoutParams(true, true, true, deviceId, checkoutRequest)
+
+        // Then
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] == true)
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] == true)
+        assert(checkoutParams[CheckoutGqlUseCase.PARAM_DEV_ID] == deviceId)
+    }
+
 }
