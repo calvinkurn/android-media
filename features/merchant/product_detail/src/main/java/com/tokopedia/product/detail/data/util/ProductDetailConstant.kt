@@ -23,6 +23,8 @@ object ProductDetailConstant {
 
     const val VALUE_NEW_ETALASE = "new"
 
+    const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
+
     //waarehouse product
     const val PATH_MOVE_TO_WAREHOUSE = "move_to_warehouse.pl"
     const val PATH_MOVE_TO_ETALASE = "edit_etalase.pl"
@@ -77,6 +79,7 @@ object ProductDetailConstant {
     const val REQUEST_CODE_MERCHANT_VOUCHER = 564
     const val REQUEST_CODE_ETALASE = 565
     const val REQUEST_CODE_REPORT = 570
+    const val REQUEST_CODE_TOP_CHAT = 997
     const val REQUEST_CODE_SHOP_INFO = 998
     const val REQUEST_CODE_IMAGE_PREVIEW = 999
 
@@ -121,6 +124,7 @@ object ProductDetailConstant {
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
+    const val REPORT = "report"
 
 
     //Arguments
@@ -172,4 +176,10 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
+
+    const val EXP_TOP_NAV = "Navigation Revamp"
+    const val VARIANT_OLD = "Existing Navigation"
+    const val VARIANT_REVAMP = "Navigation Revamp"
+
+    const val HIDE_NPL_BS = false
 }

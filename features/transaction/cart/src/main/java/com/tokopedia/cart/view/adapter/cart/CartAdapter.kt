@@ -611,17 +611,29 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
     }
 
     fun increaseQuantity(position: Int, parentPosition: Int) {
-        if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
-            (cartDataList[parentPosition] as CartShopHolderData).shopGroupAvailableData
-                    .cartItemDataList?.get(position)?.cartItemData?.updatedData?.increaseQuantity()
+        if (parentPosition < cartDataList.size) {
+            val data = cartDataList[parentPosition]
+            if (data is CartShopHolderData) {
+                data.shopGroupAvailableData.cartItemDataList?.let {
+                    if (position < it.size) {
+                        it[position].cartItemData?.updatedData?.increaseQuantity()
+                    }
+                }
+            }
         }
         checkForShipmentForm()
     }
 
     fun decreaseQuantity(position: Int, parentPosition: Int) {
-        if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
-            (cartDataList[parentPosition] as CartShopHolderData).shopGroupAvailableData
-                    .cartItemDataList?.get(position)?.cartItemData?.updatedData?.decreaseQuantity()
+        if (parentPosition < cartDataList.size) {
+            val data = cartDataList[parentPosition]
+            if (data is CartShopHolderData) {
+                data.shopGroupAvailableData.cartItemDataList?.let {
+                    if (position < it.size) {
+                        it[position].cartItemData?.updatedData?.decreaseQuantity()
+                    }
+                }
+            }
         }
         checkForShipmentForm()
     }

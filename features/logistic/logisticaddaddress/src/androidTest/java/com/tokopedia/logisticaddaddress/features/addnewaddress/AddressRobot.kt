@@ -32,7 +32,7 @@ class AddressRobot {
                 .check(matches(isDisplayed()))
                 .perform (typeText(keyword), closeSoftKeyboard())
         // delay for text field debounce
-        Thread.sleep(500L)
+        Thread.sleep(800L)
     }
 
     fun selectFirstItem() {
@@ -54,7 +54,7 @@ class AddressRobot {
         onView(withId(R.id.et_search_district_recommendation))
                 .check(matches(isDisplayed()))
                 .perform(typeText(keyword), closeSoftKeyboard())
-        Thread.sleep(750L)
+        Thread.sleep(800L)
     }
 
     fun selectFirstCityItem() {

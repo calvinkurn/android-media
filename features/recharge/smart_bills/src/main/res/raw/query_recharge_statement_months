@@ -1,9 +1,0 @@
-query rechargeStatementMonths($limit: Int!){
-  rechargeStatementMonths(Limit: $limit) {
-    index: Index
-  	label: Label
-  	month: Month
-  	year: Year
-  	isOngoing: IsOngoing
-  }
-}

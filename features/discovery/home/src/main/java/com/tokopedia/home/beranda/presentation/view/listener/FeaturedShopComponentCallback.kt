@@ -15,17 +15,17 @@ import java.util.HashMap
 class FeaturedShopComponentCallback(val context: Context?, private val homeCategoryListener: HomeCategoryListener) : FeaturedShopListener{
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
         FeaturedShopTracking.sendFeaturedShopViewAllClick(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context, channelModel.channelHeader.applink)
+        RouteManager.route(context, "${channelModel.channelHeader.applink}?source=homepage.${channelModel.layout}.0.${channelModel.id}")
     }
 
     override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
         FeaturedShopTracking.sendFeaturedShopViewAllCardClick(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context, applink)
+        RouteManager.route(context, "$applink?source=homepage.${channelModel.layout}.0.${channelModel.id}")
     }
 
     override fun onFeaturedShopBannerBackgroundClicked(channelModel: ChannelModel) {
         FeaturedShopTracking.sendFeaturedShopBackgroundClick(channelModel, channelModel.id, homeCategoryListener.userId)
-        RouteManager.route(context, channelModel.channelBanner.applink)
+        RouteManager.route(context, "${channelModel.channelBanner.applink}?source=homepage.${channelModel.layout}.0.${channelModel.id}")
     }
 
     override fun onFeaturedShopItemImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
@@ -34,7 +34,7 @@ class FeaturedShopComponentCallback(val context: Context?, private val homeCateg
 
     override fun onFeaturedShopItemClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, parentPosition: Int) {
         FeaturedShopTracking.sendFeaturedShopItemClick(channelModel, channelGrid, homeCategoryListener.userId, parentPosition, position)
-        RouteManager.route(context, channelGrid.applink)
+        RouteManager.route(context, "${channelGrid.applink}?source=homepage.${channelModel.layout}.0.${channelModel.id}")
     }
 
 }

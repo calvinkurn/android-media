@@ -16,9 +16,9 @@ class GetProductIncentiveOvo @Inject constructor(private val graphqlRepository: 
         const val PARAM_REPUTATION_ID = "reputationID"
         const val OVO_INCENTIVE_QUERY_CLASS_NAME = "OvoIncentive"
         const val OVO_INCENTIVE_QUERY = """
-                query getProductRevIncentiveOvo{
-                    productrevIncentiveOvo{
-                    ticker{
+                query getProductRevIncentiveOvo(${'$'}productID: String, ${'$'}reputationID: String) {
+                  productrevIncentiveOvo(productID: ${'$'}productID, reputationID: ${'$'}reputationID) {
+                    ticker {
                       title
                       subtitle
                     }

@@ -77,6 +77,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
 
+    private var autoTick = false
     private var totalPrice = 0
     private var maximumPrice = 0
 
@@ -108,7 +109,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
                     if (ongoingMonth != null) {
                         viewModel.getStatementBills(
-                                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
                                 viewModel.createStatementBillsParams(ongoingMonth.month, ongoingMonth.year),
                                 swipeToRefresh?.isRefreshing ?: false
                         )
@@ -136,15 +136,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     val bills = it.data.bills
                     if (bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
-                        renderList(it.data.bills)
-                        smartBillsAnalytics.impressionAllProducts(it.data.bills)
+                        renderList(bills)
+                        smartBillsAnalytics.impressionAllProducts(bills)
+
+                        // Auto select bills based on data
+                        autoTick = true
+                        bills.forEachIndexed { index, rechargeBills ->
+                            if (rechargeBills.isChecked) adapter.updateListByCheck(true, index)
+                        }
+                        autoTick = false
 
                         // Show coach mark
                         showOnboarding()
 
                         // Save maximum price
                         maximumPrice = 0
-                        for (bill in it.data.bills) {
+                        for (bill in bills) {
                             maximumPrice += bill.amount.toInt()
                         }
                     } else {
@@ -304,7 +311,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         smart_bills_checkout_view.setVisibilityLayout(true)
 
         viewModel.getStatementMonths(
-                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),
                 viewModel.createStatementMonthsParams(1),
                 swipeToRefresh?.isRefreshing ?: false
         )
@@ -352,7 +358,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
-            smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
+            // Do not trigger event if bill is auto-ticked
+            if (!autoTick) smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
             totalPrice += item.amount.toInt()
         } else {
             smartBillsAnalytics.clickUntickBill(item)

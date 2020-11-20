@@ -152,6 +152,7 @@ object ProductTrackingConstant {
         const val CLICK_SHOP_INFO_MINI = "click - shop info mini"
         const val CLICK_TICKER = "click - selengkapnya on component ticker"
         const val CLICK_CUSTOM_INFO = "click - custom info component"
+        const val CLICK_NPL_FOLLOWERS = "click - follow shop on bottom sheet"
 
         const val CLICK_REQUEST_PERMISSION_IMEI = "click - beli then show popup"
         const val CLICK_ACCEPT_PERMISSION = "click -  berikan akses on bottomsheet"
@@ -174,6 +175,9 @@ object ProductTrackingConstant {
 
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
+
+        const val CLICK_REPORT_FROM_COMPONENT= "click - laporkan on produk bermasalah"
+        const val CLICK_SHARE_FROM_CONTENT= "click - share product button on pdp"
     }
 
 

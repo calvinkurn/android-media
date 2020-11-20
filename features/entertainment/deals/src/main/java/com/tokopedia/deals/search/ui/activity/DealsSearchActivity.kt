@@ -1,5 +1,7 @@
 package com.tokopedia.deals.search.ui.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -11,7 +13,7 @@ import com.tokopedia.deals.search.di.component.DaggerDealsSearchComponent
 import com.tokopedia.deals.search.di.component.DealsSearchComponent
 import com.tokopedia.deals.search.ui.fragment.DealsSearchFragment
 
-class DealsSearchActivity: BaseSimpleActivity(), HasComponent<DealsSearchComponent> {
+class DealsSearchActivity : BaseSimpleActivity(), HasComponent<DealsSearchComponent> {
 
     var childCategoryIds: String? = null
 
@@ -33,5 +35,9 @@ class DealsSearchActivity: BaseSimpleActivity(), HasComponent<DealsSearchCompone
 
     override fun getTagFragment(): String {
         return DealsSearchFragment.TAG
+    }
+
+    companion object {
+        fun getCallingIntent(context: Context): Intent = Intent(context, DealsSearchActivity::class.java)
     }
 }

@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel;
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
 
 /**
  * @author by alvarisi on 12/12/17.
