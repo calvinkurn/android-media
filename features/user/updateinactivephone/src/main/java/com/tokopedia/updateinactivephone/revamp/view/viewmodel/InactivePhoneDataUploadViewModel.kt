@@ -71,9 +71,9 @@ class InactivePhoneDataUploadViewModel @Inject constructor(
         })
     }
 
-    fun submitForm(email: String, newPhone: String, userIndex: Int, idCardObj: String, selfieObj: String) {
+    fun submitForm(email: String, oldPhone: String,  newPhone: String, userIndex: Int, idCardObj: String, selfieObj: String) {
         launchCatchError(coroutineContext, {
-            submitDataUseCase.setParam(email, newPhone, userIndex, idCardObj, selfieObj)
+            submitDataUseCase.setParam(email, oldPhone, newPhone, userIndex, idCardObj, selfieObj)
             submitDataUseCase.execute(onSuccess = {
                 _submitData.postValue(Success(it))
             }, onError = {

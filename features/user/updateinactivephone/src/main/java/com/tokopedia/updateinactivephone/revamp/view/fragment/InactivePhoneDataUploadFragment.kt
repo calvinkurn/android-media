@@ -43,7 +43,6 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
     private val viewModelFragmentProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelFragmentProvider.get(InactivePhoneDataUploadViewModel::class.java) }
 
-    private var uploadHost = ""
     private var idCardObj = ""
     private var selfieObj = ""
 
@@ -119,7 +118,7 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
                     } else if (it.data.source == SELFIE) {
                         selfieObj = it.data.data.pictureObject
                         textPhoneNumber?.let { newPhone ->
-                            viewModel.submitForm(userDataTemp.getEmail(), newPhone.text, userDataTemp.getIndex(), idCardObj, selfieObj)
+                            viewModel.submitForm(userDataTemp.getEmail(), userDataTemp.getOldPhone(), newPhone.text, userDataTemp.getIndex(), idCardObj, selfieObj)
                         }
                     }
                 }
@@ -159,9 +158,11 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
     }
 
     private fun gotoSuccessPage() {
-        activity?.let {
-            userDataTemp.delete()
+        textPhoneNumber?.let {
+            userDataTemp.setNewPhone(it.text)
+        }
 
+        activity?.let {
             val intent = InactivePhoneSuccessPageActivity.createIntent(it)
             startActivity(intent)
             it.finish()
