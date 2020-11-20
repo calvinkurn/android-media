@@ -142,9 +142,16 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         }
 
-        view.findViewById(R.id.action_back).setOnClickListener(v -> {
-            getActivity().onBackPressed();
-        });
+        ImageButton backBtn = view.findViewById(R.id.action_back);
+        if(getActivity() instanceof AccountHomeActivity) {
+            backBtn.setVisibility(View.VISIBLE);
+            backBtn.setOnClickListener(v -> {
+                getActivity().onBackPressed();
+            });
+        }else {
+            backBtn.setVisibility(View.GONE);
+        }
+
         //status bar background compability
         statusBarBackground.getLayoutParams().height =
                 DisplayMetricUtils.getStatusBarHeight(getActivity());
