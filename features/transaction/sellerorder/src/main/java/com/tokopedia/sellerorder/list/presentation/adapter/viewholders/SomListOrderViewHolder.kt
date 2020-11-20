@@ -47,11 +47,11 @@ class SomListOrderViewHolder(
 
     override fun bind(element: SomListOrderUiModel?) {
         if (element != null) {
+            itemView.cardSomOrder.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0) 0.5f else 1f
             itemView.setOnClickListener {
                 if (!listener.isMultiSelectEnabled()) listener.onOrderClicked(element)
                 else touchCheckBox(element)
             }
-            itemView.alpha = if (listener.isMultiSelectEnabled() && element.cancelRequest != 0) 0.5f else 1f
             // header
             setupStatusIndicator(element)
             setupCheckBox(element)
@@ -171,7 +171,7 @@ class SomListOrderViewHolder(
                     return@apply
                 }
                 tvSomListProductVariant.apply {
-                    text = "($productVariant)"
+                    text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
             }

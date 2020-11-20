@@ -34,7 +34,7 @@ class SomListBulkAcceptOrderProductViewHolder(itemView: View?) : AbstractViewHol
                     text = productName
                 }
                 tvProductVariant.apply {
-                    text = "($productVariant)"
+                    text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
                 tvProductCount.text = getString(R.string.som_list_bulk_accept_order_product_amount, element.amount.toString())

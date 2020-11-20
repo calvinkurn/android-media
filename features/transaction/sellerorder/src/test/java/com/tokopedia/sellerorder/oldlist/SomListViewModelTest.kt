@@ -9,6 +9,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.oldlist.data.model.*
 import com.tokopedia.sellerorder.oldlist.domain.list.*
 import com.tokopedia.sellerorder.oldlist.presentation.viewmodel.SomListViewModel
+import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
@@ -413,5 +414,12 @@ class SomListViewModelTest {
         topAdsGetShopInfoField.set(somListViewModel, Fail(Throwable()))
         val result = somListViewModel.isTopAdsActive()
         assert(!result)
+    }
+
+    @Test
+    fun clearUserRolesTest() {
+        somListViewModel.clearUserRoles()
+
+        assert(somListViewModel.userRoleResult.observeAwaitValue() == null)
     }
 }
