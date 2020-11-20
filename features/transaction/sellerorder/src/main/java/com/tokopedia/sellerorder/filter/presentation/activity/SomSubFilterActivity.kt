@@ -2,11 +2,9 @@ package com.tokopedia.sellerorder.filter.presentation.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -22,7 +20,6 @@ import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomSubFilterListWrapper
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import kotlinx.android.synthetic.main.activity_som_sub_filter.*
-import kotlinx.android.synthetic.main.item_widget_filter_date.view.*
 
 class SomSubFilterActivity : BaseSimpleActivity(),
         SomSubFilterCheckboxAdapter.SomSubCheckboxFilterListener, SomSubFilterRadioButtonAdapter.SomSubRadioButtonFilterListener {
