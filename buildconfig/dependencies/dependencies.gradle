@@ -49,9 +49,9 @@ ext {
 
     playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
-    playServiceBase = '16.1.0'
+    playServiceBase = '17.5.0'
     playServiceAppIndexing = '17.1.0'
-    playServiceAnalytics = '16.0.6'
+    playServiceAnalytics = '17.0.0'
     playServiceFirebaseMessaging = '17.3.4'
     playServiceLocation = '17.0.0'
     playServiceMaps = '17.0.0'
