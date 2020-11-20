@@ -139,7 +139,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
 
         val transactionId = "1234"
         every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
@@ -163,7 +163,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.setDataCheckoutRequestList(emptyList())
+        presenter.dataCheckoutRequestList = emptyList()
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
@@ -187,7 +187,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.setDataCheckoutRequestList(null)
+        presenter.dataCheckoutRequestList = null
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
@@ -213,7 +213,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
 
         val priceValidationData = PriceValidationData().apply {
             isUpdated = true
@@ -241,7 +241,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
 
         val errorReporter = ErrorReporter().apply {
             eligible = true
@@ -269,7 +269,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
             cartItemModels = listOf(CartItemModel())
         })
-        presenter.setDataCheckoutRequestList(listOf(DataCheckoutRequest()))
+        presenter.dataCheckoutRequestList = listOf(DataCheckoutRequest())
 
         every { view.activityContext } returns null
         every { checkoutUseCase.createObservable(any()) } returns Observable.error(IOException())
@@ -293,7 +293,7 @@ class ShipmentPresenterCheckoutTest {
         presenter.validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(validateUseResponse.validateUsePromoRevamp)
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
         dataCheckoutRequest.shopProducts[0].cartString = "239594-0-301643"
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
         val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
@@ -307,7 +307,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with insurance THEN request should contains insurance flag true`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
         val checkoutRequest = presenter.generateCheckoutRequest(null, true, 0, "")
@@ -320,7 +320,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with donation THEN request should contains donation flag true`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
 
         // When
         val checkoutRequest = presenter.generateCheckoutRequest(null, false, 1, "")
@@ -333,7 +333,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with egold THEN request should contains egold data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val egoldAmount = 10000L
         presenter.egoldAttributeModel = EgoldAttributeModel().apply {
             isChecked = true
@@ -353,7 +353,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout request with corner address THEN request should contains corner address data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val tmpUserCornerId = "123"
         val tmpCornerId = "456"
         presenter.recipientAddressModel = RecipientAddressModel().apply {
@@ -375,7 +375,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout params trade in laku 6 THEN request should contains trade in laku 6 data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
         val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
 
@@ -392,7 +392,7 @@ class ShipmentPresenterCheckoutTest {
     fun `WHEN generate checkout params trade in indopaket THEN request should contains trade in indopaket data`() {
         // Given
         val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
-        presenter.setDataCheckoutRequestList(listOf(dataCheckoutRequest))
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
         val deviceId = "12345"
         val checkoutRequest = presenter.generateCheckoutRequest(null, false, 0, "")
 
@@ -403,6 +403,51 @@ class ShipmentPresenterCheckoutTest {
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN] == true)
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_IS_TRADE_IN_DROP_OFF] == true)
         assert(checkoutParams[CheckoutGqlUseCase.PARAM_DEV_ID] == deviceId)
+    }
+
+    @Test
+    fun `WHEN checkout multiple product with one error product THEN should checkout success`() {
+        // Given
+        val shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>()
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = ArrayList<CartItemModel>()
+                    cartItemModels.add(
+                            CartItemModel().apply {
+                                isError = false
+                            }
+                    )
+                }
+        )
+        shipmentCartItemModelList.add(
+                ShipmentCartItemModel().apply {
+                    cartItemModels = ArrayList<CartItemModel>()
+                    cartItemModels.add(
+                            CartItemModel().apply {
+                                isError = true
+                            }
+                    )
+                }
+        )
+        presenter.shipmentCartItemModelList = shipmentCartItemModelList
+        val dataCheckoutRequest = DataProvider.provideSingleDataCheckoutRequest()
+        presenter.dataCheckoutRequestList = listOf(dataCheckoutRequest)
+
+        val transactionId = "1234"
+        every { checkoutUseCase.createObservable(any()) } returns Observable.just(CheckoutData().apply {
+            this.transactionId = transactionId
+        })
+        every { view.generateNewCheckoutRequest(any(), any()) } returns listOf(dataCheckoutRequest)
+
+        // When
+        presenter.processCheckout(false, false, false, false, "", "", "")
+
+        // Then
+        verifyOrder {
+            view.setHasRunningApiCall(false)
+            view.triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(transactionId, null, 0, null)
+            view.renderCheckoutCartSuccess(any())
+        }
     }
 
 }

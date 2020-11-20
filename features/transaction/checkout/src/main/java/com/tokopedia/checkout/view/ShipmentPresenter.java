@@ -323,6 +323,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
+    public List<DataCheckoutRequest> getDataCheckoutRequestList() {
+        return dataCheckoutRequestList;
+    }
+
     @Override
     public void setEgoldAttributeModel(EgoldAttributeModel egoldAttributeModel) {
         this.egoldAttributeModel = egoldAttributeModel;
@@ -722,10 +726,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @NotNull
     public Map<String, Object> generateCheckoutParams(boolean isOneClickShipment,
-                                                       boolean isTradeIn,
-                                                       boolean isTradeInDropOff,
-                                                       String deviceId,
-                                                       CheckoutRequest checkoutRequest) {
+                                                      boolean isTradeIn,
+                                                      boolean isTradeInDropOff,
+                                                      String deviceId,
+                                                      CheckoutRequest checkoutRequest) {
         Map<String, Object> params = new HashMap<>();
         params.put(CheckoutGqlUseCase.PARAM_CARTS, CheckoutRequestGqlDataMapper.INSTANCE.map(checkoutRequest));
         params.put(CheckoutGqlUseCase.PARAM_IS_ONE_CLICK_SHIPMENT, String.valueOf(isOneClickShipment));
