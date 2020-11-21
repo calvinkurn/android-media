@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/spacing_lvl4"
-        app:search_bar_show_icon="false" />
+        app:search_bar_show_icon="false"
+        app:search_bar_clearable="true"/>
 
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
         android:id="@+id/vg_input_dropdown_recycler_view"

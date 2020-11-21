@@ -50,6 +50,13 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationVisitable
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
@@ -89,6 +96,8 @@ open class HomeViewModel @Inject constructor(
         private val getPendingCashbackUseCase: Lazy<GetCoroutinePendingCashbackUseCase>,
         private val getPlayCardHomeUseCase: Lazy<GetPlayLiveDynamicUseCase>,
         private val getRecommendationTabUseCase: Lazy<GetRecommendationTabUseCase>,
+        private val getRecommendationUseCase: Lazy<GetRecommendationUseCase>,
+        private val getRecommendationFilterChips: Lazy<GetRecommendationFilterChips>,
         private val getWalletBalanceUseCase: Lazy<GetCoroutineWalletBalanceUseCase>,
         private val popularKeywordUseCase: Lazy<GetPopularKeywordUseCase>,
         private val sendGeolocationInfoUseCase: Lazy<SendGeolocationInfoUseCase>,
@@ -99,6 +108,7 @@ open class HomeViewModel @Inject constructor(
         private val getSalamWidgetUseCase: Lazy<GetSalamWidgetUseCase>,
         private val declineSalamWidgetUseCase: Lazy<DeclineSalamWIdgetUseCase>,
         private val topAdsImageViewUseCase: Lazy<TopAdsImageViewUseCase>,
+        private val bestSellerMapper: Lazy<BestSellerMapper>,
         private val homeDispatcher: Lazy<HomeDispatcherProvider>,
         private val homeProcessor: Lazy<HomeCommandProcessor>,
         private val playWidgetTools: Lazy<PlayWidgetTools>
@@ -253,6 +263,107 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
         getTokopoint()
         getSearchHint(isFirstInstall)
+    }
+
+    fun getRecommendationWidget(){
+        val data = _homeLiveData.value?.list?.toMutableList()
+        data?.withIndex()?.filter { it.value is BestSellerDataModel }?.forEach {
+            val bestSellerDataModel = it.value as BestSellerDataModel
+            launchCatchError(coroutineContext, block = {
+                val recomFilterList = mutableListOf<RecommendationFilterChipsEntity.RecommendationFilterChip>()
+
+                getRecommendationFilterChips.get().setParams(
+                        userId = if (userSession.get().userId.isEmpty()) 0 else userSession.get().userId.toInt(),
+                        pageName = bestSellerDataModel.pageName,
+                        queryParam = bestSellerDataModel.widgetParam
+                )
+                recomFilterList.addAll(getRecommendationFilterChips.get().executeOnBackground())
+
+
+                val recomData = getRecommendationUseCase.get().getData(
+                        GetRecommendationRequestParam(
+                                pageName = bestSellerDataModel.pageName,
+                                queryParam = bestSellerDataModel.widgetParam
+                        )
+                )
+
+                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
+                    val recomWidget = recomData.first().copy(
+                            recommendationFilterChips = recomFilterList
+                    )
+                    val dataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                            dataModel.copy(
+                                    id = bestSellerDataModel.id,
+                                    pageName = bestSellerDataModel.pageName,
+                                    widgetParam = bestSellerDataModel.widgetParam
+                            ),
+                            it.index,
+                            this@HomeViewModel
+                    ))
+                } else {
+                    homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(bestSellerDataModel, it.index, this@HomeViewModel))
+                }
+            }){
+                homeProcessor.get().sendWithQueueMethod(DeleteWidgetCommand(bestSellerDataModel, -1, this@HomeViewModel))
+            }
+
+        }
+    }
+
+    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel){
+        val data = _homeLiveData.value?.list?.toMutableList()
+        data?.withIndex()?.find { it.value is BestSellerDataModel && (it.value as BestSellerDataModel).id == bestSellerDataModel.id }?.let {
+            launchCatchError(coroutineContext, block = {
+                val recomData = getRecommendationUseCase.get().getData(
+                        GetRecommendationRequestParam(
+                                pageName = bestSellerDataModel.pageName,
+                                queryParam = if(filterChip.isActivated) filterChip.value else ""
+                        )
+                )
+                if (recomData.isNotEmpty() && recomData.first().recommendationItemList.isNotEmpty()) {
+                    val recomWidget = recomData.first().copy(
+                            recommendationFilterChips = bestSellerDataModel.filterChip
+                    )
+                    val newBestSellerDataModel = bestSellerMapper.get().mappingRecommendationWidget(recomWidget)
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                            bestSellerDataModel.copy(
+                                    recommendationItemList = newBestSellerDataModel.recommendationItemList,
+                                    productCardModelList = newBestSellerDataModel.productCardModelList,
+                                    height = newBestSellerDataModel.height,
+                                    filterChip = newBestSellerDataModel.filterChip.map{
+                                        it.copy(isActivated = filterChip.name == it.name
+                                                && filterChip.isActivated)
+                                    }
+                            ),
+                            it.index,
+                            this@HomeViewModel
+                    ))
+                } else {
+                    homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                            bestSellerDataModel.copy(
+                                    filterChip = bestSellerDataModel.filterChip.map{
+                                        it.copy(isActivated = filterChip.name == it.name
+                                                && !filterChip.isActivated)
+                                    }
+                            ),
+                            it.index,
+                            this@HomeViewModel
+                    ))
+                }
+            }){ _ ->
+                homeProcessor.get().sendWithQueueMethod(UpdateWidgetCommand(
+                        bestSellerDataModel.copy(
+                                filterChip = bestSellerDataModel.filterChip.map {
+                                    it.copy(isActivated = filterChip.name == it.name
+                                            && !filterChip.isActivated)
+                                }
+                        ),
+                        it.index,
+                        this@HomeViewModel
+                ))
+            }
+        }
     }
 
     fun sendGeolocationData() {
@@ -802,6 +913,7 @@ open class HomeViewModel @Inject constructor(
                     getPlayBanner()
                     getPopularKeyword()
                     getDisplayTopAdsHeader()
+                    getRecommendationWidget()
                     getTopAdsBannerData(homeDataWithoutExternalComponentPair.second)
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
@@ -1187,42 +1299,38 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
-        val requestParams = RequestParams()
-        val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
-        requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
-                productId = grid.id,
-                quantity = quantity,
-                shopId = grid.shopId,
-                warehouseId = grid.warehouseId,
-                productName = grid.name,
-                price = grid.price,
-                userId = getUserId()
-        ))
-        getAtcUseCase.get().createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .subscribe (
-                        {
-                            if(it.status == STATUS_OK) {
-                                _oneClickCheckoutHomeComponent.postValue(Event(
-                                        mapOf(
-                                                ATC to it,
-                                                CHANNEL to channel,
-                                                GRID to grid,
-                                                QUANTITY to quantity,
-                                                POSITION to position
+        launchCatchError(coroutineContext, block = {
+            val requestParams = RequestParams()
+            val quantity = if(grid.minOrder < 1) "1" else grid.minOrder.toString()
+            requestParams.putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, AddToCartOccRequestParams(
+                    productId = grid.id,
+                    quantity = quantity,
+                    shopId = grid.shopId,
+                    warehouseId = grid.warehouseId,
+                    productName = grid.name,
+                    price = grid.price,
+                    userId = getUserId()
+            ))
+            val addToCartResult = getAtcUseCase.get().createObservable(requestParams).toBlocking().first()
+            if(addToCartResult.status == STATUS_OK) {
+                _oneClickCheckoutHomeComponent.postValue(Event(
+                        mapOf(
+                                ATC to addToCartResult,
+                                CHANNEL to channel,
+                                GRID to grid,
+                                QUANTITY to quantity,
+                                POSITION to position
 
-                                        )
-                                ))
-                            }
-                            else {
-                                _oneClickCheckoutHomeComponent.postValue(Event(Throwable()))
-                            }
-                        },
-                        {
-                            _oneClickCheckoutHomeComponent.postValue(Event(it))
-                        }
-                )
+                        )
+                ))
+            }
+            else {
+                _oneClickCheckoutHomeComponent.postValue(Event(Throwable()))
+            }
+        }){
+            it.printStackTrace()
+            _oneClickCheckoutHomeComponent.postValue(Event(it))
+        }
     }
 
     private fun getTokocashBalance() {
@@ -1355,6 +1463,7 @@ open class HomeViewModel @Inject constructor(
         return when (visitable) {
             is HomeVisitable -> visitable.visitableId()
             is HomeComponentVisitable -> visitable.visitableId()
+            is RecommendationVisitable -> visitable.visitableId()
             else -> null
         }
     }

@@ -575,7 +575,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         performanceMonitoringSellerHomePlt?.startRenderPerformanceMonitoring()
     }
 
-    private fun stopHomeLayoutRenderMonitoring() {
+    private fun stopHomeLayoutRenderMonitoring(fromCache: Boolean) {
+        performanceMonitoringSellerHomePlt?.addDataSourceAttribution(fromCache)
         performanceMonitoringSellerHomePlt?.stopRenderPerformanceMonitoring()
         (activity as? SellerHomeActivity)?.sellerHomeLoadTimeMonitoringListener?.onStopPltMonitoring()
     }
@@ -590,12 +591,14 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             super.renderList(widgets)
             swipeRefreshLayout.isRefreshing = true
         } else {
-            val newWidgets = adapter.data.toMutableList().mapIndexed { i, widget ->
+            val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
+            val newWidgets = mostWidgetData.mapIndexed { i, widget ->
+                val newWidget = widgets.getOrNull(i)
                 // "if" is true only on the first load, "else" is always true when we reload
-                if (isTheSameWidget(widget, widgets[i]) && widget.isFromCache && !widgets[i].isFromCache) {
+                if (newWidget != null && isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
                     widget.apply { isFromCache = false }
                 } else {
-                    widgets[i]
+                    newWidget
                 }
             }
 
@@ -750,7 +753,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(widgetType: String) {
-        stopPltMonitoringIfNotCompleted()
+        val isFromCache = firstOrNull()?.isFromCache == true
+        stopPltMonitoringIfNotCompleted(isFromCache)
         forEach { widgetData ->
             adapter.data.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
@@ -845,11 +849,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun stopPltMonitoringIfNotCompleted() {
+    private fun stopPltMonitoringIfNotCompleted(fromCache: Boolean) {
         if (!performanceMonitoringSellerHomePltCompleted) {
             performanceMonitoringSellerHomePltCompleted = true
             recyclerView.addOneTimeGlobalLayoutListener {
-                stopHomeLayoutRenderMonitoring()
+                stopHomeLayoutRenderMonitoring(fromCache)
             }
         }
     }

@@ -48,7 +48,6 @@ abstract class BaseWidgetUiTest{
     open val injectCouponTimeBasedUseCase = mockk<Lazy<InjectCouponTimeBasedUseCase>>(relaxed = true)
     open val remoteConfig = mockk<RemoteConfig>(relaxed = true)
     open val getDisplayHeadlineAds = mockk<Lazy<GetDisplayHeadlineAds>>(relaxed = true)
-    open val playWidgetTools = mockk<Lazy<PlayWidgetTools>> (relaxed = true)
 
     open val homeVisitableFactory = HomeVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())
     open val homeDynamicChannelVisitableFactory = HomeDynamicChannelVisitableFactoryImpl(userSessionInterface.get(), remoteConfig, HomeDefaultDataSource())

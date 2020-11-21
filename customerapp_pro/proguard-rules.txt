@@ -433,3 +433,5 @@
  -keep public class com.android.installreferrer.** { *; }
  -dontwarn com.squareup.javapoet.**
  -dontwarn com.tokopedia.topads.dashboard.view.sheet.**
+
+-dontwarn module-info

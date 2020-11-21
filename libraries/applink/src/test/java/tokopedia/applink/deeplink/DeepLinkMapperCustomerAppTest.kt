@@ -502,19 +502,6 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check group chat appLink then should return tokopedia internal group chat in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat"
-        assertEqualsDeepLinkMapper(ApplinkConst.GROUPCHAT_LIST, expectedDeepLink)
-    }
-
-    @Test
-    fun `check group chat with id appLink then should return tokopedia internal group chat with id in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat/123456/"
-        val appLink = UriUtil.buildUri(ApplinkConst.GROUPCHAT_DETAIL, "123456")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
     fun `check chat template appLink then should return tokopedia internal chat template in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/chat/settings/templatechat"
         assertEqualsDeepLinkMapper(ApplinkConst.CHAT_TEMPLATE, expectedDeepLink)

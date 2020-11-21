@@ -80,7 +80,7 @@ class EventPDPTicketItemPackageAdapter(
 
                 itemView.post {
                     if(position == 0) heightItemView += itemView.height.toDp()
-                    if(onCoachmarkListener.getLocalCache()) {
+                    if(!onCoachmarkListener.getLocalCache()) {
                         if (listItemPackage.size == 1 && position == 0) {
                             onCoachmarkListener.showCoachMark(itemView, 0)
                         } else if (listItemPackage.size >= 2 && position == 1) {

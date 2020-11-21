@@ -108,7 +108,6 @@ class FlightHomepageFragment : BaseDaggerFragment(),
 
             flightHomepageViewModel.fetchBannerData(true)
             flightHomepageViewModel.fetchTickerData()
-            flightHomepageViewModel.fetchVideoBannerData()
         }
     }
 
@@ -116,6 +115,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         super.onActivityCreated(savedInstanceState)
 
         flightHomepageViewModel.bannerList.observe(viewLifecycleOwner, Observer {
+            flightHomepageViewModel.fetchVideoBannerData()
             when (it) {
                 is Success -> {
                     renderBannerTitle(it.data.meta.label)
