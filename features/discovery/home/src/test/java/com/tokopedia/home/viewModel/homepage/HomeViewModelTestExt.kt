@@ -19,12 +19,16 @@ import com.tokopedia.home.util.HomeCommandProcessor
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 import java.util.concurrent.TimeoutException
 
@@ -50,6 +54,8 @@ fun createHomeViewModel(
         getStickyLoginUseCase: StickyLoginUseCase = mockk(relaxed = true),
         getPopularKeywordUseCase: GetPopularKeywordUseCase = mockk(relaxed = true),
         getDynamicChannelsUseCase: GetDynamicChannelsUseCase = mockk(relaxed = true),
+        getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true),
+        getRecommendationFilterChips: GetRecommendationFilterChips = mockk(relaxed = true),
         closeChannelUseCase: CloseChannelUseCase = mockk(relaxed = true),
         injectCouponTimeBasedUseCase: InjectCouponTimeBasedUseCase = mockk(relaxed = true),
         getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase = mockk(relaxed = true),
@@ -59,7 +65,9 @@ fun createHomeViewModel(
         topadsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true),
         getDisplayHeadlineAds: GetDisplayHeadlineAds = mockk(relaxed = true),
         playWidgetTools: PlayWidgetTools = mockk(relaxed = true),
-        dispatchers: TestDispatcherProvider = TestDispatcherProvider()
+        bestSellerMapper: BestSellerMapper = mockk(relaxed = true),
+        dispatchers: TestDispatcherProvider = TestDispatcherProvider(),
+        homeProcessor: HomeCommandProcessor = HomeCommandProcessor(Dispatchers.Unconfined)
 ): HomeViewModel{
 
 
@@ -88,9 +96,12 @@ fun createHomeViewModel(
             getSalamWidgetUseCase = Lazy{getSalamWidgetUseCase},
             topAdsImageViewUseCase = Lazy{topadsImageViewUseCase},
             getDisplayHeadlineAds = Lazy{ getDisplayHeadlineAds },
+            getRecommendationUseCase = Lazy{ getRecommendationUseCase},
+            getRecommendationFilterChips = Lazy { getRecommendationFilterChips },
             getRechargeRecommendationUseCase = Lazy{getRechargeRecommendationUseCase},
             playWidgetTools = Lazy { playWidgetTools },
-            homeProcessor = Lazy{ HomeCommandProcessor(dispatchers.ui()) }
+            bestSellerMapper = Lazy { bestSellerMapper },
+            homeProcessor = Lazy{ homeProcessor }
     )
 }
 
