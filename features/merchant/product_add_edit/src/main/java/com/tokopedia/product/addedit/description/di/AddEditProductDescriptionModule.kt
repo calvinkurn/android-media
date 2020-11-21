@@ -7,6 +7,8 @@ import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.network.interceptor.CommonErrorResponseInterceptor
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
@@ -27,6 +29,10 @@ class AddEditProductDescriptionModule {
     @AddEditProductDescriptionScope
     @Provides
     fun provideCoroutineDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @AddEditProductDescriptionScope
+    @Provides
+    fun provideCoroutineDispatchers(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @AddEditProductDescriptionScope
     @Provides

@@ -11,6 +11,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -23,18 +24,16 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.youtube_common.data.model.YoutubeVideoDetailModel
 import com.tokopedia.youtube_common.domain.usecase.GetYoutubeVideoDetailUseCase
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
-        coroutineDispatcher: CoroutineDispatcher,
+        private val coroutineDispatcher: CoroutineDispatchers,
         private val resource: ResourceProvider,
         private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
         private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
-) : BaseViewModel(coroutineDispatcher) {
+) : BaseViewModel(coroutineDispatcher.main) {
 
     private var _productInputModel = MutableLiveData(ProductInputModel())
     val productInputModel: LiveData<ProductInputModel> get() = _productInputModel
@@ -83,7 +82,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
 
     fun validateProductDescriptionInput(productDescriptionInput: String) {
         launchCatchError(block = {
-            val response = withContext(Dispatchers.IO) {
+            val response = withContext(coroutineDispatcher.io) {
                 validateProductDescriptionUseCase.setParams(productDescriptionInput)
                 validateProductDescriptionUseCase.executeOnBackground()
             }
@@ -100,7 +99,7 @@ class AddEditProductDescriptionViewModel @Inject constructor(
         launchCatchError( block = {
             getIdYoutubeUrl(videoUrl)?.let { youtubeId  ->
                 getYoutubeVideoUseCase.setVideoId(youtubeId)
-                val result = withContext(Dispatchers.IO) {
+                val result = withContext(coroutineDispatcher.io) {
                     convertToYoutubeResponse(getYoutubeVideoUseCase.executeOnBackground())
                 }
                 _videoYoutubeNew.value = Pair(position, Success(result))
