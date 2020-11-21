@@ -32,7 +32,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
         components.data?.let {
             if (!it.isNullOrEmpty()) {
                 dataItem.value = it[0]
-                productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(it[0])
+                productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(it[0], components.name)
             }
         }
     }
