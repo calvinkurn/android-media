@@ -18,6 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.consumeAsFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
@@ -110,7 +111,9 @@ class HomeViewModelBusinessUnitTest{
                     emit(it)
                 }
             }
-            channel.send(homeDataModel.copy())
+            launch{
+                channel.send(homeDataModel.copy())
+            }
             homeViewModel = createHomeViewModel(
                     getHomeUseCase = getHomeUseCase,
                     getBusinessUnitDataUseCase = getBusinessUnitDataUseCase,
@@ -139,25 +142,12 @@ class HomeViewModelBusinessUnitTest{
             homeViewModel.getBusinessUnitData(1, 0, "Keuangan")
 
             // Expect tabs data on live data available
-            verifyOrder {
-                observerHome.onChanged(match {
-                    it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                            (it.list.first() as NewBusinessUnitWidgetDataModel).tabList == null
-                })
-                observerHome.onChanged(match {
-                    it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                            (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                            (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null
-                })
-                observerHome.onChanged(match {
-                    it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
-                            (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
-                            (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
-                            (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list != null
-                })
+            homeViewModel.homeLiveData.value?.let{
+                assert(it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                        (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
+                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
+                        (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list != null)
             }
-            confirmVerified(observerHome)
-            channel.send(homeDataModel.copy())
         }
     }
 
