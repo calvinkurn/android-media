@@ -22,6 +22,7 @@ import io.mockk.Ordering
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -687,5 +688,12 @@ class SomListViewModelTest {
         setGetDataOrderListParams()
         viewModel.setSortOrderBy(sortBy)
         assert(viewModel.getDataOrderListParams().sortBy == sortBy)
+    }
+
+    @Test
+    fun setIsMultiSelectEnabledTest() {
+        val mockMultiSelectEnabled = true
+        viewModel.isMultiSelectEnabled = mockMultiSelectEnabled
+        assertEquals(viewModel.isMultiSelectEnabled, mockMultiSelectEnabled)
     }
 }

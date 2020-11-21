@@ -59,11 +59,8 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
                 getSomOrderFilterUseCase.execute()
             } returns baseSomFilterList
 
-            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
             somFilterViewModel.setIsRequestCancelFilterApplied(mockCancelFilterApplied)
-            val shouldSelectRequestCancelFilterMethod = SomFilterViewModel::class.java.getDeclaredMethod("shouldSelectRequestCancelFilter")
-            shouldSelectRequestCancelFilterMethod.isAccessible = true
-            shouldSelectRequestCancelFilterMethod.invoke(somFilterViewModel)
+            somFilterViewModel.getSomFilterData(mockIdFilter, mockDate)
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
@@ -102,9 +99,6 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     fun `when update filter many selected should return success`() {
         runBlocking {
             somFilterViewModel.updateFilterManySelected(mockIdFilter, ChipsUnify.TYPE_NORMAL, 2)
-            val updateIsRequestCancelFilterAppliedMethod = SomFilterViewModel::class.java.getDeclaredMethod("updateIsRequestCancelFilterApplied")
-            updateIsRequestCancelFilterAppliedMethod.isAccessible = true
-            updateIsRequestCancelFilterAppliedMethod.invoke(somFilterViewModel)
             somFilterViewModel.updateParamSom(mockIdFilter)
             val somFilterSuccess = (somFilterViewModel.updateFilterSelected.value as Success).data
             val somFilterDataList = somFilterSuccess.first.filterIsInstance<SomFilterUiModel>()

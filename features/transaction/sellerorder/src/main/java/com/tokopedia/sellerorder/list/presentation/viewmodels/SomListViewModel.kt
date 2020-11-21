@@ -10,7 +10,6 @@ import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.SomConsts
-import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
@@ -43,7 +42,6 @@ class SomListViewModel @Inject constructor(
         somEditRefNumUseCase, somRejectCancelOrderRequest, getUserRoleUseCase) {
 
     companion object {
-        private const val DATE_FORMAT = "dd/MM/yyyy"
         private const val MAX_RETRY_GET_ACCEPT_ORDER_STATUS = 20
         private const val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
@@ -118,10 +116,7 @@ class SomListViewModel @Inject constructor(
         }
     }
 
-    private var getOrderListParams = SomListGetOrderListParam().apply {
-        startDate = Utils.getFormattedDate(90, DATE_FORMAT)
-        endDate = Utils.getFormattedDate(0, DATE_FORMAT)
-    }
+    private var getOrderListParams = SomListGetOrderListParam()
 
     var isMultiSelectEnabled: Boolean = false
 
@@ -232,8 +227,8 @@ class SomListViewModel @Inject constructor(
     fun isTopAdsActive(): Boolean {
         val topAdsGetShopInfo = topAdsCategoryResult
         if (topAdsGetShopInfo.value is Fail) return false
-        return (topAdsGetShopInfo.value as? Success)?.data.orZero() == SomConsts.TOPADS_MANUAL_ADS ||
-                (topAdsGetShopInfo.value as? Success)?.data.orZero() == SomConsts.TOPADS_AUTO_ADS
+        val topAdsGetShopInfoSuccess = (topAdsGetShopInfo.value as? Success)?.data.orZero()
+        return (topAdsGetShopInfoSuccess == SomConsts.TOPADS_MANUAL_ADS || topAdsGetShopInfoSuccess == SomConsts.TOPADS_AUTO_ADS)
     }
 
     fun setStatusOrderFilter(id: List<Int>) {
