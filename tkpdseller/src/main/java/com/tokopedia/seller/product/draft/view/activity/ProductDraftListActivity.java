@@ -191,8 +191,6 @@ public class ProductDraftListActivity extends BaseSimpleActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-            //TODO milhamj remove comment
-//            if(GlobalConfig.isSellerApp()) {
             String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
                     .buildUpon()
                     .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, draftProductIdList.get(0).toString())
@@ -201,10 +199,6 @@ public class ProductDraftListActivity extends BaseSimpleActivity
                     .toString();
             Intent intent = RouteManager.getIntent(this, uri);
             startActivity(intent);
-//            } else {
-//                startActivity(ProductDraftAddActivity.Companion.createInstance(this,
-//                draftProductIdList.get(0)));
-//            }
         } else {
             Toast.makeText(this, MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();
             ProductDraftListFragment productDraftListFragment = (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);
