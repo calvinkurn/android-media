@@ -21,6 +21,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -440,13 +441,16 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onParentSortFilterClicked() {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.put(SomFilterBottomSheet.KEY_SOM_LIST_GET_ORDER_PARAM, viewModel.getDataOrderListParams())
         somListSortFilterTab?.getSomFilterUi()?.let { somFilterList ->
             somFilterBottomSheet = SomFilterBottomSheet.createInstance(
                     somListSortFilterTab?.getSelectedFilterStatusName().orEmpty(),
                     viewModel.getDataOrderListParams().statusList,
                     somFilterList,
                     filterDate,
-                    filterOrderType != 0
+                    filterOrderType != 0,
+                    cacheManager?.id.orEmpty()
             )
             somFilterBottomSheet?.setSomFilterFinishListener(this)
             somFilterBottomSheet?.isAdded?.let {
@@ -1486,6 +1490,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
         loadFilters(false)
+        isLoadingInitialData = true
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         } else {

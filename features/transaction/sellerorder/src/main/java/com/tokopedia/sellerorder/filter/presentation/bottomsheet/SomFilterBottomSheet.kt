@@ -81,11 +81,11 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         somFilterUiModelListCopy = somFilterUiModelList.copyListParcelable()
         val statusListFilter = arguments?.getIntegerArrayList(KEY_ORDER_STATUS_ID_LIST)?.toList()
         statusList = statusListFilter?.copyInt() ?: listOf()
-        somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, arguments?.getString(KEY_CACHE_MANAGER_ID)) }
+        this.somListOrderParam = cacheManager?.get(KEY_SOM_LIST_GET_ORDER_PARAM, SomListGetOrderListParam::class.java)
         somListOrderParam?.statusList = statusListFilter ?: listOf()
         somFilterViewModel.setSomFilterUiModel(somFilterUiModelList)
-        somFilterViewModel.setSomListGetOrderListParam(somListOrderParam
-                ?: SomListGetOrderListParam())
+        somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
 
         setShowListener {
             setStatusBarColor()
@@ -185,6 +185,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
         somListOrderParam?.startDate = startDate.first
         somListOrderParam?.endDate = endDate.first
+        somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         val date = if (startDate.second.isBlank() && endDate.second.isBlank()) {
             ""
         } else if (endDate.second.isBlank()) {
@@ -408,7 +409,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                            orderStatusIdList: List<Int>,
                            somFilterUiModelList: List<SomFilterUiModel>,
                            filterDate: String,
-                           isRequestCancelFilterApplied: Boolean
+                           isRequestCancelFilterApplied: Boolean,
+                           cacheManagerId: String
         ): SomFilterBottomSheet {
             val fragment = SomFilterBottomSheet()
             val args = Bundle()
@@ -417,6 +419,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
             args.putParcelableArrayList(KEY_SOM_FILTER_LIST, ArrayList(somFilterUiModelList))
             args.putString(KEY_FILTER_DATE, filterDate)
             args.putBoolean(KEY_IS_REQUEST_CANCEL_FILTER_APPLIED, isRequestCancelFilterApplied)
+            args.putString(KEY_CACHE_MANAGER_ID, cacheManagerId)
             fragment.arguments = args
             return fragment
         }
