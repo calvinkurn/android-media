@@ -1,7 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.pinpoint;
 
-import android.widget.AdapterView;
-
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
@@ -65,12 +63,9 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @Override
-    public void onSuggestionItemClick(AdapterView<?> adapter, int position) {
-        final PredictionResult item = (PredictionResult) adapter.getItemAtPosition(position);
-        final String placeID = item.getPlaceId();
-
+    public void geoCode(String placeId) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put("placeid", placeID);
+        param.put("placeid", placeId);
         retrofitInteractor.generateLatLng(
                 AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 new RetrofitInteractor.GenerateLatLongListener() {

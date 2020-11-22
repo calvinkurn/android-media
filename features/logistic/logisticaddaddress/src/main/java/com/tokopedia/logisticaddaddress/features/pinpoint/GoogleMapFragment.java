@@ -62,6 +62,7 @@ import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
 import com.tokopedia.logisticdata.util.LocationHelperKt;
 import com.tokopedia.user.session.UserSession;
@@ -314,7 +315,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         autoComplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long itemID) {
-                presenter.onSuggestionItemClick(adapterView, position);
+                final PredictionResult item = (PredictionResult) adapterView.getItemAtPosition(position);
+                presenter.geoCode(item.getPlaceId());
                 analyticsGeoLocationListener.sendAnalyticsOnDropdownSuggestionItemClicked();
             }
         });

@@ -2,19 +2,14 @@ package com.tokopedia.logisticaddaddress.features.pinpoint;
 
 import android.content.res.Configuration;
 import android.view.View;
-import android.widget.AdapterView;
 
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.tokopedia.logisticaddaddress.data.IMapsRepository;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
@@ -80,7 +75,7 @@ public interface GeolocationContract {
 
         void getReverseGeoCoding(String latitude, String longitude);
 
-        void onSuggestionItemClick(AdapterView<?> adapter, int position);
+        void geoCode(String placeId);
 
         void onDestroy();
 
