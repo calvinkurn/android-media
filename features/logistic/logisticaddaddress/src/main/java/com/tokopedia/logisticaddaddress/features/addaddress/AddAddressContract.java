@@ -52,6 +52,5 @@ public interface AddAddressContract {
 
         void requestReverseGeoCode(Context context, Destination destination);
 
-        void editAddressPinPoint(Destination address, String locationText);
     }
 }

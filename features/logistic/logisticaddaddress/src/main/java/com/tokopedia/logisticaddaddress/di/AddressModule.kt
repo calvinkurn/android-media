@@ -49,8 +49,8 @@ class AddressModule {
     @AddressScope
     fun provideAddAddressPresenter(
             @LogisticUserSessionQualifier userSessionInterface: UserSessionInterface?,
-            addressRepository: AddressRepository, revGeocodeUseCase: RevGeocodeUseCase?, editAddressUseCase: EditAddressUseCase): AddAddressContract.Presenter {
-        return AddAddressPresenterImpl(userSessionInterface, addressRepository, revGeocodeUseCase, editAddressUseCase)
+            addressRepository: AddressRepository, revGeocodeUseCase: RevGeocodeUseCase?): AddAddressContract.Presenter {
+        return AddAddressPresenterImpl(userSessionInterface, addressRepository, revGeocodeUseCase)
     }
 
     @Provides
