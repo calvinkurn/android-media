@@ -5,12 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_DATE
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
+import com.tokopedia.sellerorder.common.util.Utils
+import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper.getIsRequestCancelApplied
 import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper.getShouldSelectRequestCancelFilter
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
@@ -94,7 +97,11 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
             }
 
             somFilterUiModel.find { it.nameFilter == FILTER_STATUS_ORDER }?.somFilterData?.map { chips ->
-                chips.isSelected = chips.name == orderStatus
+                if(chips.name != SomConsts.STATUS_NAME_ALL_ORDER) {
+                    chips.isSelected = chips.name == orderStatus
+                } else {
+                    chips.isSelected
+                }
             }
 
             shouldSelectRequestCancelFilter()
@@ -190,9 +197,28 @@ class SomFilterViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
                 somFilter.somFilterData.map { chips ->
                     chips.isSelected = false
                 }
+                when(somFilter.nameFilter) {
+                    FILTER_SORT -> {
+                        somListGetOrderListParam.sortBy = SomConsts.SORT_BY_PAYMENT_DATE_DESCENDING
+                    }
+                    FILTER_STATUS_ORDER -> {
+                        somListGetOrderListParam.statusList = emptyList()
+                    }
+                    FILTER_TYPE_ORDER -> {
+                        somListGetOrderListParam.orderTypeList = emptyList()
+                    }
+                    FILTER_COURIER -> {
+                        somListGetOrderListParam.shippingList = emptyList()
+                    }
+                    FILTER_LABEL -> {
+                        somListGetOrderListParam.isShippingPrinted = 0
+                    }
+                }
             }
-            somListGetOrderListParam = SomListGetOrderListParam()
+            somListGetOrderListParam.startDate = Utils.getNPastMonthTimeText(3)
+            somListGetOrderListParam.endDate = Utils.getNowTimeStamp().formatDate(SomConsts.PATTERN_DATE_PARAM)
             _resetFilterResult.postValue(Success(somFilterUiModel))
+            _somFilterOrderListParam.postValue(Success(somListGetOrderListParam))
         }, onError = {
             _resetFilterResult.postValue(Fail(it))
         })

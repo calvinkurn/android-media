@@ -371,13 +371,8 @@ class SomFilterBottomSheet : BottomSheetUnify(),
     }
 
     private fun actionResetFilter() {
-        somListOrderParam = somFilterViewModel.getSomListGetOrderListParam()
-        somListOrderParam?.startDate = Utils.getNPastMonthTimeText(3)
-        somListOrderParam?.endDate = Utils.getNowTimeStamp().formatDate(PATTERN_DATE_PARAM)
-        somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
         somFilterViewModel.setIsRequestCancelFilterApplied(false)
         filterDate = ""
-        somFilterViewModel.setIsRequestCancelFilterApplied(false)
     }
 
     private fun checkIsSelected(): Boolean {

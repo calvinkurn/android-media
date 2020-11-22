@@ -1265,6 +1265,13 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     dismissCoachMark(true)
                 }
             } else {
+                val lastIndex = adapter.data.size - 1
+                adapter.data.getOrNull(lastIndex)?.let { index ->
+                    if (index is SomListEmptyStateUiModel) {
+                        adapter.data.removeAt(lastIndex)
+                        adapter.notifyItemRemoved(lastIndex)
+                    }
+                }
                 (adapter as SomListOrderAdapter).updateOrders(adapter.data.plus(data))
                 rvSomList.post {
                     updateBulkActionCheckboxStatus()
