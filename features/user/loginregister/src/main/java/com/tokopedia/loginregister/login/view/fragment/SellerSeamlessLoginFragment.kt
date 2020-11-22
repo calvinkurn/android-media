@@ -165,8 +165,9 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         arguments?.run {
             autoLogin = getBoolean(KEY_AUTO_LOGIN, false)
         }
-        if (context?.applicationContext is LoginRouter) {
-            (context?.applicationContext as LoginRouter).setOnboardingStatus(true)
+        (context?.applicationContext as? LoginRouter)?.let {
+            it.setOnboardingStatus(true)
+            it.fetchSellerAppWidgetData()
         }
     }
 

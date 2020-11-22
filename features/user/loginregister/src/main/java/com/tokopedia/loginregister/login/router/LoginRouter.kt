@@ -7,4 +7,6 @@ package com.tokopedia.loginregister.login.router
 interface LoginRouter {
 
     fun setOnboardingStatus(status: Boolean)
+
+    fun fetchSellerAppWidgetData()
 }

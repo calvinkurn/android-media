@@ -74,8 +74,9 @@ class SeamlessLoginEmailPhoneFragment: LoginEmailPhoneFragment() {
     override fun setLoginSuccessSellerApp() {
         if(redirectAppLinks?.isNotEmpty() == true){
             view?.run {
-                if (context.applicationContext is LoginRouter) {
-                    (context.applicationContext as LoginRouter).setOnboardingStatus(true)
+                (context.applicationContext as? LoginRouter)?.let {
+                    it.setOnboardingStatus(true)
+                    it.fetchSellerAppWidgetData()
                 }
                 SellerMigrationRedirectionUtil().startRedirectionActivities(context, redirectAppLinks.orEmpty())
                 activity?.finish()
