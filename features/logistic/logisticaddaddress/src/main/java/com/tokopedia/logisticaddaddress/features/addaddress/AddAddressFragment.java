@@ -919,13 +919,6 @@ public class AddAddressFragment extends BaseDaggerFragment
         }
     }
 
-    @Override
-    public void goToGeolocationActivity(LocationPass locationPass) {
-        Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
-                isAddAddressFromCartCheckoutMarketplace());
-        startActivityForResult(intent, REQUEST_CODE);
-    }
-
     private boolean isAddAddressFromCartCheckoutMarketplace() {
         return (instanceType >= 10 && instanceType < 30);
     }

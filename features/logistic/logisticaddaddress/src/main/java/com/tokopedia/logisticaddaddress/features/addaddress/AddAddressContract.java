@@ -38,8 +38,6 @@ public interface AddAddressContract {
 
         void stopPerformaceMonitoring();
 
-        void goToGeolocationActivity(LocationPass locationPass);
-
     }
 
     interface Presenter {
