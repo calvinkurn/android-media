@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.service.GetOrderService
-import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
 /**
@@ -36,7 +35,8 @@ class GetOrderWorker(
 
             workRequest?.let {
                 WorkManager.getInstance(context)
-                        .enqueueUniqueWork(TAG_RUN_PERIODIC, ExistingWorkPolicy.REPLACE, it)
+                        .beginUniqueWork (TAG_RUN_PERIODIC, ExistingWorkPolicy.REPLACE, it)
+                        .enqueue()
             }
         }
     }
