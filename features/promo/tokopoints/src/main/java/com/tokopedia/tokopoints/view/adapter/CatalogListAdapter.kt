@@ -13,6 +13,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity.Companion.getCatalogDetail
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
@@ -160,7 +161,7 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
 
 
     private fun setDataTimer(holder: TimerViewHolder, countDownInfo: CountDownInfo) {
-        if (holder.timerUnifySingle.timer!=null){
+        if (holder.timerUnifySingle.timer != null) {
             holder.timerUnifySingle.timer!!.cancel()
         }
         val timerValue = countDownInfo.countdownUnix
@@ -189,12 +190,18 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         } else {
             holder.timerUnifySingle.timerFormat = TimerUnifySingle.FORMAT_DAY
             val timerString = countDownInfo.countdownStr
-            var noOfDay = timerString?.replace("[^0-9]".toRegex(), "")
+            val noOfDay = timerString?.replace("[^0-9]".toRegex(), "")
 
             val cal = Calendar.getInstance()
-            noOfDay?.toInt()?.let { cal.add(Calendar.DAY_OF_MONTH, it+1) }
+            noOfDay?.toInt()?.let { cal.add(Calendar.DAY_OF_MONTH, it + 1) }
 
             holder.timerUnifySingle.targetDate = cal
+        }
+
+        holder.timerUnifySingle.apply {
+            onFinish = {
+                holder.timerUnifySingle.hide()
+            }
         }
     }
 
