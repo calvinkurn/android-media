@@ -3,7 +3,7 @@
     <item android:id="@android:id/background">
         <shape>
             <corners android:radius="8dp"/>
-            <solid android:color="@color/Neutral_N75"/>
+            <solid android:color="@color/Unify_N75"/>
         </shape>
     </item>
 
@@ -11,7 +11,7 @@
         <scale android:scaleWidth="100%">
             <shape>
                 <corners android:radius="8dp"/>
-                <solid android:color="@color/red_ribbon"/>
+                <solid android:color="@color/Unify_R500"/>
             </shape>
         </scale>
     </item>

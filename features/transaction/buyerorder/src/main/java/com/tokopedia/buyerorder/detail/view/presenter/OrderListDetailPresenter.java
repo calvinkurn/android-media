@@ -24,10 +24,10 @@ import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
 import com.tokopedia.buyerorder.detail.data.AdditionalTickerInfo;
-import com.tokopedia.buyerorder.detail.data.Body;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
+import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.MetaDataInfo;
@@ -119,7 +119,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public String pdfUri = " ";
     private boolean isdownloadable = false;
     private OrderDetails details;
-    private List<Body> retryBody = new ArrayList<>();
     ArrayList<Integer> categoryList;
     String category;
 
@@ -188,8 +187,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             public void onNext(GraphqlResponse response) {
                 if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
-                    setDetailsData(data.orderDetails());
-                    orderDetails = data.orderDetails();
+                    if (data != null) {
+                        setDetailsData(data.orderDetails());
+                        orderDetails = data.orderDetails();
+                    }
 
                     if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
                         List<Items> list = orderDetails.getItems();
@@ -204,7 +205,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                             category = String.join(",", category);
                         } else {
-                            category = category.toString().substring(1, category.toString().length() - 1);
+                            category = category.substring(1, category.length() - 1);
                         }
                     } else {
                         RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
@@ -313,25 +314,29 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                         if (view != null) {
                             if (response != null) {
                                 ActionButtonList data = response.getData(ActionButtonList.class);
-                                actionButtonList = data.getActionButtonList();
-                                if (actionButtonList != null)
-                                    if (flag) {
-                                        view.setTapActionButton(position, actionButtonList);
-                                        for (int i = 0; i < actionButtonList.size(); i++) {
-                                            if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
-                                                actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                if (data != null) {
+                                    actionButtonList = data.getActionButtonList();
+                                    if (actionButtonList != null)
+                                        if (flag) {
+                                            view.setTapActionButton(position, actionButtonList);
+                                            for (int i = 0; i < actionButtonList.size(); i++) {
+                                                if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
+                                                    actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                                }
                                             }
+                                        } else {
+                                            view.setActionButton(position, actionButtonList);
                                         }
-                                    } else {
-                                        view.setActionButton(position, actionButtonList);
-                                    }
+                                }
                             }
                         } else {
                             if (response != null) {
                                 ActionButtonList data = response.getData(ActionButtonList.class);
-                                actionButtonList = data.getActionButtonList();
-                                if (actionButtonList != null && actionButtonList.size() > 0)
-                                    getView().setActionButtons(actionButtonList);
+                                if (data != null) {
+                                    actionButtonList = data.getActionButtonList();
+                                    if (actionButtonList != null && actionButtonList.size() > 0)
+                                        getView().setActionButtons(actionButtonList);
+                                }
                             }
                         }
                     }
@@ -534,6 +539,18 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         for (Pricing pricing : details.pricing()) {
             getView().setPricing(pricing);
         }
+
+        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
+            if (details.discounts() != null && details.discounts().size() > 0) {
+                getView().setDiscountVisibility(View.VISIBLE);
+                for (Discount discount : details.discounts()) {
+                    getView().setDiscount(discount);
+                }
+            } else {
+                getView().setDiscountVisibility(View.GONE);
+            }
+        }
+
         getView().setPaymentData(details.paymentData());
         getView().setContactUs(details.contactUs(), details.getHelpLink());
 
@@ -612,11 +629,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                                     DataResponseCommon dataResponse = restResponse.getData();
                                                     CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                                                     if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                                                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                                                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
                                                     else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
                                                         getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                                                     else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                                                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                                                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
                                                     getView().hideProgressBar();
                                                     getView().finishOrderDetail();
                                                 }
@@ -670,11 +687,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DataResponseCommon dataResponse = restResponse.getData();
                     CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
                     if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSucessMessage(cancelReplacementPojo.getMessageStatus());
+                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
                     else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
                         getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
                     else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSucessMessage((String) dataResponse.getMessageStatus().get(0));
+                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
                     getView().hideProgressBar();
                     getView().finishOrderDetail();
                 }
@@ -704,7 +721,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (isdownloadable(uri)) {
             getView().askPermission();
         } else {
-            if (getView() != null && getView().getActivity() != null) {
+            if (getView() != null && getView().getActivity() != null && getView().getActivity().getApplicationContext() != null && getView().getActivity() != null) {
                 RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }

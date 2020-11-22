@@ -52,7 +52,6 @@ import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -71,6 +70,7 @@ import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.view.model.ShopShareModel
+import com.tokopedia.shop.common.view.viewmodel.ShopPageFollowingStatusSharedViewModel
 import com.tokopedia.shop.common.view.viewmodel.ShopProductFilterParameterSharedViewModel
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
@@ -211,6 +211,7 @@ class ShopPageFragment :
     private var shopShareBottomSheet: ShopShareBottomSheet? = null
     private var shopImageFilePath: String = ""
     private var shopProductFilterParameterSharedViewModel: ShopProductFilterParameterSharedViewModel? = null
+    private var shopPageFollowingStatusSharedViewModel: ShopPageFollowingStatusSharedViewModel? = null
 
     val isMyShop: Boolean
         get() = if (::shopViewModel.isInitialized) {
@@ -240,6 +241,7 @@ class ShopPageFragment :
         shopViewModel.shopPageHeaderContentData.removeObservers(this)
         shopViewModel.shopImagePath.removeObservers(this)
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.removeObservers(this)
+        shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.removeObservers(this)
         shopViewModel.flush()
         super.onDestroy()
     }
@@ -327,7 +329,7 @@ class ShopPageFragment :
             val tvTitleTabFeedHasPost: Typography = sellerMigrationLayout.findViewById(R.id.tvTitleTabFeedHasPost)
             tvTitleTabFeedHasPost.movementMethod = LinkMovementMethod.getInstance()
             ivTabFeedHasPost.setImageUrl(SellerMigrationConstants.SELLER_MIGRATION_SHOP_PAGE_TAB_FEED_LINK)
-            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
+            tvTitleTabFeedHasPost.setOnClickLinkSpannable(getString(com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content), ::trackContentFeedBottomSheet) {
                 val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
                 val appLinkShopPageFeed = UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, shopId).orEmpty()
                 val intent = SellerMigrationActivity.createIntent(
@@ -499,9 +501,11 @@ class ShopPageFragment :
             }
             shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
             shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+            shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
+            observeShopPageFollowingStatusSharedViewModel()
             startPltNetworkPerformanceMonitoring()
             getInitialData()
             view.findViewById<ViewStub>(R.id.view_stub_content_layout).inflate()
@@ -515,6 +519,13 @@ class ShopPageFragment :
     private fun observeShopProductFilterParameterSharedViewModel() {
         shopProductFilterParameterSharedViewModel?.sharedShopProductFilterParameter?.observe(viewLifecycleOwner, Observer {
             initialProductFilterParameter = it
+        })
+    }
+
+    private fun observeShopPageFollowingStatusSharedViewModel() {
+        shopPageFollowingStatusSharedViewModel?.shopPageFollowingStatusLiveData?.observe(viewLifecycleOwner, Observer {
+            shopPageFragmentHeaderViewHolder.setFavoriteValue(it)
+            shopPageFragmentHeaderViewHolder.updateFavoriteButton()
         })
     }
 
