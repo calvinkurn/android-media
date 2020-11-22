@@ -13,7 +13,6 @@ import org.spekframework.spek2.style.gherkin.Feature
 object GeolocationPresenterTest : Spek({
 
     lateinit var presenter: GeolocationPresenter
-    val context: Context = mockk(relaxed = true)
     val retrofitImpl: RetrofitInteractorImpl = mockk(relaxUnitFun = true)
     val userSession: UserSession = mockk()
     val revGeocode: RevGeocodeUseCase = mockk(relaxUnitFun = true)
@@ -22,7 +21,6 @@ object GeolocationPresenterTest : Spek({
 
     beforeEachTest {
         presenter = GeolocationPresenter(
-                context,
                 retrofitImpl,
                 userSession,
                 revGeocode,
@@ -41,28 +39,6 @@ object GeolocationPresenterTest : Spek({
                     retrofitImpl.unSubscribe()
                     revGeocode.unsubscribe()
                 }
-            }
-        }
-    }
-
-    Feature("connect google api") {
-        Scenario("") {
-            When("on connected") {
-                presenter.connectGoogleApi()
-            }
-            Then("nothing to verify") {
-
-            }
-        }
-    }
-
-    Feature("disconnect google api") {
-        Scenario("") {
-            When("on disconnect") {
-                presenter.disconnectGoogleApi()
-            }
-            Then("nothing to verify") {
-
             }
         }
     }

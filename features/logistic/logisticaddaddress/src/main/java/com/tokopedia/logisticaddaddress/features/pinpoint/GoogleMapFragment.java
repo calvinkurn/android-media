@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +26,18 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -46,12 +55,14 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.common.AddressConstants;
-import com.tokopedia.logisticaddaddress.data.IMapsRepository;
+import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
+import com.tokopedia.logisticaddaddress.utils.LocationCache;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
 import com.tokopedia.logisticdata.util.LocationHelperKt;
 import com.tokopedia.user.session.UserSession;
 
@@ -59,7 +70,7 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 import rx.subscriptions.CompositeSubscription;
-
+import timber.log.Timber;
 
 /**
  * A Refactored fragment from core
@@ -69,7 +80,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         GeolocationContract.GeolocationView,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        ResultCallback<LocationSettingsResult>, OnMapReadyCallback {
+        ResultCallback<LocationSettingsResult>, OnMapReadyCallback, LocationListener {
 
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final String ARGUMENT_GEOLOCATION_DATA = "ARG_GEO_DATA";
@@ -79,6 +90,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private static final boolean HAS_LOCATION = true;
     private ITransactionAnalyticsGeoLocationPinPoint analyticsGeoLocationListener;
     private GoogleMap googleMap;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
     private LocationPass locationPass;
     private SuggestionLocationAdapter adapter;
     private BottomSheetDialog dialog;
@@ -143,6 +156,16 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        this.locationRequest = LocationRequest.create()
+                .setInterval(DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS)
+                .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        this.googleApiClient = new GoogleApiClient.Builder(getContext())
+                .addApi(LocationServices.API)
+                .addApi(Places.GEO_DATA_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
         mapView = view.findViewById(R.id.mapview);
         toolbar = view.findViewById(R.id.app_bar);
         autoComplete = view.findViewById(R.id.autocomplete);
@@ -151,7 +174,6 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         fab = view.findViewById(R.id.fab);
 
         submitPointer.setOnClickListener(view1 -> {
-            locationPass = presenter.getUpdateLocation();
             Bundle bundle = new Bundle();
             bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
             Intent intent = new Intent();
@@ -164,7 +186,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
             analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
         });
 
-        presenter.setUpVariables(locationPass, hasLocation);
+        if (hasLocation) saveLocationToCache();
+
         initActionBarView();
         prepareActionBarView();
         prepareAutoCompleteView();
@@ -176,7 +199,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
             final Bundle mapViewSaveState = savedInstanceState != null ? savedInstanceState.getBundle(STATE_MAPVIEW_SAVE_STATE) : null;
             mapView.onCreate(mapViewSaveState);
             mapView.getMapAsync(this);
-            presenter.connectGoogleApi();
+            this.googleApiClient.connect();
         }
     }
 
@@ -200,7 +223,9 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     @Override
     public void onStop() {
         super.onStop();
-        presenter.disconnectGoogleApi();
+        if (googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -339,18 +364,16 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void prepareDetailDestination(View view) {
-        presenter.prepareDetailDestination(view);
-    }
-
-    @Override
-    public void initAutoCompleteAdapter(CompositeSubscription compositeSubscription, IMapsRepository repository, GoogleApiClient googleApiClient, LatLngBounds latLngBounds) {
-        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, latLngBounds,
-                null, mUser, compositeSubscription, repository);
-    }
-
-    @Override
-    public void setAutoCompleteAdaoter() {
-        autoComplete.setAdapter(adapter);
+        if (hasLocation) {
+            if (locationPass.getManualAddress() == null) {
+                hideDetailDestination();
+            } else {
+                showDetailDestination(view);
+                setManualDestination(locationPass.getManualAddress());
+            }
+        } else {
+            hideDetailDestination();
+        }
     }
 
     @Override
@@ -389,12 +412,12 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     @Override
     public void hideDetailDestination() {
-        fab.setVisibility(View.GONE);
+        fab.hide();
     }
 
     @Override
     public void showDetailDestination(View view) {
-        fab.setVisibility(View.VISIBLE);
+        fab.show();
     }
 
     @Override
@@ -415,17 +438,90 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) { }
+    public void setNewLocationPass(LocationPass locationPass) {
+        this.locationPass = locationPass;
+    }
 
     @Override
-    public void onConnectionSuspended(int cause) { }
+    public void onConnected(@Nullable Bundle bundle) {
+        // no op
+    }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
+    public void onConnectionSuspended(int cause) {
+        // no op
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // no op
+    }
 
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
-        presenter.onResult(locationSettingsResult);
+        final Status status = locationSettingsResult.getStatus();
+        switch (status.getStatusCode()) {
+            case LocationSettingsStatusCodes.SUCCESS:
+                moveMap(getLastLocation());
+                requestLocationUpdate();
+                break;
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                showDialogError(status);
+                break;
+            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                break;
+            default:
+                break;
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private LatLng getLastLocation() {
+        try {
+            if (isServiceConnected()) {
+                Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                LocationCache.saveLocation(getContext(), location);
+                return new LatLng(location.getLatitude(), location.getLongitude());
+            } else {
+                return DEFAULT_LATLNG_JAKARTA;
+            }
+        } catch (Exception e) {
+            return DEFAULT_LATLNG_JAKARTA;
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestLocationUpdate() {
+        if (googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+        }
+    }
+
+    private boolean isServiceConnected() {
+        GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
+
+        int resultCode = availability.isGooglePlayServicesAvailable(getContext());
+
+        if (ConnectionResult.SUCCESS == resultCode) {
+            Timber.d("Google play services available");
+            return true;
+        } else {
+            Timber.d("Google play services unavailable");
+            return false;
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
+        LocationCache.saveLocation(getContext(), location);
+        removeLocationUpdate();
+    }
+
+    private void removeLocationUpdate() {
+        if (googleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
+        }
     }
 
     @Override
@@ -436,11 +532,31 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
         LatLng defLatLng = new LatLng(AddressConstants.DEFAULT_LAT, AddressConstants.DEFAULT_LONG);
         moveMap(defLatLng);
-        presenter.onMapReady();
+        if (!hasLocation) {
+            LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            locationSettingsRequest.setAlwaysShow(true);
+
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi
+                            .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
+
+            checkLocationSettings(result);
+        } else {
+            moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
+        }
     }
 
     public void prepareAutoCompleteView() {
-        presenter.prepareAutoCompleteView();
+        RetrofitInteractor interactor = presenter.getInteractor();
+        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, setDefaultBoundsJakarta(),
+                null, mUser, interactor.getCompositeSubscription(), interactor.getMapRepository());
+        autoComplete.setAdapter(adapter);
+    }
+
+    private LatLngBounds setDefaultBoundsJakarta() {
+        return GeoLocationUtils.generateBoundary(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
 
     private void dimissKeyBoard() {
@@ -474,5 +590,12 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private void initActionBarView() {
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+    }
+
+    private void saveLocationToCache() {
+        Location location = new Location(LocationManager.NETWORK_PROVIDER);
+        location.setLatitude(Double.parseDouble(locationPass.getLatitude()));
+        location.setLongitude(Double.parseDouble(locationPass.getLongitude()));
+        LocationCache.saveLocation(getContext(), location);
     }
 }
