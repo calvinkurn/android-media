@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.ActionButtonList;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
@@ -39,6 +40,7 @@ import com.tokopedia.buyerorder.detail.data.SendEventEmail;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
+import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
@@ -46,6 +48,9 @@ import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
+import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohFinishOrderUseCase;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -114,6 +119,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
     @Inject
     UserSessionInterface userSessionInterface;
+    @Inject
+    FinishOrderGqlUseCase finishOrderGqlUseCase;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -640,6 +647,51 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                             }
                                         }
         );
+    }
+
+    public void finishOrderGql(String orderId, String actionStatus) {
+        if (getView() == null)
+            return;
+
+        UohFinishOrderParam uohFinishOrderParam = new UohFinishOrderParam();
+        uohFinishOrderParam.setOrderId(orderId);
+        uohFinishOrderParam.setAction(actionStatus);
+        uohFinishOrderParam.setUserId(userSessionInterface.getUserId());
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(BuyerConsts.PARAM_INPUT, uohFinishOrderParam);
+        finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
+        finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() != null && getView().getActivity() != null) {
+                    Timber.d(e);
+                    getView().hideProgressBar();
+                    getView().showErrorMessage(e.getMessage());
+                    getView().finishOrderDetail();
+                }
+            }
+
+            @Override
+            public void onNext(UohFinishOrder.Data data) {
+                if (data.getFinishOrderBuyer().getSuccess() == 1) {
+                    if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                        getView().showSuccessMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                    }
+                } else {
+                    if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                        getView().showErrorMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                    }
+                }
+                getView().hideProgressBar();
+                getView().finishOrderDetail();
+            }
+        });
     }
 
     public void finishOrder(String orderId, String url) {
