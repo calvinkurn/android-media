@@ -1479,6 +1479,11 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
         loadFilters(false)
+        if (shouldReloadOrderListImmediately()) {
+            loadOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
+        }
         setDefaultSortByValue()
     }
 
