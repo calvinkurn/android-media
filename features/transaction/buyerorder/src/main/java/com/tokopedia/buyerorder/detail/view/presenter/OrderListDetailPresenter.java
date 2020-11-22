@@ -41,7 +41,6 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
-import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
@@ -50,7 +49,6 @@ import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
-import com.tokopedia.buyerorder.unifiedhistory.list.domain.UohFinishOrderUseCase;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -103,8 +101,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     List<ActionButton> actionButtonList;
     @Inject
     PostCancelReasonUseCase postCancelReasonUseCase;
-    @Inject
-    FinishOrderUseCase finishOrderUseCase;
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
     OrderDetails orderDetails;
@@ -694,75 +690,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
-    public void finishOrder(String orderId, String url) {
-        if (getView() == null || getView().getActivity() == null)
-            return;
-        UserSession userSession = new UserSession(getView().getActivity());
-        String userId = userSession.getUserId();
-        String deviceId = userSession.getDeviceId();
-
-        if (isFinishOrderWithDeviceIdChecker() && deviceId != null && deviceId.isEmpty()) {
-            getView().showErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-            getView().finishOrderDetail();
-            return;
-        }
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("user_id", userId);
-        requestParams.putString("order_id", orderId);
-        requestParams.putString("device_id", userSession.getDeviceId());
-        getView().showProgressBar();
-
-        finishOrderUseCase.setRequestParams(requestParams);
-        finishOrderUseCase.setEndPoint(url);
-        finishOrderUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getActivity() != null) {
-                    Timber.d(e);
-                    getView().hideProgressBar();
-                    getView().showErrorMessage(e.getMessage());
-                    getView().finishOrderDetail();
-                }
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                if (getView() != null && getView().getActivity() != null) {
-                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                    }.getType();
-                    RestResponse restResponse = typeDataResponseMap.get(token);
-                    DataResponseCommon dataResponse = restResponse.getData();
-                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
-                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                        getView().showErrorMessage((String) dataResponse.getErrorMessage().get(0));
-                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
-                    getView().hideProgressBar();
-                    getView().finishOrderDetail();
-                }
-            }
-        });
-    }
-
-    private boolean isFinishOrderWithDeviceIdChecker() {
-        return true;
-    }
-
     @Override
     public void detachView() {
         orderDetailsUseCase.unsubscribe();
         if (postCancelReasonUseCase != null) {
             postCancelReasonUseCase.unsubscribe();
         }
-        if (finishOrderUseCase != null) {
-            finishOrderUseCase.unsubscribe();
+        if (finishOrderGqlUseCase != null) {
+            finishOrderGqlUseCase.unsubscribe();
         }
         addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();

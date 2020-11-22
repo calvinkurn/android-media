@@ -30,7 +30,6 @@ import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
-import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.list.data.Data;
@@ -133,7 +132,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private OrderDetails orderDetails;
     private RequestCancelInfo requestCancelInfo;
     private PostCancelReasonUseCase postCancelReasonUseCase;
-    private FinishOrderUseCase finishOrderUseCase;
     private AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
     private FinishOrderGqlUseCase finishOrderGqlUseCase;
 
@@ -146,7 +144,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                   UserSessionInterface userSessionInterface,
                                   OrderListAnalytics orderListAnalytics,
                                   PostCancelReasonUseCase postCancelReasonUseCase,
-                                  FinishOrderUseCase finishOrderUseCase,
                                   AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase,
                                   FinishOrderGqlUseCase finishOrderGqlUseCase) {
         this.getRecommendationUseCase = getRecommendationUseCase;
@@ -157,7 +154,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         this.userSessionInterface = userSessionInterface;
         this.orderListAnalytics = orderListAnalytics;
         this.postCancelReasonUseCase = postCancelReasonUseCase;
-        this.finishOrderUseCase = finishOrderUseCase;
         this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
         this.finishOrderGqlUseCase = finishOrderGqlUseCase;
     }
@@ -909,58 +905,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                             }
                                         }
         );
-    }
-
-    public void finishOrder(Context context, String orderId, String url) {
-        if (getView() == null)
-            return;
-        UserSession userSession = new UserSession(context);
-        String userId = userSession.getUserId();
-
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("user_id", userId);
-        requestParams.putString("order_id", orderId);
-        requestParams.putString("device_id", userSession.getDeviceId());
-        getView().displayLoadMore(true);
-
-        finishOrderUseCase.setRequestParams(requestParams);
-        finishOrderUseCase.setEndPoint(url);
-        finishOrderUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null) {
-                    Timber.d(e);
-                    getView().displayLoadMore(false);
-                    getView().showFailureMessage(e.getMessage());
-                    getView().finishOrderDetail();
-                }
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                if (getView() != null) {
-                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                    }.getType();
-                    RestResponse restResponse = typeDataResponseMap.get(token);
-                    DataResponseCommon dataResponse = restResponse.getData();
-                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
-                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                        getView().showFailureMessage((String) dataResponse.getErrorMessage().get(0));
-                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
-                    getView().displayLoadMore(false);
-                    getView().finishOrderDetail();
-                }
-            }
-        });
-
     }
 
     public void finishOrderGql(String orderId, String actionStatus) {

@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.buyerorder.detail.domain.ErrorResponse;
-import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.network.NetworkRouter;
@@ -31,16 +30,6 @@ public class OrderListDetailModule {
         ErrorResponseInterceptor errorResponseInterceptor = new ErrorResponseInterceptor(ErrorResponse.class);
         interceptorList.add(errorResponseInterceptor);
         return new PostCancelReasonUseCase(interceptorList, context);
-    }
-
-    @Provides
-    FinishOrderUseCase provideFinishOrderUseCase(@ApplicationContext Context context) {
-        List<Interceptor> interceptorList = new ArrayList<>(2);
-        interceptorList.add(new TkpdOldAuthInterceptor(context,
-                (NetworkRouter) context, new UserSession(context)));
-        ErrorResponseInterceptor errorResponseInterceptor = new ErrorResponseInterceptor(ErrorResponse.class);
-        interceptorList.add(errorResponseInterceptor);
-        return new FinishOrderUseCase(interceptorList, context);
     }
 
     @Provides
