@@ -6,8 +6,23 @@ import retrofit2.http.*
 
 interface InactivePhoneApi {
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     @Multipart
-    @POST("userapp/api/v1/sq-inactive-phone/upload-photo")
+    @POST("urlPath")
     suspend fun uploadImage(
             @Part("index") userIndex: RequestBody,
             @Part("old_msisdn") oldMsisdn: RequestBody,

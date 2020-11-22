@@ -1,4 +1,4 @@
-package com.tokopedia.updateinactivephone.common
+package com.tokopedia.updateinactivephone.common.view
 
 import android.content.Context
 import android.util.AttributeSet

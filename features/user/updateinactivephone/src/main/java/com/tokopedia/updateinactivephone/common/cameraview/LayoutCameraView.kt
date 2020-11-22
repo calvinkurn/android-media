@@ -45,7 +45,6 @@ class LayoutCameraView @JvmOverloads constructor(
             when (layoutType) {
                 CameraViewMode.ID_CARD.id -> { drawIdCardLayout(canvas) }
                 CameraViewMode.SELFIE.id -> { drawSelfieLayout(canvas) }
-                CameraViewMode.SAVING_BOOK.id -> { drawSavingBookLayout(canvas) }
             }
 
             canvas?.clipPath(path)
@@ -129,34 +128,6 @@ class LayoutCameraView @JvmOverloads constructor(
         )
     }
 
-    /**
-     * Draw layout for capture saving book
-     * */
-    private fun drawSavingBookLayout(canvas: Canvas?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            path.addRect(createSavingBookRect(), Path.Direction.CW)
-        } else {
-            path.addRoundRect(createSavingBookRect(), RADIUS, RADIUS, Path.Direction.CW)
-        }
-
-        path.fillType = Path.FillType.INVERSE_EVEN_ODD
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            canvas?.drawRect(createSavingBookRect(), paintWhite)
-        } else {
-            canvas?.drawRoundRect(createSavingBookRect(), RADIUS, RADIUS, paintWhite)
-        }
-    }
-
-    private fun createSavingBookRect(): RectF {
-        return RectF(
-                left + (right - left) / DIMEN_SAVING_BOOK_LEFT,
-                top + (bottom - top) / DIMEN_SAVING_BOOK_TOP,
-                right - (right - left) / DIMEN_SAVING_BOOK_RIGHT,
-                bottom - (bottom - top) / DIMEN_SAVING_BOOK_BOTTOM
-        )
-    }
-
     companion object {
         private const val DIMEN_LEFT_KK = 20f
         private const val DIMEN_TOP_KK = 3.22f
@@ -177,11 +148,6 @@ class LayoutCameraView @JvmOverloads constructor(
         private const val DIMEN_ID_CARD_TOP = 3f
         private const val DIMEN_ID_CARD_RIGHT = 20f
         private const val DIMEN_ID_CARD_BOTTOM = 3f
-
-        private const val DIMEN_SAVING_BOOK_LEFT = 20f
-        private const val DIMEN_SAVING_BOOK_TOP = 1.35f
-        private const val DIMEN_SAVING_BOOK_RIGHT = 20f
-        private const val DIMEN_SAVING_BOOK_BOTTOM = 1.18f
 
         private const val RADIUS = 30f
         private const val STROKE_WIDTH = 10f

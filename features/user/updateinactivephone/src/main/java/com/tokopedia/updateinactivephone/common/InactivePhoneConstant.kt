@@ -41,9 +41,6 @@ object InactivePhoneConstant {
             CameraViewMode.SELFIE.id -> {
                 File(context.externalCacheDir, "$TAG-$SELFIE.jpg").absolutePath
             }
-            CameraViewMode.SAVING_BOOK.id -> {
-                File(context.externalCacheDir, "$TAG-$SAVING_BOOk.jpg").absolutePath
-            }
             else -> ""
         }
     }

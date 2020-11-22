@@ -18,7 +18,7 @@ import com.tokopedia.updateinactivephone.common.InactivePhoneConstant
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.ID_CARD
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.SELFIE
 import com.tokopedia.updateinactivephone.common.InactivePhoneConstant.filePath
-import com.tokopedia.updateinactivephone.common.ThumbnailFileView
+import com.tokopedia.updateinactivephone.common.view.ThumbnailFileView
 import com.tokopedia.updateinactivephone.common.UserDataTemporary
 import com.tokopedia.updateinactivephone.common.cameraview.CameraViewMode
 import com.tokopedia.updateinactivephone.common.cameraview.FileType
@@ -94,7 +94,6 @@ class InactivePhoneDataUploadFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> {
                     if (it.data.validation.status == 1) {
-                        userDataTemp.setUserId(it.data.validation.userId)
                         doUploadImage(FileType.ID_CARD, ID_CARD)
                     }
                 }

@@ -17,12 +17,3 @@ data class ImageUploadDataModel(
             var pictureObject: String = ""
     )
 }
-
-data class ImageUploadParamDataModel(
-        @Expose @SerializedName("email")
-        var email: String = "",
-        @Expose @SerializedName("oldMsisdn")
-        var phoneNumber: String = "",
-        @Expose @SerializedName("index")
-        var index: Int = 0
-)

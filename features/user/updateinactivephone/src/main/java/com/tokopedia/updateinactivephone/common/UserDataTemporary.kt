@@ -10,14 +10,6 @@ class UserDataTemporary constructor(
         return context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun getUserId(): String {
-        return getSharedPReference().getString(KEY_USER_ID, "") ?: ""
-    }
-
-    fun setUserId(value: String) {
-        getSharedPReference().edit().putString(KEY_USER_ID, value).apply()
-    }
-
     fun getEmail(): String {
         return getSharedPReference().getString(KEY_EMAIL, "") ?: ""
     }
@@ -59,7 +51,6 @@ class UserDataTemporary constructor(
 
     companion object {
         private const val PREF_NAME = "userDataInactivePhone.pref"
-        private const val KEY_USER_ID = "userId"
         private const val KEY_EMAIL = "email"
         private const val KEY_OLD_PHONE = "oldPhone"
         private const val KEY_NEW_PHONE = "newPhone"
