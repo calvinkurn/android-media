@@ -12,10 +12,15 @@ object AddEditProductDetailMapper {
     fun getFinalProductName(getProductNameAutoComplete: List<UniverseSearchResponse.UniverseSearch.Data>): List<String> {
         val productNameList: MutableList<String> = mutableListOf()
         val maxSuggestionName = 5
+        val maxLengthKeyword = 70
         getProductNameAutoComplete.map {  data ->
             data.items.forEach {
                 if(productNameList.size <= maxSuggestionName) {
-                    productNameList.add(it.keyword)
+                    if(it.keyword.length > maxLengthKeyword) {
+                        productNameList.add(it.keyword.take(maxLengthKeyword))
+                    } else {
+                        productNameList.add(it.keyword)
+                    }
                 }
             }
         }
