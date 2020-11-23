@@ -8,11 +8,7 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
-import android.webkit.WebView
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.ViewFlipper
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
@@ -28,6 +24,8 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.cataloglisting.ValidateMessageDialog
@@ -42,9 +40,7 @@ import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.sendgift.SendGiftFragment
 import com.tokopedia.tokopoints.view.util.*
-import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.webview.TkpdWebView
@@ -64,6 +60,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private var serverErrorView: ServerErrorView? = null
     private val mSubscriptionCouponTimer: Subscription? = null
     private var mSubscriptionCatalogTimer: Subscription? = null
+    var progressBar: TimerUnifySingle? = null
     private val mRefreshRepeatCount = 0
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
@@ -144,7 +141,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     private fun addStartSaveCouponObserver() = mViewModel.startSaveCouponLiveData.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
         when (it) {
-            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description)
+            is Success -> redeemCoupon(it.data.cta, it.data.code, it.data.title, it.data.description, it.data.redeemMessage)
             is ValidationError<*, *> -> {
                 if (it.data is ValidateMessageDialog) {
                     checkValidation(it.data.item, it.data.title, it.data.desc, it.data.messageCode)
@@ -288,40 +285,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
-    override fun redeemCoupon(cta: String, code: String, title: String, description: String) {
-        //Call api to validate the coupon
-
-        val btn1: UnifyButton
-        val btn2: UnifyButton
-        val titleDialog: TextView
-        val descDialog: Typography
-        val adb = AlertDialog.Builder(context!!)
-        val altTitle = "Kupon berhasil diklaim"
-        val altDescription = "Selamat! Kamu berhasil klaim kupon ini. Yuk pakai kuponnya supaya belanjamu lebih hemat."
-        val view = LayoutInflater.from(context).inflate(R.layout.tp_upcoming_feature_dialog, null)
-        adb.setView(view)
-        btn1 = view.findViewById(R.id.btn_route)
-        btn2 = view.findViewById(R.id.btn_route_kupon)
-        titleDialog = view.findViewById(R.id.tv_dialogTitle)
-        descDialog = view.findViewById(R.id.tv_dialogDesc)
-        titleDialog.text = altTitle
-        descDialog.text = altDescription
-        val alertDialog = adb.create()
-        alertDialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        alertDialog.setCancelable(true)
-        alertDialog.setCanceledOnTouchOutside(true)
-        btn1.setOnClickListener { v: View? ->
-            mViewModel.redeemCoupon(code, cta)
-            alertDialog.dismiss()
+    override fun redeemCoupon(cta: String?, code: String?, title: String?, description: String?, redeemMessage: String?) {
+        RouteManager.route(context, cta)
+        if (redeemMessage != null) {
+            CustomToast.show(appContext, redeemMessage)
         }
-        btn2.setOnClickListener {
-            startActivity(getCallingIntent(activityContext))
-            alertDialog.dismiss()
-        }
-        alertDialog.show()
     }
 
-    private fun showErrorDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int){
+    private fun showErrorDialog(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
         val adb = AlertDialog.Builder(activityContext)
         val labelPositive: String
         var labelNegative: String? = null
@@ -394,16 +365,16 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun checkValidation(item: CatalogsValueEntity, title: String?, message: String, resCode: Int) {
-       if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS){
-           mViewModel.startSaveCoupon(item)
-           AnalyticsTrackerUtil.sendEvent(context,
-                   AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                   AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
-                   AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
-                   title)
-       } else {
-           showErrorDialog(item,title,message,resCode)
-       }
+        if (resCode == CommonConstant.CouponRedemptionCode.SUCCESS) {
+            mViewModel.startSaveCoupon(item)
+            AnalyticsTrackerUtil.sendEvent(context,
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                    title)
+        } else {
+            showErrorDialog(item, title, message, resCode)
+        }
     }
 
     override fun onRealCodeReFresh(realCode: String) {
@@ -440,6 +411,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         val quota: Typography = view!!.findViewById(R.id.text_quota_count)
+        val quotaContainer: LinearLayout? = view?.findViewById(R.id.quota_container)
         val btnAction2: Typography = view!!.findViewById(R.id.button_action_2)
         val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
         btnAction2.isEnabled = !data.isDisabledButton
@@ -452,6 +424,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
             quota.visibility = View.GONE
         } else {
+            quotaContainer?.show()
             quota.visibility = View.VISIBLE
             val upperText = StringBuilder()
             for (i in data.upperTextDesc.indices) {
@@ -506,6 +479,12 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             return
         }
         mCouponName = data.title
+        val quotaContainer = view?.findViewById<LinearLayout>(R.id.quota_container)
+        val timerContainer = view?.findViewById<ConstraintLayout>(R.id.timer_container)
+        progressBar = view?.findViewById<TimerUnifySingle>(R.id.timer_unify)
+        val minUsageLabel = view?.findViewById<Typography>(R.id.tv_min_txn_label)
+        val minUsageValue = view?.findViewById<Typography>(R.id.tv_min_txn_value)
+        val transactionContainer = view?.findViewById<ConstraintLayout>(R.id.container_transaksi)
         val quota: Typography = view!!.findViewById(R.id.text_quota_count)
         val description: Typography = view!!.findViewById(R.id.text_description)
         val disabledError: Typography = view!!.findViewById(R.id.text_disabled_error)
@@ -526,18 +505,26 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
         val tvHowToUse: TkpdWebView = view!!.findViewById(R.id.how_to_use_content)
         val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
-        val tncSeeMore: Typography = view!!.findViewById(R.id.tnc_see_more)
-        val howToUseSeeMore: Typography = view!!.findViewById(R.id.how_to_use_see_more)
-        tvTnc.loadData(data.tnc?.let { getLessDisplayData(it, tncSeeMore) }, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tvHowToUse.loadData(data.howToUse?.let { getLessDisplayData(it, howToUseSeeMore) }, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tncSeeMore.setOnClickListener { v: View? -> data.tnc?.let { loadWebViewInBottomsheet(it, getString(R.string.tnc_coupon_catalog)) } }
-        howToUseSeeMore.setOnClickListener { v: View? -> data.howToUse?.let { loadWebViewInBottomsheet(it, getString(R.string.how_to_use_coupon_catalog)) } }
+        if (!data.tnc.isNullOrEmpty() && data.tnc != "<br>") {
+            tvTnc.loadData(data.tnc, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        } else {
+            view?.findViewById<Typography>(R.id.tnc)?.hide()
+            view?.findViewById<View>(R.id.tp_mid_separator)?.hide()
+            tvTnc.hide()
+        }
+        if (!data.howToUse.isNullOrEmpty() && data.howToUse != "<br>") {
+            tvHowToUse.loadData(data.howToUse, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        } else {
+            view?.findViewById<Typography>(R.id.how_to_use)?.hide()
+            tvHowToUse.hide()
+        }
         val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         //Quota text handling
         if (data.upperTextDesc.isNullOrEmpty()) {
             quota.visibility = View.GONE
         } else {
+            quotaContainer?.show()
             quota.visibility = View.VISIBLE
             val upperText = StringBuilder()
             for (i in data.upperTextDesc!!.indices) {
@@ -553,8 +540,25 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (data.disableErrorMessage.isNullOrEmpty()) {
             disabledError.visibility = View.GONE
         } else {
+            quotaContainer?.show()
             disabledError.visibility = View.VISIBLE
             disabledError.text = data.disableErrorMessage
+        }
+
+        if (data.minUsageValue.isNullOrEmpty()) {
+            transactionContainer?.hide()
+        } else {
+            transactionContainer?.show()
+            minUsageLabel?.show()
+            minUsageLabel?.text = data.minimumUsageLabel
+            minUsageValue?.show()
+            minUsageValue?.text = data.minUsageValue
+        }
+        if (!data.activePeriod.isNullOrEmpty()) {
+            timerContainer?.visibility = View.VISIBLE
+            showTimer(data)
+        } else {
+            timerContainer?.visibility = View.GONE
         }
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled) {
@@ -639,24 +643,41 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
                 mCouponName)
     }
 
-    private fun loadWebViewInBottomsheet(data: String, title: String) {
-        val bottomSheet = BottomSheetUnify()
-        bottomSheet.setShowListener {
-            val sideMargin = 16.toPx()
-            bottomSheet.bottomSheetWrapper.setPadding(0, 0, 0, 0)
-            (bottomSheet.bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(sideMargin, sideMargin, sideMargin, sideMargin)
+    private fun showTimer(item: CatalogsValueEntity) {
+
+        if (progressBar?.timer != null) {
+            progressBar?.timer!!.cancel()
         }
-        val view = layoutInflater.inflate(R.layout.catalog_bottomsheet, null, false)
-        val webView = view.findViewById<WebView>(R.id.catalog_webview)
-        webView.loadData(data, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        bottomSheet.apply {
-            setChild(view)
-            setTitle(title)
-            showCloseIcon = true
-            isDragable = true
-            isHideable = true
+        var timerValue = item.activePeriod?.toLong()
+        val flipTimer = view?.findViewById<ViewFlipper>(R.id.flip_timer)
+        val couponExpire = view?.findViewById<Typography>(R.id.text_timer_value)
+
+        progressBar?.apply {
+            onFinish = {
+                progressBar?.hide()
+            }
+            timerTextWidth = TimerUnifySingle.TEXT_WRAP
         }
-        bottomSheet.show(childFragmentManager, "")
+        if (timerValue != null) {
+            if (timerValue <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S * 1000) {
+                flipTimer?.displayedChild = 0
+                val timeToExpire = convertLongToHourMinuteSec(timerValue)
+                val cal = Calendar.getInstance()
+                cal.add(Calendar.HOUR, timeToExpire.first)
+                cal.add(Calendar.MINUTE, timeToExpire.second)
+                cal.add(Calendar.SECOND, timeToExpire.third)
+                progressBar?.targetDate = cal
+            } else {
+                flipTimer?.displayedChild = 1
+                val cal = Calendar.getInstance(Locale.ENGLISH)
+                if (item.activePeriod != null) {
+                    cal.timeInMillis = item.activePeriod?.toLong()?.times(1000L)!!
+                }
+                val dateMonthYear = "${cal.get(Calendar.DAY_OF_MONTH)} " + cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale("in", "ID")) +
+                        " ${cal.get(Calendar.YEAR)}"
+                couponExpire?.text = dateMonthYear
+            }
+        }
     }
 
     override fun gotoSendGiftPage(id: Int, title: String?, pointStr: String?, banner: String?) {
@@ -668,6 +689,14 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val sendGiftFragment = SendGiftFragment()
         sendGiftFragment.arguments = bundle
         sendGiftFragment.show(childFragmentManager, CommonConstant.FRAGMENT_DETAIL_TOKOPOINT)
+    }
+
+    override fun onDestroyView() {
+        if (progressBar?.timer != null) {
+            progressBar?.timer!!.cancel()
+            progressBar?.timer = null
+        }
+        super.onDestroyView()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

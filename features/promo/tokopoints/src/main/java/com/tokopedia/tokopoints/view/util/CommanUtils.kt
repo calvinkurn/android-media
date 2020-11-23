@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 private val LIST_TAG_START = "<li>"
 private val LIST_TAG_END = "</li>"
@@ -30,11 +29,11 @@ fun getLessDisplayData(data: String, seeMore: Typography): String {
     return displayString
 }
 
-fun convertLongToHourMinuteSec(l : Long) : String {
+fun convertLongToHourMinuteSec(l: Long): Triple<Int, Int, Int> {
     val seconds = (l / 1000).toInt() % 60
     val minutes = (l / (1000 * 60) % 60).toInt()
     val hours = (l / (1000 * 60 * 60) % 24).toInt()
-    return String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
+    return Triple(hours, minutes, seconds)
 }
 
 fun convertDpToPixel(dp: Int, context: Context): Int {

@@ -25,8 +25,8 @@ class CustomToast {
                  duration: Int = Toast.LENGTH_LONG,
                  bg: Int = R.drawable.tp_toast_bg
         ) {
-            val leftPadding = dpToPx(activityContext, 16).toInt()
-            val bottomMargin = dpToPx(activityContext, 48).toInt()
+            val leftPadding = dpToPx(activityContext, 20).toInt()
+            val bottomMargin = dpToPx(activityContext, 100).toInt()
             val topPadding = dpToPx(activityContext, 8).toInt()
             val topPaddingSingleLine = dpToPx(activityContext, 12).toInt()
             val bottomPaddingSingleLine = dpToPx(activityContext, 2).toInt()

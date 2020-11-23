@@ -21,6 +21,7 @@ import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
+import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
@@ -53,7 +54,7 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
             } else {
                 countDownView.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             }
-            countDownView?.timerTextWidth=TimerUnifySingle.TEXT_WRAP
+            countDownView?.timerTextWidth = TimerUnifySingle.TEXT_WRAP
             if (!countDownInfo?.label.isNullOrEmpty()) {
                 (timerMessage as TextView).text = countDownInfo?.label
             } else {
@@ -129,14 +130,12 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
 
     private fun setTimer(timerValue: Long, timerStr: String, timerType: Int) {
         if (timerType == 1) {
-            val seconds = timerValue?.rem(60)
-            val minutes = (timerValue?.rem((60 * 60)))?.div(60)
-            val hours = timerValue?.div((60 * 60))
+            val timeToExpire = convertLongToHourMinuteSec(timerValue)
             val cal = Calendar.getInstance()
-            cal.add(Calendar.HOUR, hours.toInt())
-            cal.add(Calendar.MINUTE, minutes.toInt())
-            cal.add(Calendar.SECOND, seconds.toInt())
-            countDownView?.targetDate = cal
+            cal.add(Calendar.HOUR, timeToExpire.first)
+            cal.add(Calendar.MINUTE, timeToExpire.second)
+            cal.add(Calendar.SECOND, timeToExpire.third)
+            countDownView.targetDate = cal
         } else {
             countDownView.timerFormat = TimerUnifySingle.FORMAT_DAY
             val cal = Calendar.getInstance()

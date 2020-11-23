@@ -22,6 +22,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.tokopoints.view.util.ImageUtil
+import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 import kotlin.collections.HashMap
@@ -173,20 +174,14 @@ class CatalogListAdapter(private val list: ArrayList<Any>) : RecyclerView.Adapte
         }
         holder.timerUnifySingle.timerText = countDownInfo.label
         if (countDownInfo.type == 1) {
-            val seconds = timerValue?.rem(60)
-            val minutes = (timerValue?.rem((60 * 60)))?.div(60)
-            val hours = timerValue?.div((60 * 60))
-            val cal = Calendar.getInstance()
-            if (hours != null) {
-                cal.add(Calendar.HOUR, hours.toInt())
+            if (timerValue != null) {
+                val timeToExpire = convertLongToHourMinuteSec(timerValue)
+                val cal = Calendar.getInstance()
+                cal.add(Calendar.HOUR, timeToExpire.first)
+                cal.add(Calendar.MINUTE, timeToExpire.second)
+                cal.add(Calendar.SECOND, timeToExpire.third)
+                holder.timerUnifySingle.targetDate = cal
             }
-            if (minutes != null) {
-                cal.add(Calendar.MINUTE, minutes.toInt())
-            }
-            if (seconds != null) {
-                cal.add(Calendar.SECOND, seconds.toInt())
-            }
-            holder.timerUnifySingle?.targetDate = cal
         } else {
             holder.timerUnifySingle.timerFormat = TimerUnifySingle.FORMAT_DAY
             val timerString = countDownInfo.countdownStr
