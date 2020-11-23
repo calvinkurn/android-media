@@ -93,6 +93,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
     implementation rootProject.ext.miscDependencies.gson
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config

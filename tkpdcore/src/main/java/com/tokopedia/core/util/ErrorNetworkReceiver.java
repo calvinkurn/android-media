@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.core;
+package com.tokopedia.core.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

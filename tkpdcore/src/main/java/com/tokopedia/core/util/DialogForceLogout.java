@@ -1,4 +1,4 @@
-package com.tokopedia.seller.base.view.core;
+package com.tokopedia.core.util;
 
 import android.app.AlertDialog;
 import android.content.Context;
