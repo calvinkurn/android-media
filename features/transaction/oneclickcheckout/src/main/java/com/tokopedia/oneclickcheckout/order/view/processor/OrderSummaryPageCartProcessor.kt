@@ -87,7 +87,8 @@ class OrderSummaryPageCartProcessor @Inject constructor(private val atcOccExtern
                     orderProduct.notes,
                     orderProduct.productId.toString(),
                     orderShipment.getRealShipperId(),
-                    orderShipment.getRealShipperProductId()
+                    orderShipment.getRealShipperProductId(),
+                    orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && orderShipment.logisticPromoViewModel != null
             )
             var metadata = orderPreference.preference.payment.metadata
             val selectedTerm = orderPayment.creditCard.selectedTerm

@@ -21,7 +21,9 @@ data class UpdateCartOccCartRequest(
         @SerializedName("shipping_id")
         val shippingId: Int = 0,
         @SerializedName("sp_id")
-        val spId: Int = 0
+        val spId: Int = 0,
+        @SerializedName("is_free_shipping_selected")
+        val isFreeShippingSelected: Boolean = false
 )
 
 data class UpdateCartOccProfileRequest(
