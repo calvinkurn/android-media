@@ -127,6 +127,7 @@ object ProductDetailConstant {
     const val MEDIA = "product_media"
     const val BY_ME = "byme"
     const val TOP_ADS = "banner_ads"
+    const val REPORT = "report"
 
 
     //Arguments
@@ -180,6 +181,10 @@ object ProductDetailConstant {
     const val ADS_COUNT = 1
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
+
+    const val EXP_TOP_NAV = "Navigation Revamp"
+    const val VARIANT_OLD = "Existing Navigation"
+    const val VARIANT_REVAMP = "Navigation Revamp"
 
     const val HIDE_NPL_BS = false
     const val RECOM_URL = "tokopedia://rekomendasi/{product_id}/d/?ref=recom_oos"

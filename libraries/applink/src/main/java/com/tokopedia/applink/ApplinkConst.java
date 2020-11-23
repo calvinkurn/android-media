@@ -8,6 +8,7 @@ package com.tokopedia.applink;
 
 public interface ApplinkConst {
     String APPLINK_CUSTOMER_SCHEME = "tokopedia";
+    String HOME_NAVIGATION = "tokopedia://navigation/main";
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
     String HOME_ACCOUNT = "tokopedia://home/account";
@@ -222,6 +223,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
     String SELLER_PURCHASE_CANCELED = "tokopedia://seller/cancelled";
+    String SELLER_PURCHASE_CANCELLATION_REQUEST = "tokopedia://seller/cancellationrequest";
     String SELLER_PURCHASE_WAITING_PICKUP = "tokopedia://seller/waitingpickup";
     String SELLER_PURCHASE_WAITING_AWB = "tokopedia://seller/waitingawb";
     String SELLER_PURCHASE_AWB_INVALID = "tokopedia://seller/awbinvalid";
@@ -567,5 +569,9 @@ public interface ApplinkConst {
         interface Reward {
             String REWARDS = "rewards";
         }
+    }
+
+    interface Navigation{
+        String MAIN_NAV = "tokopedia://navigation/main";
     }
 }
