@@ -3,7 +3,7 @@ package com.tokopedia.logisticaddaddress.features.pinpoint
 import android.content.Context
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.user.session.UserSession
 import io.mockk.mockk
 import io.mockk.verify
