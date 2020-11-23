@@ -247,10 +247,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         return;
                     }
                     break;
-                case DeepLinkChecker.GROUPCHAT:
-                    openGroupChat(linkSegment, defaultBundle);
-                    screenName = AppScreen.GROUP_CHAT;
-                    break;
                 case DeepLinkChecker.PROMO_DETAIL:
                     DeepLinkChecker.openPromoDetail(uriData.toString(), context, defaultBundle);
                     screenName = "";
@@ -352,16 +348,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             intent.putExtra(PARAM_EXTRA_REVIEW, ratingNumber);
             viewListener.goToPage(intent);
-        }
-    }
-
-    private void openGroupChat(List<String> linkSegment, Bundle bundle) {
-        int SEGMENT_GROUPCHAT = 2;
-        Intent intent;
-        if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, linkSegment.get(1));
-            intent.putExtras(bundle);
-            context.startActivity(intent);
         }
     }
 

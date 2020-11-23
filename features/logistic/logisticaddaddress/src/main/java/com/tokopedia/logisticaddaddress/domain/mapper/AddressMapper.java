@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.mapper;
 
 import com.tokopedia.logisticaddaddress.domain.model.Address;
-import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress;
 
 import javax.inject.Inject;
 

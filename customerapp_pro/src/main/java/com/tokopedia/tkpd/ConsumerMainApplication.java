@@ -34,6 +34,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     // Used to load the 'native-lib' library on application startup.
     static {
         System.loadLibrary("native-lib");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     protected void setVersionName() {

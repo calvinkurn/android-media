@@ -35,6 +35,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FILTER_SHORT_BY;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MEMBERSHIP_EVENT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_LIST_TOGGLE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_SEARCH_SUGGESTION;
@@ -48,6 +49,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_ME
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PROFILE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_SETTING;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_FOLLOW_NPL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOWCASE_LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CURRENCY_CODE;
@@ -75,6 +77,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NAME;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.NON_LOGIN;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PAGE_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.POSITION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCTS;
@@ -101,6 +104,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SEL
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PROFILE_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_REF;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_TYPE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRY_ANOTHER_WORD;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.URL_SLUG;
@@ -302,6 +306,40 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 joinSpace(CLICK, followUnfollow),
                 "",
                 customDimensionShopPage);
+    }
+
+    public void clickFollowShowcaseNplButton(
+            String shopId,
+            String userId,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        sendGeneralEventNplFollower(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                String.format(CLICK_SHOWCASE_FOLLOW_NPL, FOLLOW),
+                shopId,
+                PHYSICAL_GOODS,
+                TOKOPEDIA_MARKETPLACE,
+                userId,
+                customDimensionShopPage
+        );
+    }
+
+    public void clickCTASuccessFollowNplToaster(
+            String shopId,
+            String userId,
+            CustomDimensionShopPage customDimensionShopPage
+    ) {
+        sendGeneralEventNplFollower(
+                CLICK_SHOP_PAGE,
+                SHOP_PAGE_BUYER,
+                CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL,
+                shopId,
+                PHYSICAL_GOODS,
+                TOKOPEDIA_MARKETPLACE,
+                userId,
+                customDimensionShopPage
+        );
     }
 
     public void clickMessageSeller(CustomDimensionShopPage customDimensionShopPage) {

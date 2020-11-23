@@ -12,6 +12,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.analyticsdebugger.AnalyticsSource;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
 import com.tokopedia.config.GlobalConfig;
@@ -88,8 +89,6 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String GTM_SIZE_LOG_REMOTE_CONFIG_KEY = "android_gtm_size_log";
     private static final long GTM_SIZE_LOG_THRESHOLD_DEFAULT = 6000;
     private static long gtmSizeThresholdLog = 0;
-
-    private final String REMOTE_CONFIG_SEND_TRACK_BG = "android_send_track_background";
 
     public GTMAnalytics(Context context) {
         super(context);
@@ -244,16 +243,11 @@ public class GTMAnalytics extends ContextAnalytics {
         }
         // https://tokopedia.atlassian.net/browse/AN-19138
 
-        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.just(value)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .map(this::sendEnhanceECommerceEventOrigin)
-                    .subscribe(getDefaultSubscriber());
-        } else {
-            sendEnhanceECommerceEventOrigin(value);
-        }
-
+        Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .map(this::sendEnhanceECommerceEventOrigin)
+                .subscribe(getDefaultSubscriber());
     }
 
     private boolean sendEnhanceECommerceEventOrigin(Map<String, Object> value) {
@@ -869,7 +863,7 @@ public class GTMAnalytics extends ContextAnalytics {
         try {
             String name = eventName == null ? (String) values.get("event") : eventName;
             if (isGtmV5) name += " (v5)";
-            GtmLogger.getInstance(context).save(name, values);
+            GtmLogger.getInstance(context).save(name, values, AnalyticsSource.GTM);
             logEventSize(eventName, values);
             if (tetraDebugger != null) {
                 tetraDebugger.send(values);
@@ -1025,14 +1019,10 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushGeneralGtmV5Internal(Map<String, Object> params) {
-        if (remoteConfig.getBoolean(REMOTE_CONFIG_SEND_TRACK_BG, true)) {
-            Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .subscribe(getDefaultSubscriber());
-        } else {
-            pushGeneralGtmV5InternalOrigin(params);
-        }
+        Observable.fromCallable(() -> pushGeneralGtmV5InternalOrigin(params))
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(getDefaultSubscriber());
     }
 
     private boolean pushGeneralGtmV5InternalOrigin(Map<String, Object> params) {

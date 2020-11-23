@@ -67,7 +67,7 @@ class PlayBeforeLiveFragment @Inject constructor(
             }
 
             override fun onCloseIconClicked() {
-                onBackPressed()
+                activity?.onBackPressed()
             }
         })
     }

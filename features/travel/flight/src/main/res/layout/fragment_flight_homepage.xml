@@ -67,18 +67,38 @@
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_20"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/flightHomepageSearchFormContainer"
             tools:visibility="visible">
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/flightHomepageBannerTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_3"
+                tools:text="Promo tiket pesawat" />
+
             <com.tokopedia.banner.Banner
                 android:id="@+id/flightHomepageBanner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3" />
 
         </LinearLayout>
+
+        <!-- Video Banner disini -->
+        <com.tokopedia.common.travel.widget.TravelVideoBannerWidget
+            android:id="@+id/flightHomepageVideoBanner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/flightHomepageBannerLayout" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
