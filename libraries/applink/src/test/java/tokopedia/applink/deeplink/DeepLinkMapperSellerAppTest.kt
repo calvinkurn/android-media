@@ -1,4 +1,4 @@
-    package tokopedia.applink.deeplink
+package tokopedia.applink.deeplink
 
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.constant.DeeplinkConstant
