@@ -211,7 +211,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         titleMinTrans?.text = data.minimumUsageLabel
         textMinTrans?.text = data.minimumUsage
         btnAction2?.text = data.buttonStr
-        btnAction2?.setBackgroundResource(R.drawable.bg_button_orange_enabled)
+        btnAction2?.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_orange_enabled)
 
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
 
