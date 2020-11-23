@@ -8,6 +8,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.BarChartConfig
 import com.tokopedia.charts.model.*
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartAxisUiModel
@@ -16,6 +17,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.BarChartUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
 import com.tokopedia.sellerhomecommon.utils.ChartXAxisLabelFormatter
 import com.tokopedia.sellerhomecommon.utils.ChartYAxisLabelFormatter
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_bar_chart_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_chart_tooltip.view.*
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
@@ -152,7 +155,7 @@ class BarChartViewHolder(
     private fun getBarChartTooltip(): ChartTooltip {
         return ChartTooltip(itemView.context, R.layout.shc_partial_chart_tooltip)
                 .setOnDisplayContent { view, data, x, y ->
-                    (data as? BarChartMetricValue)?.let {
+                    data?.let {
                         view.tvShcTooltipTitle.text = it.xLabel
                         view.tvShcTooltipValue.text = it.yLabel
                     }
@@ -200,15 +203,12 @@ class BarChartViewHolder(
         val tooltip = element.tooltip
         val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
-            btnShcBarChartTooltip.visible()
+            tvShcBarChartTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvShcBarChartTitle.setOnClickListener {
                 listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
             }
-            btnShcBarChartTooltip.setOnClickListener {
-                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
-            }
         } else {
-            btnShcBarChartTooltip.gone()
+            tvShcBarChartTitle.clearUnifyDrawableEnd()
         }
     }
 

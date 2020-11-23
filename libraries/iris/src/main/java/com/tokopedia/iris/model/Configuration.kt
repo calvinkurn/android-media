@@ -11,8 +11,7 @@ import java.util.concurrent.TimeUnit
 data class Configuration(
         @SerializedName("row_limit") var maxRow: Int = DEFAULT_MAX_ROW,
         @SerializedName("interval") var intervals: Long = DEFAULT_SERVICE_TIME,
-        var isEnabled: Boolean = true,
-        var isWorkManagerEnabled: Boolean = true
+        var isEnabled: Boolean = true
 ) {
     val intervalSeconds = TimeUnit.MINUTES.toSeconds(intervals)
 }

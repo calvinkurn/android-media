@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.brandlist.R
 import com.tokopedia.unifyprinciples.Typography
 
-class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabLayout(context, attrs) {
+class BrandlistCategoryTabLayout(context: Context, attrs: AttributeSet?) : TabLayout(context, attrs) {
 
     private var tabMaxHeight: Int = 0
     private var tabMinHeight: Int = 0
@@ -120,14 +120,14 @@ class BrandlistCategoryTabLayout(context: Context?, attrs: AttributeSet?) : TabL
 
     private fun setActiveText(categoryView: Typography) {
         categoryView.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Purple_P600))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_P600))
             setWeight(Typography.BOLD)
         }
     }
 
     private fun setInactiveText(categoryView: Typography) {
         categoryView.apply {
-            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
             setWeight(Typography.REGULAR)
         }
     }

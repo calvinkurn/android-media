@@ -8,6 +8,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeoLocationPromptDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderDataModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedDataModel
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 
 /**
  * Created by Lukas on 2019-08-20
@@ -19,6 +20,8 @@ interface HomeTypeFactory {
     fun type(homepageBannerDataModel: HomepageBannerDataModel): Int
 
     fun type(tickerDataModel: TickerDataModel): Int
+
+    fun type(bestSellerDataModel: BestSellerDataModel): Int
 
     fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
 
@@ -44,8 +47,6 @@ interface HomeTypeFactory {
 
     fun type(playCard: PlayCardDataModel): Int
 
-    fun type(playCard: PlayCarouselCardDataModel): Int
-
     fun type(homeLoadingMoreModel: HomeLoadingMoreModel): Int
 
     fun type(homeRetryModel: HomeRetryModel): Int
@@ -57,4 +58,6 @@ interface HomeTypeFactory {
     fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
 
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int
+
+    fun type(dataModel: CarouselPlayWidgetDataModel): Int
 }

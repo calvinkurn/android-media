@@ -8,4 +8,6 @@
     <color name="text_promo_potency">#d50000</color>
     <color name="disabled_washout_foreground">#88FFFFFF</color>
 
+    <color name="text_mvc">#03AC0E</color>
+
 </resources>

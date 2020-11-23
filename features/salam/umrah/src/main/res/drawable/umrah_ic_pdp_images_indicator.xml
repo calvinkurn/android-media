@@ -2,16 +2,16 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
         <shape android:shape="ring"
-            android:innerRadius="0dp"
-            android:thickness="3dp"
+            android:innerRadius="@dimen/unify_space_0"
+            android:thickness="@dimen/spacing_lvl2"
             android:useLevel="false">
-            <solid android:color="@color/g_500" />
+            <solid android:color="@color/Green_G500" />
         </shape>
     </item>
     <item>
         <shape android:shape="ring"
-            android:innerRadius="0dp"
-            android:thickness="3dp"
+            android:innerRadius="@dimen/unify_space_0"
+            android:thickness="@dimen/spacing_lvl2"
             android:useLevel="false">
             <solid android:color="@color/Neutral_N0" />
         </shape>

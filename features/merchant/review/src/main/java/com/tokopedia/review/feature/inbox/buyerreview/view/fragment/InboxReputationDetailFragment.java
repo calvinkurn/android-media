@@ -39,7 +39,6 @@ import com.tokopedia.review.R;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.AppScreen;
 import com.tokopedia.review.feature.inbox.buyerreview.analytics.ReputationTracking;
 import com.tokopedia.review.feature.inbox.buyerreview.di.DaggerReputationComponent;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.model.ProductRevIncentiveOvoDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationDetailActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.activity.InboxReputationReportActivity;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.InboxReputationDetailAdapter;
@@ -158,7 +157,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     }
 
     private void setToolbar(String title, String subtitle){
-        Toolbar toolbar = getActivity().findViewById(R.id.toolbar);
+        Toolbar toolbar = getActivity().findViewById(com.tokopedia.abstraction.R.id.toolbar);
         toolbar.setTitle(title);
         toolbar.setSubtitle(subtitle);
     }
@@ -207,7 +206,6 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        presenter.getProductIncentiveOvo();
         if (!TextUtils.isEmpty(reputationId)) {
             presenter.getInboxDetail(
                     reputationId,
@@ -451,7 +449,10 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onSmoothScrollToReplyView(int adapterPosition) {
-        listProduct.smoothScrollToPosition(adapterPosition);
+        if(adapterPosition > -1 && adapterPosition < adapter.getList().size()
+                && adapter.getList().get(adapterPosition) instanceof InboxReputationDetailItemViewModel) {
+            listProduct.smoothScrollToPosition(adapterPosition);
+        }
     }
 
     @Override
@@ -565,16 +566,5 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
         if (presenter != null)
             presenter.detachView();
         callbackManager = null;
-    }
-
-    @Override
-    public void onErrorGetProductRevIncentiveOvo(Throwable throwable) {
-        adapter.setProductRevIncentiveOvoDomain(null);
-    }
-
-    @Override
-    public void onSuccessGetProductRevIncentiveOvo(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain) {
-        adapter.setProductRevIncentiveOvoDomain(productRevIncentiveOvoDomain);
-        adapter.setFragmentManager(getFragmentManager());
     }
 }

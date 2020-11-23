@@ -49,6 +49,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -62,6 +63,7 @@ import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -80,6 +82,8 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -101,6 +105,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -136,7 +141,9 @@ public class ProductListFragment
         BroadMatchListener,
         InspirationCardListener,
         QuickFilterElevation,
-        SortFilterBottomSheet.Callback {
+        SortFilterBottomSheet.Callback,
+        SearchInTokopediaListener,
+        SearchNavigationClickListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -310,7 +317,8 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this, this,
-                this, this, this, topAdsConfig);
+                this, this, this, this, this,
+                topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -537,6 +545,7 @@ public class ProductListFragment
     public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
         String userId = getUserId();
         String searchRef = getSearchRef();
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
 
@@ -546,15 +555,19 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel,
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel, "");
         }
     }
 
     private String getSearchRef() {
         return searchParameter.get(SearchApiConst.SEARCH_REF);
+    }
+
+    private String getSearchProductTrackingEventLabel(ProductItemViewModel item) {
+        return TextUtils.isEmpty(item.getPageTitle()) ? getQueryKey() : item.getPageTitle();
     }
 
     @Override
@@ -609,7 +622,10 @@ public class ProductListFragment
 
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
-            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+            ProductCardOptionsManager.handleProductCardOptionsActivityResult(
+                    requestCode, resultCode, data,
+                    this::handleWishlistAction, this::handleAddToCartAction, this::handleVisitShopAction, this::handleShareProductAction
+            );
         }
     }
 
@@ -621,6 +637,45 @@ public class ProductListFragment
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
         presenter.handleWishlistAction(productCardOptionsModel);
+    }
+
+    private void handleAddToCartAction(ProductCardOptionsModel productCardOptionsModel) {
+        presenter.handleAddToCartAction(productCardOptionsModel);
+    }
+
+    @Override
+    public void trackSuccessAddToCartEvent(boolean isAds, Object addToCartDataLayer) {
+        SearchTracking.trackEventAddToCart(getQueryKey(), isAds, addToCartDataLayer);
+    }
+
+    @Override
+    public void showAddToCartSuccessMessage() {
+        if (getView() == null) return;
+        Toaster.make(getView(), getString(R.string.search_add_to_cart_success), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
+    }
+
+    @Override
+    public void showAddToCartFailedMessage(String errorMessage) {
+        if (getView() == null) return;
+        Toaster.make(getView(), errorMessage, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR);
+    }
+
+    private void handleVisitShopAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (presenter != null) presenter.handleVisitShopAction();
+    }
+
+    @Override
+    public void routeToShopPage(String shopId) {
+        if (getContext() != null) RouteManager.route(getContext(), ApplinkConst.SHOP, shopId);
+    }
+
+    @Override
+    public void trackEventGoToShopPage(Object dataLayer) {
+        SearchTracking.trackEventGoToShopPage(getQueryKey(), dataLayer);
+    }
+
+    private void handleShareProductAction(ProductCardOptionsModel productCardOptionsModel) {
+        SearchTracking.trackEventShareProduct(getQueryKey(), productCardOptionsModel.getProductId());
     }
 
     @Override
@@ -714,6 +769,7 @@ public class ProductListFragment
 
     @Override
     public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
 
@@ -721,7 +777,7 @@ public class ProductListFragment
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
                 item.isOrganicAds(),
-                getQueryKey(),
+                eventLabel,
                 filterSortParams
         );
     }
@@ -799,27 +855,19 @@ public class ProductListFragment
 
     @Override
     public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
-        if (getSearchParameter() == null || getActivity() == null) return;
+        if (getSearchParameter() == null || getActivity() == null || presenter == null) return;
 
-        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
-        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
+        presenter.onThreeDotsClick(item, adapterPosition);
     }
 
-    private ProductCardOptionsModel createProductCardOptionsModel(ProductItemViewModel item) {
-        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+    @Override
+    public void trackEventLongPress(String productID) {
+        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), productID);
+    }
 
-        productCardOptionsModel.setHasWishlist(item.isWishlistButtonEnabled());
-        productCardOptionsModel.setHasSimilarSearch(true);
-        productCardOptionsModel.setWishlisted(item.isWishlisted());
-        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
-        productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
-        productCardOptionsModel.setTopAds(item.isTopAds() || item.isOrganicAds());
-        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
-        productCardOptionsModel.setRecommendation(false);
-        productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
-        productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
-
-        return productCardOptionsModel;
+    @Override
+    public void showProductCardOptions(ProductCardOptionsModel productCardOptionsModel) {
+        ProductCardOptionsManager.showProductCardOptions(this, productCardOptionsModel);
     }
 
     @Override
@@ -981,6 +1029,13 @@ public class ProductListFragment
         return getOptionListFromFilterController();
     }
 
+    @Override
+    public void onEmptySearchToGlobalSearchClicked(String applink) {
+        if (redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
+    }
+
     private List<Option> getOptionListFromFilterController() {
         if (filterController == null) return new ArrayList<>();
 
@@ -1013,16 +1068,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
-        adapter.setGlobalNavViewModel(globalNavViewModel);
-        presenter.clearData();
-        adapter.showEmptyState(getActivity(), isFilterActive());
-    }
-
-    private boolean isFilterActive() {
-        if (filterController == null) return false;
-
-        return filterController.isFilterActive();
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
+        adapter.showEmptyState(globalNavViewModel, emptySearchProductViewModel);
     }
 
     private void setSortFilterIndicatorCounter() {
@@ -1171,7 +1218,9 @@ public class ProductListFragment
 
     @Override
     public boolean isAnyFilterActive() {
-        return isFilterActive();
+        if (filterController == null) return false;
+
+        return filterController.isFilterActive();
     }
 
     @Override
@@ -1575,33 +1624,63 @@ public class ProductListFragment
     }
 
     @Override
-    public void showOnBoarding() {
-        if (searchSortFilter != null && searchSortFilter.getSortFilterPrefix() != null) {
-            ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+    public void showOnBoarding(int firstProductPosition, boolean showThreeDotsOnBoarding) {
+        if (recyclerView == null) return;
 
-            CoachMarkItem item = createFilterOnBoardingCoachMarkItem();
-            coachMarkItemList.add(item);
+        recyclerView.post(() -> {
+            View threeDots = showThreeDotsOnBoarding ? getThreeDotsOfFirstProductItem(firstProductPosition) : null;
+
+            if (searchSortFilter == null) return;
+
+            if (firstProductPosition > 0 && threeDots != null)
+                recyclerView.smoothScrollToPosition(firstProductPosition);
+
+            ArrayList<CoachMarkItem> coachMarkItemList = createCoachMarkItemList(
+                    searchSortFilter.getSortFilterPrefix(),
+                    threeDots
+            );
 
             CoachMarkBuilder builder = new CoachMarkBuilder();
             builder.allowPreviousButton(false);
             builder.build().show(getActivity(), SEARCH_RESULT_PRODUCT_FILTER_ONBOARDING_TAG, coachMarkItemList);
-        }
+        });
     }
 
-    private CoachMarkItem createFilterOnBoardingCoachMarkItem() {
+    private View getThreeDotsOfFirstProductItem(int firstProductPosition) {
+        if (recyclerView == null) return null;
+
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(firstProductPosition);
+        if (viewHolder == null) return null;
+
+        if (viewHolder.itemView instanceof IProductCardView)
+            return ((IProductCardView) viewHolder.itemView).getThreeDotsButton();
+        else
+            return null;
+    }
+
+    private ArrayList<CoachMarkItem> createCoachMarkItemList(View sortFilterPrefix, @Nullable View threeDots) {
+        ArrayList<CoachMarkItem> coachMarkItemList = new ArrayList<>();
+
+        coachMarkItemList.add(createFilterOnBoarding(sortFilterPrefix));
+        if (threeDots != null) coachMarkItemList.add(createThreeDotsOnBoarding(threeDots));
+
+        return coachMarkItemList;
+    }
+
+    private CoachMarkItem createFilterOnBoarding(View sortFilterPrefix) {
         return new CoachMarkItem(
-                searchSortFilter.getSortFilterPrefix(),
-                getFilterOnBoardingTitle(),
-                getFilterOnBoardingDescription()
+                sortFilterPrefix,
+                getString(R.string.search_product_filter_onboarding_title),
+                getString(R.string.search_product_filter_onboarding_description)
         );
     }
 
-    private String getFilterOnBoardingTitle() {
-        return getString(R.string.search_product_filter_onboarding_title);
-    }
-
-    private String getFilterOnBoardingDescription() {
-        return getString(R.string.search_product_filter_onboarding_description);
+    private CoachMarkItem createThreeDotsOnBoarding(View threeDotsButton) {
+        return new CoachMarkItem(
+                threeDotsButton,
+                getString(R.string.search_product_three_dots_onboarding_title),
+                getString(R.string.search_product_three_dots_onboarding_description)
+        );
     }
 
     private Unit openBottomSheetFilterRevamp() {
@@ -1699,5 +1778,53 @@ public class ProductListFragment
     public void configure(boolean shouldRemove) {
         if (shouldRemove) SearchFilterUtilsKt.removeQuickFilterElevation(searchSortFilter);
         else SearchFilterUtilsKt.applyQuickFilterElevation(getContext(), searchSortFilter);
+    }
+
+    @Override
+    public void onSearchInTokopediaClick(@NotNull String applink) {
+        if (getActivity() == null) return;
+
+        RouteManager.route(getActivity(), applink);
+    }
+
+    @Override
+    public void addLocalSearchRecommendation(List<Visitable> visitableList) {
+        adapter.appendItems(visitableList);
+    }
+
+    @Override
+    public void onChangeViewClicked(int position) {
+        if (presenter == null) return;
+
+        presenter.handleChangeView(position, adapter.getCurrentLayoutType());
+    }
+
+    @Override
+    public void trackEventSearchResultChangeView(String viewType) {
+        SearchTracking.eventSearchResultChangeGrid(getActivity(), viewType, getScreenName());
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToListView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationListView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToBigGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationSingleGridView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToSmallGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(2);
+        adapter.changeSearchNavigationDoubleGridView(position);
     }
 }

@@ -167,10 +167,10 @@ open class SellerMenuViewModelTestFixture {
         talk: Int
     ): SellerMenuNotificationResponse {
         val orderStatus = SellerOrderStatus(newOrder, readyToShip)
-        val notifications = Notifications(orderStatus)
         val notifCenterTotalUnread = NotifCenterTotalUnread(totalUnread)
         val inbox = Inbox(talk)
+        val notifications = Notifications(orderStatus, notifCenterTotalUnread, inbox)
 
-        return SellerMenuNotificationResponse(notifications, notifCenterTotalUnread, inbox)
+        return SellerMenuNotificationResponse(notifications)
     }
 }

@@ -64,6 +64,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_X_TAB = "click %1s tab";
     public static final String CLICK_SHOWCASE_X = "click etalase %1s";
     public static final String CLICK_SHOWCASE_LIST = "click etalase list";
+    public static final String CLICK_SHOWCASE_FOLLOW_NPL = "click %1s on etalase page";
+    public static final String CLICK_OK_SUCCESS_FOLLOW_TOASTER_NPL = "click ok on toaster follow shop";
     public static final String SORT_PRODUCT = "sort product";
     public static final String CLICK_SETTING = "click setting";
     public static final String CLICK_SHOP_DASHBOARD = "click shop dashboard";
@@ -87,11 +89,17 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_CLOSE_TNC = "click close t&c - %1s";
     public static final String CLICK_ACTIVATE_REMINDER = "click activate reminder";
     public static final String CLICK_DEACTIVATE_REMINDER = "click deactivate reminder";
+    public static final String CAMPAIGN_SEGMENTATION = "campaign segmentation";
     public static final String IMPRESSION_TOASTER_NOTIFY_ME = "impression toaster notify me";
     public static final String CLICK_OK_TOASTER_NOTIFY_ME = "click ok on toaster notify me";
     public static final String CLICK_SEE_ALL_CAMPAIGN_NPL_WIDGET = "click see all - %1s";
     public static final String CLICK_SHARE_DETAIL = "click share detail";
     public static final String CLICK_PRODUCT_LIST_TOGGLE = "click product list toggle";
+    public static final String CLICK_FILTER_CHIP = "click filter chip";
+    public static final String CLICK_FILTER_SHORT_BY = "click filter sort by - ";
+    public static final String CLICK_FILTER_PRICE = "click filter price - min : %s - max : %s";
+    public static final String CLICK_FILTER_RATING = "click filter rating - ";
+    public static final String CLICK_FOLLOW_UNFOLLOW_TNC_PAGE = "click %1s on t&c page";
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -108,8 +116,6 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_HOW_TO_ACTIVATE_SHOP = "click how to activate shop";
     public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
     public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
-    public static final String IMPRESSION_SGC_CHANNEL = "impression on play sgc channel";
-    public static final String IMPRESSION_SGC_BANNER = "impression on play sgc banner";
     public static final String CLICK_MENU_FROM_MORE_MENU = "click menu from more menu";
     public static final String CLICK_WISHLIST = "clickWishlist";
     public static final String ADD = "add";
@@ -121,12 +127,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FOLLOW = "click follow";
     public static final String CLICK_UNFOLLOW = "click unfollow";
     public static final String CLICK_ADD_NOTE = "click add note";
-    public static final String CLICK_OTHER_CONTENT = "click other content";
-    public static final String CLICK_VIEW_ALL_PLAY = "click view all play";
-    public static final String CLICK_REMOVE_REMIND_ME_PLAY = "click on remove remind me";
-    public static final String CLICK_REMIND_ME_PLAY = "click remind me";
     public static final String BUSINESS_UNIT = "businessUnit";
-    public static final String ADS_SOLUTION = "ads solution";
+    public static final String PHYSICAL_GOODS = "physical goods";
     public static final String CURRENT_SITE = "currentSite";
     public static final String TOKOPEDIA_MARKETPLACE = "tokopediamarketplace";
     public static final String SEE_ALL = "see all";
@@ -163,13 +165,9 @@ public class ShopPageTrackingConstant {
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
     public static final String CLICK_ADD_TO_CART = "click add to cart";
-    public static final String PLAY_SGC_NAME = "/shoppage play inside banner - p%s";
-    public static final String PLAY_LEFT_BANNER_NAME = "/shoppage play outside banner - p%s";
 
     public static final String LABEL_ETALASE_UPCOMING_ONGOING_CAMPAIGN = "%1s campaign %2s";
     public static final String LABEL_ETALASE_CAMPAIGN = "campaign %1s";
-
-
 
     //key
     public static final String EVENT = "event";
