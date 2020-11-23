@@ -914,7 +914,7 @@ public class FlightAnalytics {
     private static class Action {
         static String PROMOTION_VIEW = "banner impression";
         static String PROMOTION_CLICK = "click banner";
-        static String PRODUCT_CLICK_SEARCH_LIST = "product click";
+        static String PRODUCT_CLICK_SEARCH_LIST = "product click v2";
         static String PRODUCT_CLICK_SEARCH_DETAIL = "click pilih on flight detail";
         static String PRODUCT_VIEW_ACTION = "product impressions";
         static String PRODUCT_VIEW_ACTION_V2 = "product impressions v2";
