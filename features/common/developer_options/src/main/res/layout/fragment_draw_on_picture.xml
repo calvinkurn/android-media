@@ -7,11 +7,10 @@
 
     <com.tokopedia.developer_options.drawonpicture.widgets.DrawOnPictureView
         android:id="@+id/dopFeedbackForm"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
-        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
