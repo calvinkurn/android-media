@@ -3,13 +3,13 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
 import com.tokopedia.shop_showcase.shop_showcase_add.domain.usecase.CreateShopShowcaseUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.GetShopProductsResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseListSeller.ShopShowcaseListSellerResponse
-import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseListSellerUseCase
 import com.tokopedia.shop_showcase.shop_showcase_management.domain.GetShopShowcaseTotalProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopShowcasePickerViewModel @Inject constructor(
-        private val getShopShowcaseListSellerUseCase: GetShopShowcaseListSellerUseCase,
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
         private val dispatchers: ShopShowcaseDispatchProvider
@@ -39,11 +39,11 @@ class ShopShowcasePickerViewModel @Inject constructor(
     fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
             withContext(dispatchers.io()) {
-                getShopShowcaseListSellerUseCase.params = GetShopShowcaseListSellerUseCase.createRequestParams(
+                getShopEtalaseUseCase.params = GetShopEtalaseUseCase.createRequestParams(
                         // set withDefault to false to avoid get default generated showcase
                         withDefault = false
                 )
-                val shopShowcaseData = getShopShowcaseListSellerUseCase.executeOnBackground()
+                val shopShowcaseData = getShopEtalaseUseCase.executeOnBackground()
                 shopShowcaseData.let {
                     _getListSellerShopShowcaseResponse.postValue(Success(it))
                 }

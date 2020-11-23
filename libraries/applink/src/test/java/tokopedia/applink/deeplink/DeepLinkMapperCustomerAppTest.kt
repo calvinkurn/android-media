@@ -3,7 +3,6 @@ package tokopedia.applink.deeplink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import io.mockk.every
 import org.junit.Test
@@ -503,19 +502,6 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check group chat appLink then should return tokopedia internal group chat in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat"
-        assertEqualsDeepLinkMapper(ApplinkConst.GROUPCHAT_LIST, expectedDeepLink)
-    }
-
-    @Test
-    fun `check group chat with id appLink then should return tokopedia internal group chat with id in customerapp`() {
-        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://groupchat/123456/"
-        val appLink = UriUtil.buildUri(ApplinkConst.GROUPCHAT_DETAIL, "123456")
-        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
-    }
-
-    @Test
     fun `check chat template appLink then should return tokopedia internal chat template in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/chat/settings/templatechat"
         assertEqualsDeepLinkMapper(ApplinkConst.CHAT_TEMPLATE, expectedDeepLink)
@@ -969,6 +955,12 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     fun `check seller canceled appLink then should return tokopedia internal seller canceled in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/cancelled?tab_active=order_canceled"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_PURCHASE_CANCELED, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller cancellation request appLink then should return tokopedia internal seller cancellation request in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/cancellationrequest?tab_active=all_order&filter_order_type=10"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_PURCHASE_CANCELLATION_REQUEST, expectedDeepLink)
     }
 
     @Test

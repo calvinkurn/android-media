@@ -48,9 +48,6 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
-    <!-- Dynamic feature for Groupchat-->
-    <string name="title_groupchat_df">Play</string>
-
     <!--    Change Phone Number-->
     <string name="change_phone_number_app_module_name">changephonenumber</string>
 
@@ -285,7 +282,9 @@
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
-
+    <string name="title_promo_checkout_df">Promo Checkout</string>
+    <string name="title_promo_checkout_list">Gunakan Promo/Kupon</string>
+    <string name="title_promo_checkout_detail">Detail Kupon</string>
 
     <string name="title_favorite_page">Favorit</string>
 
