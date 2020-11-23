@@ -33,6 +33,7 @@ import com.tokopedia.logisticorder.presenter.ITrackingPagePresenter;
 import com.tokopedia.logisticorder.uimodel.AdditionalInfoUiModel;
 import com.tokopedia.logisticorder.uimodel.TrackingUiModel;
 import com.tokopedia.logisticorder.utils.DateUtil;
+import com.tokopedia.logisticorder.view.livetracking.LiveTrackingActivity;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifycomponents.ticker.Ticker;
@@ -389,8 +390,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-            String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
-            RouteManager.route(getActivity(), applink);
+           /* String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
+            RouteManager.route(getActivity(), applink);*/
+            if (getContext() != null) {
+                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), mTrackingUrl), 12);
+            }
         };
     }
 
