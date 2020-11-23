@@ -2,12 +2,14 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
+import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -17,15 +19,14 @@ import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.MockK
-import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -101,6 +102,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
+    private var shipmentMapper = ShipmentMapper()
 
     private lateinit var presenter: ShipmentPresenter
 
@@ -125,7 +127,13 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @Test
     fun firstLoadCheckoutPage_ShouldHideInitialLoadingAndRenderPage() {
         // Given
-        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(GroupAddress())))
+        val data = DataProvider.provideShipmentAddressFormResponse()
+        val cartShipmentAddressFormData = shipmentMapper.convertToShipmentAddressFormData(data.shipmentAddressFormResponse.data)
+        cartShipmentAddressFormData.abTestButton = ABTestButton(enable = true)
+        presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel()
+
+        every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(cartShipmentAddressFormData)
+        every { shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout(any()) } just Runs
 
         // When
         presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")

@@ -396,12 +396,12 @@
                   "product_shipment": [],
                   "product_shipment_mapping": [],
                   "purchase_protection_plan_data": {
-                    "protection_available": false,
-                    "protection_type_id": 0,
-                    "protection_price_per_product": 0,
-                    "protection_price": 0,
-                    "protection_title": "",
-                    "protection_subtitle": "",
+                    "protection_available": true,
+                    "protection_type_id": 1,
+                    "protection_price_per_product": 1000,
+                    "protection_price": 1000,
+                    "protection_title": "Protection Title",
+                    "protection_subtitle": "Protection Subtitle",
                     "protection_link_text": "",
                     "protection_link_url": "",
                     "protection_opt_in": false,
@@ -482,7 +482,14 @@
         },
         "tier_data": []
       },
-      "tickers": [],
+      "tickers": [
+        {
+          "id" : 0,
+          "message" : "Ticker BBO Description",
+          "page" : "checkout",
+          "title" : "Ticker BBO Title"
+        }
+      ],
       "campaign_timer": {
         "description": "",
         "show_timer": false,
