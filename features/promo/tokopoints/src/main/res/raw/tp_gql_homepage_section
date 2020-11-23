@@ -89,6 +89,15 @@
           isShowTukarButton
           quotaPercentage
         }
+        countdownInfo{
+          isShown
+          type
+          label
+          countdownUnix
+          countdownStr
+          textColor
+          backgroundColor
+        }
       }
       layoutTickerAttr {
         tickerList {

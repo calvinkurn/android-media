@@ -23,6 +23,7 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
@@ -238,7 +239,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String) {
+    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
         p2Data.let {
 
             shopInfoMap?.run {
@@ -254,6 +255,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             tickerInfoMap?.run {
                 statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo else null
                 closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo else null
+                this.isProductWarehouse = isProductWarehouse
+                this.isProductInCampaign = isProductInCampaign
+                this.isOutOfStock = isOutOfStock
             }
 
             shopCredibility?.run {
@@ -436,6 +440,14 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
     fun failUpdateShopFollow() {
         shopInfoMap?.enableButtonFavorite = true
         shopCredibility?.enableButtonFavorite = true
+    }
+
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+        tickerInfoMap?.run {
+            this.isProductWarehouse = isProductWarehouse
+            this.isProductInCampaign = isProductInCampaign
+            this.isOutOfStock = isOutOfStock
+        }
     }
 
     private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
