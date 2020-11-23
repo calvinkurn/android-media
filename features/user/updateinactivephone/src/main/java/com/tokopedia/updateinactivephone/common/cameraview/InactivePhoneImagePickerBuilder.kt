@@ -7,5 +7,5 @@ import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 
 class InactivePhoneImagePickerBuilder constructor(
         title: String,
-        @ImagePickerTabTypeDef imagePickerTabTypeDef: IntArray
+        @ImagePickerTabTypeDef imagePickerTabTypeDef: IntArray = IntArray(ImagePickerTabTypeDef.TYPE_CAMERA)
 ) : ImagePickerBuilder(title, imagePickerTabTypeDef, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB, DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true, null, null)
