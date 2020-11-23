@@ -37,7 +37,7 @@ class SomDetailShippingViewHolder(itemView: View, private val actionListener: So
 
                 if (item.dataObject.logisticInfo.logisticInfoAllList.isNotEmpty()) {
                     tv_shipping_name.apply {
-                        setTextColor(ContextCompat.getColor(context, R.color.Unify_G500))
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                         setOnClickListener {
                             actionListener?.onShowInfoLogisticAll(item.dataObject.logisticInfo.logisticInfoAllList)
                         }
