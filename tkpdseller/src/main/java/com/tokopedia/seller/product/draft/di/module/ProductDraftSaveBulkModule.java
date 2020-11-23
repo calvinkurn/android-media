@@ -26,10 +26,8 @@ import dagger.Provides;
 @Module
 public class ProductDraftSaveBulkModule extends ProductAddModule {
 
-    private final Context context;
-
     public ProductDraftSaveBulkModule(Context context) {
-        this.context = context;
+        super(context);
     }
 
     @ProductAddScope

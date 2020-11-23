@@ -3,8 +3,8 @@ package com.tokopedia.seller.manageitem.di.module;
 import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
@@ -29,6 +29,18 @@ import okhttp3.logging.HttpLoggingInterceptor;
 @Module(includes = ShopCommonModule.class)
 public class ProductAddModule {
 
+    protected final Context context;
+
+    public ProductAddModule(Context context) {
+        this.context = context;
+    }
+
+    @ApplicationContext
+    @Provides
+    Context context(@ApplicationContext Context context){
+        return context;
+    }
+
     @ProductAddScope
     @Provides
     AbstractionRouter abstractionRouter(@ApplicationContext Context context){
@@ -48,12 +60,6 @@ public class ProductAddModule {
             logging.setLevel(HttpLoggingInterceptor.Level.NONE);
         }
         return logging;
-    }
-
-    @com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-    @Provides
-    Context context(@ApplicationContext Context context){
-        return context;
     }
 
     @ProductAddScope
