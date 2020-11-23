@@ -190,10 +190,6 @@ class HomeAccountUserViewModelTest {
 
         viewModel.getFirstRecommendation()
 
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
-
         val result = viewModel.firstRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Fail(expectedResult))
     }
