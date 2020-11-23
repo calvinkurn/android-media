@@ -15,7 +15,6 @@ import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.sortfilter.SortFilterItem;
 
@@ -91,8 +90,6 @@ public interface ProductListSectionContract {
         void setDefaultLayoutType(int defaultView);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
-
-        void redirectToBrowser(String url);
 
         void showRefreshLayout();
 
@@ -197,8 +194,6 @@ public interface ProductListSectionContract {
 
         void loadData(Map<String, Object> searchParameter);
 
-        void onBannedProductsGoToBrowserClick(String url);
-
         String getUserId();
 
         boolean isUserLoggedIn();
@@ -226,9 +221,6 @@ public interface ProductListSectionContract {
         void onProductClick(ProductItemViewModel item, int adapterPosition);
 
         List<Option> getQuickFilterOptionList();
-
-        @Nullable
-        DynamicFilterModel getDynamicFilterModel();
 
         void getProductCount(Map<String, String> mapParameter);
 
