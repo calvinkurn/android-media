@@ -348,7 +348,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 }
 
                 if (statusSuccess) {
-                    return@withContext OccGlobalEvent.TriggerRefresh(false)
+                    return@withContext OccGlobalEvent.TriggerRefresh()
                 }
 
                 if (messageError.isNullOrBlank()) {

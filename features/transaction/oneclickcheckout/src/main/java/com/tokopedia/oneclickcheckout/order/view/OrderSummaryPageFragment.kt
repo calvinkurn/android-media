@@ -426,7 +426,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         priceValidationDialog.setPrimaryCTAText(messageData.action)
                         priceValidationDialog.setPrimaryCTAClickListener {
                             priceValidationDialog.dismiss()
-                            refresh(isFullRefresh = false)
+                            refresh()
                         }
                         priceValidationDialog.show()
                         orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_PRICE_CHANGE)
