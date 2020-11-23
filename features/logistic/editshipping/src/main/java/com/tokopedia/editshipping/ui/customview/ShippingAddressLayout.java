@@ -15,7 +15,7 @@ import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.domain.model.editshipping.ShopShipping;
 import com.tokopedia.editshipping.presenter.EditShippingPresenter;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 
 /**
  * Created by Kris on 6/9/2016.

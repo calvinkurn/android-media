@@ -114,6 +114,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializePerformance()
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
     }
 
@@ -247,8 +248,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
 
                 view.bottom_sheet_calendar.apply {
-                    getActiveDate(productDetailData).firstOrNull()?.let {
-                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData))
+                    getActiveDate(productDetailData.dates).firstOrNull()?.let {
+                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData.dates))
                                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                     }
 
@@ -520,6 +521,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
         const val ENT_PDP_PERFORMANCE = "et_event_pdp"
+        const val GMT = "GMT+7"
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101

@@ -97,8 +97,11 @@ object ApplinkConstInternalMarketplace {
     // InboxReputationActivity
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
 
+    //ReviewDetailActivity
+    val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
+
     // InboxReputationDetailActivity
-    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{feedback_id}/"
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/reputation/{reputation_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -248,6 +251,10 @@ object ApplinkConstInternalMarketplace {
     // AttachInvoiceActivity
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
+
+    // AttachProductActivity
+    @JvmField
+    val ATTACH_PRODUCT = "$INTERNAL_MARKETPLACE/user-attach-product"
 
     @JvmField
     val SHOP_PAGE_SETTING = "$SHOP_PAGE_BASE-setting"

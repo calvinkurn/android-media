@@ -23,7 +23,8 @@ internal val nonFilterParameterKeyList = setOf(
         SearchApiConst.NAVSOURCE,
         SearchApiConst.SKIP_BROADMATCH,
         SearchApiConst.HINT,
-        SearchApiConst.FIRST_INSTALL
+        SearchApiConst.FIRST_INSTALL,
+        SearchApiConst.SEARCH_REF
 )
 
 internal fun removeQuickFilterElevation(sortFilter: SortFilter?) {

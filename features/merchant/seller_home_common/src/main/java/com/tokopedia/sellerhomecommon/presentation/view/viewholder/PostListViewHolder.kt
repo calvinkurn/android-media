@@ -5,7 +5,9 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
@@ -16,6 +18,8 @@ import com.tokopedia.sellerhomecommon.presentation.adapter.ListAdapterTypeFactor
 import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget.view.*
 import kotlinx.android.synthetic.main.shc_partial_post_list_widget_error.view.*
@@ -33,6 +37,7 @@ class PostListViewHolder(
     companion object {
         @LayoutRes
         val RES_LAYOUT = R.layout.shc_post_list_card_widget
+        private const val IMG_EMPTY_STATE = "https://ecs7.tokopedia.net/android/others/shc_post_list_info_empty_state.png"
     }
 
     private val postAdapter = BaseListAdapter(ListAdapterTypeFactory(), this)
@@ -71,10 +76,21 @@ class PostListViewHolder(
     }
 
     private fun onSuccessLoadData(postListWidgetUiModel: PostListWidgetUiModel) {
-        if (postListWidgetUiModel.data?.items.isNullOrEmpty()) {
-            listener.removeWidget(adapterPosition, postListWidgetUiModel)
-        } else {
-            showSuccessState(postListWidgetUiModel)
+        val isEmpty = postListWidgetUiModel.data?.items.isNullOrEmpty()
+        when {
+            isEmpty && !postListWidgetUiModel.isShowEmpty -> {
+                listener.removeWidget(adapterPosition, postListWidgetUiModel)
+            }
+            else -> showSuccessState(postListWidgetUiModel)
+        }
+    }
+
+    private fun showEmptyState() {
+        with(itemView) {
+            rvPostList.gone()
+            imgShcPostEmpty.visible()
+            tvShcPostEmptyTitle.visible()
+            ImageHandler.loadImageWithoutPlaceholderAndError(imgShcPostEmpty, IMG_EMPTY_STATE)
         }
     }
 
@@ -85,15 +101,46 @@ class PostListViewHolder(
     }
 
     private fun showSuccessState(element: PostListWidgetUiModel) {
+        with(itemView) {
+            tvShcPostEmptyTitle.gone()
+            imgShcPostEmpty.gone()
+            rvPostList.visible()
+        }
+
         element.data?.run {
             hideErrorLayout()
             hideShimmeringLayout()
             setupTooltip(element.tooltip)
             itemView.tvPostListTitle.text = element.title
+            setupPostFilter(element)
             showCtaButtonIfNeeded(element.ctaText, element.appLink)
-            setupPostList(items)
             showListLayout()
             addImpressionTracker(element.dataKey, element.impressHolder)
+
+            val isEmpty = items.isNullOrEmpty()
+            if (isEmpty) {
+                showEmptyState()
+            } else {
+                setupPostList(items)
+            }
+        }
+    }
+
+    private fun setupPostFilter(element: PostListWidgetUiModel) {
+        with(itemView) {
+            val isFilterAvailable = element.postFilter.isNotEmpty()
+            if (isFilterAvailable) {
+                val selectedFilter = element.postFilter.find { it.isSelected }
+                filterShcPostList.visible()
+                filterShcPostList.text = selectedFilter?.name.orEmpty()
+                filterShcPostList.setUnifyDrawableEnd(IconUnify.CHEVRON_DOWN)
+                filterShcPostList.setOnClickListener {
+                    listener.showPostFilter(element, adapterPosition)
+                    listener.sendPostListFilterClick(element)
+                }
+            } else {
+                filterShcPostList.gone()
+            }
         }
     }
 
@@ -132,11 +179,10 @@ class PostListViewHolder(
         tooltip?.run {
             val shouldShowTooltip = shouldShow && (content.isNotBlank() || list.isNotEmpty())
             if (shouldShowTooltip) {
-                imgInfo.visible()
-                imgInfo.setOnClickListener { showBottomSheet(tooltip) }
+                tvPostListTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
                 tvPostListTitle.setOnClickListener { showBottomSheet(tooltip) }
             } else {
-                imgInfo.gone()
+                tvPostListTitle.clearUnifyDrawableEnd()
             }
         }
     }
@@ -207,5 +253,9 @@ class PostListViewHolder(
         fun sendPostListCtaClickEvent(dataKey: String) {}
 
         fun sendPostListImpressionEvent(dataKey: String) {}
+
+        fun sendPostListFilterClick(element: PostListWidgetUiModel) {}
+
+        fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {}
     }
 }

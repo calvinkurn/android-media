@@ -5,14 +5,14 @@ import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl
 import com.tokopedia.logisticaddaddress.data.AddressRepository
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressContract
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressPresenterImpl
-import com.tokopedia.logisticdata.data.apiservice.PeopleActApi
-import com.tokopedia.logisticdata.data.module.LogisticNetworkModule
-import com.tokopedia.logisticdata.data.module.qualifier.AddressScope
-import com.tokopedia.logisticdata.data.module.qualifier.LogisticPeopleActApiQualifier
-import com.tokopedia.logisticdata.data.module.qualifier.LogisticUserSessionQualifier
-import com.tokopedia.logisticdata.data.repository.AddressRepositoryImpl
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticCommon.data.apiservice.PeopleActApi
+import com.tokopedia.logisticCommon.data.module.LogisticNetworkModule
+import com.tokopedia.logisticCommon.data.module.qualifier.AddressScope
+import com.tokopedia.logisticCommon.data.module.qualifier.LogisticPeopleActApiQualifier
+import com.tokopedia.logisticCommon.data.module.qualifier.LogisticUserSessionQualifier
+import com.tokopedia.logisticCommon.data.repository.AddressRepositoryImpl
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -41,7 +41,7 @@ class AddressModule {
     @Provides
     @AddressScope
     fun provideEditPinpointRepository(
-            @LogisticPeopleActApiQualifier peopleActApi: PeopleActApi): com.tokopedia.logisticdata.data.repository.AddressRepository {
+            @LogisticPeopleActApiQualifier peopleActApi: PeopleActApi): com.tokopedia.logisticCommon.data.repository.AddressRepository {
         return AddressRepositoryImpl(peopleActApi)
     }
 
@@ -49,8 +49,8 @@ class AddressModule {
     @AddressScope
     fun provideAddAddressPresenter(
             @LogisticUserSessionQualifier userSessionInterface: UserSessionInterface?,
-            addressRepository: AddressRepository, revGeocodeUseCase: RevGeocodeUseCase?, editAddressUseCase: EditAddressUseCase): AddAddressContract.Presenter {
-        return AddAddressPresenterImpl(userSessionInterface, addressRepository, revGeocodeUseCase, editAddressUseCase)
+            addressRepository: AddressRepository, revGeocodeUseCase: RevGeocodeUseCase?): AddAddressContract.Presenter {
+        return AddAddressPresenterImpl(userSessionInterface, addressRepository, revGeocodeUseCase)
     }
 
     @Provides

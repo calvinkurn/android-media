@@ -3,8 +3,8 @@ package com.tokopedia.shop_showcase.shop_showcase_management.presentation.viewmo
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
-import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseParam
 import com.tokopedia.shop_showcase.shop_showcase_add.data.model.AddShopShowcaseResponse
@@ -19,16 +19,15 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopShowcasePickerViewModel @Inject constructor(
-        private val getShopShowcaseListBuyerUseCase: GetShopEtalaseByShopUseCase,
+        private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
         private val createShopShowcaseUseCase: CreateShopShowcaseUseCase,
         private val dispatchers: ShopShowcaseDispatchProvider
 ): BaseViewModel(dispatchers.ui()) {
 
-
-    private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
-    val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
-        get() = _getListBuyerShopShowcaseResponse
+    private val _getListSellerShopShowcaseResponse = MutableLiveData<Result<ShopShowcaseListSellerResponse>>()
+    val getListSellerShopShowcaseResponse: LiveData<Result<ShopShowcaseListSellerResponse>>
+        get() = _getListSellerShopShowcaseResponse
 
     private val _getShopProductResponse = MutableLiveData<Result<GetShopProductsResponse>>()
     val getShopProductResponse: LiveData<Result<GetShopProductsResponse>>
@@ -37,24 +36,20 @@ class ShopShowcasePickerViewModel @Inject constructor(
     private val _createShopShowcase = MutableLiveData<Result<AddShopShowcaseResponse>>()
     val createShopShowcase: LiveData<Result<AddShopShowcaseResponse>> get() = _createShopShowcase
 
-    fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean) {
+    fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
-            val showcaseList = withContext(dispatchers.io()) {
-                clearGetShowcaseCache()
-                val requestParam = GetShopEtalaseByShopUseCase.createRequestParams(
-                        shopId = shopId,
-                        hideNoCount = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_NO_COUNT_VALUE,
-                        hideShowCaseGroup = GetShopEtalaseByShopUseCase.Companion.SellerQueryParam.HIDE_SHOWCASE_GROUP_VALUE,
-                        isOwner = isOwner
+            withContext(dispatchers.io()) {
+                getShopEtalaseUseCase.params = GetShopEtalaseUseCase.createRequestParams(
+                        // set withDefault to false to avoid get default generated showcase
+                        withDefault = false
                 )
-
-                getShopShowcaseListBuyerUseCase.createObservable(requestParam)
-                        .toBlocking().first()
+                val shopShowcaseData = getShopEtalaseUseCase.executeOnBackground()
+                shopShowcaseData.let {
+                    _getListSellerShopShowcaseResponse.postValue(Success(it))
+                }
             }
-
-            _getListBuyerShopShowcaseResponse.postValue(Success(showcaseList))
         }) {
-            _getListBuyerShopShowcaseResponse.value = Fail(it)
+            _getListSellerShopShowcaseResponse.value = Fail(it)
         }
     }
 
@@ -90,10 +85,6 @@ class ShopShowcasePickerViewModel @Inject constructor(
         }, onError = {
             _createShopShowcase.value = Fail(it)
         })
-    }
-
-    fun clearGetShowcaseCache() {
-        getShopShowcaseListBuyerUseCase.clearCache()
     }
 
 }

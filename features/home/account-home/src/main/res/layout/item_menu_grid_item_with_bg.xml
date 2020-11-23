@@ -42,7 +42,7 @@
             android:lines="2"
             android:maxWidth="@dimen/dp_80"
             android:gravity="top|center_horizontal"
-            android:textColor="@color/grey_796"
+            android:textColor="@color/Unify_N700_96"
             app:typographyWeight="reguler"
             app:typographyType="body_3"/>
 

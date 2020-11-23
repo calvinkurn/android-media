@@ -6,6 +6,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopBas
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.UpdateShopScheduleUseCase
 import com.tokopedia.shop.settings.basicinfo.data.CheckShopIsOfficialModel
 import com.tokopedia.shop.settings.basicinfo.domain.CheckOfficialStoreTypeUseCase
+import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopScheduleViewModel
 import com.tokopedia.shop.settings.basicinfo.view.viewmodel.ShopSettingsInfoViewModel
 import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
 import io.mockk.*
@@ -33,6 +34,7 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
     lateinit var updateShopScheduleUseCase: UpdateShopScheduleUseCase
 
     protected lateinit var shopSettingsInfoViewModel: ShopSettingsInfoViewModel
+    protected lateinit var shopScheduleViewModel: ShopScheduleViewModel
 
     @Before
     fun setup() {
@@ -42,6 +44,12 @@ abstract class ShopSettingsInfoViewModelTestFixture  {
                 getShopBasicDataUseCase,
                 getShopStatusUseCase,
                 updateShopScheduleUseCase,
+                TestCoroutineDispatcher
+        )
+
+        shopScheduleViewModel = ShopScheduleViewModel(
+                updateShopScheduleUseCase,
+                getShopBasicDataUseCase,
                 TestCoroutineDispatcher
         )
     }

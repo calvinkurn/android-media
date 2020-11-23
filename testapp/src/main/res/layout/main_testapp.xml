@@ -7,17 +7,12 @@
     android:background="#004900">
     <Button
         android:id="@+id/loginButton"
-        android:text="Login (NEW FLOW)"
+        android:text="Login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/logoutButton"
         android:text="Logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/chuckButton"
-        android:text="Chuck"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
@@ -36,10 +31,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/useOldPageButton"
-        android:text="use old login page"
+    <CheckBox
+        android:id="@+id/toggle_dark_mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_64"/>
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_small"
+        android:padding="@dimen/margin_small"
+        android:text="Force Dark Mode" />
 </LinearLayout>

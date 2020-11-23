@@ -71,6 +71,36 @@
             app:typographyType="small"
             app:typographyWeight="bold" />
 
+        <ImageView
+            android:id="@+id/labelCampaignBackground"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_label_campaign_height"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@id/imageProduct"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/textViewLabelCampaign"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="@dimen/product_card_label_campaign_height"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:textColor="@color/Unify_N0"
+            android:visibility="gone"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="@id/labelCampaignBackground"
+            app:layout_constraintTop_toTopOf="@id/labelCampaignBackground"
+            app:layout_constraintEnd_toEndOf="@id/labelCampaignBackground"
+            app:layout_constraintBottom_toBottomOf="@id/labelCampaignBackground"
+            tools:visibility="visible" />
+
         <include
             android:id="@+id/productCardContentLayout"
             android:layout_width="@dimen/dp_0"
@@ -79,8 +109,10 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginTop="@dimen/product_card_content_margin_top"
+            app:layout_goneMarginTop="@dimen/dp_0"
             app:layout_constraintStart_toEndOf="@id/imageProduct"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/labelCampaignBackground"
             app:layout_constraintEnd_toEndOf="parent"
             layout="@layout/product_card_content_layout" />
 

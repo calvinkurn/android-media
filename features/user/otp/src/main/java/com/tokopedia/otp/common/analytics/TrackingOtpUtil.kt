@@ -234,6 +234,15 @@ class TrackingOtpUtil @Inject constructor() {
         ))
     }
 
+    fun trackClickBackReceiveSuccess() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.EVENT_CLICK_OTP,
+                Category.CATEGORY_PUSH_NOTIF_RECEIVE_SUCCESS_PAGE,
+                Action.ACTION_CLICK_ON_BUTTON_CLOSE,
+                Label.LABEL_EMPTY
+        ))
+    }
+
     fun trackClickCloseReceiveSuccess() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 Event.EVENT_CLICK_OTP,

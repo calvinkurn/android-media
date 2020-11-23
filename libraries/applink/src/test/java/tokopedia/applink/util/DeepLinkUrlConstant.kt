@@ -2,7 +2,6 @@ package tokopedia.applink.util
 
 object DeepLinkUrlConstant {
     const val PLAY_LINK_URL = "https://www.tokopedia.com/play"
-    const val GROUP_CHAT_LINK_URL = "https://www.tokopedia.com/groupchat"
     const val FLIGHT_LINK_URL = "https://www.tokopedia.com/flight"
     const val PROMO_DETAIL_LINK_URL = "https://www.tokopedia.com/promo/finansial-citibank/?cta_src=0"
     const val PROMO_LIST_LINK_URL = "https://www.tokopedia.com/promo"

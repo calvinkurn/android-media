@@ -21,6 +21,7 @@ import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnAct
 import com.tokopedia.flight.searchV4.presentation.model.*
 import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_flight_search_return.*
 
@@ -106,6 +107,8 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
         filterModel.isBestPairing = flightSearchReturnViewModel.isViewOnlyBestPairing
         filterModel.journeyId = flightSearchReturnViewModel.selectedFlightDepartureId
         filterModel.isReturn = isReturnTrip()
+        filterModel.canFilterFreeRapidTest = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_FREE_RAPID_TEST, false)
+        filterModel.canFilterSeatDistancing = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_FLIGHT_SHOW_SEAT_DISTANCING, false)
 
         return filterModel
     }

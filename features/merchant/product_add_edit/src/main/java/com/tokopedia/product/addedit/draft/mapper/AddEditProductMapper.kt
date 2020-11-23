@@ -9,6 +9,8 @@ import com.tokopedia.product.addedit.preview.presentation.model.ProductInputMode
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
+import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
+import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.product.manage.common.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
 object AddEditProductMapper {
@@ -51,6 +53,7 @@ object AddEditProductMapper {
         productDraft.variantInputModel = mapProductInputModelToJsonString(productInputModel.variantInputModel)
         productDraft.productId = productInputModel.productId
         productDraft.detailInputModel.productName = productInputModel.detailInputModel.productName
+        productDraft.detailInputModel.currentProductName = productInputModel.detailInputModel.currentProductName
         productDraft.detailInputModel.categoryId = productInputModel.detailInputModel.categoryId
         productDraft.detailInputModel.categoryName = productInputModel.detailInputModel.categoryName
         productDraft.detailInputModel.price = productInputModel.detailInputModel.price
@@ -67,6 +70,9 @@ object AddEditProductMapper {
         }
         productDraft.detailInputModel.wholesaleList = productInputModel.detailInputModel.wholesaleList.map { wholeSale ->
             DraftWholeSaleInputModel(wholeSale.price, wholeSale.quantity)
+        }
+        productDraft.detailInputModel.productShowCases = productInputModel.detailInputModel.productShowCases.map {showCaseItem ->
+            ShowCaseInputModel(showcaseId = showCaseItem.showcaseId, showcaseName = showCaseItem.showcaseName)
         }
         productDraft.detailInputModel.status = productInputModel.detailInputModel.status
         productDraft.descriptionInputModel.apply {
@@ -99,6 +105,7 @@ object AddEditProductMapper {
         productInputModel.productId = productDraft.productId
         productInputModel.detailInputModel.apply {
             productName = productDraft.detailInputModel.productName
+            currentProductName = productDraft.detailInputModel.currentProductName
             categoryId = productDraft.detailInputModel.categoryId
             categoryName = productDraft.detailInputModel.categoryName
             price = productDraft.detailInputModel.price
@@ -116,6 +123,9 @@ object AddEditProductMapper {
         }
         productInputModel.detailInputModel.wholesaleList = productDraft.detailInputModel.wholesaleList.map { wholeSale ->
             WholeSaleInputModel(wholeSale.price, wholeSale.quantity)
+        }
+        productInputModel.detailInputModel.productShowCases = productDraft.detailInputModel.productShowCases.map { showCase ->
+            ShowcaseItemPicker(showcaseId = showCase.showcaseId, showcaseName = showCase.showcaseName)
         }
         productInputModel.detailInputModel.status = productDraft.detailInputModel.status
         productInputModel.descriptionInputModel.apply {
