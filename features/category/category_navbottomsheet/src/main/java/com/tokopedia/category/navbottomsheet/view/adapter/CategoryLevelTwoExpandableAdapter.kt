@@ -76,7 +76,7 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?, var
         val listTitleTextView = convertViewTemp?.findViewById<Typography>(R.id.listTitle)
         listTitleTextView?.text = listTitle
         val expandedIcon = convertViewTemp?.findViewById<ImageView>(R.id.expand_icon)
-        expandedIcon?.loadImageDrawable(if (isExpanded) R.drawable.ic_chevron_up else R.drawable.ic_chevron_down)
+        expandedIcon?.loadImageDrawable(if (isExpanded) R.drawable.category_ic_chevron_up else R.drawable.category_ic_chevron_down)
         return convertViewTemp!!
     }
 
