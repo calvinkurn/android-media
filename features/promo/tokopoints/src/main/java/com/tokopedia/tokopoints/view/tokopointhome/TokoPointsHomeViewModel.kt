@@ -39,7 +39,7 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
                 deferredSavingData = async { getUserSavingData() }
             }
             if (data != null && dataSection != null && dataSection.sectionContent != null) {
-                tokopointDetailLiveData.value = Success(TokopointSuccess(data.tokopediaRewardTopSection, dataSection.sectionContent.sectionContent,deferredSavingData?.await()))
+                tokopointDetailLiveData.value = Success(TokopointSuccess(TopSectionResponse(data.tokopediaRewardTopSection!!, deferredSavingData?.await()), dataSection.sectionContent.sectionContent))
             } else {
                 throw NullPointerException("error in data")
             }
@@ -63,4 +63,5 @@ class TokoPointsHomeViewModel @Inject constructor(private val repository: Tokopo
     }
 }
 
-data class TokopointSuccess(val tokoPointEntity: TokopediaRewardTopSection?, val sectionList: MutableList<SectionContent>, val userSaving: UserSavingResponse?)
+data class TokopointSuccess(val topSectionResponse: TopSectionResponse, val sectionList: MutableList<SectionContent>)
+data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: UserSavingResponse?)

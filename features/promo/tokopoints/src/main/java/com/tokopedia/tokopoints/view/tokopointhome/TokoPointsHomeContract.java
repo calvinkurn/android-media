@@ -25,9 +25,7 @@ public interface TokoPointsHomeContract {
 
         void showLoading();
 
-        void renderExploreSectionTab(List<SectionContent> sections , TokopediaRewardTopSection tokopediaRewardTopSection,UserSavingResponse userSavingResponse);
-
-        void onSuccessResponse(TokopediaRewardTopSection data, List<SectionContent> sections , UserSavingResponse userSavingResponse);
+        void renderRewardUi(TopSectionResponse topSectionResponse,List<SectionContent> sections );
 
     }
 

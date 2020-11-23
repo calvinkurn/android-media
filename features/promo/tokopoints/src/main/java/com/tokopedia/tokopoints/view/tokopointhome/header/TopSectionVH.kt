@@ -26,6 +26,7 @@ import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSe
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
 import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
+import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -47,7 +48,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
     private var cardContainer: ConstraintLayout? = null
 
 
-    fun bind(model: TokoPointsHomeFragmentNew.TopSectionResponse) {
+    fun bind(model: TopSectionResponse) {
 
         cardTierInfo = itemView.findViewById(R.id.container_target)
         dynamicAction = itemView.findViewById(R.id.dynamic_widget)

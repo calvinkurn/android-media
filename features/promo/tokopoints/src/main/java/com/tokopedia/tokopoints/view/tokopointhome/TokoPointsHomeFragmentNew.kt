@@ -40,9 +40,7 @@ import com.tokopedia.tokopoints.view.intro.RewardIntroActivity
 import com.tokopedia.tokopoints.view.intro.RewardIntroFragment
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
-import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.section.SectionContent
-import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner11ViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner21ViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.banner.SectionVerticalBanner31ViewBinder
@@ -216,17 +214,11 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     stopNetworkRequestPerformanceMonitoring()
                     startRenderPerformanceMonitoring()
                     setOnRecyclerViewLayoutReady()
-                    onSuccessResponse(it.data.tokoPointEntity, it.data.sectionList, it.data.userSaving)
+                    renderRewardUi(it.data.topSectionResponse, it.data.sectionList)
                 }
             }
         }
     })
-
-    override fun onSuccessResponse(data: TokopediaRewardTopSection?, sections: List<SectionContent>, savingResponse: UserSavingResponse?) {
-        mContainerMain?.displayedChild = CONTAINER_DATA
-        addDynamicToolbar(data?.dynamicActionList)
-        renderExploreSectionTab(sections, data, savingResponse)
-    }
 
     override fun onError(error: String, hasInternet: Boolean) {
         if (mContainerMain != null) {
@@ -296,22 +288,20 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
         adapter?.notifyItemChanged(0)
     }
 
-    override fun renderExploreSectionTab(sections: List<SectionContent>, data: TokopediaRewardTopSection?, userSavingResponse: UserSavingResponse?) {
+    override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
+        mContainerMain?.displayedChild = CONTAINER_DATA
+        addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
         if (sections.isEmpty()) {
             return
         }
         if (adapter == null) {
 
-            //Todo Single response class in viewmodel
-            val topSectionResponse = TopSectionResponse(data!!,userSavingResponse)
-
-            val topSectionViewBinder = TopSectionViewBinder(topSectionResponse, this, toolbarItemList)
-
+            val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList)
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
                     CommonConstant.SectionLayoutType.TOPHEADER,
                     topSectionViewBinder as SectionItemBinder)
-            topSectionResponse?.let { sectionList.add(0, topSectionResponse) }
+            topSectionData?.let { sectionList.add(0,it) }
 
             for (sectionContent in sections) {
                 if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
@@ -577,6 +567,4 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun setCardLayoutHeight(height: Int) {
         setLayoutParams(height)
     }
-
-    data class TopSectionResponse(val tokopediaRewardTopSection: TokopediaRewardTopSection, val userSavingResponse: UserSavingResponse?  )
 }
