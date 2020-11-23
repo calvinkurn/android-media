@@ -1,4 +1,4 @@
-package com.tokopedia.buyerorder
+package com.tokopedia.buyerorder.topads
 
 import android.Manifest
 import androidx.recyclerview.widget.GridLayoutManager
@@ -14,14 +14,18 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
+import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.getUohItemAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.activity.UohListActivity
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.UohRecommendationItemViewHolder
-import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
+import com.tokopedia.test.application.environment.callback.TopAdsVerificatorInterface
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-import com.tokopedia.test.application.util.InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser
 import com.tokopedia.test.application.util.setupTopAdsDetector
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 class UohTopAdsVerificationTest {
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -39,7 +43,7 @@ class UohTopAdsVerificationTest {
     var activityRule = object: ActivityTestRule<UohListActivity>(UohListActivity::class.java) {
         override fun beforeActivityLaunched() {
             super.beforeActivityLaunched()
-            loginInstrumentationTestTopAdsUser()
+            InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
             setupTopAdsDetector()
         }
     }
@@ -83,7 +87,7 @@ class UohTopAdsVerificationTest {
 
     private fun clickProductRecommItem(uohRecyclerView: RecyclerView, i: Int) {
         try {
-            Espresso.onView(ViewMatchers.withId(uohRecyclerView.id))
+            onView(withId(uohRecyclerView.id))
                     .perform(RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(i, ViewActions.click()))
         } catch (e: PerformException) {
             e.printStackTrace()
