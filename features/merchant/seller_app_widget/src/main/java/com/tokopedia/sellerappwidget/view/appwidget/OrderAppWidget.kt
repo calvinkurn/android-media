@@ -93,10 +93,10 @@ class OrderAppWidget : AppWidgetProvider() {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
         val orderItem: OrderUiModel? = bundle?.getParcelable(Const.Extra.ORDER_ITEM)
         val orderId = orderItem?.orderId ?: "0"
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
+        val orderDetailIntent = RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-        context.startActivity(intent)
+        context.startActivity(orderDetailIntent)
     }
 
     companion object {
