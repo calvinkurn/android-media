@@ -4,10 +4,10 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:gravity="center"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingBottom="@dimen/dp_10"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView

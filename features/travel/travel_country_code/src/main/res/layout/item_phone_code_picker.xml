@@ -7,13 +7,13 @@
     android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:padding="@dimen/dp_20">
+    android:padding="20dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/country_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_5"
+        android:layout_marginRight="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2"
         app:typographyWeight="bold"

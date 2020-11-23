@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="Content"
-        android:padding="@dimen/dp_16"
+        android:padding="@dimen/spacing_lvl4"
         app:typographyType="body_2"
         android:textColor="@color/Unify_N700_96"
         />
@@ -20,8 +20,8 @@
     <View
         android:id="@+id/transaction_seperator"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:background="@color/Unify_N100"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"/>
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"/>
 </LinearLayout>

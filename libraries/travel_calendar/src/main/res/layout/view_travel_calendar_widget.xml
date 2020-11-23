@@ -10,14 +10,14 @@
         android:id="@+id/calendar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/dp_16">
+        android:paddingBottom="@dimen/spacing_lvl4">
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/layout_lvl5"
             android:background="@color/Unify_N0"
-            android:elevation="@dimen/dp_3"
+            android:elevation="@dimen/spacing_lvl1"
             android:theme="@style/ThemeOverlay.AppCompat.Light"
             app:tabGravity="fill"
             app:tabIndicatorColor="@color/Unify_G400"
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/quick_filter_months"
             android:background="@color/Unify_N0"
-            android:paddingTop="@dimen/dp_15" />
+            android:paddingTop="@dimen/spacing_lvl4" />
 
         <com.tokopedia.travelcalendar.view.widget.HolidayWidgetView
             android:id="@+id/holiday_widget_view"
