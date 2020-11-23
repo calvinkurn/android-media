@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3
 
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -15,10 +17,12 @@ class SingleProductNotificationViewHolder constructor(
             R.id.pc_single
     )
 
+    override fun isLongerContent(element: NotificationUiModel) = false
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindProductData(element)
-        bindClickItem(element)
+        bindItemTouch(element)
     }
 
     private fun bindProductData(element: NotificationUiModel) {
@@ -26,14 +30,15 @@ class SingleProductNotificationViewHolder constructor(
         productContainer?.bindProductData(product, listener)
     }
 
-    private fun bindClickItem(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            listener?.showProductBottomSheet(element)
-            // TODO: Implement longer content
-//            if (element.isLongerContent) {
-//            } else {
-//                productContainer?.goToPdp(element.product)
-//            }
+    @SuppressLint("ClickableViewAccessibility")
+    private fun bindItemTouch(element: NotificationUiModel) {
+        productContainer?.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_UP -> {
+                    markAsReadIfUnread(element)
+                }
+            }
+            false
         }
     }
 

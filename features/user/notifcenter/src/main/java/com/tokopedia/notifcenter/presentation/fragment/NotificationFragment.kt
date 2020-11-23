@@ -29,6 +29,7 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -93,7 +94,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun loadData(page: Int) {
         if (page == 1) {
-            viewModel.loadFirstPageNotification(containerListener?.role)
+            viewModel.loadFirstPageNotification(
+                    containerListener?.role
+            )
         }
     }
 
@@ -183,6 +186,14 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
         viewModel.filterList.observe(viewLifecycleOwner, Observer {
             filter?.updateFilterState(it)
+        })
+
+        viewModel.clearNotif.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Status.SUCCESS -> containerListener?.clearNotificationCounter()
+                else -> {
+                }
+            }
         })
     }
 
@@ -307,6 +318,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     override fun addProductToCart(product: ProductData) {
         val atcPageIntent = getAtcPageIntent(product)
         startActivityForResult(atcPageIntent, REQUEST_CHECKOUT)
+    }
+
+    override fun markNotificationAsRead(element: NotificationUiModel) {
+        viewModel.markNotificationAsRead(containerListener?.role, element)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

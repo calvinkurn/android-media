@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -45,6 +47,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var bottomNav: InboxBottomNavigationView? = null
     private var currentRole: ConstraintLayout? = null
     private var fragmentContainer: FrameLayout? = null
+    private var inboxCounter: InboxCounter = InboxCounter()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -65,6 +68,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setupBottomNav()
         setupObserver()
         setupInitialPage()
+    }
+
+    override fun clearNotificationCounter() {
+        inboxCounter.getByRole(InboxConfig.role)?.notifcenterInt = 0
+        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
     }
 
     private fun setupInjector() {
@@ -89,6 +97,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     override fun onRoleChanged(@RoleType role: Int) {
         navigator?.notifyRoleChanged(role)
         showNotificationRoleChanged(role)
+        updateBottomNavNotificationCounter()
     }
 
     private fun showNotificationRoleChanged(@RoleType role: Int) {
@@ -122,35 +131,43 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupBackground() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        val whiteColor = ContextCompat.getColor(
+                this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+        )
+        window.decorView.setBackgroundColor(whiteColor)
     }
 
     private fun setupNotificationBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = Color.WHITE
+            if (!isDarkMode()) {
+                window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
+            window.statusBarColor = ContextCompat.getColor(
+                    this, com.tokopedia.unifyprinciples.R.color.Unify_N0
+            )
         }
     }
 
     private fun setupObserver() {
         viewModel.notifications.observe(this, Observer { result ->
             if (result is Success) {
-                updateBottomNavNotificationCounter(result.data)
-                updateToolbarNotificationCounter(result.data)
+                inboxCounter = result.data
+                updateBottomNavNotificationCounter()
+                updateToolbarNotificationCounter()
             }
         })
     }
 
-    private fun updateBottomNavNotificationCounter(notification: InboxCounter) {
-        val notificationRole = notification.getByRole(InboxConfig.role)
+    private fun updateBottomNavNotificationCounter() {
+        val notificationRole = inboxCounter.getByRole(InboxConfig.role)
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole?.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole?.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole?.talkInt)
     }
 
-    private fun updateToolbarNotificationCounter(notification: InboxCounter) {
+    private fun updateToolbarNotificationCounter() {
         // TODO: to be implemented on global nav custom view
-        val notificationRole = notification.getByRole(InboxConfig.role)
+        val notificationRole = inboxCounter.getByRole(InboxConfig.role)
         BadgeCounterBinder.bindBadgeCounter(roleNotificationCounter, notificationRole?.totalInt)
     }
 
@@ -183,5 +200,9 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
+    }
+
+    private fun isDarkMode(): Boolean {
+        return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
     }
 }

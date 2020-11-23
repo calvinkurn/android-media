@@ -30,7 +30,6 @@ class BannerNotificationTitleViewHolder(
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindBannerImage(element)
-        bindClickBanner(element)
         bindFooterTimeStatus(element)
     }
 
@@ -129,12 +128,6 @@ class BannerNotificationTitleViewHolder(
         countDown?.targetDate = element.expireTargetDate
         countDown?.onFinish = {
             bindFooterTimeStatusHasEnded(element)
-        }
-    }
-
-    private fun bindClickBanner(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            listener?.showLongerContent(element)
         }
     }
 

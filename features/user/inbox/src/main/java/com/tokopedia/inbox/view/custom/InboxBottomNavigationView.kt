@@ -37,6 +37,11 @@ class InboxBottomNavigationView : BottomNavigationView {
         BadgeCounterBinder.bindBadgeCounter(badge, badgeCount)
     }
 
+    fun hasBadge(@InboxFragmentType typePosition: Int): Boolean? {
+        val badge = getBadgeAt(typePosition)
+        return badge?.text?.isNotEmpty()
+    }
+
     fun setSelectedPage(@InboxFragmentType page: Int) {
         val pageId = when (page) {
             InboxFragmentType.NOTIFICATION -> R.id.menu_inbox_notification

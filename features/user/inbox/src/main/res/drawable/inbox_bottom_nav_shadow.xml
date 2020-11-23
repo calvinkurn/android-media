@@ -3,6 +3,6 @@
     android:shape="rectangle">
     <gradient
         android:angle="-90"
-        android:endColor="@color/inbox_shadow_bottom_nav"
+        android:endColor="@color/Unify_N400_20"
         android:startColor="@color/transparent" />
 </shape>

@@ -4,14 +4,15 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.notifcenter.R
+import androidx.core.content.ContextCompat
 import com.tokopedia.notifcenter.presentation.adapter.NotificationAdapter
 
 class NotificationItemDecoration(context: Context?) : RecyclerView.ItemDecoration() {
 
     private val mDivider: Drawable? = context?.let {
-        ContextCompat.getDrawable(it, com.tokopedia.abstraction.R.drawable.bg_line_separator_thin)
+        ContextCompat.getDrawable(it, R.drawable.bg_notifcenter_line_separator_thin)
     }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

@@ -6,13 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
+import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
+import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
@@ -42,6 +46,8 @@ interface INotificationViewModel {
 class NotificationViewModel @Inject constructor(
         private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
         private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
+        private val clearNotifUseCase: ClearNotifCounterUseCase,
+        private val markAsReadUseCase: MarkNotificationAsReadUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addWishListUseCase: AddWishListUseCase,
@@ -73,6 +79,10 @@ class NotificationViewModel @Inject constructor(
     val filterList: LiveData<Resource<NotifcenterFilterResponse>>
         get() = _filterList
 
+    private val _clearNotif = MutableLiveData<Resource<ClearNotifCounterResponse>>()
+    val clearNotif: LiveData<Resource<ClearNotifCounterResponse>>
+        get() = _clearNotif
+
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
     }
@@ -93,8 +103,11 @@ class NotificationViewModel @Inject constructor(
         notifcenterDetailUseCase.getFirstPageNotification(filter, role,
                 {
                     _mutateNotificationItems.value = Success(it)
-                    if (!hasFilter() && role == RoleType.BUYER) {
-                        loadTopAdsBannerData()
+                    if (!hasFilter()) {
+                        if (role == RoleType.BUYER) {
+                            loadTopAdsBannerData()
+                        }
+                        clearNotifCounter(role)
                     }
                 },
                 {
@@ -102,7 +115,6 @@ class NotificationViewModel @Inject constructor(
                 }
         )
     }
-
 
     fun loadNotificationFilter(
             @RoleType
@@ -118,6 +130,21 @@ class NotificationViewModel @Inject constructor(
                 {
                     _filterList.postValue(Resource.error(it, null))
                 }
+        )
+    }
+
+
+    fun markNotificationAsRead(
+            @RoleType
+            role: Int?,
+            element: NotificationUiModel
+    ) {
+        if (role == null) return
+        launchCatchError(dispatcher.io(),
+                {
+                    markAsReadUseCase.markAsRead(role, element.notifId).collect { }
+                },
+                { }
         )
     }
 
@@ -218,6 +245,20 @@ class NotificationViewModel @Inject constructor(
                         callback.invoke(true, null)
                     }
                 }
+        )
+    }
+
+    private fun clearNotifCounter(
+            @RoleType
+            role: Int?
+    ) {
+        if (role == null) return
+        launchCatchError(dispatcher.io(),
+                {
+                    clearNotifUseCase.clearNotifCounter(role).collect {
+                        _clearNotif.postValue(it)
+                    }
+                }, { }
         )
     }
 

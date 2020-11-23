@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v
 
 import android.os.Parcelable
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +11,8 @@ import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
-import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 import com.tokopedia.notifcenter.widget.CarouselProductRecyclerView
+import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 
 class CarouselProductNotificationViewHolder constructor(
         itemView: View?,
@@ -19,6 +20,8 @@ class CarouselProductNotificationViewHolder constructor(
         private val carouselListener: Listener?,
         private val adapterListener: NotificationAdapterListener?
 ) : BaseNotificationViewHolder(itemView, notificationItemListener) {
+
+    private var touchListener: RecyclerView.OnItemTouchListener? = null
 
     interface Listener {
         fun saveProductCarouselState(position: Int, state: Parcelable?)
@@ -43,11 +46,19 @@ class CarouselProductNotificationViewHolder constructor(
         }
     }
 
+    override fun isLongerContent(element: NotificationUiModel): Boolean = true
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindCarouselProduct(element)
         bindScrollState(element)
-        bindClickItem(element)
+        bindItemTouch(element)
+    }
+
+    override fun onViewRecycled() {
+        touchListener?.let {
+            rv?.removeOnItemTouchListener(it)
+        }
     }
 
     private fun bindCarouselProduct(element: NotificationUiModel) {
@@ -58,10 +69,27 @@ class CarouselProductNotificationViewHolder constructor(
         rv?.restoreSavedCarouselState(adapterPosition, carouselListener)
     }
 
-    private fun bindClickItem(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            notificationItemListener?.showProductBottomSheet(element)
+    private fun bindItemTouch(element: NotificationUiModel) {
+        touchListener = object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                when (e.action) {
+                    MotionEvent.ACTION_UP -> {
+                        markAsReadIfUnread(element)
+                    }
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
         }
+        touchListener?.let {
+            rv?.addOnItemTouchListener(it)
+        }
+    }
+
+    override fun showLongerContent(element: NotificationUiModel) {
+        notificationItemListener?.showProductBottomSheet(element)
     }
 
     companion object {

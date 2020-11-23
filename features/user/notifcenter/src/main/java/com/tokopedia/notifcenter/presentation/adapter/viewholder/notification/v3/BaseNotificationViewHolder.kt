@@ -32,10 +32,7 @@ abstract class BaseNotificationViewHolder constructor(
     protected val desc: Typography? = itemView?.findViewById(R.id.txt_notification_desc)
 
     protected val clickedColor = MethodChecker.getColor(
-            itemView?.context, com.tokopedia.unifycomponents.R.color.Green_G100
-    )
-    protected val clickedColorIcon = MethodChecker.getColor(
-            itemView?.context, com.tokopedia.unifycomponents.R.color.Green_G500
+            itemView?.context, R.color.notifcenter_dms_unread_notification
     )
 
     override fun bind(element: NotificationUiModel) {
@@ -48,12 +45,43 @@ abstract class BaseNotificationViewHolder constructor(
         bindClick(element)
     }
 
+    protected open fun bindClick(element: NotificationUiModel) {
+        container?.setOnClickListener {
+            markAsReadIfUnread(element)
+            if (isLongerContent(element)) {
+                showLongerContent(element)
+            } else {
+                RouteManager.route(itemView.context, element.dataNotification.appLink)
+            }
+        }
+    }
+
+    protected open fun showLongerContent(element: NotificationUiModel) {
+        listener?.showLongerContent(element)
+    }
+
+    protected open fun isLongerContent(element: NotificationUiModel): Boolean {
+        return element.isLongerContent
+    }
+
     private fun bindContainer(element: NotificationUiModel) {
         if (!element.isRead()) {
             container?.setBackgroundColor(clickedColor)
         } else {
             container?.background = null
         }
+    }
+
+    protected fun markAsReadIfUnread(element: NotificationUiModel) {
+        if (!element.isRead()) {
+            markNotificationAsRead(element)
+        }
+    }
+
+    protected fun markNotificationAsRead(element: NotificationUiModel) {
+        element.markNotificationAsRead()
+        bindContainer(element)
+        listener?.markNotificationAsRead(element)
     }
 
     private fun bindTitle(element: NotificationUiModel) {
@@ -102,16 +130,6 @@ abstract class BaseNotificationViewHolder constructor(
 
     private fun bindTime(element: NotificationUiModel) {
         time?.text = TimeHelper.getRelativeTimeFromNow(element.createTimeUnix)
-    }
-
-    private fun bindClick(element: NotificationUiModel) {
-        container?.setOnClickListener {
-            if (element.isLongerContent) {
-                listener?.showLongerContent(element)
-            } else {
-                RouteManager.route(itemView.context, element.dataNotification.appLink)
-            }
-        }
     }
 
     private fun getStringResource(stringId: Int): String {

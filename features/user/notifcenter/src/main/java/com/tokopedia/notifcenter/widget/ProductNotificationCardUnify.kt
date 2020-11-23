@@ -119,7 +119,9 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindProductClick(product: ProductData) {
-        setOnClickListener { goToPdp(product) }
+        setOnClickListener {
+            goToPdp(product)
+        }
     }
 
     private fun bindBuyClick(product: ProductData) {

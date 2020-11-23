@@ -21,7 +21,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/notif_dp_2"
-        android:background="@color/divider_notif_light"
+        android:background="@color/Unify_N75"
         android:layout_marginTop="@dimen/notif_dp_16"/>
 
 </LinearLayout>
