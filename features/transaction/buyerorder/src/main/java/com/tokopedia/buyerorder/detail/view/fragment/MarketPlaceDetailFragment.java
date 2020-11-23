@@ -817,8 +817,6 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             btnOk.setOnClickListener(view1 -> {
                                 if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
                                     if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
-                                        // presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
-
                                         String actionStatus = "";
                                         if (!status.status().isEmpty() && Integer.parseInt(status.status()) < 600) {
                                             actionStatus = ACTION_FINISH_ORDER;
