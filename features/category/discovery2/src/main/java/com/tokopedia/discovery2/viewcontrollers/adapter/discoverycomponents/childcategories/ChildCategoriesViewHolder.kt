@@ -7,6 +7,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -16,7 +18,7 @@ import com.tokopedia.discovery2.viewcontrollers.customview.SpaceItemDecoration
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setMargin
 
-class ChildCategoriesViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class ChildCategoriesViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CategoryNavBottomSheet.CategorySelected {
     private val categoriesRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
     private val dropdownArrow: ImageView = itemView.findViewById(R.id.dropdown_arrow)
     private var categoriesRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
@@ -30,7 +32,7 @@ class ChildCategoriesViewHolder(itemView: View, private val fragment: Fragment) 
         childCategoriesViewModel = discoveryBaseViewModel as ChildCategoriesViewModel
         getSubComponent().inject(childCategoriesViewModel)
         dropdownArrow.setOnClickListener {
-
+            CategoryNavBottomSheet(this, childCategoriesViewModel.components.pageEndPoint, true).show(fragment.childFragmentManager, "")
         }
     }
 
@@ -58,6 +60,10 @@ class ChildCategoriesViewHolder(itemView: View, private val fragment: Fragment) 
                     resources.getDimensionPixelSize(R.dimen.dp_8))
             addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
         }
+    }
+
+    override fun onCategorySelected(catId: String, appLink: String?, depth: Int) {
+        RouteManager.route(itemView.context, appLink)
     }
 
 }

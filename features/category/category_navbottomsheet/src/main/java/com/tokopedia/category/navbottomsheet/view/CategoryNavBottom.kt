@@ -39,6 +39,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         isDragable = true
         isHideable = true
         clearContentPadding = true
+        isFullpage = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
