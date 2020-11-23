@@ -11,7 +11,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 
 import java.util.List;
 

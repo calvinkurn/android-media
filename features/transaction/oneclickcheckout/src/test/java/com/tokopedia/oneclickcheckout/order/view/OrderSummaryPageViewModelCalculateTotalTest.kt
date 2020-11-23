@@ -1,8 +1,8 @@
 package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.*

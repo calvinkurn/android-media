@@ -45,12 +45,12 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.loca
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil
 import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.data.entity.response.Data
-import com.tokopedia.logisticdata.util.getLatLng
-import com.tokopedia.logisticdata.util.rxPinPoint
-import com.tokopedia.logisticdata.util.toCompositeSubs
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.util.getLatLng
+import com.tokopedia.logisticCommon.util.rxPinPoint
+import com.tokopedia.logisticCommon.util.toCompositeSubs
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.bottomsheet_getdistrict.*
 import kotlinx.android.synthetic.main.fragment_pinpoint_map.*
@@ -837,6 +837,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapView, OnMapReadyCal
                     }
 
                     override fun onPermissionGranted() {
+                        moveMap(getLatLng(currentLat, currentLong), ZOOM_LEVEL)
                         googleMap?.isMyLocationEnabled = true
                     }
 

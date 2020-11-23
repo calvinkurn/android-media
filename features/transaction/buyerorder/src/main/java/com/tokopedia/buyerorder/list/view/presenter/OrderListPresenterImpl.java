@@ -20,6 +20,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData;
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiLegacyUseCase;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.detail.data.CancelReplacementPojo;
 import com.tokopedia.buyerorder.detail.data.DataResponseCommon;
 import com.tokopedia.buyerorder.detail.data.DetailsData;
@@ -28,7 +29,7 @@ import com.tokopedia.buyerorder.detail.data.OrderDetails;
 import com.tokopedia.buyerorder.detail.data.RequestCancelInfo;
 import com.tokopedia.buyerorder.detail.data.ShopInfo;
 import com.tokopedia.buyerorder.detail.data.Status;
-import com.tokopedia.buyerorder.detail.domain.FinishOrderUseCase;
+import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.list.data.Data;
@@ -44,6 +45,8 @@ import com.tokopedia.buyerorder.list.view.adapter.WishListResponseListener;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomTitleUiModel;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListRecomUiModel;
 import com.tokopedia.buyerorder.list.view.adapter.viewmodel.OrderListUiModel;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrder;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
@@ -129,8 +132,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private OrderDetails orderDetails;
     private RequestCancelInfo requestCancelInfo;
     private PostCancelReasonUseCase postCancelReasonUseCase;
-    private FinishOrderUseCase finishOrderUseCase;
     private AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
+    private FinishOrderGqlUseCase finishOrderGqlUseCase;
 
     @Inject
     public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase,
@@ -141,8 +144,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                                   UserSessionInterface userSessionInterface,
                                   OrderListAnalytics orderListAnalytics,
                                   PostCancelReasonUseCase postCancelReasonUseCase,
-                                  FinishOrderUseCase finishOrderUseCase,
-                                  AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase) {
+                                  AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase,
+                                  FinishOrderGqlUseCase finishOrderGqlUseCase) {
         this.getRecommendationUseCase = getRecommendationUseCase;
         this.addToCartUseCase = addToCartUseCase;
         this.addWishListUseCase = addWishListUseCase;
@@ -151,8 +154,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         this.userSessionInterface = userSessionInterface;
         this.orderListAnalytics = orderListAnalytics;
         this.postCancelReasonUseCase = postCancelReasonUseCase;
-        this.finishOrderUseCase = finishOrderUseCase;
         this.addToCartMultiLegacyUseCase = addToCartMultiLegacyUseCase;
+        this.finishOrderGqlUseCase = finishOrderGqlUseCase;
     }
 
     @Override
@@ -373,6 +376,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             addToCartUseCase.unsubscribe();
         }
         addToCartMultiLegacyUseCase.unsubscribe();
+        if (finishOrderGqlUseCase != null) {
+            finishOrderGqlUseCase.unsubscribe();
+        }
         super.detachView();
     }
 
@@ -901,21 +907,19 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         );
     }
 
-    public void finishOrder(Context context, String orderId, String url) {
+    public void finishOrderGql(String orderId, String actionStatus) {
         if (getView() == null)
             return;
-        UserSession userSession = new UserSession(context);
-        String userId = userSession.getUserId();
 
-        RequestParams requestParams = RequestParams.create();
-        requestParams.putString("user_id", userId);
-        requestParams.putString("order_id", orderId);
-        requestParams.putString("device_id", userSession.getDeviceId());
-        getView().displayLoadMore(true);
+        UohFinishOrderParam uohFinishOrderParam = new UohFinishOrderParam();
+        uohFinishOrderParam.setOrderId(orderId);
+        uohFinishOrderParam.setAction(actionStatus);
+        uohFinishOrderParam.setUserId(userSessionInterface.getUserId());
 
-        finishOrderUseCase.setRequestParams(requestParams);
-        finishOrderUseCase.setEndPoint(url);
-        finishOrderUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(BuyerConsts.PARAM_INPUT, uohFinishOrderParam);
+        finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
+        finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
             @Override
             public void onCompleted() {
 
@@ -923,7 +927,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                if (getView() != null) {
+                if (getView() != null && getView().getActivity() != null) {
                     Timber.d(e);
                     getView().displayLoadMore(false);
                     getView().showFailureMessage(e.getMessage());
@@ -932,24 +936,19 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             }
 
             @Override
-            public void onNext(Map<Type, RestResponse> typeDataResponseMap) {
-                if (getView() != null) {
-                    Type token = new TypeToken<DataResponseCommon<CancelReplacementPojo>>() {
-                    }.getType();
-                    RestResponse restResponse = typeDataResponseMap.get(token);
-                    DataResponseCommon dataResponse = restResponse.getData();
-                    CancelReplacementPojo cancelReplacementPojo = (CancelReplacementPojo) dataResponse.getData();
-                    if (!TextUtils.isEmpty(cancelReplacementPojo.getMessageStatus()))
-                        getView().showSuccessMessage(cancelReplacementPojo.getMessageStatus());
-                    else if (dataResponse.getErrorMessage() != null && !dataResponse.getErrorMessage().isEmpty())
-                        getView().showFailureMessage((String) dataResponse.getErrorMessage().get(0));
-                    else if ((dataResponse.getMessageStatus() != null && !dataResponse.getMessageStatus().isEmpty()))
-                        getView().showSuccessMessage((String) dataResponse.getMessageStatus().get(0));
-                    getView().displayLoadMore(false);
-                    getView().finishOrderDetail();
+            public void onNext(UohFinishOrder.Data data) {
+                if (data.getFinishOrderBuyer().getSuccess() == 1) {
+                    if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                        getView().showSuccessMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                    }
+                } else {
+                    if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                        getView().showFailureMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                    }
                 }
+                getView().displayLoadMore(false);
+                getView().finishOrderDetail();
             }
         });
-
     }
 }

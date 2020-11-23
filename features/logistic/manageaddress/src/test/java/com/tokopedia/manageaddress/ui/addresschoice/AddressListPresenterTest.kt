@@ -1,7 +1,7 @@
 package com.tokopedia.manageaddress.ui.addresschoice
 
-import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.manageaddress.AddressDummyDataProvider
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress
 import io.mockk.every

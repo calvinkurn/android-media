@@ -38,7 +38,7 @@ class MenuGridIconNotificationItemViewHolder(private val context: Context, itemV
                 if (menuItem.count > 0) {
                     notificationRef.visible()
                     notificationGravity = Gravity.TOP or Gravity.END
-                    (notificationRef.parent as FrameLayout).setBackgroundColor(Color.WHITE)
+                    (notificationRef.parent as FrameLayout).setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     notificationRef.setNotification(menuItem.count.toString(), NotificationUnify.COUNTER_TYPE, NotificationUnify.COLOR_TEXT_TYPE)
                 } else {
                     notificationRef.gone()

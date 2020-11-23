@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Hubungi"
-            android:textColor="@color/Green_G500"
+            android:textColor="@color/Unify_G500"
             app:typographyType="body_3"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -47,7 +47,7 @@
         android:layout_height="@dimen/hotel_1dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:background="@color/hotel_grey_300"
+        android:background="@color/Unify_N100"
         app:layout_constraintTop_toBottomOf="@+id/transaction_status" />
 
 
