@@ -12,7 +12,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
-import io.mockk.every
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import java.lang.reflect.Type
