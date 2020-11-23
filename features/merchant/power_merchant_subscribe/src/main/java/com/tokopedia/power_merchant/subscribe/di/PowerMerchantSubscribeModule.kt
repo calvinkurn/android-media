@@ -17,8 +17,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
 @PowerMerchantSubscribeScope
@@ -39,8 +37,7 @@ class PowerMerchantSubscribeModule {
 
     @PowerMerchantSubscribeScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideMainDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
 
     @Provides
     @Named(GMParamConstant.RAW_GM_QUESTIONNAIRE_QUESTION)
