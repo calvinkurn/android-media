@@ -1179,8 +1179,9 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     }
 
     @Test
-    fun `check change inactive phone appLink then should return tokopedia internal phone verfication in customerapp`() {
-        assertEqualsDeepLinkMapper(ApplinkConst.CHANGE_INACTIVE_PHONE, "")
+    fun `check change inactive phone appLink then should return tokopedia internal phone change inactive phone in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://global/change-inactive-phone"
+        assertEqualsDeepLinkMapper(ApplinkConst.CHANGE_INACTIVE_PHONE, expectedDeepLink)
     }
 
     @Test
