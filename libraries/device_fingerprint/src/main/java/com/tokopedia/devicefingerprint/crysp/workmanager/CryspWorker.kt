@@ -2,15 +2,12 @@ package com.tokopedia.devicefingerprint.crysp.workmanager
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.work.*
-import com.crysp.sdk.CryspNetworkManager
-import com.tokopedia.devicefingerprint.crysp.CryspInstance
 import com.tokopedia.devicefingerprint.crysp.CryspInstance.Companion.sendToken
 import com.tokopedia.devicefingerprint.crysp.usecase.SubmitCrTokenUseCase
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -22,7 +19,7 @@ class CryspWorker(appContext: Context, params: WorkerParameters) : CoroutineWork
     lateinit var submitCrTokenUseCase: SubmitCrTokenUseCase
 
     @Inject
-    lateinit var userSession: UserSession
+    lateinit var userSession: UserSessionInterface
 
     init {
         DaggerDeviceFingerprintComponent.builder()
