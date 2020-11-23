@@ -7,7 +7,7 @@ import com.tokopedia.shop.feed.view.adapter.factory.FeedShopTypeFactory
 /**
  * @author by yfsx on 16/05/19.
  */
-data  class WhitelistViewModel(
+data  class WhitelistUiModel(
         var whitelist: WhitelistDomain = WhitelistDomain()
 ) : Visitable<FeedShopTypeFactory> {
     override fun type(typeFactory: FeedShopTypeFactory?): Int {
