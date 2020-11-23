@@ -10,7 +10,6 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.user.session.UserSessionInterface
-
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named

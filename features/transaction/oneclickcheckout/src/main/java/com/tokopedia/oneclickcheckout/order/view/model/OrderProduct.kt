@@ -64,11 +64,7 @@ data class QuantityUiModel(
         var errorProductMinQuantity: String = "",
         var isStateError: Boolean = false,
         var maxOrderStock: Int = 0
-) {
-    companion object {
-        const val VALUE_REPLACE_STRING = "{{value}}"
-    }
-}
+)
 
 data class ProductTickerMessage(
         val message: String = "",

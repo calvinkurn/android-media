@@ -2,7 +2,6 @@ package com.tokopedia.digital.home.presentation.adapter
 
 import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.digital.home.model.DigitalHomePageSectionModel
 import com.tokopedia.digital.home.model.RechargeHomepageSectionModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable

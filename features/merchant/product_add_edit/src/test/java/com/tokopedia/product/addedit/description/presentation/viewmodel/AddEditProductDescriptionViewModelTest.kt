@@ -8,6 +8,7 @@ import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -40,6 +41,9 @@ class AddEditProductDescriptionViewModelTest {
 
     @RelaxedMockK
     lateinit var videoYoutubeObserver: Observer<in Pair<Int, Result<YoutubeVideoDetailModel>>>
+
+    @RelaxedMockK
+    lateinit var validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -89,7 +93,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     private val viewModel: AddEditProductDescriptionViewModel by lazy {
-        AddEditProductDescriptionViewModel(CoroutineTestDispatchersProvider, resourceProvider, getYoutubeVideoUseCase)
+        AddEditProductDescriptionViewModel(CoroutineTestDispatchersProvider, resourceProvider, getYoutubeVideoUseCase, validateProductDescriptionUseCase)
     }
 
     private val youtubeAppHost = "youtu.be"
