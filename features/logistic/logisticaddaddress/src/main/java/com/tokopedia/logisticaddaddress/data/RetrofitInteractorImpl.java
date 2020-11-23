@@ -1,21 +1,13 @@
 package com.tokopedia.logisticaddaddress.data;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationPresenter;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.network.utils.TKPDMapParam;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

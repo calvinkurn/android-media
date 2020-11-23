@@ -5,11 +5,11 @@ import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl
 import com.tokopedia.logisticaddaddress.domain.mapper.GeolocationMapper
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.CoordinateModel
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel
-import com.tokopedia.logisticdata.data.entity.response.Data
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.user.session.UserSession
 import io.mockk.every
 import io.mockk.mockk

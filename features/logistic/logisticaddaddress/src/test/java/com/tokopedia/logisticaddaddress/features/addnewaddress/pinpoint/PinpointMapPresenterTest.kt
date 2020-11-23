@@ -8,10 +8,10 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.response.Data
-import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill
-import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.data.entity.response.KeroMapsAutofill
+import com.tokopedia.logisticCommon.domain.usecase.RevGeocodeUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

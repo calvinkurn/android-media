@@ -9,7 +9,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
 
 /**
  * Created by Fajar Ulin Nuha on 29/10/18.
