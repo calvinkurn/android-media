@@ -8,14 +8,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.fragment.app.Fragment;
+
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -33,6 +37,7 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -47,8 +52,11 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.developer_options.config.DevOptConfig;
+import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
+import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
 import com.tokopedia.iris.Iris;
@@ -62,9 +70,9 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
+import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
@@ -89,8 +97,8 @@ import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
 import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
-import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
+import com.tokopedia.tkpdreactnative.react.creditcard.domain.CreditCardFingerPrintUseCase;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.UseCase;
@@ -139,7 +147,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter,
-        CMRouter,
         KYCRouter {
 
     private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
@@ -334,7 +341,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.classParentStack = getHomeClass();
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
@@ -553,11 +560,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public long getLongRemoteConfig(String key, long defaultValue) {
-        return remoteConfig.getLong(key, defaultValue);
     }
 
     @Override

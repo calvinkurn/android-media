@@ -32,6 +32,7 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.authentication.AuthHelper;
@@ -44,6 +45,7 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.customer_mid_app.BuildConfig;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
@@ -51,12 +53,15 @@ import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallback
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.shakedetect.ShakeDetectManager;
 import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -74,6 +79,13 @@ import com.tokopedia.weaver.Weaver;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -105,6 +117,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
+    private static final String ENABLE_SEQ_AB_TESTING_ASYNC = "android_exec_seq_ab_testing_async";
+
     GratificationSubscriber gratificationSubscriber;
 
     @Override
@@ -123,6 +137,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
+        createAndCallPostSeqAbTesting();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
@@ -178,6 +193,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
+    }
+
+    private void createAndCallPostSeqAbTesting() {
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequenceAbTesting();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, ENABLE_SEQ_AB_TESTING_ASYNC, context);
     }
 
     private void createAndCallFontLoad() {
@@ -245,10 +272,15 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
 
-        initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
+        return true;
+    }
+
+    @NotNull
+    private Boolean executePostCreateSequenceAbTesting() {
+        initializeAbTestVariant();
         return true;
     }
 

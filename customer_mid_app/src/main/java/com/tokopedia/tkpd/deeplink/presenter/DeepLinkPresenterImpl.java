@@ -111,16 +111,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         initInjection(activity);
     }
 
-    private static String constructSearchApplink(Uri uriData) {
-        String q = uriData.getQueryParameter("q");
-
-        String applink = TextUtils.isEmpty(q) ?
-                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
-                ApplinkConstInternalDiscovery.SEARCH_RESULT;
-
-        return applink + "?" + uriData.getQuery();
-    }
-
     @Override
     public void checkUriLogin(Uri uriData) {
         UserSessionInterface userSession = new UserSession(context);
@@ -747,6 +737,16 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             String deeplink = UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId);
             RouteManager.route(context, deeplink);
         }
+    }
+
+    private static String constructSearchApplink(Uri uriData) {
+        String q = uriData.getQueryParameter("q");
+
+        String applink = TextUtils.isEmpty(q) ?
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.SEARCH_RESULT;
+
+        return applink + "?" + uriData.getQuery();
     }
 
     private boolean isHotAlias(Uri uri) {
