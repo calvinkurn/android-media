@@ -19,9 +19,9 @@ class VisorFingerprintInstance {
             return visorInstance!!
         }
 
-        fun initToken(applicationContext: Context, customUserDimension: Map<String, String>? = null, listener: onVisorInitListener? = null ) {
+        fun initToken(context: Context, customUserDimension: Map<String, String>? = null, listener: onVisorInitListener? = null ) {
             if (!isTokenInit) {
-                getVisorInstance(applicationContext).initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
+                getVisorInstance(context.applicationContext).initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
                     if (nResultCode == 0) {
                         isTokenInit = true
                         visorToken = strToken
