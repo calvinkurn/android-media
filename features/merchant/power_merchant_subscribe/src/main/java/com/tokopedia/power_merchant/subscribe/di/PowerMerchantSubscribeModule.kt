@@ -35,10 +35,6 @@ class PowerMerchantSubscribeModule {
         return UserSession(context)
     }
 
-    @PowerMerchantSubscribeScope
-    @Provides
-    fun provideMainDispatcher(): CoroutineDispatchers = CoroutineDispatchersProvider
-
     @Provides
     @Named(GMParamConstant.RAW_GM_QUESTIONNAIRE_QUESTION)
     fun provicePmStatusRaw(@ApplicationContext context: Context): String {
