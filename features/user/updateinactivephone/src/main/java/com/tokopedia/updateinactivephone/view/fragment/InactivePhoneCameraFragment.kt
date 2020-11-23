@@ -100,11 +100,6 @@ class InactivePhoneCameraFragment : BaseDaggerFragment() {
                 updateDescription(getString((R.string.text_camera_description_selfie)))
                 showCamera()
             }
-            CameraViewMode.SAVING_BOOK.id -> {
-                cameraView?.facing = Facing.BACK
-                updateTitle(getString(R.string.text_title_saving_book))
-                showCamera(true)
-            }
         }
     }
 
