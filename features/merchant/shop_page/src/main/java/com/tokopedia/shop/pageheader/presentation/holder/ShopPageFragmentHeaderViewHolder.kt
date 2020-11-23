@@ -97,7 +97,7 @@ class ShopPageFragmentHeaderViewHolder(private val view: View, private val liste
         else
             view.shop_page_main_profile_free_ongkir.hide()
 
-        if(isUsingNewNavigation()) {
+        if(isUsingNewNavigation() && !isMyShop) {
             view.shop_page_chevron_shop_info.show()
             view.shop_page_chevron_shop_info.setOnClickListener {
                 listener.openShopInfo()
