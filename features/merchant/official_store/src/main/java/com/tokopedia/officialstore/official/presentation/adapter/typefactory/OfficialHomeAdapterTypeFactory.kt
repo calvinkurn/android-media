@@ -98,7 +98,7 @@ class OfficialHomeAdapterTypeFactory(
     }
 
     override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
-        return CategoryNavigationViewHolder.LAYOUT
+        return 0
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
