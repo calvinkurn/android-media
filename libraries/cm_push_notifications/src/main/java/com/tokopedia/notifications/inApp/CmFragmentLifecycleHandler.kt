@@ -34,7 +34,7 @@ class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback,
 
     private fun showInApp(name: String, entityHashCode: Int) {
         if (!pushIntentHandler.isHandledByPush && callback.canShowDialog()) {
-            callback.showInAppForScreen(name, entityHashCode)
+            callback.showInAppForScreen(name, entityHashCode, false)
         }
     }
 
@@ -42,6 +42,6 @@ class CmFragmentLifecycleHandler(private val callback: ShowInAppCallback,
 }
 
 interface ShowInAppCallback {
-    fun showInAppForScreen(name: String, entityHashCode: Int) //check from rules
+    fun showInAppForScreen(name: String, entityHashCode: Int, isActivity:Boolean)
     fun canShowDialog(): Boolean
 }

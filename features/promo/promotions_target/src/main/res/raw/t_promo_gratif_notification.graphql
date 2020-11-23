@@ -8,33 +8,25 @@ query GetNotification($notificationID: Int!, $notificationEntryType: Int!, $paym
       titleId
       titleEn
       subtitle1Id
-      subtitle1En
       subtitle2Id
-      subtitle2En
     }
     wordingSeen {
       titleId
       titleEn
       subtitle1Id
-      subtitle1En
       subtitle2Id
-      subtitle2En
     }
     wordingExpired {
       titleId
       titleEn
       subtitle1Id
-      subtitle1En
       subtitle2Id
-      subtitle2En
     }
     wordingUsed {
       titleId
       titleEn
       subtitle1Id
-      subtitle1En
       subtitle2Id
-      subtitle2En
     }
     button {
       text

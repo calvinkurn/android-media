@@ -26,6 +26,7 @@ object GratifCmInitializer {
 
         val gratificationPresenter = GratificationPresenter(appContext)
         gratificationPresenter.dialogVisibilityContract = CMInAppManager.getInstance()
+        gratificationPresenter.dataConsumer = CMInAppManager.getInstance().dataConsumer
         val firebaseRemoteConfig: FirebaseRemoteConfigImpl? = try {
             FirebaseRemoteConfigImpl(appContext)
         } catch (ex: Exception) {

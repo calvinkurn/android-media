@@ -34,7 +34,9 @@ import com.tokopedia.promotionstarget.data.coupon.CouponUiData
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.components.DaggerCmGratificationComponent
 import com.tokopedia.promotionstarget.data.di.modules.AppModule
-import com.tokopedia.promotionstarget.data.notification.*
+import com.tokopedia.promotionstarget.data.notification.GratifNotification
+import com.tokopedia.promotionstarget.data.notification.HachikoButtonType
+import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
 import com.tokopedia.promotionstarget.presentation.GratificationAnalyticsHelper
 import com.tokopedia.promotionstarget.presentation.ui.CustomToast
 import com.tokopedia.promotionstarget.presentation.ui.adapter.CouponListAdapter
@@ -85,7 +87,8 @@ class CmGratificationDialog {
              @NotificationEntryType notificationEntryType: Int,
              onShowListener: DialogInterface.OnShowListener,
              screenName: String,
-             closeCurrentActivity: Boolean
+             closeCurrentActivity: Boolean,
+             inAppId: Long?
     ): BottomSheetDialog? {
         this.gratifNotification = gratifNotification
         this.couponDetailResponse = couponDetailResponse
@@ -97,7 +100,7 @@ class CmGratificationDialog {
         bottomSheetDialog = pair.second
         initViews(pair.first, activityContext, gratifNotification, couponDetailResponse)
         setUiData(gratifNotification, couponDetailResponse)
-        updateGratifNotification(gratifNotification, pair.first, notificationEntryType)
+        updateGratifNotification(gratifNotification, pair.first, notificationEntryType, inAppId)
         return pair.second
     }
 
@@ -331,10 +334,13 @@ class CmGratificationDialog {
         }
     }
 
-    private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int) {
+    private fun updateGratifNotification(gratifNotification: GratifNotification, view: View, @NotificationEntryType notificationEntryType: Int, inAppId: Long?) {
         view.post {
             if (view.context is AppCompatActivity && !(view.context as AppCompatActivity).isFinishing) {
-                viewModel.updateGratification(gratifNotification.notificationID, notificationEntryType, GratificationAnalyticsHelper.getPopupType(gratifNotification, couponDetailResponse), screenName)
+                viewModel.updateGratification(gratifNotification.notificationID,
+                        notificationEntryType,
+                        GratificationAnalyticsHelper.getPopupType(gratifNotification, couponDetailResponse),
+                        screenName, inAppId)
             }
         }
     }

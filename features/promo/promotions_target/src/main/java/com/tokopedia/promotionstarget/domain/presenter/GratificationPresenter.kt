@@ -3,10 +3,12 @@ package com.tokopedia.promotionstarget.domain.presenter
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
+import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
@@ -39,7 +41,8 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 import javax.inject.Named
 
-class GratificationPresenter @Inject constructor(val context: Context, val componentProvider: CmGratifiPresenterComponentProvider = CmGratifiPresenterComponentProvider()) {
+class GratificationPresenter @Inject constructor(val context: Context,
+                                                 val componentProvider: CmGratifiPresenterComponentProvider = CmGratifiPresenterComponentProvider()) {
     val TAG = "GratifTag"
 
     @Inject
@@ -63,10 +66,15 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
     private var scope: CoroutineScope? = null
     var exceptionCallback: ExceptionCallback? = null
     var dialogVisibilityContract: CmDialogVisibilityContract? = null
+    var dataConsumer: DataConsumer? = null
 
     init {
+        val startTime = System.currentTimeMillis()
+        Log.e(TAG,"gratification presenter init start time seconds:${startTime/1000}")
         componentProvider.getComponent(context)
                 .inject(this)
+        val endTime = System.currentTimeMillis()
+        Log.e(TAG,"gratification presenter init stop time seconds:${endTime/1000}")
     }
 
 
@@ -77,7 +85,8 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                                 gratifPopupCallback: GratifPopupCallback? = null,
                                 screenName: String,
                                 timeout: Long,
-                                closeCurrentActivity: Boolean
+                                closeCurrentActivity: Boolean,
+                                inAppId: Long?
     ): Job? {
         return scope?.launch(worker + ceh) {
             Locks.notificationMutex.withLock {
@@ -85,7 +94,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                     if (timeout > 0L) {
                         var responseReceived = false
                         withTimeout(timeout) {
-                            processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity)
+                            processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
                             responseReceived = true
                         }
                         if (!responseReceived) {
@@ -94,7 +103,7 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                         } else { //Do nothing (can't delete this due to weird compile error)
                         }
                     } else {
-                        processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity)
+                        processApis(weakActivity, notificationID, notificationEntryType, paymentID, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
                     }
                 } catch (ex: Exception) {
 
@@ -105,6 +114,10 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                         }
                     }
                     exceptionCallback?.onError(ex)
+                    if (ex is TimeoutCancellationException) {
+                        gratifPopupCallback?.onIgnored(GratifPopupIngoreType.TIMEOUT)
+                        Timber.d("$TAG GRATIF ENGINE - Manual Cancellation timeout reached $timeout ")
+                    }
                 }
             }
         }
@@ -117,27 +130,38 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                             paymentID: Long = 0,
                             gratifPopupCallback: GratifPopupCallback? = null,
                             screenName: String,
-                            closeCurrentActivity: Boolean) {
+                            closeCurrentActivity: Boolean,
+                            inAppId: Long?
+    ) {
+        val curStartTime = System.currentTimeMillis()
+        Log.e(TAG,"gratification processApis start time seconds:${curStartTime/1000}, millis = $curStartTime")
 
         val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
         val notifResponse = notificationUseCase.getResponse(map)
         val reason = notifResponse.response?.resultStatus?.code
+        val notificationTime = System.currentTimeMillis()
+        Log.e(TAG,"gratification notification response time mills:${notificationTime - curStartTime} ")
+
         if (reason == GratifResultStatus.SUCCESS) {
             val code = notifResponse.response.promoCode
             if (!code.isNullOrEmpty()) {
                 val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
                 val couponStatus = couponDetail?.coupon?.realCode ?: ""
+
+                val couponTime = System.currentTimeMillis()
+                Log.e(TAG,"gratification coupon response time mills:${couponTime - notificationTime}")
+
                 if (couponStatus.isNotEmpty()) {
                     withContext(uiWorker) {
                         weakActivity?.get()?.let { activity ->
                             if (notificationEntryType == NotificationEntryType.PUSH) {
-                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity)
+                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
                             } else if (dialogVisibilityContract?.isDialogVisible(activity) == true) {
                                 Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
                                 gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
                             } else {
                                 Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
-                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity)
+                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
                             }
                         }
                     }
@@ -154,6 +178,8 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
             Timber.d("$TAG GRATIF ENGINE FAIL, notifId = $notificationID, resultStatus=$reason")
             gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
         }
+        val endTime = System.currentTimeMillis()
+        Log.e(TAG,"gratification processApis end time seconds:${endTime/1000}")
     }
 
     private fun performShowDialog(activity: Activity,
@@ -162,14 +188,15 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                                   @NotificationEntryType notificationEntryType: Int,
                                   gratifPopupCallback: GratifPopupCallback? = null,
                                   screenName: String,
-                                  closeCurrentActivity: Boolean
+                                  closeCurrentActivity: Boolean,
+                                  inAppId: Long?
     ) {
 
         val dialog = dialogCreator.createGratifDialog(activity,
                 gratifNotification,
                 couponDetail,
                 notificationEntryType,
-                gratifPopupCallback, screenName, closeCurrentActivity)
+                gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
         dialogVisibilityContract?.onDialogShown(activity)
 
         dialog?.setOnDismissListener { dialogInterface ->
@@ -184,26 +211,6 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
         }
     }
 
-//    @VisibleForTesting
-//    fun createDialog(activity: Activity,
-//                     gratifNotification: GratifNotification,
-//                     couponDetail: TokopointsCouponDetailResponse,
-//                     @NotificationEntryType notificationEntryType: Int,
-//                     gratifPopupCallback: GratifPopupCallback? = null,
-//                     screenName: String,
-//                     closeCurrentActivity: Boolean): BottomSheetDialog? {
-//        return CmGratificationDialog().show(activity,
-//                gratifNotification,
-//                couponDetail,
-//                notificationEntryType,
-//                DialogInterface.OnShowListener { dialog ->
-//                    if (dialog != null) {
-//                        gratifPopupCallback?.onShow(dialog)
-//                    }
-//                }, screenName, closeCurrentActivity)
-//    }
-
-
     fun showGratificationInApp(weakActivity: WeakReference<Activity>?,
                                gratificationId: String? = "",
                                @NotificationEntryType notificationEntryType: Int,
@@ -211,7 +218,8 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                                screenName: String,
                                paymentID: Long = 0L,
                                timeout: Long = 0L,
-                               closeCurrentActivity: Boolean = false
+                               closeCurrentActivity: Boolean = false,
+                               inAppId: Long? = null
     ): Job? {
         try {
 
@@ -238,7 +246,8 @@ class GratificationPresenter @Inject constructor(val context: Context, val compo
                     screenName = screenName,
                     paymentID = paymentID,
                     timeout = timeout,
-                    closeCurrentActivity = closeCurrentActivity
+                    closeCurrentActivity = closeCurrentActivity,
+                    inAppId = inAppId
             )
 
         } catch (ex: Exception) {

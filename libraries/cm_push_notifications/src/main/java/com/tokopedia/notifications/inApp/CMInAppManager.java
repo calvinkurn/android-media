@@ -16,6 +16,7 @@ import com.tokopedia.notifications.common.CMNotificationUtils;
 import com.tokopedia.notifications.common.CMRemoteConfigUtils;
 import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
+import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
@@ -66,6 +67,7 @@ public class CMInAppManager implements CmInAppListener,
     //DialogHandlers
     private CmDialogHandler cmDialogHandler;
     public CmDataConsumer cmDataConsumer;
+    public DataConsumer dataConsumer;
 
     static {
         inAppManager = new CMInAppManager();
@@ -92,7 +94,8 @@ public class CMInAppManager implements CmInAppListener,
                 pushIntentHandler,
                 this,
                 this);
-        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
+        dataConsumer = new DataConsumerImpl();
+        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), dataConsumer);
         initInAppManager();
     }
 
@@ -110,14 +113,15 @@ public class CMInAppManager implements CmInAppListener,
         FragmentLifecycleObserver.INSTANCE.registerCallback(fragmentObserver);
     }
 
-    private void showInAppNotification(String name, int entityHashCode) {
+    private void showInAppNotification(String name, int entityHashCode, boolean isActivity) {
         if (excludeScreenList != null && excludeScreenList.contains(name))
             return;
         RulesManager.getInstance().checkValidity(
                 name,
                 0L,
                 this,
-                entityHashCode
+                entityHashCode,
+                isActivity
         );
     }
 
@@ -128,9 +132,9 @@ public class CMInAppManager implements CmInAppListener,
                 CMInApp cmInApp = inAppDataList.get(0);
                 sendEventInAppPrepared(cmInApp);
                 if (checkForOtherSources(cmInApp, entityHashCode, screenName)) return;
-                showDialog(cmInApp);
-                dataConsumed(cmInApp);
-                sendAmplificationEventInAppRead(cmInApp);
+                if(canShowDialog()) {
+                    showDialog(cmInApp);
+                }
             }
         }
     }
@@ -187,6 +191,8 @@ public class CMInAppManager implements CmInAppListener,
             @Override
             public void onShow(@NotNull Activity activity) {
                 onDialogShown(activity);
+                dataConsumed(data);
+                sendAmplificationEventInAppRead(data);
             }
 
             @Override
@@ -201,6 +207,8 @@ public class CMInAppManager implements CmInAppListener,
             @Override
             public void onShow(@NotNull Activity activity) {
                 onDialogShown(activity);
+                dataConsumed(data);
+                sendAmplificationEventInAppRead(data);
             }
         });
     }
@@ -259,7 +267,7 @@ public class CMInAppManager implements CmInAppListener,
         RulesManager.getInstance().viewDismissed(inApp.id);
         Activity activity = activityLifecycleHandler.getCurrentActivity();
         if (activity != null)
-            dialogIsShownMap.remove(activity);
+            onDialogDismiss(activity);
     }
 
     @Override
@@ -324,8 +332,8 @@ public class CMInAppManager implements CmInAppListener,
     }
 
     @Override
-    public void showInAppForScreen(@NotNull String name, int entityHashCode) {
-        showInAppNotification(name, entityHashCode);
+    public void showInAppForScreen(@NotNull String name, int entityHashCode, boolean isActivity) {
+        showInAppNotification(name, entityHashCode, isActivity);
     }
 
     public CmActivityLifecycleHandler getActivityLifecycleHandler() {

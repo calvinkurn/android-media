@@ -74,7 +74,7 @@ class CmActivityLifecycleHandler(val applicationCallback: CmActivityApplicationC
 
     private fun showInApp(name: String, entityHashCode: Int) {
         if (callback.canShowDialog()) {
-            callback.showInAppForScreen(name, entityHashCode)
+            callback.showInAppForScreen(name, entityHashCode, true)
         }
     }
 

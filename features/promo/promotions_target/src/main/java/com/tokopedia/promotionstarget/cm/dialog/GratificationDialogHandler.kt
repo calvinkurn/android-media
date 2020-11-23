@@ -1,14 +1,14 @@
 package com.tokopedia.promotionstarget.cm.dialog
 
 import android.app.Activity
-import android.content.DialogInterface
+import androidx.annotation.VisibleForTesting
 import com.tokopedia.notifications.inApp.CMInAppManager
+import com.tokopedia.notifications.inApp.DialogHandlerContract
 import com.tokopedia.notifications.inApp.InAppPopupContract
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import com.tokopedia.promotionstarget.cm.ActivityProvider
 import com.tokopedia.promotionstarget.cm.broadcast.PendingData
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
-import com.tokopedia.promotionstarget.domain.presenter.GratifPopupIngoreType
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter
 import com.tokopedia.promotionstarget.domain.presenter.GratificationPresenter.GratifPopupCallback
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -27,29 +27,30 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                                  val broadcastScreenNames: ArrayList<String>,
                                  val activityProvider: ActivityProvider,
                                  val remoteConfigImpl: FirebaseRemoteConfigImpl?
-) : InAppPopupContract {
+) : InAppPopupContract, DialogHandlerContract {
 
     val TAG = "CmDialogHandler"
+    val callbackProvider = GratifPopupCallbackProvider()
 
     fun showPushDialog(activity: Activity, gratificationId: String, screenName: String) {
         val tempWeakActivity = WeakReference(activity)
-        gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH, object : GratificationPresenter.AbstractGratifPopupCallback() {
-            override fun onIgnored(reason: Int) {
-                super.onIgnored(reason)
-                tempWeakActivity.get()?.let {
-                    gratificationPresenter.dialogVisibilityContract?.onDialogDismiss(it)
-                }
-            }
-        }, screenName)
+        gratificationPresenter.showGratificationInApp(tempWeakActivity, gratificationId, NotificationEntryType.PUSH,
+                callbackProvider.getCallbackTypePush(gratificationPresenter, tempWeakActivity), screenName)
     }
 
-    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String?, gratifPopupCallback: GratifPopupCallback, screenName: String): Job? {
-        if(customValues.isNullOrEmpty()) return null
+    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String?, gratifPopupCallback: GratifPopupCallback, screenName: String, inAppId:Long): Job? {
+        if (customValues.isNullOrEmpty()) return null
         try {
             val json = JSONObject(customValues)
             val gratificationId = json.getString("gratificationId")
-            return gratificationPresenter.showGratificationInApp(currentActivity, gratificationId, NotificationEntryType.ORGANIC, gratifPopupCallback, screenName)
+            return gratificationPresenter.showGratificationInApp(
+                    weakActivity = currentActivity,
+                    gratificationId = gratificationId,
+                    notificationEntryType = NotificationEntryType.ORGANIC,
+                    gratifPopupCallback = gratifPopupCallback,
+                    screenName = screenName, inAppId = inAppId)
         } catch (e: Exception) {
+            Timber.e(e)
             gratifPopupCallback.onExeption(e)
         }
         return null
@@ -82,27 +83,15 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
         }
     }
 
-    private fun handleShowOrganic(currentActivity: Activity, data: CMInApp, entityHashCode: Int, screenName: String) {
-        val job = showOrganicDialog(WeakReference(currentActivity), data.customValues, object : GratificationPresenter.AbstractGratifPopupCallback() {
-            override fun onShow(dialog: DialogInterface) {
-                dataConsumed(data)
-            }
-
-            override fun onIgnored(reason: Int) {
-                if (reason != GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE) {
-                    dataConsumed(data)
-                }
-            }
-
-            override fun onExeption(ex: Exception) {
-                dataConsumed(data)
-                cmInflateException(data)
-            }
-        }, screenName)
+    @VisibleForTesting
+    fun handleShowOrganic(currentActivity: Activity, data: CMInApp, entityHashCode: Int, screenName: String) {
+        val job = showOrganicDialog(WeakReference(currentActivity), data.customValues,
+                callbackProvider.getCallbackTypeOrganic(this, data), screenName, data.id)
 
         if (job != null)
             mapOfGratifJobs[entityHashCode] = job
     }
+
 
     fun executePendingInApp(activity: Activity, screenName: String): Boolean {
         if (broadcastScreenNames.contains(activity.javaClass.name)) {
@@ -119,11 +108,12 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
         return false
     }
 
-    private fun dataConsumed(data: CMInApp) {
+
+    override fun dataConsumed(data: CMInApp) {
         CMInAppManager.getInstance().cmDataConsumer.dataConsumed(data)
     }
 
-    private fun cmInflateException(data: CMInApp) {
+    override fun cmInflateException(data: CMInApp) {
         CMInAppManager.getInstance().onCMInAppInflateException(data)
     }
 

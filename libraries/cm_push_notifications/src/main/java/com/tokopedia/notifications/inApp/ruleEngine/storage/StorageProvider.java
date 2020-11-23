@@ -64,7 +64,7 @@ public class StorageProvider implements InterfaceDataStore {
     }
 
     @Override
-    public List<CMInApp> getDataFromStore(String key) {
+    public List<CMInApp> getDataFromStore(String key, boolean isActivity) {
         List<CMInApp> list = inAppDataDao.getDataForScreen(key);
         List<CMInApp> finalList = new ArrayList<>();
         if (list != null) {
@@ -73,7 +73,7 @@ public class StorageProvider implements InterfaceDataStore {
                 if (!TextUtils.isEmpty(screenNames)) {
                     String[] screenNamesArray = screenNames.split(",");
                     for (String screenName : screenNamesArray) {
-                        if (key.equals(screenName) || screenName.equals("*")) {
+                        if (key.equals(screenName) || (isActivity && screenName.equals("*"))) {
                             finalList.add(cmInApp);
                             break;
                         }
