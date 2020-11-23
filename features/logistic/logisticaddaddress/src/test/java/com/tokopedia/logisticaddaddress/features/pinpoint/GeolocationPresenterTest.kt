@@ -59,6 +59,20 @@ object GeolocationPresenterTest : Spek({
                 verify { mapFragment.moveMap(res.coordinate) }
             }
         }
+        Scenario("error") {
+            val err = "error msg"
+            Given("success response") {
+                every { retrofitImpl.generateLatLng(any(), any()) } answers {
+                    secondArg<RetrofitInteractor.GenerateLatLongListener>().onError(err)
+                }
+            }
+            When("executed") {
+                presenter.geoCode("123")
+            }
+            Then("view moves to map") {
+                verify { mapFragment.toastMessage(err) }
+            }
+        }
     }
 
     Feature("reverse geocode") {

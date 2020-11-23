@@ -17,9 +17,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 public interface GeolocationContract {
 
     interface GeolocationView {
-        int LANDSCAPE = Configuration.ORIENTATION_LANDSCAPE;
-        int PORTRAIT = Configuration.ORIENTATION_PORTRAIT;
-
         long DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
         long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
                 DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS / 2;

@@ -76,7 +76,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
                     @Override
                     public void onError(String errorMessage) {
-
+                        view.toastMessage(errorMessage);
                     }
                 });
     }

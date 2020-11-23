@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -517,10 +518,6 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     public void onLocationChanged(Location location) {
         moveMap(GeoLocationUtils.generateLatLng(location.getLatitude(), location.getLongitude()));
         LocationCache.saveLocation(getContext(), location);
-        removeLocationUpdate();
-    }
-
-    private void removeLocationUpdate() {
         if (googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         }
@@ -552,13 +549,10 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
 
     public void prepareAutoCompleteView() {
         RetrofitInteractor interactor = presenter.getInteractor();
-        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, setDefaultBoundsJakarta(),
+        LatLngBounds bounds = GeoLocationUtils.generateBoundary(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
+        adapter = new SuggestionLocationAdapter(getActivity(), googleApiClient, bounds,
                 null, mUser, interactor.getCompositeSubscription(), interactor.getMapRepository());
         autoComplete.setAdapter(adapter);
-    }
-
-    private LatLngBounds setDefaultBoundsJakarta() {
-        return GeoLocationUtils.generateBoundary(DEFAULT_LATITUDE, DEFAULT_LONGITUDE);
     }
 
     private void dimissKeyBoard() {
@@ -577,7 +571,7 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     private void setOnScreenRotate() {
-        if (getScreenRotation() == LANDSCAPE) {
+        if (getScreenRotation() == Configuration.ORIENTATION_LANDSCAPE) {
             hideActionBar();
         } else {
             showActionBar();
