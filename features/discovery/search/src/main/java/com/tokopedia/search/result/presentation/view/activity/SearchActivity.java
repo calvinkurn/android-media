@@ -281,8 +281,8 @@ public class SearchActivity extends BaseActivity
         searchNavigationToolbar.setToolbarPageName(SearchConstant.SEARCH_RESULT_PAGE);
         searchNavigationToolbar.setIcon(
                 new IconBuilder()
-                        .addIcon(IconList.ID_CART, false, () -> Unit.INSTANCE)
-                        .addIcon(IconList.ID_NAV_GLOBAL, false, () -> Unit.INSTANCE)
+                        .addIcon(IconList.ID_CART, false, false, () -> Unit.INSTANCE)
+                        .addIcon(IconList.ID_NAV_GLOBAL, false, false, () -> Unit.INSTANCE)
         );
     }
 
@@ -508,7 +508,8 @@ public class SearchActivity extends BaseActivity
                 this::onSearchNavigationSearchBarClicked,
                 null,
                 0,
-                true
+                true,
+                false
         );
     }
 

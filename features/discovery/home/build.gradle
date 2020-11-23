@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.commonWallet)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.dynamicBanner)
     implementation project(rootProject.ext.features.feed)
     implementation project(rootProject.ext.features.homeComponent)
