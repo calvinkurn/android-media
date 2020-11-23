@@ -7,6 +7,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.widget.MultiAutoCompleteTextView
+import androidx.appcompat.widget.AppCompatMultiAutoCompleteTextView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.view.span.MentionSpan
@@ -17,7 +18,7 @@ import kotlin.math.max
  */
 
 //{@user_id|display name@}
-class MentionEditText : MultiAutoCompleteTextView {
+class MentionEditText : AppCompatMultiAutoCompleteTextView {
 
     companion object {
         @ColorInt
