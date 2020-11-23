@@ -3,7 +3,6 @@ package tokopedia.applink.deeplink
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.constant.DeeplinkConstant
-import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.order.DeeplinkMapperUohOrder
 import io.mockk.every
 import org.junit.Test
@@ -956,6 +955,12 @@ class DeepLinkMapperCustomerAppTest: DeepLinkMapperTestFixture() {
     fun `check seller canceled appLink then should return tokopedia internal seller canceled in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/cancelled?tab_active=order_canceled"
         assertEqualsDeepLinkMapper(ApplinkConst.SELLER_PURCHASE_CANCELED, expectedDeepLink)
+    }
+
+    @Test
+    fun `check seller cancellation request appLink then should return tokopedia internal seller cancellation request in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://seller/cancellationrequest?tab_active=all_order&filter_order_type=10"
+        assertEqualsDeepLinkMapper(ApplinkConst.SELLER_PURCHASE_CANCELLATION_REQUEST, expectedDeepLink)
     }
 
     @Test
