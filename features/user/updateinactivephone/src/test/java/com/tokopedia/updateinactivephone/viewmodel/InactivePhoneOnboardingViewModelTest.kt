@@ -33,6 +33,7 @@ class InactivePhoneOnboardingViewModelTest {
     lateinit var viewModel: InactivePhoneOnboardingViewModel
 
     var phoneNumber = "62800000000000"
+    var email = "account@test.com"
     val mockThrowable = Throwable("Opss!")
 
     @Before
@@ -45,20 +46,6 @@ class InactivePhoneOnboardingViewModelTest {
     fun tearDown() {
         viewModel.onCleared()
         viewModel.phoneValidation.removeObserver(observerPhoneValidation)
-    }
-
-    @Test
-    fun `Validate Phone Number - Error empty phone`() {
-        viewModel.isValidPhoneNumber("")
-
-        verify {
-            observerPhoneValidation.onChanged(any())
-        }
-
-        assert(viewModel.phoneValidation.value is Fail)
-
-        val result = viewModel.phoneValidation.value as Fail
-        assertEquals(result.throwable.message, InactivePhoneConstant.ERROR_EMPTY_PHONE)
     }
 
     @Test
@@ -113,7 +100,7 @@ class InactivePhoneOnboardingViewModelTest {
             firstArg<(PhoneValidationDataModel) -> Unit>().invoke(mockResponse)
         }
 
-        viewModel.phoneValidation(phoneNumber)
+        viewModel.phoneValidation(phoneNumber, email)
 
         verify {
             observerPhoneValidation.onChanged(any())
@@ -133,7 +120,7 @@ class InactivePhoneOnboardingViewModelTest {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
 
-        viewModel.phoneValidation(phoneNumber)
+        viewModel.phoneValidation(phoneNumber, email)
 
         verify {
             observerPhoneValidation.onChanged(any())
