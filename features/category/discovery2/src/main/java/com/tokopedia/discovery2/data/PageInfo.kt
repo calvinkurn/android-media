@@ -33,5 +33,9 @@ data class PageInfo(
 
         var additionalInfo: AdditionalInfo? = null,
 
-        var redirectionUrl: String? = null
+        var redirectionUrl: String? = null,
+
+        var isAdult: Int = 0,
+
+        var origin: Int = 0
 )

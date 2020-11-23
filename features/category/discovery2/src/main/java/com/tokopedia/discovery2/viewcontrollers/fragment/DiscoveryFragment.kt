@@ -18,6 +18,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_PHONE
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -41,6 +42,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.liha
 import com.tokopedia.discovery2.viewcontrollers.customview.CustomTopChatView
 import com.tokopedia.discovery2.viewcontrollers.customview.StickyHeadRecyclerView
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
+import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
+import com.tokopedia.discovery2.viewmodel.livestate.RouteToApplink
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -258,6 +261,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         })
+
+        discoveryViewModel.getDiscoveryLiveStateData().observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is RouteToApplink -> {
+                        RouteManager.route(context, it.applink)
+                        activity?.finish()
+                }
+                is GoToAgeRestriction -> {
+                    AdultManager.showAdultPopUp(this, it.origin, it.departmentId)
+                }
+            }
+        })
     }
 
     private fun setPageErrorState(it: Fail) {
@@ -298,10 +313,6 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
     }
 
     private fun setPageInfo(data: PageInfo?) {
-        if(!data?.redirectionUrl.isNullOrEmpty()){
-            RouteManager.route(context, data?.redirectionUrl)
-            activity?.finish()
-        }
         typographyHeader.text = data?.name
         ivSearch.setOnClickListener {
             getDiscoveryAnalytics().trackSearchClick()
@@ -407,6 +418,18 @@ class DiscoveryFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnRefreshList
                 }
             }
         }
+        AdultManager.handleActivityResult(activity, requestCode, resultCode, data, object : AdultManager.Callback {
+            override fun onFail() {
+                activity?.finish()
+            }
+
+            override fun onVerificationSuccess(message: String?) {
+            }
+
+            override fun onLoginPreverified() {
+            }
+
+        })
     }
 
     private fun showVerificationBottomSheet() {

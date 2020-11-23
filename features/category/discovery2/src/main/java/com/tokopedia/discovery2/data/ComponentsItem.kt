@@ -76,7 +76,8 @@ data class ComponentsItem(
         var loadForHorizontal: Boolean = false,
         var pageLoadedCounter: Int = 1,
         var tabName: String? = "",
-        var description : String? = "") {
+        var description : String? = "",
+        var showFilter: Boolean = true) {
 
     private var componentsItem: List<ComponentsItem>? = null
 

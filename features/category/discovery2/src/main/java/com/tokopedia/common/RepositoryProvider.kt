@@ -2,7 +2,6 @@ package com.tokopedia.common
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
-import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository

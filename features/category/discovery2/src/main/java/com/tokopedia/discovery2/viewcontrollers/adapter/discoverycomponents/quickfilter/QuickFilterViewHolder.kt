@@ -12,6 +12,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -26,8 +27,6 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         quickFilterViewModel = discoveryBaseViewModel as QuickFilterViewModel
         getSubComponent().inject(quickFilterViewModel)
-        setQuickFilters()
-        refreshQuickFilter()
         quickFilterViewModel.fetchDynamicFilterModel()
     }
 
@@ -41,15 +40,24 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
             quickFilterViewModel.getSyncPageLiveData().observe(it, Observer { item ->
                 if (item) {
                     (fragment as DiscoveryFragment).reSync()
-                    refreshQuickFilter()
+                    quickFilterViewModel.fetchQuickFilters()
                 }
+            })
+            quickFilterViewModel.getQuickFilterLiveData().observe(it, Observer { filters ->
+                setQuickFilters(filters)
             })
         }
     }
 
 
-    private fun setQuickFilters() {
+    private fun setQuickFilters(filters: ArrayList<Option>) {
         quickSortFilter.let {
+            if(!quickFilterViewModel.components.showFilter) {
+                it.filterType = SortFilter.TYPE_QUICK
+                it.dismissListener = {
+                    quickFilterViewModel.clearQuickFilters()
+                }
+            }
             it.textView.text = fragment.getString(R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
             it.sortFilterItems.removeAllViews()
@@ -58,10 +66,11 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         if (quickFilterViewModel.components.data?.isEmpty() == true) return
         componentName = quickFilterViewModel.getTargetComponent()?.name
 
-        for (option in quickFilterViewModel.getQuickFiltersList()) {
+        for (option in filters) {
             sortFilterItems.add(createSortFilterItem(option))
         }
         quickSortFilter.addItem(sortFilterItems)
+        refreshQuickFilter(filters)
     }
 
     private fun createSortFilterItem(option: Option): SortFilterItem {
@@ -77,13 +86,13 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
         return item
     }
 
-    private fun refreshQuickFilter() {
-        val options: List<Option> = quickFilterViewModel.getQuickFiltersList()
+    private fun refreshQuickFilter(filters: ArrayList<Option>) {
+        val options: List<Option> = filters
         setSortFilterItemState(options)
     }
 
     private fun setSortFilterItemState(options: List<Option>) {
-        if (quickFilterViewModel.getQuickFiltersList().size != quickSortFilter.chipItems.size) return
+        if (options.size != quickSortFilter.chipItems.size) return
         var selectedCount = 0
         for (i in options.indices) {
             if (quickFilterViewModel.isQuickFilterSelected(options[i])) {

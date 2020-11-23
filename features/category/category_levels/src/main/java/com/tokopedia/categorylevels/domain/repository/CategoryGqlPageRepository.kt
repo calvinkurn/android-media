@@ -4,6 +4,7 @@ import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common_category.data.raw.GQL_NAV_CATEGORY_DETAIL_V3
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
@@ -28,6 +29,8 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         identifier = departmentId, name = departmentName, type = "", path = "",
                         searchApplink = SEARCH_APPLINK,
                         redirectionUrl = data.appRedirectionURL,
+                        isAdult = data.isAdult,
+                        origin = AdultManager.ORIGIN_CATEGORY_PAGE,
                         share = Share(
                                 enabled = true,
                                 description = "Beli $departmentName Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk Category Name Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
@@ -38,17 +41,17 @@ class CategoryGqlPageRepository(private val departmentName: String,
 
     private fun getCategoryComponents(bannedData: Data): ArrayList<ComponentsItem> {
         val components = ArrayList<ComponentsItem>()
-        if(!bannedData.appRedirectionURL.isNullOrEmpty())
+        if(!bannedData.appRedirectionURL.isNullOrEmpty()) {
+            components.add(ComponentsItem(name = ComponentNames.LoadMore.componentName, id = "1", renderByDefault = true))
             return components
+        }
         if(bannedData.isBanned == BANNED){
             components.add(ComponentsItem(name = ComponentNames.BannedView.componentName, id = "1", renderByDefault = true, title = bannedData.bannedMsgHeader, description = bannedData.bannedMessage))
             return components
         }
         components.add(ComponentsItem(name = ComponentNames.ChildCategories.componentName, id = "1", renderByDefault = true))
-        components.add(ComponentsItem(name = ComponentNames.Margin.componentName, id = "2", renderByDefault = true, data = arrayListOf(DataItem(sizeMobile = "12"))))
-        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "3", renderByDefault = true))
-        components.add(ComponentsItem(name = ComponentNames.Margin.componentName, id = "4", renderByDefault = true, data = arrayListOf(DataItem(sizeMobile = "12"))))
-        components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "5", renderByDefault = true))
+        components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "2", renderByDefault = true, showFilter = false, properties = Properties(targetId = "3")))
+        components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "3", renderByDefault = true))
         return components
     }
 

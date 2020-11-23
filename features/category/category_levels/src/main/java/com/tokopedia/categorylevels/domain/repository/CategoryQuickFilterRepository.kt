@@ -17,13 +17,13 @@ class CategoryQuickFilterRepository @Inject constructor() : BaseRepository(), Qu
     @Inject
     lateinit var getRecommendationFilterChips: GetRecommendationFilterChips
 
-    override suspend fun getQuickFilterData(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String): DynamicFilterModel? {
+    override suspend fun getQuickFilterData(componentId: String, pageEndPoint: String): ArrayList<Filter>? {
         getRecommendationFilterChips.setParams(pageName = "clp_quick_filter", xSource = "discopage")
-        return mapChipsToComponents(getRecommendationFilterChips.executeOnBackground())
+        return mapFilters(getRecommendationFilterChips.executeOnBackground())
     }
 
-    private fun mapChipsToComponents(recommendationFilters: List<RecommendationFilterChipsEntity.RecommendationFilterChip>): DynamicFilterModel? {
-        val dataItem = DataItem(name = ComponentNames.QuickFilter.componentName)
+    private fun mapFilters(recommendationFilters: List<RecommendationFilterChipsEntity.RecommendationFilterChip>): ArrayList<Filter>? {
+        val filters = arrayListOf<Filter>()
         recommendationFilters.forEach { filter ->
             val options = arrayListOf<Option>()
             filter.options.forEach { option ->
@@ -34,13 +34,12 @@ class CategoryQuickFilterRepository @Inject constructor() : BaseRepository(), Qu
                         value = option.value,
                         inputType = option.inputType))
             }
-            dataItem.filter?.add(Filter(
+            filters.add(Filter(
                     title = filter.title,
                     options = options,
                     templateName = filter.templateName
             ))
         }
-        val discoveryDataMapper = DiscoveryDataMapper()
-        return discoveryDataMapper.mapFiltersToDynamicFilterModel(dataItem)
+        return filters
     }
 }

@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import java.util.HashMap
 import javax.inject.Inject
 
 class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository(), ProductCardsRepository {
@@ -26,19 +27,21 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
 
     override suspend fun getProducts(componentId: String, queryParamterMap: MutableMap<String, Any>, pageEndPoint: String, productComponentName: String?): ArrayList<ComponentsItem> {
         val page = queryParamterMap[RPC_PAGE_NUMBER] as String
-        val parentComponent = getComponent(componentId, pageEndPoint)?.parentComponentId?.let {
-            getComponent(it, pageEndPoint)
-        }
+        val filters = getComponent(componentId, pageEndPoint)?.selectedFilters
         val recommendationData =
-                recommendationUseCase.getData(createRequestParams(page, pageEndPoint, parentComponent?.chipSelectionData?.id))
+                recommendationUseCase.getData(createRequestParams(page, pageEndPoint, filters))
         return mapRecommendationToDiscoveryResponse(recommendationData)
     }
 
-    private fun createRequestParams(page: String, componentId: String, queryParam: String?): GetRecommendationRequestParam {
+    private fun createRequestParams(page: String, componentId: String, filters: HashMap<String, String>?): GetRecommendationRequestParam {
+        var queryParam =""
+        filters?.forEach {
+            queryParam = queryParam.plus("&${it.key}=${it.value}")
+        }
         return GetRecommendationRequestParam(
                 pageNumber = page.toIntOrZero(),
                 pageName = "category_page",
-                queryParam = queryParam ?: "",
+                queryParam = queryParam,
                 categoryIds = arrayListOf(componentId),
                 xDevice = "android",
                 xSource = "category_landing_page"

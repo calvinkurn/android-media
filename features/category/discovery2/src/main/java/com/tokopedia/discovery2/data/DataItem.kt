@@ -31,10 +31,10 @@ data class DataItem(
         val backgroundImage: String? = "",
 
         @SerializedName("filters")
-        val filter: ArrayList<Filter>? = null,
+        var filter: ArrayList<Filter>? = null,
 
         @SerializedName("sort")
-        val sort: ArrayList<Sort>? = null,
+        var sort: ArrayList<Sort>? = null,
 
         @SerializedName("filter_value")
         val filterValue: String? = "",
