@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.util.LetUtil
+import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
@@ -24,6 +25,7 @@ import com.tokopedia.otp.notif.view.activity.ResultNotifActivity
 import com.tokopedia.otp.notif.view.viewbinding.ReceiverNotifViewBinding
 import com.tokopedia.otp.notif.viewmodel.NotifViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.setImage
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.security.KeyStore
@@ -178,6 +180,10 @@ class ReceiverNotifFragment : BaseOtpFragment(), IOnBackPressed {
 
     @SuppressLint("SetTextI18n")
     private fun initView() {
+        viewBound.imagePhoneBell?.setImage(R.drawable.ic_phone_bell, 0f)
+        viewBound.imagePhone?.setImage(R.drawable.ic_phone_otp, 0f)
+        viewBound.imageTime?.setImage(R.drawable.ic_time_otp, 0f)
+        viewBound.imageLocation?.setImage(R.drawable.ic_location_otp, 0f)
         viewBound.textDevice?.text = deviceName
         viewBound.textTime?.text = time
         viewBound.textLocation?.text = "$location • $ip"
