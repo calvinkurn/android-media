@@ -5,6 +5,7 @@ import android.animation.LayoutTransition.CHANGING
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.view.menu.MenuBuilder
@@ -412,7 +413,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         tabActive = if (status.isChecked) {
-            if(isFromBottomSheetFilter)
+            if (isFromBottomSheetFilter)
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
             else
                 viewModel.setStatusOrderFilter(status.id)
@@ -1472,6 +1473,19 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun showServerErrorToaster() {
         showToasterError(view, getString(R.string.som_error_message_server_fault))
+    }
+
+    private fun getVisiblePercent(v: View): Int {
+        if (v.isShown) {
+            val r = Rect()
+            val isVisible = v.getGlobalVisibleRect(r)
+            return if (isVisible) {
+                0
+            } else {
+                -1
+            }
+        }
+        return -1
     }
 
     private fun shouldReloadOrderListImmediately(): Boolean = tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER

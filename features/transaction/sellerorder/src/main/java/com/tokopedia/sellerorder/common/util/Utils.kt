@@ -89,7 +89,7 @@ object Utils {
 
     fun getColoredIndicator(context: Context, colorHex: String): Drawable? {
         val color = if (colorHex.length > 1) Color.parseColor(colorHex)
-        else MethodChecker.getColor(context, R.color.Unify_N0)
+        else MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
         val drawable = MethodChecker.getDrawable(context, R.drawable.ic_order_status_indicator)
         val filter: ColorFilter = LightingColorFilter(Color.BLACK, color)
         drawable.colorFilter = filter
