@@ -233,10 +233,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
             com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         } else {
-            GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
+            GlobalConfig.VERSION_NAME = versionName();
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = versionName();
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
+        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = versionName();// save raw version name
     }
 
     /**
