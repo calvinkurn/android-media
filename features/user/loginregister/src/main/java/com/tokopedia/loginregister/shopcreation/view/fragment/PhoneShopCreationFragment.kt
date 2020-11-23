@@ -216,7 +216,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun initObserver() {
-        shopCreationViewModel.addPhoneResponse.observe(this, Observer {
+        shopCreationViewModel.addPhoneResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessAddPhone()
@@ -226,7 +226,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.validateUserProfileResponse.observe(this, Observer {
+        shopCreationViewModel.validateUserProfileResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessValidateUserProfile(it.data)
@@ -236,7 +236,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
                 }
             }
         })
-        shopCreationViewModel.registerCheckResponse.observe(this, Observer {
+        shopCreationViewModel.registerCheckResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     onSuccessRegisterCheck(it.data)
