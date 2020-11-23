@@ -7,11 +7,9 @@ import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
 import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
-import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
-import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
