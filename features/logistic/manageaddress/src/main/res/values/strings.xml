@@ -38,4 +38,11 @@
     <string name="content_desc_button_tkpd_corner">button tokopedia corner</string>
     <string name="content_desc_tv_button_add_new_address">button tambah alamat</string>
 
+    <!--Shop Location-->
+    <string name="shop_name">Kopi Kenangan Official</string>
+    <string name="shop_address_detail">Jalan jalan cakep</string>
+    <string name="shop_address_city">Jakarta Selatan</string>
+    <string name="shop_address_zipcode">14045</string>
+    <string name="shop_label">Aktif</string>
+
 </resources>
