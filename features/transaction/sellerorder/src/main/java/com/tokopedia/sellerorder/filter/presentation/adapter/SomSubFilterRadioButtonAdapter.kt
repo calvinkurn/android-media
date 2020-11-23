@@ -56,9 +56,6 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
         listSubFilter.mapIndexed { index, filterItemUiModel ->
             if (filterItemUiModel.isSelected) {
                 filterItemUiModel.isSelected = false
-                filterItemUiModel.childStatus.map {
-                    it.isChecked = false
-                }
                 notifyItemChanged(index)
                 rvChildStatus?.hide()
             }
@@ -89,9 +86,8 @@ class SomSubFilterRadioButtonAdapter(private val somSubFilterRadioButtonFilterLi
                 rb_filter.skipAnimation()
                 toggleChildStatus(item, rb_filter.isChecked)
 
-                rb_filter.setOnCheckedChangeListener { _, isChecked ->
+                rb_filter.setOnCheckedChangeListener { _, _ ->
                     clickHandlerRadio(item, adapterPosition)
-                    toggleChildStatus(item, isChecked)
                     somSubFilterRadioButtonFilterListener.onRadioButtonItemClicked(idList, adapterPosition)
                 }
                 setOnClickListener {
