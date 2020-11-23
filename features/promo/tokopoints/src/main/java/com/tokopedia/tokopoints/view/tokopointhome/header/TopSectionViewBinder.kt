@@ -8,16 +8,16 @@ import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder
 import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 import com.tokopedia.unifycomponents.NotificationUnify
 
-class TopSectionViewBinder(val block: TokopediaRewardTopSection?, val tokoPointsHomeFragmentNew: TokoPointsHomeFragmentNew,
+class TopSectionViewBinder(val block: TokoPointsHomeFragmentNew.TopSectionResponse?, val tokoPointsHomeFragmentNew: TokoPointsHomeFragmentNew,
                            val toolbarItemList: MutableList<NotificationUnify>)
-    : SectionItemViewBinder<TokopediaRewardTopSection, TopSectionVH>(
-        TokopediaRewardTopSection::class.java) {
+    : SectionItemViewBinder<TokoPointsHomeFragmentNew.TopSectionResponse, TopSectionVH>(
+        TokoPointsHomeFragmentNew.TopSectionResponse::class.java) {
     override fun createViewHolder(parent: ViewGroup): TopSectionVH {
         return TopSectionVH(
                 LayoutInflater.from(parent.context).inflate(getSectionItemType(), parent, false), tokoPointsHomeFragmentNew, toolbarItemList)
     }
 
-    override fun bindViewHolder(model: TokopediaRewardTopSection, viewHolder: TopSectionVH) {
+    override fun bindViewHolder(model: TokoPointsHomeFragmentNew.TopSectionResponse, viewHolder: TopSectionVH) {
         viewHolder.bind(model)
     }
 

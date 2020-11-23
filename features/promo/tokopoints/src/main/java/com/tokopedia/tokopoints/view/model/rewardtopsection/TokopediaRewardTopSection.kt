@@ -32,5 +32,8 @@ data class TokopediaRewardTopSection(
         val target: Target? = null,
 
         @SerializedName("backgroundImageURL")
-        val backgroundImageURL: String? = null
+        val backgroundImageURL: String? = null,
+
+        @SerializedName("isShowSavingPage")
+        val isShowSavingPage: Boolean? = null
 )

@@ -124,13 +124,11 @@
 
     </com.tokopedia.unifycomponents.CardUnify>
 
-    <LinearLayout
-        android:id="@+id/categoryParent"
+    <include
+        layout="@layout/tp_layout_usersaving"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/card_point"
-        android:layout_marginTop="@dimen/dp_12"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:visibility="visible" />
+        android:layout_marginTop="@dimen/dp_16" />
+
 </RelativeLayout>
