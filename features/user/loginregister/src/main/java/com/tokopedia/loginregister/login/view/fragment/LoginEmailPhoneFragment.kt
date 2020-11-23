@@ -47,6 +47,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
+import com.tokopedia.devicefingerprint.crysp.CryspInstance
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
 import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
 import com.tokopedia.dialog.DialogUnify
@@ -170,6 +171,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var btnSendBackend: UnifyButton
     private lateinit var tokenStatus: Typography
 
+    private lateinit var btnInitCrysp: UnifyButton
+    private lateinit var btnSendBackendCrysp: UnifyButton
+    private lateinit var tokenStatusCrysp: Typography
+
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -277,6 +282,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         btnInitVisor = view.findViewById(R.id.btnInitVisor)
         btnSendBackend = view.findViewById(R.id.btnSubmitBackend)
         tokenStatus = view.findViewById(R.id.tokenStatus)
+        btnInitCrysp = view.findViewById(R.id.btnInitCrysp)
+        btnSendBackendCrysp = view.findViewById(R.id.btnSubmitBackendCrysp)
+        tokenStatusCrysp = view.findViewById(R.id.tokenStatusCrysp)
         return view
     }
 
@@ -310,11 +318,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
-        btnInitVisor.setOnClickListener{
+        btnInitVisor.setOnClickListener {
             setPOCFingerprint()
         }
-        btnSendBackend.setOnClickListener{
+        btnSendBackend.setOnClickListener {
             sendTokenToBackend()
+        }
+
+        btnInitCrysp.setOnClickListener {
+            setPOCFingerprintCrysp()
+        }
+        btnSendBackendCrysp.setOnClickListener {
+            sendTokenToBackendCrysp()
         }
     }
 
@@ -346,7 +361,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun showSmartLock() {
-        if(isEnableSmartLock) {
+        if (isEnableSmartLock) {
             val intent = Intent(activity, SmartLockActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ)
@@ -643,14 +658,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         shortAnimTime?.toLong()?.let {
             progress_bar.animate().setDuration(it)
-                .alpha((if (isLoading) 1 else 0).toFloat())
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        if (progress_bar != null) {
-                            progress_bar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                    .alpha((if (isLoading) 1 else 0).toFloat())
+                    .setListener(object : AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: Animator) {
+                            if (progress_bar != null) {
+                                progress_bar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                            }
                         }
-                    }
-                })
+                    })
 
             container.animate().setDuration(it)
                     .alpha((if (isLoading) 0 else 1).toFloat())
@@ -718,7 +733,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         dismissLoadingLogin()
         activityShouldEnd = true
 
-        if(userSession.userId != fingerprintPreferenceHelper.getFingerprintUserId()){
+        if (userSession.userId != fingerprintPreferenceHelper.getFingerprintUserId()) {
             presenter.removeFingerprintData()
         }
 
@@ -735,9 +750,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 finish()
             }
 
-            if(userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS){
+            if (userSession.loginMethod == SeamlessLoginAnalytics.LOGIN_METHOD_SEAMLESS) {
                 seamlessAnalytics.eventClickLoginSeamless(SeamlessLoginAnalytics.LABEL_SUCCESS)
-            }else analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
+            } else analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
 
             setTrackingUserId(userSession.userId)
             setFCM()
@@ -794,7 +809,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 loginEventAppsFlyer(userSession.userId, userSession.email)
             }
 
-            if(isFromRegister) {
+            if (isFromRegister) {
                 TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(
                         userSession.name,
                         userSession.userId.toIntOrZero().toString(),
@@ -868,7 +883,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         analytics.trackLoginPhoneNumber()
         activity?.let {
-            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
+            val intent = goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_LOGIN_PHONE)
         }
 
@@ -878,7 +893,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
         activity?.let {
-            val intent =  goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
+            val intent = goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
         }
     }
@@ -908,9 +923,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             dialog.setOnOkClickListener { v ->
                 analytics.eventClickYesSmartLoginDialogButton()
                 dialog.dismiss()
-                if(GlobalConfig.isSellerApp()) {
+                if (GlobalConfig.isSellerApp()) {
                     goToRegisterInitial(source)
-                }else {
+                } else {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -1032,7 +1047,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
     override fun onGoToSecurityQuestion(email: String): () -> Unit {
         return {
-            val intent =  goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
+            val intent = goToVerification(email = email, otpType = OTP_SECURITY_QUESTION)
             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
         }
     }
@@ -1266,17 +1281,18 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         }
     }
 
-    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+    private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
-        if(enable2FA){
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
+                ?: false
+        if (enable2FA) {
             goToAddPin2FA(enableSkip2FA)
         } else {
             presenter.getUserInfo()
         }
     }
 
-    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+    private fun goToAddPin2FA(enableSkip2FA: Boolean) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
@@ -1542,7 +1558,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun registerPushNotif() {
-        if(isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }
@@ -1587,8 +1603,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     private fun setPOCFingerprint() {
-        val visorInstance = VisorFingerprintInstance()
-        visorInstance.initToken(context!!.applicationContext, listener = object: VisorFingerprintInstance.onVisorInitListener {
+        val context = requireContext().applicationContext
+        VisorFingerprintInstance.initToken(context, listener = object : VisorFingerprintInstance.onVisorInitListener {
             override fun onSuccessInitToken(token: String) {
                 activity?.let {
                     it.runOnUiThread(Runnable {
@@ -1607,9 +1623,23 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         })
     }
 
+    private fun setPOCFingerprintCrysp() {
+        Toast.makeText(requireContext(), "All permission has to be enabled first", Toast.LENGTH_LONG).show()
+        CryspInstance.init(requireActivity())
+    }
+
     private fun sendTokenToBackend() {
-        val visorInstance = VisorFingerprintInstance()
-        presenter.submitVisorToken(visorInstance.getVisorToken())
+        presenter.submitVisorToken(VisorFingerprintInstance.getVisorToken())
+    }
+
+    private fun sendTokenToBackendCrysp() {
+        val userId = "1234"
+        CryspInstance.sendToken(requireActivity(), userId, onSuccess = {
+            presenter.submitCrysp(it)
+            tokenStatus.text = it
+        }, onError = {
+            tokenStatus.text = it
+        })
     }
 
     override fun onSuccessSubmitVisorToken(message: String) {
@@ -1706,7 +1736,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     override fun onFingerprintValid() {}
 
     override fun onFingerprintError(msg: String, errCode: Int) {
-        if(errCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT){
+        if (errCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT) {
             view?.run {
                 Toaster.showError(this, msg, Snackbar.LENGTH_LONG)
             }

@@ -350,4 +350,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             view.onErrorSubmitVisorToken(it.localizedMessage)
         })
     }
+
+    override fun submitCrysp(data: String) {
+
+    }
 }

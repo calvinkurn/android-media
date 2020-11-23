@@ -156,5 +156,7 @@ interface LoginEmailPhoneContract {
         fun getDynamicBanner(page: String)
 
         fun submitVisorToken(token: String)
+
+        fun submitCrysp(data: String)
     }
 }

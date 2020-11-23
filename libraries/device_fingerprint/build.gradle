@@ -19,7 +19,6 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.playServicesDependencies.ads
@@ -35,6 +34,7 @@ dependencies {
     }
     //datavisor
     implementation files('libs/vangogh-release.aar')
+    implementation files('libs/CryspSDK.aar')
 }
 
 project.ext {
