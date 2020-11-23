@@ -92,7 +92,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               widgetTitle
               buttonText
               widgetBackground
-            autoplayAmount
+              autoplayAmount
               autoplay
               buttonApplink
               buttonWeblink
@@ -104,6 +104,7 @@ class PlayWidgetUseCase @Inject constructor(private val repository: GraphqlRepos
               maxAutoplayCell
               maxAutoplayWifi
               template
+              isButtonVisible
             }
           }
         }
