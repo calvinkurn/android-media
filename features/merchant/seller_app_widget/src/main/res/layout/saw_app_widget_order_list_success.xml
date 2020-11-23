@@ -5,7 +5,8 @@
     android:id="@+id/containerSawOrderListSuccess"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/saw_shape_rectangle_white_radius_16dp">
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <ImageView
         android:id="@+id/imgSawOrderAppIcon"

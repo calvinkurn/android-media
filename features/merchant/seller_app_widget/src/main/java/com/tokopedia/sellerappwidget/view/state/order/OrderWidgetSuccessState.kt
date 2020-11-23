@@ -9,15 +9,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.sellerappwidget.R
-import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.OrderWidgetRemoteViewService
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created By @ilhamsuaib on 18/11/20
@@ -29,28 +26,9 @@ object OrderWidgetSuccessState {
         with(remoteViews) {
             OrderWidgetStateHelper.updateViewOnSuccess(this)
 
-            //setup widget list view
             val orderItemsByType = ArrayList(widgetItems.filter { it.statusId == orderStatusId })
-            val randomNumber = (Math.random() * 10000).toInt()
 
-            val intent = Intent(context, OrderWidgetRemoteViewService::class.java).apply {
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
-                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
-                putExtra(Const.Extra.BUNDLE, Bundle().also {
-                    it.putParcelableArrayList(Const.Extra.ORDER_ITEMS, orderItemsByType)
-                })
-            }
-            setRemoteAdapter(R.id.lvSawOrderList, intent)
-            setEmptyView(R.id.lvSawOrderList, R.id.containerSawOrderListEmpty)
-
-            //setup list view item click event
-            val itemIntent = Intent(context, OrderAppWidget::class.java).apply {
-                action = Const.Action.ITEM_CLICK
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
-            }
-            val itemPendingIntent = PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            setPendingIntentTemplate(R.id.lvSawOrderList, itemPendingIntent)
+            setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
             //setup refresh button click event
             val reloadIntent = Intent(context, OrderAppWidget::class.java).apply {
@@ -101,35 +79,47 @@ object OrderWidgetSuccessState {
                 }
             }
 
-            /*Utils.getAppIcon(context)?.let {
-                val width = context.pxToDp(40).toInt()
-                val radius = context.pxToDp(8).toInt()
-                val builder = Glide.with(context)
-                        .asBitmap()
-                        .load(it)
-                        .transform(CenterCrop(), RoundedCorners(radius))
-                val futureTarget = builder.submit(width, width)
-
-                try {
-                    setImageViewBitmap(R.id.imgSawOrderItemProduct, futureTarget.get())
-                } catch (e: Exception) {
-                    Timber.i(e)
-                }
-            }*/
+            Utils.getAppIcon(context)?.let {
+                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderAppIcon, it, widgetId)
+            }
         }
     }
 
+    private fun setupOrderList(context: Context, remoteViews: RemoteViews, items: ArrayList<OrderUiModel>, widgetId: Int, orderStatusId: Int) {
+        with(remoteViews) {
+            //setup widget list view
+            val randomNumber = (Math.random() * 10000).toInt()
+            val intent = Intent(context, OrderWidgetRemoteViewService::class.java).apply {
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId + randomNumber)
+                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
+                putExtra(Const.Extra.BUNDLE, Bundle().also {
+                    it.putParcelableArrayList(Const.Extra.ORDER_ITEMS, items)
+                })
+            }
+            setRemoteAdapter(R.id.lvSawOrderList, intent)
+            setEmptyView(R.id.lvSawOrderList, R.id.containerSawOrderListEmpty)
 
-    fun setLastUpdated(context: Context) {
-        val updatedFmt = Utils.formatDate(Date(), "hh:mm:ss")
-        val updated = context.getString(R.string.saw_updated)
+            //setup list view item click event
+            val itemIntent = Intent(context, OrderAppWidget::class.java).apply {
+                action = Const.Action.ITEM_CLICK
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+                data = Uri.parse(toUri(Intent.URI_INTENT_SCHEME))
+            }
+            val itemPendingIntent = PendingIntent.getBroadcast(context, 0, itemIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            setPendingIntentTemplate(R.id.lvSawOrderList, itemPendingIntent)
 
-        val rv = AppWidgetHelper.getRemoteView(context, R.layout.saw_app_widget_order)
-        val awm = AppWidgetManager.getInstance(context)
-        val ids = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
-        ids.forEach {
-            rv.setTextViewText(R.id.tvSawOrderUpdated, "$updated $updatedFmt")
-            awm.updateAppWidget(it, rv)
+            //setup empty state for new order / ready to ship
+            if (items.isEmpty()) {
+                if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {
+                    setTextViewText(R.id.tvSawOrderMessageOnEmpty, context.getString(R.string.saw_order_new_order_on_empty_message))
+                    setTextViewText(R.id.tvSawOrderSubMessageOnEmpty, context.getString(R.string.saw_order_new_order_on_empty_sub_message))
+                } else {
+                    setTextViewText(R.id.tvSawOrderMessageOnEmpty, context.getString(R.string.saw_order_ready_to_ship_on_empty_message))
+                    setTextViewText(R.id.tvSawOrderSubMessageOnEmpty, context.getString(R.string.saw_order_ready_to_ship_on_empty_sub_message))
+                }
+
+                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderEmptyState, Const.Images.ORDER_ON_EMPTY, widgetId)
+            }
         }
     }
 }

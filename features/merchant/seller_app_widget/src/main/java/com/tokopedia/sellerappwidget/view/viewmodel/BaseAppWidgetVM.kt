@@ -13,7 +13,7 @@ abstract class BaseAppWidgetVM<T>(
 ) : CoroutineScope {
 
     override val coroutineContext: CoroutineContext
-        get() = dispatcherProvider.io
+        get() = dispatcherProvider.main
 
     protected var view: T? = null
         private set

@@ -6,6 +6,8 @@ import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProvider
 import com.tokopedia.sellerappwidget.coroutine.AppWidgetDispatcherProviderImpl
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
 import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -30,4 +32,8 @@ class AppWidgetModule {
     @AppWidgetScope
     @Provides
     fun provideAppWidgetDispatcherProvider(): AppWidgetDispatcherProvider = AppWidgetDispatcherProviderImpl()
+
+    @AppWidgetScope
+    @Provides
+    fun provideSharedPreferences(@ApplicationContext context: Context): SellerAppWidgetPreferences = SellerAppWidgetPreferencesImpl(context)
 }

@@ -10,13 +10,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
+import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.di.DaggerAppWidgetComponent
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
-import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetSuccessState
 import com.tokopedia.sellerappwidget.view.viewmodel.OrderAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.OrderAppWidgetView
+import com.tokopedia.sellerappwidget.view.work.GetOrderWorker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
@@ -32,6 +33,7 @@ class GetOrderService : JobIntentService(), OrderAppWidgetView {
     companion object {
         private const val JOB_ID = 8043
 
+        @JvmStatic
         fun startService(context: Context, orderStatusId: Int) {
             try {
                 val work = Intent(context, GetOrderService::class.java).apply {
@@ -42,18 +44,13 @@ class GetOrderService : JobIntentService(), OrderAppWidgetView {
                 Timber.e(e)
             }
         }
-
-        fun scheduleService(context: Context) {
-            try {
-
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
     }
 
     @Inject
     lateinit var viewModel: OrderAppWidgetViewModel
+
+    @Inject
+    lateinit var sharedPref: SellerAppWidgetPreferences
 
     private var orderStatusId = OrderAppWidget.DEFAULT_ORDER_STATUS_ID
 
@@ -84,21 +81,22 @@ class GetOrderService : JobIntentService(), OrderAppWidgetView {
 
     private fun showLoadingState() {
         val remoteViews = RemoteViews(applicationContext.packageName, R.layout.saw_app_widget_order)
-        OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
         val awm = AppWidgetManager.getInstance(applicationContext)
         val ids = awm.getAppWidgetIds(ComponentName(applicationContext, OrderAppWidget::class.java))
         ids.forEach {
+            OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
             awm.updateAppWidget(it, remoteViews)
         }
-        OrderWidgetSuccessState.setLastUpdated(applicationContext)
     }
 
     override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {
         val orderList = result.data
+        sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
         OrderAppWidget.showSuccessState(applicationContext, orderList, orderStatusId)
+        GetOrderWorker.runWorkerPeriodically(applicationContext)
     }
 
     override fun onFailedGetOrderList(fail: Fail) {
-
+        GetOrderWorker.runWorkerPeriodically(applicationContext)
     }
 }

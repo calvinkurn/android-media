@@ -8,6 +8,7 @@ import com.tokopedia.sellerappwidget.view.viewmodel.view.OrderAppWidgetView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -22,11 +23,13 @@ class OrderAppWidgetViewModel @Inject constructor(
 ) : BaseAppWidgetVM<OrderAppWidgetView>(dispatcherProvider) {
 
     fun getOrderList(dateFrm: String) {
+        println("AppWidget : getOrderList")
         launchCatchError(block = {
             getOrderUseCase.get().params = GetOrderUseCase.createParams(dateFrm)
             val result = Success(withContext(dispatcherProvider.io) {
                 getOrderUseCase.get().executeOnBackground()
             })
+            delay(5000L)
             view?.onSuccessGetOrderList(result)
         }, onError = {
             view?.onFailedGetOrderList(Fail(it))

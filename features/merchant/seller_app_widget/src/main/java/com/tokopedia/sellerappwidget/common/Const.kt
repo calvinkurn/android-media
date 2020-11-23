@@ -19,13 +19,21 @@ object Const {
     }
 
     object Action {
-        const val REFRESH = "action_refresh"
-        const val ITEM_CLICK = "action_item_click"
-        const val SWITCH_ORDER = "action_switch_order"
+        const val REFRESH = "com.tokopedia.sellerappwidget.REFRESH"
+        const val ITEM_CLICK = "com.tokopedia.sellerappwidget.ITEM_CLICK"
+        const val SWITCH_ORDER = "com.tokopedia.sellerappwidget.SWITCH_ORDER"
     }
 
     object Method {
         const val SET_VISIBILITY = "setVisibility"
         const val SET_IMAGE_RESOURCE = "setImageResource"
+    }
+
+    object Images {
+        const val ORDER_ON_EMPTY = "https://ecs7.tokopedia.net/android/others/saw_order_on_empty.png"
+    }
+
+    object SharedPrefKey {
+        const val ORDER_LAST_UPDATED = "order_last_updated"
     }
 }

@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.RemoteViews
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
@@ -25,8 +27,20 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class OrderAppWidget : AppWidgetProvider() {
 
+    private var userSession: UserSessionInterface? = null
+
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
+        if (userSession == null) {
+            userSession = UserSession(context)
+        }
+
+        userSession?.let {
+            if (it.isLoggedIn) {
+                GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
+            } else {
+                OrderWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, appWidgetIds)
+            }
+        }
         super.onUpdate(context, appWidgetManager, appWidgetIds)
     }
 
@@ -67,8 +81,8 @@ class OrderAppWidget : AppWidgetProvider() {
     private fun refreshWidget(context: Context, intent: Intent) {
         val awm = AppWidgetManager.getInstance(context)
         val appWidgetIds = awm.getAppWidgetIds(ComponentName(context, OrderAppWidget::class.java))
+        val remoteViews = RemoteViews(context.packageName, R.layout.saw_app_widget_order)
         appWidgetIds.forEach {
-            val remoteViews = RemoteViews(context.packageName, R.layout.saw_app_widget_order)
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
             awm.updateAppWidget(it, remoteViews)
         }
@@ -78,12 +92,17 @@ class OrderAppWidget : AppWidgetProvider() {
     private fun onOrderItemClick(context: Context, intent: Intent) {
         val bundle = intent.getBundleExtra(Const.Extra.BUNDLE)
         val orderItem: OrderUiModel? = bundle?.getParcelable(Const.Extra.ORDER_ITEM)
-        println("AppWidget : onOrderItemClick -> ${orderItem?.product?.productName}")
+        val orderId = orderItem?.orderId ?: "0"
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalOrder.ORDER_DETAIL, orderId).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(intent)
     }
 
     companion object {
 
-        const val DEFAULT_ORDER_STATUS_ID = Const.OrderStatusId.NEW_ORDER
+        @JvmField
+        val DEFAULT_ORDER_STATUS_ID = Const.OrderStatusId.NEW_ORDER
 
         fun showSuccessState(context: Context, widgetItems: List<OrderUiModel>, orderStatusId: Int) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
@@ -91,17 +110,22 @@ class OrderAppWidget : AppWidgetProvider() {
 
             val userSession: UserSessionInterface = UserSession(context)
 
+            if (!userSession.isLoggedIn) {
+                OrderWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, widgetIds)
+                return
+            }
+
             widgetIds.forEach { widgetId ->
-                val remoteViews = RemoteViews(context.packageName, R.layout.saw_app_widget_order)
+                val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
 
                 when {
-                    !userSession.isLoggedIn -> OrderWidgetNoLoginState.setupNoLoginState()
                     widgetItems.isEmpty() -> OrderWidgetEmptyState.setupEmptyState()
                     else -> {
                         OrderWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, widgetItems, orderStatusId, widgetId)
                     }
                 }
 
+                OrderWidgetStateHelper.setLastUpdated(context, remoteViews)
                 appWidgetManager.updateAppWidget(widgetId, remoteViews)
             }
         }
