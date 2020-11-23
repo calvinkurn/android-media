@@ -6,10 +6,10 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
-import com.tokopedia.logisticdata.domain.param.EditAddressParam
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.domain.param.EditAddressParam
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers

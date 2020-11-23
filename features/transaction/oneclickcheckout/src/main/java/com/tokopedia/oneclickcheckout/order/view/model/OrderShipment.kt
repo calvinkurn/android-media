@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 
 data class OrderShipment(
         val serviceName: String? = null,

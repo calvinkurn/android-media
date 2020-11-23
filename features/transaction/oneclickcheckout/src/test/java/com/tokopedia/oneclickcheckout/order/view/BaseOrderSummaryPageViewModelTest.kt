@@ -4,8 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.AddToCartOccExternalUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.oneclickcheckout.common.dispatchers.TestDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics

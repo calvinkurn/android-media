@@ -5,8 +5,8 @@ import android.text.TextUtils;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
