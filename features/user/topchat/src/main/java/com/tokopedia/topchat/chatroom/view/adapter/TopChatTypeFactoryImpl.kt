@@ -16,6 +16,7 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingBanner
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingFraudAlert
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.*
@@ -58,6 +59,16 @@ open class TopChatTypeFactoryImpl constructor(
         imageUploadListener,
         productAttachmentListener
 ), TopChatTypeFactory {
+
+    private val ABShowBroadcastBanner = RemoteConfigInstance.getInstance()
+            .abTestPlatform.getString(
+                    BroadcastViewHolder.AB_TEST_KEY,
+                    BroadcastViewHolder.VARIANT_CONTROL
+            )
+
+    private fun shouldHideBanner(): Boolean {
+        return ABShowBroadcastBanner == BroadcastViewHolder.VARIANT_NO_BANNER
+    }
 
     // Check if chat bubble first, if not return default impl
     override fun getItemViewType(visitables: List<Visitable<*>>, position: Int, default: Int): Int {
@@ -168,7 +179,10 @@ open class TopChatTypeFactoryImpl constructor(
     ): AbstractViewHolder<*> {
         return when (type) {
             ProductCarouselListAttachmentViewHolder.LAYOUT -> ProductCarouselListAttachmentViewHolder(parent, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener)
-            BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(parent, imageAnnouncementListener, voucherListener, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener, chatLinkHandlerListener)
+            BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(
+                    parent, imageAnnouncementListener, voucherListener, productAttachmentListener,
+                    productCarouselListListener, deferredAttachment, searchListener,
+                    commonListener, adapterListener, chatLinkHandlerListener, shouldHideBanner())
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
