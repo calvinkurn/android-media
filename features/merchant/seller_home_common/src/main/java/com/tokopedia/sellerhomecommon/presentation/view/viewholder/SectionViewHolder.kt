@@ -12,6 +12,7 @@ import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_section_widget.view.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -57,7 +58,12 @@ class SectionViewHolder(
         val regex = mapOf(
                 "{DATE_YESTERDAY_PAST_7D}" to { DateTimeUtil.getFormattedDate(7, "dd MMM yy").asUpperCase() },
                 "{DATE_YESTERDAY}" to { DateTimeUtil.getFormattedDate(1, "dd MMM yy").asUpperCase() },
-                "{NOW_DD_MMMM_YYYY_hh:mm_WIB}" to { DateTimeUtil.format(System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)), "dd MMMM yyyy (HH:00 z)") }
+                "{NOW_DD_MMMM_YYYY_hh:mm_WIB}" to {
+                    DateTimeUtil.format(
+                            System.currentTimeMillis().minus(TimeUnit.HOURS.toMillis(1)),
+                            "dd MMMM yyyy (HH:00 z)",
+                            TimeZone.getTimeZone("Asia/Jakarta"))
+                }
         )
 
         val pattern = "\\{([^}]*?)\\}".toRegex()
