@@ -69,6 +69,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler

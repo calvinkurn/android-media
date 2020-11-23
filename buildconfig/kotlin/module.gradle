@@ -109,7 +109,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.testDependencies.powerMockXstream
-    testImplementation project(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
         exclude module: 'support-annotations'
