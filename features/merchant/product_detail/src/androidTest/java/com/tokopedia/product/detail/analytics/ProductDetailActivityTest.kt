@@ -7,14 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingPolicies
 import androidx.test.espresso.IdlingRegistry
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.runner.AndroidJUnit4
@@ -24,12 +24,16 @@ import com.tokopedia.product.detail.data.util.ProductDetailLoadTimeMonitoringLis
 import com.tokopedia.product.detail.presentation.InstrumentTestAddToCartBottomSheet
 import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
+import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
+import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.*
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
@@ -52,12 +56,14 @@ class ProductDetailActivityTest {
             super.beforeActivityLaunched()
             clearLogin()
         }
+
         override fun getActivityIntent(): Intent {
             return ProductDetailActivity.createIntent(targetContext, PRODUCT_ID)
         }
 
         override fun afterActivityLaunched() {
             super.afterActivityLaunched()
+            waitForData()
             productDetailLoadTimeMonitoringListener.onStartPltListener()
             activity.productDetailLoadTimeMonitoringListener = productDetailLoadTimeMonitoringListener
             markAsIdleIfPltIsSucceed()
@@ -161,10 +167,71 @@ class ProductDetailActivityTest {
     @Test
     fun validateClickTabDiscussion() {
         actionTest {
-
+            fakeLogin()
+            clickTabDiscussion()
         } assertTest {
-
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, DISCUSSION_PRODUCT_TAB_PATH)
+            finishTest()
         }
+    }
+
+    @Test
+    fun validateClickSeeAllDiscussion() {
+        actionTest {
+            fakeLogin()
+            clickSeeAllDiscussion()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, SEE_ALL_ON_LATEST_DISCUSSION_PATH)
+            finishTest()
+        }
+    }
+
+    @Test
+    fun validateClickThreadDetail() {
+        actionTest {
+            fakeLogin()
+            clickThreadDetailDiscussion()
+        } assertTest {
+            performClose(activityRule)
+            waitForTrackerSent()
+            validate(gtmLogDBSource, targetContext, THREAD_DETAIL_ON_DISCUSSION_PATH)
+            finishTest()
+        }
+    }
+
+    private fun clickSeeAllDiscussion() {
+        onView(withId(R.id.rv_pdp)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(14, scrollTo())
+        )
+        waitForTalk()
+        val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionMostHelpfulViewHolder>(13, clickChildViewWithId(R.id.productDiscussionMostHelpfulSeeAll)))
+    }
+
+    private fun clickThreadDetailDiscussion() {
+        onView(withId(R.id.rv_pdp)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(14, scrollTo())
+        )
+        waitForTalk()
+        val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
+        viewInteraction.perform(RecyclerViewActions.actionOnItemAtPosition<ProductDiscussionQuestionViewHolder>(0, clickChildViewWithId(R.id.productDetailDiscussionThread)))
+    }
+
+    private fun waitForTalk() {
+        Thread.sleep(7000L)
+    }
+
+    private fun clickTabDiscussion() {
+        onView(withId(R.id.rv_pdp)).perform(
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(5, scrollTo())
+        )
+        onView(allOf(withId(R.id.chipSocialProofItem), withParent(withId(R.id.root_socproof))))
+                .check(matches(isDisplayed()))
+                .perform(click())
     }
 
     private fun setUpTimeoutIdlingResource() {
@@ -172,6 +239,9 @@ class ProductDetailActivityTest {
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
     }
 
+    private fun waitForData() {
+        Thread.sleep(5000L)
+    }
 
     private fun finishTest() {
         gtmLogDBSource.deleteAll().subscribe()
@@ -200,7 +270,7 @@ class ProductDetailActivityTest {
     }
 
     private fun waitForTrackerSent() {
-        Thread.sleep(5000)
+        Thread.sleep(3000)
     }
 
     private fun fakeLogin() {
