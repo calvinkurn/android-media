@@ -16,9 +16,9 @@
         android:layout_alignParentTop="true"
         android:orientation="vertical">
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
+        <com.tokopedia.travel.passenger.presentation.widget.TkpdHintTextInputLayout
             android:id="@+id/til_contact_name"
-            style="@style/HintTextInputLayout"
+            style="@style/TravelHintTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_lvl5">
@@ -32,7 +32,7 @@
                 android:textColor="@color/Unify_N700_96"
                 android:textColorHint="@color/Unify_N700_32" />
 
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </com.tokopedia.travel.passenger.presentation.widget.TkpdHintTextInputLayout>
 
         <com.tokopedia.unifycomponents.TextFieldUnify
             android:id="@+id/til_contact_email"

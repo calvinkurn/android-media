@@ -4,20 +4,21 @@ import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
+
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.common.travel.widget.TkpdHintTextInputLayout;
 import com.tokopedia.flight.orderlist.R;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.view.contract.FlightResendETicketContract;
 import com.tokopedia.flight.orderlist.view.presenter.FlightResendETicketPresenter;
+import com.tokopedia.unifycomponents.TextFieldUnify;
 
 import javax.inject.Inject;
 
@@ -34,8 +35,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
 
     private AppCompatTextView txtSend;
     private AppCompatTextView txtCancel;
-    private AppCompatEditText edtEmail;
-    private TkpdHintTextInputLayout containerEmail;
+    private TextFieldUnify containerEmail;
 
     @Inject
     FlightResendETicketPresenter flightResendETicketPresenter;
@@ -75,12 +75,13 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_resend_eticket_dialog, container, false);
-        edtEmail = view.findViewById(R.id.et_resend_eticket_email);
         txtSend = view.findViewById(R.id.tv_resend_eticket_send);
         txtCancel = view.findViewById(R.id.tv_resend_eticket_cancel);
         containerEmail = view.findViewById(R.id.container_email);
 
-        edtEmail.setText(userEmail);
+        containerEmail.getTextFieldInput().setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        containerEmail.getTextFieldInput().setSingleLine(true);
+        containerEmail.getTextFieldInput().setText(userEmail);
         txtSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +138,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
 
     @Override
     public String getEmail() {
-        return edtEmail.getText().toString();
+        return containerEmail.getTextFieldInput().getText().toString();
     }
 
     @Override
@@ -173,6 +174,7 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
     }
 
     private void showError(int resId) {
-        containerEmail.setError(getString(resId));
+        containerEmail.setMessage(getString(resId));
+        containerEmail.setError(true);
     }
 }

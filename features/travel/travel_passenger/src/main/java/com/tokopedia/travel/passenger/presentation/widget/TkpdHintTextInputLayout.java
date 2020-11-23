@@ -1,4 +1,4 @@
-package com.tokopedia.common.travel.widget;
+package com.tokopedia.travel.passenger.presentation.widget;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -35,7 +35,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.widget.TextViewCompat;
 
 import com.google.android.material.internal.CheckableImageButton;
-import com.tokopedia.common.travel.R;
+import com.tokopedia.travel.passenger.R;
 
 import java.util.Locale;
 

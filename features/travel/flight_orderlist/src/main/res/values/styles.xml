@@ -4,6 +4,7 @@
         <item name="popupTheme">@style/FlightPopupTheme</item>
         <item name="toolbarTheme">@style/FlightToolbarTheme</item>
         <item name="titleTextAppearance">@style/FlightTitleTextAppearance</item>
+        <item name="itemTextAppearance">@style/FlightTitleTextAppearance</item>
     </style>
 
     <style name="FlightTitleTextAppearance" parent="TitleTextAppearance.White">
@@ -17,11 +18,13 @@
         <item name="android:actionModeBackground">@color/Unify_N0</item>
         <item name="android:textColor">@color/Unify_N700_96</item>
         <item name="android:textColorPrimary">@color/Unify_N700_96</item>
+        <item name="actionMenuTextAppearance">@style/FlightTitleTextAppearance</item>
         <item name="android:actionMenuTextColor">@color/Unify_N700_96</item>
         <item name="android:textColorSecondary">@color/Unify_N700_96</item>
     </style>
 
     <style name="FlightPopupTheme">
         <item name="android:background">@color/Unify_N0</item>
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 </resources>
