@@ -23,7 +23,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.util.DialogForceLogout;
 import com.tokopedia.core.util.ErrorNetworkReceiver;
-import com.tokopedia.seller.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

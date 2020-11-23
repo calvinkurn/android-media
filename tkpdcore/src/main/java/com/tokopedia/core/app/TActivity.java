@@ -17,8 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.app.BaseActivity;
-import com.tokopedia.seller.R;
+import com.tokopedia.core2.R;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
