@@ -80,12 +80,11 @@ class DealsCategoryFragment : DealsBaseFragment(),
         observeLayout()
     }
 
-
     private fun observeLayout() {
         dealCategoryViewModel.observableDealsCategoryLayout.observe(viewLifecycleOwner, Observer {
             isLoadingInitialData = true
-            handleShimering(it)
             handleRanderList(it)
+            handleShimering(it)
         })
 
         dealCategoryViewModel.errorMessage.observe(viewLifecycleOwner, Observer {
@@ -119,7 +118,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                     isNotEmpty = true
                 }
             }
-            if (isNotEmpty == true) {
+            if (isNotEmpty) {
                 renderList(list, nextPage)
             }
         } else {
@@ -187,12 +186,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
                 val totalSpanCount = getTotalSpanCount(parent)
 
                 if (position != RecyclerView.NO_POSITION) {
-                    when (position) {
-                        1 -> outRect.top = resources.getInteger(R.integer.twenty_four).toPx()
-                        2 -> outRect.top = resources.getInteger(R.integer.twenty_four).toPx()
-                        else -> outRect.top = 0
-                    }
-                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.twenty_four).toPx() else resources.getInteger(R.integer.four).toPx()
+                    outRect.bottom = if (isInTheFirstRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.four).toPx()
                     outRect.left = if (isFirstInRow(position + 2, totalSpanCount)) resources.getInteger(R.integer.two).toPx() else resources.getInteger(R.integer.sixteen).toPx()
                     outRect.right = if (isFirstInRow(position + 2, totalSpanCount))resources.getInteger(R.integer.sixteen).toPx() else resources.getInteger(R.integer.two).toPx()
                 }
@@ -373,7 +367,6 @@ class DealsCategoryFragment : DealsBaseFragment(),
 
         (activity as DealsBaseActivity).searchBarActionListener = this
 
-        loadInitialData()
         dealCategoryViewModel.getChipsData()
     }
 
@@ -427,7 +420,7 @@ class DealsCategoryFragment : DealsBaseFragment(),
     private fun applyFilter() {
         var categoryIDs = chips.filter { it.isSelected }.joinToString(separator = ",") { it.id }
         if (categoryIDs.isEmpty()) categoryIDs = categoryID
-        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryIDs, true)
+        dealCategoryViewModel.updateChips(getCurrentLocation(), categoryIDs, categoryIDs.isNotEmpty())
     }
 
     override fun showTitle(brand: DealsBrandsDataView) {

@@ -32,6 +32,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
         const val DEFAULT_HIDE_NO_COUNT = false
         const val DEFAULT_HIDE_SHOWCASE_GROUP = true
         private const val DEFAULT_CATEGORIES_FILTER = "seller"
+        private const val RELOAD_ETALASE = true
 
         fun createRequestParams(shopId: String, isOwner: Boolean): RequestParams {
             return RequestParams.create().apply {
@@ -69,6 +70,7 @@ class GetProductManageFilterOptionsUseCase @Inject constructor(
                         params.getBoolean(HIDE_SHOWCASE_GROUP, DEFAULT_HIDE_SHOWCASE_GROUP),
                         params.getBoolean(IS_OWNER, false))
                 getShopEtalaseByShopUseCase.run {
+                    isFromCacheFirst = !RELOAD_ETALASE
                     createObservable(params).toBlocking().first()
                 }
             }

@@ -52,6 +52,10 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.seller_migration_common.R.string.seller_migration_tab_feed_bottom_sheet_content
 import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
 import com.tokopedia.seller_migration_common.constants.SellerMigrationConstants
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
@@ -60,6 +64,7 @@ import com.tokopedia.seller_migration_common.presentation.util.setOnClickLinkSpa
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
@@ -71,6 +76,7 @@ import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstan
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER
 import com.tokopedia.shop.common.constant.ShopPagePerformanceConstant.PltConstant.SHOP_TRACE_P1_MIDDLE
 import com.tokopedia.shop.common.util.ShopUtil
+import com.tokopedia.shop.common.util.ShopUtil.isUsingNewNavigation
 import com.tokopedia.shop.common.view.bottomsheet.ShopShareBottomSheet
 import com.tokopedia.shop.common.view.bottomsheet.listener.ShopShareBottomsheetListener
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
@@ -180,10 +186,42 @@ class ShopPageFragment :
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
     private lateinit var errorButton: View
-    private val iconTabHome = R.drawable.ic_shop_tab_home_inactive
-    private val iconTabProduct = R.drawable.ic_shop_tab_products_inactive
-    private val iconTabFeed = R.drawable.ic_shop_tab_feed_inactive
-    private val iconTabReview = R.drawable.ic_shop_tab_review_inactive
+    private val iconTabHomeInactive: Int
+        get() = R.drawable.ic_shop_tab_home_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_home_old_inactive
+    private val iconTabHomeActive: Int
+        get() = R.drawable.ic_shop_tab_home_active.takeIf {
+            isUsingNewNavigation()
+        } ?: -1
+    private val iconTabProductInactive: Int
+        get() = R.drawable.ic_shop_tab_product_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_products_old_inactive
+    private val iconTabProductActive: Int
+        get() = R.drawable.ic_shop_tab_product_active.takeIf {
+            isUsingNewNavigation()
+        } ?: -1
+    private val iconTabFeedInactive: Int
+        get() = R.drawable.ic_shop_tab_feed_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_feed_old_inactive
+    private val iconTabFeedActive: Int
+        get() = R.drawable.ic_shop_tab_feed_active.takeIf {
+            isUsingNewNavigation()
+        } ?: -1
+    private val iconTabReviewInactive: Int
+        get() = R.drawable.ic_shop_tab_review_inactive.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_shop_tab_review_old_inactive
+    private val iconTabReviewActive: Int
+        get() = R.drawable.ic_shop_tab_review_active.takeIf {
+            isUsingNewNavigation()
+        } ?: -1
+    private val iconChatFloatingButton: Int
+        get() = R.drawable.ic_chat_floating_button.takeIf {
+            isUsingNewNavigation()
+        } ?: R.drawable.ic_chat_floating_button_old
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
     private var isFirstLoading: Boolean = false
@@ -444,6 +482,9 @@ class ShopPageFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
+        shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+        shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -484,9 +525,9 @@ class ShopPageFragment :
                 }
                 handlePlayBroadcastExtra(this@run)
             }
-            shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
-            shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
-            shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
+            if (GlobalConfig.isSellerApp()) {
+                shopId = shopViewModel.userShopId
+            }
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
@@ -602,6 +643,44 @@ class ShopPageFragment :
     }
 
     private fun initToolbar() {
+        if(isMyShop){
+            initOldToolbar()
+        }
+        else{
+            if (isUsingNewNavigation()) {
+                initNewToolbar()
+            } else {
+                initOldToolbar()
+            }
+        }
+    }
+
+    private fun initNewToolbar() {
+        new_navigation_toolbar?.apply {
+            viewLifecycleOwner.lifecycle.addObserver(this)
+            show()
+            val iconBuilder = IconBuilder()
+            iconBuilder.addIcon(IconList.ID_SHARE) { clickShopShare() }
+            if(isCartShownInNewNavToolbar())
+                iconBuilder.addIcon(IconList.ID_CART) {}
+            iconBuilder.addIcon(IconList.ID_NAV_GLOBAL) {}
+            setIcon(iconBuilder)
+            if(shopViewModel.isUserSessionActive)
+                setBadgeCounter(IconList.ID_CART, getCartCounter())
+            setToolbarPageName("$SHOPPAGE - $shopId")
+        }
+    }
+
+    private fun getCartCounter(): Int {
+        return cartLocalCacheHandler.getInt(TOTAL_CART_CACHE_KEY, 0)
+    }
+
+    private fun isCartShownInNewNavToolbar(): Boolean {
+        return !GlobalConfig.isSellerApp() && remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)
+    }
+
+    private fun initOldToolbar() {
+        toolbar?.show()
         activity?.run {
             (this as? AppCompatActivity)?.run {
                 setSupportActionBar(toolbar)
@@ -837,6 +916,16 @@ class ShopPageFragment :
             shopDomain = shopPageP1Data.shopDomain
             avatar = shopPageP1Data.shopAvatar
         }
+        new_navigation_toolbar?.run{
+            setupSearchbar(
+                    hints =  listOf(HintData(placeholder = getString(
+                    R.string.shop_product_search_hint_2,
+                    shopPageHeaderDataModel?.shopName.orEmpty()))),
+                    searchbarClickCallback = {
+                        redirectToShopSearchProduct()
+                    }
+            )
+        }
         setShopName()
         customDimensionShopPage.updateCustomDimensionData(
                 shopId,
@@ -854,6 +943,7 @@ class ShopPageFragment :
         setViewState(VIEW_CONTENT)
         swipeToRefresh.isRefreshing = false
         shopPageHeaderDataModel?.let {
+            shopPageFragmentHeaderViewHolder.hideFollowButton()
             shopPageFragmentHeaderViewHolder.bind(it, isMyShop, remoteConfig)
         }
     }
@@ -869,6 +959,7 @@ class ShopPageFragment :
             shopPageHeaderDataModel.shopSnippetUrl = shopPageHeaderContentData.shopInfo.shopSnippetUrl
             shopPageHeaderDataModel.shopCoreUrl = shopPageHeaderContentData.shopInfo.shopCore.url
             if (!isMyShop) {
+                button_chat.setImageResource(iconChatFloatingButton)
                 button_chat.show()
                 button_chat.setOnClickListener {
                     goToChatSeller()
@@ -879,6 +970,7 @@ class ShopPageFragment :
             updateFavouriteResult(shopPageHeaderContentData.favoriteData.alreadyFavorited == 1)
             shopPageFragmentHeaderViewHolder.bind(shopPageHeaderDataModel, isMyShop, remoteConfig)
             shopPageFragmentHeaderViewHolder.updateFavoriteData(shopPageHeaderContentData.favoriteData)
+            shopPageFragmentHeaderViewHolder.setupFollowButton(isMyShop)
             if (!shopPageHeaderDataModel.isOfficial) {
                 shopPageFragmentHeaderViewHolder.showShopReputationBadges(shopPageHeaderContentData.shopBadge)
             }
@@ -907,7 +999,7 @@ class ShopPageFragment :
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
         viewPagerAdapter.notifyDataSetChanged()
-        var selectedPosition = getSelectedTabPosition()
+        var selectedPosition = viewPager.currentItem
         if (shouldOverrideTabToHome) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
@@ -950,7 +1042,8 @@ class ShopPageFragment :
                 getHomeFragment()?.let { homeFragment ->
                     add(ShopPageTabModel(
                             getString(R.string.shop_info_title_tab_home),
-                            iconTabHome,
+                            iconTabHomeInactive,
+                            iconTabHomeActive,
                             homeFragment
                     ))
                 }
@@ -969,7 +1062,8 @@ class ShopPageFragment :
             )
             add(ShopPageTabModel(
                     getString(R.string.new_shop_info_title_tab_product),
-                    iconTabProduct,
+                    iconTabProductInactive,
+                    iconTabProductActive,
                     shopPageProductFragment
             ))
             if (isShowFeed) {
@@ -979,7 +1073,8 @@ class ShopPageFragment :
                 )
                 add(ShopPageTabModel(
                         getString(R.string.shop_info_title_tab_feed),
-                        iconTabFeed,
+                        iconTabFeedInactive,
+                        iconTabFeedActive,
                         feedFragment
                 ))
             }
@@ -989,21 +1084,10 @@ class ShopPageFragment :
             )
             add(ShopPageTabModel(
                     getString(R.string.shop_info_title_tab_review),
-                    iconTabReview,
+                    iconTabReviewInactive,
+                    iconTabReviewActive,
                     shopReviewFragment
             ))
-        }
-    }
-
-    private fun getSelectedTabPosition(): Int {
-        return if (isShowHomeTab()) {
-            if (isShowNewHomeTab()) {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            }
-        } else {
-            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
         }
     }
 
@@ -1214,6 +1298,10 @@ class ShopPageFragment :
         context?.let {
             RouteManager.route(it, linkUrl.toString())
         }
+    }
+
+    override fun openShopInfo() {
+        redirectToShopInfoPage()
     }
 
     override fun onShopCoverClicked(isOfficial: Boolean, isPowerMerchant: Boolean) {

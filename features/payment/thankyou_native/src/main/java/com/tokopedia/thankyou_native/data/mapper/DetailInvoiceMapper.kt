@@ -150,6 +150,8 @@ object PromoDataKey {
 
 object PaymentItemKey {
     const val SERVICE_FEE = "total_fee"
+    const val E_GOLD = "egold"
+    const val DONATION = "donation"
 }
 
 object PaymentDeductionKey {

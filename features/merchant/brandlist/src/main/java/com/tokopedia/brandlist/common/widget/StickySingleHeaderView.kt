@@ -68,7 +68,7 @@ class StickySingleHeaderView : FrameLayout, OnStickySingleHeaderListener {
         recyclerViewPaddingTop = mRecyclerView?.paddingTop ?: 0
         mHeaderContainer = FrameLayout(context)
         mHeaderContainer?.let {
-            it.setBackgroundColor(Color.WHITE)
+            it.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             it.clipToPadding = false
             it.clipChildren = false
             it.layoutParams = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
