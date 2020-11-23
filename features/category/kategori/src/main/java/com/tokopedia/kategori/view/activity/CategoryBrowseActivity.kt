@@ -183,8 +183,8 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         pageLoadTimePerformanceMonitoring = null
     }
 
-    override fun onCategorySelected(catId: String, depth: Int) {
-        Log.e("TESTINGBOTTOM", "catId $catId depth $depth")
+    override fun onCategorySelected(catId: String, applink: String?, depth: Int) {
+        Log.e("TESTINGBOTTOM", "catId $catId depth $depth applink $applink")
     }
 }
 

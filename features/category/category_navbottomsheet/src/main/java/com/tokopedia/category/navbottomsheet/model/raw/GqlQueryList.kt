@@ -10,9 +10,11 @@ const val GQL_CATEGORY_LIST: String = """query AllCategoryQuery(${'$'}categoryId
       c:child {
         id
         n:name
+        a:applinks
         c:child {
           id
           n:name
+          a:applinks
         }
       }
     }

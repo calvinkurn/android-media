@@ -11,7 +11,6 @@ import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.di.DaggerCategoryNavigationBottomSheetComponent
 import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.category.navbottomsheet.model.CategoryDetailData
-import com.tokopedia.category.navbottomsheet.model.ChildItem
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryLevelTwoExpandableAdapter
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryNavLevelOneAdapter
 import com.tokopedia.kotlin.extensions.view.hide
@@ -61,7 +60,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         categoryNavBottomViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    it.data.categories?.let {list->
+                    it.data.categories?.let { list ->
                         categoryList.clear()
                         categoryList.addAll(list)
                     }
@@ -70,9 +69,9 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                     }
                     if (selectedLevelOneID != "-1") {
                         if (shouldHideL1)
-                            selectedLevelOnePosition = getPositionFromCategoryId(categoryList, selectedLevelOneID)
+                            selectedLevelOnePosition = categoryNavBottomViewModel.getPositionFromCategoryId(categoryList, selectedLevelOneID)
                         else
-                            moveSelectedCatToFirst(categoryList, getPositionFromCategoryId(categoryList, selectedLevelOneID))
+                            categoryNavBottomViewModel.moveSelectedCatToFirst(categoryList, categoryNavBottomViewModel.getPositionFromCategoryId(categoryList, selectedLevelOneID))
                     }
                     categoryList[selectedLevelOnePosition]?.isSelected = true
                     master_list.adapter?.notifyDataSetChanged()
@@ -118,9 +117,18 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             val adapter = CategoryLevelTwoExpandableAdapter(categoryList[selectedPosition]?.child)
             slave_list.setAdapter(adapter)
             if (selectedLevelTwoID != "-1")
-                expandedLevelTwoPosition = getPositionFromL2CategoryId(categoryList[selectedPosition]?.child, selectedLevelTwoID).apply {
-                    if (this != -1) {
-                        slave_list.expandGroup(this)
+                expandedLevelTwoPosition = categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedPosition]?.child, selectedLevelTwoID).also {expandedLevelTwoPosition->
+                    if (expandedLevelTwoPosition != -1) {
+                        adapter.selectedL3Position = if (selectedLevelThreeID != "-1")
+                            categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedPosition]?.child?.get(expandedLevelTwoPosition)?.child, selectedLevelThreeID).let {
+                                if (it != -1)
+                                    it+1
+                                else
+                                    it
+                            }
+                        else
+                            0
+                        slave_list.expandGroup(expandedLevelTwoPosition)
                     }
                 }
         } else {
@@ -129,38 +137,8 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                 expandedLevelTwoPosition = -1
             }
             (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).levelTwoList = categoryList[selectedPosition]?.child
+            (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).selectedL3Position = -1
             (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).notifyDataSetChanged()
-        }
-    }
-
-    private fun getPositionFromCategoryId(categoryList: LinkedList<CategoriesItem?>, selectedLevelOneID: String): Int {
-        for (i in 0 until categoryList.size) {
-            categoryList[i]?.id?.let {
-                if (it == selectedLevelOneID) {
-                    return i
-                }
-            }
-        }
-        return 0
-    }
-
-    private fun getPositionFromL2CategoryId(categoryList: List<ChildItem?>?, selectedLevelOneID: String): Int {
-        categoryList?.let {
-            for (i in categoryList.indices) {
-                categoryList[i]?.id?.let {
-                    if (it == selectedLevelOneID) {
-                        return i
-                    }
-                }
-            }
-        }
-        return -1
-    }
-
-    private fun moveSelectedCatToFirst(categoryList: LinkedList<CategoriesItem?>, positionToMove: Int) {
-        if (positionToMove != 0 && positionToMove < categoryList.size) {
-            val item = categoryList.removeAt(positionToMove)
-            categoryList.addFirst(item)
         }
     }
 
@@ -189,12 +167,13 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         slave_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
             if (childPosition == 0)
                 categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id?.let {
-                    listener.onCategorySelected(it, 2)
+                    listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink, 2)
                 }
             else
-                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition)?.id?.let {
-                    listener.onCategorySelected(it, 3)
+                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.id?.let {
+                    listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
                 }
+            dismiss()
             return@setOnChildClickListener true
         }
     }
@@ -212,7 +191,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
     }
 
     interface CategorySelected {
-        fun onCategorySelected(catId: String, depth: Int)
+        fun onCategorySelected(catId: String, appLink: String?, depth: Int)
     }
 
 }

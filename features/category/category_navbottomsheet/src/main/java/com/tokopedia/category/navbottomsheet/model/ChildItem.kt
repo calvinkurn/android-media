@@ -10,6 +10,9 @@ data class ChildItem(
         @field:SerializedName("id")
         val id: String? = null,
 
+        @field:SerializedName("a")
+        val appLink:String? = null,
+
         @field:SerializedName("c")
         val child: List<ChildItem?>? = null
 )

@@ -8,11 +8,13 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.model.ChildItem
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 
-class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?)
+class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?, var selectedL3Position: Int = -1)
     : BaseExpandableListAdapter() {
 
     override fun getChild(listPosition: Int, expandedListPosition: Int): Any {
@@ -35,8 +37,16 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?)
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertViewTemp = layoutInflater.inflate(R.layout.item_cat_level_three, null)
         }
-        val expandedListTextView = convertViewTemp?.findViewById<View>(R.id.expandedListItem) as? Typography
+        val expandedListTextView = convertViewTemp?.findViewById<Typography>(R.id.expandedListItem)
         expandedListTextView?.text = expandedListText
+        val selectedIcon = convertViewTemp?.findViewById<ImageView>(R.id.selected_icon)
+        if (selectedL3Position == expandedListPosition) {
+//            TODO:: Add drawable for selector
+//            selectedIcon?.loadImageDrawable(R.drawable.ic_chevron_up)
+            selectedIcon?.show()
+        } else {
+            selectedIcon?.invisible()
+        }
         return convertViewTemp!!
     }
 
