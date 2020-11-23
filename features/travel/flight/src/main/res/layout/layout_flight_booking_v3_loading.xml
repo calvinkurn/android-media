@@ -33,6 +33,7 @@
         android:gravity="center"
         android:lineSpacingExtra="@dimen/spacing_lvl1"
         app:typographyType="body_2"
+        android:textColor="@color/Unify_N700_96"
         tools:text="Makan roti pakai meses\nPesananmu lagi diproses" />
 
 

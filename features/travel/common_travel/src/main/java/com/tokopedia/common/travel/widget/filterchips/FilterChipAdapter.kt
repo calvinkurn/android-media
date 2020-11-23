@@ -37,16 +37,20 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
             else chips.chipType = ChipsUnify.TYPE_NORMAL
 
             chips.setOnClickListener {
-                if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
-                if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected
-                else if (!chips.isSelected) chips.isSelected = true
-                if (selectedColor > 0) {
-                    if (chips.isSelected) chips.chipType = ChipsUnify.TYPE_SELECTED
-                    else chips.chipType = ChipsUnify.TYPE_NORMAL
-                }
-                listener.onChipClickListener(chips.chipText.toString(), chips.isSelected)
+                onChipsClicked(chips)
             }
         }
+    }
+
+    fun onChipsClicked(chips: ChipsUnify) {
+        if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
+        if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected
+        else if (!chips.isSelected) chips.isSelected = true
+        if (selectedColor > 0) {
+            if (chips.isSelected) chips.chipType = ChipsUnify.TYPE_SELECTED
+            else chips.chipType = ChipsUnify.TYPE_NORMAL
+        }
+        listener.onChipClickListener(chips.chipText.toString(), chips.isSelected)
     }
 
     fun resetChipSelected() {
@@ -58,7 +62,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
         val chips: ChipsUnify = view.findViewById(R.id.chips)
 
         fun selectChip() {
-            chips.chipType = ChipsUnify.TYPE_SELECTED
+            onChipsClicked(chips)
         }
     }
 

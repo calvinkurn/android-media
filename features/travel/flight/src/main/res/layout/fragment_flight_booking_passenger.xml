@@ -27,11 +27,11 @@
                 android:layout_marginBottom="@dimen/flight_dp_20"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
-                android:paddingStart="@dimen/flight_dp_14"
-                android:paddingLeft="@dimen/flight_dp_14"
+                android:paddingStart="@dimen/spacing_lvl4"
+                android:paddingLeft="@dimen/spacing_lvl4"
                 android:paddingTop="@dimen/flight_dp_10"
-                android:paddingEnd="@dimen/flight_dp_14"
-                android:paddingRight="@dimen/flight_dp_14"
+                android:paddingEnd="@dimen/spacing_lvl4"
+                android:paddingRight="@dimen/spacing_lvl4"
                 android:paddingBottom="@dimen/spacing_lvl5">
 
                 <com.tokopedia.unifyprinciples.Typography
@@ -39,22 +39,19 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl2"
                     android:layout_marginBottom="@dimen/spacing_lvl2"
-                    android:paddingStart="@dimen/spacing_lvl2"
-                    android:paddingLeft="@dimen/spacing_lvl2"
-                    android:paddingEnd="@dimen/spacing_lvl2"
-                    android:paddingRight="@dimen/spacing_lvl2"
                     android:text="@string/flight_passenger_data_diri_label"
                     app:typographyType="heading_3" />
 
                 <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
                     android:id="@+id/til_first_name"
-                    style="@style/HintTextInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/spacing_lvl2"
                     android:layout_marginBottom="@dimen/spacing_lvl4"
+                    style="@style/TravelHintTextInputLayout"
                     android:layout_weight="1"
-                    android:hint="@string/flight_booking_passenger_first_name_hint">
+                    android:hint="@string/flight_booking_passenger_first_name_hint"
+                    android:textColorHint="@color/Unify_N700_20">
 
                     <com.tokopedia.travel.passenger.presentation.widget.InstantAutoCompleteTextView
                         android:id="@+id/et_first_name"
@@ -65,9 +62,10 @@
                         android:imeOptions="actionNext"
                         android:importantForAutofill="no"
                         android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
-                        android:nextFocusForward="@+id/et_last_name"
+                        android:nextFocusForward="@+id/til_last_name"
                         android:singleLine="true"
-                        android:textColor="@color/Unify_N700_68" />
+                        android:textColor="@color/Unify_N700_96"
+                        tools:text="Jessica"/>
                 </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
 
                 <com.tokopedia.unifycomponents.TextFieldUnify
