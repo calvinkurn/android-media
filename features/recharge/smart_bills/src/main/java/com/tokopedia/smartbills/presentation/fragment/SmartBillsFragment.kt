@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -77,6 +76,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
 
+    private var source: String = ""
+
     private var autoTick = false
     private var totalPrice = 0
     private var maximumPrice = 0
@@ -98,6 +99,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             viewModel = viewModelProvider.get(SmartBillsViewModel::class.java)
             sharedPrefs = it.getSharedPreferences(SMART_BILLS_PREF, Context.MODE_PRIVATE)
         }
+
+        arguments?.let {
+            source = it.getString(EXTRA_SOURCE_TYPE, "")
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -109,7 +114,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
                     if (ongoingMonth != null) {
                         viewModel.getStatementBills(
-                                viewModel.createStatementBillsParams(ongoingMonth.month, ongoingMonth.year),
+                                viewModel.createStatementBillsParams(
+                                        ongoingMonth.month,
+                                        ongoingMonth.year,
+                                        RechargeBills.Source.getSourceByString(source).ordinal
+                                ),
                                 swipeToRefresh?.isRefreshing ?: false
                         )
                     } else {
@@ -475,6 +484,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     companion object {
+        const val EXTRA_SOURCE_TYPE = "source"
+
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
         const val SMART_BILLS_PREF = "SMART_BILLS"
@@ -485,5 +496,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
+
+        fun newInstance(sourceType: String = ""): SmartBillsFragment {
+            val fragment = SmartBillsFragment()
+            val bundle = Bundle()
+            bundle.putString(EXTRA_SOURCE_TYPE, sourceType)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }
