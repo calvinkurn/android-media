@@ -321,12 +321,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void resetAddProductCache(Context context) {
-        EtalaseUtils.clearEtalaseCache(context);
-        EtalaseUtils.clearDepartementCache(context);
-    }
-
-    @Override
     public Interceptor getChuckerInterceptor() {
         return getAppComponent().ChuckerInterceptor();
     }

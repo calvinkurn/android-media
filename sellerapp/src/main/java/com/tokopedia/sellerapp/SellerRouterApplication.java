@@ -187,12 +187,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void resetAddProductCache(Context context) {
-        EtalaseUtils.clearEtalaseCache(context);
-        EtalaseUtils.clearDepartementCache(context);
-    }
-
-    @Override
     public CacheManager getPersistentCacheManager() {
         if(cacheManager == null)
             cacheManager = new PersistentCacheManager(this);
