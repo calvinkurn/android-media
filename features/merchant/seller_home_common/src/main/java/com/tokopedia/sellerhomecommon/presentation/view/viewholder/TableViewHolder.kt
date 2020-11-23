@@ -100,7 +100,7 @@ class TableViewHolder(
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
-        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && !element.data?.dataSet.isNullOrEmpty()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         with(itemView) {
             btnTableCta.visibility = ctaVisibility
