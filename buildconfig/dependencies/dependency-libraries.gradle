@@ -89,6 +89,7 @@ ext {
             videoRecorder           : ":libraries:video_recorder",
             videoUploader           : ":libraries:videouploader",
             weaver                  : ":libraries:weaver",
+            workManagerUtil         : ":libraries:work_manager_util",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
             williamchart            : ":libraries:williamchart",
