@@ -366,11 +366,19 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     private fun showFullPageLoading() {
-        inboxPageLoading.show()
+        if(isOldView()) {
+            inboxPageLoading.show()
+            return
+        }
+        unifiedInboxPageLoading.show()
     }
 
     private fun hideFullPageLoading() {
-        inboxPageLoading.hide()
+        if(isOldView()) {
+            inboxPageLoading.hide()
+            return
+        }
+        unifiedInboxPageLoading.hide()
     }
 
     private fun getDataFromArgument() {
@@ -409,7 +417,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun selectFilter(filter: TalkInboxFilter) {
         viewModel.setFilter(filter)
-        showLoading()
+        showFullPageLoading()
         clearAllData()
     }
 

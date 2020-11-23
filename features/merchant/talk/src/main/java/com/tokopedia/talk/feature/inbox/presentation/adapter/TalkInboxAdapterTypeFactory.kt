@@ -10,6 +10,7 @@ import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOl
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxLoadingViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxOldViewHolder
+import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxUnifiedLoadingViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.viewholder.TalkInboxViewHolder
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 
@@ -27,7 +28,10 @@ class TalkInboxAdapterTypeFactory(
     }
 
     override fun type(viewModel: LoadingMoreModel): Int {
-        return TalkInboxLoadingViewHolder.LAYOUT
+        if(isOldView) {
+            return TalkInboxLoadingViewHolder.LAYOUT
+        }
+        return TalkInboxUnifiedLoadingViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -35,6 +39,7 @@ class TalkInboxAdapterTypeFactory(
             TalkInboxOldViewHolder.LAYOUT -> TalkInboxOldViewHolder(parent, isSellerView, talkInboxViewHolderListener)
             TalkInboxViewHolder.LAYOUT -> TalkInboxViewHolder(parent, isSellerView, talkInboxViewHolderListener)
             TalkInboxLoadingViewHolder.LAYOUT -> TalkInboxLoadingViewHolder(parent)
+            TalkInboxUnifiedLoadingViewHolder.LAYOUT -> TalkInboxUnifiedLoadingViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
