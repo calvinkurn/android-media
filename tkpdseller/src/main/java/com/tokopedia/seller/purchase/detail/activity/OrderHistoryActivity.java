@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.adapter.OrderHistoryAdapter;
 import com.tokopedia.seller.purchase.detail.customview.OrderHistoryStepperLayout;
