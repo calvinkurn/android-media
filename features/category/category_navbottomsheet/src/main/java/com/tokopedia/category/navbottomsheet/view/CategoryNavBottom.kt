@@ -1,6 +1,7 @@
 package com.tokopedia.category.navbottomsheet.view
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -37,6 +38,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
     init {
         isDragable = true
         isHideable = true
+        clearContentPadding = true
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,10 +55,9 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         super.onViewCreated(view, savedInstanceState)
         val component = DaggerCategoryNavigationBottomSheetComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
         component.inject(this)
-        initView()
         categoryNavBottomViewModel = ViewModelProvider(this, viewModelFactory).get(CategoryNavBottomViewModel::class.java)
+        initView()
         categoryNavBottomViewModel.getCategoriesFromServer(catId)
-
         categoryNavBottomViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
@@ -117,12 +118,12 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             val adapter = CategoryLevelTwoExpandableAdapter(categoryList[selectedPosition]?.child)
             slave_list.setAdapter(adapter)
             if (selectedLevelTwoID != "-1")
-                expandedLevelTwoPosition = categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedPosition]?.child, selectedLevelTwoID).also {expandedLevelTwoPosition->
+                expandedLevelTwoPosition = categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedPosition]?.child, selectedLevelTwoID).also { expandedLevelTwoPosition ->
                     if (expandedLevelTwoPosition != -1) {
                         adapter.selectedL3Position = if (selectedLevelThreeID != "-1")
                             categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedPosition]?.child?.get(expandedLevelTwoPosition)?.child, selectedLevelThreeID).let {
                                 if (it != -1)
-                                    it+1
+                                    it + 1
                                 else
                                     it
                             }
@@ -147,7 +148,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             setTitle(it.resources.getString(R.string.kategori_title))
             master_list.layoutManager = LinearLayoutManager(it)
         }
-//        addShimmerItems(categoryList)
+        categoryNavBottomViewModel.addShimmerItems(categoryList)
         if (shouldHideL1) {
             master_list.hide()
             separator_guideline.setGuidelinePercent(0.0f)
@@ -165,15 +166,22 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         }
 
         slave_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
-            if (childPosition == 0)
-                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id?.let {
-                    listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink, 2)
-                }
-            else
-                categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.id?.let {
-                    listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
-                }
-            dismiss()
+            (slave_list?.expandableListAdapter as CategoryLevelTwoExpandableAdapter).apply {
+                selectedL3Position = childPosition
+                notifyDataSetChanged()
+            }
+            Handler().postDelayed(Runnable {
+                if (childPosition == 0)
+                    categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id?.let {
+                        listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink, 2)
+                    }
+                else
+                    categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.id?.let {
+                        listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
+                    }
+                dismiss()
+            },200)
+
             return@setOnChildClickListener true
         }
     }

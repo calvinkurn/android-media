@@ -1,13 +1,11 @@
 package com.tokopedia.kategori.view.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.category.navbottomsheet.view.CategoryNavBottomSheet
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kategori.Constants.CATEGORY_PLT_NETWORK_METRICS
 import com.tokopedia.kategori.Constants.CATEGORY_PLT_PREPARE_METRICS
@@ -18,6 +16,7 @@ import com.tokopedia.kategori.analytics.CategoryAnalytics.Companion.categoryAnal
 import com.tokopedia.kategori.view.PerformanceMonitoringListener
 import com.tokopedia.kategori.view.fragments.CategoryLevelOneFragment
 import com.tokopedia.kategori.view.fragments.CategoryLevelTwoFragment
+import com.tokopedia.kategori.view.fragments.Listener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -25,7 +24,7 @@ import kotlinx.android.synthetic.main.activity_category_browse.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
-open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener, CategoryNavBottomSheet.CategorySelected {
+open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener, PerformanceMonitoringListener {
 
     private val trackingQueue: TrackingQueue by lazy {
         TrackingQueue(this)
@@ -57,7 +56,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
                 CATEGORY_PLT_PREPARE_METRICS,
                 CATEGORY_PLT_NETWORK_METRICS,
-                CATEGORY_PLT_RENDER_METRICS, 0, 0, 0, 0, null
+                CATEGORY_PLT_RENDER_METRICS,0,0,0,0,null
         )
         pageLoadTimePerformanceMonitoring?.startMonitoring(CATEGORY_RESULT_TRACE)
         pageLoadTimePerformanceMonitoring?.startPreparePagePerformanceMonitoring()
@@ -114,10 +113,7 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     }
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
-//        (slaveFragment as Listener).refreshView(id, categoryName, applink)
-        var cateId = "3439"
-        val sheet = CategoryNavBottomSheet(this, cateId)
-        sheet.show(supportFragmentManager, "Testing")
+        (slaveFragment as Listener).refreshView(id, categoryName, applink)
     }
 
     override fun onError(e: Throwable) {
@@ -181,10 +177,6 @@ open class CategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener
     override fun stopPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
         pageLoadTimePerformanceMonitoring = null
-    }
-
-    override fun onCategorySelected(catId: String, applink: String?, depth: Int) {
-        Log.e("TESTINGBOTTOM", "catId $catId depth $depth applink $applink")
     }
 }
 

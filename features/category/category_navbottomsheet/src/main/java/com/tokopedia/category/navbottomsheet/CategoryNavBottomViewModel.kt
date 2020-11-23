@@ -69,12 +69,20 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         return -1
     }
 
-   fun moveSelectedCatToFirst(categoryList: LinkedList<CategoriesItem?>, positionToMove: Int) {
+    fun moveSelectedCatToFirst(categoryList: LinkedList<CategoriesItem?>, positionToMove: Int) {
         if (positionToMove != 0 && positionToMove < categoryList.size) {
             val item = categoryList.removeAt(positionToMove)
             categoryList.addFirst(item)
         }
     }
 
+    fun addShimmerItems(categoryList: LinkedList<CategoriesItem?>) {
+        // adding shimmer elements in recyclerview
+        val item = CategoriesItem()
+        item.type = 0
+        for (i in 0..8) {
+            categoryList.add(item)
+        }
+    }
 
 }

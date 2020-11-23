@@ -41,8 +41,7 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?, var
         expandedListTextView?.text = expandedListText
         val selectedIcon = convertViewTemp?.findViewById<ImageView>(R.id.selected_icon)
         if (selectedL3Position == expandedListPosition) {
-//            TODO:: Add drawable for selector
-//            selectedIcon?.loadImageDrawable(R.drawable.ic_chevron_up)
+            selectedIcon?.loadImageDrawable(R.drawable.category_bottom_nav_ic_checklist)
             selectedIcon?.show()
         } else {
             selectedIcon?.invisible()
