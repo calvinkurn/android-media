@@ -4,13 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/icon_device"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl3"
         android:layout_marginStart="@dimen/spacing_lvl4"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_phone_otp"
+        app:srcCompat="@drawable/ic_phone_otp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
