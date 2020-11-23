@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.R;
@@ -69,7 +70,7 @@ public class OrderHistoryActivity extends BaseSimpleActivity implements OrderHis
     private void initInjector() {
         OrderHistoryComponent component = DaggerOrderHistoryComponent
                 .builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) this.getApplication()).getBaseAppComponent())
                 .build();
         component.inject(this);
     }
