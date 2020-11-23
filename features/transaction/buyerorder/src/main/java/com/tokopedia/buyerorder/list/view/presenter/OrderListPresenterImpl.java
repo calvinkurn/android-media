@@ -174,11 +174,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                getView().displayLoadMore(false);
+                if (isViewAttached()) {
+                    getView().displayLoadMore(false);
+                }
             }
             @Override
             public void onNext(List<? extends RecommendationWidget> recommendationWidgets) {
-                if (getView() != null) {
+                if (isViewAttached()) {
                     getView().displayLoadMore(false);
                     RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                     List<Visitable> visitables = new ArrayList<>();
@@ -270,55 +272,58 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                Timber.d("error =" + e.toString());
-                getView().removeProgressBarView();
-                getView().displayLoadMore(false);
-                getView().unregisterScrollListener();
-                getView().showErrorNetwork(e.toString());
+                if (isViewAttached()) {
+                    Timber.d("error =" + e.toString());
+                    getView().removeProgressBarView();
+                    getView().displayLoadMore(false);
+                    getView().unregisterScrollListener();
+                    getView().showErrorNetwork(e.toString());
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                getView().removeProgressBarView();
-                getView().displayLoadMore(false);
-                long elapsedDays = 0;
-                SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                long secondsInMilli = 1000;
-                long time;
-                long daysInMilli = secondsInMilli * 60 * 60 * 24;
-                try {
-                    if (getView().getEndDate() != null && getView().getStartDate() != null) {
-                        Date date2 = format.parse(getView().getEndDate());
-                        Date date1 = format.parse(getView().getStartDate());
-                        time = date2.getTime() - date1.getTime();
-                        elapsedDays = time / daysInMilli;
+                if (isViewAttached()) {
+                    getView().removeProgressBarView();
+                    getView().displayLoadMore(false);
+                    long elapsedDays = 0;
+                    SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    long secondsInMilli = 1000;
+                    long time;
+                    long daysInMilli = secondsInMilli * 60 * 60 * 24;
+                    try {
+                        if (getView().getEndDate() != null && getView().getStartDate() != null) {
+                            Date date2 = format.parse(getView().getEndDate());
+                            Date date1 = format.parse(getView().getStartDate());
+                            time = date2.getTime() - date1.getTime();
+                            elapsedDays = time / daysInMilli;
+                        }
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                if (response != null) {
-                    Data data = response.getData(Data.class);
-                    if (!data.orders().isEmpty()) {
-                        orderList.addAll(getOrderListVisitables(data));
-                        getView().addData(getOrderListVisitables(data), false, typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL);
-                        getView().setLastOrderId(data.orders().get(0).getOrderId());
-                        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-                            checkBomSurveyEligibility(context);
+                    if (response != null) {
+                        Data data = response.getData(Data.class);
+                        if (!data.orders().isEmpty()) {
+                            orderList.addAll(getOrderListVisitables(data));
+                            getView().addData(getOrderListVisitables(data), false, typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL);
+                            getView().setLastOrderId(data.orders().get(0).getOrderId());
+                            if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                                checkBomSurveyEligibility(context);
+                            }
+                        } else {
+                            getView().unregisterScrollListener();
+                            getView().renderEmptyList(typeRequest,elapsedDays);
+                        }
+
+                        OrderFilter orderFilter = response.getData(OrderFilter.class);
+                        if (orderFilter != null && orderFilter != null) {
+                            getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
                         }
                     } else {
                         getView().unregisterScrollListener();
                         getView().renderEmptyList(typeRequest,elapsedDays);
                     }
-
-                    OrderFilter orderFilter = response.getData(OrderFilter.class);
-                    if (orderFilter != null && orderFilter != null) {
-                        getView().setFilterRange(orderFilter.getGetBomOrderFilter().getDefaultDate(), orderFilter.getGetBomOrderFilter().getCustomDate());
-                    }
-                } else {
-                    getView().unregisterScrollListener();
-                    getView().renderEmptyList(typeRequest,elapsedDays);
                 }
-
             }
         });
     }
