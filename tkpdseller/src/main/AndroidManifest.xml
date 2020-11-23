@@ -10,7 +10,8 @@
         <activity
             android:name=".product.category.view.activity.CategoryPickerActivity"
             android:label="@string/title_activity_category_picker"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -25,7 +26,8 @@
         <activity
             android:name=".product.category.view.activity.CategoryDynamicPickerActivity"
             android:label="@string/title_activity_category_picker"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
