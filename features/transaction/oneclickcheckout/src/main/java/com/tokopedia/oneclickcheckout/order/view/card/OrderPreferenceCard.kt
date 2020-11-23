@@ -16,8 +16,8 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticdata.data.constant.CourierConstant
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.OrderSummaryPageFragment
@@ -279,7 +279,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
 
                 setupPaymentSelector(payment)
 
-                setupPaymentInstallment(payment.creditCard.selectedTerm)
+                setupPaymentInstallment(payment.creditCard)
                 (ivPayment?.layoutParams as? ConstraintLayout.LayoutParams)?.bottomToBottom = R.id.tv_payment_detail
             } else {
                 if (payment.errorMessage.message.isNotEmpty()) {
@@ -350,8 +350,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
-    private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
-        if (selectedTerm != null) {
+    private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
+        val selectedTerm = creditCard.selectedTerm
+        if (!creditCard.isDebit && selectedTerm != null) {
             tvInstallmentType?.visible()
             tvInstallmentDetail?.visible()
             if (selectedTerm.term > 0) {

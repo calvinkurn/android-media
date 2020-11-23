@@ -4,7 +4,7 @@ package com.tokopedia.tradein.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
 
 data class MoneyInKeroGetAddressResponse(
         @SerializedName("data")
