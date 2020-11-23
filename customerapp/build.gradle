@@ -285,6 +285,7 @@ dependencies {
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
     implementation project(rootProject.ext.features.commonWallet)
+    implementation project(rootProject.ext.features.paylater)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.commonElectronicMoney)
     implementation project(rootProject.ext.features.loyalty)
