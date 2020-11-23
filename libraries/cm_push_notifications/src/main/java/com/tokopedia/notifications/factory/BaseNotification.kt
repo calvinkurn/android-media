@@ -211,7 +211,7 @@ abstract class BaseNotification internal constructor(
         notificationChannel.description = CMConstant.NotificationChannel.Channel_DefaultSilent_DESCRIPTION
         notificationChannel.setSound(null, null)
         notificationChannel.enableLights(false)
-        notificationChannel.lightColor = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_B600)
+        notificationChannel.lightColor = Color.BLUE
         notificationChannel.enableVibration(false)
         notificationManager.createNotificationChannel(notificationChannel)
     }
