@@ -175,7 +175,17 @@
             "amount": 10000
           }
         ],
-        "sp_ids": []
+        "promo_sp_ids": [
+          {
+            "unique_id" : "123-abc",
+            "mvc_shipping_benefits" : [
+              {
+                "benefit_amount" : 1000,
+                "sp_id" : 1
+              }
+            ]
+          }
+        ]
       }
     }
   }
