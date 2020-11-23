@@ -70,6 +70,10 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         return inflater.inflate(R.layout.fragment_promo_checkout_list, container, false)
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
