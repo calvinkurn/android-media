@@ -175,7 +175,7 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun observeDataLength() {
-        productManageFilterExpandChecklistViewModel.dataSize.observe(this, Observer {
+        productManageFilterExpandChecklistViewModel.dataSize.observe(viewLifecycleOwner, Observer {
             if(it > 0) {
                 showButtons()
             } else {
@@ -185,7 +185,7 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun observeChecklistData() {
-        productManageFilterExpandChecklistViewModel.checklistData.observe(this, Observer {
+        productManageFilterExpandChecklistViewModel.checklistData.observe(viewLifecycleOwner, Observer {
             adapter?.updateChecklistData(it)
         })
     }

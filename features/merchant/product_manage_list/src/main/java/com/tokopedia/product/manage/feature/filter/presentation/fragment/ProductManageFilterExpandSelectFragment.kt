@@ -154,7 +154,7 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun observeFilterViewModel() {
-        productManageFilterExpandSelectViewModel.selectData.observe(this, Observer {
+        productManageFilterExpandSelectViewModel.selectData.observe(viewLifecycleOwner, Observer {
             adapter?.updateSelectData(it)
         })
     }

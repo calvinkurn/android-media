@@ -269,7 +269,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     }
 
     private fun observeStock() {
-        viewModel.stock.observe(this, Observer {
+        viewModel.stock.observe(viewLifecycleOwner, Observer {
             if (product != null) {
                 product = product?.copy(stock = it)
             } else {
@@ -279,7 +279,7 @@ class ProductManageQuickEditStockFragment(private var onFinishedListener: OnFini
     }
 
     private fun observeStatus() {
-        viewModel.status.observe(this, Observer {
+        viewModel.status.observe(viewLifecycleOwner, Observer {
             if (product != null) {
                 product = product?.copy(status = it)
                 quickEditStockActivateSwitch.isChecked = product?.isActive() ?: false
