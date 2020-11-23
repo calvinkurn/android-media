@@ -79,7 +79,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.concurrent.timerTask
 
 open class DynamicProductDetailViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
                                                              private val getPdpLayoutUseCase: Lazy<GetPdpLayoutUseCase>,

@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_4">
+    android:paddingTop="@dimen/spacing_lvl2">
 
     <ImageView
         android:id="@+id/ic_info_item"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="@dimen/unify_space_0"
+        android:layout_marginStart="@dimen/spacing_lvl3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/desc_info_item"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,9 +18,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/desc_info_item"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/dp_3"
+        android:lineSpacingExtra="@dimen/pdp_dp_3"
         android:textColor="@color/Neutral_N700_68"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
