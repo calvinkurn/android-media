@@ -12,8 +12,11 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
@@ -123,12 +126,31 @@ class ShipmentPresenterChangeShippingAddressTest {
     @Test
     fun changeShippingAddressSuccess_ShouldRenderSuccess() {
         // Given
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+        }
+        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+            add(
+                    ShipmentCartItemModel().apply {
+                        cartItemModels = ArrayList<CartItemModel>().apply {
+                            add(
+                                    CartItemModel().apply {
+                                        quantity = 1
+                                        productId = 1
+                                        noteToSeller = "note"
+                                        cartId = 123
+                                    }
+                            )
+                        }
+                    }
+            )
+        }
         every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
                 .success(true)
                 .build())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false, true)
+        presenter.changeShippingAddress(recipientAddressModel, false, false, true, true)
 
         // Then
         verifySequence {
@@ -150,7 +172,7 @@ class ShipmentPresenterChangeShippingAddressTest {
                 .build())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
 
         // Then
         verifySequence {
@@ -160,6 +182,7 @@ class ShipmentPresenterChangeShippingAddressTest {
             view.setHasRunningApiCall(false)
             view.activityContext
             view.showToastError(any())
+            view.renderChangeAddressFailed(any())
         }
     }
 
@@ -169,7 +192,7 @@ class ShipmentPresenterChangeShippingAddressTest {
         every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.error(Throwable())
 
         // When
-        presenter.changeShippingAddress(RecipientAddressModel(), false, false, false, true)
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
 
         // Then
         verifySequence {
@@ -179,6 +202,78 @@ class ShipmentPresenterChangeShippingAddressTest {
             view.setHasRunningApiCall(false)
             view.activityContext
             view.showToastError(any())
+            view.renderChangeAddressFailed(any())
         }
     }
+
+    @Test
+    fun `WHEN change address for trade in indopaket flow success THEN should render success`() {
+        // Given
+        val recipientAddressModel = RecipientAddressModel().apply {
+            id = "1"
+            locationDataModel = LocationDataModel().apply {
+                addrId = 1
+            }
+        }
+        presenter.shipmentCartItemModelList = ArrayList<ShipmentCartItemModel>().apply {
+            add(
+                    ShipmentCartItemModel().apply {
+                        cartItemModels = ArrayList<CartItemModel>().apply {
+                            add(
+                                    CartItemModel().apply {
+                                        quantity = 1
+                                        productId = 1
+                                        noteToSeller = "note"
+                                        cartId = 123
+                                    }
+                            )
+                        }
+                    }
+            )
+        }
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(SetShippingAddressData.Builder()
+                .success(true)
+                .build())
+
+        // When
+        presenter.changeShippingAddress(recipientAddressModel, false, true, true, true)
+
+        // Then
+        verifySequence {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.hideLoading()
+            view.setHasRunningApiCall(false)
+            view.activityContext
+            view.showToastNormal(any())
+            view.renderChangeAddressSuccess(true)
+        }
+    }
+
+    @Test
+    fun `WHEN change shipping address error with error message THEN should show error message`() {
+        // Given
+        val errorMessages = ArrayList<String>().apply {
+            add("Error Message")
+        }
+        val shippingAddressData = SetShippingAddressData.Builder()
+                .success(false)
+                .messages(errorMessages)
+                .build()
+        every { changeShippingAddressGqlUseCase.createObservable(any()) } returns Observable.just(shippingAddressData)
+
+        // When
+        presenter.changeShippingAddress(RecipientAddressModel(), false, false, true, true)
+
+        // Then
+        verifySequence {
+            view.showLoading()
+            view.setHasRunningApiCall(true)
+            view.hideLoading()
+            view.setHasRunningApiCall(false)
+            view.showToastError(any())
+            view.renderChangeAddressFailed(any())
+        }
+    }
+
 }
