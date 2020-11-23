@@ -70,7 +70,11 @@ class TableViewHolder(
                     }
                 }
             } else {
-                setOnTableEmpty(element)
+                if (element.isShowEmpty) {
+                    setOnTableEmpty(element)
+                } else {
+                    listener.removeWidget(adapterPosition, element)
+                }
             }
         }
 
