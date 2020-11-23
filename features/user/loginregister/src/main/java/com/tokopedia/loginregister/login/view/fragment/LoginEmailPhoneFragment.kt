@@ -48,7 +48,9 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.devicefingerprint.crysp.CryspInstance
+import com.tokopedia.devicefingerprint.crysp.workmanager.CryspWorker
 import com.tokopedia.devicefingerprint.datavisor.instance.VisorFingerprintInstance
+import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
 import com.tokopedia.devicefingerprint.service.SubmitDeviceInfoService
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -101,7 +103,6 @@ import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -112,6 +113,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
+import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -166,15 +168,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var bannerLogin: ImageView
     private lateinit var callTokopediaCare: Typography
     private lateinit var sharedPrefs: SharedPreferences
-
-    private lateinit var btnInitVisor: UnifyButton
-    private lateinit var btnSendBackend: UnifyButton
-    private lateinit var tokenStatus: Typography
-
-    private lateinit var btnInitCrysp: UnifyButton
-    private lateinit var btnSendBackendCrysp: UnifyButton
-    private lateinit var tokenStatusCrysp: Typography
-
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -279,12 +272,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
         callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
-        btnInitVisor = view.findViewById(R.id.btnInitVisor)
-        btnSendBackend = view.findViewById(R.id.btnSubmitBackend)
-        tokenStatus = view.findViewById(R.id.tokenStatus)
-        btnInitCrysp = view.findViewById(R.id.btnInitCrysp)
-        btnSendBackendCrysp = view.findViewById(R.id.btnSubmitBackendCrysp)
-        tokenStatusCrysp = view.findViewById(R.id.tokenStatusCrysp)
         return view
     }
 
@@ -318,19 +305,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
-        btnInitVisor.setOnClickListener {
-            setPOCFingerprint()
-        }
-        btnSendBackend.setOnClickListener {
-            sendTokenToBackend()
-        }
 
-        btnInitCrysp.setOnClickListener {
-            setPOCFingerprintCrysp()
-        }
-        btnSendBackendCrysp.setOnClickListener {
-            sendTokenToBackendCrysp()
-        }
+        CryspInstance.init(requireActivity())
+        VisorFingerprintInstance.initToken(requireActivity(), null, null)
     }
 
     private fun fetchRemoteConfig() {
@@ -757,6 +734,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             setTrackingUserId(userSession.userId)
             setFCM()
             SubmitDeviceInfoService.startService(this)
+            CryspWorker.scheduleWorker(requireContext().applicationContext)
+            DataVisorWorker.scheduleWorker(requireContext())
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -1600,62 +1579,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
                 getString(R.string.popup_error_desc),
                 getInstance().MOBILEWEB + TOKOPEDIA_CARE_PATH
         )
-    }
-
-    private fun setPOCFingerprint() {
-        val context = requireContext().applicationContext
-        VisorFingerprintInstance.initToken(context, listener = object : VisorFingerprintInstance.onVisorInitListener {
-            override fun onSuccessInitToken(token: String) {
-                activity?.let {
-                    it.runOnUiThread(Runnable {
-                        tokenStatus.text = "visor init success : " + token
-                    })
-                }
-            }
-
-            override fun onFailedInitToken(error: String) {
-                activity?.let {
-                    it.runOnUiThread(Runnable {
-                        tokenStatus.text = "visor init failed : " + error
-                    })
-                }
-            }
-        })
-    }
-
-    private fun setPOCFingerprintCrysp() {
-        Toast.makeText(requireContext(), "All permission has to be enabled first", Toast.LENGTH_LONG).show()
-        CryspInstance.init(requireActivity())
-    }
-
-    private fun sendTokenToBackend() {
-        presenter.submitVisorToken(VisorFingerprintInstance.getVisorToken())
-    }
-
-    private fun sendTokenToBackendCrysp() {
-        val userId = "1234"
-        CryspInstance.sendToken(requireActivity(), userId, onSuccess = {
-            presenter.submitCrysp(it)
-            tokenStatus.text = it
-        }, onError = {
-            tokenStatus.text = it
-        })
-    }
-
-    override fun onSuccessSubmitVisorToken(message: String) {
-        activity?.let {
-            it.runOnUiThread(Runnable {
-                tokenStatus.text = "visor update backend success : " + message
-            })
-        }
-    }
-
-    override fun onErrorSubmitVisorToken(message: String) {
-        activity?.let {
-            it.runOnUiThread(Runnable {
-                tokenStatus.text = "visor update backend error : " + message
-            })
-        }
     }
 
     companion object {

@@ -120,8 +120,6 @@ interface LoginEmailPhoneContract {
 
         fun getFingerprintConfig(): Boolean
 
-        fun onSuccessSubmitVisorToken(message:String)
-        fun onErrorSubmitVisorToken(message:String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -154,9 +152,5 @@ interface LoginEmailPhoneContract {
         fun removeFingerprintData()
 
         fun getDynamicBanner(page: String)
-
-        fun submitVisorToken(token: String)
-
-        fun submitCrysp(data: String)
     }
 }

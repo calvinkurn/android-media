@@ -25,6 +25,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.miscDependencies.workManager
     implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.libraries.encryption)
     implementation project(rootProject.ext.libraries.graphql)
