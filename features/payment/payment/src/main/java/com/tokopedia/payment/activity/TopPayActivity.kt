@@ -120,9 +120,9 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             window?.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window?.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module, null)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500, null)
             } else {
-                window?.statusBarColor = resources.getColor(R.color.tkpd_status_green_payment_module)
+                window?.statusBarColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)
             }
         }
         initInjector()
