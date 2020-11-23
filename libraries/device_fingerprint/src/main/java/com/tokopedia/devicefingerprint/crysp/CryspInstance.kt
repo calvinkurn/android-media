@@ -5,6 +5,9 @@ import android.content.Context
 import android.os.Build
 import com.crysp.sdk.CryspAPI
 import com.crysp.sdk.CryspNetworkManager
+import com.google.gson.Gson
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import java.security.MessageDigest
 
 class CryspInstance {
@@ -26,7 +29,8 @@ class CryspInstance {
                     val errorMsg = cryspResponse.getErrorMsg();
                     onError (errorMsg)
                 } else { // Received a Valid Response from Server
-                    onSuccess(cryspResponse.toString())
+                    val wrapResponse = CryspResponse(cryspResponse.xtid, cryspResponse.hmac, cryspResponse.timestamp, cryspResponse.devInitialized)
+                    onSuccess(Gson().toJson(wrapResponse))
                 }
             }
         }
@@ -38,3 +42,18 @@ class CryspInstance {
     }
 
 }
+
+data class CryspResponse (
+        @SerializedName("xtid")
+        @Expose
+        val xtid:String,
+        @SerializedName("hmac")
+        @Expose
+        val hmac:String,
+        @SerializedName("timestamp")
+        @Expose
+        val timestamp:String,
+        @SerializedName("devInitialized")
+        @Expose
+        val devInitialized:Boolean
+)
