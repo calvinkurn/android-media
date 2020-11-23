@@ -231,7 +231,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                           hex
                           picture{
                             url
-                            url200
                             url100
                           }
                         }
