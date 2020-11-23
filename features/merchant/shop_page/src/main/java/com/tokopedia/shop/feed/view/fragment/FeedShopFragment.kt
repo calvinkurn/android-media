@@ -73,7 +73,7 @@ import com.tokopedia.shop.feed.view.adapter.factory.FeedShopFactoryImpl
 import com.tokopedia.shop.feed.view.analytics.ShopAnalytics
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.unifycomponents.Toaster
@@ -857,8 +857,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun getEmptyResultViewModel(): EmptyFeedShopViewModel {
-        return EmptyFeedShopViewModel()
+    private fun getEmptyResultViewModel(): EmptyFeedShopUiModel {
+        return EmptyFeedShopUiModel()
     }
 
     private fun onSuccessReportContent() {

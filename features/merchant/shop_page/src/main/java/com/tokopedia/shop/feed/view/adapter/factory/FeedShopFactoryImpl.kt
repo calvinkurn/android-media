@@ -32,7 +32,7 @@ import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -76,7 +76,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
         return WhitelistViewHolder.LAYOUT
     }
 
-    override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
+    override fun type(emptyFeedShopUiModel: EmptyFeedShopUiModel): Int {
         return EmptyFeedShopViewHolder.LAYOUT
     }
 

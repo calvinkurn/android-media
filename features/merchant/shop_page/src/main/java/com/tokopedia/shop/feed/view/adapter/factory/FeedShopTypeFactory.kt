@@ -3,7 +3,7 @@ package com.tokopedia.shop.feed.view.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
 import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 
 /**
@@ -13,7 +13,7 @@ interface FeedShopTypeFactory {
 
     fun type(whitelistUiModel: WhitelistUiModel): Int
 
-    fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int
+    fun type(emptyFeedShopUiModel: EmptyFeedShopUiModel): Int
 
     fun type(emptyFeedShopSellerMigrationUiModel: EmptyFeedShopSellerMigrationUiModel): Int
 
