@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -28,8 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
@@ -53,6 +52,12 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.ADD_PRODUCT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.CLICK;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.CLICK_DRAFT_PRODUCT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.DELETE_DRAFT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.DRAFT_PRODUCT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.EDIT_DRAFT;
 
 /**
  * Created by Hendry on 6/19/2017.
@@ -129,7 +134,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     // go to empty state if all data has been deleted
                                     resetPageAndSearch();
                                 }
-                                tracker.sendEventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
+                                tracker.sendEventDraftProductClicked(DELETE_DRAFT);
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -218,7 +223,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 .toString();
         Intent intent = RouteManager.getIntent(getContext(), uri);
 
-        eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
+        eventDraftProductClicked(EDIT_DRAFT);
         if (intent != null) {
             startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
         }
@@ -334,7 +339,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
+        eventDraftProductClicked(ADD_PRODUCT);
         ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT);
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PRODUCT_ADD);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
@@ -342,9 +347,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public void eventDraftProductClicked(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
-                AppEventTracking.Category.DRAFT_PRODUCT,
-                AppEventTracking.Action.CLICK,
+                CLICK_DRAFT_PRODUCT,
+                DRAFT_PRODUCT,
+                CLICK,
                 label);
     }
 
