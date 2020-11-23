@@ -574,12 +574,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @NotNull
-    private Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
-                                                                  boolean isTradeIn,
-                                                                  boolean isSkipUpdateOnboardingState,
-                                                                  @Nullable String cornerId,
-                                                                  @Nullable String deviceId,
-                                                                  @Nullable String leasingId) {
+    public Map<String, Object> generateShipmentAddressFormParams(boolean isOneClickShipment,
+                                                                 boolean isTradeIn,
+                                                                 boolean isSkipUpdateOnboardingState,
+                                                                 @Nullable String cornerId,
+                                                                 @Nullable String deviceId,
+                                                                 @Nullable String leasingId) {
         Map<String, Object> params = new HashMap<>();
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_LANG, "id");
         params.put(GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);

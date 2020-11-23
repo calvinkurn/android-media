@@ -219,7 +219,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN reload checkout page success THEN should render checkout page`(){
+    fun `WHEN reload checkout page success THEN should render checkout page`() {
         // Given
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(CartShipmentAddressFormData(groupAddress = listOf(GroupAddress())))
 
@@ -238,7 +238,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `WHEN reload checkout page failed THEN should render checkout page`(){
+    fun `WHEN reload checkout page failed THEN should render checkout page`() {
         // Given
         val errorMessage = "error"
         every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.error(CartResponseErrorException(errorMessage))
@@ -253,6 +253,67 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             view.showToastError(errorMessage)
             view.stopTrace()
         }
+    }
+
+    @Test
+    fun `WHEN generate shipment address form request with corner address THEN params should contains corner id`() {
+        // Given
+        val cornerId = "123"
+
+        // When
+        val params = presenter.generateShipmentAddressFormParams(true, false, false, cornerId, null, null)
+
+        // Then
+        assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_CORNER_ID] == cornerId.toInt())
+    }
+
+    @Test
+    fun `WHEN generate shipment address form request with invalid corner address THEN params should not contains corner id`() {
+        // Given
+        val cornerId = "abc"
+
+        // When
+        val params = presenter.generateShipmentAddressFormParams(true, false, false, cornerId, null, null)
+
+        // Then
+        assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_CORNER_ID] == null)
+    }
+
+    @Test
+    fun `WHEN generate shipment address form request for leasing flow THEN params should contains leasing id`() {
+        // Given
+        val leasingId = "123"
+
+        // When
+        val params = presenter.generateShipmentAddressFormParams(true, false, false, null, null, leasingId)
+
+        // Then
+        assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_VEHICLE_LEASING_ID] == leasingId.toInt())
+    }
+
+    @Test
+    fun `WHEN generate shipment address form request for leasing flow with invalid leasing id THEN params should not contains leasing id`() {
+        // Given
+        val leasingId = "abc"
+
+        // When
+        val params = presenter.generateShipmentAddressFormParams(true, false, false, null, null, leasingId)
+
+        // Then
+        assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_VEHICLE_LEASING_ID] == null)
+    }
+
+    @Test
+    fun `WHEN generate shipment address form request for trade in flow THEN params should contains trade in data`() {
+        // Given
+        val deviceId = "123"
+
+        // When
+        val params = presenter.generateShipmentAddressFormParams(true, true, false, null, deviceId, null)
+
+        // Then
+        assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_IS_TRADEIN] == true)
+        assert(params[GetShipmentAddressFormGqlUseCase.PARAM_KEY_DEVICE_ID] == deviceId)
     }
 
 }
