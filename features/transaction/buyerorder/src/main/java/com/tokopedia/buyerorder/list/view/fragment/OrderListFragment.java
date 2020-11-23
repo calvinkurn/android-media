@@ -993,7 +993,6 @@ public class OrderListFragment extends BaseDaggerFragment implements
             btnOk.setText(getString(R.string.popup_selesai_ok_btn));
             btnOk.setOnClickListener(view1 -> {
                 dialogUnify.dismiss();
-                // presenter.finishOrder(getContext(), selectedOrderId, actionButtonUri);
                 presenter.finishOrderGql(selectedOrderId, presenter.getStatus().status());
             });
 
