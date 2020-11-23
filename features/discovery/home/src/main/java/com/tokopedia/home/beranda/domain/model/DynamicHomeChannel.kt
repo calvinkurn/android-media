@@ -333,6 +333,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_CATEGORY_WIDGET: String = "category_widget"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
+            const val LAYOUT_BEST_SELLING: String = "best_selling"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
         }

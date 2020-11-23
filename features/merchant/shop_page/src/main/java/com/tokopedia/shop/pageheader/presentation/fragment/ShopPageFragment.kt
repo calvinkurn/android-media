@@ -440,6 +440,9 @@ class ShopPageFragment :
         super.onViewCreated(view, savedInstanceState)
         stopMonitoringPltPreparePage()
         stopMonitoringPltCustomMetric(SHOP_TRACE_ACTIVITY_PREPARE)
+        shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
+        shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
+        shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
         context?.let {
             remoteConfig = FirebaseRemoteConfigImpl(it)
             cartLocalCacheHandler = LocalCacheHandler(it, CART_LOCAL_CACHE_NAME)
@@ -479,9 +482,9 @@ class ShopPageFragment :
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
                 }
             }
-            shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
-            shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
-            shopPageFollowingStatusSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopPageFollowingStatusSharedViewModel::class.java)
+            if (GlobalConfig.isSellerApp()) {
+                shopId = shopViewModel.userShopId
+            }
             getSavedInstanceStateData(savedInstanceState)
             observeLiveData(this)
             observeShopProductFilterParameterSharedViewModel()
@@ -902,7 +905,7 @@ class ShopPageFragment :
         listShopPageTabModel = createListShopPageTabModel()
         viewPagerAdapter.setTabData(listShopPageTabModel)
         viewPagerAdapter.notifyDataSetChanged()
-        var selectedPosition = getSelectedTabPosition()
+        var selectedPosition = viewPager.currentItem
         if (shouldOverrideTabToHome) {
             selectedPosition = if (viewPagerAdapter.isFragmentObjectExists(HomeProductFragment::class.java)) {
                 viewPagerAdapter.getFragmentPosition(HomeProductFragment::class.java)
@@ -987,18 +990,6 @@ class ShopPageFragment :
                     iconTabReview,
                     shopReviewFragment
             ))
-        }
-    }
-
-    private fun getSelectedTabPosition(): Int {
-        return if (isShowHomeTab()) {
-            if (isShowNewHomeTab()) {
-                viewPagerAdapter.getFragmentPosition(ShopPageHomeFragment::class.java)
-            } else {
-                viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
-            }
-        } else {
-            viewPagerAdapter.getFragmentPosition(ShopPageProductListFragment::class.java)
         }
     }
 
