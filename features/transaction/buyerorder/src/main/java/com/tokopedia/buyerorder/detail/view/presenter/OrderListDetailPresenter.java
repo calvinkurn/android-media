@@ -87,7 +87,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String ACTION = "action";
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
-    private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
     private static final String CATEGORY_PRODUCT = "Kategori Produk";
     private static final int DEFAULT_TAB_ID = 1;
@@ -193,9 +192,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             public void onNext(GraphqlResponse response) {
                 if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
-                    if (data != null) {
-                        setDetailsData(data.orderDetails());
+                    if (data != null && isViewAttached()) {
                         orderDetails = data.orderDetails();
+                        details = data.orderDetails();
+                        getView().setDetailsData(data.orderDetails());
+                        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)
+                           || orderCategory.equalsIgnoreCase(OrderListContants.BELANJA)) {
+                            requestCancelInfo = details.getRequestCancelInfo();
+                        }
                     }
 
                     if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
@@ -349,64 +353,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 });
     }
 
-    public static final String PRODUCT_ID = "product_id";
-    public static final String QUANTITY = "quantity";
-    public static final String NOTES = "notes";
-    public static final String SHOP_ID = "shop_id";
-    public static final String PRODUCT_PRICE = "product_price";
-    public static final String CATEGORY = "category";
-    public static final String PRODUCT_NAME = "product_name";
-
-
-    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
-        JsonArray jsonArray = new JsonArray();
-        for (Items item : items) {
-            JsonObject passenger = new JsonObject();
-
-            int productId = 0;
-            int quantity = 0;
-            int shopId = 0;
-            String notes = "";
-            String price = "";
-            String category = "";
-            String productName = "";
-            try {
-                productId = item.getId();
-                quantity = item.getQuantity();
-                shopId = orderDetails.getShopInfo().getShopId();
-                notes = item.getDescription();
-                price = item.getPrice();
-                category = item.getCategory();
-                productName = item.getTitle();
-            } catch (Exception e) {
-                Log.e("error parse", e.getMessage());
-            }
-            passenger.addProperty(PRODUCT_ID, productId);
-            passenger.addProperty(QUANTITY, quantity);
-            passenger.addProperty(NOTES, notes);
-            passenger.addProperty(SHOP_ID, shopId);
-            passenger.addProperty(PRODUCT_PRICE, price);
-            passenger.addProperty(CATEGORY, category);
-            passenger.addProperty(PRODUCT_NAME, productName);
-            jsonArray.add(passenger);
-        }
-        return jsonArray;
-    }
-
     @Override
     public List<ActionButton> getActionList() {
         return actionButtonList;
     }
 
     @Override
-    public void onBuyAgainAllItems(String eventActionLabel, String statusCode) {
-        onBuyAgainItems(orderDetails.getItems(), eventActionLabel, statusCode);
-    }
-
-    @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
-        variables.put(PARAM, generateInputQueryBuyAgain(items));
+
+        JsonArray params = getView().generateInputQueryBuyAgain(items);
+        variables.put(PARAM, params);
         addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
         addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
             @Override
@@ -460,135 +417,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
         intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
-
-    private void setDetailsData(OrderDetails details) {
-        if (getView() == null || getView().getActivity() == null)
-            return;
-        this.details = details;
-        getView().hideProgressBar();
-        getView().setStatus(details.status());
-        getView().clearDynamicViews();
-        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
-            getView().setConditionalInfo(details.conditionalInfo());
-        }
-        for (Title title : details.title()) {
-            getView().setTitle(title);
-        }
-        getView().setInvoice(details.invoice());
-        getView().setOrderToken(details.orderToken());
-        for (int i = 0; i < details.detail().size(); i++) {
-            if ((orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
-                if (i == 2) {
-                    if (details.getDriverDetails() != null) {
-                        getView().showDriverInfo(details.getDriverDetails());
-                    }
-                }
-                if (i == details.detail().size() - 1) {
-                    if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
-                        getView().showDropshipperInfo(details.getDropShipper());
-                    }
-                }
-            }
-            getView().setDetail(details.detail().get(i));
-        }
-
-        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-            if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
-                getView().setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
-            }
-        }
-        getView().setBoughtDate(details.getBoughtDate());
-        if (details.getShopInfo() != null) {
-            getView().setShopInfo(details.getShopInfo());
-        }
-        if (details.getItems() != null && details.getItems().size() > 0) {
-            Flags flags = details.getFlags();
-            if (flags != null)
-                getView().setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
-            else
-                getView().setItems(details.getItems(), false, details);
-        }
-        if (details.additionalInfo().size() > 0) {
-            getView().setAdditionInfoVisibility(View.VISIBLE);
-        }
-        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
-
-            getView().setAdditionalInfo(additionalInfo);
-        }
-
-        if (details.getAdditionalTickerInfos() != null
-                && details.getAdditionalTickerInfos().size() > 0) {
-            String url = null;
-            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
-                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
-                    String formattedTitle = formatTitleHtml(
-                            tickerInfo.getNotes(),
-                            tickerInfo.getUrlDetail(),
-                            tickerInfo.getUrlText()
-                    );
-                    tickerInfo.setNotes(formattedTitle);
-                    url = tickerInfo.getUrlDetail();
-                }
-            }
-            getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
-        }
-
-        if (details.getTickerInfo() != null) {
-            getView().setTickerInfo(details.getTickerInfo());
-        }
-
-        for (PayMethod payMethod : details.getPayMethods()) {
-            if (!TextUtils.isEmpty(payMethod.getValue()))
-                getView().setPayMethodInfo(payMethod);
-        }
-
-        for (Pricing pricing : details.pricing()) {
-            getView().setPricing(pricing);
-        }
-
-        if (orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
-            if (details.discounts() != null && details.discounts().size() > 0) {
-                getView().setDiscountVisibility(View.VISIBLE);
-                for (Discount discount : details.discounts()) {
-                    getView().setDiscount(discount);
-                }
-            } else {
-                getView().setDiscountVisibility(View.GONE);
-            }
-        }
-
-        getView().setPaymentData(details.paymentData());
-        getView().setContactUs(details.contactUs(), details.getHelpLink());
-
-        if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
-            getView().setActionButtonsVisibility(View.GONE, View.GONE);
-        } else if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
-            if (details.actionButtons().size() == 2) {
-                ActionButton leftActionButton = details.actionButtons().get(0);
-                ActionButton rightActionButton = details.actionButtons().get(1);
-                getView().setTopActionButton(leftActionButton);
-                getView().setBottomActionButton(rightActionButton);
-            } else if (details.actionButtons().size() == 1) {
-                ActionButton actionButton = details.actionButtons().get(0);
-                getView().setButtonMargin();
-                if (actionButton.getLabel().equals(INVOICE)) {
-                    getView().setBottomActionButton(actionButton);
-                    getView().setActionButtonsVisibility(View.GONE, View.VISIBLE);
-                } else {
-                    getView().setTopActionButton(actionButton);
-                    getView().setActionButtonsVisibility(View.VISIBLE, View.GONE);
-
-                }
-            } else {
-                getView().setActionButtonsVisibility(View.GONE, View.GONE);
-            }
-        } else {
-            getView().setActionButtons(details.actionButtons());
-        }
-        getView().setMainViewVisible(View.VISIBLE);
-        this.requestCancelInfo = details.getRequestCancelInfo();
-    }
-
 
     public void updateOrderCancelReason(String cancelReason, String orderId,
                                         int cancelOrReplacement, String url) {
@@ -796,10 +624,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
         Matcher matcher = pattern.matcher(invoiceUrl);
         return matcher.find();
-    }
-
-    private String formatTitleHtml(String desc, String urlText, String url) {
-        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
     }
 
     public String getProductCategory() {

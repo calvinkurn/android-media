@@ -23,6 +23,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +43,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -62,6 +65,7 @@ import com.tokopedia.buyerorder.detail.data.Detail;
 import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
+import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
@@ -83,6 +87,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.dialog.DialogUnify;
@@ -110,6 +115,7 @@ import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTA
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_BODY_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_POPUP_TITLE_INSTANT_CANCEL;
+import static com.tokopedia.buyerorder.common.util.Utils.formatTitleHtml;
 
 public class MarketPlaceDetailFragment extends BaseDaggerFragment implements RefreshHandler.OnRefreshHandlerListener, OrderListDetailContract.View {
 
@@ -294,6 +300,100 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             refreshHandler.startRefresh();
             refreshHandler.setPullEnabled(true);
         }
+    }
+
+    @Override
+    public void setDetailsData(OrderDetails details) {
+        hideProgressBar();
+        setStatus(details.status());
+        clearDynamicViews();
+        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
+            setConditionalInfo(details.conditionalInfo());
+        }
+        for (Title title : details.title()) {
+            setTitle(title);
+        }
+        setInvoice(details.invoice());
+        setOrderToken(details.orderToken());
+        for (int i = 0; i < details.detail().size(); i++) {
+            if (i == 2) {
+                if (details.getDriverDetails() != null) {
+                    showDriverInfo(details.getDriverDetails());
+                }
+            }
+            if (i == details.detail().size() - 1) {
+                if (!TextUtils.isEmpty(details.getDropShipper().getDropShipperName()) && !TextUtils.isEmpty(details.getDropShipper().getDropShipperPhone())) {
+                    showDropshipperInfo(details.getDropShipper());
+                }
+            }
+            setDetail(details.detail().get(i));
+        }
+
+        if (details.getRequestCancelInfo() != null && details.getRequestCancelInfo().getIsRequestedCancel() != null) {
+            setIsRequestedCancel(details.getRequestCancelInfo().getIsRequestedCancel());
+        }
+        setBoughtDate(details.getBoughtDate());
+        if (details.getShopInfo() != null) {
+            setShopInfo(details.getShopInfo());
+        }
+        if (details.getItems() != null && details.getItems().size() > 0) {
+            Flags flags = details.getFlags();
+            if (flags != null)
+                setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
+            else
+                setItems(details.getItems(), false, details);
+        }
+        if (details.additionalInfo().size() > 0) {
+            setAdditionInfoVisibility(View.VISIBLE);
+        }
+        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+            setAdditionalInfo(additionalInfo);
+        }
+
+        if (details.getAdditionalTickerInfos() != null
+                && details.getAdditionalTickerInfos().size() > 0) {
+            String url = null;
+            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                    String formattedTitle = formatTitleHtml(
+                            tickerInfo.getNotes(),
+                            tickerInfo.getUrlDetail(),
+                            tickerInfo.getUrlText()
+                    );
+                    tickerInfo.setNotes(formattedTitle);
+                    url = tickerInfo.getUrlDetail();
+                }
+            }
+            setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
+        if (details.getTickerInfo() != null) {
+            setTickerInfo(details.getTickerInfo());
+        }
+
+        for (PayMethod payMethod : details.getPayMethods()) {
+            if (!TextUtils.isEmpty(payMethod.getValue()))
+                setPayMethodInfo(payMethod);
+        }
+
+        for (Pricing pricing : details.pricing()) {
+            setPricing(pricing);
+        }
+
+        if (details.discounts() != null && details.discounts().size() > 0) {
+            setDiscountVisibility(View.VISIBLE);
+            for (Discount discount : details.discounts()) {
+                setDiscount(discount);
+            }
+        } else {
+            setDiscountVisibility(View.GONE);
+        }
+
+        setPaymentData(details.paymentData());
+        setContactUs(details.contactUs(), details.getHelpLink());
+
+        setActionButtons(details.actionButtons());
+        setMainViewVisible(View.VISIBLE);
     }
 
     @Override
@@ -1206,5 +1306,41 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 recommendationList.setAdapter(new RecommendationMPAdapter(rechargeWidgetResponse.getRechargeFavoriteRecommendationList().getRecommendations()));
             }
         }
+    }
+
+    @Override
+    public JsonArray generateInputQueryBuyAgain(List<Items> items) {
+        JsonArray jsonArray = new JsonArray();
+        for (Items item : items) {
+            JsonObject passenger = new JsonObject();
+
+            int productId = 0;
+            int quantity = 0;
+            int shopId = 0;
+            String notes = "";
+            String price = "";
+            String category = "";
+            String productName = "";
+            try {
+                productId = item.getId();
+                quantity = item.getQuantity();
+                shopId = shopInfo.getShopId();
+                notes = item.getDescription();
+                price = item.getPrice();
+                category = item.getCategory();
+                productName = item.getTitle();
+            } catch (Exception e) {
+                Log.e("error parse", e.getMessage());
+            }
+            passenger.addProperty(BuyerConsts.PRODUCT_ID, productId);
+            passenger.addProperty(BuyerConsts.QUANTITY, quantity);
+            passenger.addProperty(BuyerConsts.NOTES, notes);
+            passenger.addProperty(BuyerConsts.SHOP_ID, shopId);
+            passenger.addProperty(BuyerConsts.PRODUCT_PRICE, price);
+            passenger.addProperty(BuyerConsts.CATEGORY, category);
+            passenger.addProperty(BuyerConsts.PRODUCT_NAME, productName);
+            jsonArray.add(passenger);
+        }
+        return jsonArray;
     }
 }

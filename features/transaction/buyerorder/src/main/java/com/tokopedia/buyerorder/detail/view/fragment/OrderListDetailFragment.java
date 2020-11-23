@@ -1,6 +1,5 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
@@ -26,10 +25,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
+import com.tokopedia.buyerorder.common.util.BuyerConsts;
 import com.tokopedia.buyerorder.common.util.Utils;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
 import com.tokopedia.buyerorder.detail.data.AdditionalInfo;
@@ -39,6 +40,7 @@ import com.tokopedia.buyerorder.detail.data.Detail;
 import com.tokopedia.buyerorder.detail.data.Discount;
 import com.tokopedia.buyerorder.detail.data.DriverDetails;
 import com.tokopedia.buyerorder.detail.data.DropShipper;
+import com.tokopedia.buyerorder.detail.data.Flags;
 import com.tokopedia.buyerorder.detail.data.Invoice;
 import com.tokopedia.buyerorder.detail.data.Items;
 import com.tokopedia.buyerorder.detail.data.OrderDetails;
@@ -56,6 +58,7 @@ import com.tokopedia.buyerorder.detail.view.customview.CopyableDetailItemView;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailContract;
 import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
+import com.tokopedia.buyerorder.list.data.OrderCategory;
 import com.tokopedia.buyerorder.list.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.utils.view.DoubleTextView;
@@ -64,6 +67,9 @@ import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.INVOICE;
+import static com.tokopedia.buyerorder.common.util.Utils.formatTitleHtml;
 
 /**
  * Created by baghira on 09/05/18.
@@ -158,6 +164,101 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         presenter.setOrderDetailsContent((String) getArguments().get(KEY_ORDER_ID), (String) getArguments().get(KEY_ORDER_CATEGORY), getArguments().getString(KEY_FROM_PAYMENT), null, "", "");
+    }
+
+    @Override
+    public void setDetailsData(OrderDetails details) {
+        hideProgressBar();
+        setStatus(details.status());
+        clearDynamicViews();
+        if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
+            setConditionalInfo(details.conditionalInfo());
+        }
+        for (Title title : details.title()) {
+            setTitle(title);
+        }
+        setInvoice(details.invoice());
+        setOrderToken(details.orderToken());
+        for (int i = 0; i < details.detail().size(); i++) {
+            setDetail(details.detail().get(i));
+        }
+
+        setBoughtDate(details.getBoughtDate());
+        if (details.getShopInfo() != null) {
+            setShopInfo(details.getShopInfo());
+        }
+        if (details.getItems() != null && details.getItems().size() > 0) {
+            Flags flags = details.getFlags();
+            if (flags != null)
+                setItems(details.getItems(), flags.isIsOrderTradeIn(), details);
+            else
+                setItems(details.getItems(), false, details);
+        }
+        if (details.additionalInfo().size() > 0) {
+            setAdditionInfoVisibility(View.VISIBLE);
+        }
+        for (AdditionalInfo additionalInfo : details.additionalInfo()) {
+
+            setAdditionalInfo(additionalInfo);
+        }
+
+        if (details.getAdditionalTickerInfos() != null
+                && details.getAdditionalTickerInfos().size() > 0) {
+            String url = null;
+            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                    String formattedTitle = formatTitleHtml(
+                            tickerInfo.getNotes(),
+                            tickerInfo.getUrlDetail(),
+                            tickerInfo.getUrlText()
+                    );
+                    tickerInfo.setNotes(formattedTitle);
+                    url = tickerInfo.getUrlDetail();
+                }
+            }
+            setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
+        if (details.getTickerInfo() != null) {
+            setTickerInfo(details.getTickerInfo());
+        }
+
+        for (PayMethod payMethod : details.getPayMethods()) {
+            if (!TextUtils.isEmpty(payMethod.getValue()))
+                setPayMethodInfo(payMethod);
+        }
+
+        for (Pricing pricing : details.pricing()) {
+            setPricing(pricing);
+        }
+
+        setPaymentData(details.paymentData());
+        setContactUs(details.contactUs(), details.getHelpLink());
+
+        if (details.getItems() != null && details.getItems().size() > 0 && details.getItems().get(0).getCategory().equalsIgnoreCase(OrderCategory.EVENT)) {
+            setActionButtonsVisibility(View.GONE, View.GONE);
+        } else {
+            if (details.actionButtons().size() == 2) {
+                ActionButton leftActionButton = details.actionButtons().get(0);
+                ActionButton rightActionButton = details.actionButtons().get(1);
+                setTopActionButton(leftActionButton);
+                setBottomActionButton(rightActionButton);
+            } else if (details.actionButtons().size() == 1) {
+                ActionButton actionButton = details.actionButtons().get(0);
+                setButtonMargin();
+                if (actionButton.getLabel().equals(BuyerConsts.INVOICE)) {
+                    setBottomActionButton(actionButton);
+                    setActionButtonsVisibility(View.GONE, View.VISIBLE);
+                } else {
+                    setTopActionButton(actionButton);
+                    setActionButtonsVisibility(View.VISIBLE, View.GONE);
+
+                }
+            } else {
+                setActionButtonsVisibility(View.GONE, View.GONE);
+            }
+        }
+        setMainViewVisible(View.VISIBLE);
     }
 
     @Override
@@ -375,6 +476,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void askPermission() {
         // no-op
+    }
+
+    @Override
+    public JsonArray generateInputQueryBuyAgain(List<Items> items) {
+        return null;
     }
 
     @Override

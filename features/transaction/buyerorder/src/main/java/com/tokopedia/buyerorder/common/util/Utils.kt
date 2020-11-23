@@ -3,11 +3,10 @@ package com.tokopedia.buyerorder.common.util
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
-
-import android.content.Context.CLIPBOARD_SERVICE
 import com.tokopedia.buyerorder.R
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.ParseException
@@ -68,5 +67,10 @@ object Utils {
                 Ticker.TYPE_ANNOUNCEMENT
             }
         }
+    }
+
+    @JvmStatic
+    fun formatTitleHtml(desc: String, urlText: String, url: String): String? {
+        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url)
     }
 }

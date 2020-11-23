@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.JsonArray;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
@@ -39,6 +40,8 @@ import java.util.List;
 public interface OrderListDetailContract {
 
     interface View extends CustomerView {
+        void setDetailsData(OrderDetails details);
+
         void setStatus(Status status);
 
         void setConditionalInfo(ConditionalInfo conditionalInfo);
@@ -117,6 +120,8 @@ public interface OrderListDetailContract {
 
         void setRecommendation(Object object);
 
+        JsonArray generateInputQueryBuyAgain(List<Items> items);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -127,8 +132,6 @@ public interface OrderListDetailContract {
         void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
 
         List<ActionButton> getActionList();
-
-        void onBuyAgainAllItems(String eventActionLabel, String statusCode);
 
         void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
 
