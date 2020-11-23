@@ -22,7 +22,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_login"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:text="@string/btn_login"
             android:layout_marginRight="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +34,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_register"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:text="@string/btn_register"
             android:layout_marginLeft="@dimen/dp_8"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -71,7 +71,7 @@
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_login_as"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="@dimen/dp_40"
             android:layout_marginRight="@dimen/dp_40"
             android:layout_marginLeft="@dimen/dp_16"
             app:layout_constraintBottom_toBottomOf="@+id/img_user_login_as"

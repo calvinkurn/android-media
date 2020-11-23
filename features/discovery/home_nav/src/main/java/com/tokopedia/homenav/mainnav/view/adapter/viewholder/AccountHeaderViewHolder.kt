@@ -104,17 +104,25 @@ class AccountHeaderViewHolder(itemView: View,
         val ovoImageUrl = cdnUrl + MainNavConst.ImageUrl.OVO_IMG
 
         userImage.loadImageCircle(element.userImage)
-
+        userImage.isClickable = false
+        tvName.isClickable = false
+        tvName.setTextIsSelectable(false)
         if (element.isGetUserNameError) {
             tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT)
             tvName.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
+            tvName.isClickable = true
+            tvName.setTextIsSelectable(true)
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
             tvName.setOnClickListener(null)
         }
 
+        tvOvo.isClickable = false
+        tvOvo.setTextIsSelectable(false)
         if (element.isGetOvoError && element.isGetSaldoError) {
             tvOvo.text = AccountHeaderViewModel.ERROR_TEXT
+            tvOvo.isClickable = true
+            tvOvo.setTextIsSelectable(true)
             tvOvo.setOnClickListener{
                 mainNavListener.onErrorProfileOVOClicked(element)
             }
@@ -132,7 +140,6 @@ class AccountHeaderViewHolder(itemView: View,
                 usrOvoBadge.loadImage(saldoImageUrl)
             }
         }
-
         if (element.shopName.isNotEmpty()) {
             tvShopInfo.visibility = View.VISIBLE
             if (element.isGetShopError) {
