@@ -91,4 +91,6 @@
     <string name="saldo_dana_tertahan">Dana Tertahan</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_info_ticker">Saldo tertahan milikmu sedang dalam pemeriksaan pihak Tokopedia.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

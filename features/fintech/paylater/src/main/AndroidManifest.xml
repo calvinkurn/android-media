@@ -1,9 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.paylater">
 
     <application>
-        <activity android:name=".presentation.activity.PaylaterActivity"></activity>
+        <activity
+            android:name="com.tokopedia.paylater.presentation.activity.PaylaterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+        </activity>
     </application>
-
 </manifest>

@@ -18,7 +18,7 @@ dependencies {
     //implementation project(rootProject.ext.features.sellerMigrationCommon)
 
     //implementation project(rootProject.ext.libraries.tkpddesign)
-    //implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.baseList)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.track)
@@ -47,9 +47,11 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModel
-    implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    //implementation 'androidx.appcompat:appcompat:1.2.0'
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    //implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation rootProject.ext.miscDependencies.dagger
