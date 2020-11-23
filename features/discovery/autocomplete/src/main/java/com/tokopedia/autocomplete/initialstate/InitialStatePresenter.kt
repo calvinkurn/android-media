@@ -272,7 +272,6 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshPopularSearch(featureId: String) {
-        refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
@@ -318,7 +317,6 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshDynamicSection(featureId: String) {
-        refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
