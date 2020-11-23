@@ -19,7 +19,6 @@ import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatGqlReposit
 import com.tokopedia.discovery2.repository.customtopchat.CustomTopChatRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
-import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryUIConfigGQLRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRepository
 import com.tokopedia.discovery2.repository.horizontalcategory.CategoryNavigationRestRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
@@ -120,16 +119,6 @@ class DiscoveryModule {
     @Provides
     fun provideCampaignSubscribeGQLRepository(@ApplicationContext context: Context): CampaignSubscribeRepo {
         return CampaignSubscribeGQLRepository(provideGetStringMethod(context))
-    }
-
-    @Provides
-    fun provideDiscoveryUIConfigRepository(@ApplicationContext context: Context): DiscoveryUIConfigGQLRepository {
-        return DiscoveryUIConfigGQLRepository(provideDiscoveryUIConfigQuery(context))
-    }
-
-    @Provides
-    fun provideDiscoveryUIConfigQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_discovery_ui_config)
     }
 
     @Provides

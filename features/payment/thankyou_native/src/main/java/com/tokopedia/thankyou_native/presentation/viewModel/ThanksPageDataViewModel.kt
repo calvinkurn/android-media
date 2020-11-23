@@ -2,20 +2,30 @@ package com.tokopedia.thankyou_native.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.thankyou_native.data.mapper.FeatureRecommendationMapper
+import com.tokopedia.thankyou_native.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.thankyou_native.di.qualifier.CoroutineMainDispatcher
+import com.tokopedia.thankyou_native.domain.model.FeatureEngineData
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
+import com.tokopedia.thankyou_native.domain.usecase.GyroEngineRequestUseCase
 import com.tokopedia.thankyou_native.domain.usecase.ThanksPageDataUseCase
+import com.tokopedia.thankyou_native.presentation.adapter.model.GyroRecommendation
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ThanksPageDataViewModel @Inject constructor(
         private val thanksPageDataUseCase: ThanksPageDataUseCase,
-        @CoroutineMainDispatcher dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        private val gyroEngineRequestUseCase: GyroEngineRequestUseCase,
+        @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
+        @CoroutineBackgroundDispatcher val dispatcherIO: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
+    val gyroRecommendationLiveData = MutableLiveData<GyroRecommendation>()
 
     fun getThanksPageData(paymentId: Long, merchant: String) {
         thanksPageDataUseCase.cancelJobs()
@@ -25,6 +35,30 @@ class ThanksPageDataViewModel @Inject constructor(
                 paymentId,
                 merchant
         )
+    }
+
+    fun getFeatureEngine(thanksPageData: ThanksPageData) {
+        gyroEngineRequestUseCase.cancelJobs()
+        gyroEngineRequestUseCase.getFeatureEngineData(
+                thanksPageData
+        ) {
+            if (it.success) {
+                postGyroRecommendation(it.engineData)
+            }
+        }
+    }
+
+    private fun postGyroRecommendation(engineData: FeatureEngineData?){
+        launchCatchError(block = {
+            val gyroRecommendation : GyroRecommendation? = withContext(dispatcherIO){
+                return@withContext FeatureRecommendationMapper.getFeatureList(engineData)
+            }
+            gyroRecommendation?.let {
+                gyroRecommendationLiveData.postValue(gyroRecommendation)
+            }
+        }, onError = {
+            it.printStackTrace()
+        })
     }
 
     private fun onThanksPageDataSuccess(thanksPageData: ThanksPageData) {
@@ -37,8 +71,8 @@ class ThanksPageDataViewModel @Inject constructor(
 
     override fun onCleared() {
         thanksPageDataUseCase.cancelJobs()
+        gyroEngineRequestUseCase.cancelJobs()
         super.onCleared()
     }
-
 
 }

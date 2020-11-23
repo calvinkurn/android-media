@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.home_recom.model.datamodel.RecommendationErrorDataModel
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.home_recom.view.dispatchers.RecommendationDispatcher
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
@@ -59,7 +58,9 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
 
                 val recommendationItems = singleRecommendationUseCase.createObservable(params).toBlocking().first()
                 if(page == 1 && filterChips.isNotEmpty()) _filterChips.postValue(Response.success(filterChips))
-                _recommendationItem.postValue(Response.success(combineList(_recommendationItem.value?.data ?: emptyList(), recommendationItems)))
+                _recommendationItem.postValue(Response.success(recommendationItems.map {
+                    it.copy(position = it.position + (page - 1) * COUNT_PRODUCT)
+                }))
 
             } catch (e: Exception){
                 if(page == 1) _filterChips.postValue(Response.error(e))
@@ -178,7 +179,7 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         })
     }
 
-    internal fun <T> combineList(first: List<T>, second: List<T>): List<T>{
-        return ArrayList(first).apply { addAll(second) }
+    companion object{
+        private const val COUNT_PRODUCT = 20
     }
 }

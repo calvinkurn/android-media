@@ -66,6 +66,11 @@ class GetLayoutUseCase(
                       description
                     }
                   }
+                  showEmpty
+                  postFilter {
+                    name
+                    value
+                  }
                   url
                   applink
                   dataKey

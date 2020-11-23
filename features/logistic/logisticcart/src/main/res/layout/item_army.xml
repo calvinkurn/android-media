@@ -66,6 +66,20 @@
             app:typographyWeight="reguler"
             tools:text="pengiriman melebihi limit bebas ongkir, kamu cukup bayar Rp3.000" />
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_eta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_info"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="4dp"
+            android:layout_toStartOf="@id/img_check"
+            android:layout_toLeftOf="@id/img_check"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Estimasi tiba" />
+
     </RelativeLayout>
 
     <View

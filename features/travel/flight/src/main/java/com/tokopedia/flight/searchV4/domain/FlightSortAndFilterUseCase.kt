@@ -82,6 +82,8 @@ class FlightSortAndFilterUseCase @Inject constructor(private val flightSearchRep
                 FlightJourneyModel(
                         term,
                         id,
+                        hasFreeRapidTest,
+                        isSeatDistancing,
                         departureAirport,
                         departureAirportName,
                         departureAirportCity,
@@ -107,7 +109,7 @@ class FlightSortAndFilterUseCase @Inject constructor(private val flightSearchRep
                         isReturn,
                         fare,
                         routes,
-                        flightAirlineDBS,
+                        flightAirlineDBS ?: arrayListOf(),
                         comboId,
                         specialTag
                 )

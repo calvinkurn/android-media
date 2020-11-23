@@ -26,6 +26,8 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                     WidgetType.TABLE -> mapToTableWidget(it, isFromCache)
                     WidgetType.PIE_CHART -> mapToPieChartWidget(it, isFromCache)
                     WidgetType.BAR_CHART -> mapToBarChartWidget(it, isFromCache)
+                    WidgetType.MULTI_LINE_GRAPH -> mapToMultiLineGraphWidget(it, isFromCache)
+                    WidgetType.ANNOUNCEMENT -> mapToAnnouncementWidget(it, isFromCache)
                     else -> mapToSectionWidget(it, isFromCache)
                 })
             }
@@ -39,10 +41,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -56,10 +58,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = null,
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -73,10 +75,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -90,10 +92,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -107,11 +109,14 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
+                postFilter = widget.postFilter?.mapIndexed { i, filter ->
+                    PostFilterUiModel(filter.name.orEmpty(), filter.value.orEmpty(), isSelected = i == 0)
+                }.orEmpty(),
                 isLoaded = false,
                 isLoading = false,
                 isFromCache = fromCache
@@ -124,10 +129,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -141,10 +146,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -158,10 +163,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -175,10 +180,10 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
@@ -192,14 +197,48 @@ class LayoutMapper @Inject constructor(private val tooltipMapper: TooltipMapper)
                 title = widget.title.orEmpty(),
                 subtitle = widget.subtitle.orEmpty(),
                 tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
-                url = widget.url.orEmpty(),
                 appLink = widget.appLink.orEmpty(),
                 dataKey = widget.dataKey.orEmpty(),
                 ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
                 data = null,
                 isLoaded = false,
                 isLoading = false,
                 isFromCache = fromCache
+        )
+    }
+
+    private fun mapToMultiLineGraphWidget(widget: WidgetModel, isFromCache: Boolean): MultiLineGraphWidgetUiModel {
+        return MultiLineGraphWidgetUiModel(
+                widgetType = widget.widgetType.orEmpty(),
+                title = widget.title.orEmpty(),
+                subtitle = widget.subtitle.orEmpty(),
+                tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+                appLink = widget.appLink.orEmpty(),
+                dataKey = widget.dataKey.orEmpty(),
+                ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = isFromCache
+        )
+    }
+
+    private fun mapToAnnouncementWidget(widget: WidgetModel, isFromCache: Boolean): BaseWidgetUiModel<out BaseDataUiModel> {
+        return AnnouncementWidgetUiModel(
+                widgetType = widget.widgetType.orEmpty(),
+                title = widget.title.orEmpty(),
+                subtitle = widget.subtitle.orEmpty(),
+                tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+                appLink = widget.appLink.orEmpty(),
+                dataKey = widget.dataKey.orEmpty(),
+                ctaText = widget.ctaText.orEmpty(),
+                isShowEmpty = widget.isShowEmpty ?: false,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = isFromCache
         )
     }
 }

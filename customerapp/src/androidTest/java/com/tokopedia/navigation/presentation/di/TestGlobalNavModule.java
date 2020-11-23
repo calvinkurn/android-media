@@ -1,13 +1,12 @@
 package com.tokopedia.navigation.presentation.di;
 
 import android.content.Context;
+
 import androidx.fragment.app.Fragment;
 
-import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.domain.GetDrawerNotificationUseCase;
 import com.tokopedia.navigation.presentation.fragment.EmptyFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
@@ -52,10 +51,5 @@ public class TestGlobalNavModule {
     @Named("FRAGMENT_ONE")
     Fragment provideFragmentOne(@ApplicationContext Context context) {
         return EmptyFragment.newInstance(0);
-    }
-
-    @Provides
-    ApplicationUpdate provideAppUpdate(@ApplicationContext Context context) {
-        return ((GlobalNavRouter) context).getAppUpdate(context);
     }
 }
