@@ -25,6 +25,15 @@
             app:srcCompat="@drawable/ic_pinpoint_green"
             tools:ignore="ContentDescription" />
 
+        <ImageView
+            android:id="@+id/img_mark_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_mark_ico"
+            app:layout_constraintTop_toTopOf="@id/tv_shop_label"
+            app:layout_constraintBottom_toBottomOf="@id/tv_shop_label"
+            app:layout_constraintStart_toStartOf="parent"/>
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_label"
             android:layout_width="wrap_content"
@@ -51,8 +60,18 @@
             app:labelType="general_light_green"
             app:layout_constraintTop_toTopOf="@id/tv_shop_label"
             app:layout_constraintBottom_toBottomOf="@id/tv_shop_label"
-            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toEndOf="@+id/tv_shop_label" />
+
+
+        <ImageView
+            android:id="@+id/img_info_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            app:srcCompat="@drawable/ic_information_ico"
+            app:layout_constraintTop_toTopOf="@id/lbl_main_shop"
+            app:layout_constraintBottom_toBottomOf="@id/lbl_main_shop"
+            app:layout_constraintStart_toEndOf="@+id/lbl_main_shop"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shop_name"
@@ -76,7 +95,7 @@
             android:visibility="visible"
             app:icon_name="MENU_KEBAB_VERTICAL"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tv_shop_name" />
+            app:layout_constraintTop_toTopOf="@id/tv_shop_label" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_detail"

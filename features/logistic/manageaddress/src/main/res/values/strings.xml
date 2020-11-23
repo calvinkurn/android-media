@@ -44,5 +44,8 @@
     <string name="shop_address_city">Jakarta Selatan</string>
     <string name="shop_address_zipcode">14045</string>
     <string name="shop_label">Aktif</string>
+    <string name="title_main_address">Lokasi utama tidak bisa dinonaktifkan</string>
+    <string name="main_address_info">Lokasi utama tokomu akan jadi acuan ongkir bagi pembeli yang belum mengatur alamat, sehingga tidak bisa dinonaktifkan.</string>
+    <string name="title_deactivate_location">Nonaktifkan lokasi toko blabla?</string>
 
 </resources>
