@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -186,6 +187,14 @@ public interface ProductListSectionContract {
         void trackEventGoToShopPage(Object dataLayer);
 
         void addLocalSearchRecommendation(List<Visitable> visitableList);
+
+        void trackEventSearchResultChangeView(String viewType);
+
+        void switchSearchNavigationLayoutTypeToListView(int position);
+
+        void switchSearchNavigationLayoutTypeToBigGridView(int position);
+
+        void switchSearchNavigationLayoutTypeToSmallGridView(int position);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -237,5 +246,7 @@ public interface ProductListSectionContract {
         void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
 
         void handleVisitShopAction();
+
+        void handleChangeView(int position, SearchConstant.ViewType currentLayoutType);
     }
 }

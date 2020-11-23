@@ -82,6 +82,7 @@ import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -139,7 +140,8 @@ public class ProductListFragment
         InspirationCardListener,
         QuickFilterElevation,
         SortFilterBottomSheet.Callback,
-        SearchInTokopediaListener {
+        SearchInTokopediaListener,
+        SearchNavigationClickListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -313,7 +315,7 @@ public class ProductListFragment
                 this, this,
                 this, this, this,
                 this, this,
-                this, this, this, this,
+                this, this, this, this, this,
                 topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
@@ -1761,5 +1763,41 @@ public class ProductListFragment
     @Override
     public void addLocalSearchRecommendation(List<Visitable> visitableList) {
         adapter.appendItems(visitableList);
+    }
+
+    @Override
+    public void onChangeViewClicked(int position) {
+        if (presenter == null) return;
+
+        presenter.handleChangeView(position, adapter.getCurrentLayoutType());
+    }
+
+    @Override
+    public void trackEventSearchResultChangeView(String viewType) {
+        SearchTracking.eventSearchResultChangeGrid(getActivity(), viewType, getScreenName());
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToListView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationListView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToBigGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationSingleGridView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToSmallGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(2);
+        adapter.changeSearchNavigationDoubleGridView(position);
     }
 }

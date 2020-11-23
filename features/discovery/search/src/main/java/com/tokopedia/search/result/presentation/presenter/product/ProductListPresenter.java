@@ -45,6 +45,7 @@ import com.tokopedia.search.result.presentation.model.RecommendationItemViewMode
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedViewModel;
 import com.tokopedia.search.result.presentation.model.SearchInTokopediaViewModel;
+import com.tokopedia.search.result.presentation.model.SearchProductCountViewModel;
 import com.tokopedia.search.result.presentation.model.SearchProductTitleViewModel;
 import com.tokopedia.search.result.presentation.model.SeparatorViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
@@ -96,6 +97,9 @@ import rx.subscriptions.CompositeSubscription;
 import static com.tokopedia.discovery.common.constants.SearchApiConst.VALUE_OF_NAVSOURCE_CAMPAIGN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_THREE_DOTS_SEARCH;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAVIGATION_REVAMP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_NAV_REVAMP;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_OLD_NAV;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_A;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_SHOP_RATING_VARIANT_B;
@@ -103,6 +107,9 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemo
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO;
 import static com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.OnBoarding.FILTER_ONBOARDING_SHOWN;
@@ -168,6 +175,7 @@ final class ProductListPresenter
     private boolean hasFullThreeDotsOptions = false;
     @Nullable private CpmModel cpmModel = null;
     @Nullable private List<CpmData> cpmDataList = null;
+    private boolean isABTestNavigationRevamp = false;
 
     @Inject
     ProductListPresenter(
@@ -208,6 +216,19 @@ final class ProductListPresenter
         useRatingString = getIsUseRatingString();
         shopRatingABTestStrategy = getShopRatingABTestStrategy();
         hasFullThreeDotsOptions = getHasFullThreeDotsOptions();
+        isABTestNavigationRevamp = isABTestNavigationRevamp();
+    }
+
+    private boolean isABTestNavigationRevamp() {
+        try {
+            return getView().getABTestRemoteConfig()
+                    .getString(AB_TEST_NAVIGATION_REVAMP, AB_TEST_OLD_NAV)
+                    .equals(AB_TEST_NAV_REVAMP);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     private boolean getIsUseRatingString() {
@@ -1078,6 +1099,10 @@ final class ProductListPresenter
 
         if (!productViewModel.isQuerySafe()) {
             getView().showAdultRestriction();
+        }
+
+        if (isABTestNavigationRevamp) {
+            list.add(new SearchProductCountViewModel(list.size(), searchProduct.getHeader().getTotalDataText()));
         }
 
         addPageTitle(list);
@@ -2113,6 +2138,26 @@ final class ProductListPresenter
         getView().trackEventGoToShopPage(threeDotsProductItem.getProductAsShopPageObjectDataLayer());
 
         this.threeDotsProductItem = null;
+    }
+
+    @Override
+    public void handleChangeView(int position, SearchConstant.ViewType currentLayoutType) {
+        if (getView() == null) return;
+
+        switch(currentLayoutType) {
+            case LIST:
+                getView().switchSearchNavigationLayoutTypeToBigGridView(position);
+                getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_BIG_GRID);
+                break;
+            case SMALL_GRID:
+                getView().switchSearchNavigationLayoutTypeToListView(position);
+                getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_LIST);
+                break;
+            case BIG_GRID:
+                getView().switchSearchNavigationLayoutTypeToSmallGridView(position);
+                getView().trackEventSearchResultChangeView(VIEW_TYPE_NAME_SMALL_GRID);
+                break;
+        }
     }
 
     @Override
