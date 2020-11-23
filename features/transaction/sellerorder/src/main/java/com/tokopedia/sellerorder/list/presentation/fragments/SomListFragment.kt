@@ -153,44 +153,48 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     if (coachMark?.isDismissed == true && abs(dy) <= 100) {
                         reshowNewOrderCoachMark(dy < 0)
                     } else if (coachMark?.isDismissed == false) {
-                        somListLayoutManager?.run {
-                            val firstVisibleIndex = findFirstVisibleItemPosition()
-                            val lastVisibleIndex = findLastVisibleItemPosition()
-                            val currentNewOrderQuickActionButton = findViewByPosition(currentNewOrderWithCoachMark)?.findViewById<View>(R.id.btnQuickAction)
-                            if (coachMark?.isDismissed == false && (currentNewOrderWithCoachMark !in firstVisibleIndex..lastVisibleIndex ||
-                                            (currentNewOrderQuickActionButton != null && getVisiblePercent(currentNewOrderQuickActionButton) == -1))) {
-                                coachMark?.setOnDismissListener {
-                                    coachMark?.setOnDismissListener { }
-                                    reshowNewOrderCoachMark(dy < 0)
-                                }
-                                dismissCoachMark(false)
+                        if (somListLayoutManager == null) {
+                            return
+                        }
+                        val layoutManager = somListLayoutManager!!
+                        val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                        val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                        val currentNewOrderQuickActionButton = layoutManager.findViewByPosition(currentNewOrderWithCoachMark)?.findViewById<View>(R.id.btnQuickAction)
+                        if (coachMark?.isDismissed == false && (currentNewOrderWithCoachMark !in firstVisibleIndex..lastVisibleIndex ||
+                                        (currentNewOrderQuickActionButton != null && getVisiblePercent(currentNewOrderQuickActionButton) == -1))) {
+                            coachMark?.setOnDismissListener {
+                                coachMark?.setOnDismissListener { }
+                                reshowNewOrderCoachMark(dy < 0)
                             }
+                            dismissCoachMark(false)
                         }
                     }
                 }
             }
 
             private fun reshowNewOrderCoachMark(isReversed: Boolean) {
-                somListLayoutManager?.run {
-                    val firstVisibleIndex = findFirstVisibleItemPosition()
-                    val lastVisibleIndex = findLastVisibleItemPosition()
-                    val visibleRange = firstVisibleIndex..lastVisibleIndex
-                    (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
-                        val order = adapter.data.getOrNull(it)
-                        if (order is SomListOrderUiModel && order.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
-                                order.buttons.firstOrNull()?.key == SomConsts.KEY_ACCEPT_ORDER && order.cancelRequest == 0) {
-                            findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.takeIf {
-                                it.isVisible
-                            }?.let { quickActionButton ->
-                                if (getVisiblePercent(quickActionButton) == 0) {
-                                    quickActionButton.post {
-                                        currentNewOrderWithCoachMark = it
-                                        coachMark?.showCoachMark(ArrayList(createCoachMarkItems(quickActionButton)), index = coachMarkIndexToShow)
-                                        coachMark?.isDismissed = false
-                                        shouldShowCoachMark = false
-                                    }
-                                    return@reshowNewOrderCoachMark
+                if (somListLayoutManager == null) {
+                    return
+                }
+                val layoutManager = somListLayoutManager!!
+                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                val visibleRange = firstVisibleIndex..lastVisibleIndex
+                (visibleRange.takeIf { !isReversed } ?: visibleRange.reversed()).forEach {
+                    val order = adapter.data.getOrNull(it)
+                    if (order is SomListOrderUiModel && order.orderStatusId == SomConsts.STATUS_CODE_ORDER_CREATED &&
+                            order.buttons.firstOrNull()?.key == SomConsts.KEY_ACCEPT_ORDER && order.cancelRequest == 0) {
+                        layoutManager.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.takeIf {
+                            it.isVisible
+                        }?.let { quickActionButton ->
+                            if (getVisiblePercent(quickActionButton) == 0) {
+                                quickActionButton.post {
+                                    currentNewOrderWithCoachMark = it
+                                    coachMark?.showCoachMark(ArrayList(createCoachMarkItems(quickActionButton)), index = coachMarkIndexToShow)
+                                    coachMark?.isDismissed = false
+                                    shouldShowCoachMark = false
                                 }
+                                return@reshowNewOrderCoachMark
                             }
                         }
                     }
