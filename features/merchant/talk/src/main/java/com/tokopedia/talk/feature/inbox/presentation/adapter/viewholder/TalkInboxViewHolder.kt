@@ -44,7 +44,7 @@ class TalkInboxViewHolder(
     private fun setProductThumbnail(productThumbnail: String) {
         with(itemView) {
             if(productThumbnail.isEmpty()) {
-                itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
+                itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_prouct))
                 talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 return
             }

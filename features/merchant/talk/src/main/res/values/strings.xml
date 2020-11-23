@@ -147,5 +147,8 @@
     <string name="inbox_toaster_connection_error">Oops, ada kendala dengan koneksi internetmu. Coba lagi, ya!</string>
     <string name="inbox_total_count_empty_seller">Balas Diskusi</string>
     <string name="inbox_total_count">%s komentar</string>
+    <string name="inbox_empty_seller_subtitle">Terus aktif jualan ya supaya pembeli mampir ke tokomu dan memulai diskusi</string>
+    <string name="inbox_empty_seller_unread_title">Yay, semua diskusi sudah dibaca</string>
+    <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
 
 </resources>

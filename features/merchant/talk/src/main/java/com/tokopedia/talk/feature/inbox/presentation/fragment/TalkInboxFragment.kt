@@ -58,6 +58,8 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         const val TAB_PARAM = "tab_param"
         const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
+        const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
+        const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
 
         fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -213,7 +215,6 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSortFilter()
-        initEmptyState()
         initErrorPage()
     }
 
@@ -314,26 +315,48 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
             Toaster.build(talkInboxContainer, getString(R.string.inbox_toaster_connection_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { loadData(currentPage) }). show() }
     }
 
-    private fun initEmptyState() {
-        talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
-    }
-
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
-        talkInboxSortFilter.hide()
+        if(isSellerTab() && !isOldView()){
+            talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
+            talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
+        } else {
+            talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+            talkInboxEmptySubtitle.text = ""
+        }
         talkInboxEmpty.show()
     }
 
     private fun showEmptyUnread() {
-        talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
-        talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
+        when {
+            isSellerTab() && !isOldView() -> {
+                talkInboxEmptyImage.loadImage(EMPTY_SELLER_READ_DISCUSSION)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_seller_unread_title)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_unread_subtitle)
+            }
+            else -> {
+                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
+            }
+        }
         talkInboxEmpty.show()
         talkInboxRecyclerView.hide()
     }
 
     private fun showEmptyRead() {
-        talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
-        talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
+        when {
+            isSellerTab() && !isOldView() -> {
+                talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
+            }
+            else -> {
+                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
+            }
+        }
         talkInboxEmpty.show()
         talkInboxRecyclerView.hide()
     }
@@ -404,6 +427,10 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun isOldView(): Boolean {
         return false
+    }
+
+    private fun isSellerTab(): Boolean {
+        return viewModel.getType() == TalkInboxTab.SHOP_TAB
     }
 
 }
