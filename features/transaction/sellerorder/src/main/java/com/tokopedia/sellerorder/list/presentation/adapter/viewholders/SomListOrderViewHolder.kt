@@ -149,11 +149,17 @@ class SomListOrderViewHolder(
                 val productName = product.productName.split(" - ").firstOrNull().orEmpty().trim()
                 val productVariant = product.productName.split(" - ").takeIf { it.size > 1 }?.lastOrNull().orEmpty().replace(Regex("\\s*,\\s*"), " | ").trim()
 
+                val hasMoreThanOneProduct = element.orderProduct.size > 1
+                val translationY = if (hasMoreThanOneProduct || productVariant.isNotBlank()) {
+                    -(4f.dpToPx())
+                } else {
+                    0f
+                }
                 tvSomListProductName.apply {
                     if (productVariant.isBlank()) {
                         maxLines = 2
                         isSingleLine = false
-                        if (element.orderProduct.size > 1) {
+                        if (hasMoreThanOneProduct || productVariant.isNotBlank()) {
                             setPadding(0, 0, 0, 0)
                         } else {
                             setPadding(0, 0, 0, 1.5f.dpToPx().toInt())
@@ -164,20 +170,25 @@ class SomListOrderViewHolder(
                     }
                     text = productName
                     val layoutParams = layoutParams as ConstraintLayout.LayoutParams
-                    layoutParams.verticalBias = if (element.orderProduct.size == 1) {
+                    layoutParams.verticalBias = if (element.orderProduct.size == 1 && productVariant.isBlank()) {
                         0.5f
                     } else 0f
                     this.layoutParams = layoutParams
+                    this.translationY = translationY
                     return@apply
                 }
                 tvSomListProductVariant.apply {
                     text = productVariant
                     showWithCondition(productVariant.isNotBlank())
+                    this.translationY = translationY
+                }
+                tvSomListProductExtra.apply {
+                    text = if (element.orderProduct.size > 1) {
+                        getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
+                    } else ""
+                    this.translationY = translationY
                 }
             }
-            tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
-                getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-            } else ""
         }
     }
 
