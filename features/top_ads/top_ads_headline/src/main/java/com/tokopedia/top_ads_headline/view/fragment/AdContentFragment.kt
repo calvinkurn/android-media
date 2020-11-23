@@ -34,6 +34,7 @@ import javax.inject.Inject
 private const val SELECT_PRODUCT_REQUEST_CODE = 1001
 private const val MAX_PRODUCT_PREVIEW = 3
 private const val MIN_PROMOTIONAL_MSG_COUNT = 20
+private const val MIN_PRODUCT_SELECTION = 2
 
 class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
@@ -138,8 +139,9 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun onClickSubmit() {
+        selectedTopAdsProducts = getSelectedProducts()
         when {
-            selectedTopAdsProducts.isEmpty() -> {
+            ifLessProductSelected() -> {
                 productPickerErrorText.show()
                 view?.let { it1 ->
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
@@ -152,6 +154,19 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         }
     }
 
+    private fun ifLessProductSelected(): Boolean {
+        if (selectedTopAdsProducts.isEmpty()) {
+            return true
+        } else {
+            stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
+                if (arrayList.size >= MIN_PRODUCT_SELECTION) {
+                    return false
+                }
+            }
+            return true
+        }
+    }
+
     private fun showTopAdsBannerPreview(responseProductList: List<ResponseProductList.Result.TopadsGetListProduct.Data> = emptyList()) {
         val cpmModel = if (selectedTopAdsProducts.isNotEmpty()) {
             cpmModelMapper.getCpmModelResponse(selectedTopAdsProducts.take(MAX_PRODUCT_PREVIEW), stepperModel?.slogan
@@ -161,7 +176,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
                     ?: "")
         }
         stepperModel?.cpmModel = cpmModel
-        topAdsBannerView.displayAds(cpmModel)
+        topAdsBannerView.displayAds(stepperModel?.cpmModel)
     }
 
     private fun onError(message: String) {
@@ -172,7 +187,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     private fun openPromotionalMessageBottomSheet() {
         val promotionalMessageBottomSheet = PromotionalMessageBottomSheet.newInstance(userSession.shopName,
-                this::onPromotionalBottomSheetDismiss)
+                stepperModel?.slogan ?: "", this::onPromotionalBottomSheetDismiss)
         promotionalMessageBottomSheet.show(childFragmentManager, "")
     }
 

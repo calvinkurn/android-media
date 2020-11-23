@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.promotional_message_bottom_sheet_layout.*
 class PromotionalMessageBottomSheet : BottomSheetUnify() {
     private var storeName: String = ""
     private val promoMsgRange = 1..19
+    private var promotionalMessage = ""
 
     init {
         showCloseIcon = false
@@ -26,9 +27,10 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        fun newInstance(storeName: String, onDismissListener: (String) -> Unit): PromotionalMessageBottomSheet {
+        fun newInstance(storeName: String, promotionalMessage:String, onDismissListener: (String) -> Unit): PromotionalMessageBottomSheet {
             return PromotionalMessageBottomSheet().apply {
                 this.storeName = storeName
+                this.promotionalMessage = promotionalMessage
                 setOnDismissListener {
                     onDismissListener.invoke(promotionalMessageInputText.getEditableValue().toString())
                 }
@@ -67,7 +69,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     private fun setUpTextField() {
-        promotionalMessageInputText.textFieldInput.setText(getString(R.string.topads_headline_promotional_dummy_message))
+        promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
         promotionalMessageInputText.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }

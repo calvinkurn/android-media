@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_dash_no_products_sheet_layout.*
@@ -25,6 +25,7 @@ class NoProductBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        imageEmpty.setImageDrawable(context?.getResDrawable(R.drawable.topads_dash_grey_circle))
         addProductBtn.setOnClickListener {
             RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
         }

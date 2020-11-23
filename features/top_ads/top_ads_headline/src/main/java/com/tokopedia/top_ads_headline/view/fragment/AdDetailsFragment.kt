@@ -106,7 +106,6 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             Utils.dismissKeyboard(context, v)
             true
         }
-        headlineAdNameInput.textFieldInput.setText(getString(R.string.topads_headline_ad_detail_dummy_headline_name))
         headlineAdNameInput.getFirstIcon().setOnClickListener {
             headlineAdNameInput.textFieldInput.setText("")
             it.hide()

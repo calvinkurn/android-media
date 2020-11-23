@@ -6,7 +6,6 @@
     <string name="topads_headline_ad_detail_name_header">Nama Iklan Toko</string>
     <string name="topads_headline_ad_detail_name_message">Contoh: Headline Sepatu Lari, Headline Bando Wanita, Headline Gaun Pesta</string>
     <string name="topads_headline_ad_detail_name_hint">Masukkan nama iklan</string>
-    <string name="topads_headline_ad_detail_dummy_headline_name">Headline-1</string>
     <string name="topads_headline_continue">Lanjutkan</string>
     <string name="topads_headline_ad_name_required">Nama iklan harus diisi</string>
     <string name="topads_headline_ad_content_name_header">Produk yang ditampilkan</string>
@@ -42,8 +41,6 @@
     <string name="topads_headline_check_now">Cek Sekarang</string>
     <string name="topads_headline_promoted_by">Dipromosikan oleh</string>
 
-
-
     <!--tips for choosing product-->
     <string name="topads_headline_tips_choosing_product">Tips memilih produk</string>
     <string name="topads_headline_tips_choose_product_with_most_reviews">Pilih produk dengan ulasan terbanyak.</string>
@@ -59,7 +56,6 @@
     <string name="topads_headline_promotional_message_3">Tuliskan keunggulan produkmu, seperti “Produk original”, “Produk lokal”, “Handmade”, dan lainnya.</string>
     <string name="topads_headline_promotional_message_4">Gunakan slogan tokomu.</string>
     <string name="topads_headline_promotional_message_5">Hindari penggunaan huruf kapital yang berlebih.</string>
-
 
     <!--keyword-->
     <string name="topads_headline_keywrod_title">Pilih Kata Kunci</string>
@@ -102,6 +98,7 @@
     <string name="topads_headline_success_title_message">Yay, %s diiklankan!</string>
     <string name="topads_headline_success_subtitle_message">Performa iklanmu dapat dilihat lebih efektif setelah 7 hari iklan berjalan di Dashboard TopAds </string>
     <string name="topads_headline_success_button_message">Kembali ke Dashboard</string>
+    <string name="topads_headline_date_picker_calendar_button">Pilih</string>
 
     <!--tips for setting a schedule and budget-->
     <string name="topads_headline_tips_schedule_header">Tips mengatur jadwal iklan</string>

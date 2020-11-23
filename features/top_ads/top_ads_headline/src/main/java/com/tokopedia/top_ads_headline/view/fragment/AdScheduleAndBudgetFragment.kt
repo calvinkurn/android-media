@@ -51,7 +51,7 @@ private const val COUNTRY_ID = "ID"
 private const val LANGUAGE_ID = "in"
 private const val HEADLINE_DATETIME_FORMAT1 = "dd MMM yyyy, HH:mm"
 private const val HEADLINE_DATETIME_FORMAT2 = "dd/MM/yyyy hh:mm aa"
-
+private const val MAX_DAILY_BUDGET = "1.000.000.000.000"
 private const val MINUTE_INTERVAL = 30
 private const val MULTIPLIER = 3
 
@@ -210,7 +210,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                                 ?: 0)))
                         btnNext.isEnabled = false
                     }
-                    input >= stepperModel?.maxBid ?: 0 -> {
+                    input > stepperModel?.maxBid ?: 0 -> {
                         advertisingCost.setError(true)
                         advertisingCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), convertToCurrency(stepperModel?.maxBid?.toLong()
                                 ?: 0)))
@@ -240,11 +240,15 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                 } else {
                     advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
                 }
-                if (input < minBid * MULTIPLIER
-                        && budgetCost.isVisible) {
+                val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toIntOrZero()
+                if (input < minBid * MULTIPLIER && budgetCost.isVisible) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.dailyBudget?.toLong()
                             ?: 0)))
+                    btnNext.isEnabled = false
+                } else if (input > maxDailyBudget) {
+                    budgetCost.setError(true)
+                    budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), MAX_DAILY_BUDGET))
                     btnNext.isEnabled = false
                 } else {
                     stepperModel?.dailyBudget = input
@@ -287,7 +291,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                         getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onStartDateChanged)
             }
             endDate.textFieldInput.setOnClickListener {
-                getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, hours = 1)?.let { it1 ->
+                getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, month = 1)?.let { it1 ->
                     openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), getString(R.string.topads_headline_end_date_info),
                             it1, getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onEndDateChanged)
                 }
@@ -354,6 +358,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                 }
                 minuteInterval = MINUTE_INTERVAL
                 datePickerButton.let { button ->
+                    button.text = this@run.getString(R.string.topads_headline_date_picker_calendar_button)
                     button.setOnClickListener {
                         onDateChanged.invoke(getDate())
                         dismiss()

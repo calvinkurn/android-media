@@ -192,17 +192,23 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun setUpSelectProductCheckBox() {
         selectProductCheckBox.setOnClickListener {
             val isChecked = selectProductCheckBox.isChecked
-            selectedTopAdsProductMap.forEach { (topAdsCategoryDataModel, _) ->
-                selectedTopAdsProductMap[topAdsCategoryDataModel]?.clear()
-            }
-            selectedTopAdsProduct.clear()
             if (isChecked) {
                 productsListAdapter.list.let {
-                    selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
-                        addAll(it.take(MAX_PRODUCT_SELECTION))
+                    if (selectedTopAdsProduct.size + it.size <= MAX_PRODUCT_SELECTION) {
+                        selectedTopAdsProductMap[selectedCategoryDataModel]?.apply {
+                            addAll(it.take(MAX_PRODUCT_SELECTION))
+                        }
+                        selectedTopAdsProduct.addAll(it.take(MAX_PRODUCT_SELECTION))
+                    } else {
+                        onProductOverSelect()
+                        selectProductCheckBox.isChecked = false
                     }
-                    selectedTopAdsProduct.addAll(it.take(MAX_PRODUCT_SELECTION))
                 }
+            } else {
+                selectedTopAdsProductMap.forEach { (topAdsCategoryDataModel, _) ->
+                    selectedTopAdsProductMap[topAdsCategoryDataModel]?.clear()
+                }
+                selectedTopAdsProduct.clear()
             }
             setSelectProductText()
             productsListAdapter.notifyDataSetChanged()
