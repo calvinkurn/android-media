@@ -4,13 +4,14 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.tkpd.app.ConsumerRouterApplication;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
@@ -50,6 +51,12 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             com.tokopedia.config.GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         }
         com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = BuildConfig.VERSION_NAME;// save raw version name
+    }
+
+    @NonNull
+    @Override
+    public String versionName() {
+        return BuildConfig.VERSION_NAME;
     }
 
     public void initConfigValues() {

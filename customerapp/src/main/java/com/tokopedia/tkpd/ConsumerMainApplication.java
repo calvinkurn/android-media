@@ -5,11 +5,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -52,6 +53,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
         }
         generateConsumerAppNetworkKeys();
+    }
+
+    @Override
+    public String versionName() {
+        return BuildConfig.VERSION_NAME;
     }
 
     @Override
