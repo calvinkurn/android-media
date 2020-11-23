@@ -4,7 +4,6 @@ import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
@@ -21,7 +20,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
-import com.tokopedia.product.detail.common.data.model.carttype.AvailableButton
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -316,7 +314,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return listOf()
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false) {
         launchCatchError(dispatcher.io(), block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
@@ -335,7 +333,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 assignTradeinParams()
 
                 //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout, isAffiliate)
+                removeDynamicComponent(it.listOfLayout, isAffiliate, isUseOldNav)
 
                 //Render initial data
                 _productLayout.postValue(it.listOfLayout.asSuccess())
@@ -462,7 +460,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ?: 30000 else shippingPriceValue
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
@@ -485,6 +483,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
+                it
+            } else if (it.name() == ProductDetailConstant.REPORT && (isUseOldNav || isShopOwner())) {
                 it
             } else {
                 null

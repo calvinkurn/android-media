@@ -181,7 +181,7 @@ class ShopPageViewModel @Inject constructor(
                             true
                     )
                     if(savedFile != null) {
-                        shopImagePath.value = savedFile.absolutePath
+                        shopImagePath.postValue(savedFile.absolutePath)
                     }
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
