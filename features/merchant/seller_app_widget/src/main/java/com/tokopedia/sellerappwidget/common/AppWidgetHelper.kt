@@ -51,6 +51,20 @@ object AppWidgetHelper {
         }
     }
 
+    @WidgetSize
+    fun getAppWidgetSize(widgetHeight: Int): String {
+        var n = 2
+        while (70 * n - 30 < widgetHeight) {
+            ++n
+        }
+        val size = n - 1
+        return when {
+            size <= 3 -> WidgetSize.SMALL
+            size > 5 -> WidgetSize.LARGE
+            else -> WidgetSize.NORMAL
+        }
+    }
+
     inline fun <reified T : AppWidgetProvider> getAppWidgetIds(context: Context, awm: AppWidgetManager): IntArray {
         return awm.getAppWidgetIds(ComponentName(context, T::class.java))
     }

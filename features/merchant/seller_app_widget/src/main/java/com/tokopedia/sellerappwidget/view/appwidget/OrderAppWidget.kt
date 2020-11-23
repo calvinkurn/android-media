@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.RemoteViews
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
@@ -60,7 +61,11 @@ class OrderAppWidget : AppWidgetProvider() {
         super.onReceive(context, intent)
     }
 
-    override fun onAppWidgetOptionsChanged(context: Context?, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+    override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+        newOptions?.let {
+            val minHeight = it.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+            println("AppWidget -> Widget Size : ${AppWidgetHelper.getAppWidgetSize(minHeight)}")
+        }
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
