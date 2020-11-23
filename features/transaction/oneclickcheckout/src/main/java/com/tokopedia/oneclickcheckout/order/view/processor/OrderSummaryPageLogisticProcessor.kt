@@ -120,6 +120,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                             null, null, null
                     )
                 }
+                val isFirstLoad = shipping.serviceId != null && shipping.shipperProductId != null
                 if (shipping.serviceId != null && shipping.shipperProductId != null) {
                     val (orderShipment1, errorId1) = onRenewShipping(shippingDurationUiModels, shipping, shippingRecommendationData)
                     shipping = orderShipment1
@@ -134,7 +135,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
-                    if (currPromo.isNotEmpty()) {
+                    if (currPromo.isNotEmpty() || (isFirstLoad && profileShipment.isFreeShippingSelected)) {
                         return@withContext ResultRates(
                                 shipping,
                                 if (logisticPromo.promoCode != currPromo) currPromo else "",
@@ -245,6 +246,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         }
         val selectedShippingDurationUiModel: ShippingDurationUiModel? = shippingDurationUiModels.firstOrNull { it.isSelected }
         if (selectedShippingDurationUiModel == null) {
+            // TODO: try use recommended sp id
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return Triple(
                     OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
@@ -253,6 +255,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         }
         val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+            // TODO: use recommended sp id
             return Triple(
                     OrderShipment(
                             serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
@@ -264,23 +267,24 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     durationError.errorId,
                     null)
         }
-        val shippingCourierViewModelList: MutableList<ShippingCourierUiModel> = selectedShippingDurationUiModel.shippingCourierViewModelList
-        val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
-                ?: shippingCourierViewModelList.first()
-        selectedShippingCourierUiModel.isSelected = true
+        val selectedShippingCourierUiModel = getSelectedCourierFromProfileSpId(profileShipment.spId, selectedShippingDurationUiModel.shippingCourierViewModelList)
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
         var preselectedSpId: String? = null
         val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
         if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+            // todo use recommended sp id
             shippingErrorId = courierError.errorId
             errorMessage = courierError.errorMessage
             if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 flagNeedToSetPinpoint = true
             }
-        } else {
+        } else if (profileShipment.spId < 0) {
             preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
+        }
+        selectedShippingDurationUiModel.shippingCourierViewModelList.forEach {
+            it.isSelected = it.productData.shipperProductId == selectedShippingCourierUiModel.productData.shipperProductId
         }
         return Triple(
                 OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
@@ -299,6 +303,14 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                         shippingRecommendationData = shippingRecommendationData),
                 shippingErrorId,
                 preselectedSpId)
+    }
+
+    private fun getSelectedCourierFromProfileSpId(spId: Int, shippingCourierViewModelList: List<ShippingCourierUiModel>): ShippingCourierUiModel {
+        return if (spId > 0) {
+            shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == spId }
+        } else {
+            shippingCourierViewModelList.firstOrNull { it.isSelected }
+        } ?: shippingCourierViewModelList.first()
     }
 
     suspend fun savePinpoint(address: OrderProfileAddress, longitude: String, latitude: String, userId: String, deviceId: String): OccGlobalEvent {

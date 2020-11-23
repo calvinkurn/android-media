@@ -29,6 +29,8 @@ data class OccOnboardingTicker(
 data class OccOnboardingCoachMark(
         @SerializedName("skip_button_text")
         val skipButtonText: String = "",
+        @SerializedName("coachmark_type")
+        val coachmarkType: Int = 0,
         @SerializedName("detail")
         val details: List<OccOnboardingCoachMarkDetail> = emptyList()
 )

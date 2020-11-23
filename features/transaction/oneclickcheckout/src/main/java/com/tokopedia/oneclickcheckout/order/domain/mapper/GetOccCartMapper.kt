@@ -40,7 +40,7 @@ class GetOccCartMapper @Inject constructor() {
                 LastApplyMapper.mapPromo(data.promo),
                 mapOrderPayment(data),
                 mapPrompt(data.prompt),
-                OccRevampData(true, 2, "testing"))
+                mapOccRevamp(data.revamp))
     }
 
     private fun generateShopShipment(shopShipments: List<OccShopShipment>): ArrayList<ShopShipment> {
@@ -170,7 +170,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {
-        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration)
+        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.isFreeShippingSelected)
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {
@@ -259,5 +259,9 @@ class GetOccCartMapper @Inject constructor() {
                 promptResponse.description, promptResponse.imageUrl, promptResponse.buttons.map {
             OccPromptButton(it.text, it.link, it.action.toLowerCase(Locale.ROOT), it.color.toLowerCase(Locale.ROOT))
         })
+    }
+
+    private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
+        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 }

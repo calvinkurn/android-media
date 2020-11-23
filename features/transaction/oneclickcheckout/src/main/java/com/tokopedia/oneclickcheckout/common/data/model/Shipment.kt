@@ -8,5 +8,9 @@ data class Shipment(
         @SerializedName("service_id")
         val serviceId: Int = 0,
         @SerializedName("service_duration")
-        val serviceDuration: String = ""
+        val serviceDuration: String = "",
+        @SerializedName("sp_id")
+        val spId: Int = 0,
+        @SerializedName("is_free_shipping_selected")
+        val isFreeShippingSelected: Boolean = false
 )

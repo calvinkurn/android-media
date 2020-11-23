@@ -355,6 +355,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           service_id
           service_duration
           service_name
+          sp_id
+          is_free_shipping_selected
         }
       }
       promo {
@@ -536,6 +538,11 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           action
           color
         }
+      }
+      occ_revamp {
+        enable
+        total_profile
+        change_template_text
       }
     }
   }

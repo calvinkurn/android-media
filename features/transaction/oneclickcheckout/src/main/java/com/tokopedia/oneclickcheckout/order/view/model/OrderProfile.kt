@@ -35,7 +35,9 @@ data class OrderProfileAddress(
 data class OrderProfileShipment(
         val serviceName: String = "",
         val serviceId: Int = 0,
-        val serviceDuration: String = ""
+        val serviceDuration: String = "",
+        val spId: Int = 0,
+        val isFreeShippingSelected: Boolean = false
 )
 
 data class OrderProfilePayment(
