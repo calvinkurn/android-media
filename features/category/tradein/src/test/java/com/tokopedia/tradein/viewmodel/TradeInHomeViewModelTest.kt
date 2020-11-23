@@ -173,7 +173,7 @@ class TradeInHomeViewModelTest {
 
     @Test(expected = IllegalStateException::class)
     fun getDiagnosticDataException() {
-        coEvery { androidIntent.getStringExtra("test-result") } returns null
+        coEvery { androidIntent.getStringExtra("test-result") } throws IllegalStateException()
         tradeInHomeViewModel.getDiagnosticData(androidIntent)
     }
 

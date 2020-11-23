@@ -24,11 +24,16 @@ class DealsBrandGridViewHolder(
                 showShimmering(itemView, brands)
             } else {
                 shimmering?.hide()
-                cl_containter_brand?.show()
                 one_row_shimmering?.hide()
-                showTitle(itemView, brands)
-                showSeeAllText(itemView, brands)
-                setupItemAdapter(itemView, brands)
+
+                if (brands.brands.isNotEmpty()) {
+                    cl_containter_brand?.show()
+                    showTitle(itemView, brands)
+                    showSeeAllText(itemView, brands)
+                    setupItemAdapter(itemView, brands)
+                } else {
+                    cl_containter_brand?.hide()
+                }
             }
         }
     }

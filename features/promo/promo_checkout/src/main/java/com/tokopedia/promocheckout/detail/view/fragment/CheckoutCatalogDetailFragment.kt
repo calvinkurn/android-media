@@ -211,7 +211,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         titleMinTrans?.text = data.minimumUsageLabel
         textMinTrans?.text = data.minimumUsage
         btnAction2?.text = data.buttonStr
-        btnAction2?.setBackgroundResource(R.drawable.bg_button_orange_enabled)
+        btnAction2?.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_orange_enabled)
 
         ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
 
@@ -256,10 +256,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         //disabling the coupons if not eligible for current membership
         if (data.isDisabled!!) {
             ImageUtil.dimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, R.color.black_54))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.black_54))
         } else {
             ImageUtil.unDimImage(imgBanner)
-            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, R.color.orange_red))
+            pointValue.setTextColor(ContextCompat.getColor(pointValue.context, com.tokopedia.design.R.color.orange_red))
         }
 
         if (data.pointsSlash!! <= 0) {
