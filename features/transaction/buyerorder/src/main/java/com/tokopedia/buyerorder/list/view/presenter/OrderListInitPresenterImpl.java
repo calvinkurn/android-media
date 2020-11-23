@@ -91,7 +91,7 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
             @Override
             public void onError(Throwable e) {
-                if (view != null && view.getActivity() != null) {
+                if (isViewAttached()) {
                     e.printStackTrace();
                     view.showErrorNetwork(e.toString());
                 }
@@ -102,7 +102,7 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
                 // Show ticker
                 if (graphqlResponse != null) {
                     TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
-                    if(view != null && view.getActivity() != null)
+                    if(view != null)
                         view.updateTicker(tickerResponse);
                 }
             }
