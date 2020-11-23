@@ -23,9 +23,7 @@ class PopularSearchTitleViewHolder(itemView: View, private val clickListener: In
     private fun bindActionRefreshButton(item: PopularSearchTitleViewModel) {
         itemView.actionRefreshButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.actionRefreshButton?.text = item.labelAction
-            itemView.actionRefreshButton?.isEnabled = true
             itemView.actionRefreshButton?.setOnClickListener {
-                itemView.actionRefreshButton?.isEnabled = false
                 clickListener.onRefreshPopularSearch(item.featureId)
             }
         }
