@@ -115,11 +115,12 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
         scrollView.viewTreeObserver.addOnScrollChangedListener {
-            val scrollY = scrollView.scrollY
-            if (scrollY > 100) {
-                navToolbar?.showShadow(lineShadow = true)
-            } else {
-                navToolbar?.hideShadow(lineShadow = true)
+            scrollView?.run {
+                if (scrollY > 100) {
+                    navToolbar?.showShadow(lineShadow = true)
+                } else {
+                    navToolbar?.hideShadow(lineShadow = true)
+                }
             }
         }
 

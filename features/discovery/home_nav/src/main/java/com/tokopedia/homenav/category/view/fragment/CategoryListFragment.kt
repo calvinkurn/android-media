@@ -99,6 +99,17 @@ class CategoryListFragment: BaseDaggerFragment(), HomeNavListener {
         }
     }
 
+    override fun onDestroy() {
+        arguments?.getString(TITLE_ARGS, "")?.let {
+            if(!it.contains(OTHER)){
+                CategoryTracking.onClickCloseCategory(userSessionInterface.userId)
+            } else {
+                CategoryTracking.onClickCloseLainnya(userSessionInterface.userId)
+            }
+        }
+        super.onDestroy()
+    }
+
     companion object {
         const val PAGE_NAME = "CATEGORY_LIST"
         const val OTHER = "lainnya"
