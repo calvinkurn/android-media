@@ -71,7 +71,7 @@
             app:fabCustomSize="@dimen/dp_56"
             app:layout_behavior="com.tokopedia.shop.ShopPageFABBehaviour"
             app:maxImageSize="@dimen/dp_32"
-            app:srcCompat="@drawable/ic_chat_floating_button" />
+            tools:srcCompat="@drawable/ic_chat_floating_button_old" />
 
         <com.tokopedia.stickylogin.view.StickyLoginView
             android:id="@+id/sticky_login_text"

@@ -50,7 +50,7 @@
         android:layout_marginRight="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:srcCompat ="@drawable/ic_shop_page_product_grid_list"
+        app:srcCompat ="@drawable/ic_shop_page_product_grid_list_old"
         app:layout_constraintHorizontal_bias="1"
         android:layout_height="@dimen/dp_24" />
 

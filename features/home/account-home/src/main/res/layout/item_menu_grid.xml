@@ -9,18 +9,19 @@
     android:layout_marginStart="@dimen/dp_16"
     android:descendantFocusability="blocksDescendants">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_title"
-        style="@style/TextView.Small"
+        app:typographyType="body_2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Transaksi Belanja"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_link"
-        style="@style/TextView.Micro.Green"
+        android:textColor="@color/Unify_G400"
+        app:typographyType="body_3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:text="Lihat Riwayat"

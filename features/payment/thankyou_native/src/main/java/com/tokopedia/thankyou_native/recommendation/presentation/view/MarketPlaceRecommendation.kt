@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -32,6 +33,7 @@ import com.tokopedia.thankyou_native.recommendation.presentation.adapter.decorat
 import com.tokopedia.thankyou_native.recommendation.presentation.adapter.listener.MarketPlaceRecommendationViewListener
 import com.tokopedia.thankyou_native.recommendation.presentation.viewmodel.MarketPlaceRecommendationViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.thank_pdp_recommendation.view.*
@@ -131,6 +133,7 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
                     Observer {
                         when (it) {
                             is Success -> addResultToUI(it.data)
+                            is Fail -> gone()
                         }
                     }
             )
@@ -148,11 +151,15 @@ class MarketPlaceRecommendation : FrameLayout, IRecommendationView {
                                   blankSpaceConfig: BlankSpaceConfig) {
         listener = getRecommendationListener()
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
-                false)
-        adapter = MarketPlaceRecommendationAdapter(marketPlaceRecommendationModelList, blankSpaceConfig, listener)
-        recyclerView.adapter = adapter
-        recyclerView.addItemDecoration(ProductCardDefaultDecorator())
+        if(marketPlaceRecommendationModelList.isNotEmpty()) {
+            recyclerView.layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL,
+                    false)
+            adapter = MarketPlaceRecommendationAdapter(marketPlaceRecommendationModelList, blankSpaceConfig, listener)
+            recyclerView.adapter = adapter
+            recyclerView.addItemDecoration(ProductCardDefaultDecorator())
+        }else{
+            gone()
+        }
     }
 
 

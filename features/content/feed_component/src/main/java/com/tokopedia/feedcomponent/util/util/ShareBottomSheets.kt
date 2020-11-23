@@ -261,7 +261,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                         object : ShareCallback {
                             override fun urlCreated(linkerShareData: LinkerShareResult) {
                                 activity?.let {
-                                    ClipboardHandler().copyToClipboard(it, data?.originalTextContent
+                                    ClipboardHandler().copyToClipboard(it, data?.uri
                                             ?: "")
                                 }
                             }

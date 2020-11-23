@@ -30,7 +30,6 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
@@ -63,7 +62,6 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
-import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.oms.OmsModuleRouter;
@@ -139,8 +137,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         LinkerRouter,
-        DigitalRouter,
-        CMRouter,
         KYCRouter {
 
     @Inject
@@ -316,48 +312,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     public Intent getIntentDeepLinkHandlerActivity() {
         return new Intent(this, DeeplinkHandlerActivity.class);
-    }
-
-    @Override
-    public String getGeneratedOverrideRedirectUrlPayment(String originUrl) {
-        Uri originUri = Uri.parse(originUrl);
-        Uri.Builder uriBuilder = Uri.parse(originUrl).buildUpon();
-        if (!originUri.isOpaque()) {
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP))) {
-                uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_FLAG_APP,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_FLAG_APP
-                );
-            }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE))) {
-                uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_DEVICE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_DEVICE
-                );
-            }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE))) {
-                uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_UTM_SOURCE,
-                        AuthUtil.DEFAULT_VALUE_WEBVIEW_FLAG_PARAM_UTM_SOURCE
-                );
-            }
-            if (!TextUtils.isEmpty(originUri.getQueryParameter(AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION))) {
-                uriBuilder.appendQueryParameter(
-                        AuthUtil.WEBVIEW_FLAG_PARAM_APP_VERSION, GlobalConfig.VERSION_NAME
-                );
-            }
-        }
-        return uriBuilder.build().toString().trim();
-    }
-
-    @Override
-    public Map<String, String> getGeneratedOverrideRedirectHeaderUrlPayment(String originUrl) {
-        String urlQuery = Uri.parse(originUrl).getQuery();
-        return AuthUtil.generateWebviewHeaders(
-                Uri.parse(originUrl).getPath(),
-                urlQuery != null ? urlQuery : "",
-                "GET",
-                AuthUtil.KEY.KEY_WSV4);
     }
 
     @Override
@@ -600,11 +554,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public long getLongRemoteConfig(String key, long defaultValue) {
-        return remoteConfig.getLong(key, defaultValue);
     }
 
     @Override
