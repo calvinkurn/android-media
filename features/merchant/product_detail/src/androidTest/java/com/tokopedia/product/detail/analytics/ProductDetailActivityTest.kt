@@ -158,6 +158,15 @@ class ProductDetailActivityTest {
         }
     }
 
+    @Test
+    fun validateClickTabDiscussion() {
+        actionTest {
+
+        } assertTest {
+
+        }
+    }
+
     private fun setUpTimeoutIdlingResource() {
         IdlingPolicies.setMasterPolicyTimeout(5, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(5, TimeUnit.MINUTES)
@@ -166,7 +175,6 @@ class ProductDetailActivityTest {
 
     private fun finishTest() {
         gtmLogDBSource.deleteAll().subscribe()
-        Thread.sleep(3000)
     }
 
     private fun addToCartBottomSheetIsVisible(): Boolean? {
