@@ -184,10 +184,12 @@ public class InboxReputationFragment extends BaseDaggerFragment
     }
 
     private void setQueryHint() {
-        if (getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
-            searchView.setSearchHint(getString(R.string.query_hint_review_seller));
-        } else {
-            searchView.setSearchHint(getString(R.string.query_hint_review_buyer));
+        if(getContext() != null) {
+            if (getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
+                searchView.setSearchHint(getString(R.string.query_hint_review_seller));
+            } else {
+                searchView.setSearchHint(getString(R.string.query_hint_review_buyer));
+            }
         }
     }
 

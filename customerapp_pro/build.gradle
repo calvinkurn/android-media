@@ -80,7 +80,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         maven {
             url 'https://www.jitpack.io'
         }
@@ -307,7 +307,7 @@ dependencies {
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.discovery2)
     implementation project(rootProject.ext.features.logisticcart)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
@@ -321,15 +321,12 @@ dependencies {
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
-    implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.phoneVerification)
-    implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.loginphone)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation project(rootProject.ext.features.commonDigital)
-    implementation project(rootProject.ext.features.promoCheckout)
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation project(rootProject.ext.features.userIdentificationCommon)
@@ -395,6 +392,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.collapsingTabLayout)
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.websocket)
+    implementation project(rootProject.ext.libraries.workManagerUtil)
     implementation project(rootProject.ext.libraries.baseAdapter)
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)

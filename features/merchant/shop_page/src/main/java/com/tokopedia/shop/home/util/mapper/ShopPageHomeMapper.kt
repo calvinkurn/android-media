@@ -42,9 +42,9 @@ object ShopPageHomeMapper {
     fun mapToHomeProductViewModelForAllProduct(
             shopProduct: ShopProduct,
             isMyOwnProduct: Boolean
-    ): ShopHomeProductViewModel =
+    ): ShopHomeProductUiModel =
             with(shopProduct) {
-                ShopHomeProductViewModel().also {
+                ShopHomeProductUiModel().also {
                     it.id = productId
                     it.name = name
                     it.displayedPrice = price.textIdr
@@ -79,7 +79,7 @@ object ShopPageHomeMapper {
     }
 
 
-    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
+    fun mapToProductCardModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
         val totalReview = shopHomeProductViewModel.totalReview.toIntOrZero()
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
@@ -108,7 +108,7 @@ object ShopPageHomeMapper {
         )
     }
 
-    fun mapToProductCardCampaignModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
+    fun mapToProductCardCampaignModel(isHasAddToCartButton: Boolean, hasThreeDots: Boolean, shopHomeProductViewModel: ShopHomeProductUiModel): ProductCardModel {
         val discountWithoutPercentageString = shopHomeProductViewModel.discountPercentage?.replace("%", "")
                 ?: ""
         val discountPercentage = if (discountWithoutPercentageString == "0") {
@@ -226,6 +226,7 @@ object ShopPageHomeMapper {
                     it.timeCounter,
                     it.totalNotify,
                     it.totalNotifyWording,
+                    mapToDynamicRule(it.dynamicRule),
                     mapCampaignListBanner(it.listBanner),
                     mapCampaignListProduct(it.statusCampaign, it.listProduct),
                     isRemindMe
@@ -233,12 +234,21 @@ object ShopPageHomeMapper {
         }
     }
 
+    private fun mapToDynamicRule(dynamicRule: ShopLayoutWidget.Widget.Data.DynamicRule): ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule {
+        return ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule(
+                dynamicRule.descriptionHeader,
+                ShopHomeNewProductLaunchCampaignUiModel.NewProductLaunchCampaignItem.DynamicRule.DynamicRoleData(
+                        dynamicRule.dynamicRoleData.firstOrNull()?.ruleID.orEmpty()
+                )
+        )
+    }
+
     private fun mapCampaignListProduct(
             statusCampaign: String ,
             listProduct: List<ShopLayoutWidget.Widget.Data.Product>
-    ): List<ShopHomeProductViewModel> {
+    ): List<ShopHomeProductUiModel> {
         return listProduct.map {
-            ShopHomeProductViewModel().apply {
+            ShopHomeProductUiModel().apply {
                 id = it.id.toString()
                 name = it.name
                 displayedPrice = it.discountedPrice
@@ -363,8 +373,8 @@ object ShopPageHomeMapper {
     private fun mapToWidgetProductListItemViewModel(
             data: List<ShopLayoutWidget.Widget.Data>,
             isMyOwnProduct: Boolean
-    ): List<ShopHomeProductViewModel> {
-        return mutableListOf<ShopHomeProductViewModel>().apply {
+    ): List<ShopHomeProductUiModel> {
+        return mutableListOf<ShopHomeProductUiModel>().apply {
             data.onEach {
                 add(mapToWidgetProductItem(it, isMyOwnProduct))
             }
@@ -374,8 +384,8 @@ object ShopPageHomeMapper {
     private fun mapToWidgetProductItem(
             response: ShopLayoutWidget.Widget.Data,
             isMyOwnProduct: Boolean
-    ): ShopHomeProductViewModel =
-            ShopHomeProductViewModel().apply {
+    ): ShopHomeProductUiModel =
+            ShopHomeProductUiModel().apply {
                 id = response.productID.toString()
                 name = response.name
                 displayedPrice = response.displayPrice

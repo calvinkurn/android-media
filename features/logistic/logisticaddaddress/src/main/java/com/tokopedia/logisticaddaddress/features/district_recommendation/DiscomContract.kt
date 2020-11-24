@@ -1,9 +1,7 @@
 package com.tokopedia.logisticaddaddress.features.district_recommendation
 
-import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.logisticaddaddress.domain.model.Address
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
 
 interface DiscomContract {
 

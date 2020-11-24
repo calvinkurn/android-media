@@ -33,7 +33,7 @@ internal class DynamicInitialStateTest: InitialStatePresenterTestFixtures() {
         val refreshedDynamicInitialStateData = refreshDynamicInitialStateResponse.jsonToObject<InitialStateUniverse>().data
         `Test Dynamic Initial State`(dynamicInitialStateData, refreshedDynamicInitialStateData)
 
-        `Then verify refreshPopularSearch view behavior`(8)
+        `Then verify refreshPopularSearch view behavior`(7)
         `Then verify visitable list after refresh dynamic initial state data`(dynamicInitialStateData, refreshedDynamicInitialStateData)
     }
 

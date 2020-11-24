@@ -83,6 +83,7 @@ class RecommendationEntityMapper : Func1<List<RecommendationEntity.Recomendation
                     data.priceInt,
                     data.departmentId,
                     data.rating,
+                    data.ratingAverage,
                     data.countReview,
                     data.stock,
                     data.recommendationType ?: "",

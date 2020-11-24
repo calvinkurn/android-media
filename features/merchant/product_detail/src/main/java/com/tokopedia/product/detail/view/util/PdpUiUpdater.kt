@@ -21,6 +21,7 @@ import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.variant_common.model.VariantCategory
 import kotlin.math.roundToLong
@@ -235,13 +236,12 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         }
     }
 
-    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String) {
+    fun updateDataP2(context: Context?, p2Data: ProductInfoP2UiData, productId: String, isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
         p2Data.let {
 
             shopInfoMap?.run {
                 shopLocation = it.shopInfo.location
                 shopLastActive = it.shopInfo.shopLastActive
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
                 shopAvatar = it.shopInfo.shopAssets.avatar
                 isAllowManage = it.shopInfo.isAllowManage
                 isGoAPotik = it.isGoApotik
@@ -252,6 +252,9 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
             tickerInfoMap?.run {
                 statusInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.statusInfo else null
                 closedInfo = if (it.shopInfo.isShopInfoNotEmpty()) it.shopInfo.closedInfo else null
+                this.isProductWarehouse = isProductWarehouse
+                this.isProductInCampaign = isProductInCampaign
+                this.isOutOfStock = isOutOfStock
             }
 
             shopCredibility?.run {
@@ -265,7 +268,6 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                 shopSpeed = it.shopSpeed
                 shopChatSpeed = it.shopChatSpeed.toIntOrZero()
                 shopRating = it.shopRating
-                isFavorite = it.shopInfo.favoriteData.alreadyFavorited == ProductDetailConstant.ALREADY_FAVORITE_SHOP
             }
 
             orderPriorityMap?.run {
@@ -403,9 +405,22 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
         shopCredibility?.enableButtonFavorite = true
     }
 
+    fun updateShopFollow(isFollow: Int) {
+        shopInfoMap?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
+        shopCredibility?.isFavorite = isFollow == ProductDetailConstant.ALREADY_FAVORITE_SHOP
+    }
+
     fun failUpdateShopFollow() {
         shopInfoMap?.enableButtonFavorite = true
         shopCredibility?.enableButtonFavorite = true
+    }
+
+    fun updateTickerData(isProductWarehouse: Boolean, isProductInCampaign: Boolean, isOutOfStock: Boolean) {
+        tickerInfoMap?.run {
+            this.isProductWarehouse = isProductWarehouse
+            this.isProductInCampaign = isProductInCampaign
+            this.isOutOfStock = isOutOfStock
+        }
     }
 
     private fun mapToCardModel(data: RecommendationWidget?): List<ProductCardModel> {
@@ -420,6 +435,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                     discountPercentage = it.discountPercentage,
                     reviewCount = it.countReview,
                     ratingCount = it.rating,
+                    countSoldRating = it.ratingAverage,
                     shopLocation = it.location,
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,

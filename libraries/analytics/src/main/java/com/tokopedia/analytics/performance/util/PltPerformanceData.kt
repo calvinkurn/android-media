@@ -7,5 +7,6 @@ class PltPerformanceData(
         var overallDuration: Long = 0,
         var isSuccess: Boolean = true,
         var isCache: Boolean = false,
-        var attribution: HashMap<String, String> = hashMapOf()) {
-}
+        var attribution: HashMap<String, String> = hashMapOf(),
+        var customMetric: HashMap<String, Long> = hashMapOf()
+)
