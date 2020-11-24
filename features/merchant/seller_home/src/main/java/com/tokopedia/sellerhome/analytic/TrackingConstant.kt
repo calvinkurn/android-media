@@ -72,6 +72,7 @@ object TrackingConstant {
     const val IMPRESSION_WIDGET_BAR_CHART = "impression widget bar chart"
     const val IMPRESSION_WIDGET_MULTI_LINE_GRAPH = "impression multi trendline"
     const val IMPRESSION_WIDGET_ANNOUNCEMENT = "impression widget announcement "
+    const val CLICK_WIDGET_ADVANCE_TABLE = "click widget advance table"
 
     //search
     const val CLICK_SEARCH = "clickSearch"

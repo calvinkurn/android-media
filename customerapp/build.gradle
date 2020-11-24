@@ -330,7 +330,6 @@ dependencies {
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
-    implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.phoneVerification)
     implementation project(rootProject.ext.features.basemvvm)
     implementation project(rootProject.ext.features.loginregister)
