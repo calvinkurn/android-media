@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips
 
 import android.view.View
 import androidx.fragment.app.Fragment
@@ -10,9 +10,10 @@ import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifyprinciples.Typography
 
-class ChildCategoriesItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class NavigationChipsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
     private val childCategory: Typography = itemView.findViewById(R.id.child_category)
     private lateinit var childCategoriesItemViewModel: DefaultComponentViewModel
     private var positionForParentAdapter: Int = -1
@@ -41,6 +42,6 @@ class ChildCategoriesItemViewHolder(itemView: View, private val fragment: Fragme
     }
 
     private fun sendChipClickEvent(chipData: DataItem) {
-
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickNavigationChips(chipData, positionForParentAdapter)
     }
 }

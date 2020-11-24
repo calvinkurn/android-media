@@ -31,11 +31,11 @@ class CategoryChildCategoriesRepository : BaseRepository(), ChildCategoryReposit
     private fun mapToDiscoveryData(data: Data): List<ComponentsItem> {
         val dataItems = arrayListOf<DataItem>()
         data.categoryAllList.categories?.get(0)?.child?.let {
-            for (item in it) {
-                dataItems.add(DataItem(title = item?.name, id = item?.id, applinks = item?.applinks))
+            it.forEachIndexed { index, item ->
+                dataItems.add(DataItem(title = item?.name, id = item?.id, applinks = item?.applinks, positionForParentItem = index))
             }
         }
-        return DiscoveryDataMapper().mapListToComponentList(dataItems, ComponentNames.ChildCategoryItem.componentName, properties = null)
+        return DiscoveryDataMapper().mapListToComponentList(dataItems, ComponentNames.NavigationChipsItem.componentName, properties = null)
     }
 
 }

@@ -64,9 +64,9 @@ enum class ComponentNames(val componentName: String) {
     //Quick Filter
     QuickFilter("chips_filter_v2"),
 
-    //Child Categories
-    ChildCategories("child_categories"),
-    ChildCategoryItem("child_categories_item"),
+    //Navigation Chips
+    NavigationChips("navigation_chips"),
+    NavigationChipsItem("navigation_chips_item"),
 
     //Banned View
     BannedView("banned_view")

@@ -17,6 +17,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.di.DiscoveryComponent
@@ -160,8 +161,6 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     open fun getNewRepoProvider(): RepositoryProvider = DiscoveryRepoProvider()
 
-    open fun getAnalyticsClass() = ::DiscoveryAnalytics
-
     open fun getPagePath() = discoveryViewModel.pagePath
 
     open fun getPageType() = discoveryViewModel.pageType
@@ -172,8 +171,8 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     fun getSourceIdentifier() = intent.getStringExtra(SOURCE) ?: ""
 
-    open fun getAnalytics(): DiscoveryAnalytics {
-        return getAnalyticsClass().invoke(getPageType(),
+    open fun getAnalytics(): BaseDiscoveryAnalytics {
+        return DiscoveryAnalytics(getPageType(),
                 getPagePath(),
                 getPageIdentifier(),
                 getCampaignCode(),

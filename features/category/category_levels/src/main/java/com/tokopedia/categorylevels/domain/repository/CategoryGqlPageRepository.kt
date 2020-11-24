@@ -49,7 +49,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
             components.add(ComponentsItem(name = ComponentNames.BannedView.componentName, id = "1", renderByDefault = true, title = bannedData.bannedMsgHeader, description = bannedData.bannedMessage))
             return components
         }
-        components.add(ComponentsItem(name = ComponentNames.ChildCategories.componentName, id = "1", renderByDefault = true))
+        components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = "1", renderByDefault = true))
         components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "2", renderByDefault = true, showFilter = false, properties = Properties(targetId = "3")))
         components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "3", renderByDefault = true))
         return components

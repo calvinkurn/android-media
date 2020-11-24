@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class ChildCategoriesViewModel (val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
+class NavigationChipsViewModel (val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel(), CoroutineScope {
     private val listData: MutableLiveData<ArrayList<ComponentsItem>> = MutableLiveData()
 
     @Inject

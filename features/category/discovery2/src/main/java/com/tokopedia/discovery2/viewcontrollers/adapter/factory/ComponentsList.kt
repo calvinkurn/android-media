@@ -68,9 +68,9 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     //Quick Filter
     QuickFilter(R.layout.discovery_quick_filter_layout, ComponentNames.QuickFilter.componentName),
 
-    //Child Categories
-    ChildCategory(R.layout.child_category_view, ComponentNames.ChildCategories.componentName),
-    ChildCategoryItem(R.layout.child_category_item, ComponentNames.ChildCategoryItem.componentName),
+    //Navigation Chips
+    NavigationChips(R.layout.navigation_chips_view, ComponentNames.NavigationChips.componentName),
+    NavigationCHipsItem(R.layout.navigation_chips_item, ComponentNames.NavigationChipsItem.componentName),
 
     //Banned View
     BannedView(R.layout.banned_view, ComponentNames.BannedView.componentName),

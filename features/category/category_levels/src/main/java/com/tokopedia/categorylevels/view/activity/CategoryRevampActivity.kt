@@ -1,10 +1,13 @@
 package com.tokopedia.categorylevels.view.activity
 
 import android.os.Bundle
-import com.tokopedia.categorylevels.analytics.CategoryPageAnalyticss
+import com.tokopedia.categorylevels.analytics.CategoryRevampAnalytics
 import com.tokopedia.categorylevels.di.CategoryRepoProvider
 import com.tokopedia.common.RepositoryProvider
+import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class CategoryRevampActivity : DiscoveryActivity() {
 
@@ -25,5 +28,18 @@ class CategoryRevampActivity : DiscoveryActivity() {
         return CategoryRepoProvider(departmentName, departmentId, categoryUrl)
     }
 
-    override fun getAnalyticsClass() = :: CategoryPageAnalyticss
+    override fun getPageIdentifier(): String {
+        return departmentId
+    }
+
+    override fun getAnalytics(): BaseDiscoveryAnalytics {
+        val userSession: UserSessionInterface = UserSession(this)
+        return CategoryRevampAnalytics(getPageType(),
+                getPagePath(),
+                getPageIdentifier(),
+                getCampaignCode(),
+                getSourceIdentifier(),
+                trackingQueue,
+                userSession)
+    }
 }

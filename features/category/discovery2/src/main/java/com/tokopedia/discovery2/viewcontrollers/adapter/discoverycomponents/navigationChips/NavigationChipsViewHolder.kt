@@ -1,4 +1,4 @@
-package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.childcategories
+package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.navigationChips
 
 import android.view.View
 import android.widget.ImageView
@@ -18,31 +18,33 @@ import com.tokopedia.discovery2.viewcontrollers.customview.SpaceItemDecoration
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.setMargin
 
-class ChildCategoriesViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CategoryNavBottomSheet.CategorySelected {
+class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CategoryNavBottomSheet.CategorySelected {
     private val categoriesRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
     private val dropdownArrow: ImageView = itemView.findViewById(R.id.dropdown_arrow)
     private var categoriesRecycleAdapter: DiscoveryRecycleAdapter = DiscoveryRecycleAdapter(fragment, this)
-    private lateinit var childCategoriesViewModel: ChildCategoriesViewModel
+    private lateinit var navigationChipsViewModel: NavigationChipsViewModel
 
     init {
         attachRecyclerView()
     }
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
-        childCategoriesViewModel = discoveryBaseViewModel as ChildCategoriesViewModel
-        getSubComponent().inject(childCategoriesViewModel)
+        navigationChipsViewModel = discoveryBaseViewModel as NavigationChipsViewModel
+        getSubComponent().inject(navigationChipsViewModel)
         dropdownArrow.setOnClickListener {
-            CategoryNavBottomSheet(this, childCategoriesViewModel.components.pageEndPoint, true).show(fragment.childFragmentManager, "")
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickNavigationDropDown()
+            CategoryNavBottomSheet(this, navigationChipsViewModel.components.pageEndPoint, true).show(fragment.childFragmentManager, "")
         }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
-        childCategoriesViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+        navigationChipsViewModel.getListDataLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+            (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackImpressionNavigationChips(item)
             categoriesRecycleAdapter.setDataList(item)
             categoriesRecycleAdapter.notifyDataSetChanged()
         })
-        childCategoriesViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
+        navigationChipsViewModel.getSyncPageLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
             if (item) {
                 (fragment as DiscoveryFragment).reSync()
             }
