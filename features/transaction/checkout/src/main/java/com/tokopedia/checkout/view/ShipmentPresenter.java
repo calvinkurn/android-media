@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
@@ -65,12 +66,12 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticdata.domain.param.EditAddressParam;
-import com.tokopedia.logisticdata.domain.usecase.EditAddressUseCase;
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass;
+import com.tokopedia.logisticCommon.domain.param.EditAddressParam;
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -103,9 +104,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.data.request.validat
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoClashVoucherOrdersUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoSpIdUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel;
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
@@ -171,10 +174,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private Token token;
     private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
     private ValidateUsePromoRequest lastValidateUsePromoRequest;
+    private Gson gson;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private CheckoutData checkoutData;
-    private boolean partialCheckout;
     private boolean couponStateChanged;
     private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
@@ -186,9 +189,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     private CheckoutAnalyticsCourierSelection mTrackerShipment;
     private CodAnalytics mTrackerCod;
-    private String PARAM_GLOBAL = "global";
-    private String PARAM_MERCHANT = "merchant";
-    private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
@@ -215,7 +215,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetInsuranceCartUseCase getInsuranceCartUseCase,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
-                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase) {
+                             ValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
+                             Gson gson) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutGqlUseCase = checkoutGqlUseCase;
         this.getShipmentAddressFormGqlUseCase = getShipmentAddressFormGqlUseCase;
@@ -238,6 +239,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
+        this.gson = gson;
     }
 
     @Override
@@ -807,12 +809,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
 
             dataCheckoutRequestList = getView().generateNewCheckoutRequest(newShipmentCartItemModelList, false);
-            partialCheckout = true;
         }
     }
 
     @Override
-    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest) {
+    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest,
+                                                int lastSelectedCourierOrderIndex,
+                                                String cartString) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
@@ -881,12 +884,27 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                                    cancelAutoApplyPromoStackAfterClash(clashPromoCodes);
                                                }
+
+                                               reloadCourierForMvc(validateUsePromoRevampUiModel, lastSelectedCourierOrderIndex, cartString);
                                            }
                                        }
                                    }
                         )
         );
 
+    }
+
+    // Re-fetch rates to get promo mvc icon
+    private void reloadCourierForMvc(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int lastSelectedCourierOrderIndex, String cartString) {
+        List<PromoSpIdUiModel> promoSpids = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        if (promoSpids.size() > 0 && lastSelectedCourierOrderIndex > -1) {
+            for (PromoSpIdUiModel promoSpId : promoSpids) {
+                if (promoSpId.getUniqueId().equalsIgnoreCase(cartString)) {
+                    getView().prepareReloadRates(lastSelectedCourierOrderIndex, false);
+                    break;
+                }
+            }
+        }
     }
 
     private void updateTickerAnnouncementData(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
@@ -1748,7 +1766,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 List<ShopShipment> shopShipmentList,
                                                 boolean isInitialLoad, ArrayList<Product> products,
                                                 String cartString, boolean isTradeInDropOff,
-                                                RecipientAddressModel recipientAddressModel) {
+                                                RecipientAddressModel recipientAddressModel,
+                                                boolean isForceReload, boolean skipMvc) {
         ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString, isTradeInDropOff, recipientAddressModel);
 
         int counter = codData == null ? -1 : codData.getCounterCod();
@@ -1759,12 +1778,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
         boolean isLeasing = shipmentCartItemModel.getIsLeasingProduct();
 
-        RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
+        String mvc = generateRatesMvcParam(cartString);
+
+        RatesParam.Builder ratesParamBuilder = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(cornerId)
                 .codHistory(counter)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
-                .build();
+                .mvc("");
+
+        if (!skipMvc) {
+            ratesParamBuilder.mvc(mvc);
+        }
+
+        RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
         if (isTradeInDropOff) {
@@ -1780,8 +1807,35 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         new GetCourierRecommendationSubscriber(
                                 getView(), this, shipperId, spId, itemPosition,
                                 shippingCourierConverter, shipmentCartItemModel, shopShipmentList,
-                                isInitialLoad, isTradeInDropOff
+                                isInitialLoad, isTradeInDropOff, isForceReload
                         ));
+    }
+
+    @Override
+    public String generateRatesMvcParam(String cartString) {
+        String mvc = "";
+
+        List<MvcShippingBenefitUiModel> tmpMvcShippingBenefitUiModel = new ArrayList<>();
+        List<PromoSpIdUiModel> promoSpIdUiModels = new ArrayList<>();
+        if (validateUsePromoRevampUiModel != null) {
+            promoSpIdUiModels = validateUsePromoRevampUiModel.getPromoUiModel().getAdditionalInfoUiModel().getPromoSpIds();
+        } else if (lastApplyData != null) {
+            promoSpIdUiModels = lastApplyData.getAdditionalInfo().getPromoSpIds();
+        }
+
+        if (promoSpIdUiModels.size() > 0) {
+            for (PromoSpIdUiModel promoSpIdUiModel : promoSpIdUiModels) {
+                if (cartString.equals(promoSpIdUiModel.getUniqueId())) {
+                    tmpMvcShippingBenefitUiModel.addAll(promoSpIdUiModel.getMvcShippingBenefits());
+                }
+            }
+        }
+
+        if (tmpMvcShippingBenefitUiModel.size() > 0) {
+            mvc = gson.toJson(tmpMvcShippingBenefitUiModel);
+        }
+
+        return mvc.replace("\n", "").replace(" ", "");
     }
 
     @NonNull
@@ -1805,7 +1859,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         shippingParam.setCategoryIds(shipmentDetailData.getShipmentCartData().getCategoryIds());
         shippingParam.setIsBlackbox(shipmentDetailData.getIsBlackbox());
         shippingParam.setIsPreorder(shipmentDetailData.getPreorder());
-        shippingParam.setAddressId(shipmentDetailData.getAddressId());
+        int addressId = 0;
+        try {
+            addressId = Integer.parseInt(recipientAddressModel.getId());
+        } catch (NumberFormatException e) {
+            // No-op
+        }
+        shippingParam.setAddressId(addressId);
         shippingParam.setTradein(shipmentDetailData.isTradein());
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
@@ -1982,8 +2042,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel
-                                                         validateUsePromoRevampUiModel) {
+    public void setValidateUsePromoRevampUiModel(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
         this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
     }
 

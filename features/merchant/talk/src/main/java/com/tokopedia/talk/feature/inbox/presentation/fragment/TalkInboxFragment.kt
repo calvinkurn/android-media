@@ -20,6 +20,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -214,6 +215,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                         talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         hideFullPageError()
                         hideFullPageLoading()
+                        hideLoading()
                         if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                             hideLoading()
@@ -238,6 +240,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                 }
                 is TalkInboxViewState.Fail -> {
                     hideFullPageLoading()
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageError()
                     } else {
@@ -245,6 +248,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                     }
                 }
                 is TalkInboxViewState.Loading -> {
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageLoading()
                     }
@@ -260,8 +264,11 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun initErrorPage() {
-        inboxPageError.talkConnectionErrorRetryButton.setOnClickListener {
-            loadInitialData()
+        inboxPageError.apply {
+            talkConnectionErrorRetryButton.setOnClickListener {
+                loadInitialData()
+            }
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 

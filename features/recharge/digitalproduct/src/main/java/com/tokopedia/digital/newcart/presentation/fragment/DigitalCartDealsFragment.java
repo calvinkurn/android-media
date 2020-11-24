@@ -23,7 +23,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DaggerDigitalCartDealsComponent;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
@@ -34,6 +33,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDealsContr
 import com.tokopedia.digital.newcart.presentation.fragment.adapter.DigitalDealsPagerAdapter;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealListListener;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartDealsPresenter;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;

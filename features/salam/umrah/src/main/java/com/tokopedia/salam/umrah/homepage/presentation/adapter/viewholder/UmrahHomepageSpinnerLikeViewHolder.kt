@@ -1,12 +1,7 @@
 package com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder
 
-import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
@@ -21,8 +16,6 @@ import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListen
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.bottom_sheets_umrah_home_page.*
-import kotlinx.android.synthetic.main.bottom_sheets_umrah_home_page.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_search_spinner.view.*
 
@@ -69,19 +62,19 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
                     rl_umrah_home_page_location_parent.setOnClickListener {
                         val listBottomSheet = UmrahHomepageBottomSheetMapper.citiesMapper(element)
-                        showBottomSheet(context,
+                        showBottomSheet(
                                 getString(R.string.umrah_home_page_search_depart_city_label), listBottomSheet, defaultIndexCities, adapterCity)
                     }
 
                     rl_umrah_home_page_calendar_parent.setOnClickListener {
                         val listBottomSheet = UmrahHomepageBottomSheetMapper.periodsMapper(element)
-                        showBottomSheet(context,
+                        showBottomSheet(
                                 getString(R.string.umrah_home_page_search_depart_month_label), listBottomSheet, defaultIndexPeriods, adapterPeriod)
                     }
 
                     rl_umrah_home_page_price_parent.setOnClickListener {
                         val listBottomSheet = UmrahHomepageBottomSheetMapper.priceRangerMapper(element)
-                        showBottomSheet(context,
+                        showBottomSheet(
                                 getString(R.string.umrah_home_page_search_price_label), listBottomSheet, defaultIndexPrice, adapterPrice)
                     }
 
@@ -121,15 +114,21 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
     }
 
     private fun renderDefaultData(element: UmrahSearchParameterEntity){
-        tvLocation.text  = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].displayText
-        departureCityId = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].query
+        if(element.umrahSearchParameter.depatureCities.options.isNotEmpty()) {
+            tvLocation.text = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].displayText
+            departureCityId = element.umrahSearchParameter.depatureCities.options[defaultIndexCities].query
+        }
 
-        tvPeriod.text = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].displayText
-        departurePeriod = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].query
+        if(element.umrahSearchParameter.departurePeriods.options.isNotEmpty()) {
+            tvPeriod.text = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].displayText
+            departurePeriod = element.umrahSearchParameter.departurePeriods.options[defaultIndexPeriods].query
+        }
 
-        tvPrice.text = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].rangeDisplayText
-        priceMin = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].minimum
-        priceMax = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].maximum
+        if(element.umrahSearchParameter.priceRangeOptions.options.isNotEmpty()) {
+            tvPrice.text = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].rangeDisplayText
+            priceMin = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].minimum
+            priceMax = element.umrahSearchParameter.priceRangeOptions.options[defaultIndexPrice].maximum
+        }
     }
 
     override fun getDatafromBottomSheet(data: UmrohHomepageBottomSheetwithType) {
@@ -154,30 +153,11 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
     }
 
-    private fun showBottomSheet(context: Context, title: String, listBottomSheet: UmrahHomepageBottomSheetData,
+    private fun showBottomSheet(title: String, listBottomSheet: UmrahHomepageBottomSheetData,
                                 defaultOption: Int,
                                 adapter: UmrahHomepageBottomSheetAdapter) {
-        adapter.lastCheckedPosition = defaultOption
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
-            setCustomContentView(inflatingView(context, R.layout.bottom_sheets_umrah_home_page,
-                    listBottomSheet, title, adapter), "", false)
-            img_umrah_home_page_bottom_sheet_closed.setOnClickListener { dismiss() }
-        }
-        bottomSheet.show()
-        adapter.bottomSheetDialog = bottomSheet
-    }
 
-    private fun inflatingView(context: Context, id: Int, listBottomSheet: UmrahHomepageBottomSheetData,
-                              title: String, adapter: UmrahHomepageBottomSheetAdapter): View? {
-        return LayoutInflater.from(context).inflate(id, null).apply {
-            tv_umrah_home_page_bottom_sheet_title.text = title
-            adapter.setList(listBottomSheet)
-            rv_umrah_home_page_bottom_sheet.adapter = adapter
-            rv_umrah_home_page_bottom_sheet.layoutManager = LinearLayoutManager(
-                    context,
-                    RecyclerView.VERTICAL, false
-            )
-        }
+        onBindListener.showBottomSheetSearchParam(title,listBottomSheet,defaultOption,adapter)
     }
 
 
