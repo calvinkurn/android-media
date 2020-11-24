@@ -66,7 +66,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         model.userSavingResponse?.tokopointsUserSaving?.userSaving?.let { renderUserSaving(it) }
     }
 
-    fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
+    private fun renderToolbarWithHeader(data: TokopediaRewardTopSection?) {
         cardTierInfo.doOnLayout {
             cardRuntimeHeightListener.setCardLayoutHeight(it.height)
         }
@@ -99,7 +99,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         renderDynamicActionList(data?.dynamicActionList)
     }
 
-    fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
+    private fun renderDynamicActionList(dataList: List<DynamicActionListItem?>?) {
 
         if (dataList != null && dataList.isNotEmpty()) {
             for (i in dataList.indices) {
@@ -170,13 +170,13 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         })
     }
 
-    fun hideNotification(index: Int, dynamicActionListItem: DynamicActionListItem?) {
+    private fun hideNotification(index: Int, dynamicActionListItem: DynamicActionListItem?) {
         toolbarItemList as ArrayList<NotificationUnify>
         toolbarItemList[index].hide()
         dynamicActionListItem?.counter?.isShowCounter = false
     }
 
-    fun renderUserSaving(userSavingInfo: UserSaving) {
+    private fun renderUserSaving(userSavingInfo: UserSaving) {
         if (!userSavingInfo.title.isNullOrEmpty()) {
             (title as TextView).text = userSavingInfo.title
         } else {
@@ -203,10 +203,8 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                         0, it,
                         Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
-
             (savingDesc as TextView).text = spannable
         }
-
         if (!userSavingInfo.backgroundImageURL.isNullOrEmpty()) {
             ImageHandler.loadBackgroundImage(cardContainer, userSavingInfo.backgroundImageURL)
         }
