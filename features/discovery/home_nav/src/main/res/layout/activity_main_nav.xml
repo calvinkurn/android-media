@@ -30,7 +30,7 @@
         app:toolbarContentType="typeTitle"
         app:toolbarInitialTheme="light"
         app:toolbarBackButton="close"
-        app:toolbarAlwaysShowShadow="true"
+        app:toolbarAlwaysShowShadow="false"
         app:toolbarPageName="nav page"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -330,6 +330,10 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         toolbarCustomReference = null
     }
 
+    fun setShowShadowEnabled(enabled: Boolean) {
+        toolbarAlwaysShowShadow = enabled
+    }
+
     fun setToolbarPageName(pageName: String) {
         toolbarPageName = pageName
     }
