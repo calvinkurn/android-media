@@ -27,9 +27,25 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:minHeight="?attr/actionBarSize"
+            android:visibility="gone"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp" />
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/nav_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            android:gravity="top"
+            android:visibility="gone"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:toolbarAlwaysShowShadow="false"
+            app:toolbarInitialTheme="light"
+            app:toolbarTitle="@string/cart"
+            app:toolbarPageName="@string/toolbar_page_name_cart"
+            app:toolbarContentType="typeTitle" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

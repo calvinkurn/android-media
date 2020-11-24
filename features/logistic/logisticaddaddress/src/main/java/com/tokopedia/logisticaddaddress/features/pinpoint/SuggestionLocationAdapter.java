@@ -31,8 +31,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 

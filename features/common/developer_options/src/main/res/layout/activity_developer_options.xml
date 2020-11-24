@@ -539,5 +539,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/requestFcmToken"
             android:text="Request New FCM Token" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/resetOnboardingNavigation"
+            android:text="RESET ONBOARDING NAVIGATION!" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonAlwaysOldNavigation"
+            android:text="ALWAYS_OLD_NAVIGATION" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonAlwaysNewNavigation"
+            android:text="ALWAYS_NEW_NAVIGATION" />
     </LinearLayout>
 </ScrollView>
