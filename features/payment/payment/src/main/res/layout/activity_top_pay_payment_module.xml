@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.TopPayActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activity.TopPayActivity">
 
     <RelativeLayout
         android:id="@+id/holder_top"
@@ -21,29 +21,27 @@
             app:srcCompat="@drawable/ic_arrow_back_black"
             tools:ignore="ContentDescription" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toEndOf="@+id/btn_back"
-            android:layout_toLeftOf="@+id/btn_close"
-            android:layout_toRightOf="@+id/btn_back"
             android:layout_toStartOf="@+id/btn_close"
+            android:layout_toEndOf="@+id/btn_back"
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/app_name"
             android:textColor="@color/Unify_N700_68"
-            android:textSize="18sp" />
+            app:typographyType="heading_3"
+            app:typographyWeight="reguler" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/btn_close"
             android:layout_width="?android:actionBarSize"
             android:layout_height="?android:actionBarSize"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:padding="12dp"
-            app:srcCompat="@drawable/ic_close_white"
             android:visibility="invisible"
+            app:srcCompat="@drawable/ic_close_white"
             tools:ignore="ContentDescription" />
     </RelativeLayout>
 
@@ -64,8 +62,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="-6dp"
             android:max="100" />
-
     </RelativeLayout>
-
 
 </RelativeLayout>
