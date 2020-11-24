@@ -91,7 +91,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
     private var scroogeWebView: WebView? = null
     private var progressBar: ProgressBar? = null
     private var btnBack: View? = null
-    private var btnClose: View? = null
     private var tvTitle: TextView? = null
     private var progressDialog: ProgressDialog? = null
 
@@ -153,7 +152,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
         setContentView(R.layout.activity_top_pay_payment_module)
         tvTitle = findViewById(R.id.tv_title)
         btnBack = findViewById(R.id.btn_back)
-        btnClose = findViewById(R.id.btn_close)
         scroogeWebView = findViewById(R.id.scrooge_webview)
         progressBar = findViewById(R.id.progressbar)
         progressDialog = ProgressDialog(this)
@@ -186,7 +184,6 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
 
         btnBack?.visibility = View.VISIBLE
         btnBack?.setOnClickListener { onBackPressed() }
-        btnClose?.setOnClickListener { callbackPaymentCanceled() }
     }
 
     private fun setActionVar() {
