@@ -285,6 +285,8 @@ class StatisticFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterFa
         StatisticTracker.sendSectionTooltipClickEvent(model.title)
     }
 
+    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {}
+
     private fun setupView() = view?.run {
         (activity as? AppCompatActivity)?.let { activity ->
             activity.setSupportActionBar(headerStcStatistic)

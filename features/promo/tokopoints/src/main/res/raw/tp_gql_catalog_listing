@@ -36,5 +36,14 @@ query CatalogListing($subCategoryID: Int, $categoryID: Int, $pointRange: Int, $s
     pageInfo {
       hasNext
     }
+    countdownInfo{
+      isShown
+      type
+      label
+      countdownUnix
+      countdownStr
+      textColor
+      backgroundColor
+    }
   }
 }
