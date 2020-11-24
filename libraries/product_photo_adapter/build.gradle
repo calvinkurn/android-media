@@ -27,4 +27,3 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
-apply from: '../../jacoco_task.gradle'

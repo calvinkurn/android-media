@@ -22,7 +22,7 @@ class ProductReportViewHolder(val view: View, val listener: DynamicProductDetail
     override fun bind(element: ProductReportDataModel) {
         view.product_report_txt.movementMethod = LinkMovementMethod.getInstance()
         view.product_report_txt.text = view.context.getString(R.string.merchant_product_detail_report_text)
-                .linkTextWithGiven(view.context, "Laporkan" to {
+                .linkTextWithGiven(view.context, view.context.getString(R.string.merchant_product_detail_report_suffix) to {
                     listener.reportProductFromComponent(getComponentTrackData(element))
                 })
     }

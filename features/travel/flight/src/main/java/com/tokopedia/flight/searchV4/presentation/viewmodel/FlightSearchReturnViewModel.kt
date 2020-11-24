@@ -55,11 +55,11 @@ class FlightSearchReturnViewModel @Inject constructor(private val flightSearchJo
                                journeyModel: FlightJourneyModel? = null,
                                adapterPosition: Int = -1) {
         if (adapterPosition == -1) {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
                     FlightAnalytics.Screen.SEARCH,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         } else {
-            flightAnalytics.eventSearchProductClickFromList(flightSearchPassData, journeyModel,
+            flightAnalytics.eventSearchProductClickV2FromList(flightSearchPassData, journeyModel,
                     adapterPosition, FlightAnalytics.Screen.SEARCH,
                     if (userSessionInterface.isLoggedIn) userSessionInterface.userId else "")
         }
