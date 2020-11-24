@@ -354,11 +354,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     @Override
-    public List<ActionButton> getActionList() {
-        return actionButtonList;
-    }
-
-    @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
         Map<String, Object> variables = new HashMap<>();
 

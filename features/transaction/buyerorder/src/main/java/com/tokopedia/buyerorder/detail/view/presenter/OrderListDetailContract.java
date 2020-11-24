@@ -131,8 +131,6 @@ public interface OrderListDetailContract {
 
         void hitEventEmail(ActionButton actionButton, String metadata, TextView actionButtonText,RelativeLayout actionButtonLayout);
 
-        List<ActionButton> getActionList();
-
         void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode);
 
         void assignInvoiceDataTo(Intent intent);
