@@ -6,19 +6,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationTitleUiModel
 import com.tokopedia.notifcenter.data.uimodel.RecommendationUiModel
-import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
-import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
-import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
+import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -46,6 +45,7 @@ interface INotificationViewModel {
 class NotificationViewModel @Inject constructor(
         private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
         private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
+        private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
         private val clearNotifUseCase: ClearNotifCounterUseCase,
         private val markAsReadUseCase: MarkNotificationAsReadUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
@@ -82,6 +82,10 @@ class NotificationViewModel @Inject constructor(
     private val _clearNotif = MutableLiveData<Resource<ClearNotifCounterResponse>>()
     val clearNotif: LiveData<Resource<ClearNotifCounterResponse>>
         get() = _clearNotif
+
+    private val _bumpReminder = MutableLiveData<Resource<BumpReminderResponse>>()
+    val bumpReminder: LiveData<Resource<BumpReminderResponse>>
+        get() = _bumpReminder
 
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
@@ -185,6 +189,23 @@ class NotificationViewModel @Inject constructor(
         if (role == null) return
         notifcenterDetailUseCase.getMoreEarlierNotifications(
                 filter, role, onSuccess, onError
+        )
+    }
+
+    fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
+        launchCatchError(dispatcher.io(),
+                {
+                    bumpReminderUseCase.bumpReminder(
+                            product.productId.toString(),
+                            notif.notifId
+                    ).collect {
+                        it.referer = notif
+                        _bumpReminder.postValue(it)
+                    }
+                },
+                {
+                    _bumpReminder.postValue(Resource.error(it, null))
+                }
         )
     }
 

@@ -27,7 +27,7 @@ class SingleProductNotificationViewHolder constructor(
 
     private fun bindProductData(element: NotificationUiModel) {
         val product = element.product
-        productContainer?.bindProductData(product, listener)
+        productContainer?.bindProductData(element, product, listener)
     }
 
     @SuppressLint("ClickableViewAccessibility")

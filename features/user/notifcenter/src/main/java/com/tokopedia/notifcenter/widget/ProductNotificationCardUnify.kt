@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,6 +33,7 @@ class ProductNotificationCardUnify(
     private var campaignTag: ImageView? = null
     private var btnCheckout: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
+    private var btnReminder: UnifyButton? = null
     private var listener: NotificationItemListener? = null
 
     init {
@@ -54,9 +56,14 @@ class ProductNotificationCardUnify(
         btnCheckout = view.findViewById(R.id.btn_checkout)
         campaignTag = view.findViewById(R.id.img_campaign)
         btnAtc = view.findViewById(R.id.btn_atc)
+        btnReminder = view.findViewById(R.id.tv_reminder)
     }
 
-    fun bindProductData(product: ProductData?, listener: NotificationItemListener?) {
+    fun bindProductData(
+            notification: NotificationUiModel?,
+            product: ProductData?,
+            listener: NotificationItemListener?
+    ) {
         if (product != null) {
             show()
             initField(listener)
@@ -69,8 +76,20 @@ class ProductNotificationCardUnify(
             bindProductClick(product)
             bindBuyClick(product)
             bindAtcClick(product)
+            bindReminder(product, notification)
         } else {
             hide()
+        }
+    }
+
+    private fun bindReminder(product: ProductData, notification: NotificationUiModel?) {
+        if (product.hasEmptyStock() && notification != null) {
+            btnReminder?.show()
+            btnReminder?.setOnClickListener {
+                listener?.bumpReminder(product, notification)
+            }
+        } else {
+            btnReminder?.hide()
         }
     }
 
@@ -125,14 +144,24 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindBuyClick(product: ProductData) {
-        btnCheckout?.setOnClickListener {
-            listener?.buyProduct(product)
+        if (product.hasEmptyStock()) {
+            btnCheckout?.hide()
+        } else {
+            btnCheckout?.show()
+            btnCheckout?.setOnClickListener {
+                listener?.buyProduct(product)
+            }
         }
     }
 
     private fun bindAtcClick(product: ProductData) {
-        btnAtc?.setOnClickListener {
-            listener?.addProductToCart(product)
+        if (product.hasEmptyStock()) {
+            btnAtc?.hide()
+        } else {
+            btnAtc?.show()
+            btnAtc?.setOnClickListener {
+                listener?.addProductToCart(product)
+            }
         }
     }
 }

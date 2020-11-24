@@ -7,7 +7,6 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import com.tokopedia.graphql.CommonUtils
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
@@ -34,7 +33,7 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
     }
 
     private fun bind(productView: ProductNotificationCardUnify?, product: ProductData) {
-        productView?.bindProductData(product, listener)
+        productView?.bindProductData(notification, product, listener)
     }
 
     private fun createProductView(): View? {

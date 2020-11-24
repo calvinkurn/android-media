@@ -12,4 +12,5 @@ interface NotificationItemListener {
     fun buyProduct(product: ProductData)
     fun addProductToCart(product: ProductData)
     fun markNotificationAsRead(element: NotificationUiModel)
+    fun bumpReminder(product: ProductData, notif: NotificationUiModel)
 }

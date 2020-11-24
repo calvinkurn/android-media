@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -195,6 +196,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 }
             }
         })
+
+        viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
+            when (it.status) {
+                Status.SUCCESS -> Toast.makeText(context, "Bump reminder success", Toast.LENGTH_SHORT).show()
+                Status.ERROR -> Toast.makeText(context, "Bump reminder error", Toast.LENGTH_SHORT).show()
+                else -> {
+                }
+            }
+        })
     }
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
@@ -322,6 +332,10 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun markNotificationAsRead(element: NotificationUiModel) {
         viewModel.markNotificationAsRead(containerListener?.role, element)
+    }
+
+    override fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
+        viewModel.bumpReminder(product, notif)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

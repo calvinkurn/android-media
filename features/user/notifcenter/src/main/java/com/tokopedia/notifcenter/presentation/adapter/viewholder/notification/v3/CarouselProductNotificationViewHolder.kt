@@ -127,7 +127,7 @@ class CarouselProductNotificationViewHolder constructor(
                 holder: NestedSingleProductNotificationViewHolder, position: Int
         ) {
             notification?.productData?.getOrNull(position)?.let {
-                holder.bind(it)
+                holder.bind(it, notification)
             }
         }
     }
@@ -145,12 +145,12 @@ class CarouselProductNotificationViewHolder constructor(
                 R.id.pc_single
         )
 
-        fun bind(product: ProductData) {
-            bindProductData(product)
+        fun bind(product: ProductData, notification: NotificationUiModel?) {
+            bindProductData(product, notification)
         }
 
-        private fun bindProductData(product: ProductData) {
-            productContainer?.bindProductData(product, listener)
+        private fun bindProductData(product: ProductData, notification: NotificationUiModel?) {
+            productContainer?.bindProductData(notification, product, listener)
         }
 
         companion object {
