@@ -12,6 +12,18 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
+import kotlinx.android.synthetic.main.product_card_list_layout.view.buttonAddToCart
+import kotlinx.android.synthetic.main.product_card_list_layout.view.cardViewProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.constraintLayoutProductCard
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageProduct
+import kotlinx.android.synthetic.main.product_card_list_layout.view.imageThreeDots
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelCampaignBackground
+import kotlinx.android.synthetic.main.product_card_list_layout.view.labelProductStatus
+import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarStock
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewLabelCampaign
+import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
+import kotlinx.android.synthetic.main.product_card_list_layout.view.btnNotify
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -55,6 +67,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         setAddToCartButtonText(productCardModel)
 
+        renderNotifyMeButton(productCardModel)
+
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                     getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
@@ -83,6 +97,10 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
+        btnNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -132,7 +150,20 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
     override fun getThreeDotsButton(): View? = imageThreeDots
 
-
+    private fun View.renderNotifyMeButton(productCardModel: ProductCardModel) {
+        btnNotify?.shouldShowWithAction(productCardModel.notifyMeText.isNotEmpty()) {
+            btnNotify.text = productCardModel.notifyMeText
+            if (productCardModel.isNotifySubscribed) {
+                btnNotify.apply {
+                    buttonVariant = UnifyButton.Variant.FILLED
+                }
+            } else {
+                btnNotify.apply {
+                    buttonVariant = UnifyButton.Variant.GHOST
+                }
+            }
+        }
+    }
 
 
     /**
