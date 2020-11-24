@@ -6,36 +6,34 @@ import com.tokopedia.devicefingerprint.datavisor.`object`.VisorObject
 
 class VisorFingerprintInstance {
 
-    lateinit var visorInstance : DVTokenClient
-    private var visorToken = ""
-    private var isTokenInit = false
+    companion object {
+        var visorInstance : DVTokenClient? = null
+        private var visorToken = ""
+        private var isTokenInit = false
 
-
-    private fun getVisorInstance(applicationContext: Context) {
-        visorInstance = DVTokenClient.getInstance(applicationContext)
-        visorInstance.setDVCustomDomain(VisorObject.Key.APP_DOMAIN)
-    }
-
-    fun initToken(applicationContext: Context, customUserDimension: Map<String, String>? = null, listener: onVisorInitListener ) {
-        if (!this::visorInstance.isInitialized) {
-            getVisorInstance(applicationContext)
+        private fun getVisorInstance(applicationContext: Context): DVTokenClient{
+            if (visorInstance == null) {
+                visorInstance = DVTokenClient.getInstance(applicationContext)
+                visorInstance?.setDVCustomDomain(VisorObject.Key.APP_DOMAIN)
+            }
+            return visorInstance!!
         }
-        if (!isTokenInit) {
-            visorInstance.initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
-                if (nResultCode == 0) {
-                    isTokenInit = true
-                    visorToken = strToken
-                    listener.onSuccessInitToken(token = strToken)
-                } else {
-                    listener.onFailedInitToken(error = "failed to init visor token code : " + nResultCode)
+
+        fun initToken(context: Context, customUserDimension: Map<String, String>? = null, listener: onVisorInitListener? = null ) {
+            if (!isTokenInit) {
+                getVisorInstance(context.applicationContext).initToken(VisorObject.Key.APP_KEY, VisorObject.Key.APP_SECRET, customUserDimension) { strToken, nResultCode ->
+                    if (nResultCode == 0) {
+                        isTokenInit = true
+                        visorToken = strToken
+                        listener?.onSuccessInitToken(token = strToken)
+                    } else {
+                        listener?.onFailedInitToken(error = "failed to init visor token code : " + nResultCode)
+                    }
                 }
+            } else {
+                listener?.onSuccessInitToken(visorToken)
             }
         }
-    }
-
-    fun getVisorToken(): String {
-        return if(visorToken.isNotEmpty()) visorToken
-        else visorInstance.dvToken
     }
 
     interface onVisorInitListener {
