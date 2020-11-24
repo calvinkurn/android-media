@@ -13,7 +13,7 @@ buildscript {
         maven { url 'https://maven.fabric.io/public' }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
@@ -45,7 +45,7 @@ buildscript {
     repositories {
         jcenter()
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.googleServices
@@ -85,6 +85,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.sellerMigrationCommon)
     implementation project(rootProject.ext.features.sellerMenuCommon)
+    implementation project(rootProject.ext.features.homeAccountUser)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager

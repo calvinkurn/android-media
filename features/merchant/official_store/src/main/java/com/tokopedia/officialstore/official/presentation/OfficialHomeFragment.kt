@@ -90,7 +90,8 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
-    private val officialHomeMapper = OfficialHomeMapper()
+    @Inject
+    lateinit var officialHomeMapper: OfficialHomeMapper
     
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
@@ -217,6 +218,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }

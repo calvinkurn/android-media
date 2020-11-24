@@ -39,7 +39,8 @@ data class RatesParam(
         var used_otdg: Int? = null,
         var occ: String = "0",
         var po_time: Int = 0,
-        var is_fulfillment: Boolean = false
+        var is_fulfillment: Boolean = false,
+        var mvc: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -65,7 +66,8 @@ data class RatesParam(
             products = builder.products,
             unique_id = builder.unique_id,
             is_fulfillment = builder.is_fulfillment,
-            po_time = builder.po_time)
+            po_time = builder.po_time,
+            mvc = builder.mvc)
 
     fun toMap(): Map<String, Any> = mapOf(
             "spids" to spids,
@@ -93,6 +95,7 @@ data class RatesParam(
             "products" to products,
             "unique_id" to unique_id,
             "occ" to occ,
+            "mvc" to mvc,
             "po_time" to po_time,
             "is_fulfillment" to is_fulfillment
     )
@@ -145,6 +148,7 @@ data class RatesParam(
             private set
         var po_time: Int = shipping.preOrderDuration
             private set
+        var mvc: String = ""
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
@@ -153,6 +157,8 @@ data class RatesParam(
         fun isLeasing(leasing: Boolean) = apply { this.vehicle_leasing = if (leasing) 1 else 0 }
 
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
+
+        fun mvc(mvc: String?) = apply { this.mvc = mvc ?: "" }
 
         fun build() = RatesParam(this)
 

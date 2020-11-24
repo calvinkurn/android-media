@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -63,7 +63,6 @@ dependencies {
 
     //Content
     implementation project(rootProject.ext.features.createpost)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.interestPick)
@@ -135,6 +134,8 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.updateinactivephone)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)
