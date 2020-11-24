@@ -12,6 +12,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
     private var categoryListLiveData = MutableLiveData<Result<CategoryAllList>>()
@@ -85,4 +86,14 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun addShimmerItemsToL2() : List<ChildItem> {
+        // adding shimmer elements in recyclerview
+        val list = ArrayList<ChildItem>()
+        val item = ChildItem()
+        item.viewType = 0
+        for (i in 0..12) {
+            list.add(item)
+        }
+        return list
+    }
 }

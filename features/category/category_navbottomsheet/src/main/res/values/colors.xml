@@ -6,4 +6,5 @@
     <color name="category_background">#BFF3F4F5</color>
     <color name="category_border">#E5E7E9</color>
     <color name="category_unselected_background">#f3f4f5</color>
+    <color name="category_expanded_icon">#6C727C</color>
 </resources>

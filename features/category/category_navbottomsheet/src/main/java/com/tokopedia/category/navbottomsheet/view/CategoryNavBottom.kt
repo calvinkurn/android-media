@@ -77,7 +77,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                     categoryList[selectedLevelOnePosition]?.isSelected = true
                     master_list.adapter?.notifyDataSetChanged()
                     master_list.layoutManager?.scrollToPosition(selectedLevelOnePosition)
-                    initiateLevelTwoView(selectedLevelOnePosition)
+                    initiateLevelTwoView(selectedLevelOnePosition, true)
                 }
                 is Fail -> {
 //                    TODO:: Failure Case Handling
@@ -113,8 +113,8 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         }
     }
 
-    private fun initiateLevelTwoView(selectedPosition: Int) {
-        if (slave_list.expandableListAdapter == null) {
+    private fun initiateLevelTwoView(selectedPosition: Int, createNewAdapter: Boolean = false) {
+        if (createNewAdapter) {
             val adapter = CategoryLevelTwoExpandableAdapter(categoryList[selectedPosition]?.child)
             slave_list.setAdapter(adapter)
             if (selectedLevelTwoID != "-1")
@@ -148,21 +148,36 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             setTitle(it.resources.getString(R.string.kategori_title))
             master_list.layoutManager = LinearLayoutManager(it)
         }
-        categoryNavBottomViewModel.addShimmerItems(categoryList)
         if (shouldHideL1) {
             master_list.hide()
             separator_guideline.setGuidelinePercent(0.0f)
         } else {
+            categoryNavBottomViewModel.addShimmerItems(categoryList)
             master_list.adapter = CategoryNavLevelOneAdapter(categoryList, this)
         }
+        val adapter = CategoryLevelTwoExpandableAdapter(categoryNavBottomViewModel.addShimmerItemsToL2())
+        slave_list.setAdapter(adapter)
+        setL2L3Listeners()
+    }
+
+    private fun setL2L3Listeners() {
         slave_list.setOnGroupExpandListener { groupPosition ->
+            (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).selectedL3Position = if (selectedLevelTwoID == categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id) {
+                if (selectedLevelThreeID != "-1")
+                    categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child, selectedLevelThreeID).let {
+                        if (it != -1)
+                            it + 1
+                        else
+                            it
+                    }
+                else
+                    0
+            } else
+                -1
             if (expandedLevelTwoPosition != -1 && groupPosition != expandedLevelTwoPosition) {
                 slave_list.collapseGroup(expandedLevelTwoPosition)
             }
             expandedLevelTwoPosition = groupPosition
-            selectedLevelTwoID = categoryList[selectedLevelOnePosition]?.child?.get(expandedLevelTwoPosition)?.id
-                    ?: "-1"
-            selectedLevelThreeID = "-1"
         }
 
         slave_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
@@ -180,7 +195,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                         listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
                     }
                 dismiss()
-            },200)
+            }, 200)
 
             return@setOnChildClickListener true
         }

@@ -14,5 +14,8 @@ data class ChildItem(
         val appLink:String? = null,
 
         @field:SerializedName("c")
-        val child: List<ChildItem?>? = null
+        val child: List<ChildItem?>? = null,
+
+        @field:SerializedName("viewType")
+        var viewType:Int = 1
 )
