@@ -750,13 +750,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (arrayFilterDate.isNotEmpty()) {
             arrayFilterDate.forEachIndexed { index, s ->
                 arrayListDateFilterBundle.add(UohFilterBundle(key = index.toString(), value = s, type = 0))
-                if (index == 1) {
-                    if (arraySubLabelExperiment.isNotEmpty()) {
-                        arraySubLabelExperiment.forEachIndexed { subIndex, subLabel ->
-                            arrayListDateFilterBundle.add(UohFilterBundle(key = subIndex.toString(), value = subLabel, type = 1))
-                        }
-                    }
-                }
             }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
@@ -774,8 +767,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_FILTERS)
         val arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
-        orderList.filters.forEach { option ->
-            arrayListStatusFilterBundle.add(UohFilterBundle(key = option, value = option, type = 0))
+        orderList.v2Filters.forEach { v2Filter ->
+            val type = if (v2Filter.isPrimary) 0
+            else 1
+            arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
         if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
