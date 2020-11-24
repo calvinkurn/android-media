@@ -417,7 +417,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 tvInstallmentDetail?.text = view.context.getString(R.string.lbl_installment_full_payment)
             }
             setupPaymentInstallmentError(selectedTerm)
-            btnChangeInstallment?.setOnClickListener {
+            setMultiViewsOnClickListener(tvInstallmentType, tvInstallmentDetail, btnChangeInstallment) {
                 listener.onInstallmentDetailClicked()
             }
         } else {
