@@ -15,29 +15,32 @@
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/spacing_lvl3">
 
+        <FrameLayout
+            android:id="@+id/imageProductBackground"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="88dp"
+            android:visibility="gone"
+            android:background="@drawable/bg_product_card"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/imageProductBackgroundOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_product_card"
+                android:scaleType="fitXY" />
+
+        </FrameLayout>
+
         <ImageView
             android:id="@+id/imageProduct"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="@dimen/layout_lvl0"
             android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:visibility="invisible"
             app:layout_constraintDimensionRatio="H,1:1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/imageProductBackground"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="88dp"
-            android:adjustViewBounds="true"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ic_recharge_bu_widget_product_card_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -1,20 +1,18 @@
 package com.tokopedia.recharge_component.presentation.adapter.viewholder
 
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.unifycomponents.Label
@@ -30,38 +28,10 @@ class RechargeBUWidgetProductCardViewHolder(
     }
 
     override fun bind(element: RechargeBUWidgetProductCardModel) {
-//        imageProduct?.loadImage(productCardModel.productImageUrl)
-//
-//        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
-//
-//        renderOutOfStockView(productCardModel)
-//
-//        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
-//
-//        textTopAds?.showWithCondition(productCardModel.isTopAds)
-//
-//        renderProductCardContent(productCardModel)
-//
-//        renderStockPercentage(productCardModel)
-//        renderStockLabel(productCardModel)
-//
-//        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
-//
-//        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
-//
-//        constraintLayoutProductCard?.post {
-//            imageThreeDots?.expandTouchArea(
-//                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-//                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
-//                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
-//                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
-//            )
-//        }
-
         applyCarousel()
 
         val imageProduct: ImageView = itemView.findViewById(R.id.imageProduct)
-        val imageProductBackground: ImageView = itemView.findViewById(R.id.imageProductBackground)
+        val imageProductBackground: FrameLayout = itemView.findViewById(R.id.imageProductBackground)
         val imageProductIcon: ImageView = itemView.findViewById(R.id.imageProductIcon)
         val imageProductIconContainer: CardView = itemView.findViewById(R.id.imageProductIconContainer)
         val textViewGimmick: Typography = itemView.findViewById(R.id.textViewGimmick)
@@ -81,7 +51,8 @@ class RechargeBUWidgetProductCardViewHolder(
             imageProductIconContainer.show()
             imageProduct.invisible()
 //            imageProductBackground.setColorFilter(Color.parseColor(element.backgroundTintColor))
-            imageProductBackground.setColorFilter(Color.parseColor(element.categoryNameColor))
+//            imageProductBackground.setColorFilter(Color.parseColor(element.categoryNameColor))
+            (imageProductBackground.background as? GradientDrawable)?.setColor(Color.parseColor(element.categoryNameColor))
             imageProductBackground.show()
         }
 
