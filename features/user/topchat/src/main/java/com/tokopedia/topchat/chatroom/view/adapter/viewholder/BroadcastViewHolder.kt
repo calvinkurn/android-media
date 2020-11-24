@@ -196,7 +196,7 @@ class BroadcastViewHolder constructor(
 
     companion object {
         val LAYOUT = R.layout.item_broadcast_message_bubble
-        const val AB_TEST_KEY = "broadcast_banner"
+        const val AB_TEST_KEY = "broadcast banner"
         const val VARIANT_CONTROL = "control_variant"
         const val VARIANT_NO_BANNER = "no_banner"
 
