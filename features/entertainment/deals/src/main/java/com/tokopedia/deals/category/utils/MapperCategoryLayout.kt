@@ -21,10 +21,10 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
     val layout = mutableListOf<DealsBaseItemDataView>()
 
     fun mapCategoryLayout(
-            brandProduct: SearchData, page: Int
+            brandProduct: SearchData, page: Int, categoryId: String
     ): List<DealsBaseItemDataView> {
         layout.clear()
-        mapBrandtoLayout(brandProduct)
+        mapBrandtoLayout(brandProduct, categoryId)
         mapProducttoLayout(brandProduct, page)
         return layout
     }
@@ -40,7 +40,7 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
         return layout
     }
 
-    private fun mapBrandtoLayout(searchData: SearchData) {
+    private fun mapBrandtoLayout(searchData: SearchData, categoryId: String) {
         var maxValue = 0
         if (searchData.eventSearch.brands.size >= MAX_BRAND_SHOWING) maxValue = MAX_BRAND_SHOWING
         else maxValue = searchData.eventSearch.brands.size
@@ -56,7 +56,8 @@ class MapperCategoryLayout @Inject constructor(@ApplicationContext private val c
                 title = getString(BRAND_POPULAR_TITLE),
                 seeAllText = getString(BRAND_SEE_ALL_TEXT),
                 brands = brandLayout,
-                oneRow = true
+                oneRow = true,
+                category = categoryId
         )
 
         brandsDataView.isLoadedAndSuccess()

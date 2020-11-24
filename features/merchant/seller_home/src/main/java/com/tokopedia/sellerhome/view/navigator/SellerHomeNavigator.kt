@@ -159,7 +159,7 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0)
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -176,7 +176,11 @@ class SellerHomeNavigator(
                 transaction.add(R.id.sahContainer, it, tag)
 
                 if(it != selectedPage) {
-                    transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                    try {
+                        transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                    } catch (e: Throwable) {
+                        e.printStackTrace()
+                    }
                 }
             }
         }
@@ -248,7 +252,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType)
         return somListFragment
     }
 

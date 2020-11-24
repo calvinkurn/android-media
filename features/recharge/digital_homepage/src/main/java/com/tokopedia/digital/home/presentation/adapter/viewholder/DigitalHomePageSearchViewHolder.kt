@@ -7,7 +7,7 @@ import android.text.style.StyleSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.view_recharge_home_search_category_item.view.*
 

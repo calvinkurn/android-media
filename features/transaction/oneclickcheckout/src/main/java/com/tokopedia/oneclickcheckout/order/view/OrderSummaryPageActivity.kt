@@ -5,14 +5,14 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.di.DaggerOrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageModule
+import com.tokopedia.purchase_platform.common.constant.Constant
 import javax.inject.Inject
 
-class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
+open class OrderSummaryPageActivity : BaseSimpleActivity(), HasComponent<OrderSummaryPageComponent> {
 
     @Inject
     lateinit var orderSummaryAnalytics: OrderSummaryAnalytics

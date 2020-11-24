@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel
+import com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -18,12 +20,12 @@ abstract class DropoffPickerViewModelsModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerViewModel::class)
-    internal abstract fun bindDropoffViewModel(viewModel: com.tokopedia.dropoff.ui.dropoff_picker.DropoffPickerViewModel): ViewModel
+    @ViewModelKey(DropoffPickerViewModel::class)
+    internal abstract fun bindDropoffViewModel(viewModel: DropoffPickerViewModel): ViewModel
 
     @Binds
     @IntoMap
-    @ViewModelKey(com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel::class)
-    internal abstract fun bindAutoCompleteViewModel(viewModel: com.tokopedia.dropoff.ui.autocomplete.AutoCompleteViewModel): ViewModel
+    @ViewModelKey(AutoCompleteViewModel::class)
+    internal abstract fun bindAutoCompleteViewModel(viewModel: AutoCompleteViewModel): ViewModel
 
 }

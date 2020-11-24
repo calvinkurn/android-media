@@ -15,6 +15,8 @@ public class TradeInInfoData implements Parcelable {
     private int oldDevicePrice;
     private String oldDevicePriceFmt;
     private boolean dropOffEnable;
+    private String deviceModel;
+    private String diagnosticId;
 
     public TradeInInfoData() {
     }
@@ -26,6 +28,8 @@ public class TradeInInfoData implements Parcelable {
         oldDevicePrice = in.readInt();
         oldDevicePriceFmt = in.readString();
         dropOffEnable = in.readByte() != 0;
+        deviceModel = in.readString();
+        diagnosticId = in.readString();
     }
 
     @Override
@@ -36,6 +40,8 @@ public class TradeInInfoData implements Parcelable {
         dest.writeInt(oldDevicePrice);
         dest.writeString(oldDevicePriceFmt);
         dest.writeByte((byte) (dropOffEnable ? 1 : 0));
+        dest.writeString(deviceModel);
+        dest.writeString(diagnosticId);
     }
 
     @Override
@@ -101,5 +107,21 @@ public class TradeInInfoData implements Parcelable {
 
     public void setDropOffEnable(boolean dropOffEnable) {
         this.dropOffEnable = dropOffEnable;
+    }
+
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public void setDeviceModel(String deviceModel) {
+        this.deviceModel = deviceModel;
+    }
+
+    public String getDiagnosticId() {
+        return diagnosticId;
+    }
+
+    public void setDiagnosticId(String diagnosticId) {
+        this.diagnosticId = diagnosticId;
     }
 }

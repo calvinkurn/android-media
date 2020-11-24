@@ -22,7 +22,7 @@
         android:layout_marginLeft="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:ellipsize="end"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_2" />
 
 </LinearLayout>

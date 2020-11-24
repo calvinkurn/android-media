@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import javax.inject.Inject
 
 

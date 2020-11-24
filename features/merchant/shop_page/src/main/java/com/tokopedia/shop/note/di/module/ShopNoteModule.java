@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.di.ShopPageContext;
 import com.tokopedia.shop.note.di.scope.ShopNoteScope;
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel;
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -23,8 +23,8 @@ public class ShopNoteModule {
 
     @ShopNoteScope
     @Provides
-    public ShopNoteViewModel provideShopNoteViewModel(){
-        return new ShopNoteViewModel();
+    public ShopNoteUiModel provideShopNoteViewModel(){
+        return new ShopNoteUiModel();
     }
 
     @ShopNoteScope
