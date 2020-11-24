@@ -62,7 +62,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
-    implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.logisticCommon)
 
     //-------------------------------------------------------------------//
     //--------------------- Testing Library Section ---------------------//

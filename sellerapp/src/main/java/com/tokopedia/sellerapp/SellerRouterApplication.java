@@ -63,7 +63,7 @@ import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
-import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
+import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
 import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -443,11 +443,16 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage) {
+    public Fragment getSomListFragment(String tabPage, int orderType) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
-        return SomListFragment.newInstance(bundle);
+        bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        if (getBooleanRemoteConfig(SomConsts.ENABLE_NEW_SOM, true)) {
+            return SomListFragment.newInstance(bundle);
+        } else {
+            return com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment.newInstance(bundle);
+        }
     }
 
     @NotNull

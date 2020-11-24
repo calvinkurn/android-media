@@ -936,7 +936,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                     it.getString(com.tokopedia.imagepicker.R.string.choose_image),
                     intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
                     GalleryType.IMAGE_ONLY,
-                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    MAX_SIZE_IMAGE_PICKER,
                     ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
                     null,
                     true,
@@ -1693,6 +1693,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     companion object {
+        private const val MAX_SIZE_IMAGE_PICKER = 20360
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle

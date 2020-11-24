@@ -86,6 +86,9 @@ class ShopPageViewModel @Inject constructor(
     val ownerShopName: String
         get() = userSessionInterface.shopName
 
+    val userShopId: String
+        get() = userSessionInterface.shopId
+
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
     val shopPageHeaderContentData = MutableLiveData<Result<ShopPageHeaderContentData>>()
@@ -178,7 +181,7 @@ class ShopPageViewModel @Inject constructor(
                             true
                     )
                     if(savedFile != null) {
-                        shopImagePath.value = savedFile.absolutePath
+                        shopImagePath.postValue(savedFile.absolutePath)
                     }
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
