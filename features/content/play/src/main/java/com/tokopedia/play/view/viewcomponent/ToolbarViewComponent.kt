@@ -15,6 +15,7 @@ import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.uimodel.CartUiModel
 import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
+import com.tokopedia.play.view.uimodel.ShareInfoUiModel
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.unifyprinciples.Typography
 
@@ -34,6 +35,7 @@ class ToolbarViewComponent(
     private val ivMore = findViewById<ImageView>(R.id.iv_more)
     private val rlCart = findViewById<RelativeLayout>(R.id.rl_cart)
     private val tvBadgeCart = findViewById<TextView>(R.id.tv_badge_cart)
+    private val ivCopyLink = findViewById<ImageView>(R.id.iv_copy_link)
 
     init {
         findViewById<ImageView>(R.id.iv_back)
@@ -100,11 +102,24 @@ class ToolbarViewComponent(
         }
     }
 
+    fun setShareInfo(shareInfoUiModel: ShareInfoUiModel) {
+        setIsShareable(shareInfoUiModel.isShowButton)
+
+        ivCopyLink.setOnClickListener {
+            listener.onCopyButtonClicked(this, shareInfoUiModel.content)
+        }
+    }
+
+    fun setIsShareable(isShow: Boolean) {
+        if (isShow) ivCopyLink.show() else ivCopyLink.hide()
+    }
+
     interface Listener {
         fun onBackButtonClicked(view: ToolbarViewComponent)
         fun onMoreButtonClicked(view: ToolbarViewComponent)
         fun onFollowButtonClicked(view: ToolbarViewComponent, partnerId: Long, action: PartnerFollowAction)
         fun onPartnerNameClicked(view: ToolbarViewComponent, partnerId: Long, type: PartnerType)
         fun onCartButtonClicked(view: ToolbarViewComponent)
+        fun onCopyButtonClicked(view: ToolbarViewComponent, content: String)
     }
 }
