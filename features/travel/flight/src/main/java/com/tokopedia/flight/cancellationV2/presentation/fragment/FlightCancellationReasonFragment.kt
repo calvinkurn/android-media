@@ -183,6 +183,9 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
     }
 
     private fun buildView() {
+        til_saved_passenger.textFieldInput.isClickable = true
+        til_saved_passenger.textFieldInput.isFocusable = false
+        til_saved_passenger.textFieldInput.isSingleLine = true
         til_saved_passenger.textFieldInput.setOnClickListener {
             startActivityForResult(FlightCancellationChooseReasonActivity.getCallingIntent(requireContext(), cancellationReasonViewModel.selectedReason),
                     REQUEST_CODE_CHOOSE_REASON)
