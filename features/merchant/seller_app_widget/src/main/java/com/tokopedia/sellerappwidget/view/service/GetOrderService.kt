@@ -14,6 +14,7 @@ import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferences
 import com.tokopedia.sellerappwidget.di.DaggerAppWidgetComponent
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
+import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetLoadingState
 import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
 import com.tokopedia.sellerappwidget.view.viewmodel.OrderAppWidgetViewModel
 import com.tokopedia.sellerappwidget.view.viewmodel.view.OrderAppWidgetView
@@ -85,6 +86,7 @@ class GetOrderService : JobIntentService(), OrderAppWidgetView {
         val ids = awm.getAppWidgetIds(ComponentName(applicationContext, OrderAppWidget::class.java))
         ids.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
+            OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
     }

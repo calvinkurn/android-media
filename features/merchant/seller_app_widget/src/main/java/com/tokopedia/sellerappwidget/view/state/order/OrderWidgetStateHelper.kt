@@ -19,6 +19,7 @@ object OrderWidgetStateHelper {
         val updatedFmt = AppWidgetHelper.getOrderWidgetLastUpdatedFmt(context)
         val updated = context.getString(R.string.saw_updated)
         remoteView.setTextViewText(R.id.tvSawOrderUpdated, "$updated $updatedFmt")
+        remoteView.setTextViewText(R.id.tvSawSmallOrderUpdated, "$updated $updatedFmt")
     }
 
     fun showEmptyState(context: Context, appWidgetManager: AppWidgetManager, widgetIds: Array<Int>, widgetItems: List<OrderUiModel>) {

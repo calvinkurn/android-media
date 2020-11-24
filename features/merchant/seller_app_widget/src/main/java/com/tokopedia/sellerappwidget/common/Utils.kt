@@ -18,16 +18,10 @@ object Utils {
 
     fun getAppIcon(context: Context): Drawable? {
         val pm = context.packageManager
-        try {
-            val appInfo: ApplicationInfo? = pm.getApplicationInfo(context.packageName, PackageManager.GET_META_DATA)
-
-            appInfo?.let {
-                return pm.getApplicationIcon(it)
-            }
-
-            return null
+        return try {
+            pm.getApplicationIcon(context.packageName)
         } catch (e: PackageManager.NameNotFoundException) {
-            return null
+            null
         }
     }
 

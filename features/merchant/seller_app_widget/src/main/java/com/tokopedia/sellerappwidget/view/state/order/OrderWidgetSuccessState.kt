@@ -8,9 +8,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.R
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.Utils
+import com.tokopedia.sellerappwidget.common.WidgetSize
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.OrderWidgetRemoteViewService
@@ -23,20 +27,52 @@ import com.tokopedia.user.session.UserSessionInterface
 object OrderWidgetSuccessState {
 
     fun setupSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, widgetItems: List<OrderUiModel>, orderStatusId: Int, widgetId: Int) {
+        val awm = AppWidgetManager.getInstance(context)
+        val option = awm.getAppWidgetOptions(widgetId)
+        val minHeight = option.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+        @WidgetSize val widgetSize = AppWidgetHelper.getAppWidgetSize(minHeight)
+        when (widgetSize) {
+            WidgetSize.SMALL -> showSmallWidgetSuccessState(context, remoteViews, userSession, widgetItems, widgetId)
+            else -> showNormalWidgetSuccessState(context, remoteViews, userSession, widgetItems, orderStatusId, widgetId)
+        }
+    }
+
+    private fun showSmallWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, widgetItems: List<OrderUiModel>, widgetId: Int) {
         with(remoteViews) {
             OrderWidgetStateHelper.updateViewOnSuccess(this)
+            setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.GONE)
+            setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.VISIBLE)
+
+            val newOrderCount = widgetItems.count { it.statusId == Const.OrderStatusId.NEW_ORDER }
+            val readyToShipCount = widgetItems.count { it.statusId == Const.OrderStatusId.READY_TO_SHIP }
+            val newOrderFmt = "$newOrderCount ${context.getString(R.string.saw_order)}"
+            val readyToShipFmt = "$readyToShipCount ${context.getString(R.string.saw_order)}"
+            setTextViewText(R.id.tvSawOrderNewOrder, newOrderFmt)
+            setTextViewText(R.id.tvSawOrderReadyToShip, readyToShipFmt)
+            setTextViewText(R.id.tvSawSmallOrderShopName, userSession.shopName)
+            setInt(R.id.btnSawSmallOrderRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
+
+            setupRefreshIntent(context, remoteViews, R.id.btnSawSmallOrderRefresh, widgetId)
+
+            val sellerAppIntent = RouteManager.getIntent(context, ApplinkConst.SellerApp.SELLER_APP_HOME).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            val sellerAppPendingIntent = PendingIntent.getBroadcast(context, 0, sellerAppIntent, 0)
+            setOnClickPendingIntent(R.id.orderSawSmallHeader, sellerAppPendingIntent)
+        }
+    }
+
+    private fun showNormalWidgetSuccessState(context: Context, remoteViews: RemoteViews, userSession: UserSessionInterface, widgetItems: List<OrderUiModel>, orderStatusId: Int, widgetId: Int) {
+        with(remoteViews) {
+            OrderWidgetStateHelper.updateViewOnSuccess(this)
+            setInt(R.id.orderSawSuccessSmall, Const.Method.SET_VISIBILITY, View.GONE)
+            setInt(R.id.orderSawSuccessNormal, Const.Method.SET_VISIBILITY, View.VISIBLE)
 
             val orderItemsByType = ArrayList(widgetItems.filter { it.statusId == orderStatusId })
 
             setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
-            //setup refresh button click event
-            val reloadIntent = Intent(context, OrderAppWidget::class.java).apply {
-                action = Const.Action.REFRESH
-                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
-            }
-            val reloadPendingIntent = PendingIntent.getBroadcast(context, 0, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-            setOnClickPendingIntent(R.id.btnSawOrderRefresh, reloadPendingIntent)
+            setupRefreshIntent(context, remoteViews, R.id.btnSawOrderRefresh, widgetId)
 
             //setup switch button click event
             val mOrderStatusId = if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {
@@ -61,8 +97,8 @@ object OrderWidgetSuccessState {
             val totalOrderFmt = "${orderItemsByType.size} ${context.getString(orderTypeStringRes)}"
             setTextViewText(R.id.tvSawOrderTotalOrder, totalOrderFmt)
             setTextViewText(R.id.tvSawOrderShopName, userSession.shopName)
-            setInt(R.id.icSawOrderMoreOrder, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_chevron_right)
             setInt(R.id.btnSawOrderRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
+            setInt(R.id.icSawOrderMoreOrder, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_chevron_right)
 
             when (orderStatusId) {
                 Const.OrderStatusId.NEW_ORDER -> {
@@ -82,6 +118,18 @@ object OrderWidgetSuccessState {
             Utils.getAppIcon(context)?.let {
                 Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderAppIcon, it, widgetId)
             }
+        }
+    }
+
+    private fun setupRefreshIntent(context: Context, remoteViews: RemoteViews, viewId: Int, widgetId: Int) {
+        with(remoteViews) {
+            //setup refresh button click event
+            val reloadIntent = Intent(context, OrderAppWidget::class.java).apply {
+                action = Const.Action.REFRESH
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId)
+            }
+            val reloadPendingIntent = PendingIntent.getBroadcast(context, 0, reloadIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            setOnClickPendingIntent(viewId, reloadPendingIntent)
         }
     }
 

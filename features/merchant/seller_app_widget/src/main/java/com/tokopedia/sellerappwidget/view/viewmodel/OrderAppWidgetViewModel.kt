@@ -23,13 +23,12 @@ class OrderAppWidgetViewModel @Inject constructor(
 ) : BaseAppWidgetVM<OrderAppWidgetView>(dispatcherProvider) {
 
     fun getOrderList(dateFrm: String) {
-        println("AppWidget : getOrderList")
         launchCatchError(block = {
             getOrderUseCase.get().params = GetOrderUseCase.createParams(dateFrm)
             val result = Success(withContext(dispatcherProvider.io) {
                 getOrderUseCase.get().executeOnBackground()
             })
-            delay(5000L)
+            delay(2000L)
             view?.onSuccessGetOrderList(result)
         }, onError = {
             view?.onFailedGetOrderList(Fail(it))

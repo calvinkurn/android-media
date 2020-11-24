@@ -54,7 +54,7 @@ object AppWidgetHelper {
     @WidgetSize
     fun getAppWidgetSize(widgetHeight: Int): String {
         var n = 2
-        while (70 * n - 30 < widgetHeight) {
+        while (70 * n - 2 < widgetHeight) {
             ++n
         }
         val size = n - 1

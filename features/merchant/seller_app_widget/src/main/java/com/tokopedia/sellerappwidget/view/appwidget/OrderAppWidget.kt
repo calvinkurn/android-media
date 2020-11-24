@@ -15,10 +15,7 @@ import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.service.GetOrderService
-import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetEmptyState
-import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetNoLoginState
-import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetStateHelper
-import com.tokopedia.sellerappwidget.view.state.order.OrderWidgetSuccessState
+import com.tokopedia.sellerappwidget.view.state.order.*
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -62,10 +59,7 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
-        newOptions?.let {
-            val minHeight = it.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-            println("AppWidget -> Widget Size : ${AppWidgetHelper.getAppWidgetSize(minHeight)}")
-        }
+        GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -86,9 +80,10 @@ class OrderAppWidget : AppWidgetProvider() {
     private fun refreshWidget(context: Context, intent: Intent) {
         val awm = AppWidgetManager.getInstance(context)
         val appWidgetIds = awm.getAppWidgetIds(ComponentName(context, OrderAppWidget::class.java))
-        val remoteViews = RemoteViews(context.packageName, R.layout.saw_app_widget_order)
+        val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
         appWidgetIds.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
+            OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
             awm.updateAppWidget(it, remoteViews)
         }
         GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
