@@ -84,6 +84,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.DROPOFF_PICKE
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.MANAGE_ADDRESS
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_INVOICE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.ATTACH_VOUCHER
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION
@@ -185,6 +186,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_USER_SETTINGS = "df_user_settings"
     const val DF_PROMO_GAMIFICATION = "df_promo_gamification"
     const val DF_PROMO_TOKOPOINTS = "df_promo_tokopoints"
+    const val DF_PROMO_CHECKOUT = "df_promo_checkout"
     const val DF_GAMIFICATION = "df_gamification"
     const val DF_SHOP_SCORE = "shop_score_sellerapp"
     const val DF_ENTERTAINMENT = "df_entertainment"
@@ -284,6 +286,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.applink_report_title, ::getDefaultFallbackUrl))
             add(DFP({ it.startsWith(ATTACH_INVOICE) }, DF_MERCHANT_LOGIN, R.string.title_module_attachinvoice))
             add(DFP({ it.startsWith(ATTACH_VOUCHER) }, DF_MERCHANT_LOGIN, R.string.title_module_attachvoucher))
+            add(DFP({ it.startsWith(ATTACH_PRODUCT) }, DF_MERCHANT_LOGIN, R.string.title_module_attachproduct))
 
             add(DFP({ it.startsWith(INTERNAL_SELLER) }, DF_MERCHANT_SELLER, R.string.merchant_seller, { DFWebviewFallbackUrl.SELLER_ORDER }))
             add(DFP({ it.startsWith(PRODUCT_MANAGE)
@@ -358,6 +361,21 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(ApplinkConstInternalPromo.INTERNAL_GAMIFICATION_TAP_TAP_GIFT)
             }, DF_PROMO_GAMIFICATION,R.string.internet_title_gamification))
 
+            add(DFP({
+                it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DIGITAL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_FLIGHT) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_FLIGHT) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_DEALS) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_DEALS) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_HOTEL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_HOTEL) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_UMROH) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_UMROH) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_LIST_EVENT) ||
+                        it.startsWith(ApplinkConstInternalPromo.PROMO_DETAIL_EVENT)
+            }, DF_PROMO_CHECKOUT, R.string.title_promo_checkout))
+
             //Entertainment
             add(DFP({ it.startsWith(EVENT_HOME) ||
                       it.startsWith(EVENT_PDP)
@@ -423,6 +441,7 @@ object DeeplinkDFMapper : CoroutineScope {
 
             add(DFP({ it.startsWith(OTP) }, DF_BASE, R.string.title_otp))
             add(DFP({ it.startsWith(CHOOSE_ACCOUNT) }, DF_BASE, R.string.title_loginphone))
+            add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
 
             // Transaction
             add(DFP({ it.startsWith(CHECKOUT) }, DF_BASE, R.string.checkout_module_title_activity_checkout))
@@ -524,6 +543,9 @@ object DeeplinkDFMapper : CoroutineScope {
                 val uri = Uri.parse(it).buildUpon().build()
                 (uri.host == ReviewApplinkConst.PATH_PRODUCT_REVIEW && uri.pathSegments.last() == ReviewApplinkConst.PATH_CREATE)
             }, DF_BASE_SELLER_APP, R.string.title_create_review))
+
+            // User
+            add(DFP({ it.startsWithPattern(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
         }
     }
 

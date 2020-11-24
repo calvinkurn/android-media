@@ -17,10 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.SomComponentInstance
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickCheckAndSetStockButton
@@ -192,7 +189,7 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
             }
             if (intent != null) {
                 eventClickCheckAndSetStockButton(
-                        adapter.itemCount,
+                        adapter.data.filterIsInstance<WaitingPaymentOrderUiModel>().size,
                         userSession.userId,
                         userSession.shopId
                 )
@@ -243,9 +240,14 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                             }
                     )
                     if (isLoadingInitialData) {
-                        newItems.add(0, createTicker())
-                        (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
-                        animateCheckAndSetStockButtonEnter()
+                        if (newItems.isNotEmpty()) {
+                            newItems.add(0, createTicker())
+                            (adapter as WaitingPaymentOrderAdapter).updateProducts(newItems)
+                            animateCheckAndSetStockButtonEnter()
+                        } else {
+                            cardCheckAndSetStock.invisible()
+                            (adapter as WaitingPaymentOrderAdapter).showEmpty()
+                        }
                     } else {
                         hideLoading()
                         adapter.addMoreData(newItems)

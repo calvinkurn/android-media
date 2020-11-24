@@ -1075,9 +1075,13 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
     val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
 
     val productCardModel = ProductCardModel(
-            productName = "Product with rating sales",
+            productName = "Product with rating sales and label integrity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
             countSoldRating = "4.6",
             isTopAds = true,
             hasThreeDots = true,
@@ -1092,8 +1096,12 @@ private fun testHasRatingSales(): ProductCardModelMatcher {
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.salesRatingFloat] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.salesRatingFloatLine] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
     }
@@ -1106,6 +1114,10 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
             productName = "Product with count sold rating but no label integrity",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
             countSoldRating = "4.6",
             isTopAds = true,
             hasThreeDots = true,
@@ -1117,9 +1129,12 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
         it[R.id.textTopAds] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
         it[R.id.imageThreeDots] = isDisplayed()
-        it[R.id.salesRatingFloat] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
@@ -1127,22 +1142,31 @@ private fun testNoLabelIntegrityAndHasRatingFloat(): ProductCardModelMatcher {
 
 private fun testPriorityRatingAverage(): ProductCardModelMatcher {
     val labelIntegrity = LabelGroup(position = LABEL_INTEGRITY, title = "Terjual 122", type = "#ae31353b")
+
     val productCardModel = ProductCardModel(
-            productName = "Product prio ratingAverage",
+            productName = "Product prio count sold rating",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp7.999.000",
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            shopLocation = "DKI Jakarta",
             countSoldRating = "4.6",
-            reviewCount = 4,
-            ratingCount = 30,
+            ratingCount = 4,
+            reviewCount = 30,
             labelGroupList = listOf(labelIntegrity)
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
         it[R.id.imageProduct] = isDisplayed()
-        it[R.id.textViewSales] = isDisplayed()
         it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.salesRatingFloat] = isDisplayed()
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
+        it[R.id.imageSalesRatingFloat] = isDisplayed()
+        it[R.id.salesRatingFloat] = isDisplayedWithText(productCardModel.countSoldRating)
+        it[R.id.salesRatingFloatLine] = isDisplayed()
+        it[R.id.textViewSales] = isDisplayedWithText(labelIntegrity.title)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)

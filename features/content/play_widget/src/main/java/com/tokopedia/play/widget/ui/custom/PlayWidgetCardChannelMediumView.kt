@@ -148,7 +148,7 @@ class PlayWidgetCardChannelMediumView : ConstraintLayout, PlayVideoPlayerReceive
         ivAction.visibility = View.GONE
         liveBadge.visibility = View.GONE
         reminderBadge.visibility = View.VISIBLE
-        totalViewBadge.visibility = if (model.totalViewVisible) View.VISIBLE else View.GONE
+        totalViewBadge.visibility = View.GONE
         promoBadge.visibility = if (model.hasPromo) View.VISIBLE else View.GONE
         llLoadingContainer.visibility = View.GONE
     }
