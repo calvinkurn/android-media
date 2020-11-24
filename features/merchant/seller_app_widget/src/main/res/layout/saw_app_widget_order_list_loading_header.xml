@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/shimmerSawLoadingHeader"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/layout_lvl2"
+    android:layout_marginBottom="@dimen/layout_lvl2"
+    android:paddingStart="@dimen/saw_dimen_12dp"
+    android:paddingEnd="@dimen/saw_dimen_12dp">
+
+    <RelativeLayout
+        android:id="@+id/shimmerSawLoading1"
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:background="@drawable/saw_shape_oval_shimmer" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/saw_dimen_148dp"
+        android:layout_height="@dimen/saw_dimen_10dp"
+        android:layout_marginStart="@dimen/saw_dimen_10dp"
+        android:layout_toEndOf="@+id/shimmerSawLoading1"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/saw_dimen_98dp"
+        android:layout_height="@dimen/saw_dimen_10dp"
+        android:layout_alignBottom="@+id/shimmerSawLoading1"
+        android:layout_marginStart="@dimen/saw_dimen_10dp"
+        android:layout_toEndOf="@+id/shimmerSawLoading1"
+        android:background="@drawable/saw_shape_shimmer_radius_6dp" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/layout_lvl4"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/saw_shape_oval_shimmer" />
+</RelativeLayout>
