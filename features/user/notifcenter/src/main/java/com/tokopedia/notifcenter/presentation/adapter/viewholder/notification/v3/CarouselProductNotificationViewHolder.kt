@@ -150,7 +150,7 @@ class CarouselProductNotificationViewHolder constructor(
         }
 
         private fun bindProductData(product: ProductData, notification: NotificationUiModel?) {
-            productContainer?.bindProductData(notification, product, listener)
+            productContainer?.bindProductData(notification, product, listener, adapterPosition)
         }
 
         companion object {

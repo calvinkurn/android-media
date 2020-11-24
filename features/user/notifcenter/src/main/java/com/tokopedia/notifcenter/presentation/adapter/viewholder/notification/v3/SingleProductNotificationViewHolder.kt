@@ -19,6 +19,18 @@ class SingleProductNotificationViewHolder constructor(
 
     override fun isLongerContent(element: NotificationUiModel) = false
 
+    override fun bind(element: NotificationUiModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            PAYLOAD_BUMP_REMINDER -> bindPayloadReminder(element)
+        }
+    }
+
+    private fun bindPayloadReminder(element: NotificationUiModel) {
+        val product = element.product ?: return
+        productContainer?.bindReminderState(product)
+    }
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindProductData(element)
@@ -27,7 +39,7 @@ class SingleProductNotificationViewHolder constructor(
 
     private fun bindProductData(element: NotificationUiModel) {
         val product = element.product
-        productContainer?.bindProductData(element, product, listener)
+        productContainer?.bindProductData(element, product, listener, adapterPosition)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -43,6 +55,7 @@ class SingleProductNotificationViewHolder constructor(
     }
 
     companion object {
+        const val PAYLOAD_BUMP_REMINDER = "payload_bump_reminder"
         val LAYOUT = R.layout.item_notifcenter_single_product_notification
     }
 }

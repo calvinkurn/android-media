@@ -62,7 +62,8 @@ class ProductNotificationCardUnify(
     fun bindProductData(
             notification: NotificationUiModel?,
             product: ProductData?,
-            listener: NotificationItemListener?
+            listener: NotificationItemListener?,
+            adapterPosition: Int
     ) {
         if (product != null) {
             show()
@@ -76,17 +77,30 @@ class ProductNotificationCardUnify(
             bindProductClick(product)
             bindBuyClick(product)
             bindAtcClick(product)
-            bindReminder(product, notification)
+            bindReminder(product, notification, adapterPosition)
         } else {
             hide()
         }
     }
 
-    private fun bindReminder(product: ProductData, notification: NotificationUiModel?) {
+    fun bindReminderState(product: ProductData) {
+        btnReminder?.isLoading = product.loadingBumpReminder
+    }
+
+    private fun bindReminder(
+            product: ProductData,
+            notification: NotificationUiModel?,
+            adapterPosition: Int
+    ) {
         if (product.hasEmptyStock() && notification != null) {
             btnReminder?.show()
+            bindReminderState(product)
             btnReminder?.setOnClickListener {
-                listener?.bumpReminder(product, notification)
+                if (!product.loadingBumpReminder) {
+                    product.loadingBumpReminder = true
+                    bindReminderState(product)
+                    listener?.bumpReminder(product, notification, adapterPosition)
+                }
             }
         } else {
             btnReminder?.hide()

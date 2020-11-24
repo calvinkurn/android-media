@@ -53,6 +53,8 @@ data class ProductData(
         @SerializedName("variant")
         val variant: List<Variant> = listOf()
 ) {
+    var loadingBumpReminder: Boolean = false
+
     fun hasEmptyStock(): Boolean {
         return isShow
     }

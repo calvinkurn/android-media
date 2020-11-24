@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +43,7 @@ import com.tokopedia.notifcenter.presentation.adapter.decoration.RecommendationI
 import com.tokopedia.notifcenter.presentation.adapter.listener.NotificationEndlessRecyclerViewScrollListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
@@ -75,6 +76,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private var containerListener: InboxFragmentContainer? = null
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
+    private val viewHolderLoading = ArrayMap<Visitable<*>, ViewHolderState>()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -198,9 +200,19 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         })
 
         viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
+            val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
             when (it.status) {
-                Status.SUCCESS -> Toast.makeText(context, "Bump reminder success", Toast.LENGTH_SHORT).show()
-                Status.ERROR -> Toast.makeText(context, "Bump reminder error", Toast.LENGTH_SHORT).show()
+                Status.SUCCESS -> {
+                    rvAdapter?.finishBumpReminder(viewHolderState)
+                    viewHolderLoading.remove(it.referer)
+                }
+                Status.ERROR -> {
+                    it.throwable?.let { error ->
+                        showErrorMessage(error)
+                    }
+                    rvAdapter?.finishBumpReminder(viewHolderState)
+                    viewHolderLoading.remove(it.referer)
+                }
                 else -> {
                 }
             }
@@ -334,7 +346,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         viewModel.markNotificationAsRead(containerListener?.role, element)
     }
 
-    override fun bumpReminder(product: ProductData, notif: NotificationUiModel) {
+    override fun bumpReminder(
+            product: ProductData,
+            notif: NotificationUiModel,
+            adapterPosition: Int
+    ) {
+        val loadingState = ViewHolderState(notif, adapterPosition, product)
+        viewHolderLoading[notif] = loadingState
         viewModel.bumpReminder(product, notif)
     }
 

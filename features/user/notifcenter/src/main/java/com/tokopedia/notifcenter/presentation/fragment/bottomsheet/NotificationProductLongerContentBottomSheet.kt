@@ -24,16 +24,20 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
     }
 
     override fun onInitContentView() {
-        notification?.productData?.forEach { product ->
+        notification?.productData?.forEachIndexed { index, product ->
             val view = createProductView()
             val productView: ProductNotificationCardUnify? = view?.findViewById(R.id.pc_single)
-            bind(productView, product)
+            bind(productView, product, index)
             contentContainer?.addView(view)
         }
     }
 
-    private fun bind(productView: ProductNotificationCardUnify?, product: ProductData) {
-        productView?.bindProductData(notification, product, listener)
+    private fun bind(
+            productView: ProductNotificationCardUnify?,
+            product: ProductData,
+            index: Int
+    ) {
+        productView?.bindProductData(notification, product, listener, index)
     }
 
     private fun createProductView(): View? {

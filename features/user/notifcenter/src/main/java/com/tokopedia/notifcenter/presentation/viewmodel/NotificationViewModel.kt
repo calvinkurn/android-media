@@ -204,7 +204,10 @@ class NotificationViewModel @Inject constructor(
                     }
                 },
                 {
-                    _bumpReminder.postValue(Resource.error(it, null))
+                    val error = Resource.error(it, null).apply {
+                        referer = notif
+                    }
+                    _bumpReminder.postValue(error)
                 }
         )
     }

@@ -9,15 +9,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SingleProductNotificationViewHolder.Companion.PAYLOAD_BUMP_REMINDER
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory
@@ -100,6 +103,20 @@ class NotificationAdapter constructor(
             notifyItemRangeInserted(position, response.items.size)
             adjustDividerPadding(position, response)
         }
+    }
+
+    fun finishBumpReminder(viewHolderState: ViewHolderState?) {
+        viewHolderState ?: return
+        val notif = viewHolderState.visitable as? NotificationUiModel ?: return
+        val elementData = getUpToDateUiModelPosition(
+                viewHolderState.previouslyKnownPosition,
+                notif
+        )
+        val position = elementData.first
+        if (viewHolderState.payload is ProductData) {
+            viewHolderState.payload.loadingBumpReminder = false
+        }
+        notifyItemChanged(position, PAYLOAD_BUMP_REMINDER)
     }
 
     private fun adjustDividerPadding(position: Int, response: NotificationDetailResponseModel) {
