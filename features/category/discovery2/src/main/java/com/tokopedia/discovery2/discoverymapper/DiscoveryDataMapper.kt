@@ -91,12 +91,12 @@ class DiscoveryDataMapper {
     }
 
     fun mapProductListToCircularModel(listItem: List<DataItem>) : ArrayList<CircularModel> {
-        val list = ArrayList<CircularModel>()
+        val bannerList = ArrayList<CircularModel>()
         listItem.forEachIndexed { index, it ->
             val circularModel = CircularModel(index, it.imageUrlDynamicMobile ?: "")
-            list.add(circularModel)
+            bannerList.add(circularModel)
         }
-        return list
+        return bannerList
     }
 
     fun mapDynamicCategoryListToComponentList(itemList: List<DataItem>, subComponentName: String = "", categoryHeaderName: String,

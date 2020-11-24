@@ -35,6 +35,7 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
         bannerCircularAdapter = BannerCircularAdapter(circularModelList, this)
         cvSliderBanner.setAdapter(bannerCircularAdapter)
         sliderBannerViewModel.getItemsList()?.let {
+            setSlideProperties(it)
             cvSliderBanner.setItemList(it)
             setUpIndicator(it)
         }
@@ -97,55 +98,4 @@ class CircularSliderBannerViewHolder(itemView: View, val fragment: Fragment) : A
             if (!it.applinks.isNullOrEmpty()) RouteManager.route(itemView.context, it.applinks)
         }
     }
-
-//    override fun attachRecyclerView() {
-//        sliderBannerView.apply {
-//            bannerRecyclerView.apply {
-//                adapter = sliderBannerRecycleAdapter
-//                layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
-//                sliderBannerPagerSnapHelper = SliderBannerPagerSnapHelper(this)
-//                sliderBannerPagerSnapHelper?.attachToRecyclerView(this)
-//                addItemDecoration(getBannerDotIndicator(this.context))
-//            }
-//        }
-//    }
-
-//    override fun startScrolling() {
-//        sliderBannerPagerSnapHelper?.startAutoScrollBanner()
-//    }
-
-//    private fun getBannerDotIndicator(context: Context): BannerDotIndicator {
-//        context.run {
-//            val radius = resources.getDimensionPixelSize(R.dimen.dp_4)
-//            val padding = resources.getDimensionPixelSize(R.dimen.dp_5)
-//            val indicatorPadding = resources.getDimensionPixelSize(R.dimen.dp_8)
-//            val activeColor = ContextCompat.getColor(context, R.color.activeBannerDot)
-//            val inActiveColor = ContextCompat.getColor(context, R.color.inActiveBannerDot)
-//            return BannerDotIndicator(radius, padding, indicatorPadding, activeColor, inActiveColor, BannerDotIndicator.SLIDER_BANNER_INDICATOR, this@SliderBannerViewHolder)
-//        }
-//    }
-
-//    override fun stopScrolling() {
-//        sliderBannerPagerSnapHelper?.stopAutoScrollBanner()
-//    }
-//
-//    inner class SliderBannerPagerSnapHelper(recyclerView: RecyclerView) : BannerPagerSnapHelper(recyclerView) {
-//        override fun setAutoScrollOnProgress(autoScrollOnProgress: Boolean) {
-//            sliderBannerView.apply {
-//                setAutoScrollOnProgressValue(autoScrollOnProgress)
-//            }
-//        }
-//
-//        override fun isAutoScrollEnabled(): Boolean {
-//            return sliderBannerView.getAutoScrollEnabled()
-//        }
-//
-//        override fun isAutoScrollOnProgress(): Boolean {
-//            return sliderBannerView.getAutoScrollOnProgressLiveData().value ?: false
-//        }
-//    }
-//
-//    override fun onClickSeeAll() {
-//        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()?.trackClickSeeAllBanner()
-//    }
 }
