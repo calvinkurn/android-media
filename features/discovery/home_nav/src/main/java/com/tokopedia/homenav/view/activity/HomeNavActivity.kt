@@ -1,6 +1,8 @@
 package com.tokopedia.homenav.view.activity
 
+import android.content.res.TypedArray
 import android.os.Bundle
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
@@ -48,8 +50,10 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         findViewById<NavToolbar>(R.id.toolbar)?.let {
             it.setToolbarTitle(getString(R.string.title_main_nav))
             it.setupToolbarWithStatusBar(this, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT, true)
+            it.setShowShadowEnabled(true)
         }
         setupNavigation()
+        setupView()
 
         //PLT prepare finished
         navPerformanceCallback.stopPreparePagePerformanceMonitoring()
@@ -67,6 +71,30 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
         }
         navController.setGraph(R.navigation.nav_graph,
                 MainNavFragmentArgs(StringMainNavArgsSourceKey = pageSource).toBundle())
+    }
+
+    private fun setupView() {
+        try {
+            val styledAttributes: TypedArray = getTheme().obtainStyledAttributes(intArrayOf(android.R.attr.actionBarSize))
+            val mActionBarSize = styledAttributes.getDimension(0, 0f).toInt()
+            styledAttributes.recycle()
+
+            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
+            layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    resources.getDimensionPixelOffset(R.dimen.dp_16) + mActionBarSize,
+                    layoutParams.rightMargin,
+                    layoutParams.bottomMargin
+            )
+        } catch (e: Exception) {
+            val layoutParams = fragment_container.view?.layoutParams as FrameLayout.LayoutParams
+            layoutParams.setMargins(
+                    layoutParams.leftMargin,
+                    resources.getDimensionPixelOffset(R.dimen.dp_200),
+                    layoutParams.rightMargin,
+                    layoutParams.bottomMargin
+            )
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {

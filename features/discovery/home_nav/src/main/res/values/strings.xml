@@ -34,6 +34,14 @@
     <string name="menu_user_menu_tokopedia_care">Tokopedia Care</string>
     <string name="menu_user_menu_qr_code">QR Code</string>
 
+    <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
+    <string name="menu_user_menu_favorite_shop_tracker_name">Favorite Shop</string>
+    <string name="menu_user_menu_recent_view_tracker_name">Recent View</string>
+    <string name="menu_user_menu_subscription_tracker_name">Subscription</string>
+    <string name="menu_user_menu_complain_tracker_name">Complain</string>
+    <string name="menu_user_menu_tokopedia_care_tracker_name">Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
+
     <string name="title_transaction_section">Transaksi berlangsung</string>
     <string name="menu_transaction_menu_all_transaction">Semua Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
@@ -59,7 +67,7 @@
     <string name="onboarding_login_p1_s3_description">Hubungi Tokopedia Care saja kalau kamu butuh bantuan atau curhat lagi ada kendala!</string>
 
     <string name="onboarding_login_p2_s1_title">Halo, sekarang Akunmu di sini~</string>
-    <string name="onboarding_login_p2_s1_description">Kamu bisa atur Akun seperti biasa &#38; cek saldo  OVO! Buat kamu yang punya toko bisa akses di sini.</string>
+    <string name="onboarding_login_p2_s1_description">Kamu bisa atur Akun seperti biasa &#38; cek saldo OVO! Buat kamu yang punya toko bisa akses di sini.</string>
 
     <string name="onboarding_nonlogin_p1_s1_title">Bayar tagihan &#38; cek transaksi bisa di sini!</string>
     <string name="onboarding_nonlogin_p1_s1_description">Kamu juga bisa top up &#38; beli tiket. Kalau transaksi sudah selesai, jangan lupa tulis ulasan, ya.</string>
