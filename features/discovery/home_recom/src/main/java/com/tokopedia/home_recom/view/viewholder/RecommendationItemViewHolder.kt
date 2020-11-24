@@ -7,6 +7,7 @@ import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
@@ -16,8 +17,12 @@ import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
  * A class for holder view Recommendation Item
  */
 class RecommendationItemViewHolder(
-       private val view: View
+       private val view: View, val listener: RecommendationListener
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
+
+    companion object{
+        private const val RECOM_ITEM = "recom_item"
+    }
 
     private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
 
@@ -43,26 +48,28 @@ class RecommendationItemViewHolder(
                                 element.productItem.trackerImageUrl,
                                 element.productItem.productId.toString(),
                                 element.productItem.name,
-                                element.productItem.imageUrl
+                                element.productItem.imageUrl,
+                                RECOM_ITEM
                         )
                     }
-                    element.listener.onProductImpression(element.productItem)
+                    listener.onProductImpression(element.productItem)
                 }
             })
 
             setOnClickListener {
-                element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
+                listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
                 if (element.productItem.isTopAds) TopAdsUrlHitter(itemView.context).hitClickUrl(
                         this.javaClass.simpleName,
                         element.productItem.clickUrl,
                         element.productItem.productId.toString(),
                         element.productItem.name,
-                        element.productItem.imageUrl
+                        element.productItem.imageUrl,
+                        RECOM_ITEM
                 )
             }
 
             setThreeDotsOnClickListener {
-                element.listener.onThreeDotsClick(element.productItem, adapterPosition)
+                listener.onThreeDotsClick(element.productItem, adapterPosition)
             }
         }
     }
@@ -80,6 +87,7 @@ class RecommendationItemViewHolder(
             reviewCount = recommendationItem.countReview,
             ratingCount = recommendationItem.rating,
             shopLocation = recommendationItem.location,
+            countSoldRating = recommendationItem.ratingAverage,
             shopBadgeList = recommendationItem.badgesUrl.map {
                 ProductCardModel.ShopBadge(imageUrl = it
                         ?: "")

@@ -84,31 +84,29 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         productCardName = productCardItemViewModel.getComponentName()
-        lifecycleOwner?.let {
+        lifecycleOwner?.let { lifecycleOwner ->
             productCardItemViewModel.getDataItemValue().observe(lifecycleOwner, Observer {
                 dataItem = it
                 populateData(it)
             })
 
-            productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer { showLogin ->
-                if (showLogin == true) {
+            productCardItemViewModel.getShowLoginData().observe(lifecycleOwner, Observer {
+                if (it == true) {
                     componentPosition?.let { position -> (fragment as DiscoveryFragment).openLoginScreen(position) }
                 }
             })
-            productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer { status ->
-                updateNotifyMeState(status)
+            productCardItemViewModel.notifyMeCurrentStatus().observe(lifecycleOwner, Observer {
+                updateNotifyMeState(it)
             })
 
-            productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer { message ->
-                showNotifyResultToast(message)
+            productCardItemViewModel.showNotifyToastMessage().observe(lifecycleOwner, Observer {
+                showNotifyResultToast(it)
             })
             productCardItemViewModel.getComponentPosition().observe(lifecycleOwner, Observer {
                 componentPosition = it
             })
-            productCardItemViewModel.getSyncPageLiveData().observe(it, Observer { needResync ->
-                if (needResync) {
-                    (fragment as DiscoveryFragment).reSync()
-                }
+            productCardItemViewModel.getSyncPageLiveData().observe(lifecycleOwner, Observer {
+                if (it) (fragment as DiscoveryFragment).reSync()
             })
         }
     }
@@ -120,6 +118,7 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
             productCardItemViewModel.notifyMeCurrentStatus().removeObservers(it)
             productCardItemViewModel.showNotifyToastMessage().removeObservers(it)
             productCardItemViewModel.getShowLoginData().removeObservers(it)
+            productCardItemViewModel.getComponentPosition().removeObservers(it)
         }
     }
 
@@ -209,9 +208,11 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun showNotifyMe(dataItem: DataItem) {
-        if (productCardItemViewModel.notifyMeVisibility() == true) {
-            notifyMeView.show()
-            updateNotifyMeState(dataItem.notifyMe)
+        if (productCardItemViewModel.notifyMeVisibility()) {
+            dataItem.notifyMe?.let {
+                notifyMeView.show()
+                updateNotifyMeState(it)
+            }
         } else {
             notifyMeView.hide()
         }
@@ -329,9 +330,9 @@ class ProductCardItemViewHolder(itemView: View, val fragment: Fragment) : Abstra
     }
 
     private fun setRating(rating: String, countReview: String?) {
-        val rating = rating.toIntOrZero()
-        if (rating in 1..5) {
-            for (r in 0 until rating) {
+        val ratingData = rating.toIntOrZero()
+        if (ratingData in 1..5) {
+            for (r in 0 until ratingData) {
                 linearLayoutImageRating.show()
                 (linearLayoutImageRating.getChildAt(r) as ImageView).setImageResource(R.drawable.product_card_ic_rating_active)
             }

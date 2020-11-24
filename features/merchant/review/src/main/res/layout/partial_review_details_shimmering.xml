@@ -109,11 +109,11 @@
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_rating"
         app:layout_constraintEnd_toEndOf="@id/review_detail_shimmer_response_2" />
 
-    <View
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/review_detail_shimmer_response_tab"
         android:layout_width="@dimen/spacing_lvl2"
         android:layout_height="0dp"
-        android:background="@drawable/rectangle_8"
+        app:srcCompat="@drawable/rectangle_8"
         app:layout_constraintStart_toStartOf="@id/review_detail_shimmer_rating"
         app:layout_constraintTop_toTopOf="@id/review_detail_shimmer_responder_name"
         app:layout_constraintBottom_toBottomOf="@id/review_detail_shimmer_response_2"/>

@@ -3,6 +3,7 @@ package com.tokopedia.linker;
 public interface LinkerConstants {
     String PRODUCTTYPE_DIGITAL = "digital";
     String PRODUCTTYPE_MARKETPLACE = "marketplace";
+    String FEATURE_TYPE_HOTEL = "hotelShareURL";
     String BRANCH_PROMOCODE_KEY = "branch_promo";
     String REFERRAL_ADVOCATE_PROMO_CODE = "";
     String ANDROID_DESKTOP_URL_KEY = "$android_url";
@@ -50,7 +51,8 @@ public interface LinkerConstants {
     int EVENT_ADD_TO_WHISHLIST =7;
     int EVENT_ADD_TO_CART = 8;
     int EVENT_PURCHASE_FLIGHT = 9;
-
+    int EVENT_DIGITAL_HOMEPAGE = 10;
+    int EVENT_DIGITAL_SCREEN_LAUNCH = 11;
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
@@ -74,6 +76,14 @@ public interface LinkerConstants {
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
     String EVENT_MARKETPLACE_FIRST_TXN = "marketplace_first_txn";
 
+    // Recharge Events
+    String EVENT_DIGITAL_SUBHOMEPAGE_LAUNCHED = "digital_subhomepage_launched";
+    String EVENT_DIGITAL_CATEGORY_LAUNCHED = "digital_category_screen_launched";
+
+    String HOTEL_LABEL = "hotel";
+    String PDP_LABEL = "pdp";
+    String SHARE_LABEL = "Share";
+
     int ERROR_INIT_FAILED = 101;
     int ERROR_REQUEST_NOT_SUCCESSFUL = 102;
     int ERROR_SOMETHING_WENT_WRONG = 103;
@@ -89,6 +99,10 @@ public interface LinkerConstants {
     String PRODUCT_NAME = "product_name";
     String JOURNEY_ID = "journey_id";
     String INVOICE_ID = "invoice_id";
+    String PRODUCT_TYPE = "productType";
+
+    // Recharge Constants
+    String PRODUCT_TYPE_DIGITAL = "Digital";
 
     String BRANCH_UTM_SOURCE = "~channel";
     String BRANCH_UTM_MEDIUM = "~feature";
@@ -99,4 +113,15 @@ public interface LinkerConstants {
     String UTM_CAMPAIGN = "utm_campaign";
     String UTM_TERM = "utm_term";
     String SCREEN_NAME = "screenName";
+
+    String CONTENT = "content";
+    String CONTENT_TYPE = "content_type";
+    String LEVEL1_NAME = "level1_name";
+    String LEVEL1_ID = "level1_id";
+    String LEVEL2_NAME = "level2_name";
+    String LEVEL2_ID = "level2_id";
+    String LEVEL3_NAME = "level3_name";
+    String LEVEL3_ID = "level3_id";
+    String SKU = "sku";
+    String CONTENT_ID = "content_id";
 }

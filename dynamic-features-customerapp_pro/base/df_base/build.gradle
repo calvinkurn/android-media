@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.feature'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -63,7 +63,6 @@ dependencies {
 
     //Content
     implementation project(rootProject.ext.features.createpost)
-    implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.interestPick)
@@ -106,6 +105,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)
     //Operational
 
@@ -123,8 +123,6 @@ dependencies {
     implementation project(rootProject.ext.features.hotel)
 
     //User
-    implementation project(rootProject.ext.features.attachinvoice)
-    implementation project(rootProject.ext.features.attachvoucher)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.changePhoneNumber)
@@ -136,9 +134,8 @@ dependencies {
     implementation project(rootProject.ext.features.notifTroubleshooter)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.otp)
-
-    //Entertainment
-    implementation project(rootProject.ext.features.orderhistory)
+    implementation project(rootProject.ext.features.loginphone)
+    implementation project(rootProject.ext.features.updateinactivephone)
 
     //Transaction
     implementation project(rootProject.ext.features.checkout)

@@ -50,9 +50,22 @@ object ApplinkConstInternalGlobal {
     val PARAM_KTP_PATH = "ktpPath"
     @JvmField
     val PARAM_FACE_PATH = "facePath"
+    @JvmField
+    val PARAM_CTA_TYPE = "ctaType"
+    @JvmField
+    val PARAM_IMG_LINK = "imglink"
+    @JvmField
+    val PARAM_MESSAGE_TITLE = "messageTitle"
+    @JvmField
+    val PARAM_MESSAGE_BODY = "messageBody"
+    @JvmField
+    val PARAM_STATUS = "status"
 
     @JvmField
     val PARAM_IS_FROM_2FA = "isFromTwoFactor"
+
+    @JvmField
+    val PARAM_NEW_HOME_ACCOUNT = "fromNewAccount"
 
     @JvmField
     val PARAM_USER_ID_ENC = "userIdEncrypted"
@@ -94,10 +107,15 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val AUTO_WITHDRAW_SETTING = "$INTERNAL_GLOBAL/autoWithdrawSettings"
 
-    // ChangeInactiveFormRequestActivity
-    // tokopedia-android-internal://global/change-inactive-phone-form
+    // InactivePhoneOnboardingActivity
+    // tokopedia-android-internal://global/change-inactive-phone
     @JvmField
-    val CHANGE_INACTIVE_PHONE_FORM = "$INTERNAL_GLOBAL/change-inactive-phone-form"
+    val CHANGE_INACTIVE_PHONE = "$INTERNAL_GLOBAL/change-inactive-phone"
+
+    // TkpdPaySettingActivity
+    // tokopedia-android-internal://global/payment-setting
+    @JvmField
+    val PAYMENT_SETTING = "$INTERNAL_GLOBAL/payment-setting"
 
     //ChooseTokocashAccountActivity
     // tokopedia-android-internal://global/choose-account
@@ -283,6 +301,16 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/cotp
     @JvmField
     val COTP = "$INTERNAL_GLOBAL/cotp"
+
+    // ReceiverNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-receiver
+    @JvmField
+    val OTP_PUSH_NOTIF_RECEIVER = "$INTERNAL_GLOBAL/otp-push-notif-receiver"
+
+    // SettingNotifActivity
+    // tokopedia-android-internal://global/otp-push-notif-setting
+    @JvmField
+    val OTP_PUSH_NOTIF_SETTING = "$INTERNAL_GLOBAL/otp-push-notif-setting"
 
     // ChangePhoneNumberWarningActivity
     // tokopedia-android-internal://global/change-phone-number
@@ -507,8 +535,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val TWO_FACTOR_REGISTER = "$INTERNAL_GLOBAL/two-factor-register"
 
+    // AccountHomeActivity
+    // tokopedia-android-internal://global/account-home-old
+    @JvmField
+    val OLD_HOME_ACCOUNT = "$INTERNAL_GLOBAL/old-home-account"
+
+    // HomeAccountUserActivity
+    // tokopedia-android-internal://global/new-home-account
+    @JvmField
+    val NEW_HOME_ACCOUNT = "$INTERNAL_GLOBAL/new-home-account"
 
     //SeamlessActivity
     @JvmField
     val SEAMLESS_LOGIN = "${INTERNAL_GLOBAL}/login-seamless"
+
+    //FeedbackPageActivity
+    @JvmField
+    val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
 }

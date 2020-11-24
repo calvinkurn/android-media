@@ -237,10 +237,8 @@
     <string name="label_go_apotik">By GoApotik</string>
     <string name="campaign_npl_start">Dimulai dalam</string>
 
-    <string name="pdp_tradein_text_permission_description">Dengan klik <b>setuju</b>, kamu memberikan izin untuk :\n• Model perangkat dan IMEI.
-        \n• Menyalakan WiFi
-        \n• Akses accelero meter</string>
-    <string name="pdp_tradein_text_request_access">Meminta Izin Akses</string>
+    <string name="pdp_tradein_text_permission_description">Izinkan Tokopedia mengakses IMEI, WiFi, dan lainnya untuk tes fungsi HP</string>
+    <string name="pdp_tradein_text_request_access">Izin akses ke HP-mu</string>
 
     <string name="recom_filter_chip_click_error_network">Silahkan cek kondisi jaringan</string>
 
@@ -258,5 +256,23 @@
     <string name="content_desc_img_pdp_video">image produk</string>
 
     <string name="double_string_builder">%1s %2s</string>
+
+    //report
+    <string name="merchant_product_detail_report_text">Produk bermasalah? Laporkan</string>
+    <string name="merchant_product_detail_report_suffix">Laporkan</string>
+
+    <string name="merchant_product_detail_success_follow_shop_npl">Kamu berhasil follow toko. Yuk, buruan beli barangnya sebelum kehabisan!</string>
+    <string name="merchant_product_detail_success_follow_shop">Kamu berhasil mengikuti Toko ini!</string>
+    <string name="merchant_product_detail_success_unfollow_shop">Anda berhenti mengikuti Toko ini!</string>
+    <string name="merchant_product_detail_error_default">Terjadi kesalahan. Coba lagi</string>
+
+    <string name="ticker_out_of_stock_description">Wishlist barang ini untuk bisa diingatkan saat stok kembali tersedia atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
+    <string name="ticker_product_inactive_title">Barang Tak Tersedia</string>
+    <string name="ticker_product_inactive_description">Untuk sementara barang ini tidak dijual. Kamu bisa wishlist barang ini atau &lt;a href="#"&gt;Cari Barang Serupa.&lt;/a&gt;</string>
+    <string name="button_check_wishlist">Cek Wishlist Kamu</string>
+    <string name="button_remind_me">Ingatkan Saya</string>
+    <string name="toaster_success_add_wishlist_from_fab">Sukses menambah ke wishlist. Kamu akan dapat notifikasi ketika barang kembali tersedia.</string>
+    <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
+    <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
 
 </resources>

@@ -25,6 +25,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.entertainment.R
@@ -113,6 +114,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initializePerformance()
+        TimeZone.setDefault(TimeZone.getTimeZone(GMT));
         urlPDP = arguments?.getString(EXTRA_URL_PDP, "")
     }
 
@@ -123,21 +125,28 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        eventPDPViewModel.eventProductDetailList.observe(this, Observer {
+        eventPDPViewModel.eventProductDetailList.observe(viewLifecycleOwner, Observer {
             clearAllData()
             it?.run {
                 renderList(this)
             }
         })
 
-        eventPDPViewModel.eventProductDetail.observe(this, Observer {
+        eventPDPViewModel.eventProductDetail.observe(viewLifecycleOwner, Observer {
             productDetailData = it.eventProductDetail.productDetailData
             context?.let {
                 renderView(it, productDetailData)
+                if(userSession.isLoggedIn){
+                    eventPDPViewModel.getWhiteListUser(userSession.userId.toInt(),userSession.email, productDetailData)
+                }
             }
         })
 
-        eventPDPViewModel.isError.observe(this, Observer {
+        eventPDPViewModel.validateScanner.observe(viewLifecycleOwner, Observer {
+            renderScanner(it)
+        })
+
+        eventPDPViewModel.isError.observe(viewLifecycleOwner, Observer {
             it?.let {
                 if (it.error) {
                     NetworkErrorHelper.showEmptyState(context, view?.rootView) {
@@ -148,7 +157,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
             }
         })
 
-        eventPDPViewModel.eventHoliday.observe(this, Observer {
+        eventPDPViewModel.eventHoliday.observe(viewLifecycleOwner, Observer {
             listHoliday = it
         })
     }
@@ -216,6 +225,15 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
         tg_event_pdp_price.text = CurrencyFormatter.getRupiahFormat(productDetailData.salesPrice.toInt())
     }
 
+    private fun renderScanner(isValidated: Boolean){
+        if (isValidated && userSession.isLoggedIn){
+            qr_redeem_pdp.show()
+            qr_redeem_pdp.setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+            }
+        }
+    }
+
     private fun loadCalendar(context: Context, productDetailData: ProductDetailData) {
         btn_event_pdp_cek_tiket.setOnClickListener {
             eventPDPTracking.onClickCariTicket(productDetailData)
@@ -230,8 +248,8 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
                 }
 
                 view.bottom_sheet_calendar.apply {
-                    getActiveDate(productDetailData).firstOrNull()?.let {
-                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData))
+                    getActiveDate(productDetailData.dates).firstOrNull()?.let {
+                        calendarPickerView?.init(it,Date(productDetailData.maxEndDate.toLong() * 1000), listHoliday, getActiveDate(productDetailData.dates))
                                 ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
                     }
 
@@ -503,6 +521,7 @@ class EventPDPFragment : BaseListFragment<EventPDPModel, EventPDPFactoryImpl>(),
 
         const val DEFAULT_PIN = "DEFAULT_PIN"
         const val ENT_PDP_PERFORMANCE = "et_event_pdp"
+        const val GMT = "GMT+7"
 
         const val REQUEST_CODE_LOGIN_WITH_DATE = 100
         const val REQUEST_CODE_LOGIN_WITHOUT_DATE = 101

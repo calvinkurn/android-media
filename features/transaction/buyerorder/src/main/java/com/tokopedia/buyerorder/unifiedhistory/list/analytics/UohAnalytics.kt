@@ -61,7 +61,7 @@ object UohAnalytics {
     private const val DIMENSION40 = "dimension40"
     private const val DIMENSION87 = "dimension87"
     private const val DIMENSION88 = "dimension88"
-    private const val ORDER_MANAGEMENT = "ordermanagement"
+    private const val ORDER_MANAGEMENT = "order management"
     private const val CLICK_ORDER_LIST = "clickOrderList"
     private const val PRODUCT_VIEW = "productView"
     private const val ITEM_LIST = "item_list"
@@ -86,11 +86,11 @@ object UohAnalytics {
     private const val CLICK_STATUS_FILTER_CHIPS = "click status filter chips"
     private const val CLICK_TERAPKAN_ON_STATUS_FILTER_CHIPS = "click terapkan on status filter chips"
     private const val CLICK_CATEGORY_FILTER_CHIPS = "click category filter chips"
-    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click category filter chips"
+    private const val CLICK_TERAPKAN_ON_CATEGORY_FILTER_CHIPS = "click terapkan on category filter chips"
     private const val CLICK_X_CHIPS_TO_CLEAR_FILTER = "click x chips to clear filter"
-    private const val CLICK_PRIMARY_BUTTON_ON_ORDER_CARD = "click primary button on order card"
-    private const val CLICK_THREE_DOTS_MENU = "click three dot menu"
-    private const val CLICK_SECONDARY_OPTION_ON_THREE_DOT_MENU = "click secondary option on three dot menu"
+    private const val CLICK_PRIMARY_BUTTON_ON_ORDER_CARD = "click primary button on order card "
+    private const val CLICK_THREE_DOTS_MENU = "click three dot menu "
+    private const val CLICK_SECONDARY_OPTION_ON_THREE_DOT_MENU = "click secondary option on three dot menu "
     private const val CLICK_MULAI_BELANJA_ON_EMPTY_ORDER_LIST = "click mulai belanja on empty order list"
     private const val CLICK_RESET_FILTER_ON_EMPTY_FILTER_RESULT = "click reset filter on empty filter result"
     private const val CLICK_LIHAT_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster"
@@ -120,6 +120,7 @@ object UohAnalytics {
         event[IS_LOGGED_IN_STATUS] = isLoggedInStatus
         event[CURRENT_SITE] = TOKOPEDIA_MARKETPLACE
         event[BUSINESS_UNIT] = ORDER_MANAGEMENT
+        event[USER_ID] = userId
 
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }

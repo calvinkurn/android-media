@@ -24,7 +24,9 @@ data class ProductInputModel (
         // requestCode related to checkEnabledOrNot function on preview page,
         // it's for handling behaviour of enabling shipment and description stepper
         // when click back pressed in add mode
-        var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE){NO_DATA}
+        var requestCode: Array<Int> = Array(REQUEST_CODE_SIZE){NO_DATA},
+        var itemSold: Int = 0, // count of successful item transaction
+        var isDataChanged: Boolean = false
 ) : Parcelable {
     companion object {
         val TAG: String get() = ProductInputModel::class.java.simpleName

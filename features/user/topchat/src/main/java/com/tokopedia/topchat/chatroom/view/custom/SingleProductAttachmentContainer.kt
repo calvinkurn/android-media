@@ -566,7 +566,7 @@ class SingleProductAttachmentContainer : ConstraintLayout {
     }
 
     private fun getBackgroundDrawable(hexColor: String): Drawable? {
-        val backgroundDrawable = MethodChecker.getDrawable(context, com.tokopedia.chat_common.R.drawable.circle_color_variant_indicator)
+        val backgroundDrawable = MethodChecker.getDrawable(context, com.tokopedia.chat_common.R.drawable.topchat_circle_color_variant_indicator)
                 ?: return null
 
         if (isWhiteColor(hexColor)) {

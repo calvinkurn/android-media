@@ -5,10 +5,10 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import android.content.Context
 
-@Database(entities = [GraphqlDatabaseModel::class], version = DbMetadata.VERSION, exportSchema = false)
+@Database(entities = [GraphqlDatabaseModel::class, GQLQueryHashModel::class], version = DbMetadata.VERSION, exportSchema = false)
 abstract class GraphqlDatabase: RoomDatabase(){
     abstract fun getGraphqlDatabaseDao(): GraphqlDatabaseDao
-
+    abstract fun getGQLQueryHashMapDao(): GQLQueryHashMapDao
     companion object {
         @Volatile private var INSTANCE: GraphqlDatabase? = null
 

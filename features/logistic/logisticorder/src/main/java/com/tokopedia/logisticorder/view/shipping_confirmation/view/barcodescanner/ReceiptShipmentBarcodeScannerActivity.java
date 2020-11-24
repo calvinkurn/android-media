@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.journeyapps.barcodescanner.CaptureActivity;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
-import com.tokopedia.logisticdata.data.analytics.SalesShippingAnalytics;
-import com.tokopedia.logisticdata.data.analytics.listener.IBarcodeScannerReceiptShippingAnalyticListener;
+import com.tokopedia.logisticCommon.data.analytics.SalesShippingAnalytics;
+import com.tokopedia.logisticCommon.data.analytics.listener.IBarcodeScannerReceiptShippingAnalyticListener;
 import com.tokopedia.logisticorder.R;
 
 public class ReceiptShipmentBarcodeScannerActivity extends CaptureActivity

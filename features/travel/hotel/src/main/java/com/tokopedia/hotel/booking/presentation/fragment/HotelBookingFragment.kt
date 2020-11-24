@@ -81,10 +81,6 @@ class HotelBookingFragment : HotelBaseFragment() {
     lateinit var hotelCart: HotelCart
     var hotelBookingPageModel = HotelBookingPageModel()
     var promoCode = ""
-    internal var destinationType: String = ""
-    internal var destinationName: String = ""
-    internal var roomCount: Int = 0
-    internal var guestCount: Int = 0
 
     lateinit var progressDialog: ProgressDialog
 
@@ -104,17 +100,13 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         arguments?.let {
             hotelBookingPageModel.cartId = it.getString(ARG_CART_ID, "")
-            destinationType = it.getString(ARG_DESTINATION_TYPE, "")
-            destinationName = it.getString(ARG_DESTINATION_NAME, "")
-            roomCount = it.getInt(ARG_ROOM_COUNT)
-            guestCount = it.getInt(ARG_GUEST_COUNT)
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.hotelCartResult.observe(this, androidx.lifecycle.Observer {
+        bookingViewModel.hotelCartResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
                     hotelCart = it.data.response
@@ -165,7 +157,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
-        bookingViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
+        bookingViewModel.contactListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
     }
@@ -556,7 +548,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = price
-        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, R.color.hotel_orange_607)) }
+        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Y500)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -575,7 +567,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             context?.run {
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G200)),
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G200)),
                         spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
@@ -604,7 +596,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 hotelBookingPageModel.guestName = tv_guest_input.getEditableValue()
             else hotelBookingPageModel.guestName = hotelBookingPageModel.contactData.name
             hotelBookingPageModel.roomRequest = tv_room_request_input.getEditableValue().toString()
-            trackingHotelUtil.hotelClickNext(context, hotelCart, destinationType, destinationName, roomCount, guestCount,
+            trackingHotelUtil.hotelClickNext(context, hotelCart,
+                    hotelCart.property.type, hotelCart.property.name,
+                    hotelCart.cart.rooms.firstOrNull()?.numOfRooms ?: 1,
+                    hotelCart.cart.adult,
                     hotelBookingPageModel.isForOtherGuest == 0, HOTEL_BOOKING_SCREEN_NAME)
 
             hotelBookingPageModel.promoCode = promoCode
@@ -692,14 +687,10 @@ class HotelBookingFragment : HotelBaseFragment() {
         private const val REGEX_IS_ALPHANUMERIC_ONLY = "^[a-zA-Z\\s]*$"
 
 
-        fun getInstance(cartId: String, destinationType: String, destinationName: String, roomCount: Int, guestCount: Int): HotelBookingFragment =
+        fun getInstance(cartId: String): HotelBookingFragment =
                 HotelBookingFragment().also {
                     it.arguments = Bundle().apply {
                         putString(ARG_CART_ID, cartId)
-                        putString(ARG_DESTINATION_TYPE, destinationType)
-                        putString(ARG_DESTINATION_NAME, destinationName)
-                        putInt(ARG_ROOM_COUNT, roomCount)
-                        putInt(ARG_GUEST_COUNT, guestCount)
                     }
                 }
     }

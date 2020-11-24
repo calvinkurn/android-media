@@ -16,7 +16,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-            tools:background="@color/grey_500"
+            tools:background="@color/Unify_N200"
             tools:visibility="visible"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -32,7 +32,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/featured_shop_product_image"
-            tools:background="@color/red_500" />
+            tools:background="@color/Unify_R600" />
 
         <ImageView
             android:id="@+id/featured_shop_product_shop_badge"
@@ -41,16 +41,16 @@
             android:foreground="@drawable/featured_shop_border_image"
             app:layout_constraintBottom_toBottomOf="@+id/featured_shop_product_logo_shop"
             app:layout_constraintEnd_toEndOf="@+id/featured_shop_product_logo_shop"
-            tools:background="@color/green_500" />
+            tools:background="@color/Unify_G500" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/featured_shop_product_shop_topads"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_card_topads"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             android:visibility="gone"
-            android:shadowColor="#5c000000"
+            android:shadowColor="@color/Unify_N700_32"
             android:shadowDy="1"
             android:shadowRadius="2"
             app:layout_constraintBottom_toBottomOf="@id/featured_shop_product_image"
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl2"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N300"
+            android:textColor="@color/Unify_N300"
             android:textSize="@dimen/sp_10"
             tools:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/featured_shop_product_reviews"
@@ -175,7 +175,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl2"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N300"
+            android:textColor="@color/Unify_N300"
             android:textSize="@dimen/sp_10"
             android:lines="1"
             android:layout_marginBottom="@dimen/dp_16"

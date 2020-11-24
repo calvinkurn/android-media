@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
@@ -236,10 +237,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                         return;
                     }
                     break;
-                case DeepLinkChecker.GROUPCHAT:
-                    openGroupChat(linkSegment, defaultBundle);
-                    screenName = AppScreen.GROUP_CHAT;
-                    break;
                 case DeepLinkChecker.PROMO_DETAIL:
                     DeepLinkChecker.openPromoDetail(uriData.toString(), context, defaultBundle);
                     screenName = "";
@@ -341,16 +338,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             intent.putExtra(PARAM_EXTRA_REVIEW, ratingNumber);
             viewListener.goToPage(intent);
-        }
-    }
-
-    private void openGroupChat(List<String> linkSegment, Bundle bundle) {
-        int SEGMENT_GROUPCHAT = 2;
-        Intent intent;
-        if (linkSegment.size() == SEGMENT_GROUPCHAT) {
-            intent = RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, linkSegment.get(1));
-            intent.putExtras(bundle);
-            context.startActivity(intent);
         }
     }
 
@@ -802,6 +789,24 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             URL obtainedURL = new URL(uriData.toString());
             Map<String, String> customDimension = new HashMap<>();
             customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendAuthenticatedEvent(Uri uriData, Campaign campaign, String screenName) {
+        Map<String, Object> campaignMap = campaign.getCampaign();
+        if (!TrackingUtils.isValidCampaign(campaignMap)) return;
+        try {
+            URL obtainedURL = new URL(uriData.toString());
+            Map<String, String> customDimension = new HashMap<>();
+            customDimension.put(Authenticated.KEY_DEEPLINK_URL, obtainedURL.toString());
+            String utmSource = (String) campaignMap.get(AppEventTracking.GTM.UTM_SOURCE);
+            String utmMedium = (String) campaignMap.get(AppEventTracking.GTM.UTM_MEDIUM);
+            customDimension.put("utmSource", utmSource);
+            customDimension.put("utmMedium", utmMedium);
             TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
         } catch (MalformedURLException e) {
             e.printStackTrace();

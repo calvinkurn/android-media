@@ -1,9 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="discount">#ef144a</color>
-    <color name="slashed_price">#7031353b</color>
-    <color name="price">#fa591d</color>
-    <color name="text_location">#ae31353b</color>
-    <color name="title_error_product_info">#f531353b</color>
-    <color name="message_error_product_info">#ae31353b</color>
 </resources>

@@ -33,7 +33,8 @@ class MenuItemsViewHolder(
 
     override fun bind(element: MenuItemUiModel) {
         with(itemView) {
-            element.drawableReference?.let { settingMenuIcon.setImageDrawable(ContextCompat.getDrawable(context, it)) }
+            element.drawableReference?.let { settingMenuIcon?.setImageDrawable(ContextCompat.getDrawable(context, it)) }
+            element.iconUnify?.let { settingMenuIcon?.setImage(it) }
             settingMenuTitle.text = element.title
             if (element.isNoIcon) {
                 element.trackingAlias?.let {

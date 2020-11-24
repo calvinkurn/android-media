@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="start"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="pmin label" />
 
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="pmax label" />
 
@@ -47,8 +47,8 @@
             style="@style/TextView.Title.BlackPrimary"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_minus4"
-            android:layout_marginRight="@dimen/dp_minus4"
+            android:layout_marginLeft="@dimen/hotel_minus4dp"
+            android:layout_marginRight="@dimen/hotel_minus4dp"
             android:layout_weight="1"
             android:clickable="false"
             android:digits="0123456789"
@@ -65,8 +65,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_15"
-            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
             android:text="@string/price_range_separator_symbol" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -74,8 +74,8 @@
             style="@style/TextView.Title.BlackPrimary"
             android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_minus4"
-            android:layout_marginRight="@dimen/dp_minus4"
+            android:layout_marginLeft="@dimen/hotel_minus4dp"
+            android:layout_marginRight="@dimen/hotel_minus4dp"
             android:layout_weight="1"
             android:clickable="false"
             android:digits="0123456789"

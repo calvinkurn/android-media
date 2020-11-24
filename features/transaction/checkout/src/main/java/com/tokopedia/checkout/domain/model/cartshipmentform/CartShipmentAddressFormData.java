@@ -348,4 +348,5 @@ public class CartShipmentAddressFormData implements Parcelable {
         }
         return false;
     }
+
 }

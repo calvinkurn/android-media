@@ -19,6 +19,7 @@ interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
+    fun isNavOld(): Boolean
 
     /**
      * ProductSnapshotViewHolder
@@ -29,8 +30,9 @@ interface DynamicProductDetailListener {
     fun getProductFragmentManager(): FragmentManager
     fun showAlertCampaignEnded()
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
-    fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun shouldShowWishlist(): Boolean
+    fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductInfoViewHolder
@@ -126,12 +128,18 @@ interface DynamicProductDetailListener {
     /**
      * ProductTickerViewHolder
      */
-    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
 
     /**
      * ProductTopAdsImageViewHolder
      */
     fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String)
     fun onTopAdsImageViewImpression(model: TopAdsImageDataModel, bannerId: String, bannerName: String)
+
+    /**
+     * ProductReportViewHolder
+     */
+    fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
 }

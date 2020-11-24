@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.data.model.response.shipment_address_form
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticdata.data.repository.InsuranceTnCDataStore
+import com.tokopedia.logisticCommon.data.repository.InsuranceTnCDataStore
 
 /**
  * Created by fwidjaja on 06/03/20.

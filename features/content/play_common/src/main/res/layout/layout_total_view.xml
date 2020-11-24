@@ -32,7 +32,7 @@
         android:layout_marginRight="@dimen/play_view_stats_info_view_padding"
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:layout_marginBottom="@dimen/play_view_stats_info_view_padding"
-        android:textColor="@color/Neutral_N0"
+        android:textColor="@color/Unify_N0"
         app:layout_constraintStart_toEndOf="@id/iv_total_view"
         app:layout_constraintTop_toTopOf="@id/iv_total_view"
         app:layout_constraintBottom_toBottomOf="@id/iv_total_view"

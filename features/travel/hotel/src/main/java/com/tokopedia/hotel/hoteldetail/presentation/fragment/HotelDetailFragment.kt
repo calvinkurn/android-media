@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
@@ -31,23 +32,26 @@ import com.tokopedia.hotel.globalsearch.presentation.widget.HotelGlobalSearchWid
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyImageItem
+import com.tokopedia.hotel.hoteldetail.data.entity.PropertySafetyBadge
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity.Companion.PDP_SCREEN_NAME
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailAllFacilityActivity
-import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailMainFacilityAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailReviewAdapter
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacilityModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelDetailViewModel
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
+import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -84,6 +88,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
     private var roomPriceAmount: String = ""
     private var isDirectPayment: Boolean = true
     private var source: String = HotelSourceEnum.SEARCHRESULT.value
+    private var isPromo: Boolean = false
 
     private var isHotelDetailSuccess: Boolean = true
     private var isHotelReviewSuccess: Boolean = true
@@ -94,6 +99,8 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
     private lateinit var detailReviewAdapter: HotelDetailReviewAdapter
     private lateinit var mainFacilityAdapter: HotelDetailMainFacilityAdapter
+
+    private var loadingProgressDialog: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -155,7 +162,6 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
 
         setupGlobalSearchWidget()
-
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -176,7 +182,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             stopTrace()
         })
 
-        detailViewModel.hotelInfoResult.observe(this, Observer {
+        detailViewModel.hotelInfoResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isHotelDetailSuccess = true
@@ -193,7 +199,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             stopTrace()
         })
 
-        detailViewModel.hotelReviewResult.observe(this, Observer {
+        detailViewModel.hotelReviewResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     isHotelReviewSuccess = true
@@ -275,7 +281,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hideLoadingLayout()
         (activity as HotelDetailActivity).setSupportActionBar(detail_toolbar)
         (activity as HotelDetailActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+        detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
 
         collapsingToolbar.setExpandedTitleTextAppearance(R.style.hotelPdpExpandedToolbarLayoutTitleColor)
         collapsingToolbar.setCollapsedTitleTextAppearance(R.style.hotelPdpCollapsingToolbarLayoutTitleColor)
@@ -286,11 +292,11 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
             override fun onOffsetChanged(appBarLayout: AppBarLayout, verticalOffset: Int) {
                 if (verticalOffset < COLLAPSING_TOOLBAR_OFFSET) {
-                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N700_96), PorterDuff.Mode.SRC_ATOP)
+                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_96), PorterDuff.Mode.SRC_ATOP)
                     (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_black)
                     isShow = true
                 } else if (isShow) {
-                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Neutral_N0), PorterDuff.Mode.SRC_ATOP)
+                    detail_toolbar.navigationIcon?.setColorFilter(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     (activity as HotelDetailActivity).optionMenu?.setIcon(com.tokopedia.abstraction.R.drawable.ic_toolbar_overflow_level_two_white)
                     isShow = false
                 }
@@ -308,10 +314,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         iv_hotel_detail_location.loadImage(data.property.locationImageStatic)
 
+        setupSafetyBadgeLayout(data.safetyBadge)
         setupPolicySwitcher(data)
         setupImportantInfo(data)
         setupDescription(data)
         setupMainFacilityItem(data)
+        setupShareLink(data)
 
         btn_hotel_detail_show.setOnClickListener {
             context?.run {
@@ -324,6 +332,53 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             hideLoadingContainerBottom()
             hideRoomNotAvailableContainerBottom()
             hideRoomAvailableContainerBottom()
+        }
+    }
+
+    private fun setupSafetyBadgeLayout(propertySafetyBadge: PropertySafetyBadge) {
+        if (propertySafetyBadge.isShow) {
+            hotel_safety_information_layout.show()
+            if (propertySafetyBadge.title.isNotEmpty()) {
+                tv_hotel_safety_information_title.text = propertySafetyBadge.title
+                iv_hotel_safety_badge_icon.loadImage(propertySafetyBadge.icon.light)
+            } else {
+                tv_hotel_safety_information_title.hide()
+                iv_hotel_safety_badge_icon.hide()
+            }
+
+            if (propertySafetyBadge.content.isNotEmpty()) {
+                tv_hotel_safety_information_content.text = propertySafetyBadge.content
+            } else tv_hotel_safety_information_content.hide()
+
+        } else hotel_safety_information_layout.hide()
+    }
+
+    private fun setupShareLink(propertyDetailData: PropertyDetailData) {
+        hotel_share_button.setOnClickListener {
+            trackingHotelUtil.clickShareUrl(requireContext(), PDP_SCREEN_NAME, hotelId.toString(), roomPriceAmount)
+            activity?.run {
+                HotelShare(this).shareEvent(propertyDetailData, isPromo,
+                        { showProgressDialog() },
+                        { hideProgressDialog() },
+                        this.applicationContext)
+            }
+        }
+    }
+
+    private fun showProgressDialog() {
+        if (loadingProgressDialog == null) {
+            loadingProgressDialog = activity?.createDefaultProgressDialog(getString(R.string.hotel_detail_share_loading), false, null)
+        }
+        loadingProgressDialog?.run {
+            if (!isShowing) {
+                show()
+            }
+        }
+    }
+
+    private fun hideProgressDialog() {
+        if (loadingProgressDialog != null && loadingProgressDialog?.isShowing == true) {
+            loadingProgressDialog?.dismiss()
         }
     }
 
@@ -524,6 +579,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             if (hotelDetailTag.isNotEmpty()) {
                 hotel_detail_tag.show()
                 hotel_detail_tag.text = hotelDetailTag
+                isPromo = true
             } else hotel_detail_tag.hide()
 
             if (data[0].additionalPropertyInfo.isEnabled) {

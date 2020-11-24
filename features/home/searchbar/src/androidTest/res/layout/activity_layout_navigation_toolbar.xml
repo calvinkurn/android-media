@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:background="@color/Unify_R100"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.tokopedia.searchbar.navigation_component.NavToolbar
+        android:id="@+id/test_navigation_toolbar"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="200dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetEnd="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetRight="0dp"
+        app:toolbarContentType="typeTitle"
+        app:toolbarTitle="APADEH"
+        app:toolbarInitialTheme="light"/>
+</FrameLayout>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0">
+    android:background="@color/Unify_N0">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="@color/Neutral_N0"
+            app:contentScrim="@color/Unify_N0"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <LinearLayout
@@ -37,8 +37,8 @@
                         android:id="@+id/review_point_text_view"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/blue_booking"
-                        android:textSize="@dimen/dp_28"
+                        android:textColor="@color/Unify_B600"
+                        android:textSize="@dimen/hotel_28sp"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="heading_1"
@@ -51,7 +51,7 @@
                         android:paddingStart="@dimen/spacing_lvl2"
                         android:paddingLeft="@dimen/spacing_lvl2"
                         android:paddingBottom="@dimen/spacing_lvl2"
-                        android:textColor="@color/blue_booking"
+                        android:textColor="@color/Unify_B600"
                         app:layout_constraintBottom_toBottomOf="@+id/review_point_text_view"
                         app:layout_constraintLeft_toRightOf="@+id/review_point_text_view"
                         app:layout_constraintStart_toEndOf="@+id/review_point_text_view"
@@ -63,6 +63,7 @@
                         android:layout_width="@dimen/hotel_20dp"
                         android:layout_height="@dimen/hotel_20dp"
                         android:layout_marginTop="@dimen/layout_lvl1"
+                        app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/review_point_text_view"
                         app:srcCompat="@drawable/ic_booking_logo" />
 
@@ -72,23 +73,23 @@
                         android:layout_marginStart="@dimen/hotel_6dp"
                         android:layout_marginLeft="@dimen/hotel_6dp"
                         android:text="Booking.com"
-                        app:typographyType="body_3"
-                        android:textColor="@color/Neutral_N700_68"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@+id/booking_logo"
                         app:layout_constraintStart_toEndOf="@+id/booking_logo"
-                        app:layout_constraintTop_toTopOf="@+id/booking_logo" />
+                        app:layout_constraintTop_toTopOf="@+id/booking_logo"
+                        app:typographyType="body_3" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/review_total_count_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="8.230 Ulasan"
-                        android:textColor="@color/Neutral_N700_68"
-                        app:typographyType="body_3"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="@+id/booking_logo"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/booking_logo" />
+                        app:layout_constraintTop_toTopOf="@+id/booking_logo"
+                        app:typographyType="body_3" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <View
@@ -105,12 +106,12 @@
                         android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="wrap_content"
                         android:text="Hanya ulasan dari Indonesia"
+                        android:textColor="@color/Unify_N700_68"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:typographyType="body_2"
-                        android:textColor="@color/Neutral_N700_68"/>
+                        app:typographyType="body_2" />
 
                     <Switch
                         android:id="@+id/indonesia_review_switch"
@@ -139,14 +140,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
+            android:paddingLeft="@dimen/hotel_12dp"
+            android:paddingRight="@dimen/hotel_12dp"
             android:paddingBottom="@dimen/hotel_12dp"
             app:contentInsetLeft="@dimen/layout_lvl0"
             app:contentInsetStart="@dimen/layout_lvl0"
             app:contentInsetStartWithNavigation="@dimen/layout_lvl0"
             app:layout_anchor="@+id/review_meta_layout"
-            app:layout_collapseMode="pin"
-            android:paddingLeft="@dimen/hotel_12dp"
-            android:paddingRight="@dimen/hotel_12dp" />
+            app:layout_collapseMode="pin" />
 
         <View
             android:layout_width="match_parent"
