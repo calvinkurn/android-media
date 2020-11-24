@@ -24,11 +24,11 @@ import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionn
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel.Companion.TYPE_MULTIPLE_OPTION
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel.Companion.TYPE_RATE
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -82,7 +82,7 @@ class PMCancellationQuestionnaireViewModelTest {
         PMCancellationQuestionnaireViewModel(
                 getPMCancellationQuestionnaireDataUseCase,
                 deactivatePowerMerchantUseCase,
-                Dispatchers.Main
+                CoroutineTestDispatchersProvider
         )
     }
 
