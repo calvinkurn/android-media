@@ -53,7 +53,6 @@ public class OrderHistoryActivity extends BaseSimpleActivity implements OrderHis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.order_history_layout);
         mainProgressDialog = new ProgressDialog(this);
         mainViewContainer = findViewById(R.id.main_container);
         initInjector();
@@ -65,6 +64,16 @@ public class OrderHistoryActivity extends BaseSimpleActivity implements OrderHis
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    protected void inflateFragment() {
+        //no op
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.order_history_layout;
     }
 
     private void initInjector() {
