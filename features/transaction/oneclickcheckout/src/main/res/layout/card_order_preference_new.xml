@@ -312,13 +312,51 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_shipping_error_message" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_new_payment_cc_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_12"
+                android:paddingEnd="@dimen/dp_16"
+                android:textColor="@color/Unify_N700_96"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/btn_new_change_payment_cc"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_new_shipping_payment"
+                app:typographyType="body_3"
+                app:typographyWeight="bold"
+                tools:ignore="RtlSymmetry" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_new_change_payment_cc"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_new_payment_cc_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_new_payment_cc_name" />
+
+            <View
+                android:id="@+id/divider_new_cc_payment"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/unify_space_12"
+                android:background="@color/Unify_N75"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_new_payment_cc_name" />
+
             <ImageView
                 android:id="@+id/iv_new_payment"
                 android:layout_width="@dimen/dp_30"
                 android:layout_height="@dimen/dp_30"
                 android:layout_marginStart="@dimen/dp_16"
                 android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_new_payment_detail"
+                app:layout_constraintBottom_toBottomOf="@+id/barrier_new_payment_detail_bottom"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/tv_new_payment_name" />
 
@@ -335,7 +373,7 @@
                 android:textColor="@color/Unify_N700_96"
                 app:layout_constraintEnd_toStartOf="@+id/btn_new_change_payment"
                 app:layout_constraintStart_toEndOf="@+id/iv_new_payment"
-                app:layout_constraintTop_toBottomOf="@+id/divider_new_shipping_payment"
+                app:layout_constraintTop_toBottomOf="@+id/divider_new_cc_payment"
                 app:typographyType="body_3"
                 app:typographyWeight="bold" />
 
@@ -369,6 +407,29 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_new_payment_name" />
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_new_payment_ovo_error_action"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_2"
+                android:lines="1"
+                android:visibility="gone"
+                android:textColor="@color/Unify_G500"
+                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintEnd_toEndOf="@+id/tv_new_payment_name"
+                app:layout_constraintStart_toStartOf="@+id/tv_new_payment_name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_new_payment_name"
+                app:layout_constraintWidth_default="wrap"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_new_payment_detail_bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="tv_new_payment_detail,tv_new_payment_ovo_error_action"/>
+
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_new_payment_error_message"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -389,11 +450,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_12"
-                android:layout_marginEnd="@dimen/dp_16"
                 android:text="@string/lbl_installment_type"
                 android:textColor="@color/Unify_N700_68"
                 android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_new_change_installment"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_payment_detail"
                 app:typographyType="body_3"
@@ -404,16 +464,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
+                android:paddingEnd="@dimen/dp_16"
                 android:textColor="@color/Unify_N700_96"
                 android:visibility="gone"
-                app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_20dp"
-                app:layout_constraintEnd_toEndOf="@+id/tv_new_installment_type"
-                app:layout_constraintHorizontal_bias="0"
+                app:layout_constraintEnd_toStartOf="@+id/btn_new_change_installment"
                 app:layout_constraintStart_toStartOf="@+id/tv_new_installment_type"
                 app:layout_constraintTop_toBottomOf="@+id/tv_new_installment_type"
-                app:layout_constraintWidth_default="wrap"
                 app:typographyType="body_3"
-                app:typographyWeight="bold" />
+                app:typographyWeight="bold"
+                tools:ignore="RtlSymmetry" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/btn_new_change_installment"
+                android:layout_width="@dimen/layout_lvl2"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:visibility="gone"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_new_installment_detail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_new_installment_type" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_new_installment_error_message"

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.Token
@@ -66,13 +67,20 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val btnReloadShipping by lazy { view.findViewById<Typography>(R.id.btn_new_reload_shipping) }
     private val iconReloadShipping by lazy { view.findViewById<IconUnify>(R.id.icon_new_reload_shipping) }
 
+    private val tvPaymentCCName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_cc_name) }
+    private val btnChangePaymentCC by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_payment_cc) }
+    private val dividerCCPayment by lazy { view.findViewById<View>(R.id.divider_new_cc_payment) }
+
     private val ivPayment by lazy { view.findViewById<ImageView>(R.id.iv_new_payment) }
     private val tvPaymentName by lazy { view.findViewById<Typography>(R.id.tv_new_payment_name) }
     private val tvPaymentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_payment_detail) }
     private val btnChangePayment by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_payment) }
     private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_payment_error_message) }
+    private val tvPaymentOvoErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_payment_ovo_error_action) }
+
     private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_new_installment_type) }
     private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_installment_detail) }
+    private val btnChangeInstallment by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_installment) }
     private val tvInstallmentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_message) }
     private val tvInstallmentErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_installment_error_action) }
 
@@ -258,20 +266,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         val payment = payment
         if (payment != null) {
-
-            setMultiViewsOnClickListener(ivPayment, tvPaymentName, btnChangePayment) {
-                listener.choosePayment(preference)
-            }
-
             if (!payment.isError()) {
                 tvPaymentErrorMessage?.gone()
                 setPaymentActiveAlpha()
 
                 setupPaymentSelector(payment)
 
-                setupPaymentInstallment(payment.creditCard.selectedTerm)
+                setupPaymentInstallment(payment.creditCard)
             } else {
                 if (payment.customErrorMessage.isNotEmpty()) {
+                    // general error
                     val message = payment.customErrorMessage
                     val button = payment.customErrorButton
 
@@ -287,12 +291,12 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                     tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
-                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                    tvPaymentDetail?.setOnClickListener {
-                        //do nothing
+                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
+                        /* no-op */
                     }
                     setPaymentErrorAlpha(false)
                 } else if (payment.errorMessage.message.isNotEmpty()) {
+                    // cc error
                     val message = payment.errorMessage.message
                     val button = payment.errorMessage.button.text
 
@@ -312,17 +316,32 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                     tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
-                    tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-                    tvPaymentDetail?.setOnClickListener {
-                        //do nothing
+                    btnChangePayment?.invisible()
+                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
+                        /* no-op */
                     }
                     setPaymentErrorAlpha(payment.isCalculationError)
                 } else if (payment.ovoErrorData != null) {
+                    // ovo error
                     val message = payment.ovoErrorData.message
                     val button = payment.ovoErrorData.buttonTitle
 
                     val span = SpannableString("$message $button")
-                    if (button.isNotBlank()) {
+                    if (message.isBlank() && button.isNotBlank()) {
+                        // only show button
+                        tvPaymentOvoErrorAction?.setOnClickListener {
+                            if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_TOP_UP) {
+                                listener.onOvoTopUpClicked(payment.ovoErrorData.callbackUrl, payment.ovoErrorData.isHideDigital, payment.ovoData.customerData)
+                            } else if (payment.ovoErrorData.type == OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
+                                listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
+                            }
+                        }
+                        tvPaymentOvoErrorAction?.text = button
+                        tvPaymentOvoErrorAction?.visible()
+                        tvPaymentDetail?.gone()
+                        tvPaymentErrorMessage?.gone()
+                    } else if (message.isNotBlank() && button.isNotBlank()) {
+                        // show message and button
                         span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         view.context?.let {
                             span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -334,47 +353,62 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                                 listener.onOvoActivateClicked(payment.ovoErrorData.callbackUrl)
                             }
                         }
+                        tvPaymentErrorMessage?.text = span
+                        tvPaymentErrorMessage?.visible()
+                        tvPaymentDetail?.gone()
                     } else {
+                        // only show message
                         tvPaymentErrorMessage?.setOnClickListener {
                             /* no-op */
                         }
+                        tvPaymentErrorMessage?.text = span
+                        tvPaymentErrorMessage?.visible()
+                        tvPaymentDetail?.gone()
                     }
-                    tvPaymentErrorMessage?.text = span
-                    tvPaymentErrorMessage?.visible()
-                    tvPaymentDetail?.gone()
+                    btnChangePayment?.visible()
                     if (payment.ovoErrorData.isBlockingError) {
                         setPaymentErrorAlpha(true)
                     } else {
                         setPaymentActiveAlpha()
                     }
+                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
+                        listener.choosePayment(preference)
+                    }
                 } else {
                     tvPaymentErrorMessage?.gone()
                     setPaymentErrorAlpha(payment.isCalculationError)
+                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
+                        listener.choosePayment(preference)
+                    }
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
+                btnChangeInstallment?.gone()
                 tvInstallmentErrorMessage?.gone()
                 tvInstallmentErrorAction?.gone()
             }
         }
     }
 
-    private fun setupPaymentInstallment(selectedTerm: OrderPaymentInstallmentTerm?) {
-        if (selectedTerm != null) {
+    private fun setupPaymentInstallment(creditCard: OrderPaymentCreditCard) {
+        val selectedTerm = creditCard.selectedTerm
+        if (!creditCard.isDebit && selectedTerm != null) {
             tvInstallmentType?.visible()
             tvInstallmentDetail?.visible()
+            btnChangeInstallment?.visible()
             if (selectedTerm.term > 0) {
                 tvInstallmentDetail?.text = "${selectedTerm.term} Bulan x ${CurrencyFormatUtil.convertPriceValueToIdrFormat(selectedTerm.monthlyAmount, false).removeDecimalSuffix()}"
             } else {
                 tvInstallmentDetail?.text = view.context.getString(R.string.lbl_installment_full_payment)
             }
             setupPaymentInstallmentError(selectedTerm)
-            tvInstallmentDetail?.setOnClickListener {
+            btnChangeInstallment?.setOnClickListener {
                 listener.onInstallmentDetailClicked()
             }
         } else {
             tvInstallmentType?.gone()
             tvInstallmentDetail?.gone()
+            btnChangeInstallment?.gone()
             tvInstallmentErrorMessage?.gone()
             tvInstallmentErrorAction?.gone()
         }
@@ -399,14 +433,22 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
     private fun setupPaymentSelector(payment: OrderPayment) {
         if (payment.creditCard.numberOfCards.availableCards > 1) {
-            tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_20dp, 0)
-            tvPaymentDetail?.setOnClickListener {
+            showPaymentCC(payment)
+            btnChangePayment?.visible()
+            setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
                 listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
             }
+        } else if (payment.creditCard.bankCode.isNotEmpty()) {
+            showPaymentCC(payment)
+            btnChangePayment?.invisible()
+            setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
+                /* no-op */
+            }
         } else {
-            tvPaymentDetail?.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-            tvPaymentDetail?.setOnClickListener {
-                //do nothing
+            hidePaymentCC()
+            btnChangePayment?.visible()
+            setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
+                listener.choosePayment(preference)
             }
         }
     }
@@ -429,9 +471,25 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
-    private fun setMultiViewsOnClickListener(vararg views: View, onClickListener: () -> Unit) {
+    private fun showPaymentCC(payment: OrderPayment) {
+        tvPaymentCCName?.text = payment.gatewayName
+        tvPaymentCCName?.visible()
+        btnChangePaymentCC?.visible()
+        dividerCCPayment?.visible()
+        setMultiViewsOnClickListener(tvPaymentCCName, btnChangePaymentCC) {
+            listener.choosePayment(preference)
+        }
+    }
+
+    private fun hidePaymentCC() {
+        tvPaymentCCName?.gone()
+        btnChangePaymentCC?.gone()
+        dividerCCPayment?.gone()
+    }
+
+    private fun setMultiViewsOnClickListener(vararg views: View?, onClickListener: () -> Unit) {
         for (view in views) {
-            view.setOnClickListener {
+            view?.setOnClickListener {
                 onClickListener.invoke()
             }
         }
