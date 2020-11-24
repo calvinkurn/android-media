@@ -5,21 +5,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.top_ads_headline.R
-import com.tokopedia.top_ads_headline.data.TopAdsCategoryDataModel
+import com.tokopedia.top_ads_headline.data.TopAdsHeadlineTabModel
 import com.tokopedia.unifycomponents.ChipsUnify
 
 private const val DEFAULT_SHIMMER_COUNT = 5
 private const val VIEW_SHIMMER = 0
 private const val VIEW_CATEGORY = 1
 
-class CategoryListAdapter(private var list: ArrayList<TopAdsCategoryDataModel>,
-                          private val chipFilterClick: ((TopAdsCategoryDataModel) -> Unit)?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class CategoryListAdapter(private var list: ArrayList<TopAdsHeadlineTabModel>,
+                          private val chipFilterClick: ((TopAdsHeadlineTabModel) -> Unit)?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var lastSelectedPosition = 0
 
-    fun setItems(list: ArrayList<TopAdsCategoryDataModel>) {
-        this.list = list
-        notifyDataSetChanged()
+    fun setItem(count: Int, position: Int) {
+        list.getOrNull(position)?.let {
+            it.count = count
+            notifyItemChanged(position)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -53,13 +55,15 @@ class CategoryListAdapter(private var list: ArrayList<TopAdsCategoryDataModel>,
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         (holder as? CategoryListViewHolder)?.let {
-            val categoryDataModel = list[position]
-            if(categoryDataModel.count>0){
-                it.chipFilter.chipText = "${categoryDataModel.name} (${categoryDataModel.count})"
+            val headlineTabModel = list[position]
+            val context = holder.itemView.context
+            val tabName = context.getString(headlineTabModel.name)
+            if(headlineTabModel.count>0){
+                it.chipFilter.chipText = "$tabName (${headlineTabModel.count})"
             } else {
-                it.chipFilter.chipText = categoryDataModel.name
+                it.chipFilter.chipText = tabName
             }
-            if (categoryDataModel.isSelected) {
+            if (headlineTabModel.isSelected) {
                 it.chipFilter.chipType = ChipsUnify.TYPE_SELECTED
             } else {
                 it.chipFilter.chipType = ChipsUnify.TYPE_NORMAL

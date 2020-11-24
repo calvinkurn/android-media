@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 open class CreateHeadlineAdsStepperModel(
         var groupName: String = "",
-        var selectedTopAdsProductMap: HashMap<TopAdsCategoryDataModel, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>> = HashMap(),
+        var selectedTopAdsProductMap: HashMap<Category, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>> = HashMap(),
         var selectedProductIds: MutableList<Int> = mutableListOf(),
         var selectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var manualSelectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),

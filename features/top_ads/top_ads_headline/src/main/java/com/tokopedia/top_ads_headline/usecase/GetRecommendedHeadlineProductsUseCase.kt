@@ -37,10 +37,10 @@ const val TOP_ADS_GET_RECOMMENDED_HEADLINE_PRODUCTS_QUERY: String = """query top
 
 @GqlQuery("GetRecommendedHeadlineProductsQuery", TOP_ADS_GET_RECOMMENDED_HEADLINE_PRODUCTS_QUERY)
 class GetRecommendedHeadlineProductsUseCase @Inject constructor(graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<GetRecommendedHeadlineProductsData.Data>(graphqlRepository) {
+    : GraphqlUseCase<GetRecommendedHeadlineProductsData>(graphqlRepository) {
 
     init {
-        setTypeClass(GetRecommendedHeadlineProductsData.Data::class.java)
+        setTypeClass(GetRecommendedHeadlineProductsData::class.java)
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build())
         setGraphqlQuery(GetRecommendedHeadlineProductsQuery.GQL_QUERY)
     }

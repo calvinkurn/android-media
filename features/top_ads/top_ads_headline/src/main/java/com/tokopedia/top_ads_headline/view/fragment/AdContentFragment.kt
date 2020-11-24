@@ -12,15 +12,16 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.CpmModelMapper
 import com.tokopedia.top_ads_headline.data.CreateHeadlineAdsStepperModel
-import com.tokopedia.top_ads_headline.data.TopAdsCategoryDataModel
 import com.tokopedia.top_ads_headline.data.TopAdsManageHeadlineInput
 import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.activity.IS_EDITED
 import com.tokopedia.top_ads_headline.view.activity.SELECTED_PRODUCT_LIST
 import com.tokopedia.top_ads_headline.view.activity.TopAdsProductListActivity
+import com.tokopedia.top_ads_headline.view.adapter.SINGLE_SELECTION
 import com.tokopedia.top_ads_headline.view.sheet.PromotionalMessageBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdContentViewModel
 import com.tokopedia.topads.common.data.internal.ParamObject
@@ -34,7 +35,6 @@ import javax.inject.Inject
 private const val SELECT_PRODUCT_REQUEST_CODE = 1001
 private const val MAX_PRODUCT_PREVIEW = 3
 private const val MIN_PROMOTIONAL_MSG_COUNT = 20
-private const val MIN_PRODUCT_SELECTION = 2
 
 class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperModel>(), TopAdsProductImagePreviewWidget.TopAdsImagePreviewClick {
 
@@ -159,11 +159,11 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
             return true
         } else {
             stepperModel?.selectedTopAdsProductMap?.forEach { (_, arrayList) ->
-                if (arrayList.size >= MIN_PRODUCT_SELECTION) {
-                    return false
+                if (arrayList.size == SINGLE_SELECTION) {
+                    return true
                 }
             }
-            return true
+            return false
         }
     }
 
@@ -207,7 +207,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == SELECT_PRODUCT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<TopAdsCategoryDataModel, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>
+            stepperModel?.selectedTopAdsProductMap = data?.getSerializableExtra(SELECTED_PRODUCT_LIST) as? HashMap<Category, ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>>
                     ?: HashMap()
             selectedTopAdsProducts = getSelectedProducts()
             if (data?.getBooleanExtra(IS_EDITED, false) == true) {
@@ -251,12 +251,12 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
     }
 
     private fun getSelectedProducts(): ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data> {
-        val result = HashSet<ResponseProductList.Result.TopadsGetListProduct.Data>()
+        val result = ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>()
         stepperModel?.selectedTopAdsProductMap?.forEach { (_, value) ->
-            if (value.size > 1) {
+            if (value.size > SINGLE_SELECTION) {
                 result.addAll(value)
             }
         }
-        return result.toCollection(ArrayList())
+        return result
     }
 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.top_ads_headline.R
+import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiHeaderModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiModel
 import com.tokopedia.topads.common.view.adapter.tips.viewmodel.TipsUiRowModel
 import com.tokopedia.topads.common.view.sheet.TipsListSheet
@@ -27,7 +28,7 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     }
 
     companion object {
-        fun newInstance(storeName: String, promotionalMessage:String, onDismissListener: (String) -> Unit): PromotionalMessageBottomSheet {
+        fun newInstance(storeName: String, promotionalMessage: String, onDismissListener: (String) -> Unit): PromotionalMessageBottomSheet {
             return PromotionalMessageBottomSheet().apply {
                 this.storeName = storeName
                 this.promotionalMessage = promotionalMessage
@@ -120,13 +121,14 @@ class PromotionalMessageBottomSheet : BottomSheetUnify() {
     private fun openTemplateTipsBottomSheet() {
         val tipsList: ArrayList<TipsUiModel> = ArrayList()
         tipsList.apply {
+            add(TipsUiHeaderModel(R.string.topads_headline_promotional_message_header))
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_1, R.drawable.topads_create_ic_checklist))
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_2, R.drawable.topads_create_ic_checklist))
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_3, R.drawable.topads_create_ic_checklist))
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_4, R.drawable.topads_create_ic_checklist))
             add(TipsUiRowModel(R.string.topads_headline_promotional_message_5, R.drawable.topads_create_ic_checklist))
         }
-        val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, getString(R.string.topads_headline_promotional_message_header), tipsList) }
+        val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList) }
         tipsListSheet?.show(parentFragmentManager, "")
     }
 }

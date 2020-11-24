@@ -57,7 +57,9 @@ data class ResponseProductList(
                     val productRating: Int = 0,
                     @SerializedName("productReviewCount")
                     val productReviewCount: Int = 0,
-                    var isRecommended: Boolean = false
+                    var isRecommended: Boolean = false,
+                    var isSingleSelect: Boolean = false,
+                    var positionInRv: Int = -1
             ) : Parcelable {
                 override fun equals(other: Any?): Boolean {
                     return other is Data && other.productID == this.productID && other.productName == this.productName

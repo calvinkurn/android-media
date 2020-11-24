@@ -13,21 +13,22 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class TipsListSheet : BottomSheetUnify() {
     private var tipsList: ArrayList<TipsUiModel> = ArrayList()
-    private var tipsTitle: String = ""
     private lateinit var tipsRecyclerView: RecyclerView
     private var tipsAdapter = TipsListAdapter()
 
     init {
         clearContentPadding = true
+        showKnob = true
+        isDragable = true
+        showHeader = false
+        isHideable = true
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(context: Context, title: String = "", tipsList: ArrayList<TipsUiModel>): TipsListSheet {
+        fun newInstance(context: Context, tipsList: ArrayList<TipsUiModel>): TipsListSheet {
             return TipsListSheet().apply {
                 this.tipsList = tipsList
-                this.showHeader = title.isNotBlank()
-                tipsTitle = title
                 val childView = LayoutInflater.from(context).inflate(R.layout.topads_common_tips_sheet_layout, null)
                 setChild(childView)
             }
@@ -45,9 +46,6 @@ class TipsListSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(view.context)
             adapter = tipsAdapter
             tipsAdapter.setTipsItems(tipsList)
-        }
-        if (tipsTitle.isNotBlank()) {
-            setTitle(tipsTitle)
         }
     }
 }

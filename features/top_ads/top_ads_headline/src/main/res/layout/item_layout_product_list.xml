@@ -7,6 +7,7 @@
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_14">
@@ -73,13 +74,17 @@
             android:id="@+id/recommendationTag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
             android:background="@color/topads_common_neutral"
             android:padding="@dimen/dp_4"
             android:text="@string/topads_headline_recommendasi"
             android:textColor="@color/topads_common_light_grey"
-            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@id/rating_layout"
+            app:layout_constraintTop_toBottomOf="@id/product_name"
+            app:layout_constraintVertical_bias="1"
             app:typographyType="heading_6"
             tools:visibility="visible" />
 

@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.topads.common.data.response.ResponseProductList
 import com.tokopedia.topads.sdk.domain.model.*
+import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

@@ -1,11 +1,13 @@
 package com.tokopedia.topads.common.activity
 
 import android.os.Bundle
+import android.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.topads.common.fragment.OnSuccessFragment
 import com.tokopedia.topads.common.getSellerMigrationFeatureName
 import com.tokopedia.topads.common.getSellerMigrationRedirectionApplinks
@@ -14,6 +16,7 @@ import com.tokopedia.topads.common.isFromPdpSellerMigration
 const val EXTRA_TITLE = "title"
 const val EXTRA_SUBTITLE = "subTitle"
 const val EXTRA_BUTTON = "button"
+const val EXTRA_HIDE_TOOLBAR = "toolbar"
 class SuccessActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         return OnSuccessFragment.newInstance(Bundle().apply {
@@ -23,6 +26,19 @@ class SuccessActivity : BaseSimpleActivity() {
                 putString(EXTRA_BUTTON, it.getStringExtra(EXTRA_BUTTON))
             }
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        hideToolBarIfAsked()
+    }
+
+    private fun hideToolBarIfAsked(){
+        intent?.let {
+            if(it.getBooleanExtra(EXTRA_HIDE_TOOLBAR, false)){
+                findViewById<Toolbar>(toolbarResourceID).hide()
+            }
+        }
     }
 
     override fun onBackPressed() {

@@ -179,7 +179,6 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 add(TipsUiRowModel(R.string.topads_headline_keyword_bottomsheet_desc7, R.drawable.topads_create_ic_checklist))
             }
             val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
-            tipsListSheet?.showCloseIcon = false
             tipsListSheet?.show(childFragmentManager, "")
         }
     }

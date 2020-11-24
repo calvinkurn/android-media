@@ -18,10 +18,7 @@ import com.tokopedia.top_ads_headline.di.DaggerHeadlineAdsComponent
 import com.tokopedia.top_ads_headline.view.activity.HeadlineStepperActivity
 import com.tokopedia.top_ads_headline.view.sheet.HeadlinePreviewBottomSheet
 import com.tokopedia.top_ads_headline.view.viewmodel.AdScheduleAndBudgetViewModel
-import com.tokopedia.topads.common.activity.EXTRA_BUTTON
-import com.tokopedia.topads.common.activity.EXTRA_SUBTITLE
-import com.tokopedia.topads.common.activity.EXTRA_TITLE
-import com.tokopedia.topads.common.activity.SuccessActivity
+import com.tokopedia.topads.common.activity.*
 import com.tokopedia.topads.common.data.internal.ParamObject.ACTION_CREATE
 import com.tokopedia.topads.common.data.internal.ParamObject.HEADLINE_SOURCE
 import com.tokopedia.topads.common.data.util.DateTimeUtils.getSpecifiedDateFromStartDate
@@ -123,6 +120,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                 putExtra(SellerMigrationApplinkConst.QUERY_PARAM_FEATURE_NAME, getSellerMigrationFeatureName(activity?.intent?.extras))
                 putStringArrayListExtra(SellerMigrationApplinkConst.SELLER_MIGRATION_APPLINKS_EXTRA, getSellerMigrationRedirectionApplinks(activity?.intent?.extras))
             }
+            putExtra(EXTRA_HIDE_TOOLBAR, true)
             putExtra(EXTRA_TITLE, getString(R.string.topads_headline_success_title_message, stepperModel?.groupName))
             putExtra(EXTRA_SUBTITLE, getString(R.string.topads_headline_success_subtitle_message))
             putExtra(EXTRA_BUTTON, getString(R.string.topads_headline_success_button_message))
@@ -402,11 +400,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row2, R.drawable.topads_create_ic_checklist))
                 add(TipsUiRowModel(R.string.topads_headline_tips_budget_row3, R.drawable.topads_create_ic_checklist))
             }
-            val tipsListSheet = context?.let { it1 ->
-                TipsListSheet.newInstance(it1,
-                        tipsList = tipsList)
-            }
-            tipsListSheet?.showKnob = true
+            val tipsListSheet = context?.let { it1 -> TipsListSheet.newInstance(it1, tipsList = tipsList) }
             tipsListSheet?.show(childFragmentManager, "")
         }
     }

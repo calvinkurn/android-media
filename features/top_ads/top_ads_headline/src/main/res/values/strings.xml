@@ -36,6 +36,9 @@
     <string name="topads_headline_promotional_message_success">Sedikit lagi! Lengkapi pesan agar promosimu lebih menarik</string>
     <string name="topads_headline_promotional_dummy_message">Ada promo menarik untuk produk ori buatan Indonesia.</string>
     <string name="topads_headline_promotional_ticker_message">Minimum 2 produk per kategori</string>
+    <string name="topads_headline_recommendation_category">Rekomendasi</string>
+    <string name="topads_headline_all_products_category">Semua produk</string>
+    <string name="topads_headline_category_count_error">dan %d lainnya</string>
 
     <!--cpmModel constants-->
     <string name="topads_headline_check_now">Cek Sekarang</string>
@@ -95,7 +98,7 @@
     <string name="topads_headline_preview_bottomsheet_header">Preview %s</string>
     <string name="topads_headline_min_budget_cost_error">Batas minimum Rp%s</string>
     <string name="topads_headline_max_budget_cost_error">Batas maksimum Rp%s</string>
-    <string name="topads_headline_success_title_message">Yay, %s diiklankan!</string>
+    <string name="topads_headline_success_title_message">Yay, %s berhasil diiklankan!</string>
     <string name="topads_headline_success_subtitle_message">Performa iklanmu dapat dilihat lebih efektif setelah 7 hari iklan berjalan di Dashboard TopAds </string>
     <string name="topads_headline_success_button_message">Kembali ke Dashboard</string>
     <string name="topads_headline_date_picker_calendar_button">Pilih</string>
