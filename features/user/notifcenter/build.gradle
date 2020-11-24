@@ -88,11 +88,15 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
 
-    /* common usecase */
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.atc_common)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.kotlinTest
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
 }
 
 project.ext {
