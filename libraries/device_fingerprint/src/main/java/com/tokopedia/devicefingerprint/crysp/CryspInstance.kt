@@ -29,8 +29,7 @@ class CryspInstance {
                     val errorMsg = cryspResponse.getErrorMsg();
                     onError (errorMsg)
                 } else { // Received a Valid Response from Server
-                    val wrapResponse = CryspResponse(cryspResponse.xtid, cryspResponse.hmac, cryspResponse.timestamp, cryspResponse.devInitialized)
-                    onSuccess(Gson().toJson(wrapResponse))
+                    onSuccess(cryspResponse.xtid)
                 }
             }
         }

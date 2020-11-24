@@ -48,7 +48,7 @@ class SubmitCrTokenUseCase @Inject constructor(
         return graphqlUseCase.executeOnBackground()
     }
 
-    fun setParams(type: String = "android", content: String) {
+    fun setParams(type: String = "device", content: String) {
         params.parameters.clear()
         params.putString(PARAM_TYPE, type)
         params.putString(PARAM_CONTENT, content)
