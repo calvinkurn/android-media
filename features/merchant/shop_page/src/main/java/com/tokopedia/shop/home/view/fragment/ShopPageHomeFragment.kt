@@ -48,6 +48,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.list.DefaultPlayWidgetInListAnalyticListener
+import com.tokopedia.play.widget.extension.stepScrollToPositionWithDelay
 import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.adapter.viewholder.medium.PlayWidgetCardMediumChannelViewHolder
@@ -59,7 +60,6 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetMediumChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
-import com.tokopedia.play.widget.ui.model.ext.hasFailedTranscodedChannel
 import com.tokopedia.play.widget.ui.model.ext.hasSuccessfulTranscodedChannel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -1702,7 +1702,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
             if (widget is PlayWidgetUiModel.Medium) {
                 if (widget.hasSuccessfulTranscodedChannel) showWidgetTranscodeSuccessToaster()
-                else if (widget.hasFailedTranscodedChannel) {}
 
                 val parent = parentFragment
                 if (parent is ShopPageFragment) {
@@ -1713,13 +1712,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                         recyclerView.addOneTimeGlobalLayoutListener {
                             viewScope.launch {
                                 parent.collapseAppBar()
-                                var cursor = 0
                                 val widgetPosition = shopHomeAdapter.list.indexOfFirst { it is CarouselPlayWidgetUiModel }
                                 val finalPosition = min(widgetPosition + 1, shopHomeAdapter.itemCount)
-                                while (cursor < finalPosition) {
-                                    delay(40)
-                                    recyclerView.smoothScrollToPosition(++cursor)
-                                }
+                                recyclerView.stepScrollToPositionWithDelay(finalPosition, 40)
                             }
                         }
                     }
