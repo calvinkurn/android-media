@@ -285,7 +285,9 @@
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
-
+    <string name="title_promo_checkout_df">Promo Checkout</string>
+    <string name="title_promo_checkout_list">Gunakan Promo/Kupon</string>
+    <string name="title_promo_checkout_detail">Detail Kupon</string>
 
     <string name="title_favorite_page">Favorit</string>
 
@@ -295,6 +297,7 @@
     <string name="title_one_click_checkout">Beli Langsung</string>
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="title_one_click_checkout_credit_card_and_debit">Kartu Kredit</string>
+    <string name="title_one_click_checkout_top_up_ovo">Top-up OVO</string>
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
 
     <!-- Dynamic feature for buyerorder-->
