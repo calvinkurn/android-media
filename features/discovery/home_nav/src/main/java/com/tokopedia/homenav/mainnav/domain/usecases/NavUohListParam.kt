@@ -32,7 +32,7 @@ data class NavUohListParam(
         var page: Int = 0,
 
         @SerializedName("Limit")
-        var limit: Int = 6,
+        var limit: Int = 100,
 
         @SerializedName("SortBy")
         var sortBy: String = "",

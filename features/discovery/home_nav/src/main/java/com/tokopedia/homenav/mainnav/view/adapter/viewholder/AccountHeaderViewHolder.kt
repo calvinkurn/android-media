@@ -107,24 +107,29 @@ class AccountHeaderViewHolder(itemView: View,
 
         if (element.isGetUserNameError) {
             tvName.text = MethodChecker.fromHtml(AccountHeaderViewModel.ERROR_TEXT)
+            tvName.isClickable = true
             tvName.setOnClickListener{mainNavListener.onErrorProfileNameClicked(element)}
         } else {
             configureNameAndBadgeSwitcher(tvName, getCurrentGreetings(), element.userName, usrBadge, getCurrentGreetingsIconStringUrl(), element.badge)
+            tvName.isClickable = false
             tvName.setOnClickListener(null)
         }
 
         if (element.isGetOvoError && element.isGetSaldoError) {
             tvOvo.text = AccountHeaderViewModel.ERROR_TEXT
+            tvOvo.isClickable = true
             tvOvo.setOnClickListener{
                 mainNavListener.onErrorProfileOVOClicked(element)
             }
             usrOvoBadge.loadImage(ovoImageUrl)
         } else if (element.isGetOvoError && !element.isGetSaldoError) {
             tvOvo.text = element.saldo
+            tvOvo.isClickable = false
             tvOvo.setOnClickListener(null)
             usrOvoBadge.loadImage(saldoImageUrl)
         } else {
             tvOvo.text = renderOvoText(element.ovoSaldo, element.ovoPoint, element.saldo)
+            tvOvo.isClickable = false
             tvOvo.setOnClickListener(null)
             if (element.ovoSaldo.isNotEmpty()) {
                 usrOvoBadge.loadImage(ovoImageUrl)
