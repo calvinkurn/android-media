@@ -134,14 +134,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             when (it) {
                 is Success -> {
                     context?.run {
-                        val taskStackBuilder = TaskStackBuilder.create(this)
-
-                        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
-                        taskStackBuilder.addNextIntent(intentHome)
-
-                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
-                        taskStackBuilder.addNextIntent(intentHotelHome)
-
                         val checkoutData = PaymentPassData()
                         checkoutData.queryString = it.data.queryString
                         checkoutData.redirectUrl = it.data.redirectUrl
@@ -149,8 +141,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         val intent = RouteManager.getIntent(context, paymentCheckoutString)
                         intent?.run {
                             putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutData)
-                            taskStackBuilder.addNextIntent(this)
-                            taskStackBuilder.startActivities()
+                            startActivity(this)
                         }
                     }
 
