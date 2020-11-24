@@ -25,7 +25,7 @@ class HomeNavTickerViewHolder(itemView: View,
         itemView.nav_ticker?.setHtmlDescription(element.description)
         itemView.nav_ticker?.tickerType = element.tickerType
 
-        itemView.nav_ticker.setDescriptionClickEvent(object: TickerCallback {
+        itemView.nav_ticker?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 RouteManager.route(context, element.applink)
                 TrackingProfileSection.onClickOpenShopSection(listener.getUserId())
