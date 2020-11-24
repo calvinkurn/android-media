@@ -9,16 +9,14 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -43,7 +41,9 @@ import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.homenav.mainnav.view.presenter.MainNavViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.AccountHeaderViewModel
 import com.tokopedia.homenav.mainnav.view.viewmodel.MainNavigationDataModel
+import com.tokopedia.homenav.view.activity.HomeNavPerformanceInterface
 import com.tokopedia.homenav.view.router.NavigationRouter
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -182,6 +182,14 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         viewModel.onboardingListLiveData.observe(viewLifecycleOwner, Observer {
             viewModel.setOnboardingSuccess(showNavigationPageOnboarding(it))
         })
+
+        viewModel.networkProcessLiveData.observe(viewLifecycleOwner, Observer { isFinished->
+            if (!isFinished) {
+                getNavPerformanceCallback()?.startNetworkRequestPerformanceMonitoring()
+            } else {
+                getNavPerformanceCallback()?.stopNetworkRequestPerformanceMonitoring()
+            }
+        })
     }
 
     override fun onRefresh() {
@@ -247,6 +255,13 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         return userSession.userId
     }
 
+    private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
+        context?.let {
+            return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
+        }
+        return null
+    }
+
     private fun observeCategoryListData(){
         onRefresh()
         viewModel.businessListLiveData.observe(viewLifecycleOwner, Observer {
@@ -278,7 +293,18 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun populateAdapterData(data: MainNavigationDataModel) {
+        setupViewPerformanceMonitoring(data)
         adapter.submitList(data.dataList)
+    }
+
+    private fun setupViewPerformanceMonitoring(data: MainNavigationDataModel) {
+        if (data.dataList.size > 1) {
+            getNavPerformanceCallback()?.startRenderPerformanceMonitoring()
+            recyclerView.addOneTimeGlobalLayoutListener {
+                getNavPerformanceCallback()?.stopRenderPerformanceMonitoring()
+                getNavPerformanceCallback()?.stopMonitoring()
+            }
+        }
     }
 
     private fun getUserSession() : UserSessionInterface{
