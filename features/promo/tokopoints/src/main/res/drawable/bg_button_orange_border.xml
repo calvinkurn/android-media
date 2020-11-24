@@ -3,6 +3,6 @@
     <corners android:radius="@dimen/dp_8" />
     <solid android:color="@color/white" />
     <stroke
-        android:width="@dimen/dp_1"
+        android:width="@dimen/dp_4"
         android:color="@color/tp_bg_button_orange_border" />
 </shape>

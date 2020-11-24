@@ -68,7 +68,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_sah.*
 import kotlinx.android.synthetic.main.fragment_sah.view.*
 import javax.inject.Inject
 
@@ -478,6 +477,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendTableImpressionEvent(model, position, slideNumber, isSlideEmpty)
     }
 
+    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
+        SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty, userSession.userId)
+    }
+
     override fun sendPieChartImpressionEvent(model: PieChartWidgetUiModel) {
         val position = adapter.data.indexOf(model)
         SellerHomeTracking.sendPieChartImpressionEvent(model, position)
@@ -561,7 +564,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         })
 
-        swipeRefreshLayout.isRefreshing = true
+        view?.swipeRefreshLayout?.isRefreshing = true
         setProgressBarVisibility(true)
         startHomeLayoutNetworkMonitoring()
         sellerHomeViewModel.getWidgetLayout()
@@ -589,16 +592,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         // somehow the recyclerview won't show the items if we use diffutil when the adapter is still empty
         if (adapter.data.isEmpty()) {
             super.renderList(widgets)
-            swipeRefreshLayout.isRefreshing = true
+            view?.swipeRefreshLayout?.isRefreshing = true
         } else {
             val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
-            val newWidgets = mostWidgetData.mapIndexed { i, widget ->
-                val newWidget = widgets.getOrNull(i)
-                // "if" is true only on the first load, "else" is always true when we reload
-                if (newWidget != null && isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
-                    widget.apply { isFromCache = false }
-                } else {
-                    newWidget
+            val newWidgets = arrayListOf<BaseWidgetUiModel<*>>()
+            mostWidgetData.forEachIndexed { i, widget ->
+                widgets.getOrNull(i)?.let { newWidget ->
+                    // "if" is true only on the first load, "else" is always true when we reload
+                    if (isTheSameWidget(widget, newWidget) && widget.isFromCache && !newWidget.isFromCache) {
+                        widget.apply { isFromCache = false }
+                        newWidgets.add(widget)
+                    } else {
+                        newWidgets.add(newWidget)
+                    }
                 }
             }
 
@@ -805,7 +811,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         val isAnyLoadingWidget = adapter.data.any { it.isLoading }
         if (!isAnyLoadingWidget) {
-            swipeRefreshLayout.isRefreshing = false
+            view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
         }
     }

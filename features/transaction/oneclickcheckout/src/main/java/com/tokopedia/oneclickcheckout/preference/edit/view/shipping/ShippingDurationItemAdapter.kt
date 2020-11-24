@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.constant.CourierConstant
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.constant.CourierConstant
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.LogisticPromoInfo
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.model.ServicesItem

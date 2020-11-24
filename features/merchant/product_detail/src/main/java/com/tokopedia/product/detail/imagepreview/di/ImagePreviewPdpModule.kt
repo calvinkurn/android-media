@@ -5,14 +5,13 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.detail.imagepreview.data.ImagePreviewTracking
+import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
+import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProviderImpl
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 @ImagePreviewPdpScope
 @Module(includes = [
@@ -30,12 +29,11 @@ class ImagePreviewPdpModule {
 
     @ImagePreviewPdpScope
     @Provides
-    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
+    fun provideDispatcherProvider(): DynamicProductDetailDispatcherProvider = DynamicProductDetailDispatcherProviderImpl()
 
     @ImagePreviewPdpScope
     @Provides
-    @Named("Main")
-    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @ImagePreviewPdpScope
     @Provides
