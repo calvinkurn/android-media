@@ -32,7 +32,6 @@ ext {
     lottieVersion = '3.4.1'
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.60.5'
-    powerMockVersion = '1.6.2'
     roomVersion = '2.2.5'
     sqliteFrameworkVersion = '2.1.0'
     multiDexVersion = '2.0.0'
@@ -303,11 +302,6 @@ ext {
             dexMakerMockito       : 'com.linkedin.dexmaker:dexmaker-mockito:2.25.1',
             assertJ               : "org.assertj:assertj-core:1.7.1",
             assertJCore           : 'org.assertj:assertj-core:3.8.0',
-            powerMock             : "org.powermock:powermock:$powerMockVersion",
-            powerMockJUnit        : "org.powermock:powermock-module-junit4:$powerMockVersion",
-            powerMockJUnitRule    : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
-            powerMockito          : "org.powermock:powermock-api-mockito:$powerMockVersion",
-            powerMockXstream      : "org.powermock:powermock-classloading-xstream:$powerMockVersion",
             kotlinMockito         : "com.nhaarman:mockito-kotlin:${KotlinMockitoVersion}",
             kotlinMockito2        : "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
             kotlinTest            : "org.jetbrains.kotlin:kotlin-test:$kotlinTestVersion",
