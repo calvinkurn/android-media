@@ -30,8 +30,6 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -49,7 +47,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         SellerappAplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
-        ChangeInactivePhoneApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
 })
@@ -68,7 +65,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new SellerappAplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
-                new ChangeInactivePhoneApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()
         );

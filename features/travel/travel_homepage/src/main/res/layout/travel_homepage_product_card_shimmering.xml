@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:padding="@dimen/layout_lvl2">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -68,7 +68,7 @@
             android:layout_marginTop="@dimen/layout_lvl3"
             app:width_weight="0.4"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/spacing_lvl7"
             />
     </LinearLayout>
 
@@ -212,7 +212,7 @@
             android:layout_marginTop="@dimen/layout_lvl3"
             app:width_weight="0.4"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
-            android:layout_marginBottom="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/spacing_lvl7"
             />
     </LinearLayout>
 

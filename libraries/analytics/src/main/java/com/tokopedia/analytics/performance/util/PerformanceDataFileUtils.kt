@@ -22,6 +22,7 @@ object PerformanceDataFileUtils {
                         "${pltPerformanceData.networkRequestDuration}," +
                         "${pltPerformanceData.renderPageDuration}," +
                         "${pltPerformanceData.overallDuration}," +
+                        "${pltPerformanceData.customMetric.toString().replace(",", ";")}," +
                         "$dataSourceType," +
                         "${networkData?.totalResponseSize ?: ""}," +
                         "${networkData?.totalResponseTime ?: ""}," +
@@ -73,6 +74,7 @@ object PerformanceDataFileUtils {
         val totalUserNetworkDuration = "Total User Network Duration (ms)"
         val responseSizeDetail = "ResponseSizeDetail"
         val responseTimeDetail = "ResponseTimeDetail"
+        val customMetricTitle = "Custom Metrics"
 
         val allframes = "All Frames"
         val jankyframes = "Janky Frames"
@@ -87,6 +89,7 @@ object PerformanceDataFileUtils {
                 "$networkRequestPlt," +
                 "$renderPagePlt," +
                 "$overallPlt," +
+                "$customMetricTitle," +
                 "$datasource," +
                 "$totalResponseSize," +
                 "$totalResponseTime," +

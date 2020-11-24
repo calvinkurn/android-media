@@ -14,8 +14,9 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelFreeRapidTest"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
             android:background="@drawable/bg_flight_search_free_rapid_test"
+            android:gravity="center"
             android:paddingLeft="@dimen/spacing_lvl3"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl3"
@@ -31,7 +32,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelSeatDistancingBackground"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
             android:background="@color/Unify_B500"
             app:layout_constraintBottom_toBottomOf="@id/labelSeatDistancing"
             app:layout_constraintLeft_toLeftOf="@id/labelSeatDistancing"
@@ -41,8 +42,9 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/labelSeatDistancing"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/layout_lvl3"
             android:background="@drawable/bg_flight_search_seat_distancing"
+            android:gravity="center"
             android:paddingLeft="@dimen/spacing_lvl3"
             android:paddingTop="@dimen/spacing_lvl2"
             android:paddingRight="@dimen/spacing_lvl3"

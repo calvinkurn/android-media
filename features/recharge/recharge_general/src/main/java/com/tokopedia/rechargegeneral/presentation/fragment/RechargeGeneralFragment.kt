@@ -689,6 +689,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             product_view_pager.adapter = pagerAdapter
             product_view_pager.offscreenPageLimit = listProductTab.size
             tab_layout.customTabMode = TabLayout.MODE_FIXED
+            tab_layout.customTabGravity = TabLayout.GRAVITY_FILL
 
             if (listProductTab.size > 1) {
                 for (item in listProductTab) {
@@ -697,7 +698,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 tab_layout.getUnifyTabLayout().addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
                         product_view_pager.setCurrentItem(tab.position, true)
-                        if (listProductTab[tab.position].title == getString(R.string.promo_tab_title)) {
+                        val promoListIndex = listProductTab.indexOfFirst { it.title == getString(R.string.promo_tab_title) }
+                        if (tab.position == promoListIndex) {
                             rechargeGeneralAnalytics.eventClickPromoTab(categoryName, operatorName)
                         }
                     }
@@ -713,7 +715,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 })
                 product_view_pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) {
-                        tab_layout.getUnifyTabLayout().selectTab(tab_layout.getUnifyTabLayout().getTabAt(position))
+                        tab_layout.getUnifyTabLayout().getTabAt(position)?.let {
+                            it.select()
+                        }
                     }
                 })
                 tab_layout.show()
