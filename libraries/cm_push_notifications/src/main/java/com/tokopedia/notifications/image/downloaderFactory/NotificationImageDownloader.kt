@@ -57,15 +57,33 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
     private fun resizeImageTO2X1Ration(bitmap: Bitmap?): Bitmap? {
         if (bitmap == null)
             return null
-        val ratio = bitmap.width / bitmap.height
-        if (ratio < 2) {
-            val resizedBitmap = Bitmap.createBitmap(bitmap.width * 2, bitmap.height, Bitmap.Config.ARGB_8888)
+        val ratio = bitmap.width.toFloat() / bitmap.height.toFloat()
+        if (ratio < 2F) {
+            val expectedHeight = bitmap.height
+            val expectedWidth = bitmap.height * 2
+            val startX = ((expectedWidth - bitmap.width).toFloat() / 2F)
+            val endX = startX + bitmap.width
+            val resizedBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resizedBitmap)
             //todo support dark mode
             canvas.drawColor(Color.WHITE)
             val frameToDraw = Rect(0, 0, bitmap.width, bitmap.height)
-            val whereToDraw = RectF(bitmap.width / 2.toFloat(), 0F,
-                    bitmap.width / 2.toFloat() + bitmap.width.toFloat(), canvas.height.toFloat())
+            val whereToDraw = RectF(startX, 0F,
+                    endX, canvas.height.toFloat())
+            canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, Paint())
+            bitmap.recycle()
+            return resizedBitmap
+        }else if (ratio > 2F){
+            val expectedHeight = bitmap.width.toFloat()/2F
+            val expectedWidth = bitmap.width.toFloat()
+            val topY = ((expectedHeight - bitmap.height) / 2F)
+            val bottomY = topY + bitmap.height
+            val resizedBitmap = Bitmap.createBitmap(expectedWidth.toInt(), expectedHeight.toInt(), Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(resizedBitmap)
+            //todo support dark mode
+            canvas.drawColor(Color.WHITE)
+            val frameToDraw = Rect(0, 0, bitmap.width, bitmap.height)
+            val whereToDraw = RectF(0F, topY, canvas.width.toFloat(), bottomY)
             canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, Paint())
             bitmap.recycle()
             return resizedBitmap
