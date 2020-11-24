@@ -20,6 +20,7 @@ class HeadLineAdItemsListAdapter(private val typeFactory: HeadLineAdItemsAdapter
     var countList: MutableList<CountDataItem> = mutableListOf()
     private var selectedMode = false
     private var fromSearch = false
+    private var selectedText = ""
     var statsData: MutableList<DataItem> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HeadLineAdItemsViewHolder<HeadLineAdItemsViewModel> {
@@ -52,7 +53,7 @@ class HeadLineAdItemsListAdapter(private val typeFactory: HeadLineAdItemsAdapter
     }
 
     override fun onBindViewHolder(holder: HeadLineAdItemsViewHolder<HeadLineAdItemsViewModel>, position: Int) {
-        holder.bind(items[position], selectedMode, fromSearch, statsData, countList)
+        holder.bind(items[position], selectedMode, fromSearch, statsData, countList ,selectedText)
     }
 
     fun getSelectedItems(): MutableList<HeadLineAdItemsItemViewModel> {
@@ -61,15 +62,15 @@ class HeadLineAdItemsListAdapter(private val typeFactory: HeadLineAdItemsAdapter
             if (it is HeadLineAdItemsItemViewModel) {
                 if (it.isChecked) {
                     list.add(it)
-
                 }
             }
         }
         return list
     }
 
-    fun setEmptyView(fromSearch: Boolean) {
+    fun setEmptyView(fromSearch: Boolean, selectedText: String = "") {
         this.fromSearch = fromSearch
+        this.selectedText = selectedText
         notifyDataSetChanged()
     }
 

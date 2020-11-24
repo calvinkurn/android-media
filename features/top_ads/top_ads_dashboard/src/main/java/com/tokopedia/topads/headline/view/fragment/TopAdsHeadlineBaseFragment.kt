@@ -380,7 +380,7 @@ open class TopAdsHeadlineBaseFragment : TopAdsBaseTabFragment() {
     private fun onEmptyResult() {
         adapter.items.add(HeadLineAdItemsEmptyViewModel())
         if (searchBar?.searchBarTextField?.text.toString().isEmpty()) {
-            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
+            adapter.setEmptyView(!TopAdsDashboardConstant.EMPTY_SEARCH_VIEW, groupFilterSheet.getSelectedText(context))
         } else {
             adapter.setEmptyView(TopAdsDashboardConstant.EMPTY_SEARCH_VIEW)
         }

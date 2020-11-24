@@ -40,7 +40,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
         TopadsSelectActionSheet.newInstance()
     }
 
-    override fun bind(item: HeadLineAdItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>) {
+    override fun bind(item: HeadLineAdItemsItemViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
         item.let {
 
             view.img.setImageDrawable(view.context.getResDrawable(R.drawable.topads_dashboard_folder))
@@ -62,7 +62,7 @@ class HeadLineAdItemsItemViewHolder(val view: View, var selectMode: ((select: Bo
             }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> view.label.setLabelType(Label.GENERAL_DARK_GREEN)
-                TIDAK_AKTIF -> view.label.setLabelType(Label.GENERAL_LIGHT_ORANGE)
+                TIDAK_AKTIF -> view.label.setLabelType(Label.GENERAL_LIGHT_GREY)
                 TIDAK_TAMPIL -> view.label.setLabelType(Label.GENERAL_LIGHT_GREY)
             }
             view.group_title.text = it.data.groupName

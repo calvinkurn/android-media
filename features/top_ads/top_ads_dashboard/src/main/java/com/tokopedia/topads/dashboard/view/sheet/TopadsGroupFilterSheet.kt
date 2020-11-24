@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.sheet
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -114,6 +113,24 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
 
     fun getSelectedStatusId(): Int? {
         return selectedStatus
+    }
+
+    fun getSelectedText(context: Context?): String {
+        context?.run {
+            return when (selectedStatus) {
+                SELECTED_STATUS_1 -> {
+                    getString(R.string.topads_active)
+                }
+                SELECTED_STATUS_2 -> {
+                    getString(R.string.topads_dash_tidak_tampil)
+                }
+                SELECTED_STATUS_3 -> {
+                    getString(R.string.topads_dash_tidak_active)
+                }
+                else -> ""
+            }
+        }
+        return ""
     }
 
     fun show() {

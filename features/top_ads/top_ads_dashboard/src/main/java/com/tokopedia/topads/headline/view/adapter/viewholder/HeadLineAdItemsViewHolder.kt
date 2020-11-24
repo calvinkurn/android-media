@@ -10,5 +10,5 @@ import com.tokopedia.topads.dashboard.data.model.CountDataItem
  */
 
 abstract class HeadLineAdItemsViewHolder<in T>(view: View) : RecyclerView.ViewHolder(view) {
-    open fun bind(item: T, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>){}
+    open fun bind(item: T, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String = ""){}
 }
