@@ -256,7 +256,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun getNavPerformanceCallback(): PageLoadTimePerformanceInterface? {
         context?.let {
-            (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
+            return (it as? HomeNavPerformanceInterface)?.getNavPerformanceInterface()
         }
         return null
     }
@@ -297,7 +297,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     }
 
     private fun setupViewPerformanceMonitoring(data: MainNavigationDataModel) {
-        if (data.dataList.size != 1) {
+        if (data.dataList.size > 1) {
             getNavPerformanceCallback()?.startRenderPerformanceMonitoring()
             recyclerView.addOneTimeGlobalLayoutListener {
                 getNavPerformanceCallback()?.stopRenderPerformanceMonitoring()

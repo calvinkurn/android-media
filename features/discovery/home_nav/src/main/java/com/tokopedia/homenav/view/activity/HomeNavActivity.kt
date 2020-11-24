@@ -30,10 +30,10 @@ class HomeNavActivity: AppCompatActivity(), HomeNavPerformanceInterface {
     )
 
     companion object {
-        private const val NAV_PAGE_PERFORMANCE_MONITORING_KEY = "mp_home"
-        private const val NAV_PAGE_PERFORMANCE_MONITORING_PREPARE_METRICS = "home_plt_start_page_metrics"
-        private const val NAV_PAGE_PERFORMANCE_MONITORING_NETWORK_METRICS = "home_plt_network_request_page_metrics"
-        private const val NAV_PAGE_PERFORMANCE_MONITORING_RENDER_METRICS = "home_plt_render_page_metrics"
+        private const val NAV_PAGE_PERFORMANCE_MONITORING_KEY = "mp_nav"
+        private const val NAV_PAGE_PERFORMANCE_MONITORING_PREPARE_METRICS = "nav_page_plt_start_page_metrics"
+        private const val NAV_PAGE_PERFORMANCE_MONITORING_NETWORK_METRICS = "nav_page_plt_network_request_page_metrics"
+        private const val NAV_PAGE_PERFORMANCE_MONITORING_RENDER_METRICS = "nav_page_plt_render_page_metrics"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
