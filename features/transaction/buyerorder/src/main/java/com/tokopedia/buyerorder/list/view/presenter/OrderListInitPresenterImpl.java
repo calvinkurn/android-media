@@ -91,9 +91,10 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
             @Override
             public void onError(Throwable e) {
-                e.printStackTrace();
-                view.showErrorNetwork(e.toString());
-
+                if (isViewAttached()) {
+                    e.printStackTrace();
+                    view.showErrorNetwork(e.toString());
+                }
             }
 
             @Override
