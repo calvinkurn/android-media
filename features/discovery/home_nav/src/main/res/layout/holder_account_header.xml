@@ -20,6 +20,7 @@
         tools:visibility="gone">
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:foreground="?attr/selectableItemBackground"
             android:id="@+id/btn_login"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
@@ -32,6 +33,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.UnifyButton
+            android:foreground="?attr/selectableItemBackground"
             android:id="@+id/btn_register"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_32"
