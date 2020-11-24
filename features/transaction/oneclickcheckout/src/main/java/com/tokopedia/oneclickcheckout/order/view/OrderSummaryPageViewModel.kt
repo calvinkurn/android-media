@@ -2,13 +2,13 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_WEIGHT_LIMIT_EXCEEDED
-import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
@@ -565,23 +565,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 calculateTotal(forceButtonState = OccButtonState.NORMAL)
                 globalEvent.value = OccGlobalEvent.Normal
                 return@launch
-            }
-            globalEvent.value = newGlobalEvent
-        }
-    }
-
-    fun updateCreditCard(metadata: String) {
-        launch(executorDispatchers.main) {
-            var param = generateUpdateCartParam()
-            if (param == null) {
-                globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
-                return@launch
-            }
-            param = param.copy(profile = param.profile.copy(metadata = metadata))
-            globalEvent.value = OccGlobalEvent.Loading
-            val (isSuccess, newGlobalEvent) = cartProcessor.updatePreference(param)
-            if (isSuccess) {
-                clearBboIfExist()
             }
             globalEvent.value = newGlobalEvent
         }
