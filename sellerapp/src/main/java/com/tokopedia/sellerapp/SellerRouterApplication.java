@@ -56,21 +56,19 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.fcm.AppNotificationReceiver;
+import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.DeferredResourceInitializer;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.utils.SellerOnboardingPreference;
-import com.tokopedia.sellerapp.onboarding.SellerOnboardingBridgeActivity;
 import com.tokopedia.sellerapp.utils.constants.Constants;
 import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
-import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
+import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
 import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
-import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
-import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
 import com.tokopedia.topchat.chatlist.fragment.ChatTabListFragment;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
@@ -86,7 +84,6 @@ import java.util.List;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
-import rx.Observable;
 import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
@@ -447,11 +444,16 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getSomListFragment(String tabPage) {
+    public Fragment getSomListFragment(String tabPage, int orderType) {
         Bundle bundle = new Bundle();
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
-        return SomListFragment.newInstance(bundle);
+        bundle.putInt(SomConsts.FILTER_ORDER_TYPE, orderType);
+        if (getBooleanRemoteConfig(SomConsts.ENABLE_NEW_SOM, true)) {
+            return SomListFragment.newInstance(bundle);
+        } else {
+            return com.tokopedia.sellerorder.oldlist.presentation.fragment.SomListFragment.newInstance(bundle);
+        }
     }
 
     @NotNull

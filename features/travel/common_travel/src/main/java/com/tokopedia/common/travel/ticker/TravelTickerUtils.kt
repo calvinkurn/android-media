@@ -24,13 +24,13 @@ object TravelTickerUtils {
         tickerView.setListMessage(messages)
         if (context != null) {
             if (travelTickerModel.type == ANNOUNCEMENT_TYPE) {
-                tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
-                tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.light_green))
-                tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.light_green))
+                tickerView.setHighLightColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
+                tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
+                tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             } else if (travelTickerModel.type == WARNING_TYPE) {
-                tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.snackbar_border_error))
-                tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, R.color.colorPink))
-                tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, R.color.colorPink))
+                tickerView.setHighLightColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R400))
+                tickerView.setPageIndicatorOnColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R100))
+                tickerView.setPageIndicatorOffColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R100))
                 tickerView.hideCloseButton()
             }
         }

@@ -282,7 +282,9 @@
     <!--Promo-->
     <string name="title_gamification_df">Gamification</string>
     <string name="title_tokopoints_df">Tokopoints</string>
-
+    <string name="title_promo_checkout_df">Promo Checkout</string>
+    <string name="title_promo_checkout_list">Gunakan Promo/Kupon</string>
+    <string name="title_promo_checkout_detail">Detail Kupon</string>
 
     <string name="title_favorite_page">Favorit</string>
 

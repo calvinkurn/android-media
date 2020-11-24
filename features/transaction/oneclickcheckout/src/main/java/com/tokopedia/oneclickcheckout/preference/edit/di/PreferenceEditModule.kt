@@ -10,8 +10,8 @@ import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
-import com.tokopedia.logisticdata.domain.usecase.GetAddressCornerUseCase
+import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticCommon.domain.usecase.GetAddressCornerUseCase
 import com.tokopedia.oneclickcheckout.common.PAYMENT_LISTING_URL
 import com.tokopedia.oneclickcheckout.common.dispatchers.DefaultDispatchers
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers

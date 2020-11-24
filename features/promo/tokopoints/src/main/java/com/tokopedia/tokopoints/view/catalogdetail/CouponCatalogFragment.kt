@@ -528,29 +528,29 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         val tvTnc: TkpdWebView = view!!.findViewById(R.id.tnc_content)
         val tncSeeMore: Typography = view!!.findViewById(R.id.tnc_see_more)
         val howToUseSeeMore: Typography = view!!.findViewById(R.id.how_to_use_see_more)
-        tvTnc.loadData(getLessDisplayData(data.tnc, tncSeeMore), CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tvHowToUse.loadData(getLessDisplayData(data.howToUse, howToUseSeeMore), CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
-        tncSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.tnc, getString(R.string.tnc_coupon_catalog)) }
-        howToUseSeeMore.setOnClickListener { v: View? -> loadWebViewInBottomsheet(data.howToUse, getString(R.string.how_to_use_coupon_catalog)) }
+        tvTnc.loadData(data.tnc?.let { getLessDisplayData(it, tncSeeMore) }, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        tvHowToUse.loadData(data.howToUse?.let { getLessDisplayData(it, howToUseSeeMore) }, CommonConstant.COUPON_MIME_TYPE, CommonConstant.UTF_ENCODING)
+        tncSeeMore.setOnClickListener { v: View? -> data.tnc?.let { loadWebViewInBottomsheet(it, getString(R.string.tnc_coupon_catalog)) } }
+        howToUseSeeMore.setOnClickListener { v: View? -> data.howToUse?.let { loadWebViewInBottomsheet(it, getString(R.string.how_to_use_coupon_catalog)) } }
         val pointValue: Typography = view!!.findViewById(R.id.text_point_value_coupon)
         pointValue.text = "Gratis"
         //Quota text handling
-        if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
+        if (data.upperTextDesc.isNullOrEmpty()) {
             quota.visibility = View.GONE
         } else {
             quota.visibility = View.VISIBLE
             val upperText = StringBuilder()
-            for (i in data.upperTextDesc.indices) {
+            for (i in data.upperTextDesc!!.indices) {
                 if (i == 1) { //exclusive case for handling font color of second index.
-                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
+                    upperText.append("<font color='#ff5722'>" + data.upperTextDesc!![i] + "</font>")
                 } else {
-                    upperText.append(data.upperTextDesc[i]).append(" ")
+                    upperText.append(data.upperTextDesc!![i]).append(" ")
                 }
             }
             quota.text = MethodChecker.fromHtml(upperText.toString())
         }
         //Quota text handling
-        if (data.disableErrorMessage == null || data.disableErrorMessage.isEmpty()) {
+        if (data.disableErrorMessage.isNullOrEmpty()) {
             disabledError.visibility = View.GONE
         } else {
             disabledError.visibility = View.VISIBLE
@@ -659,7 +659,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         bottomSheet.show(childFragmentManager, "")
     }
 
-    override fun gotoSendGiftPage(id: Int, title: String, pointStr: String, banner: String) {
+    override fun gotoSendGiftPage(id: Int, title: String?, pointStr: String?, banner: String?) {
         val bundle = Bundle()
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id)
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title)
