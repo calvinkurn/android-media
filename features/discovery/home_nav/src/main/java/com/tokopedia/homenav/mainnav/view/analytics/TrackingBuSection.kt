@@ -6,7 +6,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object TrackingBuSection: BaseTrackerConst() {
     private const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     private const val GLOBAL_MENU = "global menu"
-    private const val BUSINESS_UNIT_LIST = "business_unit_list"
+    private const val BUSINESS_UNIT_LIST = "business unit list"
 
     fun onClickBusinessUnitItem(title: String, userId: String){
         getTracker().sendGeneralEvent(BaseTrackerBuilder()
