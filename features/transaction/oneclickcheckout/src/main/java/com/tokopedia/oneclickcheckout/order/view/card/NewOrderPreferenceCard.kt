@@ -78,6 +78,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvPaymentErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_payment_error_message) }
     private val tvPaymentOvoErrorAction by lazy { view.findViewById<Typography>(R.id.tv_new_payment_ovo_error_action) }
 
+    private val tvPaymentInfo by lazy { view.findViewById<Typography>(R.id.tv_new_payment_info) }
+
     private val tvInstallmentType by lazy { view.findViewById<Typography>(R.id.tv_new_installment_type) }
     private val tvInstallmentDetail by lazy { view.findViewById<Typography>(R.id.tv_new_installment_detail) }
     private val btnChangeInstallment by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_installment) }
@@ -264,6 +266,13 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             tvPaymentDetail?.gone()
         }
 
+        if (paymentModel.tickerMessage.isNotBlank()) {
+            tvPaymentInfo?.text = MethodChecker.fromHtml(paymentModel.tickerMessage)
+            tvPaymentInfo?.visible()
+        } else {
+            tvPaymentInfo?.gone()
+        }
+
         val payment = payment
         if (payment != null) {
             if (!payment.isError()) {
@@ -291,6 +300,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                     tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
+                    btnChangePayment?.invisible()
                     setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
                         /* no-op */
                     }
