@@ -3,13 +3,13 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 import com.google.gson.JsonParser
 import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.*
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.domain.param.EditAddressParam
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
+import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.dispatchers.ExecutorDispatchers
@@ -280,7 +280,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
             if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 flagNeedToSetPinpoint = true
             }
-        } else if (profileShipment.spId < 0) {
+        } else if (profileShipment.spId <= 0) {
             preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
         }
         selectedShippingDurationUiModel.shippingCourierViewModelList.forEach {
