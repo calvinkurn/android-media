@@ -17,12 +17,30 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <include
-            android:id="@+id/item_toolbar"
+            android:id="@+id/oldToolbar"
             layout="@layout/item_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
-            tools:layout_height="@dimen/dp_56"/>
+            android:visibility="gone"
+            tools:layout_height="@dimen/dp_56"
+            tools:visibility = "visible"/>
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/navToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:minHeight="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:toolbarInitialTheme = "light"
+            app:toolbarDefaultHint = "@string/discovery_default_search_title"
+            app:toolbarContentType="typeSearchbar"
+            app:toolbarBackButton="back"
+            app:toolbarPageName="@string/discovery_page_name"
+            android:visibility="gone"
+            tools:visibility = "visible"/>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.tokopedia.unifycomponents.LoaderUnify

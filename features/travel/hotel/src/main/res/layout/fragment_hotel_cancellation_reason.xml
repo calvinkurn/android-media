@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical">
     
     <androidx.recyclerview.widget.RecyclerView
@@ -42,7 +42,7 @@
             android:layout_marginRight="@dimen/layout_lvl2"
             android:layout_marginBottom="@dimen/layout_lvl2"
             android:gravity="center"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="alawlkndjanfjenfjrbhfbrhgbhgb" />
     </LinearLayout>

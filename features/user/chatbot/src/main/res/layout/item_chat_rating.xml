@@ -95,7 +95,7 @@
                         android:paddingEnd="@dimen/dp_18"
                         android:paddingBottom="@dimen/dp_8"
                         android:textColor="@color/black_70"
-                        android:textColorLink="@color/black_70"
+                        android:textColorLink="@color/read_more_color"
                         android:textIsSelectable="true"
                         app:typographyType="body_2"
                         android:visibility="visible"

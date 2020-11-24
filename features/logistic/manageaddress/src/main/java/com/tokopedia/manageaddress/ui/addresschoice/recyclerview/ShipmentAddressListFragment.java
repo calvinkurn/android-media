@@ -24,11 +24,11 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.logisticdata.data.constant.LogisticConstant;
-import com.tokopedia.logisticdata.data.entity.address.Destination;
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel;
-import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant;
+import com.tokopedia.logisticCommon.data.entity.address.Destination;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel;
+import com.tokopedia.logisticCommon.data.entity.address.Token;
 import com.tokopedia.manageaddress.R;
 import com.tokopedia.manageaddress.di.addresschoice.DaggerAddressChoiceComponent;
 import com.tokopedia.manageaddress.domain.mapper.AddressModelMapper;
@@ -47,8 +47,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
-import static com.tokopedia.logisticdata.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticCommon.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
+import static com.tokopedia.logisticCommon.data.constant.LogisticConstant.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_REF;
 
 public class ShipmentAddressListFragment extends BaseCheckoutFragment implements

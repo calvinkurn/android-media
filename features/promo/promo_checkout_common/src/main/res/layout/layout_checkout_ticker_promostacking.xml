@@ -37,19 +37,19 @@
                 android:scaleType="centerCrop"
                 app:srcCompat="@drawable/bg_button_promostacking" />
 
-            <com.tokopedia.design.component.TextViewCompat
-                android:id="@+id/title_button_coupon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="@dimen/dp_20"
-                android:layout_marginLeft="@dimen/dp_20"
-                android:layout_toRightOf="@id/ic_button_coupon"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="Pakai Promo Tokopedia"
-                android:textColor="@color/tkpd_main_green"
-                android:textSize="@dimen/sp_12" />
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/title_button_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_toRightOf="@id/ic_button_coupon"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center"
+            android:text="Pakai Promo Tokopedia"
+            android:textColor="@color/Unify_G400"
+            android:textSize="@dimen/sp_12" />
 
             <LinearLayout
                 android:id="@+id/layout_counter_coupons"
@@ -62,33 +62,33 @@
                 android:layout_marginRight="@dimen/dp_10"
                 android:background="@drawable/bg_counter">
 
-                <com.tokopedia.design.component.TextViewCompat
-                    android:id="@+id/counter_coupons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:paddingStart="@dimen/dp_3"
-                    android:paddingLeft="@dimen/dp_3"
-                    android:paddingEnd="@dimen/dp_3"
-                    android:paddingRight="@dimen/dp_3"
-                    android:textColor="@color/Unify_N0"
-                    android:textSize="@dimen/sp_10" />
+            <com.tokopedia.design.component.TextViewCompat
+                android:id="@+id/counter_coupons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:paddingStart="@dimen/dp_3"
+                android:paddingLeft="@dimen/dp_3"
+                android:paddingEnd="@dimen/dp_3"
+                android:paddingRight="@dimen/dp_3"
+                android:textColor="@color/Unify_N0"
+                android:textSize="@dimen/sp_10" />
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/title_action_coupon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:layout_marginRight="@dimen/dp_10"
-                android:text="Cek"
-                android:textColor="@color/black_70"
-                android:visibility="gone" />
+        <TextView
+            android:id="@+id/title_action_coupon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:text="Cek"
+            android:textColor="@color/Unify_N700_68"
+            android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -190,16 +190,16 @@
 
                     </LinearLayout>
 
-                    <FrameLayout
-                        android:id="@+id/loading_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignTop="@+id/layout_content"
-                        android:layout_alignBottom="@+id/layout_content"
-                        android:layout_centerInParent="true"
-                        android:alpha="0.6"
-                        android:background="@color/white"
-                        android:visibility="gone">
+                <FrameLayout
+                    android:id="@+id/loading_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignTop="@+id/layout_content"
+                    android:layout_alignBottom="@+id/layout_content"
+                    android:layout_centerInParent="true"
+                    android:alpha="0.6"
+                    android:background="@color/Unify_N0"
+                    android:visibility="gone">
 
                         <com.tokopedia.unifycomponents.LoaderUnify
                             android:layout_width="@dimen/layout_lvl4"

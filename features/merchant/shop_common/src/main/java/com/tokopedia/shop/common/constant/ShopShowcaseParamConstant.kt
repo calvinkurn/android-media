@@ -25,6 +25,10 @@ object ShopShowcaseParamConstant {
     const val EXTRA_BUNDLE = "EXTRA_BUNDLE"
 }
 
+object ShowcaseRulesName {
+    const val FOLLOWERS_ONLY = "followers_only"
+}
+
 object ShowcasePickerType {
     const val CHECKBOX = "showcase_checkbox_picker"
     const val RADIO = "showcase_radio_picker"

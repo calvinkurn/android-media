@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.tokopedia.authentication.AuthConstant;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.user.session.UserSession;
@@ -56,6 +58,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
                 getToken(),
                 DATE_FORMAT);
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
@@ -64,6 +67,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
         Map<String, String> authHeaders = new HashMap<>();
         authHeaders = prepareHeader(authHeaders, originRequest);
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 
@@ -71,6 +75,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
             throws IOException {
         Map<String, String> authHeaders = AuthUtil.generateHeadersAccount(getToken());
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
+        authHeaders.put(AuthConstant.HEADER_USER_AGENT, AuthHelper.getUserAgent());
         generateHeader(authHeaders, originRequest, newRequest);
     }
 

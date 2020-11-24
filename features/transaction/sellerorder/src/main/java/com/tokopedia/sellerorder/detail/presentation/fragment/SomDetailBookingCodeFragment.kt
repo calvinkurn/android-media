@@ -14,13 +14,13 @@ import com.google.zxing.MultiFormatWriter
 import com.google.zxing.WriterException
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.LABEL_COPY_BOOKING_CODE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BARCODE_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_BOOKING_CODE
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailBookingCodeMessageAdapter
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import kotlinx.android.synthetic.main.fragment_som_booking_code.*
 
 /**
