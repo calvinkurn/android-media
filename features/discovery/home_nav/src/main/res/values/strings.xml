@@ -41,7 +41,7 @@
 
     <string name="transaction_item_default_status">Menunggu pembayaran</string>
     <string name="transaction_item_total_product">%s\nBarang</string>
-    <string name="transaction_others_count">%s Transaksi\nLainnya</string>
+    <string name="transaction_others_count">Transaksi\nLainnya</string>
     <string name="transaction_rupiah_value">Rp%s</string>
 
     <string name="menu_user_menu_shop_ticker_title">Mulai kembangkan bisnismu!</string>
