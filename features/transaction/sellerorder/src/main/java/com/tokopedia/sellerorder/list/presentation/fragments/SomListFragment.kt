@@ -427,21 +427,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         this.isFromBottomSheetFilter = false
         setDefaultSortByValue()
         if (viewModel.isMultiSelectEnabled) {
+            somListLayoutManager?.findFirstVisibleItemPosition()?.let {
+                somListLayoutManager?.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.addOneTimeGlobalLayoutListener {
+                    refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
+                }
+            }
             viewModel.isMultiSelectEnabled = false
             resetOrderSelectedStatus()
             toggleBulkActionButtonVisibility()
             toggleBulkActionCheckboxVisibility()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
-        }
-        this.shouldScrollToTop = shouldScrollToTop
-        if (refreshFilter) {
-            loadFilters(false)
-        }
-        if (shouldReloadOrderListImmediately() || !refreshFilter) {
-            refreshOrderList()
+            checkBoxBulkAction.skipAnimation()
         } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
+            refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
         }
     }
 
@@ -1259,8 +1258,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()
-                        ?: false)
+                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction() ?: false)
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 toggleBulkActionButtonVisibility()
@@ -1715,5 +1713,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
             override fun onAnimationStart(animation: Animator?) {}
         })
+    }
+
+    private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
+        this.shouldScrollToTop = shouldScrollToTop
+        if (refreshFilter) {
+            loadFilters(false)
+        }
+        if (shouldReloadOrderListImmediately() || !refreshFilter) {
+            refreshOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
+        }
     }
 }
