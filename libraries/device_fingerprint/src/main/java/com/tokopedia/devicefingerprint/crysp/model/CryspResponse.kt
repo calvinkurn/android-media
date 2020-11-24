@@ -1,10 +1,10 @@
-package com.tokopedia.devicefingerprint.datavisor.pojo
+package com.tokopedia.devicefingerprint.crysp.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class VisorResponse(
-        @SerializedName("getDeviceDvDetail")
+data class CryspResponse(
+        @SerializedName("getDeviceCrDetail")
         @Expose
         val deviceCrDetail: DeviceCrDetail = DeviceCrDetail()
 )

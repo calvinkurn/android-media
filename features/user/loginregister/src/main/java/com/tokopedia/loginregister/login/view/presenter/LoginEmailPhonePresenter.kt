@@ -56,8 +56,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
-                                                   private val userSession: UserSessionInterface,
-                                                   private val submitDVTokenUseCase: SubmitDVTokenUseCase)
+                                                   private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
         LoginEmailPhoneContract.Presenter {
 
@@ -339,15 +338,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             view.onGetDynamicBannerSuccess(it)
         }, onError = {
             view.onGetDynamicBannerError(it)
-        })
-    }
-
-    override fun submitVisorToken(token: String) {
-        submitDVTokenUseCase.setParams(token = token)
-        submitDVTokenUseCase.execute({
-            view.onSuccessSubmitVisorToken(it.deviceCrDetail.message)
-        },{
-            view.onErrorSubmitVisorToken(it.localizedMessage)
         })
     }
 }
