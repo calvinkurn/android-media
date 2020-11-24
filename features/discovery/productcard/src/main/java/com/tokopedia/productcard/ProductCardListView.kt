@@ -155,10 +155,14 @@ class ProductCardListView: BaseCustomView, IProductCardView {
             btnNotify.text = productCardModel.notifyMeText
             if (productCardModel.isNotifySubscribed) {
                 btnNotify.apply {
+                    setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.light_N700))
                     buttonVariant = UnifyButton.Variant.FILLED
+                    isEnabled = false
+                    isClickable = false
                 }
             } else {
                 btnNotify.apply {
+                    setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.light_G500))
                     buttonVariant = UnifyButton.Variant.GHOST
                 }
             }
