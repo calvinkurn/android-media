@@ -97,9 +97,6 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             descCouponGlobal.visibility = View.VISIBLE
         }
 
-        relativeLayoutUsePromoGlobal.background = ViewUtils.generateBackgroundWithShadow(relativeLayoutUsePromoGlobal)
-        layoutState.background = ViewUtils.generateBackgroundWithShadow(layoutState)
-
         setActionListener()
         invalidate()
         requestLayout()
