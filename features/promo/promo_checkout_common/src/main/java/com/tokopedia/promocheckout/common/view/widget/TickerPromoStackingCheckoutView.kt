@@ -65,12 +65,6 @@ class TickerPromoStackingCheckoutView @JvmOverloads constructor(
             counterCoupons = styledAttributes.getString(R.styleable.TickerCheckoutView_counter) ?: ""
             desc = styledAttributes.getString(R.styleable.TickerCheckoutView_desc) ?: ""
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                bg_button_coupon.clipToOutline = true
-                bg_active_down.clipToOutline = true
-                bg_active_up.clipToOutline = true
-            }
-
         } finally {
             styledAttributes.recycle()
         }
