@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
@@ -229,6 +228,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
+    private var productVideoDataModel: List<ProductVideoDataModel> = listOf()
 
     //View
     private lateinit var varToolbar: Toolbar
@@ -236,7 +236,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var stickyLoginView: StickyLoginView? = null
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
+    private val productVideoCoordinator by lazy {
+        ProductVideoCoordinator()
+    }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this, productVideoCoordinator) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private var toasterWishlistText = ""
@@ -323,6 +326,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onPause() {
         super.onPause()
+        productVideoCoordinator.onPause()
         if (::trackingQueue.isInitialized) {
             trackingQueue.sendAll()
             if (alreadyHitSwipeTracker != null) {
@@ -529,6 +533,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onDestroy() {
+        productVideoCoordinator.onDestroy()
         hideProgressDialog()
         viewModel.p2Data.removeObservers(this)
         viewModel.p2Other.removeObservers(this)
@@ -1466,6 +1471,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
+            productVideoDataModel = productInfo.data.media.filter {
+                it.type == "video"
+            }.map {
+                ProductVideoDataModel(videoId = it.id, videoUrl = it.videoURLAndroid)
+            }
+
             updateProductId()
             renderVariant(viewModel.variantData)
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
@@ -1589,7 +1600,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 ?: false, viewModel.getDynamicProductInfoP1?.data?.campaign?.isActive ?: false,
                 viewModel.getDynamicProductInfoP1?.getFinalStock()?.toIntOrNull() == 0)
 
-        dynamicAdapter.notifyDataSetChanged()
+        dynamicAdapter.notifyItemRangeChanges()
     }
 
     private fun updateNplButtonFollowers(restrictionInfo: RestrictionInfoResponse) {
@@ -3105,6 +3116,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             onSwipeRefresh()
         }
+    }
+
+    override fun getVideoDataById(videoId: String): ProductVideoDataModel {
+        return productVideoDataModel.firstOrNull {
+            it.videoId == videoId
+        } ?: ProductVideoDataModel()
     }
 
     override fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String) {

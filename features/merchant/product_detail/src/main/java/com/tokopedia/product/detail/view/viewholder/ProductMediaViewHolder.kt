@@ -8,13 +8,15 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
 import kotlinx.android.synthetic.main.item_dynamic_product_media.view.*
 
 /**
  * Created by Yehezkiel on 04/05/20
  */
 class ProductMediaViewHolder(private val view: View,
-                             private val listener: DynamicProductDetailListener) : AbstractViewHolder<ProductMediaDataModel>(view) {
+                             private val listener: DynamicProductDetailListener,
+                             private val productVideoCoordinator: ProductVideoCoordinator) : AbstractViewHolder<ProductMediaDataModel>(view) {
     companion object {
         val LAYOUT = R.layout.item_dynamic_product_media
     }
@@ -26,18 +28,17 @@ class ProductMediaViewHolder(private val view: View,
     override fun bind(element: ProductMediaDataModel) {
         with(view) {
             viewMediaPager.shouldRenderViewPager = element.shouldRefreshViewPagger
-            viewMediaPager.renderData(element.listOfMedia, listener::onImageClicked, listener::onSwipePicture, listener.getProductFragmentManager(), getComponentTrackData(element),
-                    listener::onImageClickedTrack, listener.getLifecycleFragment())
+            viewMediaPager.setup(element.listOfMedia, productVideoCoordinator)
 
             element.shouldRefreshViewPagger = false
 
             if (element.shouldRenderImageVariant) {
-                viewMediaPager.updateImage(element.listOfMedia)
+                viewMediaPager.updateImage(element.listOfMedia, productVideoCoordinator)
                 element.shouldRenderImageVariant = false
             }
 
-            viewMediaPager?.isVisibleOnTheScreen({},{
-                viewMediaPager?.stopVideo()
+            viewMediaPager?.isVisibleOnTheScreen({}, {
+                productVideoCoordinator.onPause()
             })
         }
     }
@@ -50,7 +51,7 @@ class ProductMediaViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_UPDATE_IMAGE -> {
-                view.viewMediaPager.updateImage(element.listOfMedia)
+                view.viewMediaPager.updateImage(element.listOfMedia, productVideoCoordinator)
                 element.shouldRenderImageVariant = false
             }
         }

@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.view.widget.ProductVideoDataModel
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 
@@ -19,6 +20,7 @@ interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
+    fun getVideoDataById(videoId: String): ProductVideoDataModel
 
     /**
      * ProductSnapshotViewHolder
@@ -104,7 +106,7 @@ interface DynamicProductDetailListener {
     /**
      * ProductDefaultErrorViewHolder
      */
-    fun onRetryClicked(forceRefresh:Boolean)
+    fun onRetryClicked(forceRefresh: Boolean)
     fun goToHomePageClicked()
     fun goToWebView(url: String)
 

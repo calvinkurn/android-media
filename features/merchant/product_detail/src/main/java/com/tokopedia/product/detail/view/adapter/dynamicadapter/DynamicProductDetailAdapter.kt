@@ -150,6 +150,10 @@ class DynamicProductDetailAdapter(
         }
     }
 
+    fun notifyItemRangeChanges() {
+        notifyItemRangeChanged(1, visitables.size)
+    }
+
     override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
         super.onViewAttachedToWindow(holder)
         if (holder is ProductRecommendationViewHolder &&
