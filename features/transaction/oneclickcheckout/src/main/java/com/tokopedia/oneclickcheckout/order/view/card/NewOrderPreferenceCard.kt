@@ -275,12 +275,11 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         val payment = payment
         if (payment != null) {
+            setupPaymentSelector(payment)
             if (!payment.isError()) {
                 tvPaymentErrorMessage?.gone()
+                tvPaymentOvoErrorAction?.gone()
                 setPaymentActiveAlpha()
-
-                setupPaymentSelector(payment)
-
                 setupPaymentInstallment(payment.creditCard)
             } else {
                 if (payment.customErrorMessage.isNotEmpty()) {
@@ -301,6 +300,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
                     btnChangePayment?.invisible()
+                    tvPaymentOvoErrorAction?.gone()
                     setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
                         /* no-op */
                     }
@@ -327,6 +327,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
                     btnChangePayment?.invisible()
+                    tvPaymentOvoErrorAction?.gone()
                     setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
                         /* no-op */
                     }
@@ -365,6 +366,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         }
                         tvPaymentErrorMessage?.text = span
                         tvPaymentErrorMessage?.visible()
+                        tvPaymentOvoErrorAction?.gone()
                         tvPaymentDetail?.gone()
                     } else {
                         // only show message
@@ -374,6 +376,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvPaymentErrorMessage?.text = span
                         tvPaymentErrorMessage?.visible()
                         tvPaymentDetail?.gone()
+                        tvPaymentOvoErrorAction?.gone()
                     }
                     btnChangePayment?.visible()
                     if (payment.ovoErrorData.isBlockingError) {
@@ -385,7 +388,9 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         listener.choosePayment(preference)
                     }
                 } else {
+                    // fallback
                     tvPaymentErrorMessage?.gone()
+                    tvPaymentOvoErrorAction?.gone()
                     setPaymentErrorAlpha(payment.isCalculationError)
                     setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
                         listener.choosePayment(preference)
