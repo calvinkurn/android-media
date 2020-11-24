@@ -382,6 +382,18 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
         }
     }
 
+
+    fun trackNotifyClick(componentsItems: ComponentsItem, isLogin: Boolean) {
+        val eventCategory = "$VALUE_DISCOVERY_PAGE - $pageType - ${removeDashPageIdentifier(pageIdentifier)}"
+        val map: MutableMap<String, Any> = mutableMapOf(
+                KEY_EVENT to EVENT_CLICK_DISCOVERY,
+                KEY_EVENT_CATEGORY to eventCategory,
+                KEY_EVENT_ACTION to PRODUCT_NOTIFY_CLICK,
+                KEY_EVENT_LABEL to "/${componentsItems.data?.firstOrNull()?.productId ?: ""} - ${if (isLogin) LOGIN else NON_LOGIN} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}")
+        getTracker().sendGeneralEvent(map)
+    }
+
+
     private fun getTabValue(componentsItems: ComponentsItem): String {
         val parentProductContainer = getComponent(componentsItems.parentComponentId, pageIdentifier)
         parentProductContainer?.let {
