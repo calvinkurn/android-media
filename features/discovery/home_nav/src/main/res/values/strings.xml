@@ -32,6 +32,14 @@
     <string name="menu_user_menu_tokopedia_care">Tokopedia Care</string>
     <string name="menu_user_menu_qr_code">QR Code</string>
 
+    <string name="menu_user_menu_wishlist_tracker_name">Wishlist</string>
+    <string name="menu_user_menu_favorite_shop_tracker_name">Favorite Shop</string>
+    <string name="menu_user_menu_recent_view_tracker_name">Recent View</string>
+    <string name="menu_user_menu_subscription_tracker_name">Subscription</string>
+    <string name="menu_user_menu_complain_tracker_name">Complain</string>
+    <string name="menu_user_menu_tokopedia_care_tracker_name">Tokopedia Care</string>
+    <string name="menu_user_menu_qr_code_tracker_name">Scan QR Code</string>
+
     <string name="title_transaction_section">Transaksi berlangsung</string>
     <string name="menu_transaction_menu_all_transaction">Semua Transaksi</string>
     <string name="menu_transaction_menu_ticket">E-tiket &#38; E-voucher Aktif</string>
