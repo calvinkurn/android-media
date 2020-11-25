@@ -51,8 +51,6 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
 
-        renderNotifyMeButton(productCardModel)
-
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                 getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
@@ -76,7 +74,7 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
-        btnNotify?.setOnClickListener(notifyMeClickListener)
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -123,22 +121,5 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
     override fun getThreeDotsButton(): View? = imageThreeDots
 
-    private fun View.renderNotifyMeButton(productCardModel: ProductCardModel) {
-        btnNotify?.shouldShowWithAction(productCardModel.notifyMeText.isNotEmpty()) {
-            btnNotify.text = productCardModel.notifyMeText
-            if (productCardModel.isNotifySubscribed) {
-                btnNotify.apply {
-                    setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.light_N700))
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    isEnabled = false
-                    isClickable = false
-                }
-            } else {
-                btnNotify.apply {
-                    setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.light_G500))
-                    buttonVariant = UnifyButton.Variant.GHOST
-                }
-            }
-        }
-    }
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 }

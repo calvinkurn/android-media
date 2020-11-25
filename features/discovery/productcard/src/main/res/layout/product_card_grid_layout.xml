@@ -206,7 +206,7 @@
             tools:visibility="visible" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnNotify"
+            android:id="@+id/buttonNotify"
             android:layout_width="match_parent"
             android:layout_height="@dimen/product_card_button_add_to_cart_height"
             android:layout_marginStart="@dimen/dp_8"

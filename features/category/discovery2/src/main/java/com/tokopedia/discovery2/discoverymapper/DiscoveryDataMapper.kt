@@ -194,12 +194,10 @@ class DiscoveryDataMapper {
                 },
                 shopLocation = getShopLocation(dataItem),
                 shopBadgeList = getShopBadgeList(dataItem),
-//                stockBarPercentage = dataItem.stockSoldPercentage.toIntOrZero(),
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 isOutOfStock = isOutOfStock,
-
-                )
+        )
     }
 
     private fun setStockProgress(dataItem: DataItem): Int {

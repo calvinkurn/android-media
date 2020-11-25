@@ -23,7 +23,6 @@ import kotlinx.android.synthetic.main.product_card_list_layout.view.progressBarS
 import kotlinx.android.synthetic.main.product_card_list_layout.view.textTopAds
 import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewLabelCampaign
 import kotlinx.android.synthetic.main.product_card_list_layout.view.textViewStockLabel
-import kotlinx.android.synthetic.main.product_card_list_layout.view.btnNotify
 
 class ProductCardListView: BaseCustomView, IProductCardView {
 
@@ -67,7 +66,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
 
         setAddToCartButtonText(productCardModel)
 
-        renderNotifyMeButton(productCardModel)
+//        renderNotifyMeButton(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -100,7 +99,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     fun setNotifyMeOnClickListener(notifyMeClickListener: (View) -> Unit) {
-        btnNotify?.setOnClickListener(notifyMeClickListener)
+        buttonNotify?.setOnClickListener(notifyMeClickListener)
     }
 
     private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
@@ -149,26 +148,7 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     }
 
     override fun getThreeDotsButton(): View? = imageThreeDots
-
-    private fun View.renderNotifyMeButton(productCardModel: ProductCardModel) {
-        btnNotify?.shouldShowWithAction(productCardModel.notifyMeText.isNotEmpty()) {
-            btnNotify.text = productCardModel.notifyMeText
-            if (productCardModel.isNotifySubscribed) {
-                btnNotify.apply {
-                    setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.light_N700))
-                    buttonVariant = UnifyButton.Variant.GHOST
-                    isEnabled = false
-                    isClickable = false
-                }
-            } else {
-                btnNotify.apply {
-                    setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.light_G500))
-                    buttonVariant = UnifyButton.Variant.GHOST
-                }
-            }
-        }
-    }
-
+    override fun getNotifyMeButton(): UnifyButton? = buttonNotify
 
     /**
      * Special cases for specific pages
