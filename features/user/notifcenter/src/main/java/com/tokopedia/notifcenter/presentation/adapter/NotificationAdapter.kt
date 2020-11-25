@@ -20,7 +20,7 @@ import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.SingleProductNotificationViewHolder.Companion.PAYLOAD_BUMP_REMINDER
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory
@@ -113,10 +113,14 @@ class NotificationAdapter constructor(
                 notif
         )
         val position = elementData.first
+        val item = elementData.second
         if (viewHolderState.payload is ProductData) {
+            val payload = PayloadBumpReminderState(
+                    viewHolderState.payload, item
+            )
             viewHolderState.payload.loadingBumpReminder = false
+            notifyItemChanged(position, payload)
         }
-        notifyItemChanged(position, PAYLOAD_BUMP_REMINDER)
     }
 
     private fun adjustDividerPadding(position: Int, response: NotificationDetailResponseModel) {

@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 
 class SingleProductNotificationViewHolder constructor(
@@ -22,7 +23,7 @@ class SingleProductNotificationViewHolder constructor(
     override fun bind(element: NotificationUiModel, payloads: MutableList<Any>) {
         if (payloads.isEmpty()) return
         when (payloads.first()) {
-            PAYLOAD_BUMP_REMINDER -> bindPayloadReminder(element)
+            is PayloadBumpReminderState -> bindPayloadReminder(element)
         }
     }
 
@@ -55,7 +56,6 @@ class SingleProductNotificationViewHolder constructor(
     }
 
     companion object {
-        const val PAYLOAD_BUMP_REMINDER = "payload_bump_reminder"
         val LAYOUT = R.layout.item_notifcenter_single_product_notification
     }
 }
