@@ -115,6 +115,7 @@ class FlightCancellationReviewFragment : BaseListFragment<FlightCancellationMode
         flightCancellationReviewViewModel.requestCancel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    flightCancellationReviewViewModel.trackOnSubmit()
                     if (it.data) showSuccessDialog(R.string.flight_cancellation_review_dialog_non_refundable_success_description)
                 }
                 is Fail -> {
