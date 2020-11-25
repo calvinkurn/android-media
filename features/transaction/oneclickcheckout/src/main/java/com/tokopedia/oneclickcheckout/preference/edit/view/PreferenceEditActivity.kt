@@ -38,6 +38,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
     private var _gatewayCode = ""
     private var _paymentQuery = ""
     private var _paymentProfile = ""
+    private var _paymentAmount = 0.0
     private var _shippingParam: ShippingParam? = null
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
@@ -76,6 +77,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
         _paymentProfile = intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: ""
+        _paymentAmount = intent.getDoubleExtra(EXTRA_PAYMENT_AMOUNT, 0.0)
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
@@ -278,6 +280,10 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         return _paymentProfile
     }
 
+    override fun getPaymentAmount(): Double {
+        return _paymentAmount
+    }
+
     override fun isDirectPaymentStep(): Boolean {
         return _directPaymentStep
     }
@@ -290,6 +296,7 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
         const val EXTRA_PAYMENT_PROFILE = "payment_profile"
+        const val EXTRA_PAYMENT_AMOUNT = "payment_amount"
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"

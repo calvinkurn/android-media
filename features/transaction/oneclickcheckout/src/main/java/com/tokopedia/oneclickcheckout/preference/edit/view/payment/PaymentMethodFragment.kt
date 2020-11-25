@@ -76,6 +76,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     @field:Named(PAYMENT_LISTING_URL)
     lateinit var paymentListingUrl: String
 
+    private var paymentAmount = 0.0
+
     private val viewModel: PaymentMethodViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentMethodViewModel::class.java]
     }
@@ -118,6 +120,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 parent.showStepper()
                 parent.setStepperValue(75)
             }
+            paymentAmount = parent.getPaymentAmount()
         }
     }
 
@@ -157,7 +160,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             }
         })
 
-        viewModel.getPaymentListingPayload(generatePaymentListingRequest())
+        viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
     }
 
     private fun loadWebView(param: String) {
@@ -214,7 +217,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     private fun showGlobalError(type: Int) {
         globalError?.setType(type)
         globalError?.setActionClickListener {
-            viewModel.getPaymentListingPayload(generatePaymentListingRequest())
+            viewModel.getPaymentListingPayload(generatePaymentListingRequest(), paymentAmount)
         }
         globalError?.visible()
         webView?.gone()

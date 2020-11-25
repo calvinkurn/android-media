@@ -52,6 +52,7 @@ interface PreferenceEditParent {
     fun getFromFlow(): Int
 
     fun getPaymentProfile(): String
+    fun getPaymentAmount(): Double
 
     fun isDirectPaymentStep(): Boolean
 }

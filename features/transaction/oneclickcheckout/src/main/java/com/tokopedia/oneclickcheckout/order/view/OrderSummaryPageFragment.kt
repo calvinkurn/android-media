@@ -885,6 +885,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
                 putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
+                val orderCost = viewModel.orderTotal.value.orderCost
+                val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
+                putExtra(PreferenceEditActivity.EXTRA_PAYMENT_AMOUNT, priceWithoutPaymentFee)
                 putExtra(PreferenceEditActivity.EXTRA_DIRECT_PAYMENT_STEP, true)
             }
             startActivityForResult(intent, REQUEST_CODE_EDIT_PAYMENT)
