@@ -142,6 +142,17 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupLifecycleObserver()
+    }
+
+    private fun setupLifecycleObserver() {
+        recommendationLifeCycleAware?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+        }
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, NotificationTypeFactory> {
         rvAdapter = NotificationAdapter(adapterTypeFactory)
         return rvAdapter as NotificationAdapter
