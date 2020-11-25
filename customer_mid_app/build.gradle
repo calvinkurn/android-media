@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.hansel.preprocessor.module'
+apply from: '../tools/set_debug_tools.gradle'
 
 buildscript {
     repositories {
