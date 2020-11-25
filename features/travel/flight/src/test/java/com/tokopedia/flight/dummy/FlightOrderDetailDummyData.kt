@@ -1,14 +1,164 @@
 package com.tokopedia.flight.dummy
 
+import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.flight.orderdetail.presentation.model.*
+import com.tokopedia.usecase.coroutines.Success
 
 /**
  * @author by furqan on 16/10/2020
  */
+val DUMMY_FAILED_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
+        1,
+        "0001-01-01T00:00:00Z",
+        600,
+        "Gagal",
+        1,
+        "1234567890",
+        "Muhammad Furqan",
+        "email@email.com",
+        "123456789012",
+        "ID",
+        "Rp1.000.000",
+        1000000,
+        "Rp0",
+        0,
+        "Rp0",
+        0,
+        "Rp1.000.000",
+        1000000,
+        "Rp",
+        "dummy pdf",
+        true,
+        false,
+        "Ekonomi",
+        "dummy contact us URL",
+        false,
+        FlightOrderDetailPaymentModel(
+                1,
+                1,
+                "Paid",
+                "BCA Virtual Account",
+                "dummy icon",
+                "0001-01-01T00:00:00Z",
+                "",
+                "ididid",
+                "",
+                0,
+                "Rp0",
+                0,
+                "rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "Rp0",
+                0,
+                "BCA",
+                "Jakarta",
+                "1234567890",
+                "Furqan",
+                "Rp1.000.000"
+        ),
+        arrayListOf(
+                FlightOrderDetailJourneyModel(
+                        1,
+                        1,
+                        "123",
+                        "0001-01-01T00:00:00Z",
+                        "departure airport",
+                        "aceh",
+                        "321",
+                        "0001-01-01T00:00:00Z",
+                        "arrival airport",
+                        "jakarta",
+                        0,
+                        0,
+                        0,
+                        "2j",
+                        120,
+                        FlightOrderDetailFareModel(
+                                1000000,
+                                0,
+                                0
+                        ),
+                        arrayListOf(
+                                FlightOrderDetailRouteModel(
+                                        "123",
+                                        "departure time",
+                                        "departure airport",
+                                        "departure city",
+                                        "321",
+                                        "arrival time",
+                                        "arrival airport",
+                                        "arrival city",
+                                        "123ASD",
+                                        "890",
+                                        "Seulawah Air",
+                                        "",
+                                        "",
+                                        "AN-12345",
+                                        "2j",
+                                        120,
+                                        "",
+                                        0,
+                                        false,
+                                        "2",
+                                        "",
+                                        0,
+                                        "",
+                                        arrayListOf(),
+                                        arrayListOf(),
+                                        FlightOrderDetailFreeAmenityModel(
+                                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                                FlightOrderDetailFreeAmenityModel.OrderDetailBaggageModel(true, "kg", 1),
+                                                false,
+                                                false,
+                                                false,
+                                                arrayListOf()
+                                        )
+                                )
+                        ),
+                        FlightOrderDetailWebCheckInModel(
+                                "Check In",
+                                "",
+                                "",
+                                "",
+                                "",
+                                "",
+                                ""
+                        )
+                )
+        ),
+        arrayListOf(
+                FlightOrderDetailPassengerModel(
+                        1,
+                        1,
+                        1,
+                        "Dewasa",
+                        1,
+                        "Tuan",
+                        "Muhammad",
+                        "Furqan",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        arrayListOf(),
+                        arrayListOf()
+                )
+        ),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf(),
+        arrayListOf()
+)
+
 val DUMMY_ORDER_DETAIL_DATA = FlightOrderDetailDataModel(
         1,
         "0001-01-01T00:00:00Z",
-        1,
+        700,
         "Berhasil",
         1,
         "1234567890",
@@ -358,5 +508,27 @@ val DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE = FlightOrderDetailJourneyModel(
                 "",
                 "",
                 ""
+        )
+)
+
+val DUMMY_CROSS_SELL = Success(
+        TravelCrossSelling(
+                items = arrayListOf(
+                        TravelCrossSelling.Item(
+                                product = "Dummy Cross Selling",
+                                title = "This is Dummy Data",
+                                content = "Want to use your dummy data?",
+                                prefix = "",
+                                imageUrl = "",
+                                uriWeb = "",
+                                uri = "",
+                                value = ""
+                        )
+                ),
+                meta = TravelCrossSelling.Meta(
+                        "Lengkapi perjalananmu",
+                        "",
+                        ""
+                )
         )
 )

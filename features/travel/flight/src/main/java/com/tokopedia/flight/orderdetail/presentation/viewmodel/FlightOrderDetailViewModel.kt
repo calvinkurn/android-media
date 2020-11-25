@@ -43,8 +43,6 @@ class FlightOrderDetailViewModel @Inject constructor(private val userSession: Us
 
     var orderId: String = ""
 
-    private val paymentDetailData: MutableList<FlightOrderDetailSimpleModel> = arrayListOf()
-
     private val mutableCrossSell = MutableLiveData<Result<TravelCrossSelling>>()
     val crossSell: LiveData<Result<TravelCrossSelling>>
         get() = mutableCrossSell

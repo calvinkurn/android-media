@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.common.util.FlightAnalytics
+import com.tokopedia.flight.dummy.DUMMY_CROSS_SELL
+import com.tokopedia.flight.dummy.DUMMY_FAILED_ORDER_DETAIL_DATA
 import com.tokopedia.flight.dummy.DUMMY_ORDER_DETAIL_DATA
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailGetInvoiceEticketUseCase
 import com.tokopedia.flight.orderdetail.domain.FlightOrderDetailUseCase
@@ -17,6 +19,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -36,19 +39,10 @@ class FlightOrderDetailViewModelTest {
     private val useCase: FlightOrderDetailUseCase = mockk()
     private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase = mockk()
     private val crossSellUseCase: TravelCrossSellingUseCase = mockk()
-    private val mapper: FlightOrderDetailCancellationMapper = mockk()
+    private val mapper: FlightOrderDetailCancellationMapper = FlightOrderDetailCancellationMapper()
     private val testDispatcherProvider = TravelTestDispatcherProvider()
 
     private lateinit var viewModel: FlightOrderDetailViewModel
-
-    /*
-    private val userSession: UserSessionInterface,
-                                                     private val orderDetailUseCase: FlightOrderDetailUseCase,
-                                                     private val getInvoiceEticketUseCase: FlightOrderDetailGetInvoiceEticketUseCase,
-                                                     private val crossSellUseCase: TravelCrossSellingUseCase,
-                                                     private val orderDetailCancellationMapper: FlightOrderDetailCancellationMapper,
-                                                     private val flightAnalytics: FlightAnalytics,
-     */
 
     @Before
     fun setUp() {
@@ -61,6 +55,31 @@ class FlightOrderDetailViewModelTest {
                 mapper,
                 flightAnalytics,
                 testDispatcherProvider)
+    }
+
+    @Test
+    fun userEmail_whenNotLoggedIn_shouldBeEmptyString() {
+        // given
+        coEvery { userSession.isLoggedIn } returns false
+
+        // when
+        val userEmail = viewModel.getUserEmail()
+
+        // then
+        userEmail shouldBe ""
+    }
+
+    @Test
+    fun userEmail_whenLoggedIn_shouldBeUserEmail() {
+        // given
+        coEvery { userSession.isLoggedIn } returns true
+        coEvery { userSession.email } returns "nakama@tokopedia.com"
+
+        // when
+        val userEmail = viewModel.getUserEmail()
+
+        // then
+        userEmail shouldBe "nakama@tokopedia.com"
     }
 
     @Test
@@ -314,93 +333,155 @@ class FlightOrderDetailViewModelTest {
         }
     }
 
-//    @Test
-//    fun getAirlineLogo_multiAirline_shouldReturnNull() {
-//        // given
-//
-//        // when
-//        val airlineLogo = viewModel.getAirlineLogo(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE)
-//
-//        // then
-//        airlineLogo shouldBe null
-//    }
+    @Test
+    fun fetchEticketData_failedToFetch() {
+        // given
+        coEvery { getInvoiceEticketUseCase.executeGetETicket(any()) } coAnswers { throw Throwable("error") }
 
-//    @Test
-//    fun getAirlineLogo_oneAirline_shouldReturnLogoUrl() {
-//        // given
-//
-//        // when
-//        val airlineLogo = viewModel.getAirlineLogo(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
-//
-//        // then
-//        airlineLogo shouldBe "logo seulawah air"
-//    }
+        // when
+        viewModel.fetchETicketData()
 
-//    @Test
-//    fun getAirlineName_multiAirline() {
-//        // given
-//
-//        // when
-//        val airlineName = viewModel.getAirlineName(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE)
-//
-//        // then
-//        airlineName shouldBe "Seulawah Air + Garuda Indonesia"
-//    }
+        // then
+        assert(viewModel.eticketData.value is Fail)
+        (viewModel.eticketData.value as Fail).throwable.message shouldBe "error"
+    }
 
-//    @Test
-//    fun getAirlineName_oneAirline() {
-//        // given
-//
-//        // when
-//        val airlineName = viewModel.getAirlineName(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
-//
-//        // then
-//        airlineName shouldBe "Seulawah Air"
-//    }
+    @Test
+    fun fetchEticketData_successToFetch() {
+        // given
+        coEvery { getInvoiceEticketUseCase.executeGetETicket(any()) } returns "<html><body>SUCCESS</body></html>"
 
-//    @Test
-//    fun getRefundableInfo_fullRefundable() {
-//        // given
-//
-//        // when
-//        val isRefundable = viewModel.getRefundableInfo(DUMMY_ORDER_DETAIL_JOURNEY_MULTI_AIRLINE)
-//
-//        // then
-//        isRefundable shouldBe true
-//    }
+        // when
+        viewModel.fetchETicketData()
 
-//    @Test
-//    fun getRefundableInfo_partialRefundable() {
-//        // given
-//
-//        // when
-//        val isRefundable = viewModel.getRefundableInfo(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
-//
-//        // then
-//        isRefundable shouldBe true
-//    }
+        // then
+        assert(viewModel.eticketData.value is Success)
+        (viewModel.eticketData.value as Success).data shouldBe "<html><body>SUCCESS</body></html>"
+    }
 
-//    @Test
-//    fun getRefundableInfo_nonRefundable() {
-//        // given
-//
-//        // when
-//        val isRefundable = viewModel.getRefundableInfo(DUMMY_ORDER_DETAIL_DATA.journeys[0])
-//
-//        // then
-//        isRefundable shouldBe false
-//    }
+    @Test
+    fun fetchCrossSellingData() {
+        // given
+        coEvery { crossSellUseCase.execute(any(), any(), any()) } returns DUMMY_CROSS_SELL
 
-//    @Test
-//    fun getDepartureDateAndTime() {
-//        // given
-//
-//        // when
-//        val departureDateAndTime = viewModel.getDepartureDateAndTime(DUMMY_ORDER_DETAIL_JOURNEY_ONE_AIRLINE)
-//
-//        // then
-//        departureDateAndTime.first shouldBe "Rab, 11 Nov 20"
-//        departureDateAndTime.second shouldBe "08:00 - 10:00"
-//    }
+        // when
+        viewModel.fetchCrossSellData()
+
+        // then
+        assert(viewModel.crossSell.value is Success)
+        val dataCrossSell = (viewModel.crossSell.value as Success).data
+        dataCrossSell.meta.title shouldBe DUMMY_CROSS_SELL.data.meta.title
+        dataCrossSell.meta.uri shouldBe DUMMY_CROSS_SELL.data.meta.uri
+        dataCrossSell.meta.uriWeb shouldBe DUMMY_CROSS_SELL.data.meta.uriWeb
+
+        dataCrossSell.items.size shouldBe DUMMY_CROSS_SELL.data.items.size
+        for ((index, item) in dataCrossSell.items.withIndex()) {
+            item.product shouldBe DUMMY_CROSS_SELL.data.items[index].product
+            item.value shouldBe DUMMY_CROSS_SELL.data.items[index].value
+            item.uriWeb shouldBe DUMMY_CROSS_SELL.data.items[index].uriWeb
+            item.title shouldBe DUMMY_CROSS_SELL.data.items[index].title
+            item.prefix shouldBe DUMMY_CROSS_SELL.data.items[index].prefix
+            item.imageUrl shouldBe DUMMY_CROSS_SELL.data.items[index].imageUrl
+            item.content shouldBe DUMMY_CROSS_SELL.data.items[index].content
+            item.uri shouldBe DUMMY_CROSS_SELL.data.items[index].uri
+        }
+    }
+
+    @Test
+    fun onNavigateToCancellationClicked() {
+        // given
+        val dummyData = DUMMY_ORDER_DETAIL_DATA.journeys
+
+        // when
+        viewModel.onNavigateToCancellationClicked(dummyData)
+
+        // then
+        val cancellationData = viewModel.cancellationData.value!!
+        for ((index, item) in cancellationData.withIndex()) {
+            item.journeyId shouldBe dummyData[index].id.toString()
+            item.departureTime shouldBe dummyData[index].departureTime
+            item.departureCity shouldBe dummyData[index].departureCityName
+            item.departureCityCode shouldBe dummyData[index].departureId
+            item.departureAirportId shouldBe dummyData[index].departureAirportName
+            item.arrivalTime shouldBe dummyData[index].arrivalTime
+            item.arrivalCity shouldBe dummyData[index].arrivalCityName
+            item.arrivalCityCode shouldBe dummyData[index].arrivalId
+            item.arrivalAirportId shouldBe dummyData[index].arrivalAirportName
+        }
+    }
+
+    @Test
+    fun trackOpenOrderDetail() {
+        // given
+        coEvery { userSession.userId } returns "67890"
+        viewModel.orderId = "12345"
+
+        // when
+        viewModel.trackOpenOrderDetail("berhasil")
+
+        // then
+        verify {
+            flightAnalytics.openOrderDetail("berhasil - 12345", "67890")
+        }
+    }
+
+    @Test
+    fun buildPaymentDetailData_failedToFetchOrderDetail() {
+        // given
+        coEvery { useCase.execute(any(), any()) } coAnswers { throw Throwable() }
+
+        // when
+        val paymentData = viewModel.buildPaymentDetailData()
+
+        // then
+        paymentData.size shouldBe 0
+    }
+
+    @Test
+    fun isWebCheckInAvailable_whenOrderStatusNotSuccess_shouldNotAvailable() {
+        // given
+        val dummyData = DUMMY_FAILED_ORDER_DETAIL_DATA
+
+        // when
+        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
+
+        // then
+        isWebCheckInAvailable.first shouldBe false
+        isWebCheckInAvailable.second shouldBe ""
+    }
+
+    @Test
+    fun isWebCheckInAvailable_whenOrderStatusSuccessAndWebCheckInOpen_shouldBeAvailable() {
+        // given
+        // dummy data will be build on runtime because checkIn date need to be dynamic
+        val dummyData = DUMMY_FAILED_ORDER_DETAIL_DATA
+
+        // when
+        val isWebCheckInAvailable = viewModel.isWebCheckInAvailable(dummyData)
+
+        // then
+        isWebCheckInAvailable.first shouldBe false
+        isWebCheckInAvailable.second shouldBe ""
+    }
+
+    @Test
+    fun buildPaymentDetailData_successToFetchOrderDetail() {
+        // given
+        val dummyData = DUMMY_ORDER_DETAIL_DATA
+        coEvery { useCase.execute(any(), any()) } returns dummyData
+
+        // when
+        val paymentData = viewModel.buildPaymentDetailData()
+
+        // then
+//        paymentData.size shouldBe dummyData.passengers.size
+//        paymentData[0].leftValue shouldBe "${dummyData.journeys[0].departureId} - ${dummyData.journeys[0].arrivalId} ${FlightPassengerType.ADULT.type} x1"
+//        paymentData[0].rightValue shouldBe "Rp1.000.000"
+//        paymentData[0].isLeftBold shouldBe false
+//        paymentData[0].isRightBold shouldBe false
+//        paymentData[0].isLeftStriked shouldBe false
+//        paymentData[0].isRightStriked shouldBe false
+//        paymentData[0].isRightAlign shouldBe false
+    }
 
 }
