@@ -47,7 +47,6 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
         SellerappAplinkModule.class,
-        ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         WebViewApplinkModule.class,
