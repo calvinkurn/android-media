@@ -47,7 +47,6 @@ import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.searchbar.navigation_component.NavConstant
 import com.tokopedia.searchbar.navigation_component.NavToolbar
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
