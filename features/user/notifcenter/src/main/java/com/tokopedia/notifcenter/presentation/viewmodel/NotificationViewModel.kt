@@ -346,6 +346,15 @@ class NotificationViewModel @Inject constructor(
             return page == 1
         }
 
+        /*
+        * TODO:
+        * seems this method similar like data mapper,
+        * I suggest to you to move it onto `mapper` one.
+        * so your viewModel focusing the actual behavior.
+        *
+        * Nit:
+        * getRecommendationVisitables also used in the unit test class
+        * */
         fun getRecommendationVisitables(
                 page: Int,
                 recommendationWidget: RecommendationWidget
