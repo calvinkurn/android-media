@@ -36,7 +36,7 @@ class PaymentMethodViewModel @Inject constructor(private val getPaymentListingPa
                 "address_id=${getUrlEncoded(param.addressId)}&" +
                 "callback_url=${getUrlEncoded(param.callbackUrl)}&" +
                 "version=${getUrlEncoded(version)}&" +
-                "signature=${getUrlEncoded(param.hash)}" +
+                "signature=${getUrlEncoded(param.hash)}&" +
                 "amount=${getUrlEncoded(amount.toString())}"
     }
 
