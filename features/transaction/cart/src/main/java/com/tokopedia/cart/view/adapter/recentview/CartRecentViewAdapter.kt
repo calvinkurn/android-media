@@ -1,12 +1,11 @@
 package com.tokopedia.cart.view.adapter.recentview
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.tokopedia.cart.R
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.cart.view.ActionListener
-import com.tokopedia.cart.view.viewholder.CartRecentViewItemViewHolder
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
+import com.tokopedia.cart.view.viewholder.CartRecentViewItemViewHolder
 
 /**
  * Created by Irfan Khoirul on 2019-06-15.
@@ -23,7 +22,7 @@ class CartRecentViewAdapter(val actionListener: ActionListener?) : RecyclerView.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(CartRecentViewItemViewHolder.LAYOUT, parent, false)
-        return CartRecentViewItemViewHolder(view, actionListener, parent.context.resources.getDimension(R.dimen.dp_120).toInt())
+        return CartRecentViewItemViewHolder(view, actionListener)
     }
 
     override fun getItemCount(): Int {

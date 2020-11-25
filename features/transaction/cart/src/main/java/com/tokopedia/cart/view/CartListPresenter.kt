@@ -101,6 +101,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         val ITEM_CHECKED_PARTIAL_SHOP = 3
         val ITEM_CHECKED_PARTIAL_ITEM = 4
         val ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5
+        private const val RECENT_VIEW_XSOURCE = "recentview"
+        private const val PAGE_NAME_RECENT_VIEW = "cart_recent_view"
 
         private val QUERY_APP_CLIENT_ID = "{app_client_id}"
         private val REGEX_NUMBER = "[^0-9]".toRegex()
@@ -1149,18 +1151,13 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
     }
 
     override fun processGetRecentViewData(allProductIds: List<String>) {
-        try {
-            val userId = Integer.parseInt(userSessionInterface.userId)
-            val requestParams = RequestParams.create()
-            requestParams.putInt(GetRecentViewUseCase.PARAM_USER_ID, userId)
-            requestParams.putString(GetRecentViewUseCase.PARAM_PRODUCT_IDS, allProductIds.joinToString(separator = ","))
-            compositeSubscription.add(
-                    getRecentViewUseCase?.createObservable(requestParams)
-                            ?.subscribe(GetRecentViewSubscriber(view))
-            )
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
+        view?.showItemLoading()
+        val requestParam = getRecommendationUseCase?.getRecomParams(
+                1, RECENT_VIEW_XSOURCE, PAGE_NAME_RECENT_VIEW, allProductIds, "")
+        getRecommendationUseCase?.createObservable(requestParam ?: RequestParams.EMPTY)
+                ?.subscribeOn(schedulers.io)
+                ?.observeOn(schedulers.main)
+                ?.subscribe(GetRecentViewSubscriber(view))
     }
 
     override fun processGetWishlistData() {

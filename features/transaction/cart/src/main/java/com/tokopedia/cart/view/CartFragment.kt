@@ -17,7 +17,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.DecelerateInterpolator
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -37,14 +40,13 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
-import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.cart.R
-import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.*
 import com.tokopedia.cart.domain.model.cartlist.ActionData.Companion.ACTION_CHECKOUTBROWSER
 import com.tokopedia.cart.domain.model.cartlist.ButtonData.Companion.ID_HOMEPAGE
@@ -121,8 +123,8 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
-import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -1337,9 +1339,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onRecentViewProductClicked(productId: String) {
-        var position = 0
-
-        for (recentView in recentViewList as List<CartRecentViewItemHolderData>) {
+        (recentViewList as List<CartRecentViewItemHolderData>).withIndex().forEach { (position, recentView) ->
             if (recentView.id.equals(productId, ignoreCase = true)) {
                 if (FLAG_IS_CART_EMPTY) {
                     cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
@@ -1353,9 +1353,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     )
                 }
             }
-            position++
         }
-
         onProductClicked(productId)
     }
 
@@ -1364,6 +1362,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartPageAnalytics.enhancedEcommerceProductViewLastSeen(
                     dPresenter.generateRecentViewDataImpressionAnalytics(it, FLAG_IS_CART_EMPTY)
             )
+        }
+    }
+
+    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
+        val productId = recommendationItem.productId.toString()
+        val topAds = recommendationItem.isTopAds
+        val url = recommendationItem.trackerImageUrl
+        val productName = recommendationItem.name
+        val imageUrl = recommendationItem.imageUrl
+
+        when {
+            topAds -> {
+                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
+            }
         }
     }
 
@@ -1397,20 +1409,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
         onProductClicked(productId)
-    }
-
-    override fun onRecommendationProductImpression(recommendationItem: RecommendationItem) {
-        val productId = recommendationItem.productId.toString()
-        val topAds = recommendationItem.isTopAds
-        val url = recommendationItem.trackerImageUrl
-        val productName = recommendationItem.name
-        val imageUrl = recommendationItem.imageUrl
-
-        when {
-            topAds -> {
-                activity?.let { TopAdsUrlHitter(CartFragment::class.qualifiedName).hitImpressionUrl(it, url, productId, productName, imageUrl) }
-            }
-        }
     }
 
     override fun onRecommendationImpression(recommendationItem: CartRecommendationItemHolderData) {
@@ -2941,12 +2939,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
     }
 
-    override fun renderRecentView(recentViewList: List<RecentView>?) {
+    override fun renderRecentView(recommendationWidget: RecommendationWidget?) {
         var cartRecentViewItemHolderDataList: MutableList<CartRecentViewItemHolderData> = ArrayList()
-        if (recentViewList != null) {
-            cartRecentViewItemHolderDataList = recentViewMapper.convertToViewHolderModelList(recentViewList)
-        } else if (this.recentViewList != null) {
-            cartRecentViewItemHolderDataList.addAll(this.recentViewList!!)
+        if (recommendationWidget != null) {
+            cartRecentViewItemHolderDataList = recentViewMapper.convertToViewHolderModelList(recommendationWidget)
+        } else {
+            this.recentViewList?.let {
+                cartRecentViewItemHolderDataList.addAll(it)
+            }
         }
         val cartSectionHeaderHolderData = CartSectionHeaderHolderData()
         cartSectionHeaderHolderData.title = getString(R.string.checkout_module_title_recent_view)
