@@ -169,11 +169,9 @@ class SomListOrderViewHolder(
                     text = productVariant
                     showWithCondition(productVariant.isNotBlank())
                 }
-                tvSomListProductExtra.apply {
-                    text = if (element.orderProduct.size > 1) {
-                        getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
-                    } else ""
-                }
+                tvSomListProductExtra.text = if (element.orderProduct.size > 1) {
+                    getString(R.string.som_list_more_products, (element.orderProduct.size - 1).toString())
+                } else ""
             }
         }
     }
