@@ -1,5 +1,7 @@
 package com.tokopedia.talk.feature.reply.presentation.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -16,6 +18,8 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.common.utils.TalkReplyLoadTimeMonitoringListener
+import com.tokopedia.talk.feature.reading.presentation.activity.TalkReadingActivity
 import com.tokopedia.talk.feature.reply.presentation.fragment.TalkReplyFragment
 import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 
@@ -25,11 +29,25 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var shopId = ""
     private var source = ""
     private var inboxType = ""
-    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var talkReplyFragment: TalkReplyFragment? = null
+    var talkReplyLoadTimeMonitoringListener: TalkReplyLoadTimeMonitoringListener? = null
+
+    companion object {
+        private const val QUESTION_ID_EXTRA = "questionId"
+        private const val SHOP_ID_EXTRA = "shopId"
+
+        @JvmStatic
+        fun createIntent(context: Context, questionId: String, shopId: String) =
+                Intent(context, TalkReadingActivity::class.java).apply {
+                    putExtra(QUESTION_ID_EXTRA, questionId)
+                    putExtra(SHOP_ID_EXTRA, shopId)
+                }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
+        getDataFromIntent()
         if(FirebaseRemoteConfigImpl(applicationContext).getBoolean(TalkConstants.APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY, false)) {
             val intent = TalkDetailsActivity.getCallingIntent(questionId, shopId, applicationContext, "")
             startActivity(intent)
@@ -52,6 +70,13 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     private fun setUpToolBar() {
         supportActionBar?.elevation = TalkConstants.NO_SHADOW_ELEVATION
+    }
+
+    private fun getDataFromIntent() {
+        intent?.run {
+            shopId = getStringExtra(SHOP_ID_EXTRA).orEmpty()
+            questionId = getStringExtra(QUESTION_ID_EXTRA).orEmpty()
+        }
     }
 
     private fun getDataFromAppLink() {
@@ -93,6 +118,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         pageLoadTimePerformanceMonitoring?.let {
             it.stopMonitoring()
         }
+        talkReplyLoadTimeMonitoringListener?.onStopPltListener()
         pageLoadTimePerformanceMonitoring = null
     }
 

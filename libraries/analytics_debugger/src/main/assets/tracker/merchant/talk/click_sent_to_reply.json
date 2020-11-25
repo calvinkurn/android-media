@@ -1,0 +1,17 @@
+{
+  "readme": "Talk - click sent to reply talk",
+  "mode": "exact",
+  "query": [
+    {
+      "event" : "clickPDP",
+      "eventCategory" : "product talk",
+      "eventAction" : "click - kirim to reply talk",
+      "eventLabel" : "{{\\d{1,}}}",
+      "sessionIris": "{{.{1,}}}",
+      "screenName" : "/talk-question-form",
+      "currentSite" : "tokopediamarketplace",
+      "businessUnit" : "physical goods",
+      "productId" : "{{\\d{1,}}}"
+    }
+  ]
+}
