@@ -22,8 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/text_header_reputation"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="3dp"
-        app:default_layout="@layout/reputation_item_view_reputation" />
+        android:layout_marginTop="3dp" />
 
     <RelativeLayout
         android:id="@+id/rl_reputation_point_calculation"

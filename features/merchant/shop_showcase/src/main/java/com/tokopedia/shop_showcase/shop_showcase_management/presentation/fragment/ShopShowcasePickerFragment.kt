@@ -20,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
@@ -641,6 +642,7 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
     }
 
     private fun showToaster(msg: String?, type: Int) {
+        hideSoftKeyboard()
         view?.let { view ->
             Toaster.make(view, msg ?: "", Snackbar.LENGTH_LONG, type)
         }
@@ -667,6 +669,12 @@ class ShopShowcasePickerFragment: BaseDaggerFragment(),
 
     private fun setBackgroundColor() {
         view?.setBackgroundColor(Color.WHITE)
+    }
+
+    private fun hideSoftKeyboard() {
+        activity?.run {
+            KeyboardHandler.hideSoftKeyboard(this)
+        }
     }
 
     private fun goToAddShowcase() {

@@ -121,7 +121,7 @@ class AddEditProductShipmentFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
@@ -248,6 +248,7 @@ class AddEditProductShipmentFragment:
     }
 
     private fun inputAllDataInProductInputModel() {
+        productInputModel?.isDataChanged = true
         productInputModel?.shipmentInputModel?.apply {
             isMustInsurance = switchInsurance?.isChecked == true
             weight = tfWeightAmount.getTextIntOrZero()

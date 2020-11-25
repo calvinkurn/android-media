@@ -44,6 +44,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_talk_write.*
 import kotlinx.android.synthetic.main.partial_talk_connection_error.*
+import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.widget_talk_write_header.*
 import javax.inject.Inject
 
@@ -179,6 +180,7 @@ class TalkWriteFragment : BaseDaggerFragment(),
             submitNewQuestion()
         }
         talkConnectionErrorRetryButton.setOnClickListener {
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
             viewModel.refresh()
             showLoading()
         }
