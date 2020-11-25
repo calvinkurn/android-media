@@ -120,8 +120,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                             null, null, null
                     )
                 }
-                val isFirstLoad = shipping.serviceId != null && shipping.shipperProductId != null
-                if (shipping.serviceId != null && shipping.shipperProductId != null) {
+                val isReload = shipping.serviceId != null && shipping.shipperProductId != null
+                if (isReload) {
                     val (orderShipment1, errorId1) = onRenewShipping(shippingDurationUiModels, shipping, shippingRecommendationData)
                     shipping = orderShipment1
                     shippingErrorId = errorId1
@@ -140,7 +140,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
                 if (logisticPromo != null && !logisticPromo.disabled) {
                     shipping = shipping.copy(logisticPromoViewModel = logisticPromo)
-                    if (currPromo.isNotEmpty() || (isFirstLoad && profileShipment.isFreeShippingSelected)) {
+                    if (currPromo.isNotEmpty() || (!isReload && profileShipment.isFreeShippingSelected)) {
                         return@withContext ResultRates(
                                 shipping,
                                 if (logisticPromo.promoCode != currPromo) currPromo else "",
