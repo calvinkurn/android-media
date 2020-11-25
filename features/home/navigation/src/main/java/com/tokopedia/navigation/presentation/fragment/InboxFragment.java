@@ -496,9 +496,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable String applink) {
-        if (applink == null) return;
-        RouteManager.route(getContext(), applink);
+    public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable TopAdsImageViewModel topAdsImageViewModel) {
+        if (topAdsImageViewModel != null && topAdsImageViewModel.getApplink() == null) return;
+        RouteManager.route(getContext(), topAdsImageViewModel.getApplink());
     }
 
     @Nullable
