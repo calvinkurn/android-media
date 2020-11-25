@@ -158,7 +158,7 @@ class FloatingTextButton : FrameLayout {
         )
 
         title = styleable.getString(R.styleable.FloatingTextButton_floating_title)
-        titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, Color.BLACK)
+        titleColor = styleable.getColor(R.styleable.FloatingTextButton_floating_title_color, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             leftIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_left_icon)
             rightIcon = styleable.getDrawable(R.styleable.FloatingTextButton_floating_right_icon)
@@ -170,7 +170,7 @@ class FloatingTextButton : FrameLayout {
             if (drawableRightId != -1)
                 rightIcon = AppCompatResources.getDrawable(context, drawableRightId)
         }
-        background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, Color.WHITE)
+        background = styleable.getColor(R.styleable.FloatingTextButton_floating_background_color, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         titleAllCaps = styleable.getBoolean(R.styleable.FloatingTextButton_floating_title_allcaps, false)
         titleView?.isAllCaps = titleAllCaps
         styleable.recycle()
