@@ -13,7 +13,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesBy
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.info.data.model.ShopStatisticsResp
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -31,7 +31,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
-    val shopNotesResp = MutableLiveData<Result<List<ShopNoteViewModel>>>()
+    val shopNotesResp = MutableLiveData<Result<List<ShopNoteUiModel>>>()
     val shopStatisticsResp = MutableLiveData<ShopStatisticsResp>()
     val shopInfo = MutableLiveData<ShopInfoData>()
 
@@ -63,7 +63,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
 
                     try {
                         Success(getShopNoteUseCase.executeOnBackground().map {
-                            ShopNoteViewModel().apply {
+                            ShopNoteUiModel().apply {
                                 shopNoteId = it.id?.toLongOrNull() ?: 0
                                 title = it.title
                                 position = it.position.toLong()

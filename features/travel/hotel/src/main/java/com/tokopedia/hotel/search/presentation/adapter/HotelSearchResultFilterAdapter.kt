@@ -1,9 +1,9 @@
 package com.tokopedia.hotel.search.presentation.adapter
 
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
@@ -61,10 +61,10 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE, val li
                 base_item_filter.isSelected = isSelected
                 if (isSelected){
                     image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_hotel_rating_stars))
-                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 } else {
                     image.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_star_grayscale_24))
-                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
             }
         }
