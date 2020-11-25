@@ -108,6 +108,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.layout_partial_register_input.*
@@ -158,7 +159,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var socmedButtonsContainer: LinearLayout
     private lateinit var emailPhoneEditText: EditText
-    private lateinit var partialActionButton: UnifyButton
+    private lateinit var partialActionButton: TextView
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var bannerLogin: ImageView
@@ -399,8 +400,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             }
         }
 
-        partialActionButton.text = getString(R.string.next)
-        partialActionButton.contentDescription = getString(R.string.content_desc_register_btn)
+        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
         partialActionButton.setOnClickListener {
             showLoadingLogin()
             analytics.trackClickOnNext(emailPhoneEditText.text.toString())
@@ -496,8 +496,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
 
         emailPhoneEditText.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        partialActionButton.text = getString(R.string.next)
-        partialActionButton.contentDescription = getString(R.string.content_desc_register_btn)
+        TextAndContentDescriptionUtil.setTextAndContentDescription(partialActionButton, getString(R.string.next), getString(R.string.content_desc_register_btn))
         partialActionButton.setOnClickListener { registerCheck(emailPhoneEditText.text.toString()) }
         partialRegisterInputView.showDefaultView()
     }
