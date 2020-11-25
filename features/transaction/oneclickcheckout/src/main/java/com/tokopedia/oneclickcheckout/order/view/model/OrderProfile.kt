@@ -37,6 +37,7 @@ data class OrderProfileShipment(
         val serviceId: Int = 0,
         val serviceDuration: String = "",
         val spId: Int = 0,
+        val recommendationSpId: Int = 0,
         val isFreeShippingSelected: Boolean = false
 )
 

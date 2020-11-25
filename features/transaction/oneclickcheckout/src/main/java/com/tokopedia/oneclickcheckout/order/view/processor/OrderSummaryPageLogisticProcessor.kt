@@ -125,11 +125,16 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     val (orderShipment1, errorId1) = onRenewShipping(shippingDurationUiModels, shipping, shippingRecommendationData)
                     shipping = orderShipment1
                     shippingErrorId = errorId1
-                } else {
+                } else if (!isNewFlow) {
                     val (orderShipment2, errorId2, preselectedId2) = onNewShipping(shippingDurationUiModels, profileShipment, shippingRecommendationData)
                     shipping = orderShipment2
                     shippingErrorId = errorId2
                     preselectedSpId = preselectedId2
+                } else {
+                    val (orderShipment3, errorId3, preselectedId3) = onRevampNewShipping(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+                    shipping = orderShipment3
+                    shippingErrorId = errorId3
+                    preselectedSpId = preselectedId3
                 }
 
                 val logisticPromo: LogisticPromoUiModel? = shippingRecommendationData.logisticPromo
@@ -246,7 +251,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         }
         val selectedShippingDurationUiModel: ShippingDurationUiModel? = shippingDurationUiModels.firstOrNull { it.isSelected }
         if (selectedShippingDurationUiModel == null) {
-            // TODO: try use recommended sp id
             orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
             return Triple(
                     OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
@@ -255,7 +259,6 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         }
         val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
-            // TODO: use recommended sp id
             return Triple(
                     OrderShipment(
                             serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
@@ -267,24 +270,122 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                     durationError.errorId,
                     null)
         }
-        val selectedShippingCourierUiModel = getSelectedCourierFromProfileSpId(profileShipment.spId, selectedShippingDurationUiModel.shippingCourierViewModelList)
+        val shippingCourierViewModelList: MutableList<ShippingCourierUiModel> = selectedShippingDurationUiModel.shippingCourierViewModelList
+        val selectedShippingCourierUiModel = shippingCourierViewModelList.firstOrNull { it.isSelected }
+                ?: shippingCourierViewModelList.first()
+        selectedShippingCourierUiModel.isSelected = true
         var flagNeedToSetPinpoint = false
         var errorMessage: String? = null
         var shippingErrorId: String? = null
         var preselectedSpId: String? = null
         val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
         if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
-            // todo use recommended sp id
             shippingErrorId = courierError.errorId
             errorMessage = courierError.errorMessage
             if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 flagNeedToSetPinpoint = true
             }
+        } else {
+            preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
+        }
+        return Triple(
+                OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                        shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                        ratesId = selectedShippingCourierUiModel.ratesId,
+                        ut = selectedShippingCourierUiModel.productData.unixTime,
+                        checksum = selectedShippingCourierUiModel.productData.checkSum,
+                        shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                        needPinpoint = flagNeedToSetPinpoint,
+                        serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
+                        insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                        serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                        serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                        serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                        shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                        shippingRecommendationData = shippingRecommendationData),
+                shippingErrorId,
+                preselectedSpId)
+    }
+
+    private fun onRevampNewShipping(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
+        shippingDurationUiModels.forEach {
+            it.isSelected = it.serviceData.serviceId == profileShipment.serviceId
+        }
+        val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected } ?: return onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+        val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
+        if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
+            return onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+        }
+        val selectedShippingCourierUiModel = getSelectedCourierFromProfileSpId(profileShipment.spId, selectedShippingDurationUiModel.shippingCourierViewModelList)
+        val flagNeedToSetPinpoint = false
+        val errorMessage: String? = null
+        val shippingErrorId: String? = null
+        var preselectedSpId: String? = null
+        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
+        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+            return onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         } else if (profileShipment.spId <= 0) {
             preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
         }
         selectedShippingDurationUiModel.shippingCourierViewModelList.forEach {
             it.isSelected = it.productData.shipperProductId == selectedShippingCourierUiModel.productData.shipperProductId
+        }
+        return Triple(
+                OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                        shipperId = selectedShippingCourierUiModel.productData.shipperId,
+                        ratesId = selectedShippingCourierUiModel.ratesId,
+                        ut = selectedShippingCourierUiModel.productData.unixTime,
+                        checksum = selectedShippingCourierUiModel.productData.checkSum,
+                        shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                        needPinpoint = flagNeedToSetPinpoint,
+                        serviceErrorMessage = if (flagNeedToSetPinpoint) OrderSummaryPageViewModel.NEED_PINPOINT_ERROR_MESSAGE else errorMessage,
+                        insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                        serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
+                        serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
+                        serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
+                        shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                        shippingRecommendationData = shippingRecommendationData),
+                shippingErrorId,
+                preselectedSpId)
+    }
+    
+    private fun onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
+        var selectedShippingDurationUiModel: ShippingDurationUiModel? = null
+        var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+        for (shippingDurationUiModel in shippingDurationUiModels) {
+            val shippingCourierViewModelList = shippingDurationUiModel.shippingCourierViewModelList
+            shippingDurationUiModel.isSelected = false
+            for (shippingCourierUiModel in shippingCourierViewModelList) {
+                shippingCourierUiModel.isSelected = false
+                if (shippingCourierUiModel.productData.shipperProductId == profileShipment.recommendationSpId) {
+                    shippingCourierUiModel.isSelected = true
+                    shippingDurationUiModel.isSelected = true
+                    selectedShippingCourierUiModel = shippingCourierUiModel
+                    selectedShippingDurationUiModel = shippingDurationUiModel
+                }
+            }
+        }
+        if (selectedShippingDurationUiModel == null || selectedShippingCourierUiModel == null) {
+            // Recommendation Courier not available, should not happen
+            orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_DURATION_UNAVAILABLE)
+            return Triple(
+                    OrderShipment(serviceName = profileShipment.serviceName, serviceDuration = profileShipment.serviceDuration, serviceErrorMessage = OrderSummaryPageViewModel.NO_DURATION_AVAILABLE, shippingRecommendationData = shippingRecommendationData),
+                    null,
+                    null)
+        }
+        var flagNeedToSetPinpoint = false
+        var errorMessage: String? = null
+        var shippingErrorId: String? = null
+        var preselectedSpId: String? = null
+        val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
+        if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
+            shippingErrorId = courierError.errorId
+            errorMessage = courierError.errorMessage
+            if (courierError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                flagNeedToSetPinpoint = true
+            }
+        } else {
+            preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
         }
         return Triple(
                 OrderShipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
