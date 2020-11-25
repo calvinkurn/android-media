@@ -39,7 +39,7 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
             btnPay?.apply {
                 when (orderTotal.buttonType) {
                     OccButtonType.CHOOSE_PAYMENT -> {
-                        layoutParams?.width = Utils.convertDpToPixel(180f, context)
+                        layoutParams?.width = Utils.convertDpToPixel(if (isNewFlow) 180f else 160f, context)
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
@@ -93,28 +93,20 @@ class OrderTotalPaymentCard(private val view: View, private val listener: OrderT
                         }
                     }
                     OccButtonType.CONTINUE -> {
-                        layoutParams?.width = Utils.convertDpToPixel(180f, context)
+                        layoutParams?.width = Utils.convertDpToPixel(160f, context)
                         setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
                         when (orderTotal.buttonState) {
                             OccButtonState.NORMAL -> {
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = true
                                 isLoading = false
-                                if (isNewFlow) {
-                                    setText(R.string.change_payment_method)
-                                } else {
-                                    setText(R.string.continue_pay)
-                                }
+                                setText(R.string.continue_pay)
                             }
                             OccButtonState.DISABLE -> {
                                 layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
                                 isEnabled = false
                                 isLoading = false
-                                if (isNewFlow) {
-                                    setText(R.string.change_payment_method)
-                                } else {
-                                    setText(R.string.continue_pay)
-                                }
+                                setText(R.string.continue_pay)
                             }
                             else -> {
                                 layoutParams?.height = Utils.convertDpToPixel(48f, context)
