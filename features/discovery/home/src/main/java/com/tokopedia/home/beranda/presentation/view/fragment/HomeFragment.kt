@@ -609,7 +609,6 @@ open class HomeFragment : BaseDaggerFragment(),
             )
         }
         coachMark.container?.setOnClickListener {
-            RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
             val navigationBundle = Bundle()
             navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)

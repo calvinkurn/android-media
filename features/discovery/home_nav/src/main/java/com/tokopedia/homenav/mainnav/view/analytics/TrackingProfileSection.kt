@@ -6,7 +6,7 @@ import com.tokopedia.track.builder.util.BaseTrackerConst
 object TrackingProfileSection: BaseTrackerConst() {
     private const val CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer"
     private const val GLOBAL_MENU = "global menu"
-    private const val CLICK_ON_PROFILE_SECTION_NON_LOGIN = "clicn on profile section - non login"
+    private const val CLICK_ON_PROFILE_SECTION_NON_LOGIN = "click on profile section - non login"
     private const val CLICK_LOGIN = "login"
     private const val CLICK_LOGIN_REMINDER = "login reminder"
     private const val CLICK_REGISTER = "register account"
