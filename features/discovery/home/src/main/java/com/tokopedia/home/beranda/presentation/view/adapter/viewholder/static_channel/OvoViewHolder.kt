@@ -152,6 +152,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                 if (!TextUtils.isEmpty(homeHeaderWalletAction.walletType) && homeHeaderWalletAction.walletType == WALLET_TYPE) {
                     tokocashProgressBar.visibility = View.GONE
                     tvActionTokocash.text = homeHeaderWalletAction.labelActionButton
+                    tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
                     tvActionTokocash.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkActionButton) }
                     tokoCashHolder.setOnClickListener { goToOvoAppLink(homeHeaderWalletAction.isLinked, homeHeaderWalletAction.appLinkBalance) }
 
@@ -168,6 +169,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
                             tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.BOLD)
                             tokoCashHolder.setOnClickListener { gotToTopupOvo(homeHeaderWalletAction.topupUrl) }
                         } else {
+                            tvBalanceTokocash.setTypeface(tvBalanceTokocash.getTypeface(), Typeface.NORMAL)
                             tvBalanceTokocash.text = itemView.resources.getString(R.string.home_header_fintech_points, homeHeaderWalletAction.pointBalance)
                         }
                     } else {

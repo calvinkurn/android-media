@@ -1139,8 +1139,10 @@ public class MainParentActivity extends BaseActivity implements
                     pageName = "/";
                 } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.official))) {
                     pageName = "OS Homepage";
+                } else if (menu.get(index).getTitle().equals(getResources().getString(R.string.feed))) {
+                    pageName = "Feed";
                 }
-                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, userSession.get().getUserId());
+                globalNavAnalytics.get().eventBottomNavigationDrawer(pageName, menu.get(index).getTitle(), userSession.get().getUserId());
             } else {
                 globalNavAnalytics.get().eventBottomNavigation(menu.get(index).getTitle()); // push analytics
             }
