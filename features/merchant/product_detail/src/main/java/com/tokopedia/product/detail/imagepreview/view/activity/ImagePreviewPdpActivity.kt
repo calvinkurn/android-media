@@ -80,7 +80,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     }
 
     private fun updateView() {
-        findViewById<Button>(R.id.ivDownload)?.hide()
+        findViewById<Button>(com.tokopedia.imagepreview.R.id.ivDownload)?.hide()
 
         val isCanShowing = remoteConfig.getBoolean(KEY_WISHLIST_BUTTON, false)
         if (isCanShowing) {
@@ -114,7 +114,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             }
         }
 
-        findViewById<TouchViewPager>(R.id.viewPager)?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+        findViewById<TouchViewPager>(com.tokopedia.imagepreview.R.id.viewPager)?.addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
                 val swipeDirection = if(lastPosition > position) IMAGE_SWIPE_DIRECTION_LEFT else IMAGE_SWIPE_DIRECTION_RIGHT
@@ -130,7 +130,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             }
         })
 
-        findViewById<ImageView>(R.id.ivClose)?.setOnClickListener {
+        findViewById<ImageView>(com.tokopedia.imagepreview.R.id.ivClose)?.setOnClickListener {
             setResult()
         }
     }

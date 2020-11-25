@@ -83,7 +83,7 @@ class ProductInstallmentActivity : BaseTabActivity(), HasComponent<ProductDetail
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
         super.onCreate(savedInstanceState)
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default))
+        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default))
 
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProductInstallmentViewModel::class.java)
         viewModel.transformedInstallment.observe(this, onInstallmentChange)
@@ -98,7 +98,7 @@ class ProductInstallmentActivity : BaseTabActivity(), HasComponent<ProductDetail
             }
             is Fail -> {
                 Toaster.make(findViewById(android.R.id.content), ProductDetailErrorHandler.getErrorMessage(this, it.throwable), Snackbar.LENGTH_LONG,
-                        Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener {
+                        Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.retry_label), View.OnClickListener {
                     viewModel.loadInstallment(intent.getFloatExtra(PRODUCT_PRICE, 0f))
                 })
             }

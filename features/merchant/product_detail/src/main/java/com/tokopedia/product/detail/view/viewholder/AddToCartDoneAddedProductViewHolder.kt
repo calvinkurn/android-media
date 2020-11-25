@@ -24,7 +24,7 @@ class AddToCartDoneAddedProductViewHolder(
     override fun bind(element: AddToCartDoneAddedProductDataModel) {
         with(itemView) {
             element.productImageUr?.let {
-                image_view_added_product.loadImageRounded(it, resources.getDimension(R.dimen.dp_8))
+                image_view_added_product.loadImageRounded(it, resources.getDimension(com.tokopedia.abstraction.R.dimen.dp_8))
             }
             button_go_to_cart.setOnClickListener {
                 addToCartDoneAddedProductListener.onButtonGoToCartClicked()

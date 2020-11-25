@@ -238,8 +238,8 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     private fun generateApplink(applink: String): String {
-        return if (applink.contains(getString(R.string.internal_scheme))) {
-            applink.replace(getString(R.string.internal_scheme), "tokopedia")
+        return if (applink.contains(getString(tokopedia.applink.R.string.internal_scheme))) {
+            applink.replace(getString(tokopedia.applink.R.string.internal_scheme), "tokopedia")
         } else {
             ""
         }

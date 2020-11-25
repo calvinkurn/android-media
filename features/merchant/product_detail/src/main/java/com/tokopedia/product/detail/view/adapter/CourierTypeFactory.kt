@@ -36,7 +36,7 @@ class CourierTypeFactory: BaseAdapterTypeFactory(){
                         courier_item_name.setFontSize(TextViewCompat.FontSize.TITLE)
                         courier_item_name.text = element.name
                         courier_item_info.text = element.product.map { it.name }.joinToString(", ")
-                        ImageHandler.loadImage(context, courier_item_image, element.image, R.drawable.ic_loading_image)
+                        ImageHandler.loadImage(context, courier_item_image, element.image, com.tokopedia.design.R.drawable.ic_loading_image)
                     }
                     else -> {}
                 }

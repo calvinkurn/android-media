@@ -225,7 +225,7 @@ open class AddToCartDoneBottomSheet :
                 addToCartButton.hide()
             } else if(result is Fail){
                 dialog?.run{
-                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_80)
                     Toaster.make(findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
                             Snackbar.LENGTH_LONG,
@@ -291,7 +291,7 @@ open class AddToCartDoneBottomSheet :
                     findViewById(android.R.id.content),
                     ErrorHandler.getErrorMessage(this.context, throwable),
                     Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.title_try_again),
+                    getString(com.tokopedia.abstraction.R.string.title_try_again),
                     onClickListener
             )
         }

@@ -155,7 +155,7 @@ class ProductShopCredibilityViewHolder(private val view: View, private val liste
                 MethodChecker.getDrawable(context, R.drawable.ic_official_store_product)
             }
             isPm -> {
-                MethodChecker.getDrawable(context, R.drawable.ic_power_merchant)
+                MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant)
             }
             else -> {
                 null

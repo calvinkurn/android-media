@@ -205,7 +205,7 @@ class PartialContentView(private val view: View,
 
     fun renderTradein(showTradein: Boolean) = with(view) {
         tradein_header_container.showWithCondition(showTradein)
-        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
+        tradein_header_container.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, com.tokopedia.common_tradein.R.drawable.tradein_white), null, null, null)
     }
 
     private fun showCountDownTimerUpcomingNpl(startDateData: String, campaign: CampaignModular) = with(view) {

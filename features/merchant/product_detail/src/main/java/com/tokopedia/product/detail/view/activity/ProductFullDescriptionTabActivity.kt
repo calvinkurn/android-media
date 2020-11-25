@@ -67,7 +67,7 @@ class ProductFullDescriptionTabActivity : BaseSimpleActivity(), HasComponent<Pro
             catalogId = getStringExtra(PARAM_CATALOD_ID) ?: ""
         }
 
-        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_close_default))
+        supportActionBar?.setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default))
         titleList.add(getString(R.string.label_desc))
         viewPagerDesc?.adapter = productViewPagerAdapter
 

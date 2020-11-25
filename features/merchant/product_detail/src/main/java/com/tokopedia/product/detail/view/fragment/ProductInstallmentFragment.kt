@@ -34,7 +34,7 @@ class ProductInstallmentFragment: BaseDaggerFragment() {
     override fun initInjector() {}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_base_list, container, false)
+        return inflater.inflate(com.tokopedia.baselist.R.layout.fragment_base_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

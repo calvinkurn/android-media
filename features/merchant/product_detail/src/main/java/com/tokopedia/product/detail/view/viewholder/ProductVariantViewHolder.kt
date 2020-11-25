@@ -38,7 +38,7 @@ class ProductVariantViewHolder(val view: View,
                     containerAdapter = VariantContainerAdapter(variantListener)
                     rvContainerVariant.adapter = containerAdapter
                     if (rvContainerVariant.itemDecorationCount == 0) {
-                        rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
+                        rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, com.tokopedia.variant_common.R.drawable.bg_separator_variant)))
                     }
                     rvContainerVariant.itemAnimator = null
                     containerAdapter?.setData(it)
