@@ -61,7 +61,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
     private val tvShippingDuration by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_duration) }
     private val btnChangeDuration by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_duration) }
     private val tvShippingCourier by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_courier) }
-    private val tvShippingDiscountPrice by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_discount_price) }
+    private val tvShippingPrice by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_price) }
     private val btnChangeCourier by lazy { view.findViewById<IconUnify>(R.id.btn_new_change_courier) }
     private val tvShippingErrorMessage by lazy { view.findViewById<Typography>(R.id.tv_new_shipping_error_message) }
     private val btnReloadShipping by lazy { view.findViewById<Typography>(R.id.btn_new_reload_shipping) }
@@ -147,7 +147,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     listener.chooseDuration(false)
                 }
                 btnChangeDuration?.visible()
-                tvShippingCourier?.text = "${shipping.shipperName} (${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()})"
+                tvShippingCourier?.text = shipping.shipperName
                 tvShippingCourier?.visible()
                 btnChangeCourier?.visible()
                 tvShippingErrorMessage?.gone()
@@ -161,7 +161,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     tvShippingDuration?.gone()
                     btnChangeDuration?.gone()
                     if (shipping.logisticPromoViewModel.benefitAmount >= shipping.logisticPromoViewModel.shippingRate) {
-                        tvShippingDiscountPrice?.gone()
+                        tvShippingPrice?.gone()
                     } else {
                         val originalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.shippingRate, false).removeDecimalSuffix()
                         val finalPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.logisticPromoViewModel.discountedRate, false).removeDecimalSuffix()
@@ -170,15 +170,21 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         span.setSpan(RelativeSizeSpan(10 / 12f), 1, 1 + originalPrice.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         span.setSpan(StyleSpan(BOLD), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         span.setSpan(StyleSpan(BOLD), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        tvShippingDiscountPrice?.text = span
-                        tvShippingDiscountPrice?.visible()
+                        view.context?.let {
+                            val color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
+                            span.setSpan(ForegroundColorSpan(color), 0, 1, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            span.setSpan(ForegroundColorSpan(color), 1 + originalPrice.length, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        }
+                        tvShippingPrice?.text = span
+                        tvShippingPrice?.visible()
                     }
-                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingDiscountPrice, btnChangeCourier) {
+                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, btnChangeCourier) {
                         listener.chooseDuration(false)
                     }
                 } else {
-                    tvShippingDiscountPrice?.gone()
-                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingDiscountPrice, btnChangeCourier) {
+                    tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()
+                    tvShippingPrice?.visible()
+                    setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, btnChangeCourier) {
                         listener.chooseCourier()
                     }
                 }
@@ -204,7 +210,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 btnChangeCourier?.gone()
                 btnReloadShipping?.gone()
                 iconReloadShipping?.gone()
-                tvShippingDiscountPrice?.gone()
+                tvShippingPrice?.gone()
                 tickerShippingPromo?.gone()
             } else {
                 tvShippingDuration?.text = "Pengiriman"
@@ -225,7 +231,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 }
                 btnReloadShipping?.visible()
                 iconReloadShipping?.visible()
-                tvShippingDiscountPrice?.gone()
+                tvShippingPrice?.gone()
                 tickerShippingPromo?.gone()
             }
         }
