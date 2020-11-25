@@ -14,10 +14,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.kotlin.extensions.view.getResDrawable
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.top_ads_headline.R
 import com.tokopedia.top_ads_headline.data.Category
 import com.tokopedia.top_ads_headline.data.TopAdsHeadlineTabModel
@@ -45,7 +42,7 @@ import kotlinx.android.synthetic.main.fragment_topads_product_list.*
 import javax.inject.Inject
 
 private const val ROW = 50
-private const val MAX_PRODUCT_SELECTION = 10
+const val MAX_PRODUCT_SELECTION = 10
 private const val MIN_CATEGORY_SHOWN = 2
 private const val RECOMMENDATION_TAB_POSITION = 0
 private const val ALL_PRODUCTS_TAB_POSITION = 1
@@ -233,7 +230,9 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             setSelectProductText()
             productsListAdapter.notifyDataSetChanged()
             isProductSelectedListEdited = true
-            setTickerAndBtn()
+            if (!btnNext.isEnabled) {
+                setTickerAndBtn()
+            }
         }
     }
 
@@ -323,10 +322,8 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     private fun setSelectProductCbCheck(data: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>) {
         if (data.isEmpty()) {
             selectProductCheckBox.hide()
-            ticker.hide()
         } else {
             selectProductCheckBox.show()
-            ticker.show()
             checkIfDeterminate()
         }
     }
@@ -363,7 +360,9 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             setTabCount(data.size)
             prepareForNextFetch(eof)
             showCbIfRecommendation(data)
-            setTickerAndBtn()
+            if (!btnNext.isEnabled) {
+                setTickerAndBtn()
+            }
         } else {
             showEmptyView()
         }
@@ -404,6 +403,10 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
     }
 
     private fun setResultAndFinish() {
+        setTickerAndBtn()
+        if (ticker.isVisible) {
+            return
+        }
         val intent = Intent()
         intent.putExtra(IS_EDITED, isProductSelectedListEdited)
         intent.putExtra(SELECTED_PRODUCT_LIST, selectedTopAdsProductMap)
@@ -428,7 +431,9 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
             checkIfDeterminate()
         }
         setSelectProductText()
-        setTickerAndBtn()
+        if (!btnNext.isEnabled) {
+            setTickerAndBtn()
+        }
     }
 
     private fun changeBackGround(category: Category, product: ResponseProductList.Result.TopadsGetListProduct.Data) {

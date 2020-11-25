@@ -17,7 +17,7 @@ open class CreateHeadlineAdsStepperModel(
         var cpmModel: CpmModel = CpmModel(),
         var minBid: Int = 0,
         var maxBid: Int = 0,
-        var dailyBudget: Int = 0,
+        var dailyBudget: Float = 0F,
         var adOperations: MutableList<TopAdsManageHeadlineInput.Operation.Group.AdOperation> = ArrayList(),
         var keywordOperations: List<TopAdsManageHeadlineInput.Operation.Group.KeywordOperation> = ArrayList()
 ) : StepperModel

@@ -36,7 +36,6 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initiateStepperModel()
         adDetailsViewModel = ViewModelProvider(this, viewModelFactory).get(AdDetailsViewModel::class.java)
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
     }
@@ -59,10 +58,6 @@ class AdDetailsFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         @JvmStatic
         fun newInstance(): Fragment =
                 AdDetailsFragment()
-    }
-
-    override fun initiateStepperModel() {
-        stepperModel = stepperModel ?: CreateHeadlineAdsStepperModel()
     }
 
     override fun gotoNextPage() {

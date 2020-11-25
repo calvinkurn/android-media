@@ -59,10 +59,6 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         ViewModelProvider(this, viewModelFactory).get(TopAdsHeadlineKeyViewModel::class.java)
     }
 
-    override fun initiateStepperModel() {
-        stepperModel = stepperModel ?: CreateHeadlineAdsStepperModel()
-    }
-
     override fun gotoNextPage() {
         stepperModel?.minBid = minSuggestedBid
         stepperModel?.manualSelectedKeywords = getManualAddedKeywords()

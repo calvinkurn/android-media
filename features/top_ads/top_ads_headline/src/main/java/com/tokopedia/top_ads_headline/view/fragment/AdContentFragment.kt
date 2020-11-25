@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -74,10 +75,6 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
                 .build().inject(this)
     }
 
-    override fun initiateStepperModel() {
-        stepperModel = stepperModel ?: CreateHeadlineAdsStepperModel()
-    }
-
     override fun gotoNextPage() {
         stepperModel?.slogan = promotionalMessageInputText.textFieldInput.text.toString()
         stepperModel?.selectedProductIds = getAdItems()
@@ -120,8 +117,7 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         if (selectedTopAdsProducts.isNotEmpty()) {
             onProductsSelectionChange()
         }
-        stepperModel?.slogan = getString(R.string.topads_headline_promotional_dummy_message)
-        promotionalMessageInputText.textFieldInput.setText(getString(R.string.topads_headline_promotional_dummy_message))
+        promotionalMessageInputText.textFieldInput.setText(stepperModel?.slogan ?: getString(R.string.topads_headline_promotional_dummy_message))
         promotionalMessageInputText.textFieldInput.isFocusable = false
         promotionalMessageInputText.textFieldInput.setOnClickListener {
             openPromotionalMessageBottomSheet()
@@ -146,6 +142,12 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
                 view?.let { it1 ->
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
                     Toaster.build(it1, getString(R.string.topads_headline_submit_ad_detail_error), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                }
+            }
+            selectedTopAdsProducts.size > MAX_PRODUCT_SELECTION -> {
+                view?.let {
+                    Toaster.toasterCustomBottomHeight = resources.getDimensionPixelSize(R.dimen.dp_60)
+                    Toaster.build(it, getString(R.string.topads_headline_over_product_selection), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 }
             }
             else -> {
@@ -195,7 +197,8 @@ class AdContentFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsStepperMo
         promotionalMessageInputText.textFieldInput.setText(promotionalMessage)
         stepperModel?.let {
             it.slogan = promotionalMessage
-            showTopAdsBannerPreview()
+            it.cpmModel.data[0].cpm.cpmShop.slogan = promotionalMessage
+            topAdsBannerView.displayAds(stepperModel?.cpmModel)
         }
         btnSubmit.isEnabled = promotionalMessage.length >= MIN_PROMOTIONAL_MSG_COUNT
     }

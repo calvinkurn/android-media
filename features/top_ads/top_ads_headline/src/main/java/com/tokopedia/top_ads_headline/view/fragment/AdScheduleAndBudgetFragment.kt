@@ -79,10 +79,6 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         return inflater.inflate(R.layout.fragment_ad_schedule_and_budget, container, false)
     }
 
-    override fun initiateStepperModel() {
-        stepperModel = stepperModel ?: CreateHeadlineAdsStepperModel()
-    }
-
     override fun gotoNextPage() {
         stepperListener?.goToNextPage(stepperModel)
     }
@@ -189,7 +185,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
             advertisingCost.textFieldInput.setText(cost)
             advertisingCost.textFieldInput.addTextChangedListener(advertisingCostTextWatcher())
             val budget = it * MULTIPLIER
-            stepperModel?.dailyBudget = budget
+            stepperModel?.dailyBudget = budget.toFloat()
             budgetCost.textFieldInput.setText(convertToCurrency(budget.toLong()))
             budgetCost.textFieldInput.addTextChangedListener(budgetCostTextWatcher())
             budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, budget)
@@ -215,7 +211,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
                         btnNext.isEnabled = false
                     }
                     else -> {
-                        stepperModel?.dailyBudget = input * MULTIPLIER
+                        stepperModel?.dailyBudget = (input * MULTIPLIER).toFloat()
                         btnNext.isEnabled = true
                         advertisingCost.setMessage("")
                         advertisingCost.setError(false)
@@ -231,25 +227,24 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
         return object : NumberTextWatcher(budgetCost.textFieldInput, "0") {
             override fun onNumberChanged(number: Double) {
                 super.onNumberChanged(number)
-                val input = number.toInt()
-                budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, convertToCurrency(input.toLong()))
+                budgetCostMessage.text = getString(R.string.topads_headline_schedule_budget_cost_message, convertToCurrency(number.toLong()))
                 val minBid = if (advertisingCost.isTextFieldError) {
                     stepperModel?.minBid ?: 0
                 } else {
                     advertisingCost.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
                 }
-                val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toIntOrZero()
-                if (input < minBid * MULTIPLIER && budgetCost.isVisible) {
+                val maxDailyBudget = MAX_DAILY_BUDGET.removeCommaRawString().toFloatOrZero()
+                if (number < minBid * MULTIPLIER && budgetCost.isVisible) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_min_budget_cost_error), convertToCurrency(stepperModel?.dailyBudget?.toLong()
                             ?: 0)))
                     btnNext.isEnabled = false
-                } else if (input > maxDailyBudget) {
+                } else if (number > maxDailyBudget) {
                     budgetCost.setError(true)
                     budgetCost.setMessage(String.format(getString(R.string.topads_headline_max_budget_cost_error), MAX_DAILY_BUDGET))
                     btnNext.isEnabled = false
                 } else {
-                    stepperModel?.dailyBudget = input
+                    stepperModel?.dailyBudget = number.toFloat()
                     btnNext.isEnabled = true
                     budgetCost.setMessage("")
                     budgetCost.setError(false)

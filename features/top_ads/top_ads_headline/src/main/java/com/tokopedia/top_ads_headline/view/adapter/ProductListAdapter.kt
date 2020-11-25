@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.item_layout_topads_category_shimmer.view.*
 private const val DEFAULT_SHIMMER_COUNT = 5
 private const val VIEW_SHIMMER = 0
 private const val VIEW_CATEGORY = 1
-private const val MAX_PRODUCT_SELECTION = 10
 private const val MAX_DEPARTMENT_NAME_LENGTH = 20
+const val MAX_PRODUCT_SELECTION = 10
 const val SINGLE_SELECTION = 1
 
 class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGetListProduct.Data>,
@@ -72,7 +72,8 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
             viewHolder.itemView.setOnClickListener {
                 val checked = selectedProductMap[category]?.contains(product) ?: false
                 onItemSelection(checked, category, product)
-                viewHolder.checkBox.isChecked = selectedProductMap[category]?.contains(product) ?: false
+                viewHolder.checkBox.isChecked = selectedProductMap[category]?.contains(product)
+                        ?: false
             }
             setMarginBottomIfLast(holder, position)
             product.isSingleSelect = checkIfSingleSelect(category, product)
@@ -130,7 +131,11 @@ class ProductListAdapter(var list: ArrayList<ResponseProductList.Result.TopadsGe
         if (isAlreadyChecked) {
             selectedProductMap[category]?.remove(product)
         } else {
-            if (selectedProductMap.size >= MAX_PRODUCT_SELECTION) {
+            var totalProducts = 0
+            selectedProductMap.values.forEach {
+                totalProducts += it.size
+            }
+            if (totalProducts >= MAX_PRODUCT_SELECTION) {
                 productListAdapterListener?.onProductOverSelect()
             } else {
                 if (selectedProductMap[category] != null) {

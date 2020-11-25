@@ -14,7 +14,6 @@ abstract class BaseHeadlineStepperFragment<T : CreateHeadlineAdsStepperModel>: B
         if (context is StepperListener) context as StepperListener else null
     }
 
-    protected abstract fun initiateStepperModel()
     protected abstract fun gotoNextPage()
     protected abstract fun populateView()
     protected abstract fun updateToolBar()
