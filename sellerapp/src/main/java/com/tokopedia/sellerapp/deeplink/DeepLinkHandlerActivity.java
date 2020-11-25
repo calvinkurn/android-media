@@ -66,7 +66,6 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
