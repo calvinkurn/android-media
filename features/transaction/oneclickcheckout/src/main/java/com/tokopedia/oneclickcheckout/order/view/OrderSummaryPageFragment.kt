@@ -342,20 +342,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
-        viewModel.orderPayment.observe(viewLifecycleOwner, Observer {
+        viewModel.orderPayment.observe(viewLifecycleOwner, {
             orderPreferenceCard.setPayment(it)
             newOrderPreferenceCard.setPayment(it)
         })
 
-        viewModel.orderTotal.observe(viewLifecycleOwner, Observer {
+        viewModel.orderTotal.observe(viewLifecycleOwner, {
             orderTotalPaymentCard.setupPayment(it, viewModel.isNewFlow)
         })
 
-        viewModel.orderPromo.observe(viewLifecycleOwner, Observer {
+        viewModel.orderPromo.observe(viewLifecycleOwner, {
             setupButtonPromo(it)
         })
 
-        viewModel.globalEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.globalEvent.observe(viewLifecycleOwner, {
             when (it) {
                 is OccGlobalEvent.Loading -> {
                     if (progressDialog == null) {
@@ -560,9 +560,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             newOnboardingCard?.visible()
             ivNewOnboarding?.setImageUrl(orderPreference.onboarding.onboardingTicker.image)
             tvNewOnboardingMessage?.text = orderPreference.onboarding.onboardingTicker.message
-            tvNewOnboardingMessage?.setOnClickListener {
-                showNewOnboarding(orderPreference.onboarding)
-            }
         } else {
             onboardingCard?.gone()
             newOnboardingCard?.gone()
@@ -612,15 +609,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val scrollview = it.findViewById<ScrollView>(R.id.nested_scroll_view)
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
-                    val view: View = when (detailIndexed.index) {
-                        0 -> it.findViewById(R.id.tv_header_2)
-                        1 -> it.findViewById(R.id.btn_new_change_address)
-                        2 -> it.findViewById(R.id.tv_new_choose_preference)
-                        3 -> it.findViewById(R.id.btn_new_change_duration)
-                        4 -> it.findViewById(R.id.button_atur_pilihan)
-                        else -> it.findViewById(R.id.new_preference_card)
+                    val newView: View = when (onboarding.onboardingCoachMark.coachmarkType) {
+                        1 -> generateNewCoachMarkAnchorType1(it, detailIndexed.index)
+                        2 -> generateNewCoachMarkAnchorType2(it, detailIndexed.index)
+                        3 -> generateNewCoachMarkAnchorType3(it, detailIndexed.index)
+                        4 -> generateNewCoachMarkAnchorType4(it, detailIndexed.index)
+                        else -> it.findViewById(R.id.tv_header_2)
                     }
-                    coachMarkItems.add(CoachMark2Item(view, detailIndexed.value.title, detailIndexed.value.message))
+                    coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message))
                 }
                 val coachMark = CoachMark2(it.context)
                 coachMark.showCoachMark(coachMarkItems, scrollview)
@@ -629,9 +625,42 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
+    private fun generateNewCoachMarkAnchorType1(view: View, index: Int): View {
+        return when (index) {
+            1 -> view.findViewById(R.id.button_atur_pilihan)
+            else -> view.findViewById(R.id.tv_header_2)
+        }
+    }
+
+    private fun generateNewCoachMarkAnchorType2(view: View, index: Int): View {
+        return when (index) {
+            1 -> view.findViewById(R.id.btn_new_change_duration)
+            2 -> view.findViewById(R.id.tv_new_choose_preference)
+            else -> view.findViewById(R.id.tv_header_2)
+        }
+    }
+
+    private fun generateNewCoachMarkAnchorType3(view: View, index: Int): View {
+        return when (index) {
+            0 -> view.findViewById(R.id.btn_new_change_duration)
+            else -> view.findViewById(R.id.tv_new_choose_preference)
+        }
+    }
+
+    private fun generateNewCoachMarkAnchorType4(view: View, index: Int): View {
+        return when (index) {
+            0 -> view.findViewById(R.id.btn_new_change_address)
+            else -> view.findViewById(R.id.tv_new_choose_preference)
+        }
+    }
+
     private fun forceShowOnboarding(onboarding: OccMainOnboarding?) {
         if (onboarding?.isForceShowCoachMark == true) {
-            showOnboarding(onboarding)
+            if (viewModel.isNewFlow) {
+                showNewOnboarding(onboarding)
+            } else {
+                showOnboarding(onboarding)
+            }
             viewModel.consumeForceShowOnboarding()
         }
     }
