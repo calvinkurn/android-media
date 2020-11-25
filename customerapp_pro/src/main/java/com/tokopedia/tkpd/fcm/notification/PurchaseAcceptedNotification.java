@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.buyerorder.list.common.OrderListContants;
-import com.tokopedia.buyerorder.list.data.OrderCategory;
-import com.tokopedia.buyerorder.list.data.OrderMarketplaceFilterId;
-import com.tokopedia.buyerorder.list.view.activity.OrderListActivity;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
+import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.gcm.base.BaseNotification;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core2.R;
