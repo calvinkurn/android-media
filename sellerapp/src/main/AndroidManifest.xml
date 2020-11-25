@@ -109,11 +109,11 @@
             android:resource="@xml/actions" />
         <meta-data
             android:name="HANSEL_APP_ID"
-            android:value="AZ9LDQCRS09BKXEZB92T7LZYR"
+            android:value="GJPFWEGF6PLIR6Y7EIBONHPG4"
             tools:replace="android:value" />
         <meta-data
             android:name="HANSEL_APP_KEY"
-            android:value="S9EC0H596C9P8DED5HC3P0DW40ZACDMDNH59RCGFWJWDOD214P"
+            android:value="0II3AMNFRMI3N0G0EO8D1RJZKR40KCEYTW8Y31BBGZTBCHQDI0"
             tools:replace="android:value" />
         <uses-library
             android:name="org.apache.http.legacy"
