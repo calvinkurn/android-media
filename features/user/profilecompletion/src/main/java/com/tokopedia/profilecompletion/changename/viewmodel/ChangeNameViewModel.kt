@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
@@ -14,7 +13,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -31,13 +29,12 @@ class ChangeNameViewModel @Inject constructor(
         get() = mutableChangeNameResponse
 
     fun changePublicName(publicName: String) {
-        val rawQuery = rawQueries[ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME]
-        if(!rawQuery.isNullOrEmpty()){
+        rawQueries[ProfileCompletionQueryConstant.MUTATION_CHANGE_NAME]?.let { query ->
             val params = mapOf(PARAM_NAME to publicName)
 
             graphqlUseCase.setTypeClass(ChangeNamePojo::class.java)
             graphqlUseCase.setRequestParams(params)
-            graphqlUseCase.setGraphqlQuery(rawQuery)
+            graphqlUseCase.setGraphqlQuery(query)
 
             graphqlUseCase.execute(
                     onSuccessMutateChangeName(publicName),

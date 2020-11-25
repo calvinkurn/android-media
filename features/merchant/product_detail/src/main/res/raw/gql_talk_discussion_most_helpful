@@ -1,0 +1,30 @@
+query discussionMostHelpful($productID: String!, $shopID: String!) {
+  discussionMostHelpful(productID: $productID, shopID: $shopID) {
+    totalQuestion
+    question {
+      questionID
+      content
+      userName
+      userThumbnail
+      userID
+      createTime
+      createTimeFormatted
+      totalAnswer
+      answer {
+        answerID
+        content
+        userName
+        userThumbnail
+        userThumbnail2
+        userID
+        isSeller
+        createTime
+        createTimeFormatted
+        attachedProductCount
+      }
+    }
+    productID
+    shopID
+    shopURL
+  }
+}

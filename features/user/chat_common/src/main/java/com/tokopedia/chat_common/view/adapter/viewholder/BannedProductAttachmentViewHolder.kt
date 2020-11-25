@@ -13,15 +13,15 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.toPx
 
-class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAttachmentListener)
+open class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAttachmentListener)
     : BaseChatViewHolder<BannedProductAttachmentViewModel>(itemView) {
 
-    private var container: ConstraintLayout? = null
-    private var warning: Ticker? = null
-    private var name: TextView? = null
-    private var price: TextView? = null
-    private var btnBuy: UnifyButton? = null
-    private var image: ImageView? = null
+    protected open var container: ConstraintLayout? = null
+    protected open var warning: Ticker? = null
+    protected open var name: TextView? = null
+    protected open var price: TextView? = null
+    protected open var btnBuy: UnifyButton? = null
+    protected open var image: ImageView? = null
 
     init {
         container = itemView?.findViewById(R.id.bubble_product)
@@ -32,8 +32,7 @@ class BannedProductAttachmentViewHolder(itemView: View?, val listener: ProductAt
         image = itemView?.findViewById(R.id.product_image)
     }
 
-    override fun bind(viewModel: BannedProductAttachmentViewModel?) {
-        if (viewModel == null) return
+    override fun bind(viewModel: BannedProductAttachmentViewModel) {
         setAlignment(viewModel)
         bindWarning(viewModel)
         bindImage(viewModel)

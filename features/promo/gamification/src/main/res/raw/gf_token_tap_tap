@@ -13,6 +13,8 @@ query {
         tokenUserIDstr
         campaignID
         title
+        text
+        desc
     }
     timeRemaining {
         isShow
@@ -37,6 +39,7 @@ query {
         glowShadowImgURL
         glowImgURL
         imageV2URLs
+        rewardImgURL
     }
     rewardButton {
         text

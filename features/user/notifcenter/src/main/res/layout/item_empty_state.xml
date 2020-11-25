@@ -3,9 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/empty_container"
+    android:id="@+id/emptyContainer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="gone"
+    tools:visibility="visible">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,22 +17,23 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/img_state"
-            android:layout_width="@dimen/dp_280"
-            android:layout_height="@dimen/dp_210"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_20" />
+            android:id="@+id/imgEmpty"
+            android:src="@drawable/bg_notif_empty_state"
+            android:layout_width="@dimen/notif_dp_280"
+            android:layout_height="@dimen/notif_dp_210"
+            android:layout_marginStart="@dimen/notif_dp_20"
+            android:layout_marginTop="@dimen/notif_dp_16"
+            android:layout_marginEnd="@dimen/notif_dp_20" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/txt_message"
+            android:id="@+id/txtEmptyMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="kosong nih bos"
+            tools:text="Message"
             app:typographyType="body_1"
             app:typographyWeight="bold"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/notif_dp_16"
+            android:layout_marginTop="@dimen/notif_dp_8"
             android:textColor="@color/chorcoal_black"/>
 
     </LinearLayout>

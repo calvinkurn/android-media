@@ -2,11 +2,18 @@ package com.tokopedia.contactus.createticket.interactor;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.tokopedia.contactus.R;
+import com.tokopedia.contactus.createticket.UploadImageContactUsParam;
+import com.tokopedia.contactus.createticket.model.ContactUsPass;
+import com.tokopedia.contactus.createticket.model.CreateTicketResult;
 import com.tokopedia.contactus.createticket.model.GenerateHostPass;
+import com.tokopedia.contactus.createticket.model.ImageUpload;
+import com.tokopedia.contactus.createticket.model.ImageUploadResult;
+import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
 import com.tokopedia.core.network.apiservices.accounts.AccountsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsService;
 import com.tokopedia.core.network.apiservices.etc.ContactUsWsService;
@@ -18,15 +25,9 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.contactus.createticket.UploadImageContactUsParam;
-import com.tokopedia.contactus.createticket.model.ContactUsPass;
-import com.tokopedia.contactus.createticket.model.CreateTicketResult;
-import com.tokopedia.contactus.createticket.model.ImageUpload;
-import com.tokopedia.contactus.createticket.model.ImageUploadResult;
-import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.json.JSONException;
 
@@ -48,6 +49,9 @@ import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+import timber.log.Timber;
+
+import static com.tokopedia.contactus.inboxticket2.domain.usecase.UploadImageUseCaseKt.IMAGE_QUALITY;
 
 /**
  * Created by nisie on 8/12/16.
@@ -288,6 +292,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
                 .flatMap(new Func1<ImageUpload, Observable<ImageUpload>>() {
                     @Override
                     public Observable<ImageUpload> call(ImageUpload imageUpload) {
+                        UserSessionInterface userSession = new UserSession(context);
                         String uploadUrl = "http://" + contactUsPass.getGeneratedHost().getUploadHost();
                         NetworkCalculator networkCalculator = new NetworkCalculator(
                                 NetworkConfig.POST, context,
@@ -300,7 +305,9 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
                         File file;
                         try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                            file = ImageUtils.writeImageToTkpdPath(
+                                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                                    ImageUtils.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY).getAbsolutePath());
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }
@@ -321,7 +328,7 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
                         Log.d(TAG + "(step 2):host = ", contactUsPass.getGeneratedHost().getUploadHost());
                         Observable<ImageUploadResult> upload;
-                        if (SessionHandler.isV4Login(context)) {
+                        if (userSession.isLoggedIn()) {
                             upload = RetrofitUtils.createRetrofit(uploadUrl)
                                     .create(UploadImageContactUsParam.class)
                                     .uploadImage(
@@ -377,7 +384,10 @@ public class ContactUsRetrofitInteractorImpl implements ContactUsRetrofitInterac
 
     @Override
     public void unsubscribe() {
-        RxUtils.unsubscribeIfNotNull(compositeSubscription);
+        if (compositeSubscription != null) {
+            Timber.d("unsubscribeIfNotNull");
+            compositeSubscription.unsubscribe();
+        }
     }
 
     @Override

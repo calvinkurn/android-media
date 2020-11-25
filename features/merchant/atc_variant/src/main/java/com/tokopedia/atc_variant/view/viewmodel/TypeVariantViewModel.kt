@@ -7,63 +7,27 @@ import com.tokopedia.atc_variant.view.adapter.AddToCartVariantAdapterTypeFactory
 import com.tokopedia.atc_variant.view.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.product.detail.common.data.model.variant.Variant.Companion.COLOR
 import com.tokopedia.product.detail.common.data.model.variant.Variant.Companion.SIZE
+import kotlinx.android.parcel.Parcelize
 
 /**
  * Created by Irfan Khoirul on 30/11/18.
  */
-
+@Parcelize
 data class TypeVariantViewModel(
-        var variantId: Int,
-        var variantName: String,
-        var variantSelectedValue: String,
-        var variantGuideline: String,
-        var variantIdentifier: String,
-        var variantOptions: ArrayList<OptionVariantViewModel>
+        var variantId: Int = 0,
+        var variantName: String = "",
+        var variantSelectedValue: String = "",
+        var variantGuideline: String = "",
+        var variantIdentifier: String = "",
+        var variantOptions: ArrayList<OptionVariantViewModel> = arrayListOf()
 ) : Visitable<AddToCartVariantAdapterTypeFactory>, Parcelable {
 
     fun getSelectedOption(): Int? {
         return variantOptions.find { it.currentState == STATE_SELECTED }?.optionId
     }
 
-    constructor(parcel: Parcel? = null) : this(
-            parcel?.readInt() ?: 0,
-            parcel?.readString() ?: "",
-            parcel?.readString() ?: "",
-        parcel?.readString() ?: "",
-        parcel?.readString() ?: "",
-            arrayListOf<OptionVariantViewModel>().apply {
-                parcel?.readList(this, OptionVariantViewModel::class.java.classLoader)
-            }
-    )
-
     override fun type(typeFactory: AddToCartVariantAdapterTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(variantId)
-        parcel.writeString(variantName)
-        parcel.writeString(variantSelectedValue)
-        parcel.writeString(variantGuideline)
-        parcel.writeString(variantIdentifier)
-        parcel.writeList(variantOptions)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object {
-        @JvmField
-        val CREATOR = object : Parcelable.Creator<TypeVariantViewModel> {
-            override fun createFromParcel(parcel: Parcel): TypeVariantViewModel {
-                return TypeVariantViewModel(parcel)
-            }
-
-            override fun newArray(size: Int): Array<TypeVariantViewModel?> {
-                return arrayOfNulls(size)
-            }
-        }
     }
 
     val isSizeIdentifier: Boolean

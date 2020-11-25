@@ -18,7 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 
 import java.io.File;
 
@@ -26,7 +26,7 @@ import java.io.File;
  * @author by alvarisi on 3/26/18.
  */
 
-public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<FlightCancellationAttachmentViewModel> {
+public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<FlightCancellationAttachmentModel> {
 
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_attachment;
@@ -63,7 +63,7 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void bind(FlightCancellationAttachmentViewModel element) {
+    public void bind(FlightCancellationAttachmentModel element) {
         tvFilename.setText(element.getFilename());
         tvPassengerName.setText(element.getPassengerName());
 
@@ -146,8 +146,8 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
         ivAttachment.requestLayout();
     }
 
-    private void renderFileName(FlightCancellationAttachmentViewModel element) {
-        if (element.getFilename() != null && element.getFilename().length() > 0) {
+    private void renderFileName(FlightCancellationAttachmentModel element) {
+        if (element.getFilename().length() > 0) {
             tvFilename.setVisibility(View.VISIBLE);
         } else {
             tvFilename.setVisibility(View.GONE);

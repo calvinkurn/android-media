@@ -1,0 +1,9 @@
+query notifier_getPushDataToRender() {
+    notifier_getPushDataToRender() {
+        status
+        error_message
+        push_data
+        inapp_data
+        next_fetch
+    }
+}

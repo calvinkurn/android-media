@@ -142,10 +142,6 @@ public class NetworkErrorHelper {
         SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_LONG).show();
     }
 
-    public static void showRedSnackbarShort(Activity activity, String message) {
-        SnackbarManager.makeRed(SnackbarManager.getContentView(activity), message, Snackbar.LENGTH_SHORT).show();
-    }
-
     public static void showRedSnackbar(View view, String message) {
         SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).show();
     }
@@ -295,34 +291,6 @@ public class NetworkErrorHelper {
             e.printStackTrace();
         }
 
-    }
-
-    public static void showDialogCustomMSG(Context context, final RetryClickedListener listener, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
-        msg.setText(message);
-        dialog.setView(promptsView);
-        if (listener != null) {
-            dialog.setPositiveButton(context.getString(R.string.title_try_again),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listener.onRetryClicked();
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        dialog.create().show();
     }
 
     public static SnackbarRetry createSnackbarRedWithAction(Activity activity, String message, final RetryClickedListener listener) {

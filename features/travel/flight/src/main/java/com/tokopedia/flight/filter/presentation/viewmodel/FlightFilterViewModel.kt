@@ -8,13 +8,13 @@ import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.*
-import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
-import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
-import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.searchV4.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -118,8 +118,7 @@ class FlightFilterViewModel @Inject constructor(
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.let {
-                mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
+                mutableStatisticModel.postValue(flightSearchStatisticUseCase.execute(it))
             }
         }
     }
@@ -127,8 +126,7 @@ class FlightFilterViewModel @Inject constructor(
     private fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
-                mediatorFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
-                        .createRequestParams(filterModel.value!!)))
+                mediatorFlightCount.postValue(flightSearchCountUseCase.execute(filterModel.value!!))
             }
         }
     }
@@ -140,8 +138,20 @@ class FlightFilterViewModel @Inject constructor(
             // Sort
             items.add(SORT_ORDER, FlightSortModel())
 
+            // Transit
+            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
+
+            // Departure Time
+            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
+
+            // Arrival Time
+            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
+
             // Airline
             items.add(AIRLINE_ORDER, FlightFilterAirlineModel())
+
+            // Facility
+            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
             // Price
             val selectedMinPrice = filterModel.value?.priceMin ?: 0
@@ -152,18 +162,6 @@ class FlightFilterViewModel @Inject constructor(
                     selectedStartValue = if (selectedMinPrice > it.minPrice) selectedMinPrice else it.minPrice,
                     selectedEndValue = if (selectedMaxPrice < it.maxPrice) selectedMaxPrice else it.maxPrice
             ))
-
-            // Departure Time
-            items.add(DEPARTURE_TIME_ORDER, DepartureTimeModel(DepartureTimeEnum._00))
-
-            // Arrival Time
-            items.add(ARRIVAL_TIME_ORDER, ArrivalTimeModel(DepartureTimeEnum._00))
-
-            // Transit
-            items.add(TRANSIT_ORDER, TransitModel(TransitEnum.DIRECT))
-
-            // Facility
-            items.add(FACILITY_ORDER, FlightFilterFacilityModel())
 
         }
 
@@ -188,12 +186,12 @@ class FlightFilterViewModel @Inject constructor(
 
     companion object {
         const val SORT_ORDER = 0
-        const val AIRLINE_ORDER = 1
-        const val PRICE_ORDER = 2
-        const val DEPARTURE_TIME_ORDER = 3
-        const val ARRIVAL_TIME_ORDER = 4
-        const val TRANSIT_ORDER = 5
-        const val FACILITY_ORDER = 6
+        const val TRANSIT_ORDER = 1
+        const val DEPARTURE_TIME_ORDER = 2
+        const val ARRIVAL_TIME_ORDER = 3
+        const val AIRLINE_ORDER = 4
+        const val FACILITY_ORDER = 5
+        const val PRICE_ORDER = 6
 
         const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }

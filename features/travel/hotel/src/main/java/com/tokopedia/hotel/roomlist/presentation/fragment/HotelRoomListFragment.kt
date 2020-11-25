@@ -40,6 +40,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.di.HotelRoomListComponent
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
+import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity.Companion.ROOM_LIST_SCREEN_NAME
 import com.tokopedia.hotel.roomlist.presentation.adapter.RoomListTypeFactory
 import com.tokopedia.hotel.roomlist.presentation.adapter.viewholder.RoomListViewHolder
 import com.tokopedia.hotel.roomlist.presentation.viewmodel.HotelRoomListViewModel
@@ -53,6 +54,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -114,20 +119,22 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomListViewModel.roomListResult.observe(this, androidx.lifecycle.Observer {
+        roomListViewModel.roomListResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
-                    if (firstTime) {
-                        trackingHotelUtil.hotelViewRoomList(hotelRoomListPageModel.propertyId, hotelRoomListPageModel, it.data)
-                    }
-                    firstTime = false
                     if (!roomListViewModel.isFilter) {
                         roomListViewModel.roomList = it.data
                         showFilterRecyclerView(it.data.size > 0)
                     } else showFilterRecyclerView(true)
+
                     clearAllData()
                     roomList = it.data
                     renderList(roomList, false)
+                    if (firstTime) {
+                        firstTime = false
+                        trackingHotelUtil.hotelViewRoomList(context, hotelRoomListPageModel.propertyId,
+                                hotelRoomListPageModel, it.data, ROOM_LIST_SCREEN_NAME)
+                    }
                 }
                 is Fail -> {
                     showGetListError(it.throwable)
@@ -136,23 +143,20 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             }
         })
 
-        roomListViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
+        roomListViewModel.addCartResponseResult.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId,
-                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
-                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId))
                     }
                 }
                 is Fail -> {
-                    if (ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable)) {
-                        navigateToAddPhonePage()
-                    } else if (ErrorHandlerHotel.isGetFailedRoomError(it.throwable)) {
-                        showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
-                    } else {
-                        NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
+                    when {
+                        ErrorHandlerHotel.isPhoneNotVerfiedError(it.throwable) -> navigateToAddPhonePage()
+                        ErrorHandlerHotel.isGetFailedRoomError(it.throwable) -> showFailedGetRoomErrorDialog((it.throwable as HotelErrorException).message)
+                        ErrorHandlerHotel.isEmailNotVerifiedError(it.throwable) -> navigateToAddEmailPage()
+                        else -> NetworkErrorHelper.showRedSnackbar(activity, ErrorHandler.getErrorMessage(activity, it.throwable))
                     }
                 }
             }
@@ -214,7 +218,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         filter_recycler_view.listener = this
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                com.tokopedia.design.R.color.snackbar_border_normal)
+                com.tokopedia.unifyprinciples.R.color.Unify_G300)
 
         recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
@@ -283,7 +287,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
 
     override fun onItemClicked(room: HotelRoom) {
         val position = roomList.indexOf(room)
-        trackingHotelUtil.hotelClickRoomDetails(room, hotelRoomListPageModel, position)
+        trackingHotelUtil.hotelClickRoomDetails(context, room, hotelRoomListPageModel, position, ROOM_LIST_SCREEN_NAME)
         if (room.available) {
             val objectId = System.currentTimeMillis().toString()
             context?.run {
@@ -320,12 +324,19 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onChipClickListener(string: String, isSelected: Boolean) {
-        when (string) {
-            getString(R.string.hotel_room_list_filter_free_breakfast) -> {
-                roomListViewModel.clickFilter(clickFreeBreakfast = true)
-            }
-            getString(R.string.hotel_room_list_filter_free_cancelable) -> {
-                roomListViewModel.clickFilter(clickFreeCancelable = true)
+        CoroutineScope(Dispatchers.Main).launch {
+            clearAllData()
+            showLoading()
+
+            delay(DELAY_ROOM_LIST_SHIMMERING)
+
+            when (string) {
+                getString(R.string.hotel_room_list_filter_free_breakfast) -> {
+                    roomListViewModel.clickFilter(clickFreeBreakfast = true)
+                }
+                getString(R.string.hotel_room_list_filter_free_cancelable) -> {
+                    roomListViewModel.clickFilter(clickFreeCancelable = true)
+                }
             }
         }
     }
@@ -396,7 +407,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     override fun onClickBookListener(room: HotelRoom) {
         progressDialog.show()
         val hotelAddCartParam = mapToAddCartParam(hotelRoomListPageModel, room)
-        trackingHotelUtil.hotelChooseRoom(room, hotelAddCartParam)
+        trackingHotelUtil.hotelChooseRoom(context, room, hotelAddCartParam, ROOM_LIST_SCREEN_NAME)
         if (userSessionInterface.isLoggedIn) {
             roomListViewModel.addToCart(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_add_to_cart),
                     hotelAddCartParam)
@@ -406,7 +417,8 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     override fun onPhotoClickListener(room: HotelRoom) {
-        trackingHotelUtil.hotelClickRoomListPhoto(room.additionalPropertyInfo.propertyId, room.roomId, room.roomPrice.priceAmount.roundToLong().toString())
+        trackingHotelUtil.hotelClickRoomListPhoto(context, room.additionalPropertyInfo.propertyId, room.roomId,
+                room.roomPrice.priceAmount.roundToLong().toString(), ROOM_LIST_SCREEN_NAME)
     }
 
     private fun navigateToLoginPage() {
@@ -414,6 +426,10 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             progressDialog.dismiss()
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
+    }
+
+    private fun navigateToAddEmailPage() {
+        RouteManager.route(context, ApplinkConstInternalGlobal.ADD_EMAIL)
     }
 
     override fun onGetListErrorWithEmptyData(throwable: Throwable?) {
@@ -444,6 +460,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
     }
 
     companion object {
+        const val DELAY_ROOM_LIST_SHIMMERING: Long = 500
 
         const val RESULT_ROOM_DETAIL = 102
         const val REQ_CODE_LOGIN = 1345

@@ -15,5 +15,8 @@ data class ChatBlastSellerMetadata(
         val promo: Int?,
         @SerializedName("promoType")
         @Expose
-        val promoType: Int?
+        val promoType: Int?,
+        @SerializedName("url")
+        @Expose
+        val url: String?
 )

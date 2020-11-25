@@ -4,11 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
@@ -35,17 +34,26 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImageRounded(productCardModel.productImageUrl)
 
+        renderLabelCampaign(labelCampaignBackground, textViewLabelCampaign, productCardModel)
+
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         textTopAds?.showWithCondition(productCardModel.isTopAds)
 
         renderProductCardContent(productCardModel)
 
+        renderStockPercentage(productCardModel)
+        renderStockLabel(productCardModel)
+
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
+
+        buttonDeleteProduct?.showWithCondition(productCardModel.hasDeleteProductButton)
 
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+
+        setAddToCartButtonText(productCardModel)
 
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
@@ -65,12 +73,33 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageThreeDots?.setOnClickListener(threeDotsClickListener)
     }
 
+    fun setDeleteProductOnClickListener(deleteProductClickListener: (View) -> Unit) {
+        buttonDeleteProduct?.setOnClickListener(deleteProductClickListener)
+    }
+
     fun setRemoveWishlistOnClickListener(removeWishlistClickListener: (View) -> Unit) {
         buttonRemoveFromWishlist?.setOnClickListener(removeWishlistClickListener)
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
+    }
+
+    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
+        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            progressBarStock.progress = productCardModel.stockBarPercentage
+        }
+    }
+
+    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
+        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            textViewStockLabel.text = productCardModel.stockBarLabel
+        }
+    }
+
+    private fun setAddToCartButtonText(productCardModel: ProductCardModel) {
+        if (productCardModel.addToCardText.isNotEmpty())
+            buttonAddToCart?.text = productCardModel.addToCardText
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
@@ -95,10 +124,13 @@ class ProductCardListView: BaseCustomView, IProductCardView {
         imageProduct?.layoutParams = layoutParams
     }
 
+
     override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
     }
+
+    override fun getThreeDotsButton(): View? = imageThreeDots
 
 
 
@@ -109,6 +141,8 @@ class ProductCardListView: BaseCustomView, IProductCardView {
     fun wishlistPage_hideCTAButton(isVisible: Boolean) {
         buttonAddToCart?.showWithCondition(isVisible)
         buttonRemoveFromWishlist?.showWithCondition(isVisible)
+        progressBarStock?.showWithCondition(!isVisible)
+        textViewStockLabel?.showWithCondition(!isVisible)
     }
 
     fun wishlistPage_enableButtonAddToCart(){

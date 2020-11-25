@@ -9,36 +9,37 @@ import com.tokopedia.rechargegeneral.presentation.adapter.RechargeGeneralAdapter
 /**
  * Created by resakemal on 26/11/19.
  */
-data class RechargeGeneralProductInput (
+open class RechargeGeneralProductInput (
 
         @SerializedName("id")
         @Expose
-        val id: String = "",
+        var id: String = "",
         @SerializedName("param_name")
         @Expose
-        val paramName: String = "",
+        var paramName: String = "",
         @SerializedName("name")
         @Expose
-        val name: String = "",
+        var name: String = "",
         @SerializedName("style")
         @Expose
         var style: String = "",
         @SerializedName("text")
         @Expose
-        val text: String = "",
+        var text: String = "",
         @SerializedName("placeholder")
         @Expose
-        val placeholder: String = "",
+        var placeholder: String = "",
         @SerializedName("help")
         @Expose
-        val help: String = "",
+        var help: String = "",
         @SerializedName("data_collections")
         @Expose
-        val dataCollections: List<CatalogProductInput.DataCollection> = listOf(),
+        var dataCollections: List<CatalogProductInput.DataCollection> = listOf(),
         @SerializedName("validations")
         @Expose
-        val validations: List<CatalogProductInput.Validation> = listOf(),
-        var value: String = ""
+        var validations: List<CatalogProductInput.Validation> = listOf(),
+        var value: String = "",
+        var isFavoriteNumber: Boolean = false
 
 ) : Visitable<RechargeGeneralAdapterFactory> {
         override fun type(typeFactory: RechargeGeneralAdapterFactory) = typeFactory.type(this)

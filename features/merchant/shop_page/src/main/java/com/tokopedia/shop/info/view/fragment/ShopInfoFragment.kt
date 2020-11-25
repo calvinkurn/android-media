@@ -2,7 +2,9 @@ package com.tokopedia.shop.info.view.fragment
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -10,7 +12,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -20,11 +21,10 @@ import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingShopPageInfo
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
+import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.extension.transformToVisitable
@@ -37,10 +37,8 @@ import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
 import com.tokopedia.shop.note.view.activity.ShopNoteDetailActivity
 import com.tokopedia.shop.note.view.adapter.ShopNoteAdapterTypeFactory
 import com.tokopedia.shop.note.view.adapter.viewholder.ShopNoteViewHolder
-import com.tokopedia.shop.note.view.model.ShopNoteViewModel
-import com.tokopedia.shop.common.config.ShopPageConfig
+import com.tokopedia.shop.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
-import com.tokopedia.shop.pageheader.presentation.fragment.ShopPageFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,8 +48,7 @@ import kotlinx.android.synthetic.main.partial_shop_info_note.*
 import kotlinx.android.synthetic.main.partial_shop_info_statistics.*
 import javax.inject.Inject
 
-class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
-        ShopNoteViewHolder.OnNoteClicked {
+class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
         fun createInstance(
@@ -74,10 +71,10 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     private var shopPageConfig: ShopPageConfig? = null
     private var shopViewModel: ShopInfoViewModel? = null
     private var shopPageTracking: ShopPageTrackingShopPageInfo? = null
-    private var noteAdapter: BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>? = null
+    private var noteAdapter: BaseListAdapter<ShopNoteUiModel, ShopNoteAdapterTypeFactory>? = null
     private var shopInfo: ShopInfoData? = null
-
     private val isOfficial: Boolean
+
         get() = shopInfo?.isOfficial == 1
     private val isGold: Boolean
         get() = shopInfo?.isGold == 1
@@ -95,7 +92,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopPageTracking = ShopPageTrackingShopPageInfo(TrackingQueue(context!!))
         remoteConfig = FirebaseRemoteConfigImpl(context)
         shopPageConfig = ShopPageConfig(context)
-        setHasOptionsMenu(true)
         initViewModel()
         initObservers()
         initView()
@@ -116,20 +112,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         super.onDestroy()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_shop_info, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_share -> {
-                onClickShareShop()
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun onEmptyButtonClicked() {
         shopInfo?.run {
             shopPageTracking?.clickAddNote(CustomDimensionShopPage
@@ -138,7 +120,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         }
     }
 
-    override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
+    override fun onNoteClicked(position: Long, shopNoteUiModel: ShopNoteUiModel) {
         shopInfo?.run {
             shopPageTracking?.clickReadNotes(
                     shopViewModel?.isMyShop(shopId) == true, position.toInt(),
@@ -147,7 +129,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             startActivity(ShopNoteDetailActivity.createIntent(
                     activity,
                     shopId,
-                    shopNoteViewModel.shopNoteId.toString()
+                    shopNoteUiModel.shopNoteId.toString()
             ))
         }
     }
@@ -289,7 +271,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         shopInfoOpenSince.text = getString(R.string.shop_info_label_open_since_v3, shopInfo.openSince)
     }
 
-    private fun renderListNote(notes: List<ShopNoteViewModel>) {
+    private fun renderListNote(notes: List<ShopNoteUiModel>) {
         getShopId()?.let {
             val isMyShop = shopViewModel?.isMyShop(it) ?: false
 
@@ -313,7 +295,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         noteLabelView.setOnClickListener { onEmptyButtonClicked() }
     }
 
-    private fun showShopNotes(notes: List<ShopNoteViewModel>) {
+    private fun showShopNotes(notes: List<ShopNoteUiModel>) {
         noteAdapter?.addElement(notes)
     }
 
@@ -328,46 +310,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         })
     }
 
-    private fun onClickShareShop() {
-        shopInfo?.let {
-            trackClickShareButton(it)
-            goToShareShop(it)
-        }
-    }
-
-    private fun goToShareShop(shopInfo: ShopInfoData) {
-        val shopShareMsg = getShopShareMessage(shopInfo)
-        (activity?.applicationContext as? ShopModuleRouter)?.goToShareShop(
-                activity,
-                shopInfo.shopId,
-                shopInfo.url,
-                shopShareMsg
-        )
-    }
-
-    private fun trackClickShareButton(it: ShopInfoData) {
-        val dimension = CustomDimensionShopPage.create(it.shopId, it.isOfficial == 1, it.isGold == 1)
-        shopPageTracking?.clickShareButton(dimension)
-    }
-
-    private fun getShopShareMessage(shopInfo: ShopInfoData): String {
-        var shopShareMsg = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG) ?: ""
-        val shopName = MethodChecker.fromHtml(shopInfo.name).toString()
-
-        shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
-            FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
-                    ShopPageFragment.SHOP_NAME_PLACEHOLDER, shopName,
-                    ShopPageFragment.SHOP_LOCATION_PLACEHOLDER, shopInfo.location)
-        } else {
-            getString(R.string.shop_label_share_formatted, shopName, shopInfo.location)
-        }
-
-        return shopShareMsg
-    }
-
     private fun setToolbarTitle(title: String) {
         val toolbar = (activity as? AppCompatActivity)?.supportActionBar
-        toolbar?.title = title
+        toolbar?.title = MethodChecker.fromHtml(title)
     }
 
     private fun getShopId(): String? {

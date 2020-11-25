@@ -3,6 +3,7 @@ package com.tokopedia.analyticsdebugger.debugger.ui.presenter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
 import com.tokopedia.analyticsdebugger.debugger.domain.DeleteIrisSaveLogUseCase
+import com.tokopedia.analyticsdebugger.debugger.domain.GetIrisSaveCountLogUseCase
 import com.tokopedia.analyticsdebugger.debugger.domain.GetIrisSaveLogUseCase
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
 import com.tokopedia.usecase.RequestParams
@@ -10,6 +11,7 @@ import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
 class AnalyticsIrisSaveDebuggerPresenter(private val getUseCase: GetIrisSaveLogUseCase,
+                                         private val getCountUseCase: GetIrisSaveCountLogUseCase,
                                          private val deleteUseCase: DeleteIrisSaveLogUseCase) : AnalyticsDebugger.Presenter {
     private var view: AnalyticsDebugger.View? = null
 
@@ -37,14 +39,18 @@ class AnalyticsIrisSaveDebuggerPresenter(private val getUseCase: GetIrisSaveLogU
     }
 
     override fun search(text: String) {
-        setRequestParams(page = 0, keyword = text)
+        page = 0
+        keyword = text
+        setRequestParams(page, keyword)
         getUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun reloadData() {
-        setRequestParams(page = 0, keyword = "")
+        page = 0
+        keyword = ""
+        setRequestParams(page, keyword)
         getUseCase.execute(requestParams, reloadSubscriber())
-
+        getCountUseCase.execute(RequestParams.create(), countSubscriber())
     }
 
     override fun deleteAll() {
@@ -96,6 +102,22 @@ class AnalyticsIrisSaveDebuggerPresenter(private val getUseCase: GetIrisSaveLogU
 
             override fun onNext(visitables: List<Visitable<*>>) {
                 view!!.onReloadCompleted(visitables)
+            }
+        }
+    }
+
+    private fun countSubscriber(): Subscriber<Int> {
+        return object : Subscriber<Int>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                e.printStackTrace()
+            }
+
+            override fun onNext(count: Int) {
+                view?.showCount(count)
             }
         }
     }

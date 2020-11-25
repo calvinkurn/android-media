@@ -1,23 +1,18 @@
 package com.tokopedia.shop.common.graphql.domain.usecase.shopnotes
 
 import android.content.Context
-
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
+import com.tokopedia.shop.common.graphql.data.shopnote.gql.ShopNoteQuery
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLResultMapper
 import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase
-import com.tokopedia.shop.common.graphql.data.shopnote.gql.ShopNoteQuery
-import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import java.util.ArrayList
-
-import javax.inject.Inject
-
 import rx.Observable
-import rx.functions.Func1
+import java.util.*
+import javax.inject.Inject
 
 class GetShopNotesUseCase @Inject
 constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopNoteModel>>() {
@@ -25,8 +20,10 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopNoteMo
 
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<ShopNoteQuery>(context, ShopNoteQuery::class.java) {
-            override val graphQLRawResId: Int
-                get() = R.raw.gql_query_shop_notes
+
+            override fun getRawString(): String {
+                return GraphqlHelper.loadRawString(context.resources, R.raw.gql_query_shop_notes)
+            }
         }
     }
 

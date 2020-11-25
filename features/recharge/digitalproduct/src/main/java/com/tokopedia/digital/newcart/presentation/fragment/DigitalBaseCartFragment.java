@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
@@ -24,18 +25,9 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
-import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
-import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
-import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
@@ -44,7 +36,15 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartAdditionalInfo;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartItemDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.UserInputPriceDigital;
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.utils.DeviceUtil;
+import com.tokopedia.globalerror.GlobalError;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
@@ -53,11 +53,14 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import kotlin.Unit;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -70,6 +73,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
+    public static final int PAYMENT_SUCCESS = 5;
+
+    private static final int DELAY_ERROR_SHOWING = 3000;
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -92,6 +98,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final String EXTRA_STATE_PROMO_DATA = "EXTRA_STATE_PROMO_DATA";
 
     protected P presenter;
+
+    protected GlobalError errorView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -252,11 +260,13 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     private PromoDigitalModel getPromoDigitalModel() {
         Long price = cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0;
-        if(inputPriceHolderView.getVisibility() == View.VISIBLE){
+        if (inputPriceContainer.getVisibility() == View.VISIBLE) {
             price = inputPriceHolderView.getPriceInput();
         }
         return new PromoDigitalModel(
                 Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
+                getCategoryName(),
+                getOperatorName(),
                 getProductId(),
                 cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
                 price
@@ -266,11 +276,31 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void onDisablePromoDiscount() {
         digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
+        presenter.cancelVoucherCart();
+    }
+
+    @Override
+    public void successCancelVoucherCart() {
+        checkoutHolderView.resetPromoTicker();
         promoData.setPromoCode("");
+        disableVoucherCheckoutDiscount();
+    }
+
+    @Override
+    public void failedCancelVoucherCart(Throwable throwable) {
+        String message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+        if (throwable != null && !throwable.getMessage().equals("")) {
+            message = ErrorHandler.getErrorMessage(getActivity(), throwable);
+        }
+        showToastMessage(message);
     }
 
     private String getCategoryName() {
         return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getCategoryName());
+    }
+
+    private String getOperatorName() {
+        return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getOperatorName());
     }
 
     @Override
@@ -279,7 +309,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         String promoCode = promoData.getPromoCode();
         if (!promoCode.isEmpty()) {
             int requestCode;
-            if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
+            if (promoData.getTypePromo() == PromoData.TYPE_VOUCHER) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
                 intent.putExtra("EXTRA_COUPON_ACTIVE",
@@ -310,6 +340,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void disableVoucherCheckoutDiscount() {
+        detailHolderView.removeAdditionalInfo();
         checkoutHolderView.disableVoucherDiscount();
     }
 
@@ -319,6 +350,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         if ((requestCode == ConstantKt.getREQUEST_CODE_PROMO_LIST() || requestCode == ConstantKt.getREQUEST_CODE_PROMO_DETAIL()) && resultCode == Activity.RESULT_OK) {
             if (data.hasExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA())) {
                 promoData = data.getParcelableExtra(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+                disableVoucherCheckoutDiscount();
                 // Check between apply promo code or cancel promo from promo detail
                 switch (promoData.getState()) {
                     case EMPTY: {
@@ -328,11 +360,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                     }
                     case FAILED: {
                         promoData.setPromoCode("");
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     case ACTIVE: {
-                        presenter.onReceivePromoCode(promoData.getTitle(), promoData.getDescription(), promoData.getPromoCode(), promoData.getTypePromo());
+                        presenter.onReceivePromoCode(promoData);
                         break;
                     }
                     default: {
@@ -348,7 +380,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
                         AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
                         rating.setDialogDismissListener(() -> {
                             if (getActivity() != null) {
-                                getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
+                                getActivity().setResult(PAYMENT_SUCCESS);
                                 closeView();
                             }
                         });
@@ -376,8 +408,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             } else {
                 closeView();
             }
-        } else if (requestCode == InstantCheckoutActivity.Companion.getREQUEST_CODE()) {
-            closeView();
         }
     }
 
@@ -388,7 +418,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public void showToastMessage(String message) {
         View view = getView();
-        if (view != null) ToasterError.showClose(getActivity(), message);
+        if (view != null) Toaster.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                getString(com.tokopedia.abstraction.R.string.close), v -> {
+                });
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -419,6 +451,16 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
+    public int getOrderId() {
+        String orderIdString = cartPassData.getOrderId();
+        try {
+            return TextUtils.isEmpty(orderIdString) ? 0 : Integer.parseInt(orderIdString);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    @Override
     public String getZoneId() {
         return cartPassData.getZoneId();
     }
@@ -445,10 +487,33 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void closeViewWithMessageAlert(String message) {
-        Intent intent = new Intent();
-        intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
-        getActivity().setResult(Activity.RESULT_OK, intent);
-        getActivity().finish();
+        if (cartPassData.isFromPDP()) {
+            Intent intent = new Intent();
+            intent.putExtra(DigitalExtraParam.EXTRA_MESSAGE, message);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            showError(message);
+        }
+    }
+
+    @Override
+    public void showError(String message) {
+        if (errorView != null) {
+            errorView.setActionClickListener(view -> {
+                errorView.setVisibility(View.GONE);
+                presenter.onViewCreated();
+                return Unit.INSTANCE;
+            });
+
+            int errorType = GlobalError.Companion.getSERVER_ERROR();
+            if (message.equals(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL)) {
+                errorType = GlobalError.Companion.getNO_CONNECTION();
+            }
+            errorView.setType(errorType);
+
+            errorView.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -480,15 +545,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     public void renderErrorInstantCheckout(String message) {
         showToastMessage(message);
         presenter.processGetCartDataAfterCheckout(cartPassData.getCategoryId());
-    }
-
-    @Override
-    public void renderToInstantCheckoutPage(InstantCheckoutData instantCheckoutData) {
-        navigateToActivityRequest(
-                InstantCheckoutActivity.Companion.newInstance(getActivity(), instantCheckoutData),
-                InstantCheckoutActivity.Companion.getREQUEST_CODE()
-        );
-        closeView();
     }
 
     @Override

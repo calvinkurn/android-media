@@ -5,17 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.appcompat.widget.AppCompatTextView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -29,9 +30,9 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachme
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReasonAndProofContract;
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationViewImageDialogFragment;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReasonAndProofPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -62,14 +63,15 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     private RecyclerView rvAttachments;
     private AppCompatButton btnNext;
 
-    private List<FlightCancellationAttachmentViewModel> attachments;
+    private List<FlightCancellationAttachmentModel> attachments;
+    private List<FlightCancellationAttachmentModel> viewAttachments;
     private FlightCancellationAttachmentAdapter adapter;
-    private FlightCancellationWrapperViewModel flightCancellationViewModel;
+    private FlightCancellationWrapperModel flightCancellationViewModel;
     private OnFragmentInteractionListener interactionListener;
     private String fileFromCameraLocTemp;
     private int positionChangedImage = -1;
 
-    private FlightCancellationReasonViewModel selectedReason;
+    private FlightCancellationReasonModel selectedReason;
 
     @Inject
     FlightCancellationReasonAndProofPresenter presenter;
@@ -78,7 +80,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     }
 
-    public static FlightCancellationReasonAndProofFragment newInstance(FlightCancellationWrapperViewModel flightCancellationViewModel) {
+    public static FlightCancellationReasonAndProofFragment newInstance(FlightCancellationWrapperModel flightCancellationViewModel) {
         FlightCancellationReasonAndProofFragment fragment = new FlightCancellationReasonAndProofFragment();
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_CANCELLATION_VIEW_MODEL, flightCancellationViewModel);
@@ -118,8 +120,11 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         presenter.attachView(this);
         if (attachments == null) {
             attachments = presenter.buildAttachmentList();
+            viewAttachments = presenter.buildViewAttachmentList(0);
+        } else {
+            viewAttachments = presenter.buildViewAttachmentList(0);
         }
-        presenter.initialize(attachments);
+        presenter.initialize(viewAttachments);
         presenter.setNextButton();
 
         buildAttachmentReasonView();
@@ -199,7 +204,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void addAttachments(List<FlightCancellationAttachmentViewModel> attachments) {
+    public void addAttachments(List<FlightCancellationAttachmentModel> attachments) {
         adapter.addElement(attachments);
     }
 
@@ -224,13 +229,18 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public List<FlightCancellationAttachmentViewModel> getAttachments() {
+    public List<FlightCancellationAttachmentModel> getAttachments() {
         return attachments;
     }
 
     @Override
-    public void setAttachment(FlightCancellationAttachmentViewModel attachment, int position) {
-        attachments.set(position, attachment);
+    public List<FlightCancellationAttachmentModel> getViewAttachments() {
+        return viewAttachments;
+    }
+
+    @Override
+    public void setAttachment(FlightCancellationAttachmentModel attachment, int position) {
+        viewAttachments.set(position, attachment);
         adapter.setElement(position, attachment);
     }
 
@@ -240,7 +250,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public FlightCancellationWrapperViewModel getCancellationViewModel() {
+    public FlightCancellationWrapperModel getCancellationViewModel() {
         return flightCancellationViewModel;
     }
 
@@ -250,7 +260,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public FlightCancellationReasonViewModel getReason() {
+    public FlightCancellationReasonModel getReason() {
         return selectedReason;
     }
 
@@ -260,7 +270,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void navigateToNextStep(FlightCancellationWrapperViewModel viewModel) {
+    public void navigateToNextStep(FlightCancellationWrapperModel viewModel) {
         interactionListener.goToReview(viewModel);
     }
 
@@ -310,7 +320,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void deleteAttachement(FlightCancellationAttachmentViewModel element) {
+    public void deleteAttachement(FlightCancellationAttachmentModel element) {
         adapter.removeAttachment(element);
     }
 
@@ -346,7 +356,7 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
 
     public interface OnFragmentInteractionListener {
 
-        void goToReview(FlightCancellationWrapperViewModel viewModel);
+        void goToReview(FlightCancellationWrapperModel viewModel);
     }
 
     @Override
@@ -368,14 +378,19 @@ public class FlightCancellationReasonAndProofFragment extends BaseDaggerFragment
         buildAttachmentReasonView();
 
         deleteAllAttachments();
-        addAttachments(attachments);
+        if (selectedReason.getRequiredDocs() != null && selectedReason.getRequiredDocs().size() > 0) {
+            viewAttachments = presenter.buildViewAttachmentList(selectedReason.getRequiredDocs().get(0).getDocId());
+        } else {
+            viewAttachments = presenter.buildViewAttachmentList(0);
+        }
+        addAttachments(viewAttachments);
         renderAttachment();
     }
 
     private void buildAttachmentReasonView() {
         if (selectedReason != null && selectedReason.getRequiredDocs() != null &&
                 selectedReason.getRequiredDocs().size() > 0 && attachments != null &&
-                attachments.size() > 0) {
+                attachments.size() > 0 && viewAttachments != null && viewAttachments.size() > 0) {
             showAttachmentContainer();
         } else {
             hideAttachmentContainer();

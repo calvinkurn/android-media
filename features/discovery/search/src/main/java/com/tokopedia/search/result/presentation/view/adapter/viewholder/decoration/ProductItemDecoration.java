@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -24,7 +25,9 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
             R.layout.search_result_product_card_small_grid,
             R.layout.search_result_product_card_big_grid,
             R.layout.search_result_product_card_list,
-            R.layout.search_result_recommendation_card_small_grid
+            R.layout.search_result_recommendation_card_small_grid,
+            R.layout.search_result_product_big_grid_inspiration_card_layout,
+            R.layout.search_result_product_small_grid_inspiration_card_layout
     );
 
     public ProductItemDecoration(int spacing) {
@@ -86,27 +89,61 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     private int getHorizontalCardViewOffset(View view) {
         if (view instanceof IProductCardView) {
             IProductCardView cardView = (IProductCardView) view;
-
-            float maxElevation = cardView.getCardMaxElevation();
-            float radius = cardView.getCardRadius();
-
-            return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+            return getHorizontalOffsetForIProductCardView(cardView);
+        } else if (view instanceof CardView) {
+            CardView cardView = (CardView) view;
+            return getHorizontalOffsetForCardView(cardView);
         }
 
         return 0;
     }
 
+    private int getHorizontalOffsetForIProductCardView(IProductCardView cardView) {
+        float maxElevation = cardView.getCardMaxElevation();
+        float radius = cardView.getCardRadius();
+
+        return getHorizontalOffset(maxElevation, radius);
+    }
+
+    private int getHorizontalOffset(float maxElevation, float radius) {
+       return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+    }
+
+    private int getHorizontalOffsetForCardView(CardView cardView) {
+        float maxElevation = cardView.getMaxCardElevation();
+        float radius = cardView.getRadius();
+
+        return getHorizontalOffset(maxElevation, radius);
+    }
+
     private int getVerticalCardViewOffset(View view) {
         if (view instanceof IProductCardView) {
-            IProductCardView cardView = (IProductCardView)view;
-
-            float maxElevation = cardView.getCardMaxElevation();
-            float radius = cardView.getCardRadius();
-
-            return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
+            IProductCardView cardView = (IProductCardView) view;
+            return getVerticalOffsetForIProductCardView(cardView);
+        } else if (view instanceof CardView) {
+            CardView cardView = (CardView) view;
+            return getVerticalOffsetForCardView(cardView);
         }
 
         return 0;
+    }
+
+    private int getVerticalOffsetForIProductCardView(IProductCardView cardView) {
+        float maxElevation = cardView.getCardMaxElevation();
+        float radius = cardView.getCardRadius();
+
+        return getVerticalOffset(maxElevation, radius);
+    }
+
+    private int getVerticalOffset(float maxElevation, float radius) {
+        return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
+    }
+
+    private int getVerticalOffsetForCardView(CardView cardView) {
+        float maxElevation = cardView.getMaxCardElevation();
+        float radius = cardView.getRadius();
+
+        return getVerticalOffset(maxElevation, radius);
     }
 
     private int getLeftOffset(int relativePos, int totalSpanCount) {
@@ -126,7 +163,7 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getTopOffsetTopItem() {
-        return spacing - verticalCardViewOffset;
+        return (spacing / 2) - verticalCardViewOffset;
     }
 
     private int getTopOffsetNotTopItem() {

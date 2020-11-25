@@ -113,23 +113,26 @@ public class TopAdsGtmTracker {
                 "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
                 "brand", "none/other",
                 "variant", "none/other",
-                "category", item.getCategory().getId(),
+                "category", getCategoryBreadcrumb(item),
                 "list", "/searchproduct - topads productlist",
                 "position", position,
                 "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"));
 
         //GTMv5
         Bundle product = new Bundle();
-        String itemCategory = !TextUtils.isEmpty(item.getCategoryBreadcrumb()) ?
-                item.getCategoryBreadcrumb() : "none / other";
         product.putString(FirebaseAnalytics.Param.ITEM_ID, item.getId());
         product.putString(FirebaseAnalytics.Param.ITEM_NAME, item.getName());
         product.putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other");
-        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, itemCategory);
+        product.putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getCategoryBreadcrumb(item));
         product.putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other");
         product.putDouble(FirebaseAnalytics.Param.PRICE, safeParseDouble(item.getPriceFormat().replaceAll("[^0-9]", "")));
         product.putLong(FirebaseAnalytics.Param.INDEX, position);
         this.dataBundleList.add(product);
+    }
+
+    private static String getCategoryBreadcrumb(Product product) {
+        return !TextUtils.isEmpty(product.getCategoryBreadcrumb()) ?
+                product.getCategoryBreadcrumb() : "none / other";
     }
 
     public void eventInboxProductView(TrackingQueue trackingQueue) {
@@ -294,7 +297,7 @@ public class TopAdsGtmTracker {
                                             "id", item.getId(),
                                             "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
                                             "brand", "none/other",
-                                            "category", item.getCategory().getId(),
+                                            "category", getCategoryBreadcrumb(item),
                                             "variant", "none/other",
                                             "position", position,
                                             "dimension83", isFreeOngkirActive(item) ? "bebas ongkir" : "none / other"))))

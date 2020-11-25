@@ -13,12 +13,12 @@ fun<T> LiveData<T>.verifyValueEquals(expected: Any?) {
 
 fun<T: Any> LiveData<Result<T>>.verifySuccessEquals(expected: Success<Any>) {
     val expectedResult = expected.data
-    val actualResult = (value as Success<T>).data
+    val actualResult = (value as? Success<T>)?.data
     assertEquals(expectedResult, actualResult)
 }
 
 fun<T: Any> LiveData<Result<T>>.verifyErrorEquals(expected: Fail) {
     val expectedResult = expected.throwable::class.java
-    val actualResult = (value as Fail).throwable::class.java
+    val actualResult = (value as? Fail)?.let { it.throwable::class.java }
     assertEquals(expectedResult, actualResult)
 }

@@ -1,0 +1,9 @@
+mutation logoutUser {
+    logout_user {
+        success
+        errors {
+            name
+            message
+        }
+    }
+}

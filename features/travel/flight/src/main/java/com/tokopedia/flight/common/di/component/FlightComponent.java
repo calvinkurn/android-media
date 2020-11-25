@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
 import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
@@ -13,14 +14,15 @@ import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
-import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
-import com.tokopedia.flight.search.data.db.FlightComboDao;
-import com.tokopedia.flight.search.data.db.FlightJourneyDao;
-import com.tokopedia.flight.search.data.db.FlightRouteDao;
-import com.tokopedia.flight.search.data.db.FlightSearchRoomDb;
+import com.tokopedia.flight.searchV4.data.FlightRouteDao;
+import com.tokopedia.flight.searchV4.data.cache.db.FlightSearchRoomDb;
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightComboDao;
+import com.tokopedia.flight.searchV4.data.cache.db.dao.FlightJourneyDao;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Component;
@@ -50,19 +52,23 @@ public interface FlightComponent {
 
     FlightSearchRoomDb flightSearchRoomDb();
 
-    FlightComboDao flightComboDao();
+    FlightJourneyDao flightJourneyNewDao();
 
-    FlightJourneyDao flightJourneyDao();
+    FlightRouteDao flightRouteNewDao();
 
-    FlightRouteDao flightRouteDao();
+    FlightComboDao flightComboNewDao();
 
     Resources resources();
 
     FlightGetOrderUseCase flightGetOrderUseCase();
 
-    void inject(BaseFlightActivity baseFlightActivity);
+    GraphqlRepository graphqlRepository();
 
-    void inject(FlightDetailActivity flightDetailActivity);
+    MultiRequestGraphqlUseCase multiRequestGraphqlUseCase();
+
+    TravelDispatcherProvider dispatcherProvider();
+
+    void inject(BaseFlightActivity baseFlightActivity);
 
     void inject(FlightDetailOrderFragment flightDetailOrderFragment);
 

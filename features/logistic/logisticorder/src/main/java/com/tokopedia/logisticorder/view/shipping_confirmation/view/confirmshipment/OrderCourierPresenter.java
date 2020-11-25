@@ -2,8 +2,8 @@ package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipm
 
 import android.content.Context;
 
-import com.tokopedia.transaction.common.data.order.OrderDetailData;
-import com.tokopedia.transaction.common.data.order.OrderDetailShipmentModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
 
 
 /**

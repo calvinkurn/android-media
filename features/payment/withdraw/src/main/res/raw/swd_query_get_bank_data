@@ -1,0 +1,27 @@
+query {
+    GetBankListWD{
+        status
+        message
+        data {
+            bankID
+            accountNo
+            bankName
+            bankBranch
+            bankAccountID
+            bankImageUrl
+            isDefaultBank
+            adminFee
+            minAmount
+            maxAmount
+            status
+            isVerifiedAccount
+            accountName
+            statusFraud
+            copyWriting
+            is_fraud
+            have_rp_program
+            have_special_offer
+            default_bank_account
+        }
+    }
+}

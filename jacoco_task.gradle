@@ -1,3 +1,5 @@
+apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+
 def fileExecute = [
         '**/*ViewModel.*',
         '**/*Presenter.*'

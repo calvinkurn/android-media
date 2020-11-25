@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/loadImageView"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:corners="4"/>
+    
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loadTvTitle"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/layout_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintStart_toEndOf="@id/loadImageView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.65"
+        app:corners="4"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/loadTvDesc"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_12"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:layout_constraintStart_toEndOf="@id/loadImageView"
+        app:layout_constraintTop_toBottomOf="@id/loadTvTitle"
+        app:layout_constraintWidth_percent="0.3"
+        app:corners="4"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

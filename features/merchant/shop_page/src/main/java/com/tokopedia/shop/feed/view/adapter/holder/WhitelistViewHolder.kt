@@ -7,29 +7,29 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
-import kotlinx.android.synthetic.main.item_post_entry.view.*
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
+import kotlinx.android.synthetic.main.item_post_entry_shop_page.view.*
 
 /**
  * @author by yfsx on 16/05/19.
  */
 class WhitelistViewHolder(v: View,
                           private val mainView: FeedShopContract.View)
-    : AbstractViewHolder<WhitelistViewModel>(v) {
+    : AbstractViewHolder<WhitelistUiModel>(v) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_post_entry
+        val LAYOUT = R.layout.item_post_entry_shop_page
 
         private const val FORMAT_NAME = "{{name}}"
     }
 
-    override fun bind(element: WhitelistViewModel) {
+    override fun bind(element: WhitelistUiModel) {
         initView(element)
         initViewListener(element)
     }
 
-    private fun initView(model: WhitelistViewModel) {
+    private fun initView(model: WhitelistUiModel) {
         itemView.tvCaption.text = MethodChecker.fromHtml(formatWhiteListTitle(
                 model.whitelist.title))
 
@@ -53,7 +53,7 @@ class WhitelistViewHolder(v: View,
         return String.format("<b>%s</b>", text)
     }
 
-    private fun initViewListener(element: WhitelistViewModel) {
+    private fun initViewListener(element: WhitelistUiModel) {
         itemView.btnCreatePost.setOnClickListener { mainView.onWhitelistClicked(element) }
     }
 }

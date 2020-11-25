@@ -12,9 +12,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingStart="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/notif_dp_16"
+        android:paddingTop="@dimen/notif_dp_16"
+        android:paddingEnd="@dimen/notif_dp_16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,10 +27,10 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="@dimen/sp_4"
+            android:lineSpacingExtra="@dimen/notif_sp_4"
             android:maxLines="2"
             android:textColor="@color/charcoal_grey_88"
-            android:textSize="@dimen/sp_14"
+            android:textSize="@dimen/notif_sp_14"
             android:textStyle="bold"
             tools:text="Hari Terakhir Promo Cashback untuk Dapat Ekstra Lebih" />
 
@@ -38,11 +38,11 @@
             android:id="@+id/body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginTop="@dimen/notif_dp_2"
             android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/sp_4"
+            android:lineSpacingExtra="@dimen/notif_sp_4"
             android:textColor="@color/charcoal_grey_40"
-            android:textSize="@dimen/sp_14"
+            android:textSize="@dimen/notif_sp_14"
             tools:text="Spesial untuk Anda! Ekstra cashback 25% Rp 250.000" />
 
     </LinearLayout>
@@ -53,12 +53,12 @@
         android:layout_height="wrap_content"
         android:visibility="gone"
         tools:visibility="visible"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginStart="@dimen/notif_dp_4"
+        android:layout_marginEnd="@dimen/notif_dp_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_caption"
-        android:layout_marginTop="@dimen/dp_6">
+        android:layout_marginTop="@dimen/notif_dp_6">
 
         <include layout="@layout/item_notification_product_card" />
 
@@ -72,12 +72,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_caption"
         android:clipToPadding="false"
-        android:paddingStart="@dimen/dp_4"
-        android:paddingEnd="@dimen/dp_4"
+        android:paddingStart="@dimen/notif_dp_4"
+        android:paddingEnd="@dimen/notif_dp_4"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_notification_product_card"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_2"/>
+        android:layout_marginTop="@dimen/notif_dp_6"
+        android:layout_marginBottom="@dimen/notif_dp_2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

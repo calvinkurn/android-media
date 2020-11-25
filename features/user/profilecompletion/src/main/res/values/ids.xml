@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="action_register" type="id"/>
+    <item name="action_skip" type="id"/>
+    <item name="viewpager" type="id" />
+</resources>

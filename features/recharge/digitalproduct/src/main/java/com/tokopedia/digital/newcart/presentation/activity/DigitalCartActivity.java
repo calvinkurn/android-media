@@ -11,7 +11,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.constant.DeeplinkConstant;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.newcart.di.DigitalCartComponent;
@@ -21,6 +20,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFra
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 import com.tokopedia.user.session.UserSession;
 
 /**
@@ -37,6 +37,7 @@ public class DigitalCartActivity extends BaseSimpleActivity implements HasCompon
     private DigitalCheckoutPassData processIntentDataCheckoutFromApplink(Context context, Uri uriData) {
         DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
         passData.setCategoryId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_CATEGORY_ID()));
+        passData.setOrderId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_ORDER_ID()));
         passData.setClientNumber(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_CLIENT_NUMBER()));
         passData.setOperatorId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_OPERATOR_ID()));
         passData.setProductId(uriData.getQueryParameter(DigitalCheckoutPassData.Companion.getPARAM_PRODUCT_ID()));

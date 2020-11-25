@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationReasonAndProofFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 import com.tokopedia.imageuploader.di.ImageUploaderModule;
 
@@ -23,11 +23,11 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
 
     private static final String EXTRA_CANCELLATION_VIEW_MODEL = "EXTRA_CANCELLATION_VIEW_MODEL";
     private static final int REQUEST_REVIEW_CODE = 1;
-    private FlightCancellationWrapperViewModel cancellationWrapperViewModel;
+    private FlightCancellationWrapperModel cancellationWrapperViewModel;
     private FlightCancellationComponent cancellationComponent;
     private FlightCancellationReasonAndProofFragment fragment;
 
-    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperViewModel viewModel) {
+    public static Intent getCallingIntent(Activity activity, FlightCancellationWrapperModel viewModel) {
         Intent intent = new Intent(activity, FlightCancellationReasonAndProofActivity.class);
         intent.putExtra(EXTRA_CANCELLATION_VIEW_MODEL, viewModel);
         return intent;
@@ -81,7 +81,7 @@ public class FlightCancellationReasonAndProofActivity extends BaseFlightActivity
     }
 
     @Override
-    public void goToReview(FlightCancellationWrapperViewModel viewModel) {
+    public void goToReview(FlightCancellationWrapperModel viewModel) {
 
         startActivityForResult(FlightCancellationReviewActivity.createIntent(this,
                 viewModel.getInvoice(), viewModel),

@@ -1,20 +1,12 @@
 package com.tokopedia.autocomplete.suggestion
 
+import com.tokopedia.autocomplete.suggestion.domain.usecase.SuggestionTrackerUseCase
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
-import org.junit.Before
 import org.junit.Test
 
-internal class OnSuggestionItemClickTest {
-
-    private val suggestionView = mockk<SuggestionContract.View>(relaxed = true)
-    private val getSuggestionUseCase = mockk<UseCase<SuggestionData>>(relaxed = true)
-    private val suggestionTrackerUseCase = mockk<UseCase<Void?>>(relaxed = true)
-    private val userSession = mockk<UserSessionInterface>(relaxed = true)
-
-    private lateinit var suggestionPresenter: SuggestionPresenter
+internal class OnSuggestionItemClickTest: SuggestionPresenterTestFixtures() {
 
     private val id = "12345"
     private val applinkShopWithQueryParams = "tokopedia://shop/$id?source=universe&st=product"
@@ -29,16 +21,11 @@ internal class OnSuggestionItemClickTest {
     private val position = 1
     private val title = "Samsung"
     private val campaignCode = "123"
-
-    @Before
-    fun setUp() {
-        suggestionPresenter = SuggestionPresenter()
-        suggestionPresenter.attachView(suggestionView)
-        suggestionPresenter.getSuggestionUseCase = getSuggestionUseCase
-        suggestionPresenter.suggestionTrackerUseCase = suggestionTrackerUseCase
-
-        suggestionPresenter.userSession = userSession
-    }
+    private val campaign = "Waktu%20Indonesia%20Belanja"
+    private val applinkLocalKeyword = "tokopedia://search?q=asus&source=universe&st=product&navsource=campaign&srp_page_id=160&srp_page_title=$campaign"
+    private val applinkGlobalKeyword = "tokopedia://search?q=asus&source=universe&st=product"
+    private val keywordLocalGlobalTypedByUser = "asus"
+    private val localGlobalTitle = "Cari \"asus\""
 
     @Test
     fun `test click suggestion item`() {
@@ -63,16 +50,10 @@ internal class OnSuggestionItemClickTest {
 
     private fun `then verify view interaction is correct`(item: BaseSuggestionViewModel) {
         verifyOrder {
-            suggestionView.onClickSuggestion(item)
+            suggestionView.onClickSuggestion(item.applink)
         }
 
         confirmVerified(suggestionView)
-    }
-
-    private fun SuggestionContract.View.onClickSuggestion(item: BaseSuggestionViewModel) {
-        dropKeyBoard()
-        route(item.applink)
-        finish()
     }
 
     private fun `then verify url tracker is hit`() {
@@ -121,7 +102,7 @@ internal class OnSuggestionItemClickTest {
 
         verify {
             suggestionView.trackEventClickKeyword(expectedEventLabel)
-            suggestionView.onClickSuggestion(item)
+            suggestionView.onClickSuggestion(item.applink)
         }
 
         confirmVerified(suggestionView)
@@ -151,7 +132,7 @@ internal class OnSuggestionItemClickTest {
 
         verify {
             suggestionView.trackEventClickCurated(expectedEventLabel, campaignCode)
-            suggestionView.onClickSuggestion(item)
+            suggestionView.onClickSuggestion(item.applink)
         }
 
         confirmVerified(suggestionView)
@@ -179,7 +160,7 @@ internal class OnSuggestionItemClickTest {
 
         verify {
             suggestionView.trackEventClickShop(expectedEventLabel)
-            suggestionView.onClickSuggestion(item)
+            suggestionView.onClickSuggestion(item.applink)
         }
 
         confirmVerified(suggestionView)
@@ -222,7 +203,7 @@ internal class OnSuggestionItemClickTest {
 
         verify {
             suggestionView.trackEventClickProfile(expectedEventLabel)
-            suggestionView.onClickSuggestion(item)
+            suggestionView.onClickSuggestion(item.applink)
         }
 
         confirmVerified(suggestionView)
@@ -261,7 +242,75 @@ internal class OnSuggestionItemClickTest {
 
         verify {
             suggestionView.trackEventClickRecentKeyword(expectedEventLabel)
-            suggestionView.onClickSuggestion(item)
+            suggestionView.onClickSuggestion(item.applink)
+        }
+
+        confirmVerified(suggestionView)
+    }
+
+    @Test
+    fun `test tracking click suggestion item local keyword`() {
+        val searchParameter : Map<String, String> = mutableMapOf<String, String>().also {
+            it[SearchApiConst.Q] = "asus"
+            it[SearchApiConst.SRP_PAGE_TITLE] = campaign
+        }
+        val item = BaseSuggestionViewModel(
+                applink = applinkLocalKeyword,
+                type = TYPE_LOCAL,
+                searchTerm = keywordLocalGlobalTypedByUser,
+                title = localGlobalTitle,
+                position = position
+        )
+
+        `given search param campaign is Waktu Indonesia Belanja`(searchParameter as HashMap<String, String>)
+        `when suggestion item clicked`(item)
+        `then verify view tracking click item local keyword is correct`(item)
+    }
+
+    private fun `given search param campaign is Waktu Indonesia Belanja`(searchParameter: HashMap<String, String>) {
+        suggestionPresenter.setSearchParameter(searchParameter)
+    }
+
+    private fun `then verify view tracking click item local keyword is correct`(item: BaseSuggestionViewModel) {
+        val expectedEventLabel =
+            "keyword: ${item.title} " +
+            "- value: $keywordLocalGlobalTypedByUser " +
+            "- applink: ${item.applink} " +
+            "- campaign: $campaign"
+        val userId = "0"
+
+        verify {
+            suggestionView.trackEventClickLocalKeyword(expectedEventLabel, userId)
+            suggestionView.onClickSuggestion(item.applink)
+        }
+
+        confirmVerified(suggestionView)
+    }
+
+    @Test
+    fun `test tracking click suggestion item global keyword`() {
+        val item = BaseSuggestionViewModel(
+                applink = applinkGlobalKeyword,
+                type = TYPE_GLOBAL,
+                searchTerm = keywordLocalGlobalTypedByUser,
+                title = localGlobalTitle,
+                position = position
+        )
+
+        `when suggestion item clicked`(item)
+        `then verify view tracking click item global keyword is correct`(item)
+    }
+
+    private fun `then verify view tracking click item global keyword is correct`(item: BaseSuggestionViewModel) {
+        val expectedEventLabel =
+                "keyword: ${item.title} " +
+                "- value: $keywordLocalGlobalTypedByUser " +
+                "- applink: ${item.applink}"
+        val userId = "0"
+
+        verify {
+            suggestionView.trackEventClickGlobalKeyword(expectedEventLabel, userId)
+            suggestionView.onClickSuggestion(item.applink)
         }
 
         confirmVerified(suggestionView)

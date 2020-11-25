@@ -10,6 +10,7 @@ object NotificationQueriesConstant {
     const val PRODUCT_STOCK_HANDLER = "product_stock_handler"
     const val FILTER_NOTIFICATION = "filter_notification"
     const val QUERY_IS_TAB_UPDATE = "query_is_tab_update"
+    const val PRODUCT_HIGHLIGHT = "product_highlight"
 
     //global param
     const val PARAM_SECTION_TYPE = "section_type"

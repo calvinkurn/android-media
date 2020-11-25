@@ -1,0 +1,39 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "responseCode": 4,
+      "keywordProcess": "4",
+      "totalData": 0,
+      "totalDataText": "0",
+      "additionalParams": "",
+      "errorMessage": "",
+      "defaultView": 1
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=baju%20kaos%20anak%20balapan",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": ""
+      },
+      "suggestion": {
+        "currentKeyword": "",
+        "suggestion": "",
+        "suggestionCount": 0,
+        "instead": "",
+        "insteadCount": 0,
+        "text": "<strong>\"baju kaos anak balapan\"</strong> nggak ditemukan. Mau cek rekomendasi kami?",
+        "query": "q=baju kaos anak balapan&rf=true"
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "products": []
+    }
+  }
+}

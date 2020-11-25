@@ -34,7 +34,7 @@
             android:layout_height="@dimen/layout_lvl4" />
 
         <RadioGroup
-            android:id="@+id/radioGroup"
+            android:id="@+id/rg_gender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -45,7 +45,7 @@
                 android:layout_weight="1" />
 
             <RadioButton
-                android:id="@+id/ava_man"
+                android:id="@+id/rb_man"
                 android:layout_width="@dimen/layout_lvl8"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -64,7 +64,7 @@
                 android:layout_height="0dp" />
 
             <RadioButton
-                android:id="@+id/ava_woman"
+                android:id="@+id/rb_woman"
                 android:layout_width="@dimen/layout_lvl8"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"

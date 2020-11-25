@@ -100,17 +100,6 @@
         <attr name="ttil_prefixString" format="string|reference" />
     </declare-styleable>
 
-    <declare-styleable name="TitleCardView">
-        <attr name="tcv_title" format="string" />
-        <attr name="tcv_title_text_size" format="dimension" />
-        <attr name="tcv_icon" format="reference" />
-        <attr name="tcv_loading_layout" format="reference" />
-        <attr name="tcv_empty_layout" format="reference" />
-        <attr name="tcv_error_layout" format="reference" />
-        <attr name="tcv_use_gradient_title" format="boolean" />
-        <attr name="tcv_title_height" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="TitleGroupView">
         <attr name="tgv_title" format="string" />
         <attr name="tgv_icon" format="reference" />
@@ -124,14 +113,6 @@
         <attr name="lsv_full_screen" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="EmptyCardContentView">
-        <attr name="eccv_icon" format="reference" />
-        <attr name="eccv_title_text" format="string" />
-        <attr name="eccv_desc_text" format="string" />
-        <attr name="eccv_content_text" format="string" />
-        <attr name="eccv_action_text" format="string" />
-    </declare-styleable>
-
     <declare-styleable name="TickerView">
         <attr name="tckv_text_color" format="color" />
         <attr name="tckv_highlight_color" format="color" />
@@ -143,26 +124,6 @@
         <attr name="tckv_show_link_underline" format="boolean"/>
         <attr name="tckv_content_text_size" format="dimension" />
         <attr name="tckv_content_height" format="dimension" />
-    </declare-styleable>
-
-    <declare-styleable name="UserReputationView">
-        <attr name="usv_show_tooltip" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="ShopReputationView">
-        <attr name="srv_show_tooltip" format="boolean" />
-        <attr name="srv_medal_width" format="dimension" />
-    </declare-styleable>
-
-    <declare-styleable name="BottomActionView">
-        <attr name="bav_1_display" format="boolean" />
-        <attr name="bav_2_display" format="boolean" />
-        <attr name="bav_2_icon_display" format="boolean" />
-        <attr name="bav_1_icon_display" format="boolean" />
-        <attr name="bav_icon_1" format="reference" />
-        <attr name="bav_label_1" format="reference" />
-        <attr name="bav_icon_2" format="reference" />
-        <attr name="bav_label_2" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="DecimalRangeInputView">

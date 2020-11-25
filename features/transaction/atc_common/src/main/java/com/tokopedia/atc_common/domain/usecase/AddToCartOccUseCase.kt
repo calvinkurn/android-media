@@ -3,6 +3,7 @@ package com.tokopedia.atc_common.domain.usecase
 import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_OCC
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartOccGqlResponse
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -30,7 +31,16 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartOccGqlResponse = it.getData<AddToCartOccGqlResponse>(AddToCartOccGqlResponse::class.java)
-            addToCartDataMapper.mapAddToCartOccResponse(addToCartOccGqlResponse)
+            val result = addToCartDataMapper.mapAddToCartOccResponse(addToCartOccGqlResponse)
+            if (!result.isStatusError()) {
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
+                        addToCartRequest.quantity, addToCartRequest.category)
+                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
+                        addToCartRequest.quantity, addToCartRequest.category, addToCartRequest.categoryLevel1Id,
+                        addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
+                        addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId)
+            }
+            result
         }
 
     }
@@ -38,5 +48,4 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
     private fun getParams(addToCartRequest: AddToCartOccRequestParams): Map<String, Any> {
         return mapOf(PARAM to addToCartRequest)
     }
-
 }

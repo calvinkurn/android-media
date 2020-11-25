@@ -1,0 +1,24 @@
+{
+  "cart_type": "default",
+  "codes": [],
+  "is_suggested": 1,
+  "is_trade_in": 0,
+  "is_trade_in_drop_off": 0,
+  "orders": [
+    {
+      "codes": [],
+      "product_details": [
+        {
+          "product_id": 618078867,
+          "quantity": 4
+        }
+      ],
+      "shipping_id": 0,
+      "shop_id": 239594,
+      "sp_id": 0,
+      "unique_id": "239594-0-301643"
+    }
+  ],
+  "skip_apply": 0,
+  "state": "cart"
+}

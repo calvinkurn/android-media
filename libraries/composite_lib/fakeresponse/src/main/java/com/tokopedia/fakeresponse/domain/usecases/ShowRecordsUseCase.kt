@@ -1,5 +1,7 @@
 package com.tokopedia.fakeresponse.domain.usecases
 
+import com.tokopedia.fakeresponse.Preference
+import com.tokopedia.fakeresponse.SortBy
 import com.tokopedia.fakeresponse.data.models.ResponseListData
 import com.tokopedia.fakeresponse.db.entities.GqlRecord
 import com.tokopedia.fakeresponse.db.entities.RestRecord
@@ -18,6 +20,18 @@ class ShowRecordsUseCase constructor(val gqlRepository: GqlRepository, val restR
 
         list.addAll(restRepository.getAll()
                 .mapNotNull { it.toResponseListData() })
+
+        @SortBy
+        val sortOrder = Preference.getSortBy()
+        if (sortOrder == SortBy.TIME_DESC) {
+            list.sortWith(object : Comparator<ResponseListData> {
+                override fun compare(o1: ResponseListData?, o2: ResponseListData?): Int {
+                    if (o1 != null && o2 != null)
+                        return o2.updatedAt.compareTo(o1.updatedAt)
+                    return 0
+                }
+            })
+        }
 
         return list
     }

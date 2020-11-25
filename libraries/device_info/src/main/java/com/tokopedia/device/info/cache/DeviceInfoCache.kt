@@ -20,13 +20,13 @@ class DeviceInfoCache(context: Context) {
      * Boolean false = never cached before
      */
     fun getImei(): Pair<String, Boolean> {
-        val imei = sp.getString(KEY_IMEI, "")
-        if (imei.isNullOrEmpty()) {
+        val imei = sp.getString(KEY_IMEI, "") ?: ""
+        if (imei.isEmpty()) {
             val ts = sp.getLong(KEY_IMEI_TIMESTAMP, 0)
             if (ts > 0) {
-                return imei to true
+                return (imei?:"") to true
             } else {
-                return imei to false
+                return (imei?:"") to false
             }
         } else {
             return imei to true

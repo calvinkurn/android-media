@@ -18,7 +18,7 @@ public class FlightCancellationDetail implements Parcelable {
     private String estimatedRefund;
     private String realRefund;
     private int status;
-    private List<FlightCancellationListPassengerViewModel> passengers;
+    private List<FlightCancellationListPassengerModel> passengers;
     private List<FlightOrderJourney> journeys;
     private String statusStr;
     private String statusType;
@@ -34,7 +34,7 @@ public class FlightCancellationDetail implements Parcelable {
         estimatedRefund = in.readString();
         realRefund = in.readString();
         status = in.readInt();
-        passengers = in.createTypedArrayList(FlightCancellationListPassengerViewModel.CREATOR);
+        passengers = in.createTypedArrayList(FlightCancellationListPassengerModel.CREATOR);
         journeys = in.createTypedArrayList(FlightOrderJourney.CREATOR);
         statusStr = in.readString();
         statusType = in.readString();
@@ -114,11 +114,11 @@ public class FlightCancellationDetail implements Parcelable {
         this.status = status;
     }
 
-    public List<FlightCancellationListPassengerViewModel> getPassengers() {
+    public List<FlightCancellationListPassengerModel> getPassengers() {
         return passengers;
     }
 
-    public void setPassengers(List<FlightCancellationListPassengerViewModel> passengers) {
+    public void setPassengers(List<FlightCancellationListPassengerModel> passengers) {
         this.passengers = passengers;
     }
 

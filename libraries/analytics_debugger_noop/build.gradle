@@ -1,27 +1,23 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
+apply plugin: 'kotlin-android'
 
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
     }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 
 dependencies {
-
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation rootProject.ext.testDependencies.androidAnnotation
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
 }
-
-project.ext {
-    artifactId = 'analytics-debugger-noop'
-    groupId = 'com.tokopedia.library'
-    versionName = "0.0.2"
-    artifactName = "analytics_debugger_noop-release"
-}
-
-apply from: '../../publish_local.gradle'

@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.hotel.R
+import com.tokopedia.hotel.common.util.CurrencyEnum
+import com.tokopedia.hotel.common.util.CurrencyTextWatcher
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.layout_hotel_filter_price_range_slider.view.*
@@ -45,16 +45,16 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
         maxCurrencyTextWatcher = CurrencyTextWatcher(max_value, CurrencyEnum.RP)
         max_value.addTextChangedListener(maxCurrencyTextWatcher)
 
-        if (selectedMaxPrice == 0 || selectedMaxPrice == maxBound) maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
+        if (selectedMaxPrice == 0 || selectedMaxPrice == maxBound) maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
         if (selectedMaxPrice != 0) max_value.setText(selectedMaxPrice.toString())
         else max_value.setText(maxBound.toString())
 
         min_label.text = resources.getString(R.string.hotel_search_filter_price_min_label)
         max_label.text = resources.getString(R.string.hotel_search_filter_price_max_label)
 
-        seekbar_background.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_G300)
-        seekbar_background.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N75)
-        seekbar_background.knobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500)
+        seekbar_background.activeRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G300)
+        seekbar_background.backgroundRailColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N75)
+        seekbar_background.knobColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
 
         seekbar_background.updateEndValue(getPositionFromMaxValue(maxBound))
         seekbar_background.setInitialValue(getPositionFromMinValue(selectedMinPrice), getPositionFromMaxValue(selectedMaxPrice))
@@ -94,8 +94,8 @@ class HotelFilterPriceRangeSlider @JvmOverloads constructor(context: Context, at
                 onValueChangedListener?.onValueChanged(startValue, endValue)
 
                 min_value.setText(startValue.toString())
-                if (endValue >= maxBound) maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
-                else maxCurrencyTextWatcher.format = resources.getString(R.string.hotel_search_filter_max_string_format)
+                if (endValue >= maxBound) maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format_with_plus)
+                else maxCurrencyTextWatcher.stringFormat = resources.getString(R.string.hotel_search_filter_max_string_format)
                 max_value.setText(endValue.toString())
 
             }

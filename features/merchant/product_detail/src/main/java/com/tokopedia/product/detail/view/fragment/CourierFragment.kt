@@ -7,31 +7,23 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
-import com.tokopedia.product.detail.data.model.shop.ProductShopBBInfo
 import com.tokopedia.product.detail.data.model.shop.ProductShopShipment
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.product.detail.view.adapter.CourierTypeFactory
-import kotlinx.android.synthetic.main.fragment_courier_list_detail.view.*
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 
 class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFactory>() {
 
     companion object {
         private const val ARGS_PRODUCT_LIST: String = "LIST_PRODUCT"
-        private const val ARGS_BBINFO_LIST: String = "LIST_BBINFO"
         private const val ARGS_PRODUCT_ID: String = "ARGS_PRODUCT_ID"
 
         @JvmStatic
-        fun newInstance(productId: String, shipments: List<ShopShipment>,
-                        bbInfos: List<BBInfo>) = CourierFragment().apply {
+        fun newInstance(productId: String, shipments: List<ShopShipment>) = CourierFragment().apply {
             arguments = Bundle().also {
                 it.putString(ARGS_PRODUCT_ID, productId)
                 it.putParcelableArrayList(ARGS_PRODUCT_LIST, ArrayList(shipments))
-                it.putParcelableArrayList(ARGS_BBINFO_LIST, ArrayList(bbInfos))
             }
         }
     }
@@ -44,24 +36,15 @@ class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFacto
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
             val shipments: List<ShopShipment> = it.getParcelableArrayList(ARGS_PRODUCT_LIST) ?: listOf()
-            val bbInfos: List<BBInfo> = it.getParcelableArrayList(ARGS_BBINFO_LIST) ?: listOf()
-            val shopShipments = shipments.map { shipment -> ProductShopShipment(shipment.isAvailable,
-                    shipment.code, shipment.shipmentID, shipment.image, shipment.name, shipment.isPickup,
-                    shipment.maxAddFee, shipment.awbStatus, shipment.product) }
-            val productBBInfos = bbInfos.map { bb -> ProductShopBBInfo(bb.name, bb.desc, bb.nameEN, bb.descEN) }
-            val rv = getRecyclerView(view)
-            if (bbInfos.isNotEmpty()){
-                (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
-                super.renderList(productBBInfos, false)
-                view.title_bbinfo.visible()
-                if (rv.itemDecorationCount > 0)
-                    rv.removeItemDecorationAt(rv.itemDecorationCount - 1)
-            } else {
-                (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.courier_title))
-                super.renderList(shopShipments, false)
-                view.title_bbinfo.gone()
-                rv.addItemDecoration(DividerItemDecoration(activity))
+            val shopShipments = shipments.map { shipment ->
+                ProductShopShipment(shipment.isAvailable,
+                        shipment.code, shipment.shipmentID, shipment.image, shipment.name, shipment.isPickup,
+                        shipment.maxAddFee, shipment.awbStatus, shipment.product)
             }
+            val rv = getRecyclerView(view)
+            (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.courier_title))
+            super.renderList(shopShipments, false)
+            rv.addItemDecoration(DividerItemDecoration(activity))
         }
     }
 

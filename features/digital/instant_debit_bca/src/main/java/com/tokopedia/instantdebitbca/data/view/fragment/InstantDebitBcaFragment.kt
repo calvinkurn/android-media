@@ -150,7 +150,7 @@ open class InstantDebitBcaFragment @Inject constructor(): BaseDaggerFragment(), 
 
     companion object {
 
-        fun newInstance(context: Context, callbackUrl: String): Fragment {
+        fun newInstance(callbackUrl: String): Fragment {
             val fragment = InstantDebitBcaFragment()
             val bundle = Bundle()
             bundle.putString(InstantDebitBcaActivity.CALLBACK_URL, callbackUrl)

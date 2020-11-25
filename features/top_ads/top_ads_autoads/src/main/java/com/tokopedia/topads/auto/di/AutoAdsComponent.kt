@@ -4,10 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsModule
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
 import com.tokopedia.topads.auto.di.module.ViewModelModule
-import com.tokopedia.topads.auto.view.activity.AutoAdsRouteActivity
-import com.tokopedia.topads.auto.view.fragment.CreateAutoAdsFragment
-import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
-import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
+import com.tokopedia.topads.auto.view.fragment.*
 import dagger.Component
 
 /**
@@ -18,12 +15,10 @@ import dagger.Component
         dependencies = [BaseAppComponent::class])
 interface AutoAdsComponent {
 
-    fun inject(adsRouteActivity: AutoAdsRouteActivity)
-
-    fun inject(dailyBudgetFragment: DailyBudgetFragment)
-
-    fun inject(autoAdsWidgetView: AutoAdsWidgetView)
-
+    fun inject(dailyBudgetFragment: AutoAdsBaseBudgetFragment)
     fun inject(createAutoAdsFragment: CreateAutoAdsFragment)
+    fun inject(autoAdsOnboardingFragment: AutoAdsOnboardingFragScreen1)
+    fun inject(autoAdsOnboardingFragment: AutoAdsOnboardingFragScreen2)
+    fun inject(autoAdsOnboardingFragment: AutoAdsOnboardingFragScreen3)
 
 }

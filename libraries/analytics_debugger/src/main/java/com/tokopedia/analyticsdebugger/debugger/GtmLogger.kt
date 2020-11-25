@@ -3,7 +3,6 @@ package com.tokopedia.analyticsdebugger.debugger
 import android.content.Context
 import android.text.TextUtils
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDBSource
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
@@ -12,7 +11,9 @@ import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerAct
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.analyticsdebugger.AnalyticsSource
 import com.tokopedia.analyticsdebugger.database.GtmErrorLogDB
+import com.tokopedia.analyticsdebugger.validator.MainValidatorActivity
 
 import java.net.URLDecoder
 
@@ -36,11 +37,12 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
         this.cache = LocalCacheHandler(context, ANALYTICS_DEBUGGER)
     }
 
-    override fun save(name: String, mapData: Map<String, Any>) {
+    override fun save(name: String, mapData: Map<String, Any>, @AnalyticsSource source:String) {
         try {
             val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
 
             val data = AnalyticsLogData()
+            data.source = source
             data.category = mapData["eventCategory"] as String?
             data.name = name
             data.data = URLDecoder.decode(gson.toJson(mapData)
@@ -85,6 +87,10 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
 
     override fun openErrorActivity() {
         context.startActivity(AnalyticsGtmErrorDebuggerActivity.newInstance(context))
+    }
+
+    override fun navigateToValidator() {
+        context.startActivity(MainValidatorActivity.newInstance(context))
     }
 
     override fun enableNotification(isEnabled: Boolean) {
@@ -133,7 +139,7 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun save(name: String, data: Map<String, Any>) {
+                override fun save(name: String, data: Map<String, Any>, @AnalyticsSource source:String) {
 
                 }
 
@@ -150,6 +156,10 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
                 }
 
                 override fun openErrorActivity() {
+
+                }
+
+                override fun navigateToValidator() {
 
                 }
 

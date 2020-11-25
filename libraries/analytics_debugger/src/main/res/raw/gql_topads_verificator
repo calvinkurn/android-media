@@ -1,0 +1,14 @@
+query verifyTopAdsUrl($url: String!) {
+  TopadsVerifyClicksViews(queryInput:
+    {
+      url:$url
+    }
+  ){   
+    data {
+      status
+      type
+      url
+      productType
+    }
+  }
+}

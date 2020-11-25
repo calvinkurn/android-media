@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <include layout="@layout/item_notification_header_transaction"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/lstMenuItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/notif_dp_16"
+        android:layout_marginLeft="@dimen/notif_dp_16"
+        android:layout_marginRight="@dimen/notif_dp_16"
+        android:layout_marginEnd="@dimen/notif_dp_16"
+        android:layout_marginTop="@dimen/notif_dp_16"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/notif_dp_8"
+        android:background="@color/divider_notif_big"
+        android:layout_marginTop="@dimen/notif_dp_16"/>
+
+</LinearLayout>

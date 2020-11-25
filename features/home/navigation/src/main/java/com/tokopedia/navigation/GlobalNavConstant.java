@@ -11,7 +11,8 @@ public class GlobalNavConstant {
 
     public class Analytics {
 
-        static final String CLICK_HOMEPAGE = "clickHomePage";
+        static final String CLICK_HOMEPAGE = "clickHomepage";
+        static final String CLICK_NAVIGATION_DRAWER = "clickNavigationDrawer";
 
         static final String HOME_PAGE = "homepage";
 
@@ -46,6 +47,14 @@ public class GlobalNavConstant {
         public static final String CLICK_HOME_PAGE = "clickHomePage";
         public static final String TOP_NAV = "top nav";
         public static final String SCREEN_NAME_CHAT = "/chat";
+
+
+        public static final String EVENT_CURRENTSITE = "currentsite";
+        public static final String EVENT_BUSINESSUNIT = "businessUnit";
+        public static final String EVENT_USERID = "userId";
+
+        public static final String EVENT_CURRENTSITE_VALUE = "tokopediamarketplace";
+        public static final String EVENT_BUSINESSUNIT_VALUE = "home & browse";
 
     }
 

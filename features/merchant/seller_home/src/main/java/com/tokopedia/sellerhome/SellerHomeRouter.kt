@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 
 interface SellerHomeRouter {
 
-    fun getSomListFragment(tabPage: String?): Fragment
+    fun getSomListFragment(tabPage: String?, orderType: Int): Fragment
 
-    fun getProductManageFragment(filterOptions: ArrayList<String>): Fragment
+    fun getProductManageFragment(filterOptions: ArrayList<String>, searchKeyword: String): Fragment
 
     fun getChatListFragment(): Fragment
 }

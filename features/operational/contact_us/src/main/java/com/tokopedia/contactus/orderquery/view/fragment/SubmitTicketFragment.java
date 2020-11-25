@@ -36,7 +36,6 @@ import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -69,7 +68,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     @Inject
     SubmitTicketPresenter presenter;
 
-    ImageUploadHandler imageUploadHandler;
     private RecyclerView rvSelectedImages;
 
     public static SubmitTicketFragment newInstance(SubmitTicketInvoiceData submitTicketInvoiceData) {
@@ -86,7 +84,6 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         View view = inflater.inflate(R.layout.layout_invoice_form, container, false);
         initInjector();
         findingViewsId(view);
-        imageUploadHandler = ImageUploadHandler.createInstance(this);
         presenter.attachView(this);
         imageUploadAdapter = new ImageUploadAdapter(getContext(),this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -305,7 +302,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         if(mInvoiceNumber.equals("")){
             invoiceLabel = "Without Invoice";
         }
-        ContactUsTracking.eventSuccessClick(invoiceLabel);
+        ContactUsTracking.eventSuccessClick(getContext(),invoiceLabel);
         presenter.onSendButtonClick();
     }
 
@@ -319,7 +316,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     }
 
     public void onOkClick() {
-        ContactUsTracking.eventOkClick();
+        ContactUsTracking.eventOkClick(getContext());
         submitSuccess.setVisibility(View.GONE);
         getActivity().startActivity(new Intent(getActivity(), InboxListActivity.class));
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());

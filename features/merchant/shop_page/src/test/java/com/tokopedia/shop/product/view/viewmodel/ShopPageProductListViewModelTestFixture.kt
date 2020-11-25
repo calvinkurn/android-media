@@ -2,17 +2,26 @@ package com.tokopedia.shop.product.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
+import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
+import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.product.di.ShopProductGetHighlightProductQualifier
 import com.tokopedia.shop.product.domain.interactor.GetShopFeaturedProductUseCase
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase
+import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
@@ -51,14 +60,30 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var removeWishlistUseCase: RemoveWishListUseCase
     @RelaxedMockK
     lateinit var deleteShopInfoUseCase: DeleteShopInfoCacheUseCase
-
+    @RelaxedMockK
+    lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
+    @RelaxedMockK
+    lateinit var getShopProductFilterUseCase: GetShopProductSortUseCase
+    @RelaxedMockK
+    lateinit var getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase
+    @RelaxedMockK
+    lateinit var getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase
+    @RelaxedMockK
+    lateinit var gqlGetShopSortUseCase: GqlGetShopSortUseCase
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
-    lateinit var getShopInfoUseCase: GQLGetShopInfoUseCase
+    lateinit var shopProductSortMapper: ShopProductSortMapper
+    @RelaxedMockK
+    lateinit var restrictionEngineNplUseCase: RestrictionEngineNplUseCase
+    @RelaxedMockK
+    lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var viewModelShopPageProductListResultViewModel: ShopPageProductListResultViewModel
+    private val testCoroutineDispatcherProvider by lazy {
+        TestCoroutineDispatcherProviderImpl
+    }
 
     @Before
     fun setUp() {
@@ -81,7 +106,11 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopHighlightProductUseCase,
                 removeWishlistUseCase,
                 deleteShopInfoUseCase,
-                Dispatchers.Unconfined
+                testCoroutineDispatcherProvider,
+                getShopFilterBottomSheetDataUseCase,
+                getShopFilterProductCountUseCase,
+                gqlGetShopSortUseCase,
+                shopProductSortMapper
         )
 
         viewModelShopPageProductListResultViewModel = ShopPageProductListResultViewModel(
@@ -89,9 +118,13 @@ abstract class ShopPageProductListViewModelTestFixture {
                 getShopInfoUseCase,
                 getShopEtalaseByShopUseCase,
                 getShopProductUseCase,
-                addWishListUseCase,
-                removeWishlistUseCase,
-                Dispatchers.Unconfined
+                gqlGetShopSortUseCase,
+                shopProductSortMapper,
+                testCoroutineDispatcherProvider,
+                getShopFilterBottomSheetDataUseCase,
+                getShopFilterProductCountUseCase,
+                restrictionEngineNplUseCase,
+                toggleFavouriteShopUseCase
         )
     }
 }

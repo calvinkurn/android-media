@@ -41,7 +41,7 @@ fun Activity.requestStatusBarDark() {
     }
 }
 
-private fun Window.setWindowFlag(bits: Int, on: Boolean) {
+fun Window.setWindowFlag(bits: Int, on: Boolean) {
     val winParams: WindowManager.LayoutParams = this.attributes
     if (on) {
         winParams.flags = winParams.flags or bits
@@ -75,4 +75,10 @@ fun Activity.setStatusBarColor(color: Int) {
     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
     window.statusBarColor = color;
+}
+
+fun Activity.getIntIntentExtra(key: String, defValue: Int): Lazy<Int> {
+    return lazy {
+        intent?.getIntExtra(key, defValue) ?: defValue
+    }
 }

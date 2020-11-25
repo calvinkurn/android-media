@@ -59,6 +59,9 @@ public class CouponValueEntity extends BaseItem {
     @SerializedName("tnc")
     private String tnc;
 
+    @SerializedName("is_show_button")
+    private boolean is_show_button;
+
     @SerializedName("swipe")
     private CouponSwipeDetail swipe;
 
@@ -242,6 +245,14 @@ public class CouponValueEntity extends BaseItem {
                 || TextUtils.isEmpty(this.imageUrlMobile);
     }
 
+    public boolean isIs_show_button() {
+        return is_show_button;
+    }
+
+    public void setIs_show_button(boolean is_show_button) {
+        this.is_show_button = is_show_button;
+    }
+
     @Override
     public String toString() {
         return "CouponValueEntity{" +
@@ -259,6 +270,7 @@ public class CouponValueEntity extends BaseItem {
                 ", minimumUsageLabel='" + minimumUsageLabel + '\'' +
                 ", realCode='" + realCode + '\'' +
                 ", tnc='" + tnc + '\'' +
+                ", is_show_button='" + is_show_button + '\'' +
                 ", swipe=" + swipe +
                 '}';
     }

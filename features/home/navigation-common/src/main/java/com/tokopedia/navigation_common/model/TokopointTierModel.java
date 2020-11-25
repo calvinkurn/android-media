@@ -19,6 +19,13 @@ public class TokopointTierModel {
     @SerializedName("eggImageHomepageURL")
     @Expose
     private String imageUrl = "";
+    @SerializedName("eggImageURL")
+    @Expose
+    private String eggImageURL = "";
+
+    @SerializedName("backgroundImgURLMobile")
+    @Expose
+    private String backgroundImgUrl = "";
 
     public Integer getId() {
         return id;
@@ -50,5 +57,21 @@ public class TokopointTierModel {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getEggImageURL() {
+        return eggImageURL;
+    }
+
+    public void setEggImageURL(String eggImageURL) {
+        this.eggImageURL = eggImageURL;
+    }
+
+    public String getBackgroundImgUrl() {
+        return backgroundImgUrl;
+    }
+
+    public void setBackgroundImgUrl(String backgroundImgUrl) {
+        this.backgroundImgUrl = backgroundImgUrl;
     }
 }

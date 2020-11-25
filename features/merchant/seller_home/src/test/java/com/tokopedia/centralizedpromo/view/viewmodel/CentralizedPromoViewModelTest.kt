@@ -9,16 +9,19 @@ import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
+import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -42,6 +45,9 @@ class CentralizedPromoViewModelTest {
 
     @RelaxedMockK
     lateinit var getChatBlastSellerMetadataUseCase: GetChatBlastSellerMetadataUseCase
+
+    @RelaxedMockK
+    lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -79,14 +85,22 @@ class CentralizedPromoViewModelTest {
         } returns "Tingkatkan penjualan dengan kirim pesan promosi ke pembeli"
     }
 
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
+    private val testCoroutineDispatcher: SellerHomeCoroutineDispatcher = SellerHomeCoroutineTestDispatcher
 
     private val viewModel : CentralizedPromoViewModel by lazy {
-        CentralizedPromoViewModel(context, userSession, getOnGoingPromotionUseCase, getPostUseCase, getChatBlastSellerMetadataUseCase, testCoroutineDispatcher)
+        CentralizedPromoViewModel(
+            context,
+            userSession,
+            getOnGoingPromotionUseCase,
+            getPostUseCase,
+            getChatBlastSellerMetadataUseCase,
+            remoteConfig,
+            testCoroutineDispatcher
+        )
     }
 
     @Test
-    fun `Success get layout data for on going promotion`() {
+    fun `Success get layout data for on going promotion`() = runBlocking {
         val successResult = OnGoingPromoListUiModel(
                 title = "Track your promotion",
                 items = listOf(
@@ -112,6 +126,8 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getOnGoingPromotionUseCase.executeOnBackground()
         }
@@ -128,18 +144,18 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.ON_GOING_PROMO)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getOnGoingPromotionUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.ON_GOING_PROMO)
         assert(result != null && result is Fail)
     }
 
     @Test
-    fun `Success get layout data for post`() {
+    fun `Success get layout data for post`() = runBlocking {
         val successResult = PostListUiModel(
                 items = listOf(
                         PostUiModel(
@@ -173,6 +189,8 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.POST)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostUseCase.executeOnBackground()
         }
@@ -189,11 +207,11 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.POST)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getPostUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.POST)
         assert(result != null && result is Fail)
@@ -207,16 +225,20 @@ class CentralizedPromoViewModelTest {
         } returns ChatBlastSellerMetadataUiModel(200, 2)
 
         every {
+            remoteConfig.getBoolean(RemoteConfigKey.FREE_SHIPPING_FEATURE_DISABLED)
+        } returns true
+
+        every {
             context.getString(R.string.centralized_promo_broadcast_chat_extra_free_quota, any<Integer>())
         } returns String.format("%d kuota gratis", 200)
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify {
             getChatBlastSellerMetadataUseCase.executeOnBackground()
         }
-
-        delay(100)
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -233,7 +255,7 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
@@ -250,7 +272,7 @@ class CentralizedPromoViewModelTest {
 
         viewModel.getLayoutData(LayoutType.PROMO_CREATION)
 
-        delay(100)
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 

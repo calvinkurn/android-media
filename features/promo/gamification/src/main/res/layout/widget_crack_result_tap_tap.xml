@@ -19,7 +19,7 @@
         android:layout_height="@dimen/dp_160"
         android:layout_above="@+id/view_list_reward_text"
         android:layout_centerHorizontal="true"
-        tools:src="@drawable/ic_empty_egg"
+        tools:src="@drawable/gami_ic_empty_egg"
         tools:visibility="visible" />
 
 
@@ -30,7 +30,7 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/bg_info_tap_tap"
+        android:background="@drawable/gami_bg_info_tap_tap"
         android:visibility="invisible"
         tools:visibility="visible"
         android:orientation="vertical"

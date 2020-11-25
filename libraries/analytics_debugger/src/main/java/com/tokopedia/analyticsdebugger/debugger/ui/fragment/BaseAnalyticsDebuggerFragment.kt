@@ -41,7 +41,7 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        buttonSearch!!.setOnClickListener { v ->
+        buttonSearch!!.setOnClickListener { _ ->
             if (TextUtils.isEmpty(searchInputView.searchText)) {
                 presenter!!.reloadData()
             } else {
@@ -124,6 +124,10 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
 
     override fun onDeleteCompleted() {
         presenter!!.reloadData()
+    }
+
+    override fun showCount(count: Int) {
+        //noop
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

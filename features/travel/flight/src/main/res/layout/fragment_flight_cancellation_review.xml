@@ -48,10 +48,10 @@
                 android:layout_marginBottom="@dimen/padding_16"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingEnd="@dimen/dp_8"
                 android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_16">
+                android:paddingTop="@dimen/dp_16"
+                android:paddingEnd="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_16">
 
                 <TextView
                     android:id="@+id/tv_departure_label"
@@ -146,8 +146,8 @@
                     android:id="@+id/container_estimate_refund"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_8"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/margin_8"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatTextView
@@ -176,68 +176,18 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/container_estimate_notes"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvEstimationNotes"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_8"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            style="@style/TextView.Micro"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dp_2"
-                            android:layout_marginRight="@dimen/dp_2"
-                            android:gravity="top"
-                            android:text="@string/flight_cancellation_asterisks" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            style="@style/TextView.Micro"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/flight_cancellation_estimate_note_cashback" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            style="@style/TextView.Micro"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/dp_2"
-                            android:layout_marginRight="@dimen/dp_2"
-                            android:gravity="top"
-                            android:text="@string/flight_cancellation_asterisks" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            style="@style/TextView.Micro"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@string/flight_cancellation_estimate_note_additional" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
+                    android:layout_height="wrap_content" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_refund_detail"
                     style="@style/TextView.Small.Bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_8"
                     android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/margin_8"
                     android:visibility="gone"
                     tools:text="@string/flight_cancellation_review_refund_to_email_detail"
                     tools:visibility="visible" />
@@ -249,8 +199,8 @@
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/dp_10"
-                android:paddingTop="@dimen/dp_10">
+                android:paddingTop="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10">
 
                 <androidx.appcompat.widget.AppCompatButton
                     android:id="@+id/button_submit"

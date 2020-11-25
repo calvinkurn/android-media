@@ -19,8 +19,6 @@ import java.util.List;
  */
 public class TokopediaWsV4Response {
 
-    public static final String TOO_MANY_REQUEST = "TOO_MANY_REQUEST";
-
     private boolean isNullData;
     private boolean isError;
     private String status;
@@ -152,13 +150,6 @@ public class TokopediaWsV4Response {
         return stringData;
     }
 
-    private void setStringData(String stringData) {
-        if (!stringData.isEmpty()) {
-            gson.toJson(stringData);
-        }
-        this.stringData = stringData;
-    }
-
     public JSONObject getJsonData() {
         return jsonData;
     }
@@ -195,10 +186,6 @@ public class TokopediaWsV4Response {
 
     private void setErrorMessages(List<String> errorMessages) {
         this.errorMessages = errorMessages;
-    }
-
-    public List<String> getStatusMessages() {
-        return statusMessages;
     }
 
     public void setStatusMessages(List<String> statusMessages) {
@@ -265,16 +252,6 @@ public class TokopediaWsV4Response {
             }
         } else {
             return (List<T>) objData;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T convertToObj(Class<T> clazz) {
-        try {
-            return gson.fromJson(stringData, clazz);
-        } catch (ClassCastException | JsonSyntaxException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 }

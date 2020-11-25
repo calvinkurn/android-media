@@ -6,6 +6,7 @@ import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.entity.UserInfo
 
 open class BaseNotificationItemViewBean(
+        var indexId: Int = 0,
         open var notificationId: String = "",
         open var isRead: Boolean = false,
         open var iconUrl: String? = "",

@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.data.mapper
 
-import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
 import com.tokopedia.recommendation_widget_common.data.SingleProductRecommendationEntity
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
@@ -36,6 +35,7 @@ object SingleProductRecommendationMapper {
                     data.priceInt,
                     data.departmentId,
                     data.rating,
+                    data.ratingAverage,
                     data.countReview,
                     data.stock,
                     data.recommendationType ?: "",
@@ -45,7 +45,7 @@ object SingleProductRecommendationMapper {
                     data.slashedPriceInt,
                     data.discountPercentage,
                     if (isLabelDiscountVisible(data)) "${data.discountPercentage}%" else "",
-                    index,
+                    index + 1,
                     data.shop?.id ?: -1,
                     "",
                     data.shop?.name ?: "",

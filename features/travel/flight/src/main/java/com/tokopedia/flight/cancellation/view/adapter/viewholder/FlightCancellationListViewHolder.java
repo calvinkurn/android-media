@@ -5,7 +5,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -13,7 +13,7 @@ import com.tokopedia.unifyprinciples.Typography;
  * @author by furqan on 30/04/18.
  */
 
-public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightCancellationListViewModel> {
+public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightCancellationListModel> {
 
     public static final int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_list;
 
@@ -35,7 +35,7 @@ public class FlightCancellationListViewHolder extends AbstractViewHolder<FlightC
     }
 
     @Override
-    public void bind(FlightCancellationListViewModel element) {
+    public void bind(FlightCancellationListModel element) {
         txtCreatedTime.setText(String.format(getString(com.tokopedia.flight.R.string.flight_cancellation_list_created_time),
                 element.getCancellations().getCreateTime()));
         if (element.getCancellations().getJourneys().size() > 0 &&

@@ -50,9 +50,9 @@ class Parameter {
     @SerializedName("language")
     @Expose
     var language: String? = null
-    @SerializedName("user_defined_varue")
+    @SerializedName("user_defined_value")
     @Expose
-    var userDefinedvarue: String? = null
+    var userDefinedValue: String? = null
     @SerializedName("nid")
     @Expose
     var nid: String? = null

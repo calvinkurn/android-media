@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 project.ext {
     artifactId = 'cachemanager'
     groupId = 'com.tokopedia.cachemanager'
-    versionName = "3.24"
+    versionName = "2.24"
     artifactName = "cache_manager"
 }
 

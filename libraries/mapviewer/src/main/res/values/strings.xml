@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">mapviewer</string>
+    <string name="mapviewer_google_map_intent_link">geo:%1$f,%2$f?z=20&amp;q=%3$f,%4$f(%3$s)</string>
+    <string name="mapviewer_detail_map_marker_title">%1$s</string>
+    <string name="mapviewer_detail_map_marker_snippet">%1$s</string>
+
+</resources>

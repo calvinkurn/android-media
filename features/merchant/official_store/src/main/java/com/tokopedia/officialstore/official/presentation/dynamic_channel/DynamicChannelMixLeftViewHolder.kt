@@ -3,21 +3,22 @@ package com.tokopedia.officialstore.official.presentation.dynamic_channel
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.countdown.CountDownView
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.home_component.util.loadImageWithoutPlaceholder
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,17 +28,16 @@ import kotlinx.coroutines.launch
 class DynamicChannelMixLeftViewHolder(
         view: View?,
         private val dcEventHandler: DynamicChannelEventHandler
-) : AbstractViewHolder<DynamicChannelViewModel>(view), CoroutineScope {
+) : AbstractViewHolder<DynamicChannelDataModel>(view), CoroutineScope, TransparentProductFlashSaleClickListener {
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.dynamic_channel_mix_left_layout
-        const val OPACITY_MAX_THRESHOLD = 0.2f
     }
 
     private val masterJob = SupervisorJob()
 
-    override val coroutineContext = masterJob + Dispatchers.Main
+    override val coroutineContext = masterJob + Dispatchers.IO
 
     private val headerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_header_main_container)
     private val headerTitle = itemView.findViewById<Typography>(R.id.dc_header_title)
@@ -50,12 +50,16 @@ class DynamicChannelMixLeftViewHolder(
     private var adapter: MixWidgetAdapter? = null
 
 
-    override fun bind(element: DynamicChannelViewModel?) {
+    override fun bind(element: DynamicChannelDataModel?) {
         element?.run {
-            dcEventHandler.flashSaleImpression(dynamicChannelData)
-            setupHeader(dynamicChannelData)
+            dcEventHandler.onMixLeftBannerImpressed(dynamicChannelData.channel, 1)
+            setupHeader(dynamicChannelData.channel)
             setupContent(dynamicChannelData)
         }
+    }
+
+    override fun onClickTransparentItem() {
+        image.performClick()
     }
 
     private fun setupHeader(channel: Channel) {
@@ -83,7 +87,6 @@ class DynamicChannelMixLeftViewHolder(
                         setOnClickListener {
                             dcEventHandler.onMixFlashSaleSeeAllClicked(channel, header.applink)
                         }
-                        setTextColor(MethodChecker.getColor(itemView.context, R.color.bg_button_green_border_outline))
                     }
                 } else {
                     headerActionText.visibility = View.GONE
@@ -94,32 +97,40 @@ class DynamicChannelMixLeftViewHolder(
         }
     }
 
-    private fun setupContent(channelData: Channel) {
-        setupBackground(channelData)
-        setupList(channelData)
+    private fun setupContent(dynamicChannelData: OfficialStoreChannel) {
+        setupBackground(dynamicChannelData.channel)
+        setupList(dynamicChannelData)
     }
 
     private fun setupBackground(channel: Channel) {
         channel.banner?.let{ banner ->
             setGradientBackground(bannerBackground, banner.gradientColor)
-            image.loadImage(banner.imageUrl)
+            image.loadImageWithoutPlaceholder(banner.imageUrl)
+            image.setOnClickListener { dcEventHandler.onClickMixLeftBannerImage(channel, 1) }
         }
     }
 
-    private fun setupList(channel: Channel) {
+    private fun setupList(dynamicChannelData: OfficialStoreChannel) {
         image.alpha = 1f
         recyclerViewProductList.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerViewProductList.layoutManager = layoutManager
-        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, channel)
-        val productDataList = convertDataToProductData(channel)
-        adapter = MixWidgetAdapter(typeFactoryImpl)
+        val typeFactoryImpl = OfficialStoreFlashSaleCardViewTypeFactoryImpl(dcEventHandler, this, dynamicChannelData.channel)
+        val productDataList = convertDataToProductData(dynamicChannelData)
+        if(adapter == null){
+            adapter = MixWidgetAdapter(typeFactoryImpl)
+            recyclerViewProductList.adapter = adapter
+        }
+        adapter?.clearAllElements()
+        adapter?.addElement(EmptyModel())
         adapter?.addElement(productDataList)
-        recyclerViewProductList.adapter = adapter
         recyclerViewProductList.addOnScrollListener(getParallaxEffect())
         launch {
             try {
-                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+                recyclerViewProductList.setHeightBasedOnProductCardMaxHeight(dynamicChannelData)
+                val imageLayoutParams = image.layoutParams
+                val recyclerViewLayoutParams = recyclerViewProductList.layoutParams as ViewGroup.MarginLayoutParams
+                imageLayoutParams.height = recyclerViewLayoutParams.height + recyclerViewLayoutParams.topMargin + recyclerViewLayoutParams.bottomMargin
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
@@ -127,70 +138,44 @@ class DynamicChannelMixLeftViewHolder(
         }
     }
 
-    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>
-    ) {
-        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+    private fun View.setHeightBasedOnProductCardMaxHeight(officialStoreChannel: OfficialStoreChannel) {
+        val productCardHeight = officialStoreChannel.height
 
         val carouselLayoutParams = this.layoutParams
         carouselLayoutParams?.height = productCardHeight
         this.layoutParams = carouselLayoutParams
     }
 
-    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-            val productCardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_item_width)
-            return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
-    }
 
     private fun getParallaxEffect(): RecyclerView.OnScrollListener {
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (layoutManager?.findFirstVisibleItemPosition() == 0) {
-                    val firstView = layoutManager?.findViewByPosition(layoutManager?.findFirstVisibleItemPosition()!!)
-                    firstView?.let { it ->
+                if (layoutManager?.findFirstVisibleItemPosition().orZero() <= 1 && layoutManager?.findLastVisibleItemPosition().orZero() >= 1) {
+                    val firstTransparentView = layoutManager?.findViewByPosition(0)
+                    val firstNonTransparentView = layoutManager?.findViewByPosition(1)
+                    firstNonTransparentView?.let { it ->
                         val distanceFromLeft = it.left
-                        val translateX = (recyclerViewProductList.paddingLeft - distanceFromLeft) * -0.1f
+                        val translateX = (firstTransparentView?.width.orZero() - distanceFromLeft) * -0.1f
                         image.translationX = translateX
-                        val alpha = distanceFromLeft.toFloat() / recyclerViewProductList.paddingLeft.toFloat()
-                        image.alpha = alpha.takeIf { alphaValue -> alphaValue > OPACITY_MAX_THRESHOLD }
-                                ?: OPACITY_MAX_THRESHOLD
+                        val alpha = distanceFromLeft.toFloat() / (firstTransparentView?.width.orZero()).toFloat()
+                        image.alpha = alpha
                     }
+                }else{
+                    image.alpha = 0f
                 }
             }
         }
     }
 
-    private fun convertDataToProductData(channel: Channel): List<ProductFlashSaleDataModel> {
-        return channel.grids?.let { listGridData ->
-            val list: MutableList<ProductFlashSaleDataModel> = mutableListOf()
-            listGridData.onEach { gridData ->
-                gridData?.let { grid ->
-                    list.add(ProductFlashSaleDataModel(
-                            ProductCardModel(
-                                    slashedPrice = grid.slashedPrice,
-                                    productName = grid.name,
-                                    formattedPrice = grid.price,
-                                    productImageUrl = grid.imageUrl,
-                                    discountPercentage = grid.discount,
-                                    freeOngkir = ProductCardModel.FreeOngkir(grid.freeOngkir?.isActive
-                                            ?: false, grid.freeOngkir?.imageUrl ?: ""),
-                                    labelGroupList = grid.labelGroup.map {
-                                        ProductCardModel.LabelGroup(
-                                                position = it.position,
-                                                title = it.title,
-                                                type = it.type
-                                        )
-                                    },
-                                    hasThreeDots = false
-                            ),
-                            gridData,
-                            grid.applink
-                    ))
-                }
-            }
-            return list
-        } ?: mutableListOf()
+    private fun convertDataToProductData(officialStoreChannel: OfficialStoreChannel): List<ProductFlashSaleDataModel> {
+        return officialStoreChannel.productCardModels.withIndex().map {
+            ProductFlashSaleDataModel(
+                    it.value,
+                    officialStoreChannel.channel.grids[it.index],
+                    officialStoreChannel.channel.grids[it.index].applink
+            )
+        }
     }
 
     private fun RecyclerView.resetLayout() {

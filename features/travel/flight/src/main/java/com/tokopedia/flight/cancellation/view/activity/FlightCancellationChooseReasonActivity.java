@@ -11,14 +11,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationChooseReasonFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
         implements HasComponent<FlightCancellationComponent> {
 
     public static Intent createIntent(Context context,
-                                      FlightCancellationReasonViewModel selectedReason) {
+                                      FlightCancellationReasonModel selectedReason) {
         Intent intent = new Intent(context, FlightCancellationChooseReasonActivity.class);
         intent.putExtra(FlightCancellationChooseReasonFragment.EXTRA_SELECTED_REASON, selectedReason);
         return intent;
@@ -33,7 +33,7 @@ public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
 
     @Override
     protected Fragment getNewFragment() {
-        FlightCancellationReasonViewModel selectedReason = getIntent()
+        FlightCancellationReasonModel selectedReason = getIntent()
                 .getParcelableExtra(FlightCancellationChooseReasonFragment.EXTRA_SELECTED_REASON);
         return FlightCancellationChooseReasonFragment.createInstance(selectedReason);
     }

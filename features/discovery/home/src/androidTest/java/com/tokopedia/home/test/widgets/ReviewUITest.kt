@@ -61,23 +61,23 @@ class ReviewUITest : BaseWidgetUiTest(){
 
     @Before
     fun setup(){
-        every { userSessionInterface.isLoggedIn } returns false
+        every { userSessionInterface.get().isLoggedIn } returns false
     }
 
     @Test
     fun test_when_data_suggested_not_available_the_review_widget_must_loading(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery{getHomeReviewSuggestedUseCase.get().executeOnBackground()} returns SuggestedProductReview(SuggestedProductReviewResponse())
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
             newList.add(4, ReviewDataModel(channel = DynamicHomeChannel.Channels()))
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -89,15 +89,15 @@ class ReviewUITest : BaseWidgetUiTest(){
     fun test_when_no_data_review_the_review_widget_must_not_show(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
             newList.add(4, ReviewDataModel(channel = DynamicHomeChannel.Channels()))
             emit(data.copy(list = newList))
         }
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)
@@ -108,14 +108,14 @@ class ReviewUITest : BaseWidgetUiTest(){
     fun test_when_data_available_the_review_widget_try_to_click_close_button(){
         val json = GraphqlHelper.loadRawString(context.resources, com.tokopedia.home.test.R.raw.home_empty_dynamic_channel_json)
         val homeData = Gson().fromJson<HomeData>(json, HomeData::class.java)
-        coEvery { getHomeUseCase.updateHomeData() } returns flow {  }
-        coEvery{getHomeReviewSuggestedUseCase.executeOnBackground()} returns SuggestedProductReview(
+        coEvery { getHomeUseCase.get().updateHomeData() } returns flow {  }
+        coEvery{getHomeReviewSuggestedUseCase.get().executeOnBackground()} returns SuggestedProductReview(
                 SuggestedProductReviewResponse(
                         linkURL = "KOSONG",
                         imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/1/20/8744407/8744407_1bc03512-8a00-472b-8e14-560f0cb66d45_700_700.jpg"
                 )
         )
-        coEvery { getHomeUseCase.getHomeData() } returns flow {
+        coEvery { getHomeUseCase.get().getHomeData() } returns flow {
             val data = homeDataMapper.mapToHomeViewModel(homeData, false)
             val newList = data.list.toMutableList()
             newList.add(4, ReviewDataModel(
@@ -130,7 +130,7 @@ class ReviewUITest : BaseWidgetUiTest(){
         }
 
         viewModel = reInitViewModel()
-        val homeFragment = HomeFragmentTest(createViewModelFactory(viewModel))
+        val homeFragment = HomeFragmentTest()
 
         activityRule.activity.setupFragment(homeFragment)
         Thread.sleep(5000)

@@ -38,7 +38,6 @@ public class SearchInputView extends BaseCustomView {
         void onSearchSubmitted(String text);
 
         void onSearchTextChanged(String text);
-
     }
 
     public interface FocusChangeListener {
@@ -121,17 +120,7 @@ public class SearchInputView extends BaseCustomView {
         if (!TextUtils.isEmpty(searchHint)) {
             searchTextView.setHint(searchHint);
         }
-        searchTextView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
-                    hideKeyboard();
-                    listener.onSearchSubmitted(textView.getText().toString());
-                    return true;
-                }
-                return false;
-            }
-        });
+        searchTextView.setOnEditorActionListener(getOnEditorActionListener());
 
         searchTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -152,6 +141,20 @@ public class SearchInputView extends BaseCustomView {
                 }
             }
         });
+    }
+
+    protected TextView.OnEditorActionListener getOnEditorActionListener() {
+        return new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH && listener != null) {
+                    hideKeyboard();
+                    listener.onSearchSubmitted(textView.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        };
     }
 
     public int getSearchImageViewResourceId() {
@@ -270,5 +273,4 @@ public class SearchInputView extends BaseCustomView {
             }
         };
     }
-
 }

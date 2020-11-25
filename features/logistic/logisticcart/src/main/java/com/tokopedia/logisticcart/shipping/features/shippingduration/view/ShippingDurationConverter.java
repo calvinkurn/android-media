@@ -3,15 +3,18 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 import android.text.TextUtils;
 
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.PromoStacking;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesDetailData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
+import com.tokopedia.logisticCommon.data.constant.CourierConstant;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.MerchantVoucherData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,6 +78,8 @@ public class ShippingDurationConverter {
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationUiModel shippingDurationUiModel = new ShippingDurationUiModel();
             shippingDurationUiModel.setServiceData(serviceData);
+            shippingDurationUiModel.setShowShippingInformation(isCourierInstantOrSameday(serviceData.getServiceId()));
+            shippingDurationUiModel.setEtaErrorCode(serviceData.getTexts().getErrorCode());
             List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
                             serviceData.getProducts(), ratesId, blackboxInfo);
@@ -93,9 +98,27 @@ public class ShippingDurationConverter {
                 shippingDurationUiModel.setCodAvailable(serviceData.getCodData().getIsCod() == COD_TRUE_VAL);
                 shippingDurationUiModel.setCodText(serviceData.getCodData().getCodText());
             }
+            if (serviceData.getMerchantVoucherData() != null) {
+                MerchantVoucherData merchantVoucherData = serviceData.getMerchantVoucherData();
+                MerchantVoucherModel merchantVoucherModel = new MerchantVoucherModel(
+                        merchantVoucherData.isMvc(),
+                        merchantVoucherData.getMvcTitle(),
+                        merchantVoucherData.getMvcLogo(),
+                        merchantVoucherData.getMvcErrorMessage()
+                );
+               shippingDurationUiModel.setMerchantVoucherModel(merchantVoucherModel);
+            }
         }
 
         return shippingDurationUiModels;
+    }
+
+    private boolean isCourierInstantOrSameday(int shipperId) {
+        int[] ids = CourierConstant.INSTANT_SAMEDAY_DURATION;
+        for (int id : ids) {
+            if (shipperId == id) return true;
+        }
+        return false;
     }
 
     private List<ShippingCourierUiModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
@@ -131,7 +154,8 @@ public class ShippingDurationConverter {
                 promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
                 promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),
                 promo.getPromoTncHtml(), applied, promo.getImageUrl(), promo.getDiscontedRate(),
-                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName());
+                promo.getShippingRate(), promo.getBenefitAmount(), promo.isDisabled(), promo.isHideShipperName(),
+                promo.getCod(), promo.getEta());
     }
 
     private boolean isPromoStackingApplied(RatesDetailData ratesDetailData) {

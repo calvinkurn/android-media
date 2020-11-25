@@ -3,24 +3,27 @@ package com.tokopedia.flight.airport.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
-import com.tokopedia.flight.airport.di.FlightAirportModule;
-import com.tokopedia.flight.airport.view.adapter.FlightAirportAdapterTypeFactory;
 import com.tokopedia.flight.airport.view.adapter.FlightAirportClickListener;
+import com.tokopedia.flight.airport.view.model.FlightAirportModel;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerContract;
 import com.tokopedia.flight.airport.view.presenter.FlightAirportPickerPresenterImpl;
-import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.airportv2.di.DaggerFlightAirportComponent;
+import com.tokopedia.flight.airportv2.di.FlightAirportModule;
+import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterTypeFactory;
 import com.tokopedia.flight.common.di.component.FlightComponent;
+import com.tokopedia.flight.common.view.model.EmptyResultModel;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -42,7 +45,6 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Inject
     FlightAirportPickerPresenterImpl flightAirportPickerPresenter;
     private boolean isFirstTime = true;
-    String searchHint;
 
     public static FlightAirportPickerFragment getInstance(String searchHint) {
         FlightAirportPickerFragment fragment = new FlightAirportPickerFragment();
@@ -64,9 +66,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        searchHint = getArguments().getString(EXTRA_TOOLBAR_TITLE);
-        searchInputView.setSearchHint(String.format(
-                getString(com.tokopedia.common.travel.R.string.flight_label_search_hint_airport), searchHint));
+        searchInputView.setSearchHint(getString(com.tokopedia.common.travel.R.string.flight_label_search_hint_airport));
     }
 
     @Override
@@ -144,12 +144,31 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
         getAdapter().setElement(getLoadingModel());
     }
 
+    @NonNull
+    @Override
+    protected BaseListAdapter<Visitable, FlightAirportAdapterTypeFactory> createAdapterInstance() {
+        BaseListAdapter<Visitable, FlightAirportAdapterTypeFactory> adapter = super.createAdapterInstance();
+        ErrorNetworkModel errorNetworkModel = adapter.getErrorNetworkModel();
+        errorNetworkModel.setIconDrawableRes(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection);
+        errorNetworkModel.setErrorMessage(getString(R.string.flight_airport_connection_title_error));
+        errorNetworkModel.setSubErrorMessage(getString(R.string.flight_airport_connection_description_error));
+        errorNetworkModel.setOnRetryListener(() -> loadData(0));
+        adapter.setErrorNetworkModel(errorNetworkModel);
+        return adapter;
+    }
+
     @Override
     protected Visitable getEmptyDataViewModel() {
-        EmptyModel emptyModel = new EmptyModel();
-        if (searchInputView.getSearchText().length() < 3)
+        EmptyResultModel emptyModel = new EmptyResultModel();
+        if (searchInputView.getSearchText().length() < 3) {
+            emptyModel.setIconRes(R.drawable.ic_flight_airport_search_not_complete);
+            emptyModel.setTitle(getString(com.tokopedia.flight.R.string.flight_airport_less_than_three_keyword_title_error));
             emptyModel.setContent(getString(com.tokopedia.flight.R.string.flight_airport_less_than_three_keyword_error));
-        else emptyModel.setContent(getString(com.tokopedia.abstraction.R.string.title_no_result));
+        } else {
+            emptyModel.setIconRes(com.tokopedia.globalerror.R.drawable.unify_globalerrors_404);
+            emptyModel.setTitle(getString(com.tokopedia.flight.R.string.flight_airport_not_found_title_error));
+            emptyModel.setContent(getString(com.tokopedia.flight.R.string.flight_airport_not_found_description_error));
+        }
         return emptyModel;
     }
 
@@ -159,7 +178,7 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     }
 
     @Override
-    public void airportClicked(FlightAirportViewModel airportViewModel) {
+    public void airportClicked(FlightAirportModel airportViewModel) {
         Intent intent = new Intent();
         intent.putExtra(EXTRA_SELECTED_AIRPORT, airportViewModel);
         getActivity().setResult(Activity.RESULT_OK, intent);

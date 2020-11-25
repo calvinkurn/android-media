@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/shake_transparent">
+
+    <LinearLayout
+        android:id="@+id/layout_shake_error"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/shake_black_54"
+        android:visibility="gone">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/shake_landing_dp_20"
+            android:background="@drawable/shake_landing_white_button_rounded"
+            android:orientation="vertical"
+            android:padding="@dimen/shake_landing_dp_10">
+
+            <ImageView
+                android:id="@+id/cancel_btn2"
+                android:layout_width="@dimen/spacing_lvl5"
+                android:layout_height="@dimen/spacing_lvl5"
+                android:layout_gravity="right"
+                app:srcCompat="@drawable/shake_landing_ic_cross_circle" />
+
+            <ImageView
+                android:layout_width="@dimen/shake_landing_dp_159"
+                android:layout_height="@dimen/shake_landing_dp_159"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/shake_landing_shake_shake_error_pic" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/shake_landing_oops"
+                android:textColor="@color/shake_black_b3"
+                android:textSize="@dimen/shake_landing_sp_18"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/shake_shake_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/shake_landing_dp_25"
+                android:layout_marginRight="@dimen/shake_landing_dp_25"
+                android:gravity="center"
+                android:textColor="@color/shake_black_b3"
+                android:textSize="@dimen/fontSize_lvl4" />
+
+            <TextView
+                android:id="@+id/btn_shake_close"
+                android:layout_width="@dimen/shake_landing_dp_160"
+                android:layout_height="@dimen/shake_landing_dp_40"
+                android:layout_gravity="center_horizontal"
+                android:layout_margin="@dimen/shake_landing_dp_10"
+                android:background="@drawable/shake_landing_bg_btn_green"
+                android:gravity="center"
+                android:text="@string/shake_landing_shake_lagi"
+                android:textColor="@color/Neutral_N0"
+                android:textSize="@dimen/sp_13" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/disable_shake_shake_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/shake_black_54"
+        android:visibility="gone">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/shake_landing_dp_30"
+            android:background="@drawable/shake_landing_white_button_rounded"
+            android:orientation="vertical"
+            android:padding="@dimen/shake_landing_dp_15">
+
+            <ImageView
+                android:id="@+id/cancel_btn3"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_gravity="right"
+                app:srcCompat="@drawable/shake_landing_ic_cross_circle" />
+
+            <ImageView
+                android:layout_width="@dimen/shake_landing_dp_159"
+                android:layout_height="@dimen/shake_landing_dp_159"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/shake_landing_ic_shake_stop_image" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:text="@string/shake_landing_oops"
+                android:textColor="@color/shake_black_b3"
+                android:textSize="@dimen/fontSize_lvl5"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="@dimen/shake_landing_dp_25"
+                android:layout_marginRight="@dimen/shake_landing_dp_25"
+                android:gravity="center"
+                android:text="@string/shake_landing_sepertinya_sistem_shake"
+                android:textColor="@color/shake_black_b3"
+                android:textSize="@dimen/fontSize_lvl4" />
+
+            <TextView
+                android:id="@+id/btn_turn_off"
+                android:layout_width="@dimen/shake_landing_dp_160"
+                android:layout_height="@dimen/shake_landing_dp_40"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/shake_landing_dp_15"
+                android:background="@drawable/shake_landing_bg_btn_green"
+                android:gravity="center"
+                android:text="@string/shake_landing_matikan_shake"
+                android:textColor="@color/Neutral_N0"
+                android:textSize="@dimen/shake_landing_sp_13" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/shake_shake_message_button"
+        android:layout_width="@dimen/shake_landing_dp_288"
+        android:layout_height="@dimen/shake_landing_dp_38"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="@dimen/shake_landing_dp_10"
+        android:background="@drawable/shake_landing_bg_rect_rounded_white_shadow"
+        android:gravity="center"
+        android:padding="@dimen/shake_landing_dp_5">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linear_layout_button_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:gravity="center"
+            android:minHeight="@dimen/shake_landing_dp_32"
+            android:minWidth="@dimen/shake_landing_dp_80"
+            android:paddingLeft="@dimen/shake_landing_dp_30"
+            android:paddingRight="@dimen/shake_landing_dp_30">
+
+            <ImageView
+                android:id="@+id/shake_shake_icon"
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginEnd="@dimen/shake_landing_dp_10"
+                android:layout_marginRight="@dimen/shake_landing_dp_10"
+                app:srcCompat="@drawable/shake_landing_ic_shake_shake" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/shake_landing_shake_shake_terus"
+                android:textColor="@color/shake_tkpd_main_green"
+                android:textSize="@dimen/shake_landing_dp_14"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/cancel_btn"
+                android:layout_width="@dimen/shake_landing_dp_12"
+                android:layout_height="@dimen/shake_landing_dp_12"
+                android:layout_marginLeft="@dimen/shake_landing_dp_25"
+                app:srcCompat="@drawable/shake_landing_ic_cross" />
+
+            <TextView
+                android:id="@+id/shake_shake_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/shake_landing_dp_3"
+                android:background="@layout/shake_landing_layout_circle"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:text="1"
+                android:textColor="@color/shake_tkpd_main_green"
+                android:textSize="@dimen/fontSize_lvl2"
+                android:textStyle="normal"
+                android:visibility="gone">
+
+            </TextView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/cancel_button"
+        android:layout_width="@dimen/shake_landing_dp_288"
+        android:layout_height="@dimen/shake_landing_dp_38"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="@dimen/shake_landing_dp_10"
+        android:background="@drawable/shake_landing_bg_rect_rounded_white_shadow"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:minHeight="@dimen/shake_landing_dp_32"
+            android:minWidth="@dimen/shake_landing_dp_80"
+            android:paddingLeft="@dimen/shake_landing_dp_5"
+            android:paddingRight="@dimen/shake_landing_dp_5"
+            android:visibility="visible">
+
+            <ImageView
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                android:layout_marginEnd="@dimen/shake_landing_dp_10"
+                android:layout_marginRight="@dimen/shake_landing_dp_10"
+                app:srcCompat="@drawable/shake_landing_ic_shake_shake" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:text="@string/shake_landing_cancel_shake_shake"
+                android:textColor="@color/shake_tkpd_main_green"
+                android:textSize="@dimen/shake_landing_sp_14"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:layout_width="@dimen/shake_landing_dp_12"
+                android:layout_height="@dimen/shake_landing_dp_12"
+                android:layout_marginLeft="@dimen/shake_landing_dp_25"
+                app:srcCompat="@drawable/shake_landing_ic_cross" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</FrameLayout>

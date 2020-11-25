@@ -16,9 +16,10 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_14">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_tokopedia_pay"
-            style="@style/TextView.TitleMedium.Bold"
+            app:typographyType="heading_3"
+            android:textColor="@color/Unify_N700_68"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_tokopedia_pay_title_new"
@@ -40,9 +41,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/label_tokopedia_pay">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_action"
-                style="@style/TextView.Micro.Green"
+                app:typographyType="body_3"
+                android:textColor="@color/Unify_G400"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_tokopedia_pay_action" />
@@ -57,7 +59,8 @@
             app:layout_constraintEnd_toStartOf="@+id/layout_right"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay">
+            app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay"
+            >
 
             <ImageView
                 android:id="@+id/card_icon_left"
@@ -70,13 +73,13 @@
                 app:layout_constraintStart_toStartOf="@+id/text_amount_left"
                 app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_amount_left"
-                style="@style/TextView.Small.Bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_N700_96"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_8"
                 android:textAlignment="center"
                 android:textSize="@dimen/sp_13"
                 app:layout_constraintEnd_toStartOf="@+id/text_amount_right"
@@ -85,13 +88,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/card_icon_left"
                 tools:text="Rp 2.000.000" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_desc_left"
-                style="@style/TextView.Micro.BlackDisabled"
+                app:typographyType="body_3"
+                android:textColor="@color/Unify_N700_44"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_left"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_left"
                 app:layout_constraintTop_toBottomOf="@+id/text_amount_left"
@@ -120,13 +124,13 @@
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
                 app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_amount_right"
-                style="@style/TextView.Small.Bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_N700_96"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_8"
                 android:textAlignment="center"
                 android:textSize="@dimen/sp_13"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -139,15 +143,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
                 app:layout_constraintTop_toBottomOf="@+id/text_amount_right">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_desc_right"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_44"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -182,13 +187,13 @@
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
                 app:layout_constraintTop_toBottomOf="@+id/label_tokopedia_pay" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_amount_centre"
-                style="@style/TextView.Small.Bold"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_N700_96"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_8"
                 android:textAlignment="center"
                 android:textSize="@dimen/sp_13"
                 tools:text="Rp 200.000" />
@@ -197,15 +202,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="@dimen/dp_4"
+                android:layout_marginTop="@dimen/spacing_lvl1"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="@+id/text_amount_right"
                 app:layout_constraintStart_toStartOf="@+id/text_amount_right"
                 app:layout_constraintTop_toBottomOf="@+id/text_amount_right">
 
-                <TextView
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/text_desc_centre"
-                    style="@style/TextView.Micro.BlackDisabled"
+                    app:typographyType="body_3"
+                    android:textColor="@color/Unify_N700_44"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

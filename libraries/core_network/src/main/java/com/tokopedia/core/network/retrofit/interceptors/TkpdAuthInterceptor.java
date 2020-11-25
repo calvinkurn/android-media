@@ -1,11 +1,11 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.network.CoreNetworkApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 import com.tokopedia.user.session.UserSession;
@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import okhttp3.Request;
 import okhttp3.Response;
@@ -51,7 +49,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         this.authKey = AuthUtil.KEY.KEY_WSV4;
     }
 
-    private Lock lock = new ReentrantLock();
 
     @Override
     public Response intercept(Chain chain) throws IOException {
@@ -105,8 +102,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
     private void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(CoreNetworkApplication.getAppContext(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacyGCMHandler(),
-                CoreNetworkApplication.getCoreNetworkRouter().legacySessionHandler(),
                 response.request().url().toString());
     }
 
@@ -138,7 +133,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
 
 
     protected boolean isTimezoneNotAutomatic() {
-        return MethodChecker.isTimezoneNotAutomatic();
+        return MethodChecker.isTimezoneNotAutomatic(CoreNetworkApplication.getAppContext());
     }
 
     protected boolean isForbiddenRequest(String bodyResponse, int code) {
@@ -384,7 +379,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             }
             if (isUnauthorized(newestRequest, response) || isNeedGcmUpdate(response)){
                 ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
-                        isUnauthorized(newestRequest, response),  isNeedGcmUpdate(response));
+                        isUnauthorized(newestRequest, response),  isNeedGcmUpdate(response), "Deprecated - Refresh Token and GCM Update");
             }
 
             return chain.proceed(newestRequest);

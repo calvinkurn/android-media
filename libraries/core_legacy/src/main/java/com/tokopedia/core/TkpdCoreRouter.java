@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -16,8 +15,6 @@ public interface TkpdCoreRouter {
             = "com.tokopedia.purchase_platform.features.checkout.view.feature.cartlist.CartActivity";
 
     String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
-
-    String ACTIVITY_SIMPLE_HOME = "com.tokopedia.tkpd.home.SimpleHomeActivity";
 
     String FRAGMENT_TYPE = "FRAGMENT_TYPE";
     int WISHLIST_FRAGMENT = 1;
@@ -47,31 +44,6 @@ public interface TkpdCoreRouter {
         return parentIndexHomeClass;
     }
 
-    static Class<?> getSimpleHomeActivityClass() {
-        try {
-            return RouterUtils.getActivityClass(ACTIVITY_SIMPLE_HOME);
-        } catch (ClassNotFoundException e) {
-
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Deprecated
-    static Intent getActivitySellingTransactionList(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionListReal(mContext);
-    }
-
-    @Deprecated
-    static Class<?> getSellingActivityClass(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getSellingActivityClassReal();
-    }
-
-    @Deprecated
-    static Intent getActivitySellingTransactionShippingStatus(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getActivitySellingTransactionShippingStatusReal(mContext);
-    }
-
     @Deprecated
     static Class<?> getInboxResCenterActivityClass(Context mContext) {
         return RouterUtils.getRouterFromContext(mContext).getInboxResCenterActivityClassReal();
@@ -81,25 +53,11 @@ public interface TkpdCoreRouter {
         return RouterUtils.getRouterFromContext(mContext).getInboxMessageActivityClass();
     }
 
-    static IAppNotificationReceiver getAppNotificationReceiver(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getAppNotificationReceiver();
-    }
-
     static Intent getInboxTalkActivityIntentWrapper(Context mContext) {
         return RouterUtils.getRouterFromContext(mContext).getInboxTalkCallingIntent(mContext);
     }
 
-    static Intent getSellerHomeActivity(Context context) {
-        return RouterUtils.getRouterFromContext(context).getSellerHomeActivityReal(context);
-    }
-
-    static Class<?> getDeeplinkClass(Context mContext) {
-        return RouterUtils.getRouterFromContext(mContext).getDeeplinkClass();
-    }
-
     Class<?> getDeeplinkClass();
-
-    Intent getSellerHomeActivityReal(Context context);
 
     Intent getInboxTalkCallingIntent(Context mContext);
 
@@ -109,29 +67,15 @@ public interface TkpdCoreRouter {
 
     Class<?> getInboxResCenterActivityClassReal();
 
-    Intent getActivitySellingTransactionShippingStatusReal(Context mContext);
-
-    Class getSellingActivityClassReal();
-
-    Intent getActivitySellingTransactionListReal(Context mContext);
-
     Intent getHomeIntent(Context context);
 
-    Class<?> getHomeClass(Context context) throws ClassNotFoundException;
+    Class<?> getHomeClass();
 
     NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass, Bundle data, String notifTitle);
 
-    Intent getInboxMessageIntent(Context mContext);
-
     void onAppsFlyerInit();
-
-    SessionHandler legacySessionHandler();
-
-    GCMHandler legacyGCMHandler();
 
     void refreshFCMTokenFromBackgroundToCM(String token, boolean force);
 
     void refreshFCMFromInstantIdService(String token);
-
-    void refreshFCMTokenFromForegroundToCM();
 }

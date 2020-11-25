@@ -8,13 +8,17 @@ import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import com.tokopedia.rechargeocr.data.RechargeUploadImageResponse
 import com.tokopedia.rechargeocr.data.ResultOcr
-import io.mockk.*
+import io.mockk.MockKAnnotations
+import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockkObject
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 class RechargeUploadImageViewModelTest {
 
@@ -47,9 +51,12 @@ class RechargeUploadImageViewModelTest {
                 RechargeUploadImageResponse.RechargeUploadImageData(picSrc = stringUrl))
 
         val expectedData = "12345678910"
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeOcrResponse::class.java to RechargeOcrResponse(ResultOcr(expectedData))),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeOcrResponse::class.java
+        result[objectType] = RechargeOcrResponse(ResultOcr(expectedData))
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         //when
@@ -89,9 +96,16 @@ class RechargeUploadImageViewModelTest {
         val errorMessage = "Nomor kartu tidak terdeteksi"
         val errorGql = GraphqlError()
         errorGql.message = errorMessage
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(), mapOf(RechargeOcrResponse::class.java to listOf(errorGql)), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeOcrResponse::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(errorGql)
+
+        val gqlResponseFail = GraphqlResponse(result, errors, false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseFail
 
         // when
         rechargeUploadImageViewModel.uploadImageRecharge("", "", "")

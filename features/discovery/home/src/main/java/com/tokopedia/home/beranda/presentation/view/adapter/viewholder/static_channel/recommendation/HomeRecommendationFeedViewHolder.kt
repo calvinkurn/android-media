@@ -54,7 +54,7 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 listener,
                 listener.eggListener,
                 this,
-                listener.childFragmentManager,
+                listener.childsFragmentManager,
                 recommendationTabDataModelList,
                 listener.parentPool)
 
@@ -66,7 +66,6 @@ class HomeRecommendationFeedViewHolder(itemView: View,
                 if (tab.position < recommendationTabDataModelList!!.size) {
                     val selectedFeedTabModel = recommendationTabDataModelList!![tab.position]
                     HomePageTracking.eventClickOnHomePageRecommendationTab(
-                            context,
                             selectedFeedTabModel
                     )
                 }

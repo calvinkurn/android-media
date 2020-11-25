@@ -3,11 +3,13 @@ package com.tokopedia.purchase_platform.common.analytics;
 import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.CustomDimension;
@@ -15,8 +17,8 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
+import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.ExtraKey;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
-import com.tokopedia.iris.util.ConstantKt;
 
 
 /**
@@ -316,12 +318,12 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
 
-    private void sendEnhancedECommerce(Map<String, Object> cartMap, String eventLabel) {
+    private void sendEnhancedECommerce(int step, Map<String, Object> cartMap, String eventLabel) {
 
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
-                Key.EVENT_ACTION, EventAction.VIEW_CART_PAGE,
+                Key.EVENT_ACTION, step == 0 ? EventAction.VIEW_CART_PAGE : EventAction.CLICK_CHECKOUT,
                 Key.EVENT_LABEL, eventLabel,
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
@@ -340,51 +342,51 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     }
 
     public void enhancedECommerceCartLoadedStep0(Map<String, Object> cartMap) {
-        sendEnhancedECommerce(cartMap, "");
+        sendEnhancedECommerce(0, cartMap, "");
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
         }
         flushEnhancedECommerce();
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap, boolean eligibleCod) {
         if (eligibleCod) {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT_ELIGIBLE_COD);
         } else {
-            sendEnhancedECommerce(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+            sendEnhancedECommerce(1, cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
         }
         flushEnhancedECommerce();
     }
@@ -987,6 +989,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         mapEvent.put("productId", productId);
         sendGeneralEvent(mapEvent);
     }
+
     public void eventClickBrowseButtonOnTickerProductContainTobacco() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -1017,5 +1020,192 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventCategory.CART,
                 EventAction.CLICK_TRASH_ICON_BUTTON_ON_PRODUCT_CONTAIN_TOBACCO
         );
+    }
+
+    // Cart Revamp
+    public void eventViewRemainingStockInfo(String userId, String productId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_REMAINING_STOCK_INFO,
+                productId
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventViewInformationLabelInProductCard(String userId, String productId, String informationLabel) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_INFORMATION_LABEL_IN_PRODUCT_CARD,
+                productId + " - " + informationLabel
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickDetailTagihan(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DETAIL_TAGIHAN,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickMoveToWishlistOnAvailableSection(String userId, String productId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.ADD_WISHLIST_CART_LOGIN,
+                productId + " - available section"
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickMoveToWishlistOnUnavailableSection(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.ADD_WISHLIST_CART_LOGIN,
+                productId + " - " + errorType + " - unavailable section"
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickDeleteProductOnUnavailableSection(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DELETE_PRODUCT_ON_UNAVAILABLE_SECTION,
+                productId + " - " + errorType
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickSeeOtherProductOnUnavailableSection(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_LIHAT_PRODUK_SERUPA_ON_UNAVAILABLE_SECTION,
+                productId + " - " + errorType
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickCheckoutMelaluiBrowserOnUnavailableSection(String userId, String productId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_CHECKOUT_MELALUI_BROWSER_ON_UNAVAILABLE_SECTION,
+                productId + " - " + errorType
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickDeleteAllUnavailableProduct(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_DELETE_ALL_UNAVAILABLE_PRODUCT,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickAccordionButtonOnUnavailableProduct(String userId, String buttonWording) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ACCORDION_ON_UNAVAILABLE_PRODUCT.replace("%s", buttonWording.toLowerCase(Locale.getDefault())),
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickUndoAfterDeleteProduct(String userId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_UNDO_AFTER_DELETE_PRODUCT,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventViewErrorPageWhenLoadCart(String userId, String errorType) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.VIEW_ATC_IRIS,
+                EventCategory.CART,
+                EventAction.VIEW_ERROR_PAGE_WHEN_LOAD_CART,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickWishlistIcon(String userId){
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_WISHLIST,
+                EventCategory.CART,
+                EventAction.CLICK_WISHLIST_ICON_IN_CART_PAGE,
+                ""
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickRemoveWishlist(String userId, String productId){
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_WISHLIST,
+                EventCategory.CART,
+                EventAction.REMOVE_WISHLIST_CART_LOGIN,
+                productId + " - wishlist section"
+        );
+        gtmData.put(ExtraKey.USER_ID, userId);
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+
+        sendGeneralEvent(gtmData);
+    }
+
+    public void eventClickFollowShop(String userId, String errorType, String shopId) {
+        Map<String, Object> gtmData = getGtmData(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_FOLLOW_SHOP_ON_UNAVAILABLE_SECTION,
+                errorType + " - " + shopId
+        );
+        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM);
+        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
+        gtmData.put(ExtraKey.USER_ID, userId);
+
+        sendGeneralEvent(gtmData);
     }
 }

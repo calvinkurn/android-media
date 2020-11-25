@@ -1,0 +1,25 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+}
+
+dependencies {
+    api project(rootProject.ext.libraries.analyticsDebugger)
+	implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.testDependencies.junit
+
+}

@@ -1,11 +1,9 @@
 package com.tokopedia.contactus.createticket.presenter;
 
+import android.util.Patterns;
 import android.view.View;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.contactus.R;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
@@ -14,6 +12,9 @@ import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteract
 import com.tokopedia.contactus.createticket.listener.CreateTicketFormFragmentView;
 import com.tokopedia.contactus.createticket.model.ContactUsPass;
 import com.tokopedia.contactus.createticket.model.solution.SolutionResult;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 /**
  * Created by nisie on 8/12/16.
@@ -76,13 +77,14 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     }
 
     private ContactUsPass getSendTicketParam() {
+        UserSessionInterface userSession = new UserSession(viewListener.getActivity());
         ContactUsPass pass = new ContactUsPass();
         pass.setSolutionId(String.valueOf(viewListener.getArguments().getString(
                 ContactUsActivity.PARAM_SOLUTION_ID)));
         pass.setMessageBody(viewListener.getMessage().getText().toString());
         if (!viewListener.getAttachment().isEmpty())
             pass.setAttachment(viewListener.getAttachment());
-        pass.setName(SessionHandler.getLoginName(viewListener.getActivity()));
+        pass.setName(userSession.getName());
         pass.setTag(String.valueOf(viewListener.getArguments().getString(
                 ContactUsActivity.PARAM_TAG)));
         if (viewListener.getPhoneNumber().trim().length() > 0)
@@ -95,7 +97,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
                 ContactUsActivity.PARAM_INVOICE_ID, "").length() > 0)
             pass.setInvoiceNumber(String.valueOf(viewListener.getArguments().getString(
                     ContactUsActivity.PARAM_INVOICE_ID)));
-        if (!SessionHandler.isV4Login(viewListener.getActivity())) {
+        if (!userSession.isLoggedIn()) {
             pass.setName(viewListener.getName().getText().toString());
             pass.setEmail(viewListener.getEmail().getText().toString());
         }
@@ -103,8 +105,8 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
     }
 
     private boolean isTicketValid() {
-
-        if (!SessionHandler.isV4Login(viewListener.getActivity())) {
+        UserSessionInterface userSession = new UserSession(viewListener.getActivity());
+        if (!userSession.isLoggedIn()) {
             if (viewListener.getName().getText().toString().trim().length() == 0) {
                 viewListener.showErrorValidation(viewListener.getName(), viewListener.getString(R.string.contactus_error_field_required));
                 return false;
@@ -113,7 +115,7 @@ public class CreateTicketFormFragmentPresenterImpl implements CreateTicketFormFr
             if (viewListener.getEmail().getText().toString().trim().length() == 0) {
                 viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_field_required));
                 return false;
-            } else if (!CommonUtils.EmailValidation(viewListener.getEmail().getText().toString())) {
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(viewListener.getEmail().getText().toString()).matches()) {
                 viewListener.showErrorValidation(viewListener.getEmail(), viewListener.getString(R.string.contactus_error_invalid_email));
                 return false;
             }

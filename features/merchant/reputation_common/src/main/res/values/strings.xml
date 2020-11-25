@@ -6,4 +6,10 @@
     <string name="rating_3_star">Cukup</string>
     <string name="rating_4_star">Baik</string>
     <string name="rating_5_star">Memuaskan</string>
+
+    <string name="rating_1_star_create_review">Kecewa</string>
+    <string name="rating_2_star_create_review">Kurang</string>
+    <string name="rating_3_star_create_review">Lumayan</string>
+    <string name="rating_4_star_create_review">Suka</string>
+    <string name="rating_5_star_create_review">Puas Banget</string>
 </resources>

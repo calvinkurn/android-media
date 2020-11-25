@@ -3,16 +3,20 @@
     android:versionCode="1"
     android:versionName="1.0.0"
     package="com.tokopedia.home">
-
     <application
         android:label="Home Test"
-        tools:replace="android:label">
+        tools:ignore="HardcodedDebugMode"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+        tools:replace="android:debuggable,android:label"
+        android:debuggable="false">
 
         <activity
             android:name=".test.activity.HomeActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity
-            android:name=".environment.InstrumentationHomeTestActivity"/>
+            android:name=".environment.InstrumentationHomeTestActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
     </application>
 </manifest>

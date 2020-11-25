@@ -14,7 +14,7 @@ import com.tokopedia.design.text.Chips
 
 class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
                   val onResetChipListener: ResetChipListener,
-                  @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.snackbar_border_normal)
+                  @ColorRes val selectedColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_G300)
     : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
@@ -38,7 +38,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
                 else if (!chips.isSelected) chips.isSelected = true
                 if (selectedColor > 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
-                    else setTextColor(com.tokopedia.design.R.color.black_56)
+                    else setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
                 }
                 listener.onChipClickListener(chips.text.toString(), chips.isSelected)
             }
@@ -59,7 +59,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
 
         fun selectChip() {
             chips.isSelected = true
-            this.setTextColor(com.tokopedia.design.R.color.snackbar_border_normal)
+            this.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_G300)
         }
     }
 

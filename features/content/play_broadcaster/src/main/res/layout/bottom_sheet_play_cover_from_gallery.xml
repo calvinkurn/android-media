@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bottomsheet_background"
+        >
+
+        <View
+            android:id="@+id/v_drag_indicator"
+            android:layout_width="@dimen/play_drag_indicator_width"
+            android:layout_height="@dimen/play_drag_indicator_height"
+            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:background="@drawable/bg_play_drag_indicator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <LinearLayout
+            android:id="@+id/containerPlayGalleryHeader"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/play_dp_12"
+            android:paddingEnd="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/play_dp_12"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/v_drag_indicator"
+            >
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/album"
+                android:textColor="@color/Neutral_N700_96"
+                app:typographyType="body_2"
+                tools:text="Album" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvPlayGalleryAlbumLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Green_G500"
+                app:typographyType="body_2"
+                tools:text="Semua media" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPlayGallery"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/spacing_lvl1"
+            android:paddingEnd="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerPlayGalleryHeader"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPlayAlbum"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/spacing_lvl1"
+            android:paddingEnd="@dimen/spacing_lvl1"
+            android:paddingBottom="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/v_drag_indicator"
+            />
+
+        <LinearLayout
+            android:id="@+id/containerPlayLoading"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/layout_lvl0"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/containerPlayGalleryHeader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            >
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

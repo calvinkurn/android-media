@@ -16,8 +16,6 @@ public interface IPromoListView extends IBaseView {
 
     void renderNextPage(boolean hasNextPage);
 
-    void renderErrorGetPromoDataList(String message);
-
     void renderEmptyResultGetPromoDataList();
 
     void renderErrorHttpGetPromoDataList(String message);

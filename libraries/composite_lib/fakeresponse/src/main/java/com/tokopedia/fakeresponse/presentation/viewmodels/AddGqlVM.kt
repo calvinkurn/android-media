@@ -30,6 +30,7 @@ class AddGqlVM constructor(
     val liveDataTransactionEntity = MutableLiveData<LiveDataResult<TransactionEntity>>()
     val liveDataGqlUpdate = MutableLiveData<LiveDataResult<Boolean>>()
     val liveDataExport = MutableLiveData<LiveDataResult<String>>()
+    val liveDataDeleteRecord = MutableLiveData<LiveDataResult<Boolean>>()
 
     override val coroutineContext: CoroutineContext
         get() = workerDispatcher + ceh
@@ -94,6 +95,17 @@ class AddGqlVM constructor(
                 liveDataExport.postValue(Success(text))
             } catch (ex: Exception) {
                 liveDataExport.postValue(Fail(ex))
+            }
+        }
+    }
+
+    fun delete(id: Int) {
+        launch {
+            try {
+                useCase.deleteRecord(id)
+                liveDataDeleteRecord.postValue(Success(true))
+            } catch (ex: Exception) {
+                liveDataDeleteRecord.postValue(Fail(ex))
             }
         }
     }

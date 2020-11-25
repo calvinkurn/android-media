@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.ShopComponentHelper;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.favourite.view.fragment.ShopFavouriteListFragment;
@@ -39,6 +39,6 @@ public class ShopFavouriteListActivity extends BaseSimpleActivity implements Has
 
     @Override
     public ShopComponent getComponent() {
-        return ShopComponentInstance.getComponent(getApplication());
+        return new ShopComponentHelper().getComponent(getApplication(), this);
     }
 }

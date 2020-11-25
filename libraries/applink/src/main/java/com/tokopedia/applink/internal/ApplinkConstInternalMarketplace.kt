@@ -89,7 +89,11 @@ object ApplinkConstInternalMarketplace {
 
     // SetCashbackActivity
     @JvmField
-    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/{productName}/"
+    val SET_CASHBACK = "$INTERNAL_MARKETPLACE/set-cashback/{productId}/"
+
+    // CampaignStockActivity
+    @JvmField
+    val RESERVED_STOCK = "$INTERNAL_MARKETPLACE/reserved-stock/{productId}/{shopId}/"
 
     // CreateReviewActivity
     @JvmField
@@ -98,8 +102,11 @@ object ApplinkConstInternalMarketplace {
     // InboxReputationActivity
     val INBOX_REPUTATION = "$INTERNAL_MARKETPLACE/review"
 
+    //ReviewDetailActivity
+    val REVIEW_DETAIL = "$INTERNAL_MARKETPLACE/review/detail/{feedback_id}/"
+
     // InboxReputationDetailActivity
-    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/review/{reputation_id}/"
+    val INBOX_REPUTATION_DETAIL = "$INTERNAL_MARKETPLACE/reputation/{reputation_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -113,7 +120,10 @@ object ApplinkConstInternalMarketplace {
     val OPEN_SHOP = "$INTERNAL_MARKETPLACE/shop-open"
 
     @JvmField
-    val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
+    val SHOP_PAGE_BASE = "$INTERNAL_MARKETPLACE/shop-page"
+
+    @JvmField
+    val SHOP_PAGE_DOMAIN = "$SHOP_PAGE_BASE?domain={domain}"
 
     //ShopInfoActivity
     @JvmField
@@ -121,20 +131,25 @@ object ApplinkConstInternalMarketplace {
 
     //ShopPageActivity
     @JvmField
-    val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
+    val SHOP_PAGE = "$SHOP_PAGE_BASE/{shop_id}/"
 
     @JvmField
-    val SHOP_PAGE_HOME = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/home"
+    val SHOP_PAGE_HOME = "$SHOP_PAGE_BASE/{shop_id}/home"
 
     @JvmField
-    val SHOP_PAGE_INFO = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/info"
+    val SHOP_PAGE_INFO = "$SHOP_PAGE_BASE/{shop_id}/info"
 
     @JvmField
-    val SHOP_PAGE_PRODUCT_LIST = "$INTERNAL_MARKETPLACE/shop-page-product-list/{shop_id}/etalase/{etalase_id}/"
+    val SHOP_PAGE_REVIEW = "$SHOP_PAGE_BASE/{shop_id}/review"
 
-    //ReviewShopInfoActiviy
     @JvmField
-    val SHOP_REVIEW_APPLINK = "$INTERNAL_MARKETPLACE/shop/{shop_id}/review"
+    val SHOP_PAGE_PRODUCT = "$SHOP_PAGE_BASE/{shop_id}/product"
+
+    @JvmField
+    val SHOP_PAGE_FEED = "$SHOP_PAGE_BASE/{shop_id}/feed"
+
+    @JvmField
+    val SHOP_PAGE_PRODUCT_LIST = "$SHOP_PAGE_BASE-product-list/{shop_id}/etalase/{etalase_id}/"
 
     // GmSubscribeHomeActivity
     @JvmField
@@ -176,6 +191,12 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
+    @JvmField
+    val SHOP_SETTINGS_SHIPPING = "$SHOP_SETTINGS_BASE-shipping"
+
+    @JvmField
+    val SHOP_SETTINGS_COD = "$SHOP_SETTINGS_BASE-cod"
+
     //DistrictRecommendationShopSettingsActivity
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
@@ -197,11 +218,15 @@ object ApplinkConstInternalMarketplace {
     val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
 
     @JvmField
+    val CHAT_SETTING = "$INTERNAL_MARKETPLACE/chat/settings"
+    @JvmField
     val CHAT_SETTING_TEMPLATE = "$INTERNAL_MARKETPLACE/chat/settings/templatechat"
 
     //Report Product
     @JvmField
     val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product-report/{id}/"
+    @JvmField
+    val REPORT_PRODUCT_URL = "$INTERNAL_MARKETPLACE/product-report/{id}/?url={url}"
 
     // ShopScoreDetailActivity
     @JvmField
@@ -232,11 +257,20 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    // AttachProductActivity
     @JvmField
-    val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
+    val ATTACH_PRODUCT = "$INTERNAL_MARKETPLACE/user-attach-product"
+
+    @JvmField
+    val SHOP_PAGE_SETTING = "$SHOP_PAGE_BASE-setting"
+
     // AttachVoucherActivity
     @JvmField
     val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    // OrderHistoryActivity
+    @JvmField
+    val ORDER_HISTORY = "$INTERNAL_MARKETPLACE/user-order-history/{shop_id}/"
 
     // DashboardActivity
     @JvmField
@@ -260,17 +294,9 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
 
-    // GMStatisticDashboardActivity
-    @JvmField
-    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
-
     //MitraToppersDashboardActivity
     @JvmField
     val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
-
-    //GMFeaturedProductActivity
-    @JvmField
-    val GOLD_MERCHANT_FEATURED_PRODUCT = "$INTERNAL_MARKETPLACE/gold-merchant-featured-product"
 
     //SellerInfoActivity
     @JvmField
@@ -290,10 +316,19 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val REVIEW_SELLER_REPORT = "$INTERNAL_MARKETPLACE/review-report"
 
+    //ShopFavouriteListActivity
+    @JvmField
+    val SHOP_FAVOURITE_LIST = "$INTERNAL_MARKETPLACE/shop-favourites"
+
     @JvmField
     val ARGS_SHOP_ID = "ARGS_SHOP_ID"
 
     @JvmField
     val ARGS_REVIEW_ID = "ARGS_REVIEW_ID"
 
+    @JvmField
+    val ARGS_LAYOUT_ID = "layoutID"
+
+    @JvmField
+    val ARGS_CACHE_MANAGER_ID = "cache_manager_id"
 }

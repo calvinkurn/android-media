@@ -3,14 +3,17 @@ package com.tokopedia.product.detail.data.util
 import android.net.Uri
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.unifycomponents.ticker.Ticker
+import org.json.JSONArray
+import org.json.JSONObject
 
 /**
  * Created by Yehezkiel on 2020-02-11
@@ -37,6 +40,14 @@ object TrackingUtil {
         return list
     }
 
+    fun getTickerTypeInfoString(tickerType:Int) : String {
+        return when(tickerType){
+            Ticker.TYPE_INFORMATION -> "info"
+            Ticker.TYPE_WARNING -> "warning"
+            else -> "other"
+        }
+    }
+
     fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, shopId: String, position: Int): List<Any> {
         return vouchers.withIndex().filter { it.value.isAvailable() }.map {
             DataLayer.mapOf(
@@ -58,6 +69,38 @@ object TrackingUtil {
         linkerData.catLvl1 = productInfo.basic.category.name
         linkerData.userId = userId ?: ""
         linkerData.currency = ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE
+        return linkerData
+    }
+
+    fun createLinkerDataForViewItem(productInfo: DynamicProductInfoP1, userId: String?): LinkerData {
+        val linkerData = LinkerData()
+        linkerData.shopId = productInfo.basic.shopID
+        linkerData.price = productInfo.finalPrice.toString()
+        linkerData.productName = productInfo.getProductName
+        linkerData.sku = productInfo.basic.productID
+        linkerData.currency = ProductTrackingConstant.Tracking.CURRENCY_DEFAULT_VALUE
+        productInfo.basic.category.detail.getOrNull(0)?.let {
+            linkerData.level1Name = it.name
+            linkerData.level1Id = it.id
+        }
+        linkerData.userId = userId ?: ""
+        linkerData.content = JSONArray().put(
+                JSONObject().apply {
+                    put(ProductTrackingConstant.Tracking.ID, productInfo.basic.productID)
+                    put(ProductTrackingConstant.Tracking.QUANTITY, productInfo.data.stock.value.toString())
+                }).toString()
+        productInfo.basic.category.detail.getOrNull(1)?.let {
+            linkerData.level2Name = it.name
+            linkerData.level2Id = it.id
+        }
+        linkerData.contentId = productInfo.basic.productID
+        linkerData.contentType = ProductTrackingConstant.Tracking.CONTENT_TYPE
+        productInfo.basic.category.detail.getOrNull(2)?.let {
+            linkerData.level3Name = it.name
+            linkerData.level3Id = it.id
+            linkerData.productCategory = it.name
+        }
+        linkerData.quantity = ProductTrackingConstant.Tracking.BRANCH_QUANTITY
         return linkerData
     }
 
@@ -115,16 +158,21 @@ object TrackingUtil {
         return TextUtils.join("/", list)
     }
 
-
-    fun getEnhanceShopType(goldOS: ShopInfo.GoldOS?): String {
-        return when {
-            goldOS?.isOfficial == 1 -> "official_store"
-            goldOS?.isGold == 1 -> "gold_merchant"
-            else -> "regular"
-        }
-    }
-
     fun getFormattedPrice(price: Int): String {
         return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
+    }
+
+    fun addDiscussionParams(mapEvent: MutableMap<String, Any>, userId: String): MutableMap<String, Any> {
+        with(ProductTrackingConstant.Tracking) {
+            mapEvent.putAll(
+                    mapOf(
+                            KEY_BUSINESS_UNIT to BUSINESS_UNIT,
+                            KEY_CURRENT_SITE to CURRENT_SITE,
+                            KEY_DISCUSSION_USER_ID to userId,
+                            KEY_SCREEN_NAME to PRODUCT_DETAIL_SCREEN_NAME
+                    )
+            )
+        }
+        return mapEvent
     }
 }

@@ -4,7 +4,9 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.common.GQLQueryConstant.QUERY_BRANDLIST_CATEGORIES
+import com.tokopedia.brandlist.brandlist_search.di.BrandlistSearchScope
+import com.tokopedia.brandlist.common.BrandlistDispatcherProvider
+import com.tokopedia.brandlist.common.BrandlistDispatcherProviderImp
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,9 +19,6 @@ class BrandlistCategoryModule {
 
     @BrandlistCategoryScope
     @Provides
-    @Named(QUERY_BRANDLIST_CATEGORIES)
-    fun provideQueryBrandlistCategories(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_brandlist_get_categories)
-    }
+    fun provideDispatcherProvider(): BrandlistDispatcherProvider = BrandlistDispatcherProviderImp()
 
 }

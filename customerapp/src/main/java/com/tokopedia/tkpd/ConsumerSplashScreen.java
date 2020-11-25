@@ -3,6 +3,7 @@ package com.tokopedia.tkpd;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -14,8 +15,7 @@ import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
-import com.tokopedia.iris.Iris;
-import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -23,12 +23,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -38,8 +34,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
-    public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
-    private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
+    private static final String REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -59,13 +54,7 @@ public class ConsumerSplashScreen extends SplashScreen {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        createAndCallChkApk();
-        CMPushNotificationManager.getInstance()
-                .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this.getApplicationContext()), false);
-
-
-        checkInstallReferrerInitialised();
-        syncFcmToken();
+        executeInBackground();
     }
 
     private void checkInstallReferrerInitialised() {
@@ -77,12 +66,17 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
     }
 
-    private void createAndCallChkApk(){
+    private void executeInBackground(){
         WeaveInterface chkTmprApkWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Boolean execute() {
-                trackIrisEventForAppOpen();
+                CMPushNotificationManager.getInstance()
+                        .refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(ConsumerSplashScreen.this.getApplicationContext()), false);
+
+                checkInstallReferrerInitialised();
+                syncFcmToken();
+                registerPushNotif();
                 return checkApkTempered();
             }
         };
@@ -94,11 +88,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         SyncFcmTokenService.Companion.startService(this);
     }
 
-    private void trackIrisEventForAppOpen() {
-        Iris instance = IrisAnalytics.Companion.getInstance(ConsumerSplashScreen.this);
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_SITE_OPEN);
-        instance.saveEvent(map);
+    private void registerPushNotif() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            RegisterPushNotifService.Companion.startService(getApplicationContext());
+        }
     }
 
     @NotNull
@@ -162,7 +155,7 @@ public class ConsumerSplashScreen extends SplashScreen {
         return new RemoteConfig.Listener() {
             @Override
             public void onComplete(RemoteConfig remoteConfig) {
-                TimberWrapper.initByConfig(getApplication(), remoteConfig);
+                TimberWrapper.initByRemoteConfig(getApplication(), remoteConfig);
             }
 
             @Override

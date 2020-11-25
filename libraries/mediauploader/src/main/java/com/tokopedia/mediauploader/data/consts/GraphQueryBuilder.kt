@@ -9,6 +9,7 @@ object GraphQueryBuilder {
           uploadpedia_policy(source: $paramSourceId) {
             source_policy {
               host
+              timeout
               image_policy {
                 max_file_size
                 max_res {

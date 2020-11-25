@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.analytics.ChatTemplateAnalytics;
@@ -82,8 +83,22 @@ public class TemplateChatFragment extends BaseDaggerFragment
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
         fragment.setArguments(extras);
-        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initArguments();
+    }
+
+    private void initArguments() {
+        if (getArguments() != null) {
+            isSeller = getArguments().getBoolean(PARAM_IS_SELLER);
+        }
+        if (GlobalConfig.isSellerApp()) {
+            isSeller = true;
+        }
     }
 
     @Override

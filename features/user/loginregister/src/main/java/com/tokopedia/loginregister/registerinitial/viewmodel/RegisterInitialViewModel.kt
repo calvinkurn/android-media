@@ -1,8 +1,8 @@
 package com.tokopedia.loginregister.registerinitial.viewmodel
 
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.fragment.app.Fragment
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -17,13 +17,14 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialUseCase
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConstant
+import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
-import com.tokopedia.sessioncommon.data.profile.ProfileInfo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
@@ -37,7 +38,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
-import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -90,6 +90,10 @@ class RegisterInitialViewModel @Inject constructor(
     val validateToken: LiveData<String>
         get() = mutableValidateToken
 
+    private val mutableShowPopup = MutableLiveData<PopupError>()
+    val showPopup: LiveData<PopupError>
+        get() = mutableShowPopup
+
     private val mutableGoToActivationPage = MutableLiveData<MessageErrorException>()
     val goToActivationPage: LiveData<MessageErrorException>
         get() = mutableGoToActivationPage
@@ -106,9 +110,13 @@ class RegisterInitialViewModel @Inject constructor(
     val goToSecurityQuestionAfterRelogin: LiveData<String>
         get() = mutableGoToSecurityQuestionAfterRelogin
 
-    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfo>>()
-    val getUserInfoResponse: LiveData<Result<ProfileInfo>>
+    private val mutableGetUserInfoResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoResponse: LiveData<Result<ProfileInfoData>>
         get() = mutableGetUserInfoResponse
+
+    private val mutableGetUserInfoAfterAddPinResponse = MutableLiveData<Result<ProfileInfoData>>()
+    val getUserInfoAfterAddPinResponse: LiveData<Result<ProfileInfoData>>
+        get() = mutableGetUserInfoAfterAddPinResponse
 
     private val mutableGetTickerInfoResponse = MutableLiveData<Result<List<TickerInfoPojo>>>()
     val getTickerInfoResponse: LiveData<Result<List<TickerInfoPojo>>>
@@ -165,6 +173,7 @@ class RegisterInitialViewModel @Inject constructor(
                         userSession,
                         onSuccessLoginTokenFacebook(),
                         onFailedLoginTokenFacebook(),
+                        {showPopup().invoke(it.loginToken.popupError)},
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
                 )
@@ -181,6 +190,7 @@ class RegisterInitialViewModel @Inject constructor(
                         userSession,
                         onSuccessLoginTokenFacebookPhone(),
                         onFailedLoginTokenFacebookPhone(),
+                        { showPopup().invoke(it.loginToken.popupError) },
                         onGoToSecurityQuestion("")
                 )
         )
@@ -196,6 +206,7 @@ class RegisterInitialViewModel @Inject constructor(
                         userSession,
                         onSuccessLoginTokenGoogle(),
                         onFailedLoginTokenGoogle(),
+                        {showPopup().invoke(it.loginToken.popupError)},
                         onGoToActivationPage(),
                         onGoToSecurityQuestion(email)
                 )
@@ -207,6 +218,12 @@ class RegisterInitialViewModel @Inject constructor(
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 onSuccessGetUserInfo(),
                 onFailedGetUserInfo()))
+    }
+
+    fun getUserInfoAfterAddPin() {
+        getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                onSuccessGetUserInfoAfterAddPin(),
+                onFailedGetUserInfoAfterAddPin()))
     }
 
     fun getTickerInfo() {
@@ -285,6 +302,7 @@ class RegisterInitialViewModel @Inject constructor(
                 userSession, validateToken), LoginTokenSubscriber(userSession,
                 onSuccessLoginTokenAfterSQ(),
                 onFailedLoginTokenAfterSQ(validateToken),
+                {showPopup().invoke(it.loginToken.popupError)},
                 onGoToActivationPageAfterRelogin(validateToken),
                 onGoToSecurityQuestionAfterRelogin("")))
     }
@@ -386,13 +404,25 @@ class RegisterInitialViewModel @Inject constructor(
 
     private fun onSuccessGetUserInfo(): (ProfilePojo) -> Unit {
         return {
-            mutableGetUserInfoResponse.value = Success(it.profileInfo)
+            mutableGetUserInfoResponse.value = Success(ProfileInfoData(it.profileInfo))
         }
     }
 
     private fun onFailedGetUserInfo(): (Throwable) -> Unit {
         return {
             mutableGetUserInfoResponse.value = Fail(it)
+        }
+    }
+
+    private fun onSuccessGetUserInfoAfterAddPin(): (ProfilePojo) -> Unit {
+        return {
+            mutableGetUserInfoAfterAddPinResponse.value = Success(ProfileInfoData(it.profileInfo))
+        }
+    }
+
+    private fun onFailedGetUserInfoAfterAddPin(): (Throwable) -> Unit {
+        return {
+            mutableGetUserInfoAfterAddPinResponse.value = Fail(it)
         }
     }
 
@@ -464,6 +494,12 @@ class RegisterInitialViewModel @Inject constructor(
         return {
             userSession.clearToken()
             mutableActivateUserResponse.value = Fail(it)
+        }
+    }
+
+    private fun showPopup(): (PopupError) -> Unit {
+        return {
+            mutableShowPopup.value = it
         }
     }
 

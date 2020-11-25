@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="empty_icon_talk_width">203dp</dimen>
-    <dimen name="empty_icon_talk_height">116dp</dimen>
-    <dimen name="margin_comment_seperator_left">58dp</dimen>
-</resources>

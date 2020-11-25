@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16">
+        android:paddingLeft="@dimen/layout_lvl1"
+        android:paddingRight="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl1">
 
-        <com.tokopedia.common_digital.common.widget.DigitalSearchInputView
-            android:id="@+id/siv_search_number"
+        <com.tokopedia.unifycomponents.SearchBarUnify
+            android:id="@+id/telco_search_number_input_view"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16" />
+            app:search_bar_show_icon="false"
+            app:search_bar_clearable="true"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/btnContactPicker"
-            android:layout_width="@dimen/dp_25"
-            android:layout_height="@dimen/dp_25"
+        <ImageView
+            android:id="@+id/telco_search_number_contact_picker"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
             android:layout_gravity="end|center"
-            android:background="@drawable/digital_bg_topup_contact_picker" />
+            app:srcCompat="@drawable/digital_topup_ic_contact" />
 
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="#f3f4f5"/>
-    
+        android:layout_height="@dimen/layout_lvl1"
+        android:background="@color/Neutral_N50" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvNumberList"
+        android:id="@+id/telco_search_number_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:layout_height="match_parent"
+        android:background="@color/Neutral_N0"
         tools:listitem="@layout/item_autocomplete_fav_num" />
 
 </LinearLayout>

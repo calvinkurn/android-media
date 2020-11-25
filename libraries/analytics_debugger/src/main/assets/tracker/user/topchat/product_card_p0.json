@@ -1,0 +1,29 @@
+{
+  "readme": "#EE1 - View on product thumbnail from attach manual buyer",
+  "mode": "subset",
+  "query": [
+    {
+      "event": "view_item_list",
+      "eventCategory": "chat detail",
+      "item_list": "/chat",
+      "eventAction": "view on product thumbnail",
+      "items": [
+        {
+          "dimension40": "/chat",
+          "list": "/chat"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "chat detail",
+      "item_list": "/chat",
+      "eventAction": "click on product thumbnail",
+      "items": [
+        {
+          "dimension40": "/chat"
+        }
+      ]
+    }
+  ]
+}

@@ -9,50 +9,73 @@ import com.google.gson.annotations.SerializedName;
  * @author lalit.singh
  */
 public class CMButton {
+
+    @Expose
     @ColumnInfo(name = "text")
     @SerializedName("text")
-    @Expose
     public String txt;
+
+    @Expose
     @ColumnInfo(name = "clr")
     @SerializedName("clr")
-    @Expose
     public String color;
+
+    @Expose
     @ColumnInfo(name = "bgc")
     @SerializedName("bgc")
-    @Expose
     public String bgColor;
+
+    @Expose
     @ColumnInfo(name = "sz")
     @SerializedName("sz")
-    @Expose
     public String size;
+
+    @Expose
     @SerializedName("appLink")
     @ColumnInfo(name = "appLink")
-    @Expose
     public String appLink;
+
+    @Expose
     @ColumnInfo(name = "pd")
     @SerializedName("pd")
-    @Expose
     public int padding;
+
+    @Expose
     @ColumnInfo(name = "sc")
     @SerializedName("sc")
-    @Expose
     public String strokeColor;
+
+    @Expose
     @ColumnInfo(name = "sw")
     @SerializedName("sw")
-    @Expose
     public int strokeWidth;
+
+    @Expose
     @ColumnInfo(name = "rd")
     @SerializedName("rd")
-    @Expose
     public float cornerRadius;
+
+    @Expose
     @ColumnInfo(name = "id")
     @SerializedName("id")
-    @Expose
     private String id;
 
-    public CMButton() {
+    @Expose
+    @ColumnInfo(name = "unifyType")
+    @SerializedName("unifyType")
+    private String unifyType = "main";
 
-    }
+    @Expose
+    @ColumnInfo(name = "unifyVariant")
+    @SerializedName("unifyVariant")
+    private String unifyVariant = "filled";
+
+    @Expose
+    @ColumnInfo(name = "unifySize")
+    @SerializedName("unifySize")
+    private String unifySize = "medium";
+
+    public CMButton() {}
 
     public String getTxt() {
         return txt;
@@ -133,4 +156,29 @@ public class CMButton {
     public void setId(String id) {
         this.id = id;
     }
+
+    public String getUnifyType() {
+        return unifyType;
+    }
+
+    public void setUnifyType(String unifyType) {
+        this.unifyType = unifyType;
+    }
+
+    public String getUnifyVariant() {
+        return unifyVariant;
+    }
+
+    public void setUnifyVariant(String unifyVariant) {
+        this.unifyVariant = unifyVariant;
+    }
+
+    public String getUnifySize() {
+        return unifySize;
+    }
+
+    public void setUnifySize(String unifySize) {
+        this.unifySize = unifySize;
+    }
+
 }

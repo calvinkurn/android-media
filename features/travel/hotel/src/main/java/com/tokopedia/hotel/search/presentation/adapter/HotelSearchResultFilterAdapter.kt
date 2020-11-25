@@ -1,19 +1,19 @@
 package com.tokopedia.hotel.search.presentation.adapter
 
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.hotel.R
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import kotlinx.android.synthetic.main.item_hotel_search_filter.view.*
 
-class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
+class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE, val listener: ActionListener? = null)
     : RecyclerView.Adapter<HotelSearchResultFilterAdapter.HotelSearchResultFilterViewHolder>() {
 
-    val selectedItems: MutableSet<String> = mutableSetOf()
+    var selectedItems: MutableSet<String> = mutableSetOf()
     private val _item: MutableList<HotelFilterItem> = mutableListOf()
 
     fun updateItems(items: List<HotelFilterItem>, selected: Set<String>? = null){
@@ -38,10 +38,12 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
         val item = _item[position]
         holder.bindItem(item, selectedItems.contains(item.itemId))
         holder.itemView.setOnClickListener {
+            if (mode == MODE_SINGLE) selectedItems.clear()
             if (selectedItems.contains(item.itemId))
                 selectedItems.remove(item.itemId)
             else
                 selectedItems.add(item.itemId)
+            listener?.onSelectedFilterChanged(selectedItems.toList())
             notifyDataSetChanged()
         }
     }
@@ -55,18 +57,22 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
                 else
                     image.gone()
 
-                title.text = item.itemTitle
+                hotel_selection_chip_title.text = item.itemTitle
                 base_item_filter.isSelected = isSelected
                 if (isSelected){
-                    image.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.ic_stars_active_xxl))
-                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
+                    image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_hotel_rating_stars))
+                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                 } else {
                     image.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_star_grayscale_24))
-                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.light_secondary))
+                    hotel_selection_chip_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
                 }
             }
         }
 
+    }
+
+    interface ActionListener {
+        fun onSelectedFilterChanged(selectedItems: List<String>)
     }
 
     companion object {

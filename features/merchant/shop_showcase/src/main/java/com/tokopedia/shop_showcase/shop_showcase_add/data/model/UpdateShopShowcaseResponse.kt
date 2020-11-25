@@ -10,7 +10,7 @@ data class UpdateShopShowcaseBaseResponse(
 
 data class UpdateShopShowcaseResponse(
         @Expose
-        @SerializedName("success") val success: Boolean = false,
+        @SerializedName("success") val success: Boolean? = false,
         @Expose
-        @SerializedName("message") val message: String = ""
+        @SerializedName("message") val message: String? = ""
 )

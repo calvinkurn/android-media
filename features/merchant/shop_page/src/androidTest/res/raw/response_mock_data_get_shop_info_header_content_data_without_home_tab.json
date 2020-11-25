@@ -1,0 +1,40 @@
+[{
+  "data": {
+    "shopInfoByID": {
+      "result": [{
+        "shopCore": {
+          "shopID": "1154916",
+          "description": "Indonesia\u0026#39;s No.1 Gaming Store",
+          "domain": "psegameshop",
+          "name": "Psegameshop",
+          "tagLine": "Gaming is awesome with PSe",
+          "url": "https://www.tokopedia.com/psegameshop"
+        },
+        "freeOngkir": {
+          "isActive": true,
+          "imgURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+        },
+        "closedInfo": {
+          "closedNote": "",
+          "reason": "Mohon maaf atas ketidaknyamanan yang Anda alami. Dengan berat hati toko Anda harus kami tutup karena adanya indikasi pelanggaran Syarat dan Ketentuan Tokopedia. Silahkan periksa kotak pesan Anda untuk penjelasan lebih lanjut. \u003cbr\u003e Demi kenyamanan dan keamanan bertransaksi di Tokopedia, kami himbau agar Anda dapat memperhatikan dan memahami dengan baik seluruh Syarat dan Ketentuan Transaksi Penjualan (Poin D) di \u003ca href='https://www.tokopedia.com/terms.pl#sell'\u003ehttps://www.tokopedia.com/terms.pl#sell\u003c/a\u003e. \u003cbr\u003eTerima kasih,\u003cbr\u003eTim Tokopedia",
+          "until": ""
+        },
+        "createInfo": {
+          "openSince": "May 2016"
+        },
+        "shopAssets": {
+          "avatar": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2020/6/28/1154916/1154916_bcba5d72-786d-4208-9bba-8885b87df9b8.png",
+          "cover": "https://ecs7-p.tokopedia.net/img/cache/1190/shops-1/2020/7/22/9544841/9544841_83960428-9caf-4e9d-a72c-1f05074f97a4"
+        },
+        "shopLastActive": "1596103521",
+        "location": "Jakarta Utara",
+        "isAllowManage": 0,
+        "statusInfo": {
+          "shopStatus": 1,
+          "statusMessage": "",
+          "statusTitle": ""
+        }
+      }]
+    }
+  }
+}]

@@ -19,13 +19,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.Transformation
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -39,7 +44,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_LOCK
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet
-import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent
 import com.tokopedia.saldodetails.response.model.GqlDetailsResponse
 import com.tokopedia.saldodetails.response.model.GqlMerchantCreditResponse
 import com.tokopedia.saldodetails.utils.ErrorMessage
@@ -47,6 +52,8 @@ import com.tokopedia.saldodetails.utils.Success
 import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity
 import com.tokopedia.saldodetails.view.activity.SaldoHoldInfoActivity
 import com.tokopedia.saldodetails.viewmodels.SaldoDetailViewModel
+import com.tokopedia.seller.active.common.service.UpdateShopActiveService
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.showcase.*
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -56,6 +63,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
     companion object {
         val REQUEST_WITHDRAW_CODE = 3333
+
+        val SALDODETAIL_FINTECH_PLT = "saldodetailfintech_plt"
+        val SALDODETAIL_FINTECH_PLT_PREPARE_METRICS = "saldodetailfintech_plt_prepare_metrics"
+        val SALDODETAIL_FINTECH_PLT_NETWORK_METRICS = "saldodetailfintech_plt_network_metrics"
+        val SALDODETAIL_FINTECH_PLT_RENDER_METRICS = "saldodetailfintech_plt_render_metrics"
 
         val IS_SELLER_ENABLED = "is_user_enabled"
         val BUNDLE_PARAM_SELLER_DETAILS = "seller_details"
@@ -138,6 +150,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     private var showMclBlockTickerFirebaseFlag = false
     private var remoteConfig: FirebaseRemoteConfigImpl? = null
     private var saveInstanceCacheManager: SaveInstanceCacheManager? = null
+    private val performanceInterface by lazy { PageLoadTimePerformanceCallback(SALDODETAIL_FINTECH_PLT_PREPARE_METRICS, SALDODETAIL_FINTECH_PLT_NETWORK_METRICS, SALDODETAIL_FINTECH_PLT_RENDER_METRICS) as PageLoadTimePerformanceInterface}
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -151,6 +164,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         get() = remoteConfig!!.getBoolean(RemoteConfigKey.APP_ENABLE_MERCHANT_CREDIT_LINE,
                 true)
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        performanceInterface.startMonitoring(SALDODETAIL_FINTECH_PLT)
+        performanceInterface.startPreparePagePerformanceMonitoring()
+        super.onCreate(savedInstanceState)
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(com.tokopedia.saldodetails.R.layout.fragment_saldo_deposit, container, false)
@@ -161,9 +179,10 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRemoteConfig()
-        initialVar()
         initListeners()
+        initialVar()
         startShowCase()
+        context?.let { UpdateShopActiveService.startService(it) }
     }
 
     private fun initRemoteConfig() {
@@ -286,6 +305,11 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 .commit()
         this.saldoHistoryFragment = saldoHistoryFragment
 
+        if(isSellerMigrationEnabled(context)) {
+            merchantDetailLL?.hide()
+        } else {
+            merchantDetailLL?.show()
+        }
     }
 
     private fun setViewModelObservers() {
@@ -329,9 +353,13 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
                     showSaldoPrioritasFragment(it.data.data)
+                    performanceInterface.stopRenderPerformanceMonitoring()
                 }
                 else -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
                     hideSaldoPrioritasFragment()
                 }
             }
@@ -341,9 +369,13 @@ class SaldoDepositFragment : BaseDaggerFragment() {
                 androidx.lifecycle.Observer {
             when (it) {
                 is Success -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
+                    performanceInterface.startRenderPerformanceMonitoring()
                     showMerchantCreditLineFragment(it.data.data)
+                    performanceInterface.stopRenderPerformanceMonitoring()
                 }
                 else -> {
+                    performanceInterface.stopNetworkRequestPerformanceMonitoring()
                     hideMerchantCreditLineFragment()
                 }
             }
@@ -561,6 +593,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
         sellerBalanceInfoIcon!!.setOnClickListener { showBottomSheetInfoDialog(true) }
 
+        performanceInterface.stopPreparePagePerformanceMonitoring()
+        performanceInterface.startNetworkRequestPerformanceMonitoring()
 
         if (activity != null) {
             if (isSaldoNativeEnabled) {
@@ -599,7 +633,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     override fun initInjector() {
 
         activity?.let {
-            val saldoDetailsComponent = SaldoDetailsComponentInstance.getComponent(it)
+            val saldoDetailsComponent = getComponent(SaldoDetailsComponent::class.java)
             saldoDetailsComponent.inject(this)
 
 
@@ -844,4 +878,8 @@ class SaldoDepositFragment : BaseDaggerFragment() {
         ) { saldoDetailViewModel.getUserSaldoBalance() }.showRetrySnackbar()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        performanceInterface.stopMonitoring()
+    }
 }

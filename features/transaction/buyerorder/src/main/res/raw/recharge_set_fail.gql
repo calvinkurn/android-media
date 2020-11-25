@@ -1,0 +1,11 @@
+mutation rechargeSetOrderToFail($orderId: Int!) {
+  rechargeSetOrderToFail(order_id: $orderId) {
+    attributes {
+      user_id
+      order_status
+      is_success
+      error_message
+    }
+    error
+  }
+}

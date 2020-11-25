@@ -10,6 +10,7 @@ import com.tokopedia.brandlist.brandlist_page.data.model.OfficialStoreFeaturedSh
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistAllBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistFeaturedBrandUseCase
 import com.tokopedia.brandlist.brandlist_page.domain.GetBrandlistPopularBrandUseCase
+import com.tokopedia.brandlist.common.BrandlistDispatcherProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,8 +25,8 @@ class BrandlistPageViewModel @Inject constructor(
         private val getBrandListFeaturedBrandUseCase: GetBrandlistFeaturedBrandUseCase,
         private val getBrandListPopularBrandUseCase: GetBrandlistPopularBrandUseCase,
         private val getBrandListAllBrandUseCase: GetBrandlistAllBrandUseCase,
-        dispatcher: CoroutineDispatcher
-) : BaseViewModel(dispatcher) {
+        private val dispatchers: BrandlistDispatcherProvider
+) : BaseViewModel(dispatchers.ui()) {
 
     private val _getFeaturedBrandResult = MutableLiveData<Result<OfficialStoreFeaturedShop>>()
     val getFeaturedBrandResult: LiveData<Result<OfficialStoreFeaturedShop>>
@@ -50,15 +51,7 @@ class BrandlistPageViewModel @Inject constructor(
     private var firstLetterChanged = false
     private var totalBrandSize = 0
     private var currentOffset = INITIAL_OFFSET
-    private var currentLetter = INITIAL_LETTER
 
-    fun getCurrentOffset(): Int {
-        return currentOffset
-    }
-
-    fun getCurrentLetter(): String {
-        return currentLetter.toString()
-    }
 
     fun updateTotalBrandSize(totalBrandSize: Int) {
         this.totalBrandSize = totalBrandSize
@@ -68,34 +61,17 @@ class BrandlistPageViewModel @Inject constructor(
         currentOffset += renderedBrands
     }
 
-    fun updateCurrentLetter() {
-        val firstLetter = getTheFirstLetter(totalBrandSize, currentOffset)
-        if (firstLetter != currentLetter) {
-            currentLetter = firstLetter
-            firstLetterChanged = true
-        }
-    }
-
-    fun updateAllBrandRequestParameter() {
-        if (firstLetterChanged) {
-            totalBrandSize = 0
-            currentOffset = 0
-            firstLetterChanged = false
-        }
+    fun getTotalBrandSize(): Int = totalBrandSize
+    fun getFirstLetterChanged(): Boolean = firstLetterChanged
+    fun getCurrentOffset(): Int = currentOffset
+    fun setOffset() {
+        currentOffset = 100
     }
 
     fun resetAllBrandRequestParameter() {
         firstLetterChanged = false
         totalBrandSize = 0
         currentOffset = INITIAL_OFFSET
-        currentLetter = INITIAL_LETTER
-    }
-
-    private fun getTheFirstLetter(totalBrandSize: Int, currentOffset: Int): Char {
-        return if (totalBrandSize == currentOffset) {
-            val newLetter = currentLetter + 1
-            newLetter
-        } else currentLetter
     }
 
     fun loadInitialData(category: Category?, userId: String?) {
@@ -124,10 +100,40 @@ class BrandlistPageViewModel @Inject constructor(
         }, onError = {})
     }
 
-    fun loadMoreAllBrands(category: Category?) {
+    fun loadBrandsPerAlphabet(category: Category?, brandFirstLetter: String) {
+        launchCatchError(block = {
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    brandFirstLetter).await()))
+        }, onError = {})
+    }
 
+    fun loadAllBrands(category: Category?) {
+        launchCatchError(block = {
+            _getAllBrandHeaderResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_HEADER_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    "").await()))
+
+            _getAllBrandResult.postValue(Success(getAllBrandAsync(
+                    category?.categoryId,
+                    INITIAL_OFFSET,
+                    ALL_BRANDS_QUERY,
+                    ALL_BRANDS_REQUEST_SIZE,
+                    ALPHABETIC_ASC_SORT,
+                    INITIAL_LETTER.toString()).await()))
+        }, onError = {})
+    }
+
+    fun loadMoreAllBrands(category: Category?, brandFirstLetter: String) {
         val requestSize = geRequestSize(totalBrandSize, currentOffset)
-
         launchCatchError(block = {
             _getAllBrandResult.postValue(Success(getAllBrandAsync(
                     category?.categoryId,
@@ -135,7 +141,7 @@ class BrandlistPageViewModel @Inject constructor(
                     ALL_BRANDS_QUERY,
                     requestSize,
                     ALPHABETIC_ASC_SORT,
-                    currentLetter.toString()).await()))
+                    brandFirstLetter).await()))
         }, onError = {})
     }
 
@@ -150,7 +156,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     private fun getFeaturedBrandsAsync(categoryId: String?): Deferred<OfficialStoreFeaturedShop> {
-        return async(Dispatchers.IO) {
+        return async(dispatchers.io()) {
             var featuredbrand = OfficialStoreFeaturedShop()
             try {
                 getBrandListFeaturedBrandUseCase.params = GetBrandlistFeaturedBrandUseCase
@@ -164,7 +170,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     private fun getPopularBrandsAsync(userId: String?, categoryId: ArrayList<Int>?): Deferred<OfficialStoreBrandsRecommendation> {
-        return async(Dispatchers.IO) {
+        return async(dispatchers.io()) {
             var popularBrand = OfficialStoreBrandsRecommendation()
             val categories = categoryId.toString().replace(" ","")
             try {
@@ -182,7 +188,7 @@ class BrandlistPageViewModel @Inject constructor(
     }
 
     private fun getNewBrandsAsync(userId: String?, categoryId: ArrayList<Int>?): Deferred<OfficialStoreBrandsRecommendation> {
-        return async(Dispatchers.IO) {
+        return async(dispatchers.io()) {
             var newBrand = OfficialStoreBrandsRecommendation()
             val categories = categoryId.toString().replace(" ","")
             try {
@@ -206,7 +212,7 @@ class BrandlistPageViewModel @Inject constructor(
                                  brandSize: Int,
                                  sortType: Int,
                                  firstLetter: String): Deferred<OfficialStoreAllBrands> {
-        return async(Dispatchers.IO) {
+        return async(dispatchers.io()) {
             var allBrand = OfficialStoreAllBrands()
             try {
                 getBrandListAllBrandUseCase.params = GetBrandlistAllBrandUseCase

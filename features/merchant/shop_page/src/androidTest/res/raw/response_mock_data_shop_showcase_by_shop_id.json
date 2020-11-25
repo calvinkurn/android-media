@@ -1,0 +1,127 @@
+[{
+  "data": {
+    "shopShowcasesByShopID": {
+      "result": [{
+        "id": "2",
+        "name": "Semua Produk",
+        "count": 91,
+        "type": -1,
+        "highlighted": false,
+        "alias": "etalase",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "8",
+        "name": "Diskon",
+        "count": 19,
+        "type": -1,
+        "highlighted": true,
+        "alias": "discount",
+        "useAce": true,
+        "badge": "https://ecs7.tokopedia.net/img/official_store/diskon-badge.png"
+      }, {
+        "id": "3",
+        "name": "Produk Terjual",
+        "count": 20,
+        "type": -1,
+        "highlighted": true,
+        "alias": "sold",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604696",
+        "name": "Best Deals!",
+        "count": 22,
+        "type": 1,
+        "highlighted": false,
+        "alias": "best-deals",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "21673034",
+        "name": "DBW Aloe Vera  Avocado",
+        "count": 4,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dbw-aloe-vera-avocado",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604687",
+        "name": "Dettol Antiseptic Liquid",
+        "count": 8,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-antiseptic-liquid",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604683",
+        "name": "Dettol Bodywash",
+        "count": 11,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-bodywash",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "16587526",
+        "name": "Dettol Antibacterial Soap",
+        "count": 8,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-antibacterial-soap",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "12604690",
+        "name": "Dettol Handwash",
+        "count": 14,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-handwash",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "16587482",
+        "name": "Dettol Hand Sanitizer \u0026 Wipes",
+        "count": 5,
+        "type": 1,
+        "highlighted": false,
+        "alias": "dettol-hand-sanitizer-wipes",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "23672639",
+        "name": "Aman Dari Kuman",
+        "count": 3,
+        "type": 1,
+        "highlighted": false,
+        "alias": "aman-dari-kuman",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "23672910",
+        "name": "Bebas Keringat dan Bau Badan",
+        "count": 15,
+        "type": 1,
+        "highlighted": false,
+        "alias": "bebas-keringat-dan-bau-badan",
+        "useAce": true,
+        "badge": ""
+      }, {
+        "id": "23673102",
+        "name": "Kulit Sehat dan Cantik",
+        "count": 1,
+        "type": 1,
+        "highlighted": false,
+        "alias": "kulit-sehat-dan-cantik",
+        "useAce": true,
+        "badge": ""
+      }],
+      "error": {
+        "message": ""
+      }
+    }
+  }
+}]

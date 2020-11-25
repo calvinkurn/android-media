@@ -7,10 +7,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.logisticcart.cod.di.DaggerCodComponent
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
 import com.tokopedia.purchase_platform.common.constant.Constant
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
-import com.tokopedia.purchase_platform.common.data.model.response.cod.Data
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest
+import com.tokopedia.purchase_platform.common.feature.cod.Data
 import javax.inject.Inject
 
 /**

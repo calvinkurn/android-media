@@ -4,7 +4,7 @@ import com.tokopedia.flight.orderlist.constant.FlightCancellationStatus
 import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.PassengerAmentityEntity
 import com.tokopedia.flight.orderlist.data.cloud.entity.PassengerEntity
-import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel
+import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderAmenityViewModel
 import java.util.*
 import javax.inject.Inject
@@ -30,9 +30,9 @@ constructor() {
         }
     }
 
-    fun transform(entities: List<PassengerEntity>): List<FlightOrderPassengerViewModel> {
+    fun transform(entities: List<PassengerEntity>): List<FlightOrderPassengerModel> {
         return entities.map {
-            return@map FlightOrderPassengerViewModel(
+            return@map FlightOrderPassengerModel(
                     it.type,
                     if (it.cancelStatus.isNotEmpty()) it.cancelStatus[0].status else 0,
                     if (it.cancelStatus.size > 1) it.cancelStatus[1].status else 0,

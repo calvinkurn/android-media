@@ -1,11 +1,11 @@
 package com.tokopedia.digital.newcart.domain.interactor;
 
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.newcart.domain.ICartDigitalRepository;
 import com.tokopedia.digital.newcart.domain.IVoucherDigitalRepository;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 
 import java.util.Map;
 
@@ -72,7 +72,7 @@ public class CartDigitalInteractor implements ICartDigitalInteractor {
     }
 
     @Override
-    public void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<String> subscriber) {
+    public void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<Boolean> subscriber) {
         compositeSubscription.add(
                 cartDigitalRepository.cancelVoucher(requestBodyCancelVoucher)
                         .subscribeOn(Schedulers.newThread())

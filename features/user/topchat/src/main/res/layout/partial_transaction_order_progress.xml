@@ -1,0 +1,153 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout"
+    tools:visibility="visible">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/chatcommon_1dp"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_order_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_order_status"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dp_topchat_12"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/dp_topchat_12"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            android:textColor="@color/topchat_charcoal_grey_68"
+            app:layout_constraintEnd_toStartOf="@+id/tp_order_visibility"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Pesanan Menunggu Konfirmasi" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tp_order_visibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_topchat_12"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingEnd="@dimen/dp_topchat_12"
+            android:paddingBottom="@dimen/spacing_lvl3"
+            android:textColor="@color/topchat_charcoal_grey_68"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="Tutup" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_description_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dp_topchat_12"
+            android:paddingEnd="@dimen/dp_topchat_12"
+            android:paddingBottom="@dimen/dp_topchat_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tp_order_status">
+
+            <ImageView
+                android:id="@+id/iv_order_thumbnail"
+                android:layout_width="@dimen/dp_topchat_46"
+                android:layout_height="@dimen/dp_topchat_46"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tp_order_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_topchat_9"
+                android:layout_marginLeft="@dimen/dp_topchat_9"
+                android:layout_marginTop="@dimen/dp_topchat_2"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintEnd_toStartOf="@+id/btn_action_label"
+                app:layout_constraintStart_toEndOf="@id/iv_order_thumbnail"
+                app:layout_constraintTop_toTopOf="@id/iv_order_thumbnail"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
+                tools:text="Pesanan Menunggu Konfirmasi"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_action_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minWidth="@dimen/dp_topchat_88"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/iv_order_thumbnail"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_order_thumbnail"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                tools:text="Lacak"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tp_estimate_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_topchat_7"
+                android:layout_marginEnd="@dimen/spacing_lvl4"
+                android:layout_marginRight="@dimen/spacing_lvl4"
+                android:includeFontPadding="false"
+                android:textColor="@color/topchat_charcoal_grey_68"
+                app:layout_constraintStart_toStartOf="@+id/tp_order_name"
+                app:layout_constraintTop_toBottomOf="@+id/tp_order_name"
+                app:typographyType="body_3"
+                tools:text="Estimasi tiba:" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tp_estimate_value"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_topchat_4"
+                android:layout_marginLeft="@dimen/dp_topchat_4"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:ellipsize="end"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:textColor="@color/Neutral_N700_96"
+                app:layout_constraintBottom_toBottomOf="@+id/tp_estimate_label"
+                app:layout_constraintEnd_toStartOf="@+id/btn_action_label"
+                app:layout_constraintStart_toEndOf="@+id/tp_estimate_label"
+                app:layout_constraintTop_toTopOf="@+id/tp_estimate_label"
+                app:typographyType="body_2"
+                tools:text="27 Apr 2020" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_topchat_4"
+        android:layout_gravity="top"
+        android:background="@drawable/bg_shadow_transaction_order_progres" />
+</merge>

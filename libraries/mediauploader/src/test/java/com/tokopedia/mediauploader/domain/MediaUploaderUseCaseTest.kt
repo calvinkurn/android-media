@@ -41,7 +41,7 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             When("create param") {
-                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath)
+                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath, "60")
             }
             Then("it should return upload url correctly") {
                 assert(requestParams.getString("url", "") == uploadUrl)
@@ -63,12 +63,12 @@ class MediaUploaderUseCaseTest: Spek({
             var requestParams = RequestParams()
 
             Given("set param with upload url and file path") {
-                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath)
+                requestParams = MediaUploaderUseCase.createParams(uploadUrl, filePath, "60")
             }
 
             Given("upload network services") {
                 coEvery {
-                    services.uploadFile(uploadUrl, any())
+                    services.uploadFile(uploadUrl, any(), "60")
                 } answers {
                     expectedValue
                 }
@@ -105,7 +105,7 @@ class MediaUploaderUseCaseTest: Spek({
             Given("network services") {
                 runBlocking {
                     val multipart = MultipartBody.Part.createFormData("test", "test")
-                    expectedValue = services.uploadFile(uploadUrl, multipart)
+                    expectedValue = services.uploadFile(uploadUrl, multipart, "60")
                 }
             }
 
@@ -125,7 +125,7 @@ class MediaUploaderUseCaseTest: Spek({
             Given("network services") {
                 runBlocking {
                     val multipart = MultipartBody.Part.createFormData("test", "test")
-                    expectedValue = services.uploadFile(uploadUrl, multipart)
+                    expectedValue = services.uploadFile(uploadUrl, multipart, "60")
                 }
             }
 

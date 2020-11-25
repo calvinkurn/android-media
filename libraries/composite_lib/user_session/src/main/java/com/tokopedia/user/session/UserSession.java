@@ -2,14 +2,20 @@ package com.tokopedia.user.session;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.text.TextUtils;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import javax.inject.Inject;
 
 import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
+import static com.tokopedia.user.session.Constants.ADVERTISINGID;
+import static com.tokopedia.user.session.Constants.ANDROID_ID;
 import static com.tokopedia.user.session.Constants.AUTOFILL_USER_DATA;
 import static com.tokopedia.user.session.Constants.EMAIL;
 import static com.tokopedia.user.session.Constants.FULL_NAME;
@@ -29,6 +35,8 @@ import static com.tokopedia.user.session.Constants.IS_LOGIN;
 import static com.tokopedia.user.session.Constants.IS_MSISDN_VERIFIED;
 import static com.tokopedia.user.session.Constants.IS_POWER_MERCHANT_IDLE;
 import static com.tokopedia.user.session.Constants.IS_SHOP_OFFICIAL_STORE;
+import static com.tokopedia.user.session.Constants.KEY_ADVERTISINGID;
+import static com.tokopedia.user.session.Constants.KEY_ANDROID_ID;
 import static com.tokopedia.user.session.Constants.LOGIN_ID;
 import static com.tokopedia.user.session.Constants.LOGIN_METHOD;
 import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
@@ -85,6 +93,51 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     public void setUserId(String userId) {
         setString(LOGIN_SESSION, LOGIN_ID, userId);
         setString(LOGIN_SESSION, GTM_LOGIN_ID, userId);
+    }
+
+    public String getAdsId(){
+        String adsId = getAndTrimOldString(ADVERTISINGID, KEY_ADVERTISINGID, "");
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            return adsId;
+        }else{
+            return null;
+        }
+    }
+
+    public String getAndroidId(){
+        String androidId = getAndTrimOldString(ANDROID_ID, KEY_ANDROID_ID, "");
+        if (androidId != null && !"".equalsIgnoreCase(androidId.trim())) {
+            return androidId;
+        } else {
+            String android_id = md5(
+                    Settings.Secure.getString(context.getContentResolver(),
+                    Settings.Secure.ANDROID_ID)
+            );
+            if (!TextUtils.isEmpty(android_id)) {
+                setString(ANDROID_ID, KEY_ANDROID_ID,android_id);
+            }
+            return android_id;
+        }
+    }
+
+    String md5(String s) {
+        try {
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            digest.update(s.getBytes());
+            byte[] messageDigest = digest.digest();
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : messageDigest) {
+                hexString.append(String.format("%02x", b & 0xff));
+            }
+            return hexString.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    public String getGTMLoginID(){
+        return getAndTrimOldString(LOGIN_SESSION, GTM_LOGIN_ID, "");
     }
 
     public boolean isLoggedIn() {

@@ -52,11 +52,61 @@ IterateCommitedImages (){
     #mv -f ${file%.jpg}.new $file
   done
 }
+#Check duplicate drawables and xml in commit
+foundDuplicateImages (){
+  list_of_file=""
+  for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg\|.xml\|.webp")
+  do
+    if [ -z "$list_of_file" ];
+    then
+          list_of_file=$file
+    else
+          list_of_file=$list_of_file","$file
+    fi
+  done
+  # echo $list_of_file
+
+  if [ ! -z "$list_of_file" ];
+  then
+    output=$(python tools/script_detect_duplicate_res.py --path $(git rev-parse --show-toplevel) --list $list_of_file)
+
+    #duplicate file found check in output
+    if [[ $output == *"command not found"* ]]; then
+        echo -e "$output"
+        echo -e "\n"
+        echo -e "After configuring python, please run following commands:"
+        echo -e "\n"
+        echo -e "pip install fnmatch"
+        echo -e "\n"
+        echo -e "pip install hashlib"
+        echo -e "\n"
+        echo -e "pip install argparse"
+        echo -e "\n"
+        exit 0
+    elif [[ $output == *"similar image/s found for file"* ]]; then
+        echo -e "\n"
+        echo "##################################"
+        echo "####   Duplicate File Found   ####"
+        echo "##################################"
+        echo -e "\n"
+        echo "Commit Failed, use \"git commit --no-verify\" to bypass the verification"
+        echo -e "\n"
+        echo -e "$output"
+        echo -e "\n"
+        exit 1
+    else
+        echo "No duplicates found for any committed files."
+        echo -e "\n"
+        exit 0
+    fi
+  fi
+}
 
 if [ -e .git/MERGE_MSG ]; then
     echo "Merge commit skipping image compression"
 else
     IterateCommitedImages
+    foundDuplicateImages
 fi
 
 #git diff --diff-filter=ACM --name-only HEAD | grep ".png\|.jpg" | xargs tinypng -k JeyuQt7BvAPMu9TQNy8C2uSMVqY3Qcsf

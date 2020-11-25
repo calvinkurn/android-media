@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Kupon/Promo</string>
+    <string name="promo_checkout_label_promo_recommendation_title">Ada %d promo terbaik untukmu</string>
+    <string name="promo_checkout_label_promo_recommendation_title_after_apply">%d promo terbaik dipilih</string>
+    <string name="promo_checkout_label_recommendation_benefit">Kamu bisa hemat %s</string>
+    <string name="promo_checkout_label_button_apply_promo">Pakai Promo (%d)</string>
+    <string name="label_error_global_promo_checkout">Oops, terjadi kesalahan. Coba pilih promo lagi.</string>
+    <string name="label_promo_page_summary_benefit_title">Kamu bisa hemat</string>
+    <string name="label_button_buy_without_promo">Belanja Tanpa Promo</string>
+    <string name="label_title_promo_dialog_backpressed">Simpan promo sebelum keluar?</string>
+    <string name="label_description_promo_dialog_backpressed">Kamu baru saja mengubah pilihan promo. Mau disimpan?</string>
+    <string name="label_primary_cta_promo_dialog_backpressed">Simpan Promo Baru</string>
+    <string name="label_secondary_cta_promo_dialog_backpressed">Keluar Halaman</string>
+    <string name="label_subtitle_promo_eligibility_header">Kamu bisa gabungkan promo biar makin hemat</string>
+    <string name="label_title_promo_eligibility_header">Pilih promo</string>
+    <string name="label_promo_input_hint">Masukkan kode promo</string>
+    <string name="label_button_apply_manual_input_promo">Terapkan</string>
+    <string name="label_prefix_attempted_promo_code">Kode promo:&#160;</string>
+    <string name="label_promo_recommendation_select">Pilih</string>
+    <string name="label_promo_recommendation_selected">Dipilih</string>
+    <string name="label_subtitle_promo_selected">Promo dipilih</string>
+    <string name="label_subtitle_only_one_promo">Hanya bisa pilih 1</string>
+    <string name="label_promo_show_detail">Lihat Detail</string>
+    <string name="label_promo_last_seen_title">Promo terakhir dilihat</string>
+    <string name="label_promo_code">Kode promo:&#160;</string>
+
+</resources>

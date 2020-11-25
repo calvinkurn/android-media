@@ -1,12 +1,10 @@
 package com.tokopedia.topads.dashboard.data.utils
 
 import android.content.Context
-
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel
-import com.tokopedia.topads.dashboard.R
-
-import java.util.Calendar
+import java.util.*
+import kotlin.collections.ArrayList
 
 object TopAdsDatePeriodUtil {
 

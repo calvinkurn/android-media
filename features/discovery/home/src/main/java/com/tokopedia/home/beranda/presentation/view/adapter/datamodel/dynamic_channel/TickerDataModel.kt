@@ -1,29 +1,27 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.home.beranda.domain.model.Ticker
+import com.tokopedia.home.beranda.domain.model.Tickers
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
-import java.util.ArrayList
-
 /**
- * @author by errysuprayogi on 11/28/17.
+ * @author by Lukas on 18/05/2020.
  */
 
-class TickerDataModel : HomeVisitable {
-
-    var tickers: ArrayList<Ticker.Tickers>? = null
-    private var isCache: Boolean = false
-    private var trackingData: Map<String, Any>? = null
-    private var trackingDataForCombination: List<Any>? = null
+data class TickerDataModel(
+    val tickers: List<Tickers> = listOf(),
+    private var isCache: Boolean = false,
+    private var trackingData: Map<String, Any>? = null,
+    private var trackingDataForCombination: List<Any>? = null,
     private var isCombined: Boolean = false
+) : HomeVisitable {
 
     override fun equalsWith(b: Any?): Boolean {
         if (b is TickerDataModel) {
-            if (tickers?.size != b.tickers?.size) return false
-            tickers?.forEachIndexed { index, ticker ->
-                if (ticker.id == b.tickers?.get(index)?.id) return false
+            if (tickers.size != b.tickers.size) return false
+            tickers.forEachIndexed { index, ticker ->
+                if (ticker.id == b.tickers[index].id) return false
             }
             return true
         }
@@ -35,7 +33,7 @@ class TickerDataModel : HomeVisitable {
     }
 
     override fun visitableId(): String {
-        return tickers?.size.toString()
+        return TICKERS
     }
 
     fun setCache(cache: Boolean) {
@@ -73,5 +71,9 @@ class TickerDataModel : HomeVisitable {
 
     override fun getChangePayloadFrom(b: Any?): Bundle? {
         return null
+    }
+
+    companion object{
+        private const val TICKERS = "Tickers"
     }
 }

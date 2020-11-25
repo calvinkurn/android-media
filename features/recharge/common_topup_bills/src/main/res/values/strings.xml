@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">common_topup_bills</string>
 
+    <string name="common_topup__menu_promo">Promo</string>
+    <string name="common_topup__menu_help">Tokopedia Care</string>
+    <string name="common_topup__menu_transaction_list">Daftar Transaksi</string>
+
     <string name="common_topup_text_copy_promo_code">Salin</string>
     <string name="common_topup_text_has_copied_promo_code">Disalin</string>
     <string name="common_topup_title_promo">Promo</string>

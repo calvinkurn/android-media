@@ -89,13 +89,13 @@ public class WidgetTokenOnBoarding extends FrameLayout {
             int initialYEgg = rootHeight / 2 + (int) (0.05 * imageWidth);
             int delta = (int) (0.1 * imageWidth);
 
-            onboardingView = LayoutInflater.from(getContext()).inflate(R.layout.image_view_hand, this, false);
-            ivOnboardingCircle = (ImageView) LayoutInflater.from(getContext()).inflate(R.layout.image_view_hand_circle,
+            onboardingView = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.image_view_hand, this, false);
+            ivOnboardingCircle = (ImageView) LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.image_view_hand_circle,
                     this, false);
             onboardingView.setX(initialXEgg);
             onboardingView.setY(initialYEgg);
 
-            int circleWidth = getContext().getResources().getDimensionPixelOffset(R.dimen.image_width_hand_circle);
+            int circleWidth = getContext().getResources().getDimensionPixelOffset(com.tokopedia.gamification.R.dimen.image_width_hand_circle);
             ivOnboardingCircle.setX(initialXEgg - delta - circleWidth / 2);
             ivOnboardingCircle.setY(initialYEgg - delta - circleWidth / 2);
             ivOnboardingCircle.setVisibility(View.GONE);

@@ -9,8 +9,7 @@
     android:layout_marginLeft="@dimen/dp_minus4"
     android:layout_marginRight="@dimen/dp_minus4"
     android:clipToPadding="false"
-    android:clipChildren="false"
-    android:background="#FFFFFF">
+    android:clipChildren="false">
 
     <com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
         android:id="@+id/merchantVoucherListWidget"
@@ -18,6 +17,13 @@
         android:layout_height="wrap_content"
         app:mvlwTitleString="@string/merchant_voucher"
         android:clipToPadding="false"
+        android:visibility="gone"
         android:clipChildren="false"/>
+
+    <include
+        layout="@layout/partial_shop_home_get_failed"/>
+
+    <include
+        layout="@layout/partial_shop_home_voucher_shimmering"/>
 
 </LinearLayout>

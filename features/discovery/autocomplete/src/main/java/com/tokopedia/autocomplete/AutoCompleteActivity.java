@@ -69,7 +69,7 @@ public class AutoCompleteActivity extends BaseActivity
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            window.setStatusBarColor(getResources().getColor(R.color.white, null));
+            window.setStatusBarColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0, null));
         }
     }
 
@@ -118,7 +118,7 @@ public class AutoCompleteActivity extends BaseActivity
         searchBarView.showSearch(searchParameter);
 
         if (suggestionFragment != null) {
-            suggestionFragment.setSearchParameter(searchParameter);
+            suggestionFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if (initialStateFragment != null) {
@@ -238,5 +238,10 @@ public class AutoCompleteActivity extends BaseActivity
     @Override
     public void setSearchQuery(@NotNull String keyword) {
         searchBarView.setQuery(keyword, false, true);
+    }
+
+    @Override
+    public void setIsTyping(boolean isTyping) {
+        suggestionFragment.setIsTyping(isTyping);
     }
 }

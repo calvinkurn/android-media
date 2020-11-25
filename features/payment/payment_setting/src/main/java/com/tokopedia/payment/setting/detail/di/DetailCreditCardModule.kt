@@ -1,15 +1,13 @@
 package com.tokopedia.payment.setting.detail.di
 
-import com.tokopedia.payment.setting.detail.view.presenter.DetailCreditCardPresenter
+import android.app.Activity
+import android.content.Context
 import dagger.Module
 import dagger.Provides
 
 @Module
-class DetailCreditCardModule {
+class DetailCreditCardModule(val activity: Activity) {
 
-    @DetailCreditCardScope
     @Provides
-    fun providePresenter() : DetailCreditCardPresenter {
-        return DetailCreditCardPresenter()
-    }
+    fun getContext(): Context = activity
 }

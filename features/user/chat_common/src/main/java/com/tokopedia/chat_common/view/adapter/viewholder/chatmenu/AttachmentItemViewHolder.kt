@@ -22,14 +22,14 @@ class AttachmentItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVie
     fun bind(
             attachmentMenu: AttachmentMenu,
             listener: AttachmentMenu.AttachmentMenuListener?,
-            viewHolderListener: AttachmentViewHolderListener
+            viewHolderListener: AttachmentViewHolderListener?
     ) {
         icon?.setImage(attachmentMenu.icon, 0f)
         title?.text = attachmentMenu.title
         if (listener == null) return
         itemView.setOnClickListener {
             attachmentMenu.onClick(listener)
-            viewHolderListener.closeMenu()
+            viewHolderListener?.closeMenu()
         }
     }
 

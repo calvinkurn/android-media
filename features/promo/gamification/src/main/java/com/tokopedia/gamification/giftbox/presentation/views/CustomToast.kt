@@ -26,11 +26,11 @@ class CustomToast {
                 val textView = Typography(activityContext)
                 textView.text = text
                 textView.setPadding(leftPadding, topPadding, leftPadding, topPadding)
-                textView.setTextColor(ContextCompat.getColor(activityContext, R.color.white))
+                textView.setTextColor(ContextCompat.getColor(activityContext, com.tokopedia.design.R.color.white))
                 if (isError) {
-                    textView.setBackgroundResource(R.drawable.gf_custom_toast_error_bg)
+                    textView.setBackgroundResource(com.tokopedia.gamification.R.drawable.gf_custom_toast_error_bg)
                 } else {
-                    textView.setBackgroundResource(R.drawable.gf_custom_toast_bg)
+                    textView.setBackgroundResource(com.tokopedia.gamification.R.drawable.gf_custom_toast_bg)
                 }
                 textView.fontType = Typography.BODY_3
                 val toast = Toast(activityContext)

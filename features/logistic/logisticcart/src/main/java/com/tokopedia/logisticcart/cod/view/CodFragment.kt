@@ -13,13 +13,13 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.cod.di.DaggerCodComponent
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
-import com.tokopedia.purchase_platform.common.data.model.response.cod.Data
+import com.tokopedia.purchase_platform.common.feature.checkout.request.CheckoutRequest
+import com.tokopedia.purchase_platform.common.feature.cod.Data
 import kotlinx.android.synthetic.main.fragment_cod_confirmation.*
 import java.util.*
 import javax.inject.Inject

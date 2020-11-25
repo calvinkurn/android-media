@@ -20,7 +20,6 @@ import javax.inject.Inject
 
 class AddChangePinViewModel @Inject constructor(
         private val addPinUseCase: GraphqlUseCase<AddPinPojo>,
-        private val changePinUseCase: GraphqlUseCase<ChangePinPojo>,
         private val checkPinUseCase: GraphqlUseCase<CheckPinPojo>,
         private val getStatusPinUseCase: GraphqlUseCase<StatusPinPojo>,
         private val validatePinUseCase: GraphqlUseCase<ValidatePinPojo>,
@@ -31,10 +30,6 @@ class AddChangePinViewModel @Inject constructor(
     private val mutableAddPinResponse = MutableLiveData<Result<AddChangePinData>>()
     val addPinResponse: LiveData<Result<AddChangePinData>>
         get() = mutableAddPinResponse
-
-    private val mutableChangePinResponse = MutableLiveData<Result<AddChangePinData>>()
-    val changePinResponse: LiveData<Result<AddChangePinData>>
-        get() = mutableChangePinResponse
 
     private val mutableCheckPinResponse = MutableLiveData<Result<CheckPinData>>()
     val checkPinResponse: LiveData<Result<CheckPinData>>
@@ -82,41 +77,6 @@ class AddChangePinViewModel @Inject constructor(
                 it.data.errorAddChangePinData.isNotEmpty() && it.data.errorAddChangePinData[0].message.isNotEmpty()->
                     mutableAddPinResponse.value = Fail(MessageErrorException(it.data.errorAddChangePinData[0].message))
                 else -> mutableAddPinResponse.value = Fail(RuntimeException())
-            }
-        }
-    }
-
-    fun changePin(pin: String, pinConfirm: String, pinOld: String){
-        rawQueries[ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN]?.let { query ->
-            val params = mapOf(
-                    ProfileCompletionQueryConstant.PARAM_PIN to pin,
-                    ProfileCompletionQueryConstant.PARAM_PIN_CONFIRM to pinConfirm,
-                    ProfileCompletionQueryConstant.PARAM_PIN_OLD to pinOld)
-
-            changePinUseCase.setTypeClass(ChangePinPojo::class.java)
-            changePinUseCase.setRequestParams(params)
-            changePinUseCase.setGraphqlQuery(query)
-            changePinUseCase.execute(
-                    onSuccessChangePin(),
-                    onErrorChangePin()
-            )
-        }
-    }
-
-    private fun onErrorChangePin(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            mutableChangePinResponse.value = Fail(it)
-        }
-    }
-
-    private fun onSuccessChangePin(): (ChangePinPojo) -> Unit {
-        return {
-            when {
-                it.data.success -> mutableChangePinResponse.value = Success(it.data)
-                it.data.errorAddChangePinData.isNotEmpty() && it.data.errorAddChangePinData[0].message.isNotEmpty() ->
-                    mutableChangePinResponse.value = Fail(MessageErrorException(it.data.errorAddChangePinData[0].message))
-                else -> mutableChangePinResponse.value = Fail(RuntimeException())
             }
         }
     }
@@ -251,7 +211,6 @@ class AddChangePinViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         addPinUseCase.cancelJobs()
-        changePinUseCase.cancelJobs()
         checkPinUseCase.cancelJobs()
         getStatusPinUseCase.cancelJobs()
         validatePinUseCase.cancelJobs()

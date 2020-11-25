@@ -1,0 +1,1442 @@
+{
+  "ace_search_product_v4": {
+    "header": {
+      "totalData": 6268452,
+      "totalDataText": "6.2jt+",
+      "defaultView": 1,
+      "responseCode": 0,
+      "errorMessage": "",
+      "additionalParams": "",
+      "keywordProcess": "2"
+    },
+    "data": {
+      "isQuerySafe": true,
+      "autocompleteApplink": "tokopedia://search-autocomplete?navsource=home&q=samsung",
+      "redirection": {
+        "redirectApplink": ""
+      },
+      "ticker": {
+        "text": "",
+        "query": "",
+        "typeId": 0
+      },
+      "related": {
+        "relatedKeyword": "",
+        "position": 0,
+        "otherRelated": []
+      },
+      "suggestion": {
+        "suggestion": "",
+        "query": "",
+        "text": ""
+      },
+      "products": [
+        {
+          "id": 653587466,
+          "name": "Samsung Galaxy A51 128GB A515F Blue",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2400899,
+            "name": "Samsung Mobile Indonesia",
+            "city": "Jakarta Utara",
+            "rating_average": "<b>4.8</b> Rating Toko",
+            "url": "https://www.tokopedia.com/samsung",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/3/31/21722219/21722219_61a89742-b942-4046-82aa-f51392fdce9d_600_600",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/3/31/21722219/21722219_61a89742-b942-4046-82aa-f51392fdce9d_600_600",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/3/31/21722219/21722219_61a89742-b942-4046-82aa-f51392fdce9d_600_600",
+          "price": "Rp4.399.000",
+          "priceInt": 4399000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "4.9",
+          "countReview": 100,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/samsung/samsung-galaxy-a51-128gb-a515f-blue?whid=0",
+          "labelGroups": [
+            {
+              "title": "Bisa Tukar Tambah",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Sisa 4",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 186"
+        },
+        {
+          "id": 551748909,
+          "name": "Samsung Galaxy Tab A8 2019 - Silver",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2400899,
+            "name": "Samsung Mobile Indonesia",
+            "city": "Jakarta Utara",
+            "rating_average": "<b>4.8</b> Rating Toko",
+            "url": "https://www.tokopedia.com/samsung",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/9/5/21722219/21722219_99b46a6c-2628-4448-8e28-1ae2f45f64b4_600_600",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/9/5/21722219/21722219_99b46a6c-2628-4448-8e28-1ae2f45f64b4_600_600",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2019/9/5/21722219/21722219_99b46a6c-2628-4448-8e28-1ae2f45f64b4_600_600",
+          "price": "Rp1.999.000",
+          "priceInt": 1999000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/tablet/android-os",
+          "rating": 5,
+          "ratingAverage": "5.0",
+          "countReview": 62,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/samsung/samsung-galaxy-tab-a8-2019-silver?whid=0",
+          "labelGroups": [
+            {
+              "title": "Bisa Tukar Tambah",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 154"
+        },
+        {
+          "id": 664606499,
+          "name": "Samsung Galaxy A71 128Gb A715F Black",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2400899,
+            "name": "Samsung Mobile Indonesia",
+            "city": "Jakarta Utara",
+            "rating_average": "<b>4.8</b> Rating Toko",
+            "url": "https://www.tokopedia.com/samsung",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/1/17/21722219/21722219_711a12f2-a9bd-4917-9def-94e33d17a258_600_600",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/1/17/21722219/21722219_711a12f2-a9bd-4917-9def-94e33d17a258_600_600",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/1/17/21722219/21722219_711a12f2-a9bd-4917-9def-94e33d17a258_600_600",
+          "price": "Rp5.999.000",
+          "priceInt": 5999000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "5.0",
+          "countReview": 113,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/samsung/samsung-galaxy-a71-128gb-a715f-black?whid=0",
+          "labelGroups": [
+            {
+              "title": "Bisa Tukar Tambah",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 233"
+        },
+        {
+          "id": 902266634,
+          "name": "Samsung Galaxy A21s 6/64 GB Garansi Resmi SEIN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 342169,
+            "name": "Gudang-HP",
+            "city": "Jakarta Pusat",
+            "rating_average": "<b>4.6</b> Rating Toko",
+            "url": "https://www.tokopedia.com/gudang-hp",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/6/9/2608727/2608727_b8818455-7bba-4da6-8177-8daedcb75d64_800_800",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/6/9/2608727/2608727_b8818455-7bba-4da6-8177-8daedcb75d64_800_800",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/6/9/2608727/2608727_b8818455-7bba-4da6-8177-8daedcb75d64_800_800",
+          "price": "Rp2.824.000",
+          "priceInt": 2824000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "4.9",
+          "countReview": 238,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/gudang-hp/samsung-galaxy-a21s-6-64-gb-garansi-resmi-sein-hitam?whid=0",
+          "labelGroups": [
+            {
+              "title": "Bisa Tukar Tambah",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Sisa 7",
+              "position": "gimmick",
+              "type": "textDarkRed",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 622"
+        },
+        {
+          "id": 547779659,
+          "name": "Samsung Galaxy Tab A 8.0 2019 T295 RAM 2GB / ROM 32GB - Garansi Resmi",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 256223,
+            "name": "H2 Cellular",
+            "city": "Jakarta Pusat",
+            "rating_average": "<b>4.9</b> Rating Toko",
+            "url": "https://www.tokopedia.com/h2cell",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/4/4/1762132/1762132_309e1dde-a520-4b65-84fc-660f97f33ae7_800_800",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/4/4/1762132/1762132_309e1dde-a520-4b65-84fc-660f97f33ae7_800_800",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/4/4/1762132/1762132_309e1dde-a520-4b65-84fc-660f97f33ae7_800_800",
+          "price": "Rp1.849.000",
+          "priceInt": 1849000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/tablet/android-os",
+          "rating": 5,
+          "ratingAverage": "5.0",
+          "countReview": 1037,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/h2cell/samsung-galaxy-tab-a-8-0-2019-t295-ram-2gb-rom-32gb-garansi-resmi-hitam?whid=0",
+          "labelGroups": [
+            {
+              "title": "Bisa Tukar Tambah",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 2860"
+        },
+        {
+          "id": 870578592,
+          "name": "Samsung Galaxy A11 3/32Gb Grs resmi Sein",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 2099980,
+            "name": "Pluto sellular",
+            "city": "Jakarta Timur",
+            "rating_average": "<b>4.9</b> Rating Toko",
+            "url": "https://www.tokopedia.com/pluto-olhp",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/29/2099980/2099980_cc34fa65-9351-48fa-bc75-6c5281fe1676_756_756.jpg",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/29/2099980/2099980_cc34fa65-9351-48fa-bc75-6c5281fe1676_756_756.jpg",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/5/29/2099980/2099980_cc34fa65-9351-48fa-bc75-6c5281fe1676_756_756.jpg",
+          "price": "Rp1.769.000",
+          "priceInt": 1769000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "5.0",
+          "countReview": 246,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/pluto-olhp/samsung-galaxy-a11-3-32gb-grs-resmi-sein-putih?whid=0",
+          "labelGroups": [],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 504"
+        },
+        {
+          "id": 556045864,
+          "name": "Synthetic Leather Case Samsung S10e S10 S8 Plus S9 S9 Plus Note 9",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 513569,
+            "name": "Allforgadget",
+            "city": "Jakarta Utara",
+            "rating_average": "<b>4.6</b> Rating Toko",
+            "url": "https://www.tokopedia.com/allforgadget",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/9/10/1475040/1475040_5071bbed-2ce6-45c6-888b-46cb5b10ea87_1153_1153",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2019/9/10/1475040/1475040_5071bbed-2ce6-45c6-888b-46cb5b10ea87_1153_1153",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2019/9/10/1475040/1475040_5071bbed-2ce6-45c6-888b-46cb5b10ea87_1153_1153",
+          "price": "Rp119.000",
+          "priceInt": 119000,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/aksesoris-handphone/soft-case-handphone",
+          "rating": 5,
+          "ratingAverage": "4.8",
+          "countReview": 190,
+          "originalPrice": "",
+          "discountPercentage": 0,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/allforgadget/synthetic-leather-case-samsung-s10e-s10-s8-plus-s9-s9-plus-note-9-samsung-s9-hitam?whid=0",
+          "labelGroups": [
+            {
+              "title": "Grosir",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            },
+            {
+              "title": "Grosir",
+              "position": "price",
+              "type": "lightGreen",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 419"
+        },
+        {
+          "id": 855707900,
+          "name": "SAMSUNG GALAXY M21 - 6000mAh Battery 4GB 64GB 4/64 Garansi Resmi SEIN",
+          "ads": {
+            "id": "",
+            "productClickUrl": "",
+            "productWishlistUrl": "",
+            "productViewUrl": ""
+          },
+          "shop": {
+            "id": 1163409,
+            "name": "Shopyz ID",
+            "city": "Jakarta Timur",
+            "rating_average": "<b>4.7</b> Rating Toko",
+            "url": "https://www.tokopedia.com/shopyzid",
+            "isOfficial": true,
+            "isPowerBadge": true
+          },
+          "freeOngkir": {
+            "isActive": false,
+            "imgUrl": ""
+          },
+          "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/5/18/9248235/9248235_741a78d4-37ce-4596-bb6e-7181a4308df4_700_700",
+          "imageUrl300": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/18/9248235/9248235_741a78d4-37ce-4596-bb6e-7181a4308df4_700_700",
+          "imageUrl700": "https://ecs7-p.tokopedia.net/img/cache/700/product-1/2020/5/18/9248235/9248235_741a78d4-37ce-4596-bb6e-7181a4308df4_700_700",
+          "price": "Rp2.699.900",
+          "priceInt": 2699900,
+          "priceRange": "",
+          "categoryId": 65,
+          "categoryName": "Handphone & Tablet",
+          "categoryBreadcrumb": "handphone-tablet/handphone/android-os",
+          "rating": 5,
+          "ratingAverage": "4.9",
+          "countReview": 94,
+          "originalPrice": "Rp2.999.000",
+          "discountPercentage": 10,
+          "warehouseIdDefault": 0,
+          "boosterList": "-1",
+          "source_engine": "0",
+          "minOrder": 1,
+          "url": "https://www.tokopedia.com/shopyzid/samsung-galaxy-m21-6000mah-battery-4gb-64gb-4-64-garansi-resmi-sein-hitam?whid=0",
+          "labelGroups": [
+            {
+              "title": "Bisa Tukar Tambah",
+              "position": "offers",
+              "type": "lightGrey",
+              "url": ""
+            }
+          ],
+          "badges": [
+            {
+              "title": "Official Store",
+              "imageUrl": "https://ecs7-p.tokopedia.net/img/official_store_badge.png",
+              "show": true
+            }
+          ],
+          "wishlist": false,
+          "count_sold": "Terjual 161"
+        }
+      ]
+    }
+  },
+  "quick_filter": {
+    "filter": [
+      {
+        "title": "COD",
+        "options": [
+          {
+            "name": "COD",
+            "key": "cod",
+            "icon": "",
+            "value": "true",
+            "is_new": true,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Gratis Ongkir",
+        "options": [
+          {
+            "name": "Gratis Ongkir",
+            "key": "free_shipping",
+            "icon": "",
+            "value": "true",
+            "is_new": false,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Official Store",
+        "options": [
+          {
+            "name": "Official Store",
+            "key": "official",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "value": "true",
+            "is_new": false,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Tukar Tambah",
+        "options": [
+          {
+            "name": "Tukar Tambah",
+            "key": "trade_in",
+            "icon": "",
+            "value": "true",
+            "is_new": false,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Kurir Instan",
+        "options": [
+          {
+            "name": "Kurir Instan",
+            "key": "shipping",
+            "icon": "",
+            "value": "10,12,13",
+            "is_new": false,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Dilayani Tokopedia",
+        "options": [
+          {
+            "name": "Dilayani Tokopedia",
+            "key": "is_fulfillment",
+            "icon": "",
+            "value": "true",
+            "is_new": false,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      },
+      {
+        "title": "Power Merchant",
+        "options": [
+          {
+            "name": "Power Merchant",
+            "key": "goldmerchant",
+            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+            "value": "true",
+            "is_new": false,
+            "input_type": "checkbox",
+            "total_data": "",
+            "val_max": "",
+            "val_min": "",
+            "hex_color": "",
+            "child": []
+          }
+        ]
+      }
+    ]
+  },
+  "productAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.0553116,
+      "total_data": 6
+    },
+    "data": [
+      {
+        "id": "67330331",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/chocoapple",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosrpHpnpHpJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6s1OHmFiy3zwrfo5rM1i6sHFHmddo_eh6Aydopra6AKfoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pe7_uzS8JYJz_zoucPd_7zVoJO1gRx-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku9uvuJ7h_32u8JNEqpz6uVBd_uzu8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2u8JNJu9B6zVVd_92s8jY1Z3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozJVO_7zuHJO1gp-vzcHp_32SoJNkyfBM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOH_jNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?keywords=samsung&is_search=1&ob=23&management_type=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fchocoapple%2Fsamsung-galaxy-z-fold-2-fold2-12gb-256gb-256-resmi-sein-1-tahun-bronze%3Fsrc%3Dtopads&src=search&page=1&dv=android",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosrpHpnpHpJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6s1OHmFiy3zwrfo5rM1i6sHFHmddo_eh6Aydopra6AKfoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pe7_uzS8JYJz_zoucPd_7zVoJO1gRx-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku9uvuJ7h_32u8JNEqpz6uVBd_uzu8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2u8JNJu9B6zVVd_92s8jY1Z3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozJVO_7zuHJO1gp-vzcHp_32SoJNkyfBM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOH_jNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?dv=android&uid=0&page=1&t=android&product_id=1276190479&ob=23&is_search=1&management_type=1&src=search&r=https%3A%2F%2Fwww.tokopedia.com%2Fchocoapple%2Fsamsung-galaxy-z-fold-2-fold2-12gb-256gb-256-resmi-sein-1-tahun-bronze%3Fsrc%3Dtopads&keywords=samsung",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosrpHpnpHpJDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6s1OHmFiy3zwrfo5rM1i6sHFHmddo_eh6Aydopra6AKfoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pe7_uzS8JYJz_zoucPd_7zVoJO1gRx-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku9uvuJ7h_32u8JNEqpz6uVBd_uzu8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2u8JNJu9B6zVVd_92s8jY1Z3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozJVO_7zuHJO1gp-vzcHp_32SoJNkyfBM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOH_jNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?t=android&src=search&page=1&dv=android&uid=0&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Fchocoapple&keywords=samsung",
+        "product": {
+          "id": "1276190479",
+          "name": "Samsung Galaxy Z Fold 2 / Fold2 12GB 256GB 256 RESMI SEIN 1 Tahun - Bronze",
+          "category_breadcrumb": "handphone-tablet / handphone / android-os",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syRHpHFHpHhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_n5oaYsopCMgAndyi7dHAujb_ep6cJW6ACjHm7fHsUR6cUpgc1dos1XqSCSUiFiy3zwrfo5rM1i6sHFHmddo_eh6Aydopra6AKfoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1pe7_uzS8JYJz_zoucPd_7zVoJO1gRx-q9P23_oZ8uKp_Mhg3J2ky1o-ojBku9uvuJ7h_32u8JNEqpz6uVBd_uzu8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2u8JNJu9B6zVVd_92s8jY1Z3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z92ozJVO_7zuHJO1gp-vzcHp_32SoJNkyfBM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sUOH_jNbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?ob=23&page=1&dv=android&is_search=1&keywords=samsung&management_type=1&t=android&src=search",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syRHpHFHpHhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpr5yprFgMeF6cUW6AnOgm77Hpxxb_KFgAnWosUaopxiHfzB6AyObM2FgaUDUMVj9RosQR-BUstpHAnX6A17H_Kf6ArRHsKdosrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7oJO1gRxvzJ17_uzS8JYJz_zoucPdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_OzoH1Oku9x68MD7_Bzg8JO1u9x-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJO1e_uguJBR_VzgHjOkqRz6z72W39jFo1OEgpoHuV2t_jzz8jNIzMW68B223Bo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdr77h6I2ozV1FZ3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32sH7hku9x6zVuN_jzz8JOEyR2vuJB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_1zCP1YJu_Coucra_7zsH7Okgpz6qMo2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstao_JN6ZFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?ob=23&page=1&dv=android&is_search=1&keywords=samsung&management_type=1&t=android&src=search",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syRHpHFHpHhbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpr5yprFgMeF6cUW6AnOgm77Hpxxb_KFgAnWosUaopxiHfzB6AyObM2FgaUDUMVj9RosQR-BUstpHAnX6A17H_Kf6ArRHsKdosrDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_uH7oJO1gRxvzJ17_uzS8JYJz_zoucPdZ3BRqujp1SByH7ND3uxGqMVAZ_g-qBuO_OzoH1Oku9x68MD7_Bzg8JO1u9x-q9P2y_-3o3ea69BqzsBE3_UN8u2_Z_g-qjV2_JoGP3Uao32q17jfZ3OzoJO1e_uguJBR_VzgHjOkqRz6z72W39jFo1OEgpoHuV2t_jzz8jNIzMW68B223Bo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3OR83-I6_oMZIxp_uPdPMep8AxsHO-7gjxdr77h6I2ozV1FZ3BRq3Ha_SgsQugM33NGPMep_Mh-qMY2_32sH7hku9x6zVuN_jzz8JOEyR2vuJB2_JoG8Bja69BqusBE3BPc8ujagfBvq1BE_1zCP1YJu_Coucra_7zsH7Okgpz6qMo2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstao_JN6ZFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?ob=23&page=1&dv=android&is_search=1&keywords=samsung&management_type=1&t=android&src=search",
+            "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/10/7/c70fd08b-805d-438a-80d0-62278b3de865.jpg",
+            "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/7/c70fd08b-805d-438a-80d0-62278b3de865.jpg",
+            "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/7/c70fd08b-805d-438a-80d0-62278b3de865.jpg"
+          },
+          "uri": "https://www.tokopedia.com/chocoapple/samsung-galaxy-z-fold-2-fold2-12gb-256gb-256-resmi-sein-1-tahun-bronze?src=topads",
+          "relative_uri": "chocoapple/samsung-galaxy-z-fold-2-fold2-12gb-256gb-256-resmi-sein-1-tahun-bronze",
+          "price_format": "Rp34.700.000",
+          "wholesale_price": [],
+          "count_talk_format": "0",
+          "count_review_format": "5",
+          "category": {
+            "id": "3054"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+          "product_cashback": true,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 100,
+          "product_rating_format": "5.0",
+          "product_item_sold_payment_verified": "Terjual 11",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "promo",
+              "type": "lightGreen",
+              "title": "Gratis Ongkir"
+            },
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            },
+            {
+              "position": "gimmick",
+              "type": "textDarkOrange",
+              "title": "Produk Terbaru"
+            },
+            {
+              "position": "price",
+              "type": "lightGreen",
+              "title": "Cashback"
+            }
+          ]
+        },
+        "shop": {
+          "id": "611673",
+          "name": "chocoapple",
+          "domain": "chocoapple",
+          "location": "Jakarta Pusat",
+          "city": "Jakarta Pusat",
+          "gold_shop": true,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=611673",
+          "uri": "https://www.tokopedia.com/chocoapple",
+          "owner_id": "5138814",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "<b>4.8</b> Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant",
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1276190479"
+      },
+      {
+        "id": "64311310",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/idigitalid",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosepH_JpH_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seOHmFiy3zwrfo5rM1i6sHFHmdRopJpopy7Hpypo_UhoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_1z0HJOE__u6qjBN_M2z8JN1z3BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9uvucWR_jzCH7NkyR2vzVBR_OzV8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMrp_c2SHJNJz9PoqMD7_jzVHJO1z_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jVR_c2sH7O1__o6qBVE_M2oH1Okz_o-QsnYUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6s176_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?src=search&keywords=samsung&r=https%3A%2F%2Fwww.tokopedia.com%2Fidigitalid%2Fsamsung-note-20-ultra-256gb-512gb-mystic-bronze-black-white-mystic-bronze-note-20-256gb%3Fsrc%3Dtopads&ob=23&dv=android&is_search=1&page=1&t=android&management_type=1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosepH_JpH_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seOHmFiy3zwrfo5rM1i6sHFHmdRopJpopy7Hpypo_UhoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_1z0HJOE__u6qjBN_M2z8JN1z3BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9uvucWR_jzCH7NkyR2vzVBR_OzV8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMrp_c2SHJNJz9PoqMD7_jzVHJO1z_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jVR_c2sH7O1__o6qBVE_M2oH1Okz_o-QsnYUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6s176_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?keywords=samsung&uid=0&ob=23&dv=android&management_type=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fidigitalid%2Fsamsung-note-20-ultra-256gb-512gb-mystic-bronze-black-white-mystic-bronze-note-20-256gb%3Fsrc%3Dtopads&src=search&product_id=1169637051&page=1&is_search=1",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosepH_JpH_nDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstabm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seOHmFiy3zwrfo5rM1i6sHFHmdRopJpopy7Hpypo_UhoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_1z0HJOE__u6qjBN_M2z8JN1z3BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9uvucWR_jzCH7NkyR2vzVBR_OzV8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMrp_c2SHJNJz9PoqMD7_jzVHJO1z_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jVR_c2sH7O1__o6qBVE_M2oH1Okz_o-QsnYUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6s176_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?uid=0&src=search&keywords=samsung&r=https%3A%2F%2Fwww.tokopedia.com%2Fidigitalid&management_type=1&dv=android&page=1&t=android",
+        "product": {
+          "id": "1169637051",
+          "name": "Samsung Note 20 Ultra [256GB/512GB] Mystic Bronze Black White - Mystic Bronze, NOTE 20 256GB",
+          "category_breadcrumb": "handphone-tablet / handphone / android-os",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sy7HpJhHpJFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFHsn56Z4ObpJhH_UpH_Kaoa4hH_JaHpJdHsPwypKR6_rpo_nWgAJagm77gA1ab3JOgs1WH3VBy_jho3uBHAja9pKFHV4dHAnibm-xgVYpyfYagZUEHpnFbsrRH_HRoseposHOHsJRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAVozcDF_92oo1NkZ9B6qBVd_BzVq1hAZM2jZJ2Myp-3qcoW_MY-qMY2_uzVP1Y1qRP6zJJp_M2s8jYJ39PvuJudZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_zouJJO3uz-P7h13_-oqMW7_jPGQuBNHAuo8Mrp_VzqqJNJ1926z7g0_S2qqu2_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBWPRBizpjpgjxdr7O98IgjHRKdypoZPcgU8IooH_xE_1zuHJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkgpoHqMrF_jzVP7Okqpz6zJ1F_uzVHjB2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OEe9PHqMHp_uzoH7Nk1926qj7h_32VH7BXHA7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEo_eNoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?keywords=samsung&page=1&ob=23&t=android&src=search&management_type=1&is_search=1&dv=android",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sy7HpJhHpJFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpj5oZ4hH_JaHpJdHsr5H_JhHsHh6AUR9fHdopjRHp1Fb3ehHMeWoceOHiOxo3yOb_Vxg3JNH_uBg_nNHB4dHACw6AnFUiFiy3zwrfo5rM1i6sHFHmdRopJpopy7Hpypo_UhoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_1z0HJOE__u6qjBN_M2z8JN1z3BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9uvucWR_jzCH7NkyR2vzVBR_OzV8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMrp_c2SHJNJz9PoqMD7_jzVHJO1z_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jVR_c2sH7O1__o6qBVE_M2oH1Okz_o-QsnYUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6s176_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?keywords=samsung&page=1&ob=23&t=android&src=search&management_type=1&is_search=1&dv=android",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sy7HpJhHpJFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEHiFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpj5oZ4hH_JaHpJdHsr5H_JhHsHh6AUR9fHdopjRHp1Fb3ehHMeWoceOHiOxo3yOb_Vxg3JNH_uBg_nNHB4dHACw6AnFUiFiy3zwrfo5rM1i6sHFHmdRopJpopy7Hpypo_UhoaFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peh_1z0HJOE__u6qjBN_M2z8JN1z3BHe72kgJxGgMHauMxsQ1N5Z325q1O1z9uvucWR_jzCH7NkyR2vzVBR_OzV8JB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMrp_c2SHJNJz9PoqMD7_jzVHJO1z_--q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBo8jVR_c2sH7O1__o6qBVE_M2oH1Okz_o-QsnYUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6s176_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?keywords=samsung&page=1&ob=23&t=android&src=search&management_type=1&is_search=1&dv=android",
+            "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/9/5/111231827/111231827_c8797350-d12d-4d52-a5f5-1aea915ee092_800_800",
+            "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/9/5/111231827/111231827_c8797350-d12d-4d52-a5f5-1aea915ee092_800_800",
+            "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/product-1/2020/9/5/111231827/111231827_c8797350-d12d-4d52-a5f5-1aea915ee092_800_800"
+          },
+          "uri": "https://www.tokopedia.com/idigitalid/samsung-note-20-ultra-256gb-512gb-mystic-bronze-black-white-mystic-bronze-note-20-256gb?src=topads",
+          "relative_uri": "idigitalid/samsung-note-20-ultra-256gb-512gb-mystic-bronze-black-white-mystic-bronze-note-20-256gb",
+          "price_format": "Rp11.070.000",
+          "wholesale_price": [],
+          "count_talk_format": "28",
+          "count_review_format": "59",
+          "category": {
+            "id": "3054"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 100,
+          "product_rating_format": "5.0",
+          "product_item_sold_payment_verified": "Terjual 68",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ]
+        },
+        "shop": {
+          "id": "9387364",
+          "name": "iDigital",
+          "domain": "idigitalid",
+          "location": "Jakarta Pusat",
+          "city": "Jakarta Pusat",
+          "gold_shop": true,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=9387364",
+          "uri": "https://www.tokopedia.com/idigitalid",
+          "owner_id": "111231827",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "<b>5.0</b> Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant",
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1169637051"
+      },
+      {
+        "id": "62612494",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/techstudioid",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUfH_U76_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seFHmFiy3zwrfo5rM1i6sUNHZdR6AH7opUf6_rOopJhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC68BBd_OzCHJNE39xvuJJF_S2g8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ320P1Y11926uVud_7zSoJYJ19P6qBVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_zouJJO3uz-P7h13_-oqMW7_jPGQuBNHAuo8Mrp_VzqqJNJ1926z7g0_S2qqu2_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBWPRBizpjpgjxdr7O98IgjHRKdypoZPcgU8IooH_xE_1zuHJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkypoHqj1a_7zgoJOE1_V68MHO_7zoH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkqRxHqMH7_92zH7Ok3_u68B1p_uzVq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qos1DHseDHpnOoV7DUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAKF6AHDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?keywords=samsung&ob=23&management_type=1&r=https%3A%2F%2Fwww.tokopedia.com%2Ftechstudioid%2Fresmi-samsung-note-20-ultra-note-20-bronze-green-black-white-grey-note-20-256gb-mystic-bronze%3Fsrc%3Dtopads&src=search&dv=android&is_search=1&t=android&page=1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosUfH_U76_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seFHmFiy3zwrfo5rM1i6sUNHZdR6AH7opUf6_rOopJhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC68BBd_OzCHJNE39xvuJJF_S2g8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ320P1Y11926uVud_7zSoJYJ19P6qBVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_zouJJO3uz-P7h13_-oqMW7_jPGQuBNHAuo8Mrp_VzqqJNJ1926z7g0_S2qqu2_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBWPRBizpjpgjxdr7O98IgjHRKdypoZPcgU8IooH_xE_1zuHJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkypoHqj1a_7zgoJOE1_V68MHO_7zoH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkqRxHqMH7_92zH7Ok3_u68B1p_uzVq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qos1DHseDHpnOoV7DUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAKF6AHDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?dv=android&is_search=1&ob=23&uid=0&src=search&keywords=samsung&page=1&management_type=1&t=android&product_id=1094372943&r=https%3A%2F%2Fwww.tokopedia.com%2Ftechstudioid%2Fresmi-samsung-note-20-ultra-note-20-bronze-green-black-white-grey-note-20-256gb-mystic-bronze%3Fsrc%3Dtopads",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosUfH_U76_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstpbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seFHmFiy3zwrfo5rM1i6sUNHZdR6AH7opUf6_rOopJhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC68BBd_OzCHJNE39xvuJJF_S2g8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ320P1Y11926uVud_7zSoJYJ19P6qBVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_zouJJO3uz-P7h13_-oqMW7_jPGQuBNHAuo8Mrp_VzqqJNJ1926z7g0_S2qqu2_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBWPRBizpjpgjxdr7O98IgjHRKdypoZPcgU8IooH_xE_1zuHJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkypoHqj1a_7zgoJOE1_V68MHO_7zoH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkqRxHqMH7_92zH7Ok3_u68B1p_uzVq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qos1DHseDHpnOoV7DUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAKF6AHDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?r=https%3A%2F%2Fwww.tokopedia.com%2Ftechstudioid&src=search&t=android&management_type=1&keywords=samsung&page=1&dv=android&uid=0",
+        "product": {
+          "id": "1094372943",
+          "name": "(RESMI) Samsung Note 20 Ultra Note 20 Bronze Green Black White Grey - NOTE 20 256GB, MYSTIC BRONZE",
+          "category_breadcrumb": "handphone-tablet / handphone / android-os",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaosJaoAj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFHsn56m4hHa47HAKfH_yNoa47HAKfH_yNoO4dof17oMUhHZOiopxBb_zxHcUWy_edoiOBofVxg3UOHMzxy_uwH_ndHV4hHAKFUiFiy3zwrfo5rM1i6sUNHZdR6AH7opUf6_rOopJhbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1O_oAC68BBd_OzCHJNE39xvuJJF_S2g8jB2PfBgHO-N3Ao6QVByZM2xe7jfZ320P1Y11926uVud_7zSoJYJ19P6qBVEZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32Cq1hAZSuiHsuk3Bo-ojBW1_zouJJO3uz-P7h13_-oqMW7_jPGQuBNHAuo8Mrp_VzqqJNJ1926z7g0_S2qqu2_Z9o-Q_BNyuPjrc-D63Wq3J-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7-Nys-ZHujp1MgxuOV2_fB-P7B2PfBiH72F3s-DPuKp_MYiH7-MyuPzq1Y2Z9P-q9P2yOx3QcoXQcgjz7gXyRB-ojBWPRBizpjpgjxdr7O98IgjHRKdypoZPcgU8IooH_xE_1zuHJB2PfBsHjNfyfO3gBBXZSgjH7NDZ325q1OkypoHqj1a_7zgoJOE1_V68MHO_7zoH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkqRxHqMH7_92zH7Ok3_u68B1p_uzVq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEoAKF6AHDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?keywords=samsung&ob=23&src=search&is_search=1&dv=android&page=1&management_type=1&t=android",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaosJaoAj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpK5H_H5oAndosJf6_r5oAndosJf6_Pw6APBoAgiH_JWysrdgZ77y_Cib3J76AyWg_Pxy3uio_-jy3JO9pJF6ACwH_ndHmUDUMVj9RosQR-BUsta6_JXopKpoAraosjRo_rhHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peF_S2g8JY1e_C68BBd_OzCHJNE392-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkqRuvuVVE_Bzu8JYJgpzvzVVR_M2z8jB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2VHjYJ3_zo8BJh_S2so1YJ__V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMWd_c2soJOE1_ooqBjO_S2uH7O1z3BM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sedHAKpbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?keywords=samsung&ob=23&src=search&is_search=1&dv=android&page=1&management_type=1&t=android",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syaosJaoAj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEHaFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAUFbpK5H_H5oAndosJf6_r5oAndosJf6_Pw6APBoAgiH_JWysrdgZ77y_Cib3J76AyWg_Pxy3uio_-jy3JO9pJF6ACwH_ndHmUDUMVj9RosQR-BUsta6_JXopKpoAraosjRo_rhHZFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBo1peF_S2g8JY1e_C68BBd_OzCHJNE392-q9P23_oZ8uKp_Mhg3J2ky1o-ojBkqRuvuVVE_Bzu8JYJgpzvzVVR_M2z8jB2PfBxHByOgAUN8u2c692gHsBN3Bo-ojBke3BHe72OysUOqB2_Z_g-QuJ7_uzCouB1Z9PHuVja_320PJNIZMOg8_nO_92SH7h13Mx6zVVE_jPcq7NE3MBq17BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-Q9PNyjrNHfgU8IoouRxfgAod6cHp1SzMZIxp__Jd8jOJu_C-q9P2yp-6PMoWuMggQj2fgAo6QJBkQfBoqMHp_c2VHjYJ3_zo8BJh_S2so1YJ__V-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMWd_c2soJOE1_ooqBjO_S2uH7O1z3BM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sedHAKpbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?keywords=samsung&ob=23&src=search&is_search=1&dv=android&page=1&management_type=1&t=android",
+            "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2020/8/13/40861697/40861697_87e46b11-b78e-4a0b-a486-e7aaeb52daa5_1080_1080",
+            "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/8/13/40861697/40861697_87e46b11-b78e-4a0b-a486-e7aaeb52daa5_1080_1080",
+            "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/product-1/2020/8/13/40861697/40861697_87e46b11-b78e-4a0b-a486-e7aaeb52daa5_1080_1080"
+          },
+          "uri": "https://www.tokopedia.com/techstudioid/resmi-samsung-note-20-ultra-note-20-bronze-green-black-white-grey-note-20-256gb-mystic-bronze?src=topads",
+          "relative_uri": "techstudioid/resmi-samsung-note-20-ultra-note-20-bronze-green-black-white-grey-note-20-256gb-mystic-bronze",
+          "price_format": "Rp11.090.000",
+          "wholesale_price": [],
+          "count_talk_format": "104",
+          "count_review_format": "117",
+          "category": {
+            "id": "3054"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 99,
+          "product_rating_format": "5.0",
+          "product_item_sold_payment_verified": "Terjual 240",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ]
+        },
+        "shop": {
+          "id": "4179862",
+          "name": "Tech Studio Indonesia",
+          "domain": "techstudioid",
+          "location": "Jakarta Barat",
+          "city": "Jakarta Barat",
+          "gold_shop": true,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=4179862",
+          "uri": "https://www.tokopedia.com/techstudioid",
+          "owner_id": "40861697",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "<b>4.9</b> Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant",
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1094372943"
+      },
+      {
+        "id": "36993580",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/langitcelluar",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpyN6_HO6AnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6srFHmFiy3zwrfo5rM1i6sUdoadNH_1pHArp6AHfHpeRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9x6epzN_7zuH7O119BvzV1p_uzz81YJu3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23jzS8JOJQcxoqjV7_M2g81Y_HACgQu2k_Vz08jYJyRz6Q11F_jzoHVB91_o6Q12DZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2yjzGrfUpgAxMzRPdyjrNHfgU8I2jzpJdgjPR8BxE_9P6uVV2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_7zsP1O11_ovzJ7p_1zg8jO1gRBo8Bu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_7zsP1Y1z_Vo8jJp_92S8jNk__C68BV2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfoZFaomFpHA179ZFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpH_npHmFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?keywords=samsung&dv=android&src=search&r=https%3A%2F%2Fwww.tokopedia.com%2Flangitcelluar%2Fsamsung-galaxy-m20-garansi-resmi-1-tahun-hitam%3Fsrc%3Dtopads&page=1&management_type=1&t=android&ob=23&is_search=1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEHpyN6_HO6AnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6srFHmFiy3zwrfo5rM1i6sUdoadNH_1pHArp6AHfHpeRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9x6epzN_7zuH7O119BvzV1p_uzz81YJu3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23jzS8JOJQcxoqjV7_M2g81Y_HACgQu2k_Vz08jYJyRz6Q11F_jzoHVB91_o6Q12DZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2yjzGrfUpgAxMzRPdyjrNHfgU8I2jzpJdgjPR8BxE_9P6uVV2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_7zsP1O11_ovzJ7p_1zg8jO1gRBo8Bu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_7zsP1Y1z_Vo8jJp_92S8jNk__C68BV2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfoZFaomFpHA179ZFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpH_npHmFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?r=https%3A%2F%2Fwww.tokopedia.com%2Flangitcelluar%2Fsamsung-galaxy-m20-garansi-resmi-1-tahun-hitam%3Fsrc%3Dtopads&management_type=1&is_search=1&src=search&product_id=482638296&keywords=samsung&ob=23&dv=android&uid=0&page=1&t=android",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEHpyN6_HO6AnDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUst7bm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6srFHmFiy3zwrfo5rM1i6sUdoadNH_1pHArp6AHfHpeRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9x6epzN_7zuH7O119BvzV1p_uzz81YJu3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23jzS8JOJQcxoqjV7_M2g81Y_HACgQu2k_Vz08jYJyRz6Q11F_jzoHVB91_o6Q12DZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2yjzGrfUpgAxMzRPdyjrNHfgU8I2jzpJdgjPR8BxE_9P6uVV2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_7zsP1O11_ovzJ7p_1zg8jO1gRBo8Bu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_7zsP1Y1z_Vo8jJp_92S8jNk__C68BV2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMoxPVY2gIHi6BDfoZFaomFpHA179ZFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6i-srcowrfx5rVYOQSJibm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpH_npHmFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?keywords=samsung&management_type=1&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Flangitcelluar&src=search&dv=android&page=1&uid=0",
+        "product": {
+          "id": "482638296",
+          "name": "SAMSUNG GALAXY M20 GARANSI RESMI 1 TAHUN - Hitam",
+          "category_breadcrumb": "handphone-tablet / handphone / android-os",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHf6_jpo_KFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5rI-5gIusPm7hbpUFH_j5oZ4a6m47HAnNo_HObpeFHAjOHpuwHc-sgMeaosrWofJf6Z77HAPib3Udg_eWy_uMo_ujy_UNgseO9pyaHV4fHsnXqSCSUiFiy3zwrfo5rM1i6sUdoadNH_1pHArp6AHfHpeRomFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z9x6epzN_7zuH7O119BvzV1p_uzz81YJu3BHe72a3BxDHfUpZMWyH7NkysoGQJBkQfBoe7BpZ37OPM-W_Mh-qMY23jzS8JOJQcxoqjV7_M2g81Y_HACgQu2k_Vz08jYJyRz6Q11F_jzoHVB91_o6Q12DZ3BRq3UpZSCqHMhO3A-ZQcoc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMoUZSgqZVgkgJyNrV2AZ_g-qjV2_JoGPMoWQcNxupuMyp-tPMoc69Cqe7jfZ32Cq1hAZSxjuOgNguyNHVB9gI2-qMY2yjzGrfUpgAxMzRPdyjrNHfgU8I2jzpJdgjPR8BxE_9P6uVV2_JoG8Bja69BqusB2yf7NHfHau3Bvq1BN_7zsP1O11_ovzJ7p_1zg8jO1gRBo8Bu2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_7zsP1Y1z_Vo8jJp_92S8jNk__C68BV2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpH_npHmFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?src=search&is_search=1&keywords=samsung&t=android&management_type=1&dv=android&page=1&ob=23",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHf6_jpo_KFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAJNbp15HsK5oAnF6_1poZ47HAnNo_HO9pCiyfgjHsyRb_PxosjWoAnRyiOi6c17b3JOgs1OgcJa63y7ou4fHsCwosUFbM2FgaUDUMVj9RosQR-BUsta6ArX6_JOHpnRHpKposH7opeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1Bd_jH781YJu_oouVVN_7zuH7O119BvzVu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu2JgRxozcht_32CPJNk39Bv1pnF33Oqqjh1qR2vzco7_MOVHJNJ__CguOJp_MOGQJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3-JZSoiHfedgjPR8c-I6_oMZIxEgJrh6cgIPR2y8jOR_Bzzq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81YJyRuouVJp_7zoH7OJ392oucPN_92uq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81YJyRuvuJ1h_92CH7OEgR26qj7F_S2zq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJFHpnDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?src=search&is_search=1&keywords=samsung&t=android&management_type=1&dv=android&page=1&ob=23",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6sHf6_jpo_KFbm-xgVY789CBUsthbm-FQRo2PcB5QiUEomFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRCaQfzOyReWHZ4aHAJNbp15HsK5oAnF6_1poZ47HAnNo_HO9pCiyfgjHsyRb_PxosjWoAnRyiOi6c17b3JOgs1OgcJa63y7ou4fHsCwosUFbM2FgaUDUMVj9RosQR-BUsta6ArX6_JOHpnRHpKposH7opeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1Bd_jH781YJu_oouVVN_7zuH7O119BvzVu2_JoGrB2yQAoiH7203Ao6qMUpZMh-qMY2_1o-r7BWo9giQ1NDZ325qu2JgRxozcht_32CPJNk39Bv1pnF33Oqqjh1qR2vzco7_MOVHJNJ__CguOJp_MOGQJB2PfBiH72F3s-DPuKa1MhszsBF3jo-ojBke3BHe72fyfODQMV9o3gsZJ2f3jx3qMzc69Cqe7jfZ32Cq1hAZSgsQ3hXyurOgMHaqIgszsBF3jo-ojBke3BHe72dgVP383u36_CgufzEZ325q3-JZSoiHfedgjPR8c-I6_oMZIxEgJrh6cgIPR2y8jOR_Bzzq1hAZS2gHsBN3ByNq3oW6_osHBu2_fB-81YJyRuouVJp_7zoH7OJ392oucPN_92uq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81YJyRuvuJ1h_92CH7OEgR26qj7F_S2zq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJFHpnDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?src=search&is_search=1&keywords=samsung&t=android&management_type=1&dv=android&page=1&ob=23",
+            "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/product-1/2019/5/28/4009535/4009535_0bcfd267-7a69-407b-b8e4-a5f55da29f45_620_620.jpg",
+            "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2019/5/28/4009535/4009535_0bcfd267-7a69-407b-b8e4-a5f55da29f45_620_620.jpg",
+            "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/product-1/2019/5/28/4009535/4009535_0bcfd267-7a69-407b-b8e4-a5f55da29f45_620_620.jpg"
+          },
+          "uri": "https://www.tokopedia.com/langitcelluar/samsung-galaxy-m20-garansi-resmi-1-tahun-hitam?src=topads",
+          "relative_uri": "langitcelluar/samsung-galaxy-m20-garansi-resmi-1-tahun-hitam",
+          "price_format": "Rp2.500.000",
+          "wholesale_price": [],
+          "count_talk_format": "8",
+          "count_review_format": "5",
+          "category": {
+            "id": "3054"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": false,
+          "product_cashback_rate": "",
+          "product_rating": 92,
+          "product_rating_format": "4.6",
+          "product_item_sold_payment_verified": "Terjual 27",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            }
+          ]
+        },
+        "shop": {
+          "id": "4009535",
+          "name": "langitcel",
+          "domain": "langitcelluar",
+          "location": "Jakarta Pusat",
+          "city": "Jakarta Pusat",
+          "gold_shop": true,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=4009535",
+          "uri": "https://www.tokopedia.com/langitcelluar",
+          "owner_id": "39602973",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "<b>4.8</b> Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant",
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/482638296"
+      },
+      {
+        "id": "73443483",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/ciceri-1",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopH7oAH76AHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6s1FHmFiy3zwrfo5rM1i6sUdoadfHpJRHAjOoAedHAKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-Hjhkz9BoqBJF_7z0H7Y1u_uoucPE_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMWvzJuR_OPV81OAHA-6qjjO_VzZqu2W_9zvuJ77_SjFHBB11_Co8B-t3jzsHBBWu3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZSooQ9xfgAod6c-JzSoiHfedgjx6Hc-y8AxizJNM_92CH1NAZ9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-oq_ep_92sP7OJgR2oqMDh_uzSH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgpoHqBBE_uzsP7Y1u_C6zcPR_7zgq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qos1DHseDHpnOoV7DUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsr7HArDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?src=search&ob=23&dv=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fciceri-1%2Fsamsung-galaxy-m11-ram-3-32gb%3Fsrc%3Dtopads&management_type=1&r_replacement=new&page=1&t=android&keywords=samsung&is_search=1",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEopH7oAH76AHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6s1FHmFiy3zwrfo5rM1i6sUdoadfHpJRHAjOoAedHAKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-Hjhkz9BoqBJF_7z0H7Y1u_uoucPE_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMWvzJuR_OPV81OAHA-6qjjO_VzZqu2W_9zvuJ77_SjFHBB11_Co8B-t3jzsHBBWu3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZSooQ9xfgAod6c-JzSoiHfedgjx6Hc-y8AxizJNM_92CH1NAZ9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-oq_ep_92sP7OJgR2oqMDh_uzSH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgpoHqBBE_uzsP7Y1u_C6zcPR_7zgq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qos1DHseDHpnOoV7DUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsr7HArDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?r=https%3A%2F%2Fwww.tokopedia.com%2Fciceri-1%2Fsamsung-galaxy-m11-ram-3-32gb%3Fsrc%3Dtopads&src=search&r_replacement=new&page=1&product_id=1288997995&ob=23&uid=0&management_type=1&keywords=samsung&dv=android&t=android&is_search=1",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEopH7oAH76AHDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstObm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6s1FHmFiy3zwrfo5rM1i6sUdoadfHpJRHAjOoAedHAKfbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-Hjhkz9BoqBJF_7z0H7Y1u_uoucPE_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMWvzJuR_OPV81OAHA-6qjjO_VzZqu2W_9zvuJ77_SjFHBB11_Co8B-t3jzsHBBWu3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZSooQ9xfgAod6c-JzSoiHfedgjx6Hc-y8AxizJNM_92CH1NAZ9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_-oq_ep_92sP7OJgR2oqMDh_uzSH1B2PfBsHjNfyfO3gMHauMxsQ1N5Z325q1OkgpoHqBBE_uzsP7Y1u_C6zcPR_7zgq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-sy9zwq3zpUs2Qos1DHseDHpnOoV7DUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUstiyRCs9RotQRCwP3NhUiFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHsr7HArDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?r=https%3A%2F%2Fwww.tokopedia.com%2Fciceri-1&page=1&keywords=samsung&management_type=1&uid=0&t=android&dv=android&src=search",
+        "product": {
+          "id": "1288997995",
+          "name": "Samsung Galaxy M11 RAM 3/32GB",
+          "category_breadcrumb": "handphone-tablet / handphone / android-os",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srpoAepoAKpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_n5Hsr5y3VjysKho3yWy_1RHZ776c1hb_BjHA1WHAUag_Vj6_e7gMzMbM2FgaUDUMVj9RosQR-BUsta6ArXosHhopnNo_e76AndoiFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_-HqjuN_32zHJYJqpovuV1O_uzS8jN2Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq120_7zVP7Y9z9Boepna_M2-o1h11MBqQ1O7_OzooJNNHA-guVJF_92ZqV2Jyp-gQuu2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12p_3OdPMep8AxizJgpysoj6cgU_sCi3IKdyjz6gjOEe_V6e7BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjja_3j7H7OEyRPozcPE_320H1O1gpV-q9P2yp-6PMoWuMgsHBgtyfO6Q7BkQfBoqMrp_c2g8jO1yRPvuV1F_jzSP7YJ33BM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiQBYsy3Njq3zxPcuwy3zpUsthosHDUMVi9RzBrRei6i-6UiFircYpPVYxQcri6BDiyRCs9RotQRCwP3NhUB7DUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sURoAnRbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?r_replacement=new&page=1&is_search=1&ob=23&keywords=samsung&t=android&dv=android&management_type=1&src=search",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srpoAepoAKpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpURbfVxgcUdH_uMb3JOopJWoAxBHZ7NgAnOb_naHM1hgAj7ocgjgiNkrcribm-xgVYpyfYagZUEHsKRbsypH_rF6_17oAKF6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1ja_c2V81Ok1_CvzcDp_Ozuo1O1gR26q1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fBGq7YJz9Pvu7uN_1HFHjNkZ_uHuV-23MOoPJY1__z68_na3uzzHJOE1MxqzcHa33Ouq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGr7OW8IgjHRKdyjzcrfUpgAxMZJdFyBxd6c-J_Mgo8jJh_jo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO2oAoo8MoR_1zS8jOkqpVoucrhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32SH7hk392oucoR_OzuHJNJgRPvzVB2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopeFoaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?r_replacement=new&page=1&is_search=1&ob=23&keywords=samsung&t=android&dv=android&management_type=1&src=search",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6srpoAepoAKpbm-xgVY789CBUsthbm-FQRo2PcB5QiUEoZFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpURbfVxgcUdH_uMb3JOopJWoAxBHZ7NgAnOb_naHM1hgAj7ocgjgiNkrcribm-xgVYpyfYagZUEHsKRbsypH_rF6_17oAKF6AyDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1ja_c2V81Ok1_CvzcDp_Ozuo1O1gR26q1BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fBGq7YJz9Pvu7uN_1HFHjNkZ_uHuV-23MOoPJY1__z68_na3uzzHJOE1MxqzcHa33Ouq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGr7OW8IgjHRKdyjzcrfUpgAxMZJdFyBxd6c-J_Mgo8jJh_jo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-HjO2oAoo8MoR_1zS8jOkqpVoucrhZ3BRq3Ha_SgsQugMyp-3qcoW_MY-qMY2_32SH7hk392oucoR_OzuHJNJgRPvzVB2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstaopeFoaFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?r_replacement=new&page=1&is_search=1&ob=23&keywords=samsung&t=android&dv=android&management_type=1&src=search",
+            "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/10/27/aadb815f-a571-48e1-9d05-022e1d944fdf.jpg",
+            "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/27/aadb815f-a571-48e1-9d05-022e1d944fdf.jpg",
+            "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/27/aadb815f-a571-48e1-9d05-022e1d944fdf.jpg"
+          },
+          "uri": "https://www.tokopedia.com/ciceri-1/samsung-galaxy-m11-ram-3-32gb?src=topads",
+          "relative_uri": "ciceri-1/samsung-galaxy-m11-ram-3-32gb",
+          "price_format": "Rp1.679.000",
+          "wholesale_price": [],
+          "count_talk_format": "0",
+          "count_review_format": "0",
+          "category": {
+            "id": "3054"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": true,
+          "product_cashback_rate": "",
+          "product_rating": 0,
+          "product_rating_format": "",
+          "product_item_sold_payment_verified": "",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "credibility",
+              "type": "lightBlue",
+              "title": "Terbaru"
+            },
+            {
+              "position": "gimmick",
+              "type": "textDarkOrange",
+              "title": "Produk Terbaru"
+            }
+          ]
+        },
+        "shop": {
+          "id": "9906237",
+          "name": "Ciceri cellular",
+          "domain": "ciceri-1",
+          "location": "Tangerang Selatan",
+          "city": "Tangerang Selatan",
+          "gold_shop": true,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=9906237",
+          "uri": "https://www.tokopedia.com/ciceri-1",
+          "owner_id": "122952653",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "<b>5.0</b> Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant",
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1288997995"
+      },
+      {
+        "id": "69287294",
+        "ad_ref_key": "",
+        "redirect": "https://www.tokopedia.com/langitcelluar",
+        "sticker_id": "0",
+        "sticker_image": "",
+        "product_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosja6Ara6_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seOHmFiy3zwrfo5rM1i6sUdomda6_epHAKdopJFHAU7omFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqB1h_BzuH1N1u_V6uV1h_BzuH1N_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq120_7zVP7Y9z9Boepna_M2-o1h11MBqQ1O7_OzooJNNHA-guVJF_92ZqV2Jyp-gQuu2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12p_3OdPMep8AxizJgpysoj6cgU_sCi3IKdyjz6gjOEe_V6e7BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_3j78JOJqpzo8MD7_32oP7Okz3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9BvzVVO_320HJOEe_zvzcod_1zC81NJ13BM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHhosjfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?management_type=1&r_replacement=new&keywords=samsung&t=android&src=search&page=1&ob=23&r=https%3A%2F%2Fwww.tokopedia.com%2Flangitcelluar%2Fsamsung-galaxy-z-fold-2%3Fsrc%3Dtopads&is_search=1&dv=android",
+        "product_wishlist_url": "https://ta.tokopedia.com/promo/v1/wishlists/8a-xgVY2gmUEosja6Ara6_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seOHmFiy3zwrfo5rM1i6sUdomda6_epHAKdopJFHAU7omFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqB1h_BzuH1N1u_V6uV1h_BzuH1N_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq120_7zVP7Y9z9Boepna_M2-o1h11MBqQ1O7_OzooJNNHA-guVJF_92ZqV2Jyp-gQuu2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12p_3OdPMep8AxizJgpysoj6cgU_sCi3IKdyjz6gjOEe_V6e7BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_3j78JOJqpzo8MD7_32oP7Okz3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9BvzVVO_320HJOEe_zvzcod_1zC81NJ13BM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHhosjfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?keywords=samsung&src=search&page=1&t=android&uid=0&r=https%3A%2F%2Fwww.tokopedia.com%2Flangitcelluar%2Fsamsung-galaxy-z-fold-2%3Fsrc%3Dtopads&dv=android&product_id=1250370272&r_replacement=new&is_search=1&ob=23&management_type=1",
+        "shop_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosja6Ara6_eDUMVj9RzNrc1i6sJDUSC5rfB7q3YXUstfbm-7q3OBUsthosn7Hsjdo_1fbm-srcHi6seOHmFiy3zwrfo5rM1i6sUdomda6_epHAKdopJFHAU7omFirpowQcYSUstig9BGqMzUZMggQj2fgAo6QJBkQfBoe7BpZ3O6HcoD692qu7gN3_-Sq1Y2Z_VHqB1h_BzuH1N1u_V6uV1h_BzuH1N_Z9o-Q9zDguxjPMoW1MgsHjNfyfOuq1Y2Z9P-q9P2yM7NPujau3Bvq120_7zVP7Y9z9Boepna_M2-o1h11MBqQ1O7_OzooJNNHA-guVJF_92ZqV2Jyp-gQuu2_JoGPMoWQcNxupuM3jP3POKaQcW-qMY2_1o-r7BW69BxufzFyMFNPfoW63Wju7dF3A-Dq7BkQfBoe7BpZ37N83V9gICiQABEy1rNPOKaQcW-qMY2_1o-r7BXzsVq3JtO3AoZqVtp_3Bvq12p_3OdPMep8AxizJgpysoj6cgU_sCi3IKdyjz6gjOEe_V6e7BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjjp_3j78JOJqpzo8MD7_32oP7Okz3BHe72E3_UN8u23692qu7gN3_-Sq1Y2Z9BvzVVO_320HJOEe_zvzcod_1zC81NJ13BM1_7YUiFiP9oBrBY2gmUEUsnibm-xQcri6i-pPcOwQAowQA-wQAJibm-XP3Oig9-wQfgwy3zpUstfbm-XP3Oig9-wy3zp9R-BrZUEoiFiyfV79fBjraUE3pyObAU7bAHFo_zPbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUEUMoFyOYpqcYF9RuXrZUDUSgBrSo2Qfdi6i-fHiUDUMoDP9o7g9-wq3zwPsUi6sHhosjfbm-sy9zBgfYa8uYpP3PSg9o79fV7PI-2ySu7gZUE3aUpHA17UiFiHpnO6mUDUsyNUiFiHpnRHaUDUsHfUBOY?page=1&management_type=1&uid=0&r=https%3A%2F%2Fwww.tokopedia.com%2Flangitcelluar&src=search&keywords=samsung&t=android&dv=android",
+        "product": {
+          "id": "1250370272",
+          "name": "samsung galaxy z fold 2",
+          "category_breadcrumb": "handphone-tablet / handphone / android-os",
+          "wishlist": false,
+          "image": {
+            "m_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syNHsKRHsj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4pHAn5uSViyfOobpUFHsn5H_n5H_J5osViH_jhHpjWosnpoZ77Hc17b3Jfof1W6cVjo_ndgMHdofuibSCXgaUDUMVj9RosQR-BUsta6AeXHsj7Hpnd6ArhHAnaoAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1jh_c2uH1N1u_V6uV1h_BzuH1N1u_V617BpZ3O7QcuygIgsQu-Myp-6PMoWu3Bvq1BRZ3BRq3-W69ugHBu2_fBGq7YJz9Pvu7uN_1HFHjNkZ_uHuV-23MOoPJY1__z68_na3uzzHJOE1MxqzcHa33Ouq1hAZSgsQ3hXyurOgB2IuSPyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D69PsQ_B0gVP6HVKaQcW-qMY2_1o-r7BW69BxufzFyMFN8MVI69PyHMh0Z325q1OAZ9o-Qjyh3BxGouKp1MxqH7O2_fBGr7OW8IgjHRKdyjzcrfUpgAxMZJdFyBxd6c-J_Mgo8jJh_jo-r7BX_M2iH72D3A-G83UpgI2q17jfZ32-H7O2oIxozcD7_920oJOk_9Poqju2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_7zzP1OkqpCo8jJ7_7zs8JOJe9B6zVV2gBJYvZUDUSupg9-wq3ei6iUFUiFiy3hSUstirRzW9fFp9fFa9fFhUiFiQSuWyMua9fYM9fVjraUEoiFiQSuWyMua9fVjrOYag9Ji6syDUMNwyfVXgcBjy9zB9fVjraUEH_ypbm-xyBY7g9o7Usti_iUDUSC5rRzwy3hSUs2QUMoFyOYpqcYF9RuXrZ-Pbm-fg9-pq3YXUstiPsUibm-sQIupPcua9fBj9RyaUstpH_yNoiFiyfV7g3P5rSBwrRuSgfupPVYxPIzaq3-OPc1i6BDiHpnOomUDUsHFo_KibmUf6ZUDUsHFopHibmUpoi-Pwe?t=android&ob=23&r_replacement=new&page=1&management_type=1&src=search&is_search=1&dv=android&keywords=samsung",
+            "s_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syNHsKRHsj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4aHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpJhbpyhysJNH_HNb_yFHp1WoACBomOxosPBb_xxgA1F6cgs6APByiNFQMribm-xgVYpyfYagZUEHsK7bsUNoAHF6AKRH_nFHse7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-H1hku_V6uV1h_BzuH1N1u_V6uV1h_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMWvzJuR_OPV81OAHA-6qjjO_VzZqu2W_9zvuJ77_SjFHBB11_Co8B-t3jzsHBBWu3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZSooQ9xfgAod6c-JzSoiHfedgjx6Hc-y8AxizJNM_92CH1NAZ9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ooq_zd_1z0oJOEqpzoqjOR_32Vq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81YJ19uoqMDF_92CoJYJyRxozJVN_jzzq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJf6_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?t=android&ob=23&r_replacement=new&page=1&management_type=1&src=search&is_search=1&dv=android&keywords=samsung",
+            "xs_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syNHsKRHsj7bm-xgVY789CBUsthbm-FQRo2PcB5QiUEoiFiPcBWgZUEH_yFoAUN6A1OoiFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbOghyMoW_Z4aHAUFbpJFbpJhbpyhysJNH_HNb_yFHp1WoACBomOxosPBb_xxgA1F6cgs6APByiNFQMribm-xgVYpyfYagZUEHsK7bsUNoAHF6AKRH_nFHse7bm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-H1hku_V6uV1h_BzuH1N1u_V6uV1h_Bo-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-P7B2PfBiQ_BO3_-uq1Y2ZMWvzJuR_OPV81OAHA-6qjjO_VzZqu2W_9zvuJ77_SjFHBB11_Co8B-t3jzsHBBWu3BHe72fyfODQMV9o3gqzOgR3A-Dq7BkQfBoe7BpZ37N83V9gICiQABRyf7Nqfz9_sCyHMh0Z325q1OAZ9o-Q_BNyuPjrc-D692xzpBR3A-Dq7BkQfBoe7BpZ3NcHu2yZsuyHO-t3sooq1Y2ZSooQ9xfgAod6c-JzSoiHfedgjx6Hc-y8AxizJNM_92CH1NAZ9o-QjNkysoGQVKaZSBiHfzE3Bo-ojBkZ_ooq_zd_1z0oJOEqpzoqjOR_32Vq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81YJ19uoqMDF_92CoJYJyRxozJVN_jzzq3gzv_7ibm-Orfua9fBjUstiHmUDUMVDgaUEUSo7QuYDHOYDHBYDHZUDUMNOQ3-BrBY5gBYxgIHi6syDUMNOQ3-BrBYxgIowrMuhUstfbm-X9foxQMz2gcV7guYxgIHi6sJfHaFiy3-wPcupPmUEUjdibm-FQRo79fVDgaUE3a-srcowrfx5rVYOQSJi9ZFiPMuarfB5QiUEUSyaUiFiyfhOrRzBrBY2gVYfHiUEHpJf6_yDUMoxPcuSQR-N9RoOgfPBrRzwy9z7rMBiP9zBUs2QUsHFo_eibmUpHA1dUiFiosjibmUpHArpUiFiHpyi997?t=android&ob=23&r_replacement=new&page=1&management_type=1&src=search&is_search=1&dv=android&keywords=samsung",
+            "m_ecs": "https://ecs7-p.tokopedia.net/img/cache/300/VqbcmM/2020/10/11/61b19139-6035-40e4-a67e-8ad508fc87eb.png",
+            "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/200-square/VqbcmM/2020/10/11/61b19139-6035-40e4-a67e-8ad508fc87eb.png",
+            "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/VqbcmM/2020/10/11/61b19139-6035-40e4-a67e-8ad508fc87eb.png"
+          },
+          "uri": "https://www.tokopedia.com/langitcelluar/samsung-galaxy-z-fold-2?src=topads",
+          "relative_uri": "langitcelluar/samsung-galaxy-z-fold-2",
+          "price_format": "Rp34.990.000",
+          "wholesale_price": [],
+          "count_talk_format": "0",
+          "count_review_format": "0",
+          "category": {
+            "id": "3054"
+          },
+          "product_preorder": false,
+          "product_wholesale": false,
+          "free_return": "https://ecs7-p.tokopedia.net/img/blank.gif",
+          "product_cashback": false,
+          "product_new_label": true,
+          "product_cashback_rate": "",
+          "product_rating": 0,
+          "product_rating_format": "",
+          "product_item_sold_payment_verified": "",
+          "product_minimum_order": 1,
+          "free_ongkir": {
+            "is_active": true,
+            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          },
+          "campaign": {
+            "original_price": "",
+            "discount_percentage": 0
+          },
+          "label_group": [
+            {
+              "position": "credibility",
+              "type": "lightBlue",
+              "title": "Terbaru"
+            },
+            {
+              "position": "offers",
+              "type": "lightGrey",
+              "title": "Bisa Tukar Tambah"
+            },
+            {
+              "position": "gimmick",
+              "type": "textDarkOrange",
+              "title": "Produk Terbaru"
+            }
+          ]
+        },
+        "shop": {
+          "id": "4009535",
+          "name": "langitcel",
+          "domain": "langitcelluar",
+          "location": "Jakarta Pusat",
+          "city": "Jakarta Pusat",
+          "gold_shop": true,
+          "gold_shop_badge": true,
+          "lucky_shop": "https://clover.tokopedia.com/badges/merchant/v1?shop_id=4009535",
+          "uri": "https://www.tokopedia.com/langitcelluar",
+          "owner_id": "39602973",
+          "is_owner": false,
+          "shop_is_official": false,
+          "shop_rating_avg": "<b>4.8</b> Rating Toko",
+          "badges": [
+            {
+              "title": "Free Return",
+              "image_url": "https://ecs7-p.tokopedia.net/img/blank.gif",
+              "show": false
+            },
+            {
+              "title": "Power Merchant",
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/PM-Badge-80.png",
+              "show": true
+            }
+          ]
+        },
+        "applinks": "tokopedia://product/1250370272"
+      }
+    ],
+    "template": [
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": true
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      },
+      {
+        "is_ad": false
+      }
+    ]
+  },
+  "headlineAds": {
+    "status": {
+      "error_code": 0,
+      "message": "OK"
+    },
+    "header": {
+      "process_time": 0.035540629,
+      "total_data": 1
+    },
+    "data": [
+      {
+        "id": "66560701",
+        "ad_ref_key": "66560701",
+        "redirect": "https://www.tokopedia.com/advan-official",
+        "ad_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyOosnRHAJDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7HsjdosH7bm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?keywords=samsung&page=1&template_id_used=3&r=https%3A%2F%2Fwww.tokopedia.com%2Fadvan-official&cpm_template_req=3%2C4%2C5&keyword_correction=samsung&click_ad_type=1&t=android&src=search&is_search=1&uid=0",
+        "headline": {
+          "template_id": "3",
+          "name": "Advan Official Store",
+          "image": {
+            "full_url": "https://ta.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6syfo_yFopnhbm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAUN6AypomFircV7qmUEUMusrprWrmN7QfW5rcujq3JXQMu7bfBWgaYsy3otgZ4hHAnWrRVOy9-BbRotQRCpb_J5Hsnh6m4pbp15HpnRHsJF6m4pHAraH_nd9pBMo3UaHf-xb_CsopJWoAUOHi7dyMeab_HRH_-ioMgMHMgMoaNkrcribm-src7i6sJabm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pJaHAy7H_jRHprDH_UhoAeN6A1RoVOY?page=1&cpm_template_req=3%2C4%2C5&template_id_used=3&t=android&uid=0&src=search&keyword_correction=samsung&is_search=1&keywords=samsung",
+            "full_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg"
+          },
+          "shop": {
+            "id": "3072108",
+            "name": "Advan Official Store",
+            "domain": "advan-official",
+            "tagline": "Do Great Make Better",
+            "slogan": "Belanja di Advan Official Store dan dapatkan promo\" menarik!",
+            "location": "Kota Administrasi Jakarta Barat",
+            "city": "Kota Administrasi Jakarta Barat",
+            "gold_shop": true,
+            "gold_shop_badge": true,
+            "shop_is_official": true,
+            "product": [
+              {
+                "id": "1206419737",
+                "name": "Advan G5 4 GB 32 GB Smartphone Android Garansi Resmi Bundling TWS 2 - Blue Purple",
+                "price_format": "Rp 1.250.000",
+                "applinks": "tokopedia://product/1206419737",
+                "product_rating": 97,
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "87",
+                "image_product": {
+                  "product_id": "1206419737",
+                  "product_name": "Advan G5 4 GB 32 GB Smartphone Android Garansi Resmi Bundling TWS 2 - Blue Purple",
+                  "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/attachment/2020/10/20/29652022/29652022_e7e48ec6-b442-4349-8ec3-a8c26802c67a.jpg",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyOosnRHAJDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7HsjdosH7bm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?keyword_correction=samsung&click_ad_type=2&product_id=1206419737&is_search=1&src=search&page=1&cpm_template_req=3%2C4%2C5&t=android&r=https%3A%2F%2Fwww.tokopedia.com%2Fadvan-official%2Fadvan-g5-4-gb-32-gb-smartphone-android-garansi-resmi-bundling-tws-2-blue-purple&template_id_used=3&uid=0&keywords=samsung"
+                },
+                "campaign": {
+                  "original_price": "Rp 1.599.000",
+                  "discount_percentage": 22
+                }
+              },
+              {
+                "id": "1214498574",
+                "name": "Advan G5 6 Inci Smartphone Android Garansi Resmi Bundling S1 Black - Blue Purple S1",
+                "price_format": "Rp 1.350.000",
+                "applinks": "tokopedia://product/1214498574",
+                "product_rating": 92,
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "16",
+                "image_product": {
+                  "product_id": "1214498574",
+                  "product_name": "Advan G5 6 Inci Smartphone Android Garansi Resmi Bundling S1 Black - Blue Purple S1",
+                  "image_url": "https://ecs7-p.tokopedia.net/img/cache/200-square/product-1/2020/10/8/28450045/28450045_310717a2-5c23-49a2-8825-d43cda4c519a_1080_1080",
+                  "image_click_url": "https://ta.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEosyOosnRHAJDUMVj9RzNrc1i6sHDUSC5rfB7q3YXUsthbm-7q3OBUsthosn7HsjdosH7bm-0g9BRQR-j9fBjUsth6_eOopHFoZFiy3zwrfo5rM1i6sUfoZdh6AHaHsyO6_ypoAjRbm-pHOYDQfri6i-B812kgJxGgBBXZSgjH7NDZ325q1OAZ9o-Q1dFyfFN8B29zSBgHMP2_fB-81hkgR2oucrh_7zzP7NEe_ovuVjF_MB-r7BWPchB3czfyfOZgMHa_SgsQuu2_fB-8Jhkz3BHe72OysUOqB2_Z_g-qBg0_92sHjN9zM2HucDF3MO-PJNJZ_Vgq_n7_M2uoJh9z9xoz7g2__-zP7NkgcBoq1BpZ37N83V9gICiQAB03BxmgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Aom83Ua1sVgHO-MyuPzq1Y2Z9P-q9P2ysoGrVtaQIuyH7N5ysomgMV913Bvq1BRZ3BRq3oyuMhsQMhMgJPcQMoNZ_g-q1BpZ3N6qMUpZMhyHj2Nysoj8B2_Z_g-qjV2_JoG8Bja69BqusBE3BPc8ujagfBvq1BN_M2uP1O1gR2oqjja_Bz0HjOE1_u681tNUiFiP9oBrBY2gmUEUsnibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sJDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=https%3A%2F%2Fwww.tokopedia.com%2Fadvan-official%2Fadvan-g5-6-inci-smartphone-android-garansi-resmi-bundling-s1-black-blue-purple-s1&click_ad_type=2&uid=0&product_id=1214498574&page=1&cpm_template_req=3%2C4%2C5&template_id_used=3&t=android&src=search&is_search=1&keywords=samsung&keyword_correction=samsung"
+                },
+                "campaign": {
+                  "original_price": "Rp 1.599.000",
+                  "discount_percentage": 16
+                }
+              }
+            ],
+            "image_shop": {
+              "cover": "https://ecs7-p.tokopedia.net/img/cache/750/shops-1/2020/9/14/28450045/28450045_7782c5dc-f368-4046-bdd7-8bffee865f77",
+              "s_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg",
+              "xs_url": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg",
+              "cover_ecs": "https://ecs7-p.tokopedia.net/img/cache/750/shops-1/2020/9/14/28450045/28450045_7782c5dc-f368-4046-bdd7-8bffee865f77",
+              "s_ecs": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg",
+              "xs_ecs": "https://ecs7-p.tokopedia.net/img/cache/100-square/shops-1/2018/3/5/3072108/3072108_9f5b23ba-0c71-4252-8bd2-3712b6ff2ff7.jpg"
+            }
+          },
+          "badges": [
+            {
+              "image_url": "https://ecs7-p.tokopedia.net/ta/icon/badge/OS-Badge-80.png",
+              "show": true,
+              "title": "Official Store"
+            }
+          ],
+          "button_text": "Cek Sekarang",
+          "promoted_text": "Dipromosikan oleh",
+          "description": "Belanja di Advan Official Store dan dapatkan promo&#34; menarik!",
+          "uri": "https://www.tokopedia.com/advan-official",
+          "layout": 1,
+          "position": 1
+        },
+        "applinks": "tokopedia://shop/3072108"
+      },
+      {
+        "id": "404105",
+        "ad_ref_key": "404105",
+        "redirect": "https://staging.tokopedia.com/nexard",
+        "ad_click_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAn7H_nObm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAHFHpUfHmFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?page=1&click_ad_type=1&uid=54&t=android&src=search&is_search=1&keywords=sticker&cpm_template_req=3%2C4%2C5&r=https%3A%2F%2Fstaging.tokopedia.com%2Fnexard&template_id_used=3&keyword_correction=sticker",
+        "headline": {
+          "template_id": "3",
+          "name": "nexard",
+          "image": {
+            "full_url": "https://ta-staging.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seFoAJFoZFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sJDUSz2Q31i6sJfHAepHAHaosnDUSCxPcKi6i-ByRHRbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpJFHmOpr9uxrM15Pfui9RoBrSg2yf1Wrfx5rcN5rcx5Pc4XrcNSUiFiyRCWUsth6mFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pJOHs1OosnhbAJOHs1Oo_rh997?src=search&cpm_template_req=3%2C4%2C5&keyword_correction=sticker&t=android&uid=54&is_search=1&keywords=sticker&page=1&template_id_used=3",
+            "full_ecs": "https://ecs7.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png"
+          },
+          "shop": {
+            "id": "480996",
+            "name": "nexard",
+            "domain": "nexard",
+            "tagline": "siap gan",
+            "slogan": "Belanja di nexard, diskon hingga 50%!",
+            "location": "Jakarta Selatan",
+            "city": "Jakarta Selatan",
+            "gold_shop": false,
+            "gold_shop_badge": false,
+            "shop_is_official": false,
+            "product": [
+              {
+                "id": "15255601",
+                "name": "Sticker 44",
+                "price_format": "Rp 100",
+                "applinks": "tokopedia://product/15255601",
+                "product_rating": 0,
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "0",
+                "image_product": {
+                  "product_id": "15255601",
+                  "product_name": "Sticker 44",
+                  "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/29/8969756/8969756_b6ca40a8-d9ff-4562-952d-0167fd5982d0_1350_1350",
+                  "image_click_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAn7H_nObm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAHFHpUfHmFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=https%3A%2F%2Fstaging.tokopedia.com%2Fnexard%2Fsticker-44&click_ad_type=2&product_id=15255601&src=search&cpm_template_req=3%2C4%2C5&is_search=1&template_id_used=3&t=android&uid=54&keywords=sticker&page=1&keyword_correction=sticker"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              },
+              {
+                "id": "15255571",
+                "name": "Sticker 18",
+                "price_format": "Rp 100",
+                "applinks": "tokopedia://product/15255571",
+                "product_rating": 0,
+                "product_cashback": false,
+                "product_cashback_rate": "",
+                "product_new_label": false,
+                "count_review_format": "0",
+                "image_product": {
+                  "product_id": "15255571",
+                  "product_name": "Sticker 18",
+                  "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/29/8969756/8969756_9a575acb-3fe5-49f9-834c-879738fed427_1350_1350",
+                  "image_click_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAn7H_nObm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAHFHpUfHmFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=https%3A%2F%2Fstaging.tokopedia.com%2Fnexard%2Fsticker-18&keywords=sticker&click_ad_type=2&src=search&page=1&template_id_used=3&keyword_correction=sticker&product_id=15255571&uid=54&t=android&is_search=1&cpm_template_req=3%2C4%2C5"
+                },
+                "campaign": {
+                  "original_price": "",
+                  "discount_percentage": 0
+                }
+              }
+            ],
+            "image_shop": {
+              "cover": "https://ecs7.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_url": "https://ecs7.tokopedia.net/img/cache/215-square/web_service-shopnophoto.png",
+              "xs_url": "https://ecs7.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png",
+              "cover_ecs": "https://ecs7.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_ecs": "https://ecs7.tokopedia.net/img/cache/215-square/web_service-shopnophoto.png",
+              "xs_ecs": "https://ecs7.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png"
+            }
+          },
+          "badges": [],
+          "button_text": "Cek Sekarang",
+          "promoted_text": "Dipromosikan oleh",
+          "description": "Belanja di nexard, diskon hingga 50%!",
+          "uri": "https://staging.tokopedia.com/nexard",
+          "layout": 2,
+          "position": 24
+        },
+        "applinks": "tokopedia://shop/480996"
+      }
+    ]
+  }
+}

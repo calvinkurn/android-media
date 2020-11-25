@@ -1,22 +1,23 @@
 package com.tokopedia.feedplus.view.fragment
 
 import android.content.Context
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -25,40 +26,62 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
+import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
+import com.tokopedia.feedplus.view.customview.FeedMainToolbar
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.searchbar.data.HintData
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.activity.SellerMigrationActivity
+import com.tokopedia.seller_migration_common.presentation.util.setupBottomSheetFeedSellerMigration
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_feed_plus_container.*
 import kotlinx.android.synthetic.main.partial_feed_error.*
-
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 25/07/18.
  */
 
-class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener {
+private const val EXP_NAME = "Navigation Revamp"
+private const val VARIANT_OLD = "existing navigation"
+private const val VARIANT_REVAMP = "navigation revamp"
+private const val FEED_PAGE = "feed page"
+
+class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
+
+    private var showOldToolbar: Boolean = false
+    private var feedToolbar: Toolbar? = null
 
     companion object {
         const val TOOLBAR_GRADIENT = 1
         const val TOOLBAR_WHITE = 2
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
@@ -71,6 +94,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     internal lateinit var affiliatePreference: AffiliatePreference
+
+    @Inject
+    lateinit var toolBarAnalytics: FeedToolBarAnalytics
 
     val KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -91,14 +117,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
+    private var badgeNumberCart: Int = 0
     private var isFabExpanded = false
     private var toolbarType = TOOLBAR_GRADIENT
     private var startToTransitionOffset = 0
     private var searchBarTransitionRange = 0
     private var isLightThemeStatusBar = false
 
-
-    private lateinit var coachMarkItem:  CoachMarkItem
+    private lateinit var coachMarkItem: CoachMarkItem
     private lateinit var feedBackgroundCrossfader: TransitionDrawable
 
     override fun onAttach(context: Context) {
@@ -109,13 +135,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.tabResp.observe(this, Observer {
+        viewModel.tabResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(this, Observer {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderFab(it.data)
                 is Fail -> onErrorGetWhitelist(it.throwable)
@@ -134,8 +160,56 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
             status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
         }
+        initToolbar()
         initView()
         requestFeedTab()
+    }
+
+    private fun initToolbar() {
+        showOldToolbar = !RemoteConfigInstance.getInstance().abTestPlatform.getString(EXP_NAME, VARIANT_OLD).equals(VARIANT_REVAMP, true)
+        status_bar_bg.visibility = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
+            else -> View.GONE
+        }
+        status_bar_bg2.visibility = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
+            else -> View.GONE
+        }
+        toolbarParent.removeAllViews()
+        if (showOldToolbar) {
+            feed_background_frame.show()
+            feedToolbar = context?.let { FeedMainToolbar(it) }
+            setFeedBackgroundCrossfader()
+            feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+                if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
+                    showNormalTextWhiteToolbar()
+                } else {
+                    showWhiteTextTransparentToolbar()
+                }
+            })
+            (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
+        } else {
+            feed_background_frame.hide()
+            feedToolbar = context?.let { NavToolbar(it) }
+            (feedToolbar as? NavToolbar)?.let {
+                it.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+                it.setToolbarContentType(NavToolbar.Companion.ContentType.TOOLBAR_TYPE_SEARCH)
+                it.switchToLightToolbar()
+                it.setContentInsetsAbsolute(0,0)
+                it.setToolbarPageName(FEED_PAGE)
+                viewLifecycleOwner.lifecycle.addObserver(it)
+                it.setIcon(
+                        IconBuilder()
+                                .addIcon(IconList.ID_MESSAGE) { onInboxButtonClick() }
+                                .addIcon(IconList.ID_NOTIFICATION) { onNotificationClick() }
+                                .addIcon(IconList.ID_CART) {}
+                                .addIcon(IconList.ID_NAV_GLOBAL) {}
+                )
+                it.setupSearchbar(hints = listOf(HintData()), searchbarClickCallback = ::onImageSearchClick)
+            }
+        }
+        toolbarParent.addView(feedToolbar)
     }
 
     override fun onPause() {
@@ -187,10 +261,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         return isLightThemeStatusBar
     }
 
-    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int) {
-        toolbar?.run {
+    override fun onNotificationChanged(notificationCount: Int, inboxCount: Int, cartCount: Int) {
+        (feedToolbar as? FeedMainToolbar)?.run {
             setNotificationNumber(notificationCount)
             setInboxNumber(inboxCount)
+        }
+        (feedToolbar as? NavToolbar)?.run {
+            setBadgeCounter(IconList.ID_NOTIFICATION, notificationCount)
+            setBadgeCounter(IconList.ID_MESSAGE, inboxCount)
+            setBadgeCounter(IconList.ID_CART, cartCount)
         }
         this.badgeNumberNotification = notificationCount
         this.badgeNumberInbox = inboxCount
@@ -201,6 +280,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (!isVisibleToUser) {
             hideAllFab(false)
         }
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        childFragmentManager.fragments
+                .filterIsInstance<FeedPlusFragment>()
+                .forEach { it.onParentFragmentHiddenChanged(hidden) }
     }
 
     @JvmOverloads
@@ -215,39 +301,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun initView() {
-        //status bar background compability
-        setFeedBackgroundCrossfader()
-        activity?.let {
-            status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
-            status_bar_bg2.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it)
-        }
-        status_bar_bg.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
-            else -> View.GONE
-        }
-        status_bar_bg2.visibility = when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.INVISIBLE
-            else -> View.GONE
-        }
-
         hideAllFab(true)
         if (!userSession.isLoggedIn) {
             fab_feed.show()
             fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
-        onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
-        feed_appbar.addOnOffsetChangedListener(object : AppBarLayout.OnOffsetChangedListener {
-            override fun onOffsetChanged(appBarLayout: AppBarLayout?, verticalOffset: Int) {
-                if (verticalOffset + (toolbar?.height ?: 0) < 0) {
-                    showNormalTextWhiteToolbar()
-                } else {
-                    showWhiteTextTransparentToolbar()
-                }
-            }
-        })
-
+        onNotificationChanged(badgeNumberNotification, badgeNumberInbox, badgeNumberCart) // notify badge after toolbar created
     }
 
     private fun requestFeedTab() {
@@ -297,15 +357,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
-        ToasterError.make(view_pager,
-                ErrorHandler.getErrorMessage(context, throwable),
-                BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.title_try_again)) {
-                    if (userSession.isLoggedIn) {
-                        viewModel.getWhitelist()
-                    }
+        view?.let {
+            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR, getString(R.string.title_try_again), View.OnClickListener {
+                if (userSession.isLoggedIn) {
+                    viewModel.getWhitelist()
                 }
-
+            })
+        }
     }
 
     private fun setFeedBackgroundCrossfader() {
@@ -370,11 +429,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun showFeedFab(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
         isFabExpanded = true
-        if (whitelistDomain.authors.size > 1) {
-            fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
-        } else if (whitelistDomain.authors.size == 1) {
-            val author = whitelistDomain.authors.first()
-            fab_feed.setOnClickListener { onGoToLink(author.link) }
+        when {
+            isSellerMigrationEnabled(context) -> {
+                val shopAppLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
+                val createPostAppLink = ApplinkConst.CONTENT_CREATE_POST
+                fab_feed.setOnClickListener {
+                    val intent = SellerMigrationActivity.createIntent(
+                            context = requireContext(),
+                            featureName = SellerMigrationFeatureName.FEATURE_POST_FEED,
+                            screenName = FeedPlusContainerFragment::class.simpleName.orEmpty(),
+                            appLinks = arrayListOf(ApplinkConstInternalSellerapp.SELLER_HOME, shopAppLink, createPostAppLink))
+                    setupBottomSheetFeedSellerMigration(::goToCreateAffiliate, intent)
+                }
+            }
+            else -> {
+                if (whitelistDomain.authors.size > 1) {
+                    fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
+                } else if (whitelistDomain.authors.size == 1) {
+                    val author = whitelistDomain.authors.first()
+                    fab_feed.setOnClickListener { onGoToLink(author.link) }
+                }
+            }
         }
     }
 
@@ -471,7 +546,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun showFabCoachMark() {
-        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
+        if (::coachMarkItem.isInitialized && !affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId) && !fab_feed.isOrWillBeHidden) {
             coachMark.show(activity = activity, tag = null, tutorList = arrayListOf(coachMarkItem))
             affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
         }
@@ -484,6 +559,24 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
-        isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)?:false
+        isLightThemeStatusBar = savedInstanceState?.getBoolean(KEY_IS_LIGHT_THEME_STATUS_BAR)
+                ?: false
+    }
+
+    private fun onImageSearchClick(hint: String) {
+        RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+        onImageSearchClick()
+    }
+
+    override fun onImageSearchClick() {
+        toolBarAnalytics.eventClickSearch()
+    }
+
+    override fun onInboxButtonClick() {
+        toolBarAnalytics.eventClickInbox()
+    }
+
+    override fun onNotificationClick() {
+        toolBarAnalytics.eventClickNotification()
     }
 }

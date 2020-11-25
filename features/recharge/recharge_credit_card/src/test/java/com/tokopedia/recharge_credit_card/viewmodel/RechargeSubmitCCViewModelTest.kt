@@ -7,16 +7,19 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.recharge_credit_card.data.CCRedirectUrl
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepository
 import com.tokopedia.recharge_credit_card.data.RechargeCCRepositoryImpl
-import com.tokopedia.recharge_credit_card.datamodel.*
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignature
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
+import java.lang.reflect.Type
 
 class RechargeSubmitCCViewModelTest {
 
@@ -45,9 +48,10 @@ class RechargeSubmitCCViewModelTest {
         val ccRedirectUrl = CCRedirectUrl("", "www.tokopedia.com")
         val mapParam = hashMapOf<String, String>()
 
-        val gqlResponse = GraphqlResponse(
-                mapOf(RechargeCCSignatureReponse::class.java to RechargeCCSignatureReponse(rechargeCCSignature)),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitRepository.postCreditCardNumber(any())} returns ccRedirectUrl
 
@@ -69,9 +73,10 @@ class RechargeSubmitCCViewModelTest {
         val ccRedirectUrl = CCRedirectUrl("Error dari API", "")
         val mapParam = hashMapOf<String, String>()
 
-        val gqlResponse = GraphqlResponse(
-                mapOf(RechargeCCSignatureReponse::class.java to RechargeCCSignatureReponse(rechargeCCSignature)),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitRepository.postCreditCardNumber(any())} returns ccRedirectUrl
 
@@ -91,9 +96,10 @@ class RechargeSubmitCCViewModelTest {
         val rechargeCCSignature = RechargeCCSignature(signature, "")
         val mapParam = hashMapOf<String, String>()
 
-        val gqlResponse = GraphqlResponse(
-                mapOf(RechargeCCSignatureReponse::class.java to RechargeCCSignatureReponse(rechargeCCSignature)),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
         coEvery { rechargeSubmitRepository.postCreditCardNumber(any())} throws IOException(RechargeCCRepositoryImpl.ERROR_DEFAULT)
 
@@ -112,9 +118,10 @@ class RechargeSubmitCCViewModelTest {
         val rechargeCCSignature = RechargeCCSignature("", "Error signature API")
         val mapParam = hashMapOf<String, String>()
 
-        val gqlResponse = GraphqlResponse(
-                mapOf(RechargeCCSignatureReponse::class.java to RechargeCCSignatureReponse(rechargeCCSignature)),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        result[RechargeCCSignatureReponse::class.java] = RechargeCCSignatureReponse(rechargeCCSignature)
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
@@ -131,9 +138,12 @@ class RechargeSubmitCCViewModelTest {
         //given
         val errorGql = GraphqlError()
         errorGql.message = "Error gql"
-        val gqlFailed = GraphqlResponse(
-                mapOf(), mapOf(RechargeCCSignatureReponse::class.java to listOf(errorGql)), false)
-        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlFailed
+
+        val errors = HashMap<Type, List<GraphqlError>>()
+        errors[RechargeCCSignatureReponse::class.java] = listOf(errorGql)
+        val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponse
 
         //when
         rechargeSubmitViewModel.postCreditCard("", "26", hashMapOf())

@@ -3,16 +3,17 @@ package com.tokopedia.product.detail.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.installment.InstallmentBank
 import com.tokopedia.product.detail.data.util.InstallmentTypeDef
@@ -22,12 +23,13 @@ import com.tokopedia.product.detail.view.adapter.ProductInstallmentAdapter
 import com.tokopedia.product.detail.view.fragment.ProductInstallmentFragment
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ProductInstallmentActivity: BaseTabActivity(), HasComponent<ProductDetailComponent> {
+class ProductInstallmentActivity : BaseTabActivity(), HasComponent<ProductDetailComponent> {
     private val installmentsType = intArrayOf(InstallmentTypeDef.MONTH_3,
             InstallmentTypeDef.MONTH_6, InstallmentTypeDef.MONTH_12)
 
@@ -43,7 +45,7 @@ class ProductInstallmentActivity: BaseTabActivity(), HasComponent<ProductDetailC
     lateinit var viewModel: ProductInstallmentViewModel
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
-        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
 
     companion object {
         private const val IS_OS_SHOP = "is_os_shop"
@@ -88,17 +90,17 @@ class ProductInstallmentActivity: BaseTabActivity(), HasComponent<ProductDetailC
         viewModel.loadInstallment(intent.getFloatExtra(PRODUCT_PRICE, 0f))
     }
 
-    private val onInstallmentChange = Observer<Result<Map<Int, List<InstallmentBank>>>>{
-        when(it){
+    private val onInstallmentChange = Observer<Result<Map<Int, List<InstallmentBank>>>> {
+        when (it) {
             is Success -> {
                 it.data.keys.forEach { key -> data[key] = it.data[key] ?: listOf() }
                 viewPager.post { updateFragmentPager(viewPager.currentItem) }
             }
             is Fail -> {
-                ToasterError.make(findViewById(R.id.coordinator),ProductDetailErrorHandler.getErrorMessage (this, it.throwable))
-                        .setAction(R.string.retry_label){
-                            viewModel.loadInstallment(intent.getFloatExtra(PRODUCT_PRICE, 0f))
-                        }
+                Toaster.make(findViewById(android.R.id.content), ProductDetailErrorHandler.getErrorMessage(this, it.throwable), Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR, getString(R.string.retry_label), View.OnClickListener {
+                    viewModel.loadInstallment(intent.getFloatExtra(PRODUCT_PRICE, 0f))
+                })
             }
         }
     }

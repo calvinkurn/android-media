@@ -2,6 +2,8 @@ package com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
 import com.tokopedia.topads.edit.view.sheet.EditKeywordSortSheet
@@ -11,7 +13,9 @@ import kotlinx.android.synthetic.main.topads_edit_negative_keyword_edit_item_lay
  * Created by Pika on 12/4/20.
  */
 
-class EditNegKeywordItemViewHolder(val view: View, private var actionDelete: ((pos: Int) -> Unit)?) : EditNegKeywordViewHolder<EditNegKeywordItemViewModel>(view) {
+class EditNegKeywordItemViewHolder(val view: View,
+                                   private var actionDelete: ((pos: Int) -> Unit)?,
+                                   private var actionStatusChange: ((pos: Int) -> Unit)) : EditNegKeywordViewHolder<EditNegKeywordItemViewModel>(view) {
 
     companion object {
         @LayoutRes
@@ -27,6 +31,7 @@ class EditNegKeywordItemViewHolder(val view: View, private var actionDelete: ((p
     override fun bind(item: EditNegKeywordItemViewModel) {
         item.data.let {
             view.keyword_name.text = it.tag
+            view.delete.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_ic_delete))
             view.delete.setOnClickListener {
                 actionDelete?.invoke(adapterPosition)
             }
@@ -35,11 +40,17 @@ class EditNegKeywordItemViewHolder(val view: View, private var actionDelete: ((p
             else
                 view.sort.text = TITLE_2
 
+            view.drop_down_arrow.setImageDrawable(AppCompatResources.getDrawable(view.context, R.drawable.ic_dropdown_arrow))
+
             view.sort.setOnClickListener {
-                sortKeywordList = EditKeywordSortSheet.newInstance(view.context)
-                sortKeywordList.show()
+                sortKeywordList = EditKeywordSortSheet.newInstance()
+                sortKeywordList.setChecked(view.sort.text.toString())
+                sortKeywordList.show((view.context as FragmentActivity).supportFragmentManager, "")
                 sortKeywordList.onItemClick = {
+                    val prev = view.sort.text
                     view.sort.text = sortKeywordList.getSelectedSortId()
+                    if (prev != view.sort.text)
+                        actionStatusChange.invoke(adapterPosition)
                     if (sortKeywordList.getSelectedSortId() == TITLE_1) {
                         item.data.type = BROAD
                     } else {

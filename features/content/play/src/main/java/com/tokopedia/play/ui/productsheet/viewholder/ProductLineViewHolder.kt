@@ -8,9 +8,9 @@ import android.widget.TextView
 import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
@@ -61,13 +61,13 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
 
         when (item.price) {
             is DiscountedPrice -> {
-                llProductDiscount.visible()
+                llProductDiscount.show()
                 tvProductDiscount.text = itemView.context.getString(R.string.play_discount_percent, item.price.discountPercent)
                 tvOriginalPrice.text = item.price.originalPrice
                 tvCurrentPrice.text = item.price.discountedPrice
             }
             is OriginalPrice -> {
-                llProductDiscount.gone()
+                llProductDiscount.hide()
                 tvCurrentPrice.text = item.price.price
             }
         }
@@ -81,13 +81,13 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
         }
 
         itemView.setOnClickListener {
-            if (!item.applink.isNullOrEmpty()) listener.onClickProductCard(item)
+            if (!item.applink.isNullOrEmpty()) listener.onClickProductCard(item, adapterPosition)
         }
     }
 
     interface Listener {
         fun onBuyProduct(product: ProductLineUiModel)
         fun onAtcProduct(product: ProductLineUiModel)
-        fun onClickProductCard(product: ProductLineUiModel)
+        fun onClickProductCard(product: ProductLineUiModel, position: Int)
     }
 }

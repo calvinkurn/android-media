@@ -4,23 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_weight="1"
     android:gravity="center"
     android:orientation="horizontal">
 
-    <com.tokopedia.design.image.SquareImageView
+    <ImageView
         android:id="@+id/trustmark_image"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_5" />
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl2" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/trustmark_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/dp_2"
-        android:paddingLeft="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_2"
-        android:paddingRight="@dimen/dp_2"
+        android:paddingStart="@dimen/spacing_lvl1"
+        android:paddingLeft="@dimen/spacing_lvl1"
+        android:paddingEnd="@dimen/spacing_lvl1"
+        android:paddingRight="@dimen/spacing_lvl1"
         app:typographyType="small"
         tools:text="Terpercaya" />
 

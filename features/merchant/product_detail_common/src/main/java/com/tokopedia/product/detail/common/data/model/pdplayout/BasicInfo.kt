@@ -15,6 +15,8 @@ import com.tokopedia.product.detail.common.data.model.product.TxStatsDynamicPdp
 data class BasicInfo(
         @SerializedName("alias")
         val alias: String = "",
+        @SerializedName("shopName")
+        val shopName: String = "",
         @SerializedName("blacklistMessage")
         val blacklistMessage: BlacklistMessage = BlacklistMessage(),
         @SerializedName("catalogID")
@@ -77,6 +79,9 @@ data class BasicInfo(
     fun getShopId(): Int = shopID.toIntOrNull() ?: 0
     fun isActive(): Boolean {
         return status == ProductStatusTypeDef.ACTIVE
+    }
+    fun isWarehouse(): Boolean {
+        return status == ProductStatusTypeDef.WAREHOUSE
     }
 
     fun statusMessage(context: Context): String {

@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.topupbills.analytics.CommonTopupBillsAnalytics
 import com.tokopedia.common.topupbills.utils.TopupBillsDispatchersProvider
-import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.common.di.DigitalCommonComponent
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -17,13 +16,13 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Created by resakemal on 12/08/19.
  */
 @CommonTopupBillsScope
-@Component(modules = [CommonTopupBillsModule::class, CommonTopupBillsViewModelModule::class], dependencies = [DigitalCommonComponent::class])
+@Component(modules = [CommonTopupBillsModule::class], dependencies = [DigitalCommonComponent::class])
 interface CommonTopupBillsComponent {
 
     @ApplicationContext
     fun context(): Context
 
-    fun userSessionInterface(): UserSessionInterface
+    fun userSession(): UserSessionInterface
 
     fun coroutineDispatcher(): CoroutineDispatcher
 
@@ -36,7 +35,5 @@ interface CommonTopupBillsComponent {
     fun commonTopupBillsAnalytics(): CommonTopupBillsAnalytics
 
     fun digitalCheckVoucherUseCase(): DigitalCheckVoucherUseCase
-
-    fun inject(baseTopupBillsFragment: BaseTopupBillsFragment)
 
 }

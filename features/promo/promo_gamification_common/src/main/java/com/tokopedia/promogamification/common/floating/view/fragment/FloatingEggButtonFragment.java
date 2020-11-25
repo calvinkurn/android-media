@@ -55,6 +55,9 @@ import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
+import dagger.Lazy;
+import timber.log.Timber;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -87,7 +90,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     private Runnable visibilityRunnableToShow;
 
     @Inject
-    public FloatingEggPresenter floatingEggPresenter;
+    public Lazy<FloatingEggPresenter> floatingEggPresenter;
     private boolean isHideAnimating;
     private boolean needHideFloatingToken = true;
     private OnDragListener onDragListener;
@@ -100,6 +103,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
     String sumTokenString;
     long timeRemainingSeconds;
     boolean isShowTime = false;
+    int screenHeight = 0;
 
     public static FloatingEggButtonFragment newInstance() {
         return new FloatingEggButtonFragment();
@@ -116,7 +120,17 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         tvFloatingTimer = view.findViewById(R.id.tv_floating_timer);
         minimizeButtonLeft = view.findViewById(R.id.minimize_img_left);
         vgFloatingEgg.setVisibility(View.GONE);
+
+        prepareScreenHeight();
         return view;
+    }
+
+    private void prepareScreenHeight(){
+        try {
+            screenHeight = vgFloatingEgg.getContext().getResources().getDisplayMetrics().heightPixels;
+        } catch (Exception e) {
+            Timber.d(e);
+        }
     }
 
     private void hideShowClickListener() {
@@ -327,9 +341,10 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
-    private void setCoordFloatingEgg(int x, int y) {
+    private void setCoordFloatingEgg(final int x,final int y) {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) vgFloatingEgg.getLayoutParams();
-        layoutParams.setMargins(x, y, 0, 0);
+        int finalY = getBoundedY(y);
+        layoutParams.setMargins(x, finalY, 0, 0);
     }
 
     private boolean hasCoordPreference() {
@@ -341,13 +356,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         SharedPreferences sharedPreferences = getSharedPref();
         int xEgg = sharedPreferences.getInt(COORD_X, -1);
         int yEgg = sharedPreferences.getInt(COORD_Y, -1);
-        return new int[]{xEgg, yEgg};
+
+        int yTranslate = getBoundedY(yEgg);
+        return new int[]{xEgg, yTranslate};
     }
 
-    private void saveCoordPreference(int x, int y) {
+    private void saveCoordPreference(final int x,final  int y) {
+        int yTranslate = getBoundedY(y);
         SharedPreferences.Editor editor = getSharedPref().edit();
         editor.putInt(COORD_X, x);
-        editor.putInt(COORD_Y, y);
+        editor.putInt(COORD_Y, yTranslate);
         editor.apply();
     }
 
@@ -368,7 +386,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         super.onPause();
         stopCountdownTimer();
         if (floatingEggPresenter != null) {
-            floatingEggPresenter.detachView();
+            floatingEggPresenter.get().detachView();
         }
         removeShowAnimationCallback();
     }
@@ -382,8 +400,8 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     public void loadEggData() {
         removeShowAnimationCallback();
-        floatingEggPresenter.attachView(this);
-        floatingEggPresenter.getGetTokenTokopoints();
+        floatingEggPresenter.get().attachView(this);
+        floatingEggPresenter.get().getGetTokenTokopoints();
     }
 
     @Override
@@ -522,7 +540,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         minimizeButtonLeft.setVisibility(View.VISIBLE);
         minimizeButtonLeft.setOnClickListener(v -> hideShowClickListener());
 
-        if (TextUtils.isEmpty(sumTokenString)) {
+        if (sumTokenString == null || TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {
             tvFloatingCounter.setText(sumTokenString);
@@ -697,8 +715,16 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         return vgFloatingEgg;
     }
 
-    public void moveEgg(int yEgg) {
-        vgFloatingEgg.setY(yEgg);
+    public void moveEgg(final int yEgg) {
+        int yTranslate = getBoundedY(yEgg);
+        vgFloatingEgg.setY(yTranslate);
         animateToLeftOrRightBound();
+    }
+
+    private int getBoundedY(final int y) {
+        int finalY = Math.max(0, y);
+        if (screenHeight > 0)
+            finalY = Math.min(finalY, screenHeight);
+        return finalY;
     }
 }

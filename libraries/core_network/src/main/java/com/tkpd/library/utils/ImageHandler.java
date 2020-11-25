@@ -112,17 +112,6 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         return inSampleSize;
     }
 
-    public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
-        if (isContextValid(context)) {
-            Glide.with(context)
-                    .load(url)
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .into(imageview);
-        }
-    }
-
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
             Glide.with(context)
@@ -132,19 +121,6 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .error(R.drawable.error_drawable)
                     .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                    .into(imageview);
-        }
-    }
-
-    /* This method specifically designed to display cached image from different size when offline */
-    public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
-        if (isContextValid(context)) {
-            Glide.with(context)
-                    .load(url)
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(imageview);
         }
     }
@@ -207,20 +183,6 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
                     .placeholder(R.drawable.loading_page)
                     .error(R.drawable.error_drawable)
                     .into(simpleTarget);
-        }
-    }
-
-    public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-        if (isContextValid(context)) {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
-                    .error(R.drawable.error_drawable)
-                    .diskCacheStrategy(DiskCacheStrategy.DATA)
-                    .centerCrop()
-                    .into(target);
         }
     }
 

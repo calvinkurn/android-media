@@ -1,30 +1,28 @@
 package com.tokopedia.interestpick.domain.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.interestpick.R
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.interestpick.data.pojo.GetInterestData
-import rx.Subscriber
+import com.tokopedia.interestpick.data.raw.GQL_QUERY_GET_INTEREST
+import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 07/09/18.
  */
-@Deprecated("use GetInterestPickUseCase.kt instead", ReplaceWith("GetInterestPickUseCase"))
-class GetInterestUseCase @Inject constructor(@ApplicationContext val context: Context,
-                                             val graphqlUseCase: GraphqlUseCase) {
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_get_interest)
-        val graphqlRequest = GraphqlRequest(query, GetInterestData::class.java)
 
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(subscriber)
+@GqlQuery("GetInterest", GQL_QUERY_GET_INTEREST)
+class GetInterestUseCase @Inject constructor(
+        private val graphqlUseCase: GraphqlUseCase<GetInterestData>
+) : UseCase<GetInterestData>() {
+
+    init {
+        graphqlUseCase.setTypeClass(GetInterestData::class.java)
+        graphqlUseCase.setGraphqlQuery(GetInterest.GQL_QUERY)
     }
 
-    fun unsubscribe() = graphqlUseCase.unsubscribe()
+    override suspend fun executeOnBackground(): GetInterestData {
+        graphqlUseCase.clearCache()
+        return graphqlUseCase.executeOnBackground()
+    }
 }

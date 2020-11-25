@@ -1,5 +1,5 @@
-query hachikoCouponDetailQuery($code: String) {
-  detail: hachikoCouponDetail(code: $code) {
+query hachikoCouponDetailQuery($code: String,$apiVersion: String) {
+  detail: hachikoCouponDetail(code: $code ,apiVersion: $apiVersion) {
     id
     real_code
   }

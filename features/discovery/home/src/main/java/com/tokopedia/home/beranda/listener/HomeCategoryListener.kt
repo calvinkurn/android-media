@@ -2,14 +2,11 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
-
-import java.util.HashMap
+import java.util.*
 
 /**
  * @author by errysuprayogi on 11/29/17.
@@ -25,9 +22,9 @@ interface HomeCategoryListener {
 
     val eggListener: HomeEggListener
 
-    val trackingQueue: TrackingQueue
+    fun getTrackingQueueObj(): TrackingQueue?
 
-    val childFragmentManager: FragmentManager
+    val childsFragmentManager: FragmentManager
 
     val windowHeight: Int
 
@@ -97,15 +94,19 @@ interface HomeCategoryListener {
 
     fun refreshHomeData()
 
+    fun isShowSeeAllCard(): Boolean
+
     fun getTabBusinessWidget(position: Int)
 
-    fun getBusinessUnit(tabId: Int, position: Int)
+    fun getBusinessUnit(tabId: Int, position: Int, tabName: String)
 
     fun getPlayChannel(position: Int)
 
     fun updateExpiredChannel(dynamicChannelDataModel: DynamicChannelDataModel, position: Int)
 
-    fun onBuyAgainOneClickCheckOutClick(grid: DynamicHomeChannel.Grid, channel: DynamicHomeChannel.Channels, position: Int)
+    fun removeViewHolderAtPosition(position: Int)
 
-    fun onBuyAgainCloseChannelClick(channel: DynamicHomeChannel.Channels, position: Int)
+    fun onDynamicChannelRetryClicked()
+
+    fun getTopAdsBannerNextPageToken(): String
 }

@@ -1,0 +1,8 @@
+mutation replyTicket($ticketID: String!, $userID: String!, $message: String!, $pPhoto: Int!, $pPhotoAll: String!, $agentReply:String!) {
+  ticket_reply(ticketID: $ticketID, userID: $userID, message: $message, pPhoto: $pPhoto, pPhotoAll: $pPhotoAll, agentReply: $agentReply) {
+    data {
+      status
+      post_key
+    }
+  }
+}

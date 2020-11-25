@@ -6,10 +6,12 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.notifcenter.data.entity.NotificationCenterSingleDetail
+import com.tokopedia.notifcenter.data.entity.ProductHighlightItem
 import com.tokopedia.notifcenter.data.entity.ProductStockHandler
 import com.tokopedia.notifcenter.data.entity.ProductStockReminder
 import com.tokopedia.notifcenter.di.scope.NotificationContext
 import com.tokopedia.notifcenter.di.scope.NotificationScope
+import com.tokopedia.notifcenter.domain.ProductHighlightUseCase
 import com.tokopedia.notifcenter.domain.ProductStockHandlerUseCase
 import com.tokopedia.notifcenter.domain.ProductStockReminderUseCase
 import com.tokopedia.notifcenter.domain.SingleNotificationUpdateUseCase
@@ -60,6 +62,16 @@ class NotificationUpdateModule {
             useCase: UseCase<ProductStockReminder>
     ): ProductStockReminderUseCase {
         return ProductStockReminderUseCase(query, useCase)
+    }
+
+    @Provides
+    @NotificationScope
+    fun provideProductHighlightUseCase(
+            @Named(NotificationQueriesConstant.PRODUCT_HIGHLIGHT)
+            query: String,
+            useCase: UseCase<ProductHighlightItem>
+    ): ProductHighlightUseCase {
+        return ProductHighlightUseCase(query, useCase)
     }
 
     @Provides

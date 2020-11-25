@@ -1,24 +1,30 @@
 package com.tokopedia.home_recom.view.fragment
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.home_recom.HomeRecommendationActivity
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
 import com.tokopedia.home_recom.model.datamodel.*
+import com.tokopedia.home_recom.util.*
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationAdapter
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.PDP_EXTRA_PRODUCT_ID
@@ -28,8 +34,8 @@ import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.S
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SHARE_PRODUCT_TITLE
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.SPAN_COUNT
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment.Companion.WIHSLIST_STATUS_IS_WISHLIST
-import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
-import com.tokopedia.home_recom.viewmodel.PrimaryProductViewModel
+import com.tokopedia.home_recom.view.viewholder.ProductInfoViewHolder
+import com.tokopedia.home_recom.view.viewholder.RecommendationErrorViewHolder
 import com.tokopedia.home_recom.viewmodel.RecommendationPageViewModel
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -38,13 +44,11 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
-import com.tokopedia.recommendation_widget_common.TYPE_CAROUSEL
-import com.tokopedia.recommendation_widget_common.TYPE_CUSTOM_HORIZONTAL
-import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
 /**
@@ -72,9 +76,8 @@ import javax.inject.Inject
  * @property REQUEST_FROM_PDP the const value for set request calling startActivityForResult ProductDetailActivity.
  * @constructor Creates an empty recommendation.
  */
-open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener, TitleListener {
-
-
+@SuppressLint("SyntheticAccessor")
+open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener, TitleListener, RecommendationErrorListener, ProductInfoViewHolder.ProductInfoListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private var trackingQueue: TrackingQueue? = null
@@ -87,10 +90,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     private var lastClickLayoutType: String? = null
     private var lastParentPosition: Int? = null
     private lateinit var viewModelProvider: ViewModelProvider
-    private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl() }
+    private val adapterFactory by lazy { HomeRecommendationTypeFactoryImpl(this, this, this, this) }
     private val adapter by lazy { HomeRecommendationAdapter(adapterTypeFactory) }
     private lateinit var recommendationWidgetViewModel: RecommendationPageViewModel
-    private lateinit var primaryProductViewModel: PrimaryProductViewModel
 
     companion object{
         private const val SPAN_COUNT = 2
@@ -103,9 +105,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val RECOMMENDATION_APP_LINK = "https://tokopedia.com/rekomendasi/%s"
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val REQUEST_FROM_PDP = 394
-        fun newInstance(productId: String = "", source: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
+        private const val REQUEST_CODE_LOGIN = 283
+
+        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
             this.productId = productId
-            this.queryParam = source
+            this.queryParam = queryParam
             this.ref = ref
             this.internalRef = internalRef
         }
@@ -119,25 +123,20 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onCreate(savedInstanceState)
         activity ?.let {
             viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
-            primaryProductViewModel = viewModelProvider.get(PrimaryProductViewModel::class.java)
             recommendationWidgetViewModel = viewModelProvider.get(RecommendationPageViewModel::class.java)
+            trackingQueue = TrackingQueue(it)
         }
-        clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             queryParam = it.getString(SAVED_QUERY_PARAM) ?: ""
             ref = it.getString(SAVED_REF) ?: ""
         }
-        activity?.let {
-            trackingQueue = TrackingQueue(it)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        displayProductInfo()
         activity?.run{
-            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
+            (this as AppCompatActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
         }
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(
@@ -159,6 +158,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         this.menu = menu
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_PRODUCT_ID, productId)
@@ -171,33 +172,18 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
-
-        recommendationWidgetViewModel.recommendationListModel.observe(viewLifecycleOwner, Observer {
-            it?.let { recommendationList ->
-                clearAllData()
-                renderList(mapDataModel(recommendationList))
-            }
-        })
-
-        primaryProductViewModel.productInfoDataModel.observe(viewLifecycleOwner, Observer {
-            it?.let { response ->
-                menu?.findItem(R.id.action_share)?.isVisible = true
-                menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
-                    response.data?.productDetailData?.let { productDetailData ->
-                        if(response.status.isSuccess()) {
-                            shareProduct(productDetailData.id.toString(), productDetailData.name, productDetailData.name, productDetailData.imageUrl)
-                        } else if(!response.status.isLoading()){
-                            shareProduct(productId, "", "", "")
-                        }
-                    }
-                    true
-                }
-            }
-        })
+        getRecyclerView(view).addItemDecoration(StaggerGridSpacingItemDecoration(30))
+        observeLiveData()
+        observeAtcLiveData()
+        observeBuyNowLiveData()
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
         return true
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return com.tokopedia.home_recom.R.id.recycler_view
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
@@ -222,10 +208,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     override fun loadData(page: Int) {
-        if(page == defaultInitialPage){
-            //load initial data when press retry
-            loadData()
-        }
+        loadData()
     }
 
     override fun onPause() {
@@ -233,11 +216,166 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         trackingQueue?.sendAll()
     }
 
-    override fun disableLoadMore() {
-        super.disableLoadMore()
-        getRecyclerView(view).isNestedScrollingEnabled = false
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_FROM_PDP) {
+            data?.let {
+                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                        false)
+                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
+                if(position >= 0 && adapter.data.size > position && adapter.data[position] is RecommendationItemDataModel) {
+                    (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
+                    adapter.notifyItemChanged(position, wishlistStatusFromPdp)
+                }
+            }
+        }
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data,
+                object : ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
+                    }
+                })
     }
 
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
+        if (productCardOptionsModel == null) return
+        val wishlistResult = productCardOptionsModel.wishlistResult
+        if (wishlistResult.isUserLoggedIn) {
+            if (wishlistResult.isSuccess) {
+                if (wishlistResult.isAddWishlist) {
+                    if(productId.isNotBlank() || productId.isNotEmpty()){
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
+                    }else {
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, productCardOptionsModel.screenName, ref)
+                    }
+                    showMessageSuccessAddWishlist()
+                } else {
+                    if(productId.isNotBlank() || productId.isNotEmpty()){
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
+                    }else {
+                        RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, productCardOptionsModel.screenName, ref)
+                    }
+                    showMessageSuccessRemoveWishlist()
+                }
+                updateWishlist(wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+            } else {
+                showMessageFailedWishlistAction()
+            }
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    private fun updateWishlist(isWishlist: Boolean, position: Int) {
+        if(position > -1 && adapter.itemCount > 0 &&
+                adapter.itemCount > position) {
+            (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = isWishlist
+            adapter.notifyItemChanged(position, isWishlist)
+        }
+    }
+
+    private fun showMessageSuccessAddWishlist() {
+        showToastSuccessWithAction(
+                getString(R.string.recom_msg_success_add_wishlist),
+                getString(R.string.home_recom_go_to_wishlist)
+        ){
+            View.OnClickListener { goToWishlist() }
+        }
+    }
+
+    private fun goToWishlist() {
+        if (activity == null) return
+        RouteManager.route(activity, ApplinkConst.NEW_WISHLIST)
+    }
+
+    private fun showMessageSuccessRemoveWishlist() {
+        showToastSuccess(getString(R.string.recom_msg_success_remove_wishlist))
+    }
+
+    private fun showMessageFailedWishlistAction() {
+        showToastError()
+    }
+
+    /**
+     * Void [observeAtcLiveData]
+     * This void handle observe changes list data model from viewmodel
+     */
+    private fun observeLiveData(){
+        recommendationWidgetViewModel.recommendationListLiveData.observe(viewLifecycleOwner, Observer {
+            it?.let { response ->
+                clearAllData()
+                renderList(response)
+                hideLoading()
+                (response.firstOrNull() as? ProductInfoDataModel)?.productDetailData?.let { productDetailData ->
+                    menu?.findItem(R.id.action_share)?.isVisible = true
+                    menu?.findItem(R.id.action_share)?.setOnMenuItemClickListener {
+                        shareProduct(productDetailData.id.toString(), productDetailData.name, productDetailData.name, productDetailData.imageUrl)
+                        true
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * Void [observeAtcLiveData]
+     * This void handle observe changes status atc from view model
+     */
+    private fun observeAtcLiveData(){
+        recommendationWidgetViewModel.addToCartLiveData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    response.data?.let {
+                        RecommendationPageTracking.eventUserClickAddToCartWithProductId(it.mapToRecommendationTracking(), ref, internalRef)
+                        activity?.run {
+                            showToastSuccessWithAction(RecommendationPageErrorHandler.getErrorMessage(this, response.exception), getString(R.string.recom_see_cart)){
+                                RecommendationPageTracking.eventUserClickSeeToCartWithProductId()
+                                RouteManager.route(context, ApplinkConst.CART)
+                            }
+                        }
+
+                    }
+                }
+                else -> {
+                    add_to_cart?.isEnabled = true
+                    activity?.run {
+                        showToastError(response.exception)
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * Void [observeBuyNowLiveData]
+     * This void handle observe changes status buy now from view model
+     */
+    private fun observeBuyNowLiveData(){
+        recommendationWidgetViewModel.buyNowLiveData.observe(viewLifecycleOwner, Observer { response ->
+            when(response.status){
+                Status.SUCCESS -> {
+                    response.data?.let {
+                        RecommendationPageTracking.eventUserClickBuyWithProductId(it.mapToRecommendationTracking(), ref, internalRef)
+                        RouteManager.route(context, ApplinkConst.CART)
+                    }
+                }
+                else -> {
+                    buy_now?.isEnabled = true
+                    activity?.run {
+                        showToastError(response.exception)
+                    }
+                }
+            }
+        })
+    }
+
+    /**
+     * This void from Callback [RecommendationErrorListener]
+     * it handle global error click from [RecommendationErrorViewHolder]
+     */
+    override fun refresh() {
+        loadInitialData()
+    }
 
     /**
      * This void from Callback [RecommendationListener]
@@ -248,27 +386,102 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
      */
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if(recommendationWidgetViewModel.isLoggedIn()){
-            if(isAddWishlist){
-                recommendationWidgetViewModel.addWishlist(item, callback)
+            if (isAddWishlist) {
+                recommendationWidgetViewModel.addWishlist(item.productId.toString(), item.wishlistUrl, item.isTopAds, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
                 }else {
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
                 }
             } else {
-                recommendationWidgetViewModel.removeWishlist(item, callback)
+                recommendationWidgetViewModel.removeWishlist(item.productId.toString(), callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
                 }else {
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), ref)
                 }
             }
-        }else{
+        } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
-            if(productId.isNotBlank() || productId.isNotEmpty()){
+            if (productId.isNotBlank() || productId.isNotEmpty()) {
                RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(ref)
             } else {
                RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
+            }
+        }
+    }
+
+    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        showProductCardOptions(
+                this,
+                createProductCardOptionsModel(item, position[0]))
+    }
+
+    override fun onProductAnchorImpression(productInfoDataModel: ProductInfoDataModel) {
+        RecommendationPageTracking.eventImpressionPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
+    }
+
+    override fun onProductAnchorClick(productInfoDataModel: ProductInfoDataModel) {
+        RecommendationPageTracking.eventClickPrimaryProductWithProductId(productInfoDataModel.mapToRecommendationTracking(), "0", ref, internalRef)
+        RouteManager.getIntent(
+                context,
+                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                productId)?.run {
+            putExtra(PDP_EXTRA_UPDATED_POSITION, 0)
+            startActivityForResult(this, REQUEST_FROM_PDP)
+        }
+    }
+
+    override fun onProductAnchorAddToCart(productInfoDataModel: ProductInfoDataModel) {
+        productInfoDataModel.productDetailData?.let {productDetailData ->
+            if (recommendationWidgetViewModel.isLoggedIn()) {
+                recommendationWidgetViewModel.onAddToCart(productInfoDataModel)
+            } else {
+                RecommendationPageTracking.eventUserAddToCartNonLoginWithProductId(ref, productDetailData.shop.id.toString())
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            }
+        }
+    }
+
+    override fun onProductAnchorBuyNow(productInfoDataModel: ProductInfoDataModel) {
+        productInfoDataModel.productDetailData?.let { productDetailData ->
+            if (recommendationWidgetViewModel.isLoggedIn()){
+                recommendationWidgetViewModel.onBuyNow(productInfoDataModel)
+            } else {
+                RecommendationPageTracking.eventUserClickBuyNonLoginWithProductId(ref, productDetailData.shop.id.toString())
+                context?.let {
+                    startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+                }
+            }
+        }
+    }
+
+    override fun onProductAnchorClickWishlist(productInfoDataModel: ProductInfoDataModel, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
+        productInfoDataModel.productDetailData?.let {productDetailData ->
+            if (recommendationWidgetViewModel.isLoggedIn()) {
+                RecommendationPageTracking.eventUserClickProductToWishlistForUserLoginWithProductId(isAddWishlist, ref, productDetailData.shop.id.toString())
+                if (!isAddWishlist) {
+                    recommendationWidgetViewModel.removeWishlist(productDetailData.id.toString()){ state, throwable ->
+                        callback(state, throwable)
+                        if(state){
+                            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+                        } else {
+                            showToastError(MessageErrorException())
+                        }
+                    }
+                } else {
+                    recommendationWidgetViewModel.addWishlist(productDetailData.id.toString(), productDetailData.wishlistUrl, productDetailData.isTopads){ state, throwable ->
+                        callback(state, throwable)
+                        if(state){
+                            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+                        } else {
+                            showToastError(MessageErrorException())
+                        }
+                    }
+                }
+            } else {
+                RecommendationPageTracking.eventUserClickProductToWishlistForNonLoginWithProductId(ref, productDetailData.shop.id.toString())
+                RouteManager.route(activity, ApplinkConst.LOGIN)
             }
         }
     }
@@ -326,77 +539,14 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     /**
-     * Void [clearProductInfoView]
-     * It handling clear productInfo fragment when productInfoFragment is added at view
-     */
-    private fun clearProductInfoView(){
-        if(childFragmentManager.fragments.size > 0 && childFragmentManager.fragments[0] is ProductInfoFragment){
-            childFragmentManager.beginTransaction().remove(childFragmentManager.fragments[0]).commit()
-        }
-    }
-
-    /**
      * Void [loadData]
      * It handling trigger load primaryProduct and recommendationList from viewModel
      */
     private fun loadData(){
         activity?.let{
-            if(productId.isNotBlank()) {
-                primaryProductViewModel.getPrimaryProduct(productId, queryParam)
-                recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
-                        queryParam,
-                        onErrorGetRecommendation = this::onErrorGetRecommendation)
-            } else {
-                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), queryParam, onErrorGetRecommendation = this::onErrorGetRecommendation)
-            }
+            recommendationWidgetViewModel.getRecommendationList(productId,
+                    queryParam)
         }
-    }
-
-    /**
-     * Void [onErrorGetRecommendation]
-     * It handling show error when failed fetch Recommendation List from viewModel
-     */
-    private fun onErrorGetRecommendation(errorMessage: String?) {
-        showGetListError(Throwable(errorMessage))
-    }
-
-    /**
-     * Void [displayProductInfo]
-     * It handling show productInfo fragment into container layout
-     */
-    private fun displayProductInfo(){
-        childFragmentManager.beginTransaction()
-                .replace(R.id.product_info_container, ProductInfoFragment.newInstance(productId, ref, queryParam, internalRef))
-                .commit()
-    }
-
-    /**
-     * Function [mapDataModel]
-     * It handling mapper pojo into dataModel
-     * @param listRecommendationModel list pojo recommendationWidget from API
-     * @return list of dataModel
-     */
-    private fun mapDataModel(listRecommendationModel: List<RecommendationWidget>): List<HomeRecommendationDataModel>{
-        val list = ArrayList<HomeRecommendationDataModel>()
-        listRecommendationModel.forEach { recommendationWidget ->
-            when(recommendationWidget.layoutType){
-                TYPE_SCROLL -> {
-                    list.add(TitleDataModel(recommendationWidget.title, recommendationWidget.pageName, recommendationWidget.seeMoreAppLink, this))
-                    recommendationWidget.recommendationItemList.forEach {
-                        list.add(RecommendationItemDataModel(it, this))
-                    }
-                }
-                TYPE_CAROUSEL, TYPE_CUSTOM_HORIZONTAL -> list.add(
-                        RecommendationCarouselDataModel(
-                                recommendationWidget.title,
-                                recommendationWidget.seeMoreAppLink,
-                                recommendationWidget.recommendationItemList.asSequence().map { RecommendationCarouselItemDataModel(it, list.size, this) }.toList(),
-                                this
-                        )
-                )
-            }
-        }
-        return list
     }
 
     /**
@@ -448,7 +598,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     /**
      * Void [shareProduct]
      * It handling show share intent
-     * @param productDetailData the primary product pojo
+     * @param id product id
+     * @param name product name
+     * @param description product description
+     * @param imageUrl product image url
      */
     private fun shareProduct(id: String, name: String, description: String, imageUrl: String){
         context?.let{ context ->
@@ -460,7 +613,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(id, name, description, imageUrl), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
+                    if(linkerShareData.url != null) {
+                        openIntentShare(name, context.getString(R.string.recom_home_recommendation), linkerShareData.url)
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError) {
@@ -473,7 +628,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     /**
      * Function [productDataToLinkerDataMapper]
      * It handling routing to PDP
-     * @param productDetailData the primary product pojo
+     * @param id product id
+     * @param name product name
+     * @param description product description
+     * @param imageUrl product image url
      * @return LinkerShareData for the requirement share intent
      */
     private fun productDataToLinkerDataMapper(
@@ -514,6 +672,18 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }
 
         activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
+    }
+
+    private fun createProductCardOptionsModel(recommendationItem: RecommendationItem, position: Int): ProductCardOptionsModel {
+        val productCardOptionsModel = ProductCardOptionsModel()
+        productCardOptionsModel.hasWishlist = true
+        productCardOptionsModel.isWishlisted = recommendationItem.isWishlist
+        productCardOptionsModel.productId = recommendationItem.productId.toString()
+        productCardOptionsModel.isTopAds = recommendationItem.isTopAds
+        productCardOptionsModel.topAdsWishlistUrl = recommendationItem.wishlistUrl
+        productCardOptionsModel.productPosition = position
+        productCardOptionsModel.screenName = recommendationItem.header
+        return productCardOptionsModel
     }
 
 }

@@ -1,21 +1,24 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.tokopedia.atc_common.MockResponseProvider
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
-import com.tokopedia.atc_common.data.model.response.AddToCartResponse
+import com.tokopedia.atc_common.domain.analytics.AddToCartBaseAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verifySequence
-import org.junit.Assert.*
+import io.mockk.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
+import java.lang.reflect.Type
 
 /**
  * Created by Irfan Khoirul on 2019-11-12.
@@ -28,7 +31,21 @@ class AddToCartUseCaseTest : Spek({
         AddToCartUseCase("mock_query", graphqlUseCase, addToCartdataMapper)
     }
 
-    every { addToCartdataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel()
+    every { addToCartdataMapper.mapAddToCartResponse(any()) } returns AddToCartDataModel(status = "OK", data = DataModel(success = 1))
+
+    beforeEachGroup {
+        mockkObject(AddToCartBaseAnalytics)
+
+        every { AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any()) } just Runs
+        every {
+            AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
+                    any(), any(), any(), any(), any(), any(), any())
+        } just Runs
+    }
+
+    afterEachGroup {
+        unmockkObject(AddToCartBaseAnalytics)
+    }
 
     Feature("AddToCartUseCase") {
         lateinit var subscriber: AssertableSubscriber<AddToCartDataModel>
@@ -38,9 +55,12 @@ class AddToCartUseCaseTest : Spek({
         Scenario("use case run successfully") {
 
             Given("given api response") {
+                val result = HashMap<Type, Any>()
+                val errors = HashMap<Type, List<GraphqlError>>()
+                val objectType = AddToCartGqlResponse::class.java
+                result[objectType] = MockResponseProvider.getResponseAtcSuccess()
                 every { graphqlUseCase.createObservable(any()) } returns
-                        Observable.just(GraphqlResponse(mapOf(AddToCartGqlResponse::class.java to AddToCartGqlResponse(
-                                AddToCartResponse())), null, false))
+                        Observable.just(GraphqlResponse(result, errors, false))
             }
 
             When("create observable") {
@@ -73,8 +93,16 @@ class AddToCartUseCaseTest : Spek({
                 subscriber.assertValueCount(1)
             }
 
-            Then("value should be empty AddToCartDataModel") {
-                subscriber.assertValue(AddToCartDataModel())
+            Then("value should be success AddToCartDataModel") {
+                subscriber.assertValue(AddToCartDataModel(status = "OK", data = DataModel(success = 1)))
+            }
+
+            Then("should run analytics") {
+                verify {
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(any(), any(), any(), any(), any())
+                    AddToCartBaseAnalytics.sendBranchIoTracking(any(), any(), any(), any(), any(),
+                            any(), any(), any(), any(), any(), any(), any())
+                }
             }
 
             Then("should complete") {

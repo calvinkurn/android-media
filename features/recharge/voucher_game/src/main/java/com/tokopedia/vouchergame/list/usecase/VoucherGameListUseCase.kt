@@ -24,7 +24,7 @@ class VoucherGameListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCa
             this.setRequestParams(mapParam)
             this.setTypeClass(VoucherGameListData.Response::class.java)
             this.setCacheStrategy(GraphqlCacheStrategy.Builder(if (isForceRefresh) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST)
-                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 10).build())
+                    .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`() * 5).build())
 
             val voucherGameListData = this.executeOnBackground()
             if(searchQuery.isNotEmpty()){

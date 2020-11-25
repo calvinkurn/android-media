@@ -364,7 +364,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
         }
     }
 
-    protected Response refreshToken(Chain chain, Response response)  {
+    protected Response refreshToken(Chain chain, Response response, Request finalRequest)  {
         AccessTokenRefresh accessTokenRefresh = new AccessTokenRefresh();
         try {
             accessTokenRefresh.refreshToken(context, userSession, networkRouter);
@@ -390,7 +390,7 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
             if (isNeedGcmUpdate(response)) {
                 return refreshTokenAndGcmUpdate(chain, response, finalRequest);
             } else if (isUnauthorized(finalRequest, response)) {
-                return refreshToken(chain, response);
+                return refreshToken(chain, response, finalRequest);
             } else if (isInvalidGrantWhenRefreshToken(finalRequest, response)) {
                 networkRouter.logInvalidGrant(response);
                 return response;

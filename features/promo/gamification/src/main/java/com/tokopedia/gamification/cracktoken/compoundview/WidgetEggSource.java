@@ -42,7 +42,7 @@ public class WidgetEggSource extends LinearLayout {
     }
 
     private void init() {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.widget_egg_source, this, true);
+        View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_egg_source, this, true);
         textEggSource = view.findViewById(R.id.text_egg_source);
     }
 

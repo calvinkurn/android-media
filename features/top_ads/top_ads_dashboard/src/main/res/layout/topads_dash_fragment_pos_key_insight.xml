@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/insight_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kata kunci baru"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/toolTip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="@id/insight_title"
+        app:layout_constraintStart_toEndOf="@id/insight_title"
+        app:layout_constraintTop_toTopOf="@id/insight_title" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/insight_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:textColor="@color/topads_light_shadow"
+        app:layout_constraintEnd_toStartOf="@id/btnTambah"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/insight_title"
+        app:typographyType="body_3"
+        tools:text="Tambahkan 5 kata kunci baru untuk bisa tampil lebih banyak hingga +1600 kali."/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnTambah"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="tambah"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/insight_desc"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="ghost" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/insightListPosKey"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_0"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/insight_desc"
+        tools:itemCount="10"
+        tools:listitem="@layout/topads_dash_insight_pos_key_item_layout" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

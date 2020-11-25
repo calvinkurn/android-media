@@ -18,7 +18,9 @@ data class DescriptionData(
 
         var videoUrlList: List<String> = listOf(),
 
-        var isOfficial: Boolean = false
+        var isOfficial: Boolean = false,
+
+        var isGoldMerchant: Boolean = false
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -29,6 +31,7 @@ data class DescriptionData(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.createStringArrayList() ?: listOf(),
+            parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -40,6 +43,7 @@ data class DescriptionData(
         parcel.writeString(basicDescription)
         parcel.writeStringList(videoUrlList)
         parcel.writeByte(if (isOfficial) 1 else 0)
+        parcel.writeByte(if (isGoldMerchant) 1 else 0)
     }
 
     override fun describeContents(): Int {

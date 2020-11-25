@@ -28,11 +28,10 @@ interface ProvideRatingContract {
         fun onSuccessSubmit(intent: Intent)
         fun getCaption(): ArrayList<String>
         fun getQuestion(): ArrayList<String>
-
-
         fun showProgress()
-
         fun hideProgress()
+        fun hideSubmitButton()
+        fun showSubmitButton()
 
     }
 

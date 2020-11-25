@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
+import com.tokopedia.flight.detail.view.model.FlightDetailRouteModel;
 
 /**
  * @author by alvarisi on 12/19/17.
@@ -15,7 +15,7 @@ public class FlightDetailFacilityAdapterTypeFactory extends BaseAdapterTypeFacto
     }
 
     @Override
-    public int type(FlightDetailRouteViewModel viewModel) {
+    public int type(FlightDetailRouteModel viewModel) {
         return FlightDetailFacilityViewHolder.LAYOUT;
     }
 

@@ -1,0 +1,107 @@
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/white"
+    android:layout_width="@dimen/notif_dp_128"
+    android:id="@+id/container"
+    android:layout_height="@dimen/notif_dp_292"
+    app:cardCornerRadius="@dimen/notif_dp_8"
+    app:cardElevation="@dimen/notif_dp_2">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgProduct"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/notif_dp_128"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/txtProductName"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Neutral_N700_96"
+            android:textSize="@dimen/notif_sp_12"
+            android:layout_marginTop="@dimen/notif_dp_8"
+            android:layout_marginStart="@dimen/notif_dp_8"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgProduct"
+            tools:text="This is really long product name that appear on the screen" />
+
+        <com.tokopedia.notifcenter.widget.CampaignRedView
+            android:id="@+id/viewCampaignTag"
+            android:layout_width="@dimen/notif_dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginStart="@dimen/notif_dp_8"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductName" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtProductPrice"
+            android:layout_width="@dimen/notif_dp_0"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginStart="@dimen/notif_dp_8"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/viewCampaignTag"
+            app:typographyWeight="bold"
+            tools:text="Rp 100.000.000" />
+
+        <ImageView
+            android:id="@+id/imgCampaign"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/notif_dp_20"
+            android:scaleType="fitStart"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginStart="@dimen/notif_dp_8"
+            android:layout_marginLeft="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginRight="@dimen/notif_dp_8"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtProductPrice"
+            tools:scaleType="fitStart"
+            tools:src="@tools:sample/avatars"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnAddToCart"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/notif_dp_32"
+            android:text="@string/notifcenter_btn_title_atc"
+            android:textSize="@dimen/notif_sp_12"
+            android:layout_marginStart="@dimen/notif_dp_8"
+            android:layout_marginEnd="@dimen/notif_dp_8"
+            android:layout_marginTop="@dimen/notif_dp_4"
+            android:layout_marginBottom="@dimen/notif_dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="transaction"
+            app:unifyButtonVariant="ghost" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.tokopedia.unifycomponents.CardUnify>

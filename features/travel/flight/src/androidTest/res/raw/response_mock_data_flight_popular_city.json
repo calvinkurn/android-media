@@ -1,0 +1,143 @@
+[
+  {
+    "data": {
+      "flightPopularCity": [
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 75,
+          "airportCode": "PDG",
+          "cityCode": "",
+          "cityName": "Padang",
+          "airportName": "Minangkabau"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 130,
+          "airportCode": "PLM",
+          "cityCode": "",
+          "cityName": "Palembang",
+          "airportName": "Sultan Mahmud Badaruddin II"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 174,
+          "airportCode": "SOC",
+          "cityCode": "",
+          "cityName": "Solo",
+          "airportName": "Adisumarmo"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 41,
+          "airportCode": "DPS",
+          "cityCode": "",
+          "cityName": "Denpasar",
+          "airportName": "Ngurah Rai"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 209,
+          "airportCode": "JOG",
+          "cityCode": "JOGA",
+          "cityName": "Yogyakarta",
+          "airportName": "Adisutjipto"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 201,
+          "airportCode": "UPG",
+          "cityCode": "",
+          "cityName": "Makassar",
+          "airportName": "Sultan Hasanuddin"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 162,
+          "airportCode": "SRG",
+          "cityCode": "",
+          "cityName": "Semarang",
+          "airportName": "Achmad Yani"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 178,
+          "airportCode": "SUB",
+          "cityCode": "",
+          "cityName": "Surabaya",
+          "airportName": "Juanda"
+        },
+        {
+          "countryID": "SG",
+          "countryName": "Singapore",
+          "cityID": 5185,
+          "airportCode": "SIN",
+          "cityCode": "",
+          "cityName": "Singapore",
+          "airportName": "Changi"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 111,
+          "airportCode": "KNO",
+          "cityCode": "",
+          "cityName": "Medan",
+          "airportName": "Kualanamu"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 139,
+          "airportCode": "PNK",
+          "cityCode": "",
+          "cityName": "Pontianak",
+          "airportName": "Supadio"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 57,
+          "airportCode": "CGK",
+          "cityCode": "JKTA",
+          "cityName": "Jakarta",
+          "airportName": "Soekarno Hatta"
+        },
+        {
+          "countryID": "MY",
+          "countryName": "Malaysia",
+          "cityID": 3944,
+          "airportCode": "KUL",
+          "cityCode": "",
+          "cityName": "Kuala Lumpur",
+          "airportName": "Kuala Lumpur"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 137,
+          "airportCode": "PKU",
+          "cityCode": "",
+          "cityName": "Pekanbaru",
+          "airportName": "Sultan Syarif Kasim II"
+        },
+        {
+          "countryID": "ID",
+          "countryName": "Indonesia",
+          "cityID": 132,
+          "airportCode": "PGK",
+          "cityCode": "",
+          "cityName": "Pangkal Pinang",
+          "airportName": "Depati Amir"
+        }
+      ]
+    }
+  }
+]

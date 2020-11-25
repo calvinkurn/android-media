@@ -50,6 +50,19 @@ public class RecentViewTracking {
         );
     }
 
+    public static void trackEventOpenScreen(Context context){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf("event", "openScreen",
+                        "screenName", "/recent",
+                        "eventAction", "impression on product",
+                        "isLoggedInStatus", getLoginID(context).isEmpty() ? "false" : "true",
+                        "businessUnit", "home & browse",
+                        "currentSite", "tokopediamarketplace",
+                        "userId", getLoginID(context)
+                )
+        );
+    }
+
     public static String getLoginID(Context context) {
         String u_id;
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);

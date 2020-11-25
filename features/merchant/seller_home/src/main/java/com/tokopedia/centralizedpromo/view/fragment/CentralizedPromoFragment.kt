@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
@@ -23,10 +24,12 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
@@ -43,14 +46,24 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         private const val SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION = "onBoardingAdsAndPromotions"
         private const val SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION = "onBoardingPromoRecommendation"
 
+        private const val ERROR_GET_LAYOUT_DATA = "Error when get layout data for %s."
+
         @JvmStatic
         fun createInstance(): CentralizedPromoFragment = CentralizedPromoFragment()
     }
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val adapterTypeFactory by lazy { CentralizedPromoAdapterTypeFactory() }
+    private val adapterTypeFactory by lazy {
+        CentralizedPromoAdapterTypeFactory(
+                { trackFreeShippingImpression() },
+                { trackFreeShippingClick() }
+        )
+    }
 
     private val partialViews by lazy {
         return@lazy mapOf(
@@ -90,6 +103,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         setupView()
         observeGetLayoutDataResult()
         refreshLayout()
+        CentralizedPromoTracking.sendOpenScreenEvent(userSession.isLoggedIn, userSession.userId)
     }
 
     override fun onRefreshButtonClicked() {
@@ -164,6 +178,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     private fun Fail.onFailedGetLayoutData(layoutType: LayoutType) {
+        SellerHomeErrorHandler.logExceptionToCrashlytics(throwable, String.format(ERROR_GET_LAYOUT_DATA, layoutType.name))
         partialViews[layoutType]?.renderError(this.throwable)
         showErrorToaster()
     }
@@ -212,6 +227,14 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         Handler().postDelayed({
             isErrorToastShown = false
         }, TOAST_DURATION)
+    }
+
+    private fun trackFreeShippingImpression() {
+        centralizedPromoViewModel.trackFreeShippingImpression()
+    }
+
+    private fun trackFreeShippingClick() {
+        centralizedPromoViewModel.trackFreeShippingClick()
     }
 }
 

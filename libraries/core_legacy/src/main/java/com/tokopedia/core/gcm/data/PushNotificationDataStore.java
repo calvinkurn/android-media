@@ -22,10 +22,6 @@ public interface PushNotificationDataStore {
 
     Observable<List<PushNotification>> getPushSavedPushNotificationWithOrderBy(String category, boolean ascendant);
 
-    Observable<Boolean> deleteSavedPushNotificationByCategoryAndServerId(String category, String serverId);
-
-    Observable<Boolean> deleteSavedPushNotificationByCategory(String category);
-
     Observable<Boolean> deleteSavedPushNotification();
 
     Observable<String> savePushNotification(String category, String response, String customIndex, String serverId);

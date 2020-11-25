@@ -1,21 +1,25 @@
 package com.tokopedia.play.view.uimodel
 
-import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.type.PlayChannelType
-
 /**
  * Created by jegul on 16/12/19
  */
 data class ChannelInfoUiModel(
         val id: String,
-        val title: String,
-        val description: String,
-        val channelType: PlayChannelType,
-        val partnerId: Long,
-        val partnerType: PartnerType,
-        val moderatorName: String,
-        val contentId: Int,
+        val showCart: Boolean,
+        val showPinnedProduct: Boolean,
+        val titleBottomSheet: String,
+        val partnerInfo: PartnerInfoUiModel,
+        val feedInfo: FeedInfoUiModel,
+        val shareInfo: ShareInfoUiModel
+)
+
+data class FeedInfoUiModel(
+        val contentId: String,
         val contentType: Int,
-        val likeType: Int,
-        val isShowCart: Boolean
+        val likeType: Int
+)
+
+data class ShareInfoUiModel(
+        val content: String,
+        val isShowButton: Boolean
 )

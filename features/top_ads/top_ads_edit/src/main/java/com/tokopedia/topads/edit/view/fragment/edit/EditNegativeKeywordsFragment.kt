@@ -3,22 +3,28 @@ package com.tokopedia.topads.edit.view.fragment.edit
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
+import com.tokopedia.topads.edit.utils.Constants
 import com.tokopedia.topads.edit.utils.Constants.CURRENTLIST
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_ADDED
 import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORDS_DELETED
+import com.tokopedia.topads.edit.utils.Constants.NEGATIVE_KEYWORD_ALL
 import com.tokopedia.topads.edit.utils.Constants.REQUEST_OK
 import com.tokopedia.topads.edit.utils.Constants.RESTORED_DATA
 import com.tokopedia.topads.edit.utils.Constants.SELECTED_KEYWORD
@@ -27,6 +33,7 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordLis
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.EditNegKeywordListAdapterTypeFactoryImpl
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordEmptyViewModel
 import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNegKeywordItemViewModel
+import com.tokopedia.topads.edit.view.model.EditFormDefaultViewModel
 import kotlinx.android.synthetic.main.topads_edit_negative_keyword_layout.*
 import javax.inject.Inject
 
@@ -43,27 +50,91 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     private var originalKeyList: MutableList<String> = arrayListOf()
     private lateinit var adapter: EditNegKeywordListAdapter
     private var restoreData: ArrayList<GetKeywordResponse.KeywordsItem>? = arrayListOf()
+    private var cursor = ""
+    private lateinit var recyclerviewScrollListener: EndlessRecyclerViewScrollListener
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var recyclerView: RecyclerView
+    private var groupId = 0
     private val sharedViewModel by lazy {
         ViewModelProviders.of(requireActivity()).get(SharedViewModel::class.java)
+    }
+    private val viewModelProvider by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+    }
+    private val viewModel by lazy {
+        viewModelProvider.get(EditFormDefaultViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        adapter = EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword, this::onAddKeyword))
+        adapter = EditNegKeywordListAdapter(EditNegKeywordListAdapterTypeFactoryImpl(this::onDeleteNegKeyword, this::onAddKeyword, ::onStatusChange))
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(resources.getLayout(R.layout.topads_edit_negative_keyword_layout), container, false)
+        val view = inflater.inflate(resources.getLayout(R.layout.topads_edit_negative_keyword_layout), container, false)
+        recyclerView = view.findViewById(R.id.keyword_list)
+        setAdapter()
+        return view
+    }
+
+    private fun fetchNextPage() {
+        viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
+    }
+
+    private fun onRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                if (cursor != "") {
+                    fetchNextPage()
+                }
+            }
+        }
+    }
+
+    private fun setAdapter() {
+        layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+        recyclerviewScrollListener = onRecyclerViewListener()
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = layoutManager
+        recyclerView.addOnScrollListener(recyclerviewScrollListener)
+    }
+
+    private fun onSuccessKeyword(data: List<GetKeywordResponse.KeywordsItem>, cursor: String) {
+        this.cursor = cursor
+        data.forEach { result ->
+            if ((result.type == Constants.KEYWORD_TYPE_NEGATIVE_PHRASE || result.type == Constants.KEYWORD_TYPE_NEGATIVE_EXACT) && result.status != -1) {
+                adapter.items.add(EditNegKeywordItemViewModel(result))
+                originalKeyList.add(result.tag)
+            }
+        }
+        if (adapter.items.isEmpty()) {
+            adapter.items.add(EditNegKeywordEmptyViewModel())
+            setVisibilityOperation(View.GONE)
+        } else {
+            setVisibilityOperation(View.VISIBLE)
+        }
+        updateItemCount()
+        adapter.notifyDataSetChanged()
+        recyclerviewScrollListener.updateStateAfterGetData()
     }
 
     private fun onDeleteNegKeyword(position: Int) {
         showNegConfirmationDialog(position)
     }
 
+    private fun onStatusChange(position: Int) {
+        if (isExistsOriginal(position)) {
+            deletedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+            addedKeywords?.add((adapter.items[position] as EditNegKeywordItemViewModel).data)
+        }
+    }
+
     private fun showNegConfirmationDialog(position: Int) {
         val dialog = DialogUnify(context!!, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         dialog.setTitle(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_title))
-        dialog.setDescription(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc))
+        dialog.setDescription(Html.fromHtml(String.format(getString(R.string.topads_edit_delete_neg_keyword_conf_dialog_desc),
+                (adapter.items[position] as EditNegKeywordItemViewModel).data.tag)))
         dialog.setPrimaryCTAText(getString(R.string.topads_edit_batal))
         dialog.setSecondaryCTAText(getString(R.string.topads_edit_ya))
         dialog.setPrimaryCTAClickListener {
@@ -119,40 +190,21 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun updateItemCount() {
-        keyword_count.text = String.format(getString(R.string.keyword_count), adapter.items.size)
+        keyword_count.text = String.format(getString(R.string.topads_edit_kata_kunci_negative_count), adapter.items.size)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        sharedViewModel.getnegKeywords().observe(viewLifecycleOwner, Observer {
+        sharedViewModel.getGroupId().observe(viewLifecycleOwner, Observer {
+            groupId = it
             adapter.items.clear()
-            it.forEach { item ->
-                adapter.items.add(EditNegKeywordItemViewModel(item))
-                originalKeyList.add(item.tag)
-
-            }
-            if (adapter.items.isEmpty()) {
-                adapter.items.add(EditNegKeywordEmptyViewModel())
-                setVisibilityOperation(View.GONE)
-            } else {
-                setVisibilityOperation(View.VISIBLE)
-            }
-            updateItemCount()
-            adapter.notifyDataSetChanged()
+            viewModel.getAdKeyword(groupId, cursor, this::onSuccessKeyword)
         })
-        if (adapter.items.isNotEmpty()) {
-            setVisibilityOperation(View.VISIBLE)
-        } else {
-            adapter.items.add(EditNegKeywordEmptyViewModel())
-            setVisibilityOperation(View.GONE)
 
-        }
+        add_image.setImageDrawable(AppCompatResources.getDrawable(view.context, com.tokopedia.topads.common.R.drawable.topads_plus_add_keyword))
         add_keyword.setOnClickListener {
             onAddKeyword()
         }
-        keyword_list.adapter = adapter
-        keyword_list.layoutManager = LinearLayoutManager(context)
     }
 
     override fun getScreenName(): String {
@@ -182,7 +234,7 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
     }
 
     private fun addKeywords(data: ArrayList<GetKeywordResponse.KeywordsItem>?) {
-        if (adapter.items[0] is EditNegKeywordEmptyViewModel) {
+        if (adapter.items.isNotEmpty() && adapter.items[0] is EditNegKeywordEmptyViewModel) {
             adapter.items.clear()
         }
         data?.forEach {
@@ -194,7 +246,6 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
         setVisibilityOperation(View.VISIBLE)
         updateItemCount()
         adapter.notifyDataSetChanged()
-
     }
 
     private fun isExistsOriginal(position: Int): Boolean {
@@ -203,8 +254,11 @@ class EditNegativeKeywordsFragment : BaseDaggerFragment() {
 
     fun sendData(): Bundle {
         val bundle = Bundle()
+        val list: ArrayList<GetKeywordResponse.KeywordsItem> = arrayListOf()
+        list.addAll(adapter.getCurrentItems())
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_ADDED, addedKeywords)
         bundle.putParcelableArrayList(NEGATIVE_KEYWORDS_DELETED, deletedKeywords)
+        bundle.putParcelableArrayList(NEGATIVE_KEYWORD_ALL, list)
         return bundle
     }
 

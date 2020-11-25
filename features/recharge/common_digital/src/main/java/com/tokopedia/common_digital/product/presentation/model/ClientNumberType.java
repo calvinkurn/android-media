@@ -17,7 +17,7 @@ public @interface ClientNumberType {
 
     String TYPE_INPUT_TEL = "tel";
     String TYPE_INPUT_NUMERIC = "numeric";
-    String TYPE_INPUT_ALPHANUMERIC = "tel";
+    String TYPE_INPUT_ALPHANUMERIC = "alphanumeric";
     String DEFAULT_TYPE_CONTRACT = "client_number";
 
 }

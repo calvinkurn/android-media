@@ -43,4 +43,8 @@ internal constructor(private val dbSource: IrisSendLogDBSource) {
                     Observable.just(viewModel)
                 }.toList()
     }
+
+    fun getCount(): Int {
+        return dbSource.getCount()
+    }
 }

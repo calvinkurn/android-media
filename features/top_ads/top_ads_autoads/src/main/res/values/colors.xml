@@ -4,7 +4,6 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="true_green">#03ac0e</color>
-    <color name="white">#ffffff</color>
     <color name="ads_active_bg">#d6ffde</color>
     <color name="ads_inprogress_bg">#fff0b3</color>
     <color name="ads_deactive_bg">#f3f4f5</color>
@@ -12,5 +11,10 @@
     <color name="auto_ads_grey">#888888</color>
     <color name="grey">#888888</color>
     <color name="topads_heading_color">#F531353B</color>
+    <color name="topads_autoads_background_tint">#FFFCF5</color>
+    <color name="topads_autoads_onboarding_color1">#D8F3F2</color>
+    <color name="topads_autoads_onboarding_color2">#FFDC80</color>
+
+
 
 </resources>

@@ -1,0 +1,9 @@
+<com.tokopedia.unifycomponents.ChipsUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/inspirationCardOptionChip"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:chipText="@string/search_inspiration_card_title"
+    app:chipSize="small"
+    app:chipType="selected"/>

@@ -69,19 +69,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_20" />
 
-        <!--<com.tokopedia.tkpd.session.LoginTextView-->
-            <!--android:id="@+id/buyer_button"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="1"-->
-
-            <!--android:layout_marginTop="@dimen/dp_10"-->
-            <!--app:customText="Saya sebagai Pembeli"-->
-            <!--app:textColor="@color/grey_600"-->
-            <!--app:borderColor="@color/grey_600"-->
-            <!--app:imageEnabled="false"-->
-            <!--app:cornerSize="5"-->
-            <!--app:borderSize="2" />-->
         <TextView
             android:id="@+id/buyer_button"
             android:layout_width="wrap_content"

@@ -8,7 +8,6 @@ package com.tokopedia.abstraction.common.utils.view;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
@@ -55,20 +54,6 @@ public class EventsWatcher {
             @Override
             public void onClick(View view) {
                 subject.onNext(new Object());
-            }
-        });
-        return subject;
-    }
-
-    /*
-     * Creates a subject that emits events for item clicks of list views
-     */
-    public static Observable<Integer> itemClick(AbsListView view) {
-        final PublishSubject<Integer> subject = PublishSubject.create();
-        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                subject.onNext(position);
             }
         });
         return subject;

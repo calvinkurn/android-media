@@ -18,8 +18,7 @@ class AttachVoucherViewHolder(itemView: View?, val listener: Listener) : Abstrac
         fun isChecked(element: VoucherUiModel): Boolean
     }
 
-    override fun bind(voucher: VoucherUiModel?) {
-        if (voucher == null) return
+    override fun bind(voucher: VoucherUiModel) {
         bindState(voucher)
         bindVoucherTitle(voucher)
         bindVoucherStatus(voucher)

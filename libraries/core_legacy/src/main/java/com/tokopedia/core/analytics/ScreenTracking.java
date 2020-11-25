@@ -47,15 +47,7 @@ public class ScreenTracking extends TrackingUtils {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screen);
     }
 
-    public static void eventAuthScreen(Context context, Map<String, String> customDimension, String screenName) {
+    static void eventAuthScreen(Context context, Map<String, String> customDimension, String screenName) {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName, customDimension);
-    }
-
-    public static void eventDiscoveryScreenAuth(Context context, String departmentId) {
-        if (!TextUtils.isEmpty(departmentId)) {
-            TrackApp.getInstance().getGTM().sendScreenAuthenticated(
-                    AppScreen.SCREEN_BROWSE_PRODUCT_FROM_CATEGORY + departmentId
-            );
-        }
     }
 }

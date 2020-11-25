@@ -8,7 +8,7 @@ import com.tokopedia.design.R;
 /**
  * Created by pranaymohapatra on 03/09/18.
  */
-
+@Deprecated
 public class ImageLoader {
     public static void LoadImage(ImageView imageview, String url) {
         if (imageview.getContext() != null) {

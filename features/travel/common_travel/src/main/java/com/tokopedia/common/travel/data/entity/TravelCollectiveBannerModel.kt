@@ -21,7 +21,9 @@ class TravelCollectiveBannerModel(@SerializedName("banners")
                       var product: String = "",
                       @SerializedName("attributes")
                       @Expose
-                      val attribute: Attribute = Attribute())
+                      val attribute: Attribute = Attribute(),
+
+                      var position: Int = 0)
 
     data class Attribute(@SerializedName("description")
                          @Expose
@@ -50,7 +52,10 @@ class TravelCollectiveBannerModel(@SerializedName("banners")
                          val appUrl: String = "",
                          @SerializedName("type")
                          @Expose
-                         val type: String = "")
+                         val type: String = "",
+                         @SerializedName("label")
+                         @Expose
+                         val label: String = "")
 
     data class Response(@SerializedName("travelCollectiveBanner")
                         @Expose

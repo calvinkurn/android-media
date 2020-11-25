@@ -42,15 +42,15 @@ open class BaseChatViewStateImpl(
 
     protected lateinit var rootView: ViewGroup
     protected lateinit var recyclerView: RecyclerView
-    protected lateinit var mainLoading: ProgressBar
     protected lateinit var replyEditText: EditText
-    protected lateinit var replyBox: RelativeLayout
+    protected lateinit var replyBox: ViewGroup
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
     protected lateinit var chatMenuButton: ImageView
-    protected lateinit var attachmentMenu: AttachmentMenuRecyclerView
-    protected lateinit var attachmentMenuContainer: FrameLayout
+    protected var mainLoading: ProgressBar? = null
+    protected var attachmentMenu: AttachmentMenuRecyclerView? = null
+    protected var attachmentMenuContainer: FrameLayout? = null
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -99,26 +99,30 @@ open class BaseChatViewStateImpl(
                 .skip(1)
                 .subscribe(onChatDeBounceSubscriber, onError)
 
-        attachmentMenu.setAttachmentMenuListener(attachmentMenuListener)
 
         rootView.viewTreeObserver.addOnGlobalLayoutListener(this)
+        setupChatMenu()
+    }
 
-        attachmentMenu.container = attachmentMenuContainer
+    protected open fun setupChatMenu() {
+        attachmentMenu?.setAttachmentMenuListener(attachmentMenuListener)
+        attachmentMenu?.container = attachmentMenuContainer
         chatMenuButton.setOnClickListener {
-            attachmentMenu.toggle()
+            attachmentMenu?.toggle()
         }
     }
 
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
-        title.text = getInterlocutorName(chatroomViewModel.getHeaderName())
+        val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
+        title.text = MethodChecker.fromHtml(interlocutorName)
 
         setLabel(chatroomViewModel.headerModel.label)
 
         val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
-        ImageHandler.loadImageCircle2(avatar.context, avatar, chatroomViewModel.headerModel.image,
-                R.drawable.ic_default_avatar)
+
+        loadAvatar(chatroomViewModel.headerModel.image)
 
         val onlineDesc = toolbar.findViewById<TextView>(R.id.subtitle)
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
@@ -126,12 +130,21 @@ open class BaseChatViewStateImpl(
         if (chatroomViewModel.headerModel.isOnline) {
             onlineStatus.setImageResource(getOnlineIndicatorResource())
             onlineDesc.text = view.context.getString(R.string.online)
-        } else
+            onlineDesc.visibility = View.VISIBLE
+        } else {
+            onlineDesc.visibility = View.GONE
             onlineStatus.setImageResource(getOfflineIndicatorResource())
+        }
 
         title.setOnClickListener { onToolbarClicked() }
         avatar.setOnClickListener { onToolbarClicked() }
 
+    }
+
+    override fun loadAvatar(avatarUrl: String) {
+        val avatar = toolbar.findViewById<ImageView>(R.id.user_avatar)
+        ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
+                R.drawable.ic_default_avatar)
     }
 
     @DrawableRes
@@ -184,25 +197,27 @@ open class BaseChatViewStateImpl(
         val label = toolbar.findViewById<TextView>(R.id.label)
         label.text = labelText
 
-        when (labelText) {
-            SELLER_TAG -> {
+        when {
+            labelText == SELLER_TAG && shouldShowSellerLabel() -> {
                 label.setBackgroundResource(R.drawable.topchat_seller_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.medium_green))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
                 label.visibility = View.VISIBLE
             }
-            ADMIN_TAG -> {
+            labelText == ADMIN_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                 label.visibility = View.VISIBLE
             }
-            OFFICIAL_TAG -> {
+            labelText == OFFICIAL_TAG -> {
                 label.setBackgroundResource(R.drawable.topchat_admin_label)
-                label.setTextColor(MethodChecker.getColor(label.context, R.color.topchat_admin_label_text_color))
+                label.setTextColor(MethodChecker.getColor(label.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                 label.visibility = View.VISIBLE
             }
             else -> label.visibility = View.GONE
         }
     }
+
+    protected open fun shouldShowSellerLabel(): Boolean = true
 
     open fun scrollDownWhenInBottom() {
         if (checkLastCompletelyVisibleItemIsFirst()) {
@@ -224,11 +239,11 @@ open class BaseChatViewStateImpl(
 
 
     fun showLoading() {
-        mainLoading.visibility = View.VISIBLE
+        mainLoading?.visibility = View.VISIBLE
     }
 
     fun hideLoading() {
-        mainLoading.visibility = View.GONE
+        mainLoading?.visibility = View.GONE
     }
 
     fun setAdapter(adapter: BaseChatAdapter) {
@@ -273,15 +288,32 @@ open class BaseChatViewStateImpl(
         val heightDifference = screenHeight - windowHeight - statusBarHeight
 
         if (heightDifference > keyboardOffset) {
-            attachmentMenu.isKeyboardOpened = true
-            attachmentMenu.hideMenu()
+            onKeyboardOpened()
         } else {
-            attachmentMenu.isKeyboardOpened = false
-            if (attachmentMenu.showDelayed) {
-                attachmentMenu.showDelayed()
+            onKeyboardClosed()
+        }
+    }
+
+    override fun onKeyboardOpened() {
+        hideChatMenu()
+    }
+
+    override fun onKeyboardClosed() {
+        showChatMenu()
+    }
+
+    override fun hideChatMenu() {
+        attachmentMenu?.isKeyboardOpened = true
+        attachmentMenu?.hideMenu()
+    }
+
+    override fun showChatMenu() {
+        attachmentMenu?.isKeyboardOpened = false
+        attachmentMenu?.let {
+            if (it.showDelayed) {
+                it.showDelayed()
             }
         }
-
     }
 
     private fun getScreenHeight(): Int {
@@ -302,16 +334,16 @@ open class BaseChatViewStateImpl(
     }
 
     override fun isAttachmentMenuVisible(): Boolean {
-        return attachmentMenu.isVisible
+        return attachmentMenu?.isVisible ?: false
     }
 
     override fun hideAttachmentMenu() {
-        return attachmentMenu.hideMenu()
+        attachmentMenu?.hideMenu()
     }
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {}
 
-    open fun getInterlocutorName(headerName: CharSequence): CharSequence = headerName
+    open fun getInterlocutorName(headerName: String): String = headerName
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment

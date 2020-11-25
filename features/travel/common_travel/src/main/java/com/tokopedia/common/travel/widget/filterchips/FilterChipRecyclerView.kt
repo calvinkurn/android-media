@@ -5,7 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.common.travel.R
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 
 /**
@@ -41,7 +41,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         chip_recycler_view.layoutManager = layoutManager
     }
 
-    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = com.tokopedia.design.R.color.snackbar_border_normal, initialSelectedItemPos: Int? = null) {
+    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = com.tokopedia.unifyprinciples.R.color.Unify_G300, initialSelectedItemPos: Int? = null) {
         if (listener != null) {
             adapter = FilterChipAdapter(strings, listener, this, selectedTextColor)
             if (initialSelectedItemPos != null) adapter.initialPositionSelected = initialSelectedItemPos
@@ -62,7 +62,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         for (i in 0 until adapter.itemCount) {
             with(chip_recycler_view.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
                 this?.chips?.isSelected = false
-                this?.setTextColor(com.tokopedia.design.R.color.black_56)
+                this?.setTextColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
             }
         }
     }

@@ -3,7 +3,7 @@
     android:layout_height="wrap_content"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/tv_chat"
+    android:id="@+id/tv_quick_reply"
     android:gravity="start"
     android:background="@drawable/bg_play_chat"
     android:lineHeight="@dimen/fontSize_lvl5"

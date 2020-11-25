@@ -12,7 +12,7 @@ class HomeDefaultDataSource {
             homeFlag = createHomeFlag()
     )
 
-    private fun createDefaultHomePageBanner(): BannerDataModel{
+    fun createDefaultHomePageBanner(): BannerDataModel{
         val defaultSlides = mutableListOf<BannerSlidesModel>()
         val defaultBannerSlidesModel1 = BannerSlidesModel()
         defaultBannerSlidesModel1.applink = DEFAULT_BANNER_APPLINK_1
@@ -36,8 +36,8 @@ class HomeDefaultDataSource {
         return BannerDataModel(slides = defaultSlides)
     }
 
-    private fun createDefaultHomeDynamicIcon(): DynamicHomeIcon {
-        val dynamicHomeIcon = DynamicHomeIcon(
+    fun createDefaultHomeDynamicIcon(): DynamicHomeIcon {
+        return DynamicHomeIcon(
                 dynamicIcon = listOf(
                         DynamicHomeIcon.DynamicIcon(
                                 imageUrl = DEFAULT_DYNAMIC_ICON_IMAGE_URL_1,
@@ -61,10 +61,9 @@ class HomeDefaultDataSource {
                                 name = DEFAULT_DYNAMIC_ICON_NAME_5)
                 )
         )
-        return dynamicHomeIcon
     }
 
-    private fun createDefaultHomeDynamicChannel(): DynamicHomeChannel {
+    fun createDefaultHomeDynamicChannel(): DynamicHomeChannel {
         return DynamicHomeChannel(
                 channels = listOf(
                         DynamicHomeChannel.Channels(

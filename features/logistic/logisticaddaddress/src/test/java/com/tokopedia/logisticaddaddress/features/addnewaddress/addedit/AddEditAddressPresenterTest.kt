@@ -13,8 +13,9 @@ import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -31,9 +32,9 @@ object AddEditAddressPresenterTest : Spek({
     val view: AddEditView = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
-    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any()) } just Runs
-    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any()) } just Runs
+    every { AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(any(), any(), any()) } just Runs
 
     lateinit var presenter: AddEditAddressPresenter
 
@@ -53,11 +54,11 @@ object AddEditAddressPresenterTest : Spek({
                 every { saveUseCase.execute(any(), "1") } returns Observable.just(successGql)
             }
             When("executed from positive form") {
-                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, isFullFlow = true, isLogisticLabel = true)
             }
             Then("analytics simpan success is hit") {
                 verify {
-                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any())
+                    AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any(), any())
                 }
             }
             Then("view show success") {
@@ -66,42 +67,42 @@ object AddEditAddressPresenterTest : Spek({
             }
         }
 
-//        Scenario("not success response from negative form") {
-//            val notSuccessResponse = AddAddressResponse(KeroAddAddress(
-//                    Data(isSuccess = 0)
-//            ))
-//            Given("not success answer") {
-//                every { saveUseCase.execute(any(), "1") } returns Observable.just(notSuccessResponse)
-//            }
-//            When("executed from negative form ") {
-//                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE)
-//            }
-//            Then("analytics simpan success is hit") {
-//                verify {
-//                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any())
-//                }
-//            }
-//            Then("view show success") {
-//                verify {
-//                    view.showError(null)
-//                }
-//            }
-//        }
+        Scenario("not success response from negative form") {
+            val notSuccessResponse = AddAddressResponse(KeroAddAddress(
+                    Data(isSuccess = 0)
+            ))
+            Given("not success answer") {
+                every { saveUseCase.execute(any(), any()) } returns Observable.just(notSuccessResponse)
+            }
+            When("executed from negative form ") {
+                presenter.saveAddress(model, AddressConstants.ANA_NEGATIVE, isFullFlow = true, isLogisticLabel = true)
+            }
+            Then("analytics simpan success is hit") {
+                verify {
+                    AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(any(), any())
+                }
+            }
+            Then("view show success") {
+                verify {
+                    view.showError(null)
+                }
+            }
+        }
 
-//        Scenario("error gql response") {
-//            val exception = MessageErrorException("hi")
-//            Given("error answer") {
-//                every { saveUseCase.execute(any(), "1") } returns Observable.error(exception)
-//            }
-//            When("executed") {
-//                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE)
-//            }
-//            Then("view shows error") {
-//                verify {
-//                    view.showError(exception)
-//                }
-//            }
-//        }
+        Scenario("error gql response") {
+            val exception = MessageErrorException("hi")
+            Given("error answer") {
+                every { saveUseCase.execute(any(), any()) } returns Observable.error(exception)
+            }
+            When("executed") {
+                presenter.saveAddress(model, AddressConstants.ANA_POSITIVE, isFullFlow = true, isLogisticLabel = true)
+            }
+            Then("view shows error") {
+                verify {
+                    view.showError(exception)
+                }
+            }
+        }
     }
 
     Feature("get zip code") {
@@ -146,9 +147,7 @@ object AddEditAddressPresenterTest : Spek({
             val givenPlaceId = "1"
             val givenLat = 0.3131
             val givenLong = 9.3232
-            val successModel = listOf(
-                    SuggestedPlace(placeId = givenPlaceId)
-            )
+            val successModel = Place(listOf(SuggestedPlace(givenPlaceId)))
             val successDistrict = GetDistrictDataUiModel(
                     latitude = givenLat.toString(), longitude = givenLong.toString())
             Given("returns positive") {

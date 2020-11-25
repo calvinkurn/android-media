@@ -5,11 +5,11 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:paddingTop="@dimen/dynamic_filter_item_padding"
     android:paddingBottom="@dimen/dynamic_filter_item_padding">
 
-    <com.tokopedia.design.text.DecimalRangeInputView
+    <com.tokopedia.filter.newdynamicfilter.adapter.viewholder.widget.DecimalRangeInputView
         android:id="@+id/price_range_input_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

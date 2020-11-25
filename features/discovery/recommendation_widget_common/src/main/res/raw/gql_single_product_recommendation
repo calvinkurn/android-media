@@ -30,6 +30,10 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                relatedProductUrlLink
                price
                priceInt
+               discountPercentage
+               slashedPrice
+               slashedPriceInt
+               isWishlist
                shop {
                    id
                    name
@@ -44,13 +48,23 @@ query productRecommendationSingle($userID: Int!, $pageNumber: Int!, $queryParam:
                   title
                   imageUrl
               }
+              labelgroup{
+                position
+                title
+                type
+              }
               wholesalePrice {
                   price
                   quantityMax
                   quantityMin
                   priceString
               }
+              freeOngkir{
+                isActive
+                imageUrl
+              }
               rating
+              ratingAverage
               countReview
               recommendationType
               stock

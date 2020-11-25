@@ -20,6 +20,7 @@ class ProductViewHolder(
     companion object {
         @LayoutRes
         var LAYOUT = R.layout.item_manage_product_list
+        const val MAX_SHOWING_STOCK = 999_999
     }
 
     override fun bind(product: ProductViewModel) {
@@ -33,23 +34,26 @@ class ProductViewHolder(
         showProductImage(product)
         showStockHintImage(product)
         showProductCheckBox(product)
+        showProductTopAdsIcon(product)
 
         setOnClickListeners(product)
     }
 
     private fun setTitleAndPrice(product: ProductViewModel) {
         itemView.textTitle.text = product.title
-        itemView.textPrice.text = product.priceFormatted
+        val prices = mutableListOf(product.minPrice?.priceFormatted, product.maxPrice?.priceFormatted).distinct()
+        itemView.textPrice.text = prices.joinToString(" - ")
     }
 
     private fun showProductStock(product: ProductViewModel) {
-        if(product.isNotVariant()) {
-            itemView.textStockCount.text = product.stock?.getNumberFormatted()
+        product.stock?.run {
+            itemView.textStockCount.text = if (this <= MAX_SHOWING_STOCK) {
+                getNumberFormatted()
+            } else {
+                "${MAX_SHOWING_STOCK.getNumberFormatted()}+"
+            }
             itemView.textStockCount.show()
             itemView.textStock.show()
-        } else {
-            itemView.textStockCount.hide()
-            itemView.textStock.hide()
         }
     }
 
@@ -57,6 +61,7 @@ class ProductViewHolder(
         itemView.labelBanned.showWithCondition(product.isViolation())
         itemView.labelInactive.showWithCondition(product.isInactive())
         itemView.labelActive.showWithCondition(product.isActive())
+        itemView.labelCampaign.showWithCondition(product.hasStockReserved)
     }
 
     private fun showVariantLabel(product: ProductViewModel) {
@@ -120,6 +125,10 @@ class ProductViewHolder(
     private fun showProductCheckBox(product: ProductViewModel) {
         itemView.checkBoxSelect.isChecked = product.isChecked
         itemView.checkBoxSelect.showWithCondition(product.multiSelectActive)
+    }
+
+    private fun showProductTopAdsIcon(product: ProductViewModel) {
+        itemView.imageTopAds.showWithCondition(product.hasTopAds())
     }
 
     private fun toggleCheckBox() {

@@ -9,6 +9,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -40,13 +41,13 @@ public class PromoInteractor implements IPromoInteractor {
     }
 
     @Override
-    public void getPromoList(TKPDMapParam<String, String> param, Subscriber<List<PromoData>> subscriber) {
-        compositeSubscription.add(
-                promoRepository.getPromoDataList(param)
-                        .subscribeOn(Schedulers.newThread())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .unsubscribeOn(Schedulers.newThread())
-                        .subscribe(subscriber)
-        );
+    public Observable<List<PromoData>> getPromoList(TKPDMapParam<String, String> param, Subscriber<List<PromoData>> subscriber) {
+        Observable<List<PromoData>> observable = promoRepository.getPromoDataList(param);
+        compositeSubscription.add(observable
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.newThread())
+                .subscribe(subscriber));
+        return observable;
     }
 }

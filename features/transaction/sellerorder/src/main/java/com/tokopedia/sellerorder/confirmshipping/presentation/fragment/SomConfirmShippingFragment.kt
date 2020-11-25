@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
+import com.tokopedia.sellerorder.common.errorhandler.SomErrorHandler
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_AGENCY_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.INPUT_ORDER_ID
@@ -30,6 +31,7 @@ import com.tokopedia.sellerorder.confirmshipping.di.SomConfirmShippingComponent
 import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfirmShippingActivity
 import com.tokopedia.sellerorder.confirmshipping.presentation.adapter.SomBottomSheetCourierListAdapter
 import com.tokopedia.sellerorder.confirmshipping.presentation.viewmodel.SomConfirmShippingViewModel
+import com.tokopedia.sellerorder.detail.presentation.fragment.SomDetailFragment
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +63,12 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
     }
 
     companion object {
+        private const val ERROR_CONFIRM_SHIPPING = "Error when confirm shipping."
+        private const val ERROR_GET_COURIER_LIST = "Error when get courier list."
+        private const val ERROR_CHANGE_COURIER = "Error when change courier."
+
+        private const val TAG_BOTTOMSHEET = "bottomSheet"
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomConfirmShippingFragment {
             return SomConfirmShippingFragment().apply {
@@ -93,6 +101,13 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
         setupListeners()
         observingCourierList()
         observingChangeCourier()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (fragmentManager?.findFragmentByTag(TAG_BOTTOMSHEET) as? BottomSheetUnify)?.let {
+            if (it.isVisible) it.dismiss()
+        }
     }
 
     private fun setupLayout() {
@@ -190,13 +205,18 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
             when (it) {
                 is Success -> {
                     SomAnalytics.eventClickKonfirmasi(true)
-                    confirmShippingResponseMsg = it.data.mpLogisticConfirmShipping.listMessage.first()
+                    confirmShippingResponseMsg = if (it.data.listMessage.isNotEmpty()) {
+                        it.data.listMessage.first()
+                    } else {
+                        getString(R.string.default_confirm_shipping_success)
+                    }
                     activity?.setResult(Activity.RESULT_OK, Intent().apply {
                         putExtra(RESULT_CONFIRM_SHIPPING, confirmShippingResponseMsg)
                     })
                     activity?.finish()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CONFIRM_SHIPPING)
                     SomAnalytics.eventClickKonfirmasi(false)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
@@ -228,6 +248,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     iv_choose_courier_service?.setOnClickListener { showBottomSheetCourier(true) }
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_GET_COURIER_LIST)
                     Utils.showToasterError(getString(R.string.global_error), view)
                 }
             }
@@ -247,6 +268,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
                     activity?.finish()
                 }
                 is Fail -> {
+                    SomErrorHandler.logExceptionToCrashlytics(it.throwable, ERROR_CHANGE_COURIER)
                     Utils.showToasterError(it.throwable.localizedMessage, view)
                 }
             }
@@ -265,7 +287,7 @@ class SomConfirmShippingFragment : BaseDaggerFragment(), SomBottomSheetCourierLi
 
         bottomSheetUnify.setCloseClickListener { bottomSheetUnify.dismiss() }
         bottomSheetUnify.setChild(viewBottomSheet)
-        fragmentManager?.let { bottomSheetUnify.show(it, getString(R.string.show_bottomsheet)) }
+        fragmentManager?.let { bottomSheetUnify.show(it, TAG_BOTTOMSHEET) }
 
         if (isCourierService) {
             setCourierServiceListData(currShipmentId)

@@ -5,5 +5,6 @@ import com.tokopedia.user_identification_common.domain.pojo.KycUserProjectInfoPo
 data class PowerMerchantStatus(
         val goldGetPmOsStatus: GoldGetPmOsStatus = GoldGetPmOsStatus(),
         val kycUserProjectInfoPojo: KycUserProjectInfoPojo = KycUserProjectInfoPojo(),
-        val shopScore: ShopScoreResult = ShopScoreResult()
+        val shopScore: ShopScoreResult = ShopScoreResult(),
+        val freeShippingEnabled: Boolean = false
 )

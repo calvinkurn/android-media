@@ -1,65 +1,97 @@
 package com.tokopedia.play.view.uimodel.mapper
 
+import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
-
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 /**
  * Created by mzennis on 2020-03-06.
  */
 object PlayUiMapper {
 
-    private const val MAX_PRODUCTS = 5
-    private const val MAX_VOUCHERS = 5
-
     fun createCompleteInfoModel(
             channel: Channel,
             partnerName: String,
-            isBanned: Boolean
+            isBanned: Boolean,
+            exoPlayer: ExoPlayer
     ) = PlayCompleteInfoUiModel(
             channelInfo = mapChannelInfo(channel),
-            videoStream = mapVideoStream(channel.videoStream, channel.isActive),
+            videoStream = mapVideoStream(
+                    channel.video,
+                    channel.configuration,
+                    channel.isLive),
+            videoPlayer = mapVideoPlayer(
+                    channel.video,
+                    exoPlayer
+            ),
             pinnedMessage = mapPinnedMessage(
                     partnerName,
                     channel.pinnedMessage
             ),
-            pinnedProduct = PlayUiMapper.mapPinnedProduct(
+            pinnedProduct = mapPinnedProduct(
                     partnerName,
-                    channel.isShowProductTagging,
-                    channel.pinnedProduct),
-            quickReply = mapQuickReply(channel.quickReply),
-            totalView = mapTotalViews(channel.totalViews),
+                    channel.configuration),
+            quickReply = mapQuickReply(channel.quickReplies),
+            totalView = mapTotalViews(channel.stats.view.formatted),
             event = mapEvent(channel, isBanned)
     )
 
     private fun mapEvent(channel: Channel, isBanned: Boolean) = EventUiModel(
             isBanned = isBanned,
-            isFreeze = !channel.isActive || channel.isFreeze,
-            bannedMessage = channel.banned.message,
-            bannedTitle = channel.banned.title,
-            bannedButtonTitle = channel.banned.buttonTitle,
-            freezeMessage = channel.freezeChannelState.desc,
-            freezeTitle = channel.freezeChannelState.title,
-            freezeButtonTitle = channel.freezeChannelState.btnTitle,
-            freezeButtonUrl = channel.freezeChannelState.btnAppLink
+            isFreeze = !channel.configuration.active || channel.configuration.freezed,
+            bannedMessage = channel.configuration.channelBannedMessage.message,
+            bannedTitle = channel.configuration.channelBannedMessage.title,
+            bannedButtonTitle = channel.configuration.channelBannedMessage.buttonText,
+            freezeMessage = channel.configuration.channelFreezeScreen.desc,
+            freezeTitle = String.format(channel.configuration.channelFreezeScreen.title, channel.title),
+            freezeButtonTitle = channel.configuration.channelFreezeScreen.btnTitle,
+            freezeButtonUrl = channel.configuration.channelFreezeScreen.btnAppLink
     )
 
-    fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
+    private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
-            title = channel.title,
-            description = channel.description,
-            channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
-            moderatorName = channel.moderatorName,
-            partnerId = channel.partnerId,
-            partnerType = PartnerType.getTypeByValue(channel.partnerType),
-            contentId = channel.contentId,
-            contentType = channel.contentType,
-            likeType = channel.likeType,
-            isShowCart = channel.isShowCart
+            partnerInfo = mapPartnerInfo(channel.partner),
+            feedInfo = mapFeedInfo(channel.configuration.feedsLikeParams),
+            showCart = channel.configuration.showCart,
+            showPinnedProduct = channel.configuration.showPinnedProduct,
+            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet,
+            shareInfo = mapShareInfo(channel.share, channel)
     )
+
+    private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
+            id = partner.id.toLongOrZero(),
+            name = partner.name,
+            type = PartnerType.getTypeByValue(partner.type),
+            isFollowed = true,
+            isFollowable = false
+    )
+
+    private fun mapFeedInfo(feedInfo: Channel.FeedLikeParam) = FeedInfoUiModel(
+            contentId = feedInfo.contentId,
+            contentType = feedInfo.contentType,
+            likeType = feedInfo.likeType
+    )
+
+    private fun mapShareInfo(shareInfo: Channel.Share, channel: Channel): ShareInfoUiModel {
+        val fullShareContent = try {
+            shareInfo.text.replace("${'$'}{url}", shareInfo.redirectUrl)
+        } catch (e: Throwable) {
+            "${shareInfo.text}/n${shareInfo.redirectUrl}"
+        }
+
+        return ShareInfoUiModel(
+                content = fullShareContent,
+                isShowButton = shareInfo.isShowButton
+                        && shareInfo.redirectUrl.isNotBlank()
+                        && channel.configuration.active
+                        && !channel.configuration.freezed
+        )
+    }
 
     fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = if (pinnedMessage.pinnedMessageId > 0 && pinnedMessage.title.isNotEmpty()) {
         PinnedMessageUiModel(
@@ -69,28 +101,47 @@ object PlayUiMapper {
         )
     } else null
 
-    fun mapPinnedProduct(partnerName: String, isShowProductTagging: Boolean, pinnedProduct: PinnedProduct) = if (isShowProductTagging)
+    private fun mapPinnedMessage(partnerName: String, pinnedMessage: Channel.PinnedMessage) = if (pinnedMessage.id.isNotEmpty()
+            && !pinnedMessage.id.contentEquals("0")
+            && pinnedMessage.title.isNotEmpty()) {
+        PinnedMessageUiModel(
+                applink = pinnedMessage.redirectUrl,
+                partnerName = partnerName,
+                title = pinnedMessage.title
+        )
+    } else null
+
+    private fun mapPinnedProduct(partnerName: String, configuration: Channel.Configuration) = if (configuration.showPinnedProduct)
         PinnedProductUiModel(
             partnerName = partnerName,
-            title = pinnedProduct.title,
-            isPromo = pinnedProduct.isShowDiscount
+            title = configuration.pinnedProduct.title,
+            hasPromo = configuration.hasPromo
     ) else null
 
-    fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
-            uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayChannelType.Live.value, true))
-                PlayChannelType.Live else PlayChannelType.VOD,
-            isActive = isActive
+    private fun mapVideoStream(video: Video, config: Channel.Configuration, isLive: Boolean) = VideoStreamUiModel(
+            uriString = video.streamSource,
+            channelType = if (isLive) PlayChannelType.Live else PlayChannelType.VOD,
+            orientation = VideoOrientation.getByValue(video.orientation),
+            backgroundUrl = config.roomBackground.imageUrl,
+//            channelType = PlayChannelType.Live,
+//            orientation = VideoOrientation.Horizontal(16, 9),
+//            backgroundUrl = "https://i.pinimg.com/736x/d3/bb/7b/d3bb7b85f4e160d013f68fcde8d19844.jpg",
+            isActive = config.active
     )
+
+    private fun mapVideoPlayer(video: Video, exoPlayer: ExoPlayer) = when (video.type) {
+        "live", "vod" -> General(exoPlayer)
+        "youtube" -> YouTube(video.streamSource)
+        else -> Unknown
+    }
 
     fun mapQuickReply(quickReplyList: List<String>) = QuickReplyUiModel(quickReplyList.filterNot { quickReply -> quickReply.isEmpty() || quickReply.isBlank() } )
     fun mapQuickReply(quickReply: QuickReply) = mapQuickReply(quickReply.data)
 
-    fun mapTotalLikes(totalLike: Int, totalLikeString: String) = TotalLikeUiModel(totalLike, totalLikeString)
+    private fun mapTotalLikes(totalLike: Int, totalLikeString: String) = TotalLikeUiModel(totalLike, totalLikeString)
     fun mapTotalLikes(totalLike: TotalLike) = mapTotalLikes(totalLike.totalLike, totalLike.totalLikeFormatted)
 
-    fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
+    private fun mapTotalViews(totalViewString: String) = TotalViewUiModel(totalViewString)
     fun mapTotalViews(totalView: TotalView) = mapTotalViews(totalView.totalViewFormatted)
 
     fun mapPlayChat(userId: String, playChat: PlayChat) = PlayChatUiModel(
@@ -101,24 +152,17 @@ object PlayUiMapper {
             isSelfMessage = playChat.user.id == userId
     )
 
-    fun mapPartnerInfoFromShop(shopId: String, shopInfo: ShopInfo) = PartnerInfoUiModel(
-            id = shopInfo.shopCore.shopId.toLong(),
-            name = shopInfo.shopCore.name,
-            type = PartnerType.SHOP,
-            isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
-            isFollowable = shopId != shopInfo.shopCore.shopId
-    )
-
-    fun mapProductSheet(title: String, productTagging: ProductTagging): ProductSheetUiModel {
+    fun mapProductSheet(title: String, partnerId: Long, productTagging: ProductTagging): ProductSheetUiModel {
         return ProductSheetUiModel(
                 title = title,
+                partnerId = partnerId,
                 productList = mapItemProducts(productTagging.listOfProducts),
                 voucherList = mapItemVouchers(productTagging.listOfVouchers)
         )
     }
 
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
-        return products.take(MAX_PRODUCTS).map { product ->
+        return products.map { product ->
             mapItemProduct(product)
         }
     }
@@ -147,7 +191,7 @@ object PlayUiMapper {
     )
 
     fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
-        return vouchers.take(MAX_VOUCHERS).map {
+        return vouchers.map {
             MerchantVoucherUiModel(
                     title = it.title,
                     description = it.subtitle,

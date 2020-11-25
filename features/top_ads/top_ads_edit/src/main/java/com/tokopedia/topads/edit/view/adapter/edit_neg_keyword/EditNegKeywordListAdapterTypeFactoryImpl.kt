@@ -11,7 +11,9 @@ import com.tokopedia.topads.edit.view.adapter.edit_neg_keyword.viewmodel.EditNeg
  * Created by Pika on 12/4/20.
  */
 
-class EditNegKeywordListAdapterTypeFactoryImpl(var actionDelete: ((pos: Int) -> Unit)?, var actionAdd: (() -> Unit?)) : EditNegKeywordListAdapterTypeFactory {
+class EditNegKeywordListAdapterTypeFactoryImpl(var actionDelete: ((pos: Int) -> Unit)?,
+                                               var actionAdd: (() -> Unit?),
+                                               var actionStatusChange: ((pos: Int) -> Unit)) : EditNegKeywordListAdapterTypeFactory {
 
     override fun type(model: EditNegKeywordEmptyViewModel): Int = EditNegKeywordEmptyViewHolder.LAYOUT
 
@@ -19,7 +21,7 @@ class EditNegKeywordListAdapterTypeFactoryImpl(var actionDelete: ((pos: Int) -> 
 
     override fun holder(type: Int, view: View): EditNegKeywordViewHolder<*> {
         return when (type) {
-            EditNegKeywordItemViewHolder.LAYOUT -> EditNegKeywordItemViewHolder(view, actionDelete)
+            EditNegKeywordItemViewHolder.LAYOUT -> EditNegKeywordItemViewHolder(view, actionDelete, actionStatusChange)
             EditNegKeywordEmptyViewHolder.LAYOUT -> EditNegKeywordEmptyViewHolder(view, actionAdd)
             else -> throw RuntimeException("Illegal view type")
         }

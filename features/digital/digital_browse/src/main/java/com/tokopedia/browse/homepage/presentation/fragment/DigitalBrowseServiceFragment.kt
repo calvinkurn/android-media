@@ -92,7 +92,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
         presenter.onInit()
 
         if (savedInstanceState != null) {
-            viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA)
+            viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA) ?: DigitalBrowseServiceViewModel(null)
         } else {
             viewModel = DigitalBrowseServiceViewModel(null)
         }

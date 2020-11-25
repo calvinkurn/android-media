@@ -1,31 +1,37 @@
 package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
-import androidx.annotation.NonNull
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.Toolbar
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.NonNull
+import androidx.appcompat.widget.Toolbar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics.Companion.chatbotAnalytics
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.chatbot.view.customview.ReasonBottomSheet
 import com.tokopedia.kotlin.extensions.view.hide
@@ -35,6 +41,9 @@ import com.tokopedia.user.session.UserSessionInterface
 /**
  * @author by nisie on 07/12/18.
  */
+private const val ACTION_IMRESSION_ACTION_BUTTON = "impression action button"
+private const val ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN = "impression thumbs up and thumbs down"
+
 class ChatbotViewStateImpl(@NonNull override val view: View,
                            @NonNull private val userSession: UserSessionInterface,
                            private val quickReplyListener: QuickReplyListener,
@@ -90,6 +99,12 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         checkShowQuickReply(chatroomViewModel)
     }
 
+    override fun loadAvatar(avatarUrl: String) {
+        val avatar = toolbar.findViewById<ImageView>(com.tokopedia.chat_common.R.id.user_avatar)
+        ImageHandler.loadImageCircle2(avatar.context, avatar, avatarUrl,
+                R.drawable.chatbot_avatar)
+    }
+
     private fun checkShowQuickReply(chatroomViewModel: ChatroomViewModel) {
         if (chatroomViewModel.listChat.isNotEmpty()
                 && chatroomViewModel.listChat[0] is QuickReplyListViewModel) {
@@ -118,11 +133,13 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun onReceiveQuickReplyEventWithActionButton(visitable: ChatActionSelectionBubbleViewModel) {
         super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_ACTION_BUTTON)
         showQuickReply(visitable.quickReplies)
     }
 
     override fun onReceiveQuickReplyEventWithChatRating(visitable: ChatRatingViewModel) {
         super.onReceiveMessageEvent(visitable)
+        chatbotAnalytics.eventShowView(ACTION_IMRESSION_THUMBS_UP_THUMBS_DOWN)
         showQuickReply(visitable.quickReplies)
     }
 
@@ -171,11 +188,10 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
     }
 
     private fun showQuickReply(list: List<QuickReplyViewModel>) {
-        if (::quickReplyAdapter.isInitialized) {
-            quickReplyAdapter.setList(list)
-            quickReplyAdapter.notifyDataSetChanged()
-        }
-        rvQuickReply.visibility = View.VISIBLE
+            if (::quickReplyAdapter.isInitialized) {
+                quickReplyAdapter.setList(list)
+            }
+            rvQuickReply.visibility = View.VISIBLE
     }
 
     private fun hasQuickReply(): Boolean {
@@ -209,6 +225,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         }
     }
 
+
+    override fun showLiveChatSeprator(chatSepratorViewModel: ChatSepratorViewModel) {
+        getAdapter().addElement(0, chatSepratorViewModel)
+    }
+
     override fun hideEmptyMessage(visitable: Visitable<*>) {
         if (visitable is FallbackAttachmentViewModel && visitable.message.isEmpty()) {
             getAdapter().removeElement(visitable)
@@ -220,7 +241,30 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         showQuickReply(quickReplyList)
     }
 
-    override fun getInterlocutorName(headerName: CharSequence): CharSequence  = headerName
+    override fun hideActionBubble(model: ChatActionSelectionBubbleViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is ChatActionSelectionBubbleViewModel ){
+            adapter.removeElement(model)
+        }
+    }
+
+    override fun hideOptionList(model: HelpFullQuestionsViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is HelpFullQuestionsViewModel) {
+            model.isSubmited = true
+            adapter.setElement(0, model)
+        }
+    }
+
+    override fun hideCsatOptionList(model: CsatOptionsViewModel) {
+        val adapter = getAdapter()
+        if (adapter.list.isNotEmpty() && adapter.list[0] is CsatOptionsViewModel) {
+            model.isSubmited = true
+            adapter.setElement(0, model)
+        }
+    }
+
+    override fun getInterlocutorName(headerName: String): String  = headerName
 
     override fun showErrorWebSocket(isWebSocketError: Boolean) {
         val title = notifier.findViewById<TextView>(R.id.title)

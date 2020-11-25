@@ -1,43 +1,55 @@
 package com.tokopedia.play.view.activity
 
 import android.content.Intent
+import android.media.AudioManager
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.play.R
+import com.tokopedia.play.*
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play_common.util.PlayLifecycleObserver
-import com.tokopedia.play_common.util.PlayProcessLifecycleObserver
+import com.tokopedia.play.view.monitoring.PlayPltPerformanceCallback
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play_common.util.PlayVideoPlayerObserver
 import javax.inject.Inject
 
 /**
  * Created by jegul on 29/11/19
  * {@link com.tokopedia.applink.internal.ApplinkConstInternalContent#PLAY_DETAIL}
  */
-class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
-
-    companion object {
-        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
-    }
+class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation {
 
     @Inject
-    lateinit var playLifecycleObserver: PlayLifecycleObserver
+    lateinit var playLifecycleObserver: PlayVideoPlayerObserver
 
     @Inject
-    lateinit var playProcessLifecycleObserver: PlayProcessLifecycleObserver
+    lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var pageMonitoring: PlayPltPerformanceCallback
+
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        inject()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+
+        startPageMonitoring()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play)
-        inject()
+
         setupPage()
 
         val channelId = intent?.data?.lastPathSegment
@@ -46,6 +58,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     override fun onResume() {
         super.onResume()
+        volumeControlStream = AudioManager.STREAM_MUSIC
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
@@ -80,13 +93,11 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     private fun getFragment(channelId: String?): Fragment {
-        return PlayFragment.newInstance(channelId)
+        return getPlayFragment(channelId)
     }
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
-        ProcessLifecycleOwner.get()
-                .lifecycle.addObserver(playProcessLifecycleObserver)
     }
 
     private fun setupView(channelId: String?) {
@@ -95,25 +106,48 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
         }
     }
 
-    override fun onBackPressed() {
+    private fun getPlayFragment(channelId: String?): Fragment {
+        val fragmentFactory = supportFragmentManager.fragmentFactory
+        return fragmentFactory.instantiate(classLoader, PlayFragment::class.java.name).apply {
+            arguments = Bundle().apply {
+                putString(PLAY_KEY_CHANNEL_ID, channelId)
+            }
+        }
+    }
+
+    override fun onBackPressed(isSystemBack: Boolean) {
         val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
         if (fragment != null && fragment is PlayFragment) {
             if (!fragment.onBackPressed()) {
-                if (isTaskRoot) {
-                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-                    startActivity(intent)
-                    finish()
-                } else {
-                    fragment.setResultBeforeFinish()
-                    supportFinishAfterTransition()
+                if (isSystemBack && orientation.isLandscape) fragment.onOrientationChanged(ScreenOrientation.Portrait, false)
+                else {
+                    if (isTaskRoot) {
+                        val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        fragment.setResultBeforeFinish()
+                        supportFinishAfterTransition()
+                    }
                 }
             }
         } else super.onBackPressed()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        ProcessLifecycleOwner.get()
-                .lifecycle.removeObserver(playProcessLifecycleObserver)
+    override fun onBackPressed() {
+        onBackPressed(true)
+    }
+
+    fun getPltPerformanceResultData(): PltPerformanceData? {
+        return pageMonitoring.getPltPerformanceData()
+    }
+
+    private fun startPageMonitoring() {
+        pageMonitoring.startPlayMonitoring()
+        pageMonitoring.startPreparePagePerformanceMonitoring()
+    }
+
+    companion object {
+        private const val PLAY_FRAGMENT_TAG = "FRAGMENT_PLAY"
     }
 }

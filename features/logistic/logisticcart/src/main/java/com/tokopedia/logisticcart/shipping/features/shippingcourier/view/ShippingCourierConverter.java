@@ -1,11 +1,15 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 
+import com.tokopedia.logisticcart.shipping.model.CashOnDeliveryProduct;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.MerchantVoucherProductModel;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.MerchantVoucherProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 
 import java.util.List;
 
@@ -74,19 +78,51 @@ public class ShippingCourierConverter {
         courierItemData.setUt(shippingCourierUiModel.getProductData().getUnixTime());
         courierItemData.setBlackboxInfo(shippingCourierUiModel.getBlackboxInfo());
         courierItemData.setSelected(true);
-        if (shippingCourierUiModel.getProductData().getFeatures() != null &&
-                shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
-            OntimeDeliveryGuarantee otd_prev = shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
+
+        /*on time delivery*/
+        if (shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
+            OntimeDeliveryGuarantee otdPrev = shippingCourierUiModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
             OntimeDelivery otd = new OntimeDelivery(
-                    otd_prev.getAvailable(),
-                    otd_prev.getTextLabel(),
-                    otd_prev.getTextDetail(),
-                    otd_prev.getUrlDetail(),
-                    otd_prev.getValue()
+                    otdPrev.getAvailable(),
+                    otdPrev.getTextLabel(),
+                    otdPrev.getTextDetail(),
+                    otdPrev.getUrlDetail(),
+                    otdPrev.getValue(),
+                    otdPrev.getIconUrl()
             );
             courierItemData.setOntimeDelivery(otd);
         }
+
+        /*merchant voucher*/
+        if(shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData() != null) {
+            MerchantVoucherProductData merchantVoucherProductData = shippingCourierUiModel.getProductData().getFeatures().getMerchantVoucherProductData();
+            MerchantVoucherProductModel mvc = new MerchantVoucherProductModel(
+                    merchantVoucherProductData.isMvc(),
+                    merchantVoucherProductData.getMvcLogo(),
+                    merchantVoucherProductData.getMvcErrorMessage()
+            );
+            courierItemData.setMerchantVoucherProductModel(mvc);
+        }
+
+        /*cash on delivert*/
+        if (shippingCourierUiModel.getProductData().getCodProductData() != null) {
+            CodProductData codProductData = shippingCourierUiModel.getProductData().getCodProductData();
+            CashOnDeliveryProduct codProduct = new CashOnDeliveryProduct(
+                    codProductData.getIsCodAvailable(),
+                    codProductData.getCodText(),
+                    codProductData.getCodPrice(),
+                    codProductData.getFormattedPrice(),
+                    codProductData.getTncText(),
+                    codProductData.getTncLink()
+            );
+            courierItemData.setCodProductData(codProduct);
+        }
+        if (shippingCourierUiModel.getProductData().getEstimatedTimeArrival() != null) {
+            courierItemData.setEtaText(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getTextEta());
+            courierItemData.setEtaErrorCode(shippingCourierUiModel.getProductData().getEstimatedTimeArrival().getErrorCode());
+        }
         return courierItemData;
+
     }
 
 }

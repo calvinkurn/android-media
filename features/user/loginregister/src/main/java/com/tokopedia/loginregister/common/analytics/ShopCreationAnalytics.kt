@@ -81,7 +81,7 @@ class ShopCreationAnalytics {
     }
 
     companion object {
-        const val SCREEN_LANDING_SHOP_CREATION = "Landing page"
+        const val SCREEN_LANDING_SHOP_CREATION = "/buka toko"
         const val SCREEN_REGISTRATION_SHOP_CREATION = "Registration page"
         const val SCREEN_OPEN_SHOP_CREATION = "Open Shop page"
 

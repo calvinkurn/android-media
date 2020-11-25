@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -22,6 +19,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -30,7 +32,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.activation.di.DaggerActivationComponent;
@@ -38,13 +39,14 @@ import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.loginregister.activation.view.listener.ActivationContract;
 import com.tokopedia.loginregister.activation.view.presenter.ActivationPresenter;
+import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
-import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.sessioncommon.data.model.TokenViewModel;
 import com.tokopedia.sessioncommon.di.SessionModule;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
@@ -324,7 +326,7 @@ public class ActivationFragment extends BaseDaggerFragment
             KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
             removeErrorOtp();
             finishLoadingProgress();
-            ToasterNormal.show(getActivity(), getString(R.string.success_resend_activation));
+            Toaster.INSTANCE.make(getView(), getString(R.string.success_resend_activation), Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, "", v->{});
         }
     }
 

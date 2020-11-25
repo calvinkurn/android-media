@@ -77,6 +77,7 @@ internal class HandleViewClickAddToCart: Spek({
         Scenario("Add to Cart Status Success") {
             val similarProductModelCommon = getSimilarProductModelCommon()
             val addToCartSuccessModel = getAddToCartSuccessModel()
+            val mockUserId = "1"
 
             val addToCartUseCase by memoized<RxUseCase<AddToCartDataModel>>()
             val userSession by memoized<UserSessionInterface>()
@@ -91,6 +92,10 @@ internal class HandleViewClickAddToCart: Spek({
 
             Given("user is logged in") {
                 every { userSession.isLoggedIn }.returns(true)
+            }
+
+            Given("user id") {
+                every { userSession.userId } returns(mockUserId)
             }
 
             Given("view already created and has similar search data") {
@@ -127,6 +132,10 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
+                addToCartRequestParams.userId shouldBe mockUserId
             }
 
             Then("assert tracking click add to cart event should contain original product as object data layer") {
@@ -148,6 +157,7 @@ internal class HandleViewClickAddToCart: Spek({
         Scenario("Add to Cart Status Error") {
             val similarProductModelCommon = getSimilarProductModelCommon()
             val addToCartErrorModel = getAddToCartFailedModel()
+            val mockUserId = "1"
 
             val addToCartUseCase by memoized<RxUseCase<AddToCartDataModel>>()
             val userSession by memoized<UserSessionInterface>()
@@ -162,6 +172,10 @@ internal class HandleViewClickAddToCart: Spek({
 
             Given("user is logged in") {
                 every { userSession.isLoggedIn }.returns(true)
+            }
+
+            Given("user id") {
+                every { userSession.userId } returns(mockUserId)
             }
 
             Given("view already created and has similar search data") {
@@ -198,6 +212,10 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
+                addToCartRequestParams.userId shouldBe mockUserId
             }
 
             Then("assert tracking click add to cart event should be null") {
@@ -222,6 +240,7 @@ internal class HandleViewClickAddToCart: Spek({
         Scenario("Add to Cart Error with Exception") {
             val similarProductModelCommon = getSimilarProductModelCommon()
             val testException = TestException()
+            val mockUserId = "1"
 
             val addToCartUseCase by memoized<RxUseCase<AddToCartDataModel>>()
             val userSession by memoized<UserSessionInterface>()
@@ -236,6 +255,10 @@ internal class HandleViewClickAddToCart: Spek({
 
             Given("user is logged in") {
                 every { userSession.isLoggedIn }.returns(true)
+            }
+
+            Given("user id") {
+                every { userSession.userId } returns(mockUserId)
             }
 
             Given("view already created and has similar search data") {
@@ -271,6 +294,10 @@ internal class HandleViewClickAddToCart: Spek({
                 addToCartRequestParams.productId shouldBe similarProductModelCommon.getOriginalProduct().id.toLong()
                 addToCartRequestParams.shopId shouldBe similarProductModelCommon.getOriginalProduct().shop.id
                 addToCartRequestParams.quantity shouldBe similarProductModelCommon.getOriginalProduct().minOrder
+                addToCartRequestParams.productName shouldBe similarProductModelCommon.getOriginalProduct().name
+                addToCartRequestParams.category shouldBe similarProductModelCommon.getOriginalProduct().categoryName
+                addToCartRequestParams.price shouldBe similarProductModelCommon.getOriginalProduct().price
+                addToCartRequestParams.userId shouldBe mockUserId
             }
 
             Then("assert tracking click add to cart event should be null") {

@@ -32,11 +32,11 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         }
 
         override fun getItemCount(): Int {
-            return carouselProductCardGridTestData.size
+            return carouselProductCardTestData.size
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.bind(carouselProductCardGridTestData[position])
+            holder.bind(carouselProductCardTestData[position])
         }
 
         override fun onViewRecycled(holder: ViewHolder) {
@@ -58,7 +58,8 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         fun bind(productCardModelList: List<ProductCardModel>) {
             item?.bindCarouselProductCardViewGrid(
                     productCardModelList = productCardModelList,
-                    recyclerViewPool = recycledViewPool
+                    recyclerViewPool = recycledViewPool,
+                    showSeeMoreCard = true
             )
         }
 

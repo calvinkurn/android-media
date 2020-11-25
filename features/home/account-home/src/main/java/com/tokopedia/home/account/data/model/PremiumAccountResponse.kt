@@ -1,33 +1,48 @@
 package com.tokopedia.home.account.data.model
 
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class PremiumAccountResponse(
         @SerializedName("status")
+        @Expose
         var status: Long = 0,
+
         @SerializedName("message")
-        var message: String? = null,
+        @Expose
+        var message: String = "",
+
         @SerializedName("data")
-        var data: PremiumAccountData? = null
+        @Expose
+        var data: PremiumAccountData = PremiumAccountData()
 )
 
 data class PremiumAccountData(
         @SerializedName("isPowerMerchant")
+        @Expose
         var isIsPowerMerchant: Boolean = false,
 
         @SerializedName("copywriting")
-        var copyWriting: PremiumAccountCopyWriting? = null
+        @Expose
+        var copyWriting: PremiumAccountCopyWriting = PremiumAccountCopyWriting()
 )
 
 data class PremiumAccountCopyWriting(
         @SerializedName("title")
-        var title: String,
+        @Expose
+        var title: String = "",
+
         @SerializedName("subtitle")
-        var subtitle: String,
+        @Expose
+        var subtitle: String = "",
+
         @SerializedName("cta")
-        var cta: String,
+        @Expose
+        var cta: String = "",
+
         @SerializedName("url")
-        var url: String
+        @Expose
+        var url: String = ""
 )
 
 

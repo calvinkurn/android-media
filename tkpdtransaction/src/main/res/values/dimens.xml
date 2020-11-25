@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <dimen name="margin_2dp">2dp</dimen>
-    <dimen name="top_margin_default">12dp</dimen>
-    <dimen name="margin_default">16dp</dimen>
-    <dimen name="image_width_brand">90dp</dimen>
-
-</resources>

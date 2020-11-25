@@ -1,50 +1,35 @@
 package com.tokopedia.product.addedit.preview.presentation.viewmodel
 
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.addedit.description.data.remote.model.variantbycat.ProductVariantByCatModel
-import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
+import com.tokopedia.product.addedit.util.getOrAwaitValue
+import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
-import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 
 @ExperimentalCoroutinesApi
 class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixture() {
 
     @Test
-    fun `When SuccessGetProductVariant Expect ExpectedBehaviour`() {
-        val productVariant = ProductVariantByCatModel().apply {
-            this.name = "hello"
-            this.variantId = 3
-        }
-
-        onGetProductVariant_thenReturn(productVariant)
-        viewModel.getVariantList("")
-
-        coVerify { getProductVariantUseCase.executeOnBackground() }
-        verifyGetProductVariantResult(Success(listOf(productVariant)))
-    }
-
-    @Test
-    fun `When SuccessSaveAndGetProductDraft Expect ExpectedBehaviour`() {
+    fun `When save and get product draft are success Expect can be saved and retrieved data draft`() = runBlocking {
         val productDraft = ProductDraft().apply {
             draftId = 1112
             productId = 220
-            completionPercent = 100
         }
 
         onSaveProductDraft_thenReturn(productDraft.draftId)
@@ -52,6 +37,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         onGetProductDraft_thenReturn(productDraft)
         viewModel.getProductDraft(productDraft.draftId)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { getProductDraftUseCase.executeOnBackground() }
@@ -61,7 +48,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When SuccessGetProduct Expect ExpectedBehaviour`() {
+    fun  `When get remote product is success Expect set product input model`() = runBlocking {
         val product: Product = Product().copy(
                 productID = "01919",
                 productName = "mainan",
@@ -70,26 +57,21 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         onGetProduct_thenReturn(product)
         viewModel.getProductData(product.productID)
 
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductResult(Success(product))
     }
 
     @Test
-    fun  `When FailedGetProductVariant Expect ExpectedBehaviour`() {
-        onGetProductVariant_thenFailed()
-        viewModel.getVariantList("")
-
-        coVerify { getProductVariantUseCase.executeOnBackground() }
-        verifyGetProductVariantFailed()
-    }
-
-    @Test
-    fun `When FailedSaveAndGetProductDraft Expect ExpectedBehaviour`() {
+    fun `When save and get product draft are fail Expect can't be saved and retrieved data draft`() = runBlocking {
         onSaveProductDraft_thenFailed()
         viewModel.saveProductDraft(ProductDraft(), 3, false)
 
         onGetProductDraft_thenFailed()
         viewModel.getProductDraft(3)
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { saveProductDraftUseCase.executeOnBackground() }
         coVerify { getProductDraftUseCase.executeOnBackground() }
@@ -99,63 +81,72 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun  `When FailedGetProduct Expect ExpectedBehaviour`() {
+    fun `When get remote product is fail Expect fail object`() = runBlocking {
         onGetProduct_thenFailed()
         viewModel.getProductData("4")
+
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify { getProductUseCase.executeOnBackground() }
         verifyGetProductFailed()
     }
 
     @Test
-    fun `When ValidateProductInputModel Expect ExpectedBehaviour`() {
+    fun `When validate product input model Expect return error message`() {
         val detailInputModel = DetailInputModel()
 
+        detailInputModel.categoryId = "123"
+        detailInputModel.imageUrlOrPathList = listOf()
         assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
-        detailInputModel.categoryId = "1234"
 
-        assertEquals(resourceProvider.getInvalidPhotoCountErrorMessage(), viewModel.validateProductInput(detailInputModel))
+        detailInputModel.categoryId = "0"
+        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
+
+        detailInputModel.categoryId = ""
+        assertEquals(resourceProvider.getInvalidCategoryIdErrorMessage(), viewModel.validateProductInput(detailInputModel))
+
         detailInputModel.imageUrlOrPathList = listOf("one","two","three","four","five","six")
+        assertEquals(resourceProvider.getInvalidPhotoCountErrorMessage(), viewModel.validateProductInput(detailInputModel))
 
-        assertEquals(resourceProvider.getInvalidPhotoReachErrorMessage(), viewModel.validateProductInput(detailInputModel))
-        detailInputModel.imageUrlOrPathList = listOf("one","two","three")
+        every {
+            resourceProvider.getInvalidCategoryIdErrorMessage()
+        } returns null
 
+        every {
+            resourceProvider.getInvalidPhotoCountErrorMessage()
+        } returns null
+
+        every {
+            resourceProvider.getInvalidPhotoReachErrorMessage()
+        } returns null
+
+        detailInputModel.categoryId = "123"
+        detailInputModel.imageUrlOrPathList = listOf()
+        assertEquals("", viewModel.validateProductInput(detailInputModel))
+
+        detailInputModel.categoryId = "0"
+        assertEquals("", viewModel.validateProductInput(detailInputModel))
+
+        detailInputModel.categoryId = ""
+        assertEquals("", viewModel.validateProductInput(detailInputModel))
+
+        detailInputModel.imageUrlOrPathList = listOf("one","two","three","four","five","six")
         assertEquals("", viewModel.validateProductInput(detailInputModel))
     }
 
     @Test
-    fun `When CheckUpdateProductInputModel Expect ExpectedBehaviour`() {
-        viewModel.productAddResult.value = ProductInputModel()
+    fun `When set image url path list Expect should set image url path list`() {
+        viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
 
         viewModel.getNewProductInputModel(arrayListOf())
         viewModel.productInputModel.getOrAwaitValue()
 
         assertTrue(viewModel.productInputModel.value?.detailInputModel != null)
-
-        viewModel.updateSizeChart(PictureViewModel())
-        viewModel.productInputModel.getOrAwaitValue()
-
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.productSizeChart != null)
     }
 
     @Test
-    fun `When CheckUpdateVariantAndOption Expect ExpectedBehaviour`() {
-        viewModel.productAddResult.value = ProductInputModel()
-        viewModel.productInputModel.getOrAwaitValue()
-
-        val productVariantOptionParent = ProductVariantOptionParent().apply {
-            productVariantOptionChild = listOf(ProductVariantOptionChild(pvo = 10))
-        }
-        viewModel.updateVariantAndOption(arrayListOf(ProductVariantCombinationViewModel()), arrayListOf(productVariantOptionParent))
-        viewModel.productInputModel.getOrAwaitValue()
-
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.productVariant?.isNotEmpty() ?: false)
-        assertTrue(viewModel.productInputModel.value?.variantInputModel?.variantOptionParent?.isNotEmpty() ?: false)
-    }
-
-    @Test
-    fun `When WholesaleIncrementAndDecrement Expect ExpectedBehaviour`() {
+    fun `When increase or decrease wholesale Expect should increase or decrease wholesale`() {
         var wholeSaleInputModel = WholeSaleInputModel().apply { quantity = "2" }
         assertEquals("3", viewModel.incrementWholeSaleMinOrder(listOf(wholeSaleInputModel)).last().quantity)
 
@@ -164,36 +155,101 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When CheckVariableOnPreviewPage Expect ExpectedBehaviour`() {
+    fun `When check product id and is adding Expect should return expected result`() {
+        assertEquals("", viewModel.getProductId())
+        assertEquals(true , viewModel.isAdding)
+
         viewModel.setProductId("112")
-        viewModel.setDraftId("10")
-        viewModel.setIsDuplicate(true)
-        viewModel.hasOriginalVariantLevel = true
-
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.wholesaleList = listOf(WholeSaleInputModel()) }
-        viewModel.productInputModel.getOrAwaitValue()
-
-        assertEquals(false, viewModel.isAdding)
-        assertEquals(true, viewModel.hasOriginalVariantLevel)
-        assertEquals(true, viewModel.isDuplicate)
         assertEquals("112", viewModel.getProductId())
-        assertEquals(10L , viewModel.getDraftId())
-        assertEquals(true, viewModel.hasWholesale)
     }
 
     @Test
-    fun `When UpdateProductPhotos Expect ExpectedBehaviour`() {
-        val pictureInputModel = PictureInputModel().apply { fileName = "apa" }
-        val product = ProductInputModel().apply {
-            detailInputModel.pictureList = listOf(pictureInputModel)
+    fun `When check draft id Expect should return expected result`() {
+        viewModel.setDraftId("10")
+        assertEquals(10L , viewModel.getDraftId())
+
+        viewModel.setDraftId("")
+        assertEquals(0 , viewModel.getDraftId())
+    }
+
+    @Test
+    fun `When check is duplicate Expect should return expected result`() {
+        viewModel.setIsDuplicate(true)
+        assertEquals(true, viewModel.isDuplicate)
+
+        viewModel.isDuplicate = true
+        assertEquals(true, viewModel.isDuplicate)
+    }
+
+    @Test
+    fun `When check is editing Expect should return expected result`() {
+        viewModel.setProductId("112")
+
+        viewModel.isEditing.getOrAwaitValue()
+        assertEquals(true, viewModel.isEditing.value)
+    }
+
+    @Test
+    fun `When check product domain Expect should return expected result`() {
+        val product = Product(
+                productID = "12312",
+                productName = "Rice"
+        )
+        viewModel.productDomain = product
+        assertEquals(product, viewModel.productDomain)
+    }
+
+    @Test
+    fun `When check product input model Expect should return expected result`() {
+        val product = MediatorLiveData<ProductInputModel>()
+        product.value = ProductInputModel()
+
+        viewModel.productInputModel = product
+        assertEquals(product, viewModel.productInputModel)
+    }
+
+    @Test
+    fun `When check has original variant level Expect should return expected result`() {
+        viewModel.hasOriginalVariantLevel = true
+        assertEquals(true, viewModel.hasOriginalVariantLevel)
+    }
+
+    @Test
+    fun `When update product photos Expect updated product photos`() {
+        var pictureInputModel = PictureInputModel().apply {
+            urlOriginal = "www.blank.com"
+            fileName = "apa"
+        }
+        var product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
             detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
         }
-        viewModel.productAddResult.value = product
+        viewModel.productInputModel.value = product
         viewModel.productInputModel.getOrAwaitValue()
 
-        val imagePickerResult = arrayListOf("pict1","pict2","pict3")
-        val originalImageUrl = arrayListOf("www.blank.com","num2","num3")
-        val editted = arrayListOf(true,false,true)
+        var imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        var originalImageUrl = arrayListOf("www.blank.com","num2","num3")
+        var editted = arrayListOf(true,false,true)
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
+        viewModel.productInputModel.getOrAwaitValue()
+
+        assertTrue(viewModel.imageUrlOrPathList.value != null)
+
+        pictureInputModel = PictureInputModel().apply {
+            urlOriginal = ""
+            fileName = "apa"
+        }
+        product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa")
+        }
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        imagePickerResult = arrayListOf("pict1","pict2","pict3")
+        originalImageUrl = arrayListOf("www.blank.com","num2","num3")
+        editted = arrayListOf(true,false,true)
 
         viewModel.updateProductPhotos(imagePickerResult, originalImageUrl, editted)
         viewModel.productInputModel.getOrAwaitValue()
@@ -202,58 +258,44 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
-    fun `When UpdateProductStatus Expect ExpectedBehaviour`() {
-        val productVariantCombinationViewModel = ProductVariantCombinationViewModel().apply { st = 0 }
-        val product = ProductInputModel().apply {
+    fun `When update product status Expect should update product status`() {
+        val product = MediatorLiveData<ProductInputModel>()
+        product.value = null
+        viewModel.productInputModel = product
+        viewModel.updateProductStatus(true)
+        assertEquals(null, viewModel.productInputModel.value)
+
+        val productVariantInputModel = ProductVariantInputModel().apply { status = "INACTIVE" }
+        viewModel.productInputModel.value = ProductInputModel().apply {
             draftId = 109
             productId = 211
             detailInputModel.productName = "mainan"
             detailInputModel.status = 0
-            variantInputModel.productVariant = arrayListOf(productVariantCombinationViewModel)
+            variantInputModel.products = listOf(productVariantInputModel)
         }
-        viewModel.productAddResult.value = product
         viewModel.productInputModel.getOrAwaitValue()
-        val expectedResult = viewModel.productInputModel.value?.detailInputModel?.status
 
         viewModel.updateProductStatus(true)
         viewModel.productInputModel.getOrAwaitValue()
-        val actualResult = viewModel.productInputModel.value?.detailInputModel?.status
+        var actualResult = viewModel.productInputModel.value?.detailInputModel?.status
+        assertNotEquals(true, actualResult)
 
-        assertNotEquals(expectedResult, actualResult)
+        viewModel.updateProductStatus(false)
+        viewModel.productInputModel.getOrAwaitValue()
+        actualResult = viewModel.productInputModel.value?.detailInputModel?.status
+        assertNotEquals(false, actualResult)
     }
 
     @Test
-    fun `When GetStatusStockVariant Expect ExpectedBehaviour`() {
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.stock = 0 }
+    fun `When productInputModel data changed Expect `() {
+        viewModel.productInputModel.value = ProductInputModel()
         viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(1, viewModel.getStatusStockViewVariant())
 
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.stock = 4 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(2, viewModel.getStatusStockViewVariant())
+        viewModel.setIsDataChanged(true)
+        assertTrue(viewModel.getIsDataChanged())
 
-        viewModel.productAddResult.value = ProductInputModel().apply { detailInputModel.status = 0 }
-        viewModel.productInputModel.getOrAwaitValue()
-        assertEquals(3, viewModel.getStatusStockViewVariant())
-    }
-
-    @Test
-    fun `When CheckOriginalVariantLevel Expect ExpectedBehaviour`() {
-        val product = ProductInputModel().apply {
-            variantInputModel = ProductVariantInputModel().apply {
-                productVariant = arrayListOf(ProductVariantCombinationViewModel())
-                variantOptionParent = arrayListOf(ProductVariantOptionParent())
-            }
-        }
-        assertEquals(false, viewModel.checkOriginalVariantLevel(product))
-
-        viewModel.setProductId("1212")
-        viewModel.isEditing.getOrAwaitValue()
-        assertEquals(true, viewModel.checkOriginalVariantLevel(product))
-    }
-
-    private fun onGetProductVariant_thenReturn(productVariant: ProductVariantByCatModel) {
-        coEvery { getProductVariantUseCase.executeOnBackground() } returns listOf(productVariant)
+        viewModel.setIsDataChanged(false)
+        assertFalse(viewModel.getIsDataChanged())
     }
 
     private fun onGetProductDraft_thenReturn(draft: ProductDraft) {
@@ -266,10 +308,6 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetProduct_thenReturn(product: Product) {
         coEvery { getProductUseCase.executeOnBackground() } returns product
-    }
-
-    private fun onGetProductVariant_thenFailed() {
-        coEvery { getProductVariantUseCase.executeOnBackground() } throws MessageErrorException("")
     }
 
     private fun onSaveProductDraft_thenFailed() {
@@ -294,25 +332,14 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         assertEquals(expectedResult, actualResult)
     }
 
-    private fun verifyGetProductVariantResult(expectedResult: Success<List<ProductVariantByCatModel>>) {
-        val actualResult = viewModel.productVariantList.value as Success<List<ProductVariantByCatModel>>
-        assertEquals(expectedResult, actualResult)
-        assertTrue(!viewModel.productVariantListData.isNullOrEmpty())
-        assertEquals(false, viewModel.isLoading.value)
-    }
-
     private fun verifyGetProductResult(expectedResult: Success<Product>) {
         val actualResult = viewModel.getProductResult.value as Success<Product>
         assertEquals(expectedResult, actualResult)
 
         viewModel.isVariantEmpty.getOrAwaitValue()
+        viewModel.isLoading.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
-    }
-
-    private fun verifyGetProductVariantFailed() {
-        val result = viewModel.productVariantList.value
-        assertTrue(result is Fail)
-        assertTrue(viewModel.productVariantListData == null)
+        assertEquals(false, viewModel.isLoading.value)
     }
 
     private fun verifySaveProductDraftFailed() {
@@ -331,30 +358,5 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
         viewModel.isVariantEmpty.getOrAwaitValue()
         assertEquals(true, viewModel.isVariantEmpty.value)
-    }
-
-    private fun <T> LiveData<T>.getOrAwaitValue(
-            time: Long = 2,
-            timeUnit: TimeUnit = TimeUnit.SECONDS
-    ): T {
-        var data: T? = null
-        val latch = CountDownLatch(1)
-        val observer = object : Observer<T> {
-            override fun onChanged(o: T?) {
-                data = o
-                latch.countDown()
-                this@getOrAwaitValue.removeObserver(this)
-            }
-        }
-
-        this.observeForever(observer)
-
-        // Don't wait indefinitely if the LiveData is not set.
-        if (!latch.await(time, timeUnit)) {
-            throw TimeoutException("LiveData value was never set.")
-        }
-
-        @Suppress("UNCHECKED_CAST")
-        return data as T
     }
 }

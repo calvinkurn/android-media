@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +32,14 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
     }
     override suspend fun executeOnBackground(): WalletBalanceModel = withContext(Dispatchers.IO){
         graphqlUseCase.clearCache()
-        graphqlUseCase.setRequestParams(mapOf())
+        graphqlUseCase.setRequestParams(getParams().parameters)
         mapper(graphqlUseCase.executeOnBackground().wallet)
+    }
+
+    fun getParams(): RequestParams {
+        val params= RequestParams.create()
+        params.putBoolean(KEY_IS_GET_TOPUP, true)
+        return params
     }
 
     private fun mapper(walletBalanceEntity: WalletBalanceEntity?): WalletBalanceModel {
@@ -107,6 +114,9 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
             balanceTokoCash.rawTotalBalance = walletBalanceEntity.rawTotalBalance.toLong()
             balanceTokoCash.redirectUrl = walletBalanceEntity.redirectUrl
             balanceTokoCash.totalBalance = walletBalanceEntity.totalBalance
+            balanceTokoCash.isShowTopup = walletBalanceEntity.isShowTopup
+            balanceTokoCash.topupUrl = walletBalanceEntity.topupUrl
+            balanceTokoCash.topupLimit = walletBalanceEntity.topupLimit
 
             var labelName = remoteConfig.getString(RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME)
             if (labelName.isEmpty()) {
@@ -135,5 +145,6 @@ class GetCoroutineWalletBalanceUseCase @Inject constructor(
 
     companion object {
         private const val OVO_TYPE = "OVO"
+        private const val KEY_IS_GET_TOPUP = "isGetTopup"
     }
 }

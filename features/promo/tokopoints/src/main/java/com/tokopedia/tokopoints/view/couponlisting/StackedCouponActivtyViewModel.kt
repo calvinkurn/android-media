@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopoints.view.model.CouponFilterBase
 import com.tokopedia.tokopoints.view.util.*
 import kotlinx.coroutines.Dispatchers
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 class StackedCouponActivtyViewModel @Inject constructor(bundle: Bundle, private val repository: StackedCouponRepository) : BaseViewModel(Dispatchers.Main) {

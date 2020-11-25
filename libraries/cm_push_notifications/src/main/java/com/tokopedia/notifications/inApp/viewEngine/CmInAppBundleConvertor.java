@@ -45,7 +45,7 @@ public class CmInAppBundleConvertor {
                 cmInApp.setEndTime(getLongFromStr(map.get(RulesUtil.Constants.Payload.END_TIME)));
 
             if (cmInApp.getEndTime() == 0L) {
-                cmInApp.setEndTime(System.currentTimeMillis() + CMInAppManager.getInstance().cmInAppEndTimeInterval);
+                cmInApp.setEndTime(System.currentTimeMillis() + CMInAppManager.getInstance().getCmInAppEndTimeInterval());
             }
 
             /*if (map.containsKey("ct"))
@@ -59,6 +59,9 @@ public class CmInAppBundleConvertor {
 
             if (map.containsKey(RulesUtil.Constants.Payload.IS_TEST))
                 cmInApp.setTest(getBooleanFromString(map.get(RulesUtil.Constants.Payload.IS_TEST)));
+
+            if (map.containsKey(RulesUtil.Constants.Payload.PERST_ON))
+                cmInApp.setPersistentToggle(getBooleanFromString(map.get(RulesUtil.Constants.Payload.PERST_ON)));
 
             if (map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_TYPE))
                 cmInApp.setType(map.get(RulesUtil.Constants.Payload.NOTIFICATION_TYPE));

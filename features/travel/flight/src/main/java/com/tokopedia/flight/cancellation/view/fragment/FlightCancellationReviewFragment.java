@@ -36,10 +36,13 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightReviewCancellationAd
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
 import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReviewPresenter;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationViewModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewEstimationNotesAdapter;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -47,13 +50,15 @@ import javax.inject.Inject;
  * @author by furqan on 29/03/18.
  */
 
-public class FlightCancellationReviewFragment extends BaseListFragment<FlightCancellationViewModel, FlightReviewCancellationAdapterTypeFactory>
+public class FlightCancellationReviewFragment extends BaseListFragment<FlightCancellationModel, FlightReviewCancellationAdapterTypeFactory>
         implements FlightCancellationReviewContract.View, FlightCancellationAttachementAdapterTypeFactory.OnAdapterInteractionListener {
 
     public static final String EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID";
     public static final String EXTRA_CANCEL_JOURNEY = "EXTRA_CANCEL_JOURNEY";
 
     private static final int REQUEST_CANCELLATION_TNC = 1;
+
+    private FlightCancellationReviewEstimationNotesAdapter estimationNotesAdapter;
 
     private LinearLayout containerAdditionalData;
     private LinearLayout containerAdditionalReason;
@@ -68,15 +73,15 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private AppCompatTextView tvDescription;
     private AppCompatTextView tvRefundDetail;
     private LinearLayout containerEstimateRefund;
-    private LinearLayout containerEstimateNotes;
+    private RecyclerView rvEstimationNotes;
 
     @Inject
     FlightCancellationReviewPresenter presenter;
     private String invoiceId;
-    private FlightCancellationWrapperViewModel flightCancellationPassData;
+    private FlightCancellationWrapperModel flightCancellationPassData;
 
     public static FlightCancellationReviewFragment createInstance(String invoiceId,
-                                                                  FlightCancellationWrapperViewModel flightCancellationPassData) {
+                                                                  FlightCancellationWrapperModel flightCancellationPassData) {
         FlightCancellationReviewFragment fragment = new FlightCancellationReviewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_INVOICE_ID, invoiceId);
@@ -102,7 +107,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         tvDescription = view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);
         tvRefundDetail = view.findViewById(com.tokopedia.flight.R.id.tv_refund_detail);
         containerEstimateRefund = view.findViewById(com.tokopedia.flight.R.id.container_estimate_refund);
-        containerEstimateNotes = view.findViewById(com.tokopedia.flight.R.id.container_estimate_notes);
+        rvEstimationNotes = view.findViewById(com.tokopedia.flight.R.id.rvEstimationNotes);
 
         tvDescription.setText(setDescriptionText());
         tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -152,7 +157,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public void onItemClicked(FlightCancellationViewModel flightCancellationViewModel) {
+    public void onItemClicked(FlightCancellationModel flightCancellationViewModel) {
 
     }
 
@@ -194,15 +199,24 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public void showEstimateValue() {
+    public void showEstimateValue(List<String> estimationNotes) {
         containerEstimateRefund.setVisibility(View.VISIBLE);
-        containerEstimateNotes.setVisibility(View.VISIBLE);
+
+        if (estimationNotesAdapter == null) {
+            estimationNotesAdapter = new FlightCancellationReviewEstimationNotesAdapter();
+        }
+        estimationNotesAdapter.setData(estimationNotes);
+
+        rvEstimationNotes.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
+        rvEstimationNotes.setHasFixedSize(true);
+        rvEstimationNotes.setAdapter(estimationNotesAdapter);
+        rvEstimationNotes.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideEstimateValue() {
         containerEstimateRefund.setVisibility(View.GONE);
-        containerEstimateNotes.setVisibility(View.GONE);
+        rvEstimationNotes.setVisibility(View.GONE);
     }
 
     @Override
@@ -222,12 +236,12 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public FlightCancellationWrapperViewModel getCancellationWrapperViewModel() {
+    public FlightCancellationWrapperModel getCancellationWrapperViewModel() {
         return flightCancellationPassData;
     }
 
     @Override
-    public void setCancellationWrapperViewModel(FlightCancellationWrapperViewModel viewModel) {
+    public void setCancellationWrapperViewModel(FlightCancellationWrapperModel viewModel) {
         this.flightCancellationPassData = viewModel;
     }
 
@@ -281,7 +295,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public void deleteAttachement(FlightCancellationAttachmentViewModel element) {
+    public void deleteAttachement(FlightCancellationAttachmentModel element) {
 
     }
 

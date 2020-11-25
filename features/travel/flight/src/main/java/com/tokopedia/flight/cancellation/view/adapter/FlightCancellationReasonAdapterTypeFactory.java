@@ -5,7 +5,7 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationReasonViewHolder;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonModel;
 
 /**
  * @author by furqan on 30/10/18.
@@ -19,7 +19,7 @@ public class FlightCancellationReasonAdapterTypeFactory extends BaseAdapterTypeF
         this.reasonListener = reasonListener;
     }
 
-    public int type(FlightCancellationReasonViewModel viewModel) {
+    public int type(FlightCancellationReasonModel viewModel) {
         return FlightCancellationReasonViewHolder.LAYOUT;
     }
 

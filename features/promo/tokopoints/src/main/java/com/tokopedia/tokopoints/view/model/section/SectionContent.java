@@ -41,6 +41,10 @@ public class SectionContent {
     @Expose
     private LayoutTickerAttr layoutTickerAttr;
 
+    @SerializedName("layoutTopAdsAttr")
+    @Expose
+    private LayoutTopAdsAttr layoutTopAdsAttr;
+
     public String getBackgroundImgURLMobile() {
         return backgroundImgURLMobile;
     }
@@ -129,4 +133,11 @@ public class SectionContent {
         this.layoutTickerAttr = layoutTickerAttr;
     }
 
+    public LayoutTopAdsAttr getLayoutTopAdsAttr() {
+        return layoutTopAdsAttr;
+    }
+
+    public void setLayoutTopAdsAttr(LayoutTopAdsAttr layoutTopAdsAttr) {
+        this.layoutTopAdsAttr = layoutTopAdsAttr;
+    }
 }

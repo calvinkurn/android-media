@@ -54,6 +54,7 @@ import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
@@ -222,7 +223,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     }
 
                     is FeedDetailViewState.Error -> {
-                        onErrorGetFeedDetail(it.errorMsg)
+                        onErrorGetFeedDetail(it.error)
                     }
                 }
             })
@@ -271,11 +272,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
 
-    private fun onErrorGetFeedDetail(errorMessage: String?) {
+    private fun onErrorGetFeedDetail(error: Throwable) {
         dismissLoading()
         footer.hide()
-        NetworkErrorHelper.showEmptyState(activity, view, errorMessage
-        ) { presenter.getFeedDetail(detailId, pagingHandler.page) }
+        NetworkErrorHelper.showEmptyState(activity, view, ErrorHandler.getErrorMessage(context, error)) {
+            presenter.getFeedDetail(detailId, pagingHandler.page)
+        }
     }
 
     private fun onEmptyFeedDetail() {

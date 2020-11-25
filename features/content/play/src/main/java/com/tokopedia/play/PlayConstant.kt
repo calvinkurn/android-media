@@ -30,3 +30,30 @@ const val ERR_TOO_MANY_REQUEST = "TOP12"
 const val ERR_STATE_SOCKET = "Socket Connection"
 const val ERR_STATE_VIDEO = "Video Player"
 const val ERR_STATE_GLOBAL = "Global Error"
+
+/**
+ * Performance Monitoring for Play
+ * Start: PlayActivity before onCreate()
+ */
+const val PLAY_TRACE_PAGE = "plt_play_page"
+
+/**
+ * Monitor duration between open page until network requests
+ * Start: PlayFragment onCreate()
+ * Stop: onResume() getChannelInfo(channelId)
+ */
+const val PLAY_TRACE_PREPARE_PAGE = "plt_play_page_prepare_page"
+
+/**
+ * Monitor duration between network requests until receiving responses
+ * Start: PlayFragment getChannelInfo(channelId)
+ * Stop: PlayFragment observeGetChannelInfo
+ */
+const val PLAY_TRACE_REQUEST_NETWORK = "plt_play_page_request_network"
+
+/**
+ * Monitor duration between receive response until the UI is rendered
+ * Start: PlayFragment observeGetChannelInfo()
+ * Stop: PlayFragment observeVideoProperty when player is Playing
+ */
+const val PLAY_TRACE_RENDER_PAGE = "plt_play_page_render_page"

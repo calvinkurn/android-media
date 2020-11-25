@@ -7,14 +7,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PlayCardViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetTotalViewUiModel
 import java.util.*
 
-class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
+class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, private val adapterTypeFactory: HomeAdapterFactory, visitables: List<Visitable<*>>) :
         HomeBaseAdapter<HomeAdapterFactory>(asyncDifferConfig, adapterTypeFactory, visitables){
 
    private var mRecyclerView: RecyclerView? = null
@@ -27,7 +31,9 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
     }
 
     override fun getItemViewType(position: Int): Int {
-        return (getItem(position) as Visitable<HomeAdapterFactory>).type(adapterTypeFactory)
+        val item = getItem(position)
+        return if (item != null) (getItem(position) as Visitable<HomeAdapterFactory>).type(adapterTypeFactory)
+        else EmptyBlankViewHolder.LAYOUT
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -49,8 +55,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         super.onViewAttachedToWindow(holder)
         if(holder is PlayCardViewHolder) {
             holder.onViewAttach()
-        } else if(holder is BannerViewHolder){
-            holder.onResume()
         }
     }
 
@@ -86,38 +90,61 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<HomeVisitable>, pr
         return list
     }
 
-    fun onResume() {
-        val positions = getPositionPlay()
-        if(positions.isNotEmpty()){
-            currentSelected = positions.first()
-            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
-        }
-
+    fun onResumeBanner() {
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.onResume()
         }
     }
 
-    fun onPause() {
+    fun onResumePlayWidget(){
         val positions = getPositionPlay()
         if(positions.isNotEmpty()){
             currentSelected = positions.first()
-            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.resume()
         }
+    }
+
+    fun onPauseBanner() {
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.onPause()
         }
     }
 
+    fun onPausePlayWidget(shouldPausePlay: Boolean){
+        val positions = getPositionPlay()
+        if(positions.isNotEmpty()){
+            currentSelected = positions.first()
+            (getViewHolder(currentSelected) as? PlayCardViewHolder)?.pause(shouldPausePlay)
+        }
+    }
+
     fun onDestroy() {
         for (exoPlayerHelper in getAllExoPlayers()) {
-            exoPlayerHelper.onActivityStop()
+            exoPlayerHelper.onActivityDestroy()
         }
     }
 
     fun resetImpressionHomeBanner() {
         if(itemCount > 0){
             (getViewHolder(0) as? BannerViewHolder)?.resetImpression()
+        }
+    }
+
+    /**
+     * Play Widget
+     */
+    fun updatePlayWidgetReminder(reminderUiModel: PlayWidgetReminderUiModel) {
+        currentList.indexOfFirst { it is CarouselPlayWidgetDataModel }.let { position ->
+            if (position == -1) return@let
+            if (reminderUiModel.position == -1) return@let
+            notifyItemChanged(position, reminderUiModel)
+        }
+    }
+
+    fun updatePlayWidgetTotalView(totalViewUiModel: PlayWidgetTotalViewUiModel) {
+        currentList.indexOfFirst { it is CarouselPlayWidgetDataModel }.let { position ->
+            if (position == -1) return@let
+            notifyItemChanged(position, totalViewUiModel)
         }
     }
 }

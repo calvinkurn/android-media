@@ -31,7 +31,8 @@ object ProductManageVariantMapper {
                 it.price,
                 it.sku,
                 it.stock,
-                it.pictures
+                it.pictures,
+                response.isAllStockEmpty()
             )
         }
 

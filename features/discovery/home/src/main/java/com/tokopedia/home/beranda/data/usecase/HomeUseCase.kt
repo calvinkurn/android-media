@@ -17,16 +17,18 @@ class HomeUseCase @Inject constructor(
         homeRepository.getHomeData().collect { data->
             if (!firstTimeDataHasBeenConsumed) {
                 //first time observe, get latest data from cache
-                emit(homeDataMapper?.mapToHomeViewModel(data, true))
+                emit(homeDataMapper.mapToHomeViewModel(data, true))
                 //fetch new data
                 firstTimeDataHasBeenConsumed = true
             }
             //not first time, emit real data from network
-            else emit(homeDataMapper?.mapToHomeViewModel(data, false))
+            else emit(homeDataMapper.mapToHomeViewModel(data, false))
         }
     }
 
+    suspend fun onDynamicChannelExpired(groupId: String) = homeRepository.onDynamicChannelExpired(groupId = groupId)
+
     fun updateHomeData() = homeRepository.updateHomeData()
 
-    fun sendGeolocationInfo() = homeRepository.sendGeolocationInfo()
+    fun deleteHomeData() = homeRepository.deleteHomeData()
 }

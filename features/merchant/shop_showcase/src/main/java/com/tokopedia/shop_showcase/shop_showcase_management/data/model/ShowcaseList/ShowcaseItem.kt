@@ -25,7 +25,8 @@ data class ShowcaseItem(
         @SerializedName("uri")
         var uri: String = "",
         @SerializedName("useAce")
-        var useAce: Boolean = false
+        var useAce: Boolean = false,
+        var isChecked: Boolean = false
 ): Parcelable {
 
 }

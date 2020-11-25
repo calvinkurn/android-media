@@ -11,7 +11,7 @@
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="0dp">
+        app:elevation="@dimen/notif_dp_0">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -24,7 +24,7 @@
             android:id="@+id/indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMaxWidth="@dimen/dp_0"
+            app:tabMaxWidth="@dimen/notif_dp_0"
             app:tabType="secondary"
             app:tabGravity="fill"
             app:tabTextAppearance="@style/Tabs.Notification"

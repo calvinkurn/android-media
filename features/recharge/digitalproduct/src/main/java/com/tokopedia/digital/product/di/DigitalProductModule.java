@@ -2,18 +2,20 @@ package com.tokopedia.digital.product.di;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.common_digital.common.data.api.DigitalResponseConverter;
-import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
-import com.tokopedia.common_digital.common.di.DigitalRestApiRetrofit;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.common.data.apiservice.DigitalGqlApi;
 import com.tokopedia.digital.common.data.apiservice.DigitalHmacAuthInterceptor;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
 import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
 import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
 import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
+import com.tokopedia.digital.common.di.DigitalRestApiRetrofit;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.product.data.mapper.USSDMapper;
@@ -29,7 +31,7 @@ import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.url.TokopediaUrl;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.concurrent.TimeUnit;
 
@@ -69,6 +71,12 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
+    ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
+    }
+
+    @Provides
+    @DigitalProductScope
     IProductDigitalInteractor provideProductDigitalInteractor(IUssdCheckBalanceRepository ussdCheckBalanceRepository) {
         return new ProductDigitalInteractor(ussdCheckBalanceRepository);
     }
@@ -81,7 +89,7 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    FingerprintInterceptor provideFingerprintInterceptor(NetworkRouter networkRouter, UserSession userSession) {
+    FingerprintInterceptor provideFingerprintInterceptor(NetworkRouter networkRouter, UserSessionInterface userSession) {
         return new FingerprintInterceptor(networkRouter, userSession);
     }
 
@@ -89,7 +97,7 @@ public class DigitalProductModule {
     @DigitalProductScope
     DigitalHmacAuthInterceptor provideDigitalHmacAuthInterceptor(@ApplicationContext Context context,
                                                                  NetworkRouter networkRouter,
-                                                                 UserSession userSession) {
+                                                                 UserSessionInterface userSession) {
         return new DigitalHmacAuthInterceptor(context, networkRouter, userSession, TkpdBaseURL.DigitalApi.HMAC_KEY);
     }
 
@@ -130,15 +138,19 @@ public class DigitalProductModule {
                                      FingerprintInterceptor fingerprintInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      OkHttpRetryPolicy okHttpRetryPolicy,
-                                     Gson gson) {
+                                     ChuckerInterceptor chuckInterceptor) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        return builder.addInterceptor(fingerprintInterceptor)
+        builder.addInterceptor(fingerprintInterceptor)
                 .addInterceptor(digitalHmacAuthInterceptor)
-                .addInterceptor(httpLoggingInterceptor)
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(okHttpRetryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS)
-                .build();
+                .connectTimeout(okHttpRetryPolicy.connectTimeout, TimeUnit.SECONDS);
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor);
+        }
+        return builder.build();
 
     }
 
@@ -164,7 +176,7 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    GetDigitalCategoryByIdUseCase provideGetDigitalCategoryByIdUseCase(UserSession userSession,
+    GetDigitalCategoryByIdUseCase provideGetDigitalCategoryByIdUseCase(UserSessionInterface userSession,
                                                                        IDigitalCategoryRepository digitalCategoryRepository) {
         return new GetDigitalCategoryByIdUseCase(digitalCategoryRepository, userSession);
     }
@@ -183,7 +195,7 @@ public class DigitalProductModule {
 
     @Provides
     @DigitalProductScope
-    com.tokopedia.digital.common.data.apiservice.DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
-        return retrofit.create(com.tokopedia.digital.common.data.apiservice.DigitalRestApi.class);
+    DigitalRestApi provideDigitalRestApi(@DigitalRestApiRetrofit Retrofit retrofit) {
+        return retrofit.create(DigitalRestApi.class);
     }
 }

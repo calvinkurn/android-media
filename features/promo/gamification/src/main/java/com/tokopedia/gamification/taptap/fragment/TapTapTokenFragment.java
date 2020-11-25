@@ -39,6 +39,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.HexValidator;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
@@ -60,7 +62,6 @@ import com.tokopedia.gamification.taptap.presenter.TapTapTokenPresenter;
 import com.tokopedia.gamification.taptap.utils.TapTapAnalyticsTrackerUtil;
 import com.tokopedia.gamification.taptap.utils.TapTapConstants;
 import com.tokopedia.gamification.taptap.utils.TokenMarginUtilTapTap;
-import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.promogamification.common.applink.ApplinkUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -111,7 +112,6 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private PerformanceMonitoring fpmCrack;
     private View rootContainer;
 
-    @Inject
     GamificationDatabaseWrapper gamificationDatabaseWrapper;
     private TapTapSummaryDialogFragment summaryPageDialogFragment;
     private boolean isExitButtonClickedOnDialog = false;
@@ -136,7 +136,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_tap_tap_token, container, false);
+        rootView = inflater.inflate(com.tokopedia.gamification.R.layout.fragment_tap_tap_token, container, false);
 
         ivContainer = rootView.findViewById(R.id.iv_container);
         rootContainer = rootView.findViewById(R.id.root_container);
@@ -149,7 +149,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         buttonUp = rootView.findViewById(R.id.button_cta);
         buttonDown = rootView.findViewById(R.id.button_return);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(getString(R.string.tap_tap_title));
+        toolbarTitle.setText(getString(com.tokopedia.gamification.R.string.tap_tap_title));
         imageShareVia = toolbar.findViewById(R.id.image_share);
         setUpToolBar();
         userSession = new UserSession(getContext());
@@ -182,11 +182,11 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     private void startShareActivity() {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        String shareBody = String.format(getString(R.string.share_branch_link_body), userSession.getName());
-        sharingIntent.putExtra(Intent.EXTRA_TITLE, getString(R.string.share_branch_link_msg_title));
+        String shareBody = String.format(getString(com.tokopedia.gamification.R.string.share_branch_link_body), userSession.getName());
+        sharingIntent.putExtra(Intent.EXTRA_TITLE, getString(com.tokopedia.gamification.R.string.share_branch_link_msg_title));
         sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody);
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_branch_link_msg_title));
-        startActivity(Intent.createChooser(sharingIntent, getResources().getString(R.string.share_via_label)));
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, getString(com.tokopedia.gamification.R.string.share_branch_link_msg_title));
+        startActivity(Intent.createChooser(sharingIntent, getResources().getString(com.tokopedia.gamification.R.string.share_via_label)));
         TapTapAnalyticsTrackerUtil.sendEvent(getContext(),
                 TapTapAnalyticsTrackerUtil.EventKeys.CLICK_GAME,
                 TapTapAnalyticsTrackerUtil.CategoryKeys.CATEGORY_TAP_TAP,
@@ -196,9 +196,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.white));
-        toolbarTitle.setTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white));
+        toolbarTitle.setTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
     }
 
     private void setDrawableColorFilter(Drawable drawable, int color) {
@@ -209,9 +209,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     protected void initInjector() {
-        GamificationComponent gamificationComponent =
-                GamificationComponentInstance.getComponent(getActivity().getApplication());
-        gamificationComponent.inject(this);
+        if (getActivity() != null) {
+            GamificationComponent gamificationComponent =
+                    GamificationComponentInstance.getComponent(getActivity());
+            gamificationComponent.inject(this);
+            gamificationDatabaseWrapper = new GamificationDatabaseWrapper(getActivity());
+        }
         crackTokenPresenter.attachView(this);
     }
 
@@ -242,13 +245,13 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         } else {
             hideInfoTitle();
         }
-        if (timeRemaining.getIsShow()) {
+        if (timeRemaining.isShow()) {
             Drawable counterBackground = textCountdownTimer.getBackground();
             if (counterBackground instanceof GradientDrawable) {
                 GradientDrawable drawable = ((GradientDrawable) counterBackground);
 
                 if (HexValidator.validate(timeRemaining.getBorderColor())) {
-                    drawable.setStroke(getResources().getDimensionPixelOffset(R.dimen.dp_4), Color.parseColor(timeRemaining.getBorderColor()));
+                    drawable.setStroke(getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_4), Color.parseColor(timeRemaining.getBorderColor()));
                 }
 
                 if (HexValidator.validate(timeRemaining.getBackgroundColor())) {
@@ -323,9 +326,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         if (tokenData.getActionButton() != null && tokenData.getActionButton().size() != 0) {
             for (int i = 0; i < tokenData.getActionButton().size(); i++) {
                 ActionButton actionButton = tokenData.getActionButton().get(i);
-                if (!actionButton.getIsDisable() && buttonUp.getVisibility() == View.GONE) {
+                if (!actionButton.isDisable() && buttonUp.getVisibility() == View.GONE) {
                     setActionButton(buttonUp, actionButton);
-                } else if (!actionButton.getIsDisable() && buttonDown.getVisibility() == View.GONE) {
+                } else if (!actionButton.isDisable() && buttonDown.getVisibility() == View.GONE) {
                     setActionButton(buttonDown, actionButton);
                 }
             }
@@ -364,21 +367,21 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     private int getButtonBackgroundId(String backgroundColor) {
         if (TapTapConstants.ButtonColor.GREEN.equalsIgnoreCase(backgroundColor)) {
-            return R.drawable.gf_rounded_btn_green_taptap;
+            return com.tokopedia.gamification.R.drawable.gf_rounded_btn_green_taptap;
         } else if (TapTapConstants.ButtonColor.WHITE.equalsIgnoreCase(backgroundColor)) {
-            return R.drawable.gf_rounded_btn_white_taptap;
+            return com.tokopedia.gamification.R.drawable.gf_rounded_btn_white_taptap;
         } else {
-            return R.drawable.gf_rounded_btn_white_corners_taptap;
+            return com.tokopedia.gamification.R.drawable.gf_rounded_btn_white_corners_taptap;
         }
     }
 
     private int getButtonTextColor(String backgroundColor) {
         if (TapTapConstants.ButtonColor.GREEN.equalsIgnoreCase(backgroundColor)) {
-            return R.color.white;
+            return com.tokopedia.design.R.color.white;
         } else if (TapTapConstants.ButtonColor.WHITE.equalsIgnoreCase(backgroundColor)) {
-            return R.color.black_70;
+            return com.tokopedia.design.R.color.black_70;
         } else {
-            return R.color.white;
+            return com.tokopedia.design.R.color.white;
         }
     }
 
@@ -424,7 +427,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         int rootHeight = rootView.getHeight();
         int imageHeight = TokenMarginUtilTapTap.getEggWidth(rootWidth, rootHeight);
         int marginTop = TokenMarginUtilTapTap.getEggMarginBottom(rootHeight) - imageHeight
-                - getContext().getResources().getDimensionPixelOffset(R.dimen.dp_112);
+                - getContext().getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_112);
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) infoTitlePage.getLayoutParams();
         ivFullLp.gravity = Gravity.CENTER_HORIZONTAL;
@@ -449,7 +452,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         });
 
         TimeRemaining tokenRemaining = tokenData.getTimeRemaining();
-        if (tokenRemaining.getIsShow()) {
+        if (tokenRemaining.isShow()) {
             textCountdownTimer.setVisibility(View.VISIBLE);
             showCountdownTimer(tokenRemaining.getSeconds());
         } else {
@@ -534,7 +537,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             int hours = minutes / 60;
             minutes = minutes % 60;
             seconds = seconds % 60;
-            textCountdownTimer.setText(String.format(getString(R.string.countdown_format), hours, minutes, seconds));
+            textCountdownTimer.setText(String.format(getString(com.tokopedia.gamification.R.string.countdown_format), hours, minutes, seconds));
             textCountdownTimer.setVisibility(View.VISIBLE);
         }
     }
@@ -555,9 +558,9 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void navigateToLoginPage() {
-        if (getActivity().getApplication() instanceof GamificationRouter
-                && ((GamificationRouter) getActivity().getApplication()).getLoginIntent() != null) {
-            startActivityForResult(((GamificationRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+        if (getActivity() != null) {
+            Intent loginIntent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+            startActivityForResult(loginIntent, REQUEST_CODE_LOGIN);
         }
     }
 
@@ -569,7 +572,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public String getSuccessRewardLabel() {
-        return getString(R.string.success_reward_label);
+        return getString(com.tokopedia.gamification.R.string.success_reward_label);
     }
 
     @Override
@@ -582,7 +585,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Override
     public void showErrorSnackBar() {
         if (getContext() != null) {
-            NetworkErrorHelper.showErrorSnackBar(getContext().getResources().getString(R.string.points_not_available), getContext(), rootView, true);
+            NetworkErrorHelper.showErrorSnackBar(getContext().getResources().getString(com.tokopedia.gamification.R.string.points_not_available), getContext(), rootView, true);
         }
     }
 
@@ -590,7 +593,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     @Override
     public void showErrorSnackBarOnSummaryPage() {
         if (getContext() != null && summaryPageDialogFragment != null && summaryPageDialogFragment.isAdded() && summaryPageDialogFragment.isVisible()) {
-            summaryPageDialogFragment.showErrorSnackBar(getContext().getResources().getString(R.string.points_not_available));
+            summaryPageDialogFragment.showErrorSnackBar(getContext().getResources().getString(com.tokopedia.gamification.R.string.points_not_available));
         }
     }
 
@@ -804,7 +807,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
 
     public boolean isShowBackPopup() {
-        return tokenData != null && tokenData.getBackButton().getIsShow();
+        return tokenData != null && tokenData.getBackButton().isShow();
     }
 
 
@@ -919,7 +922,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             BackButton backButton = tokenData.getBackButton();
             final Dialog dialog = new Dialog(getContext());
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.setContentView(R.layout.gf_popup_exit_game);
+            dialog.setContentView(com.tokopedia.gamification.R.layout.gf_popup_exit_game);
 
             TextView textHeader = dialog.findViewById(R.id.tv_header);
             TextView textSubHeader = dialog.findViewById(R.id.tv_subheader);
@@ -930,7 +933,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
             textSubHeader.setText(backButton.getText());
             btnCancelExit.setText(backButton.getCancelText());
             btnExitGame.setText(backButton.getYesText());
-            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(getContext(), imagePopupHeader, backButton.getImageURL(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
             btnExitGame.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

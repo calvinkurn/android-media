@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class PhoneVerificationResponse(
 
-	@SerializedName("mf_get_user_info")
+	@SerializedName("profile")
 	val mfGetUserInfo: MfGetUserInfo? = null
 )

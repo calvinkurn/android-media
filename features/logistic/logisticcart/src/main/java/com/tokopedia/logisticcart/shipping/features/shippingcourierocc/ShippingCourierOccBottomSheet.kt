@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapterListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.model.*
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_shipping_occ.view.*
 
@@ -23,6 +25,7 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
                 bottomSheetUnify = BottomSheetUnify().apply {
                     isDragable = true
                     isHideable = true
+                    clearContentPadding = true
                     setTitle(context.getString(R.string.title_shipment_courier_bottomsheet_occ))
                     val child = View.inflate(context, R.layout.bottomsheet_shipping_occ, null)
                     setupChild(child, list)

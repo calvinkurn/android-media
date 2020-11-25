@@ -1,13 +1,14 @@
 package com.tokopedia.hotel.hoteldetail.data.entity
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 /**
  * @author by furqan on 26/04/19
  */
+@Parcelize
 class FacilityItem(@SerializedName("id")
                    @Expose
                    val id: Int = 0,
@@ -22,35 +23,4 @@ class FacilityItem(@SerializedName("id")
                    val iconUrl: String = "",
                    @SerializedName("availability")
                    @Expose
-                   val availability: Int = 0) : Parcelable {
-
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readInt())
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(id)
-        parcel.writeString(name)
-        parcel.writeString(icon)
-        parcel.writeString(iconUrl)
-        parcel.writeInt(availability)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<FacilityItem> {
-        override fun createFromParcel(parcel: Parcel): FacilityItem {
-            return FacilityItem(parcel)
-        }
-
-        override fun newArray(size: Int): Array<FacilityItem?> {
-            return arrayOfNulls(size)
-        }
-    }
-
-}
+                   val availability: Int = 0) : Parcelable

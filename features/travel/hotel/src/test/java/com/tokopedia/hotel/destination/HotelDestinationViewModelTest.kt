@@ -9,6 +9,8 @@ import com.tokopedia.hotel.destination.data.model.HotelSuggestion
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
 import com.tokopedia.hotel.destination.data.model.SearchDestination
+import com.tokopedia.hotel.destination.usecase.GetHotelRecentSearchUseCase
+import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
 import com.tokopedia.hotel.destination.view.viewmodel.Loaded
 import com.tokopedia.usecase.coroutines.Fail
@@ -16,12 +18,14 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 2020-03-19
@@ -29,7 +33,7 @@ import org.junit.runners.JUnit4
 
 
 @RunWith(JUnit4::class)
-class HotelHomepageViewModelTest {
+class HotelDestinationViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -40,24 +44,22 @@ class HotelHomepageViewModelTest {
     private val userSessionInterface = mockk<UserSessionInterface>()
     private val graphqlRepository = mockk<GraphqlRepository>()
 
+    @RelaxedMockK
+    lateinit var getPropertyPopularUseCase: GetPropertyPopularUseCase
+
+    @RelaxedMockK
+    lateinit var getHotelRecentSearchUseCase: GetHotelRecentSearchUseCase
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelDestinationViewModel = HotelDestinationViewModel(userSessionInterface, this.graphqlRepository, dispatcher)
+        hotelDestinationViewModel = HotelDestinationViewModel(userSessionInterface, getPropertyPopularUseCase,
+                getHotelRecentSearchUseCase, this.graphqlRepository, dispatcher)
     }
 
     @Test
     fun getHotelRecommendationIsLogin_shouldReturnSuccessWithEmptyData() {
         //given
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PopularSearch.Response::class.java to PopularSearch.Response(),
-                        RecentSearch.Response::class.java to RecentSearch.Response()),
-                mapOf(),
-                false)
-        coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlSuccessResponse
-
         coEvery {
             userSessionInterface.isLoggedIn
         } returns true
@@ -66,8 +68,11 @@ class HotelHomepageViewModelTest {
             userSessionInterface.userId
         } returns "0"
 
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } returns listOf()
+        coEvery { getHotelRecentSearchUseCase.executeOnBackground() } returns listOf()
+
         //when
-        hotelDestinationViewModel.getHotelRecommendation("", "")
+        hotelDestinationViewModel.getHotelRecommendation()
 
         //then
         assert(hotelDestinationViewModel.popularSearch.value == null)
@@ -83,15 +88,6 @@ class HotelHomepageViewModelTest {
             popularSearches.add(PopularSearch(i.toLong()))
             recentSearches.add(RecentSearch(i.toString()))
         }
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches),
-                        RecentSearch.Response::class.java to RecentSearch.Response(recentSearches)),
-                mapOf(),
-                false)
-        coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlSuccessResponse
-
         coEvery {
             userSessionInterface.isLoggedIn
         } returns true
@@ -100,26 +96,23 @@ class HotelHomepageViewModelTest {
             userSessionInterface.userId
         } returns "0"
 
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } returns popularSearches
+        coEvery { getHotelRecentSearchUseCase.executeOnBackground() } returns recentSearches
+
         //when
-        hotelDestinationViewModel.getHotelRecommendation("", "")
+        hotelDestinationViewModel.getHotelRecommendation()
 
         //then
         assert(hotelDestinationViewModel.popularSearch.value is Success)
+        assert((hotelDestinationViewModel.popularSearch.value as Success).data.size == 4)
+
         assert(hotelDestinationViewModel.recentSearch.value is Success)
+        assert((hotelDestinationViewModel.recentSearch.value as Success).data.size == 4)
     }
 
     @Test
     fun getHotelRecommendationIsLogin_shouldFail() {
         //given
-        val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(PopularSearch.Response::class.java to listOf(GraphqlError()),
-                        RecentSearch.Response::class.java to listOf(GraphqlError())),
-                false)
-        coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlErrorResponse
-
         coEvery {
             userSessionInterface.isLoggedIn
         } returns true
@@ -128,12 +121,16 @@ class HotelHomepageViewModelTest {
             userSessionInterface.userId
         } returns "0"
 
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } throws Throwable()
+        coEvery { getHotelRecentSearchUseCase.executeOnBackground() } throws Throwable()
+
+
         //when
-        hotelDestinationViewModel.getHotelRecommendation("", "")
+        hotelDestinationViewModel.getHotelRecommendation()
 
         //then
-        assert(hotelDestinationViewModel.popularSearch.value == null)
-        assert(hotelDestinationViewModel.recentSearch.value == null)
+        assert(hotelDestinationViewModel.popularSearch.value is Fail)
+        assert(hotelDestinationViewModel.recentSearch.value is Fail)
     }
 
     @Test
@@ -143,51 +140,37 @@ class HotelHomepageViewModelTest {
         for (i in 0..3) {
             popularSearches.add(PopularSearch(i.toLong()))
         }
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(PopularSearch.Response::class.java to PopularSearch.Response(popularSearches)),
-                mapOf(),
-                false)
-        coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlSuccessResponse
 
         coEvery {
             userSessionInterface.isLoggedIn
         } returns false
 
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } returns popularSearches
+
         //when
-        hotelDestinationViewModel.getHotelRecommendation("", "")
+        hotelDestinationViewModel.getHotelRecommendation()
 
         //then
         assert(hotelDestinationViewModel.popularSearch.value is Success)
+        assert((hotelDestinationViewModel.popularSearch.value as Success).data.size == 4)
         assert(hotelDestinationViewModel.recentSearch.value == null)
     }
 
     @Test
     fun getHotelRecommendationIsNotLogin_shouldReturnFail() {
         //given
-        val popularSearches = mutableListOf<PopularSearch>()
-        for (i in 0..3) {
-            popularSearches.add(PopularSearch(i.toLong()))
-        }
-        val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(PopularSearch.Response::class.java to listOf(GraphqlError())),
-                false)
-        coEvery {
-            graphqlRepository.getReseponse(any(), any())
-        } returns graphqlErrorResponse
-
         coEvery {
             userSessionInterface.isLoggedIn
         } returns false
 
+        coEvery { getPropertyPopularUseCase.executeOnBackground() } throws Throwable()
+
         //when
-        hotelDestinationViewModel.getHotelRecommendation("", "")
+        hotelDestinationViewModel.getHotelRecommendation()
 
         //then
-        assert(hotelDestinationViewModel.popularSearch.value == null)
-        assert(hotelDestinationViewModel.recentSearch.value == null)
+        assert(hotelDestinationViewModel.popularSearch.value is Fail)
+        assert(hotelDestinationViewModel.recentSearch.value is Fail)
     }
 
     @Test
@@ -198,8 +181,8 @@ class HotelHomepageViewModelTest {
             searchDestinations.add(SearchDestination(i.toLong()))
         }
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
-                mapOf(),
+                mapOf<Type, Any>(HotelSuggestion.Response::class.java to HotelSuggestion.Response(HotelSuggestion(searchDestinationList = searchDestinations))),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -217,8 +200,8 @@ class HotelHomepageViewModelTest {
     fun getHotelSearchDestination_shouldReturnFail() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(HotelSuggestion.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -236,8 +219,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_successInDeleteRecentSearch() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(RecentSearch.DeleteResponse::class.java to RecentSearch.DeleteResponse(RecentSearch.DeleteResponse.DeleteResult(true))),
-                mapOf(),
+                mapOf<Type, Any>(RecentSearch.DeleteResponse::class.java to RecentSearch.DeleteResponse(RecentSearch.DeleteResponse.DeleteResult(true))),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -258,8 +241,8 @@ class HotelHomepageViewModelTest {
     fun deleteRecentSearch_failDeleteRecentSearch() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(RecentSearch.DeleteResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())

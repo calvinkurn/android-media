@@ -2,19 +2,21 @@ package com.tokopedia.analytics.mapper.domain;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.analytics.R;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.analytics.mapper.model.AppsflyerMappingRequest;
 import com.tokopedia.analytics.mapper.model.AppsflyerMappingResponse;
+import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.Arrays;
 
@@ -44,14 +46,15 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
         String userID = "";
         String appsFlyerId = "";
         if (context.getApplicationContext() instanceof TkpdAppsFlyerRouter) {
+            UserSessionInterface userSession = new UserSession(context);
             appsFlyerId = ((TkpdAppsFlyerRouter) context.getApplicationContext()).getAppsFlyerID();
-            userID = ((TkpdAppsFlyerRouter) context.getApplicationContext()).getUserId();
+            userID = userSession.getUserId();
         }
         //check if userID Same not to go further
         if(userID == null || userID.isEmpty() || appsFlyerId == null || appsFlyerId.isEmpty()) {
             return Observable.just(true);
         }
-        if(userID.equals(cacheManager.get(USER_ID)) && appsFlyerId.equals(cacheManager.get(APPSFLYER_ID))) {
+        if(userID.equals(cacheManager.getString(USER_ID)) && appsFlyerId.equals(cacheManager.getString(APPSFLYER_ID))) {
             return Observable.just(true);
         }
         AppsflyerMappingRequest appsflyerMappingRequest = new AppsflyerMappingRequest();
@@ -70,8 +73,8 @@ public class TkpdAppsflyerMapUseCase extends UseCase<Boolean> {
             @Override
             public Boolean call(GraphqlResponse graphqlResponse) {
                 AppsflyerMappingResponse response = graphqlResponse.getData(AppsflyerMappingResponse.class);
-                cacheManager.save(USER_ID, finalUserID,30*24*60*60);
-                cacheManager.save(APPSFLYER_ID, finalAppsFlyerId,30*24*60*60);
+                cacheManager.put(USER_ID, finalUserID,30*24*60*60);
+                cacheManager.put(APPSFLYER_ID, finalAppsFlyerId,30*24*60*60);
                 return response.getAppsflyerMapping().getMsg().equalsIgnoreCase("success")?true:false;
             }
         });

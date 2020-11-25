@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.TextView
 
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.design.keyboard.KeyboardHelper
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.R
@@ -237,7 +237,9 @@ class BottomSheetFilterView : BaseCustomView, BottomSheetDynamicFilterView {
     }
 
     private fun initBottomSheetListener() {
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetLayout) as UserLockBottomSheetBehavior<*>
+        bottomSheetLayout?.let {
+            bottomSheetBehavior = BottomSheetBehavior.from(it) as UserLockBottomSheetBehavior<*>
+        }
         bottomSheetBehavior?.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehavior?.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {

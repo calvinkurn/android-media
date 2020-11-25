@@ -7,10 +7,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +30,8 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
+import com.tokopedia.device.info.DeviceConnectionInfo;
+import com.tokopedia.globalerror.GlobalError;
 import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.di.component.DaggerPromoListFragmentComponent;
 import com.tokopedia.loyalty.di.component.PromoListFragmentComponent;
@@ -65,10 +69,16 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     private static final int PROMO_DETAIL_REQUEST_CODE = 0;
 
+    public final int CONTAINER_LOADER = 0;
+    public final int CONTAINER_DATA = 1;
+    public final int CONTAINER_ERROR = 2;
+
     private static final String TYPE_FILTER_ALL = "all";
-    QuickSingleFilterView quickSingleFilterView;
-    RecyclerView rvPromoList;
-    View containerList;
+    private QuickSingleFilterView quickSingleFilterView;
+    private RecyclerView rvPromoList;
+    private View containerList;
+    private ViewFlipper viewFlipper;
+    private GlobalError globalError;
 
     @Inject
     IPromoListPresenter dPresenter;
@@ -118,6 +128,8 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         quickSingleFilterView = view.findViewById(R.id.quick_filter);
         rvPromoList = view.findViewById(R.id.rv_promo_list);
         containerList = view.findViewById(R.id.container_list);
+        viewFlipper = view.findViewById(R.id.view_flipper);
+        globalError = view.findViewById(R.id.global_error);
         initView(view);
         return view;
     }
@@ -147,23 +159,20 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
     }
 
     @Override
-    public void renderErrorGetPromoDataList(String message) {
-        handleErrorEmptyState(message);
-    }
-
-    @Override
     public void renderEmptyResultGetPromoDataList() {
-        handleErrorEmptyState(getString(R.string.message_error_data_empty_get_promo_list));
+        globalError.getErrorIllustration().setImageResource(R.drawable.loyalty_no_promo);
+        handleErrorEmptyState(getString(R.string.loyalty_no_promo), getString(R.string.loyalty_still_save_without_promo), true);
     }
 
     @Override
     public void renderErrorHttpGetPromoDataList(String message) {
-        handleErrorEmptyState(message);
+        renderErrorTimeoutConnectionGetPromoDataListt(null);
     }
 
     @Override
     public void renderErrorNoConnectionGetPromoDataList(String message) {
-        handleErrorEmptyState(message);
+        globalError.setType(GlobalError.Companion.getNO_CONNECTION());
+        handleErrorEmptyState(null, null, false);
     }
 
     @Override
@@ -183,7 +192,8 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     @Override
     public void renderErrorTimeoutConnectionGetPromoDataListt(String message) {
-        handleErrorEmptyState(message);
+        globalError.setType(GlobalError.Companion.getSERVER_ERROR());
+        handleErrorEmptyState(null, null, false);
     }
 
     @Override
@@ -229,12 +239,12 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     @Override
     public void showProgressLoading() {
-
+        viewFlipper.setDisplayedChild(CONTAINER_LOADER);
     }
 
     @Override
     public void hideProgressLoading() {
-
+        viewFlipper.setDisplayedChild(CONTAINER_DATA);
     }
 
     @Override
@@ -308,6 +318,10 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         };
         rvPromoList.addOnScrollListener(recyclerViewScrollListener);
         rvPromoList.setAdapter(adapter);
+
+        globalError.getErrorAction().setOnClickListener(v -> {
+            refreshHandler.startRefresh();
+        });
     }
 
     protected void initialVar() {
@@ -350,6 +364,7 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
         });
 
         quickSingleFilterView.actionSelect(indexAutoSelectCategoryFilter);
+
     }
 
     private List<QuickFilterItem> setQuickFilterItems(List<PromoSubMenuData> promoSubMenuDataList) {
@@ -447,17 +462,26 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
     }
 
-    private void handleErrorEmptyState(String message) {
+    private void handleErrorEmptyState(String title, String subtitle, boolean hideAllActionButton) {
         if (refreshHandler.isRefreshing()) refreshHandler.finishRefresh();
         adapter.clearDataList();
-        NetworkErrorHelper.showEmptyState(
-                getActivity(), containerList, message,
-                new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        refreshHandler.startRefresh();
-                    }
-                });
+        if (!TextUtils.isEmpty(title)) {
+            globalError.getErrorTitle().setText(title);
+        }
+
+        if (!TextUtils.isEmpty(title)) {
+            globalError.getErrorDescription().setText(subtitle);
+        }
+        if (!isConnectedToInternet()) {
+            globalError.setType(GlobalError.Companion.getNO_CONNECTION());
+        }
+
+        if (hideAllActionButton) {
+            globalError.getErrorAction().setVisibility(View.GONE);
+            globalError.getErrorSecondaryAction().setVisibility(View.GONE);
+        }
+
+        viewFlipper.setDisplayedChild(CONTAINER_ERROR);
     }
 
     @Override
@@ -471,5 +495,13 @@ public class PromoListFragment extends BaseDaggerFragment implements IPromoListV
 
         void onChangeFilter(String categoryId);
 
+    }
+
+
+    private boolean isConnectedToInternet() {
+        if (getContext() != null) {
+            return DeviceConnectionInfo.isConnectCellular(getContext()) || DeviceConnectionInfo.isConnectWifi(getContext());
+        }
+        return false;
     }
 }

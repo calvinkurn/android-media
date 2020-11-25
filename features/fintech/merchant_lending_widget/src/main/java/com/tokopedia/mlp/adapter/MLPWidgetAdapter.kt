@@ -3,11 +3,11 @@ package com.tokopedia.mlp.adapter
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
-import androidx.recyclerview.widget.RecyclerView
 import android.view.*
 import android.webkit.URLUtil
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.HexValidator
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -287,7 +287,6 @@ class MLPWidgetAdapter(private val boxList: List<WidgetsItem>, val context: Cont
 
                 if (checkValidFilteredUrl) {
                     RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, filteredUrl)
-
                 }
             } else {
                 val bottomSheetLength: Int = boxList[position].bottomSheet?.size!!

@@ -63,9 +63,9 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRep
             """.trimIndent()
         }
 
-        fun createParam(contentId: Int, contentType: Int, likeType: Int): HashMap<String, Any> {
+        fun createParam(contentId: String, contentType: Int, likeType: Int): HashMap<String, Any> {
             return hashMapOf(
-                    CONTENT_ID to contentId.toString(),
+                    CONTENT_ID to contentId,
                     CONTENT_TYPE to contentType,
                     LIKE_TYPE to likeType
             )

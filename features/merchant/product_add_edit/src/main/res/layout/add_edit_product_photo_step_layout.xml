@@ -11,7 +11,7 @@
         android:layout_marginLeft="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_27"
         android:text="@string/label_add_product_photo"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
@@ -20,12 +20,13 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_start_add_edit_product_photo"
+        android:contentDescription="@string/content_desc_tv_start_add_edit_product_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/action_start"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@+id/tv_product_photo"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_product_photo"
@@ -70,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_tips_bulb" />
+            app:srcCompat="@drawable/product_add_edit_ic_tips_bulb" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_product_photo_tips"
@@ -81,7 +82,7 @@
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_11"
             android:text="@string/preview_label_add_product_photo_tips"
-            android:textColor="@color/container_help_text"
+            android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/iv_tips_bulb"
             app:layout_constraintTop_toTopOf="parent"

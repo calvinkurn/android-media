@@ -7,7 +7,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:backgroundTint="@color/Blue_B500"
+        android:backgroundTint="@color/Unify_B500"
         android:id="@+id/chip_sub_container"
         android:orientation="horizontal"
         android:layout_width="142dp"
@@ -25,7 +25,7 @@
             android:id="@+id/chip_text"
             android:layout_gravity="center_vertical"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_14"
             android:textStyle="normal"
             android:layout_width="wrap_content"

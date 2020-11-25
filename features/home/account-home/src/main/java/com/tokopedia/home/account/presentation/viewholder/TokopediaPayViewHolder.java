@@ -1,19 +1,17 @@
 package com.tokopedia.home.account.presentation.viewholder;
 
-import android.graphics.Color;
-import androidx.annotation.LayoutRes;
-import androidx.annotation.NonNull;
 import android.view.View;
 
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.TokopediaPayCardView;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
-import com.tokopedia.showcase.ShowCaseContentPosition;
-import com.tokopedia.showcase.ShowCaseObject;
-
-import java.util.ArrayList;
 
 /**
  * @author okasurya on 7/19/18.
@@ -33,15 +31,23 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
 
     @Override
     public void bind(TokopediaPayViewModel element) {
+        String imageUrl;
+        imageUrl = listener.getRemoteConfig().getString(AccountHomeUrl.ImageUrl.KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
+        imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
+        if(AppCompatDelegate.getDefaultNightMode() != AppCompatDelegate.MODE_NIGHT_YES) {
+            tokopediaPayCardView.setBackgroundImage(imageUrl);
+        }
         tokopediaPayCardView.setTextAmountLeft(element.getAmountLeft());
         if (element.isLinked()) {
-            tokopediaPayCardView.setAmountColorLeft(android.R.color.primary_text_light);
+            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.unifyprinciples.R.color.Unify_N700_96);
         } else {
-            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
+            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.unifyprinciples.R.color.Unify_G400);
         }
 
         if(element.getBsDataCentre() == null) {
             tokopediaPayCardView.setCenterLayoutVisibility(View.GONE);
+        } else {
+            tokopediaPayCardView.setCenterLayoutVisibility(View.VISIBLE);
         }
 
         tokopediaPayCardView.setTextDescLeft(element.getLabelLeft());

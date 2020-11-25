@@ -1,7 +1,5 @@
 package com.tokopedia.navigation.presentation.adapter;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +8,14 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder;
-import com.tokopedia.navigation.R;
 
 import com.tokopedia.navigation.domain.model.Inbox;
+import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel;
+import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder;
 import com.tokopedia.navigation.presentation.adapter.viewholder.RecommendationViewHolder;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 
 import java.util.List;
 
@@ -75,5 +74,16 @@ public class InboxAdapter extends BaseAdapter<InboxAdapterTypeFactory> {
     @Override
     public int getItemViewType(int position) {
         return visitables.get(position).type(typeFactory);
+    }
+
+    public void updateTopAdsBanner(TopAdsImageViewModel topAdsImageViewModel) {
+        int bannerPosition = 4;
+        if (bannerPosition >= visitables.size()) return;
+        Visitable item = visitables.get(bannerPosition);
+        if (item instanceof InboxTopAdsBannerUiModel) {
+            InboxTopAdsBannerUiModel banner = (InboxTopAdsBannerUiModel) item;
+            banner.setAd(topAdsImageViewModel);
+            notifyItemChanged(bannerPosition, InboxTopAdsBannerViewHolder.getPAYLOAD_UPDATE_AD());
+        }
     }
 }

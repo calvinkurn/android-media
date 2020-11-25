@@ -6,4 +6,9 @@
         <attr name="sticky_text_highlight" format="string|reference" />
         <attr name="sticky_highlight_color" format="reference|color" />
     </declare-styleable>
+  
+  <declare-styleable name="EllipsizedTextView">
+    <attr name="highlight" format="string"/>
+    <attr name="highlight_color" format="reference|color"/>
+  </declare-styleable>
 </resources>

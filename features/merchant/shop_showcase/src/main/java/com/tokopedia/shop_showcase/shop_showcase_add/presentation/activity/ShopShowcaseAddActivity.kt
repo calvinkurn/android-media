@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop_showcase.R
 import com.tokopedia.shop_showcase.common.ShopShowcaseEditParam
 import com.tokopedia.shop_showcase.shop_showcase_add.presentation.fragment.ShopShowcaseAddFragment
@@ -33,7 +32,11 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
             intent.putExtra(ShopShowcaseEditParam.EXTRA_SHOWCASE_NAME, showcaseName)
             return intent
         }
+
         const val DEFAULT_SHOWCASE_ID = "0"
+
+        val ACTIVITY_LAYOUT = R.layout.activity_shop_showcase_product_add
+        val PARENT_VIEW_ACTIVITY = R.id.parent_view
     }
 
     private var isActionEdit: Boolean = false
@@ -50,14 +53,18 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_shop_showcase_add
+        return ACTIVITY_LAYOUT
+    }
+
+    override fun getParentViewResourceID(): Int {
+        return PARENT_VIEW_ACTIVITY
     }
 
     override fun setupStatusBar(){
         val window: Window = window
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            getWindow().statusBarColor = ContextCompat.getColor(this, R.color.white)
+            getWindow().statusBarColor = ContextCompat.getColor(this, android.R.color.white)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -67,7 +74,9 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
 
     override fun onBackPressed() {
         if(isActionEdit) {
-            onBackPressedConfirm()
+            if(fragment != null) {
+                (fragment as? ShopShowcaseAddFragment)?.onBackPressedConfirm()
+            }
         } else {
             finish()
         }
@@ -81,21 +90,4 @@ class ShopShowcaseAddActivity : BaseSimpleActivity() {
         return super.dispatchTouchEvent(ev)
     }
 
-    private fun onBackPressedConfirm() {
-        val confirmDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-        confirmDialog.apply {
-            setTitle(getString(R.string.text_exit_confirm_dialog_title))
-            setDescription(getString(R.string.text_exit_confirm_dialog_description))
-            setPrimaryCTAText(getString(R.string.text_cancel_button))
-            setPrimaryCTAClickListener {
-                this.dismiss()
-            }
-            setSecondaryCTAText(getString(R.string.text_exit_button))
-            setSecondaryCTAClickListener {
-                this.dismiss()
-                finish()
-            }
-            show()
-        }
-    }
 }

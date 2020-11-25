@@ -1,341 +1,254 @@
 package com.tokopedia.play.view.fragment
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.IdRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
-import com.tokopedia.play.component.EventBusFactory
-import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.di.DaggerPlayComponent
-import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
-import com.tokopedia.play.ui.loading.VideoLoadingComponent
-import com.tokopedia.play.ui.onetap.OneTapComponent
-import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
-import com.tokopedia.play.ui.video.VideoComponent
-import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.util.event.EventObserver
-import com.tokopedia.play.view.custom.RoundedConstraintLayout
-import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.uimodel.EventUiModel
-import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
+import com.tokopedia.play.util.blur.ImageBlurUtil
+import com.tokopedia.play.util.observer.DistinctEventObserver
+import com.tokopedia.play.util.observer.DistinctObserver
+import com.tokopedia.play.util.video.state.BufferSource
+import com.tokopedia.play.util.video.state.PlayViewerVideoState
+import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.uimodel.General
+import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
+import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
+import com.tokopedia.play.view.viewcomponent.OneTapViewComponent
+import com.tokopedia.play.view.viewcomponent.VideoLoadingComponent
+import com.tokopedia.play.view.viewcomponent.VideoViewComponent
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.lifecycle.lifecycleBound
+import com.tokopedia.play_common.lifecycle.whenLifecycle
+import com.tokopedia.play_common.util.coroutine.CoroutineDispatcherProvider
+import com.tokopedia.play_common.view.RoundedConstraintLayout
+import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.dpToPx
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 29/11/19
  */
-class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
+class PlayVideoFragment @Inject constructor(
+        private val viewModelFactory: ViewModelProvider.Factory,
+        dispatchers: CoroutineDispatcherProvider
+) : TkpdBaseV4Fragment(), PlayFragmentContract {
 
-    companion object {
+    private val job = SupervisorJob()
+    private val scope = CoroutineScope(dispatchers.immediate + job)
 
-        fun newInstance(channelId: String): PlayVideoFragment {
-            return PlayVideoFragment().apply {
-                val bundle = Bundle()
-                bundle.putString(PLAY_KEY_CHANNEL_ID, channelId)
-                arguments = bundle
+    private val videoView by viewComponent { VideoViewComponent(it, R.id.view_video) }
+    private val videoLoadingView by viewComponent { VideoLoadingComponent(it, R.id.view_video_loading) }
+    private val oneTapView by viewComponent { OneTapViewComponent(it, R.id.iv_one_tap_finger) }
+    private val overlayVideoView by viewComponent { EmptyViewComponent(it, R.id.v_play_overlay_video) }
+
+    private val blurUtil: ImageBlurUtil by lifecycleBound (
+            creator = { ImageBlurUtil(it.requireContext()) },
+            onLifecycle = whenLifecycle {
+                onDestroy { it.close() }
             }
-        }
-    }
-
-    private val job: Job = SupervisorJob()
-
-    override val coroutineContext: CoroutineContext
-        get() = job + dispatchers.main
+    )
 
     private val cornerRadius = 16f.dpToPx()
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var dispatchers: CoroutineDispatcherProvider
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayVideoViewModel
 
-    private var channelId: String = ""
+    private lateinit var videoAnalyticHelper: VideoAnalyticHelper
 
     private lateinit var containerVideo: RoundedConstraintLayout
 
-    override fun getScreenName(): String = "Play Video"
+    private val orientation: ScreenOrientation
+        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
 
-    override fun initInjector() {
-        DaggerPlayComponent
-                .builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .playModule(PlayModule(requireContext()))
-                .build()
-                .inject(this)
-    }
+    private val isYouTube: Boolean
+        get() = playViewModel.videoPlayer.isYouTube
+
+    private val channelId: String
+        get() = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
+
+    override fun getScreenName(): String = "Play Video"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(this, viewModelFactory).get(PlayVideoViewModel::class.java)
-        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_play_video, container, false)
-        containerVideo = view.findViewById(R.id.container_video)
-        initComponents(view as ViewGroup)
-        return view
+        return inflater.inflate(R.layout.fragment_play_video, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initAnalytic()
+        initView(view)
+        setupView()
+        setupObserve()
+    }
 
-        observeVOD()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        job.cancelChildren()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!isYouTube) videoAnalyticHelper.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!isYouTube) videoAnalyticHelper.sendLeaveRoomAnalytic(playViewModel.channelType)
+    }
+
+    override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
+        return false
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        val orientation = ScreenOrientation.getByInt(newConfig.orientation)
+        videoView.setOrientation(orientation, playViewModel.videoOrientation)
+    }
+
+    private fun initAnalytic() {
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), channelId)
+    }
+
+    private fun initView(view: View) {
+        with (view) {
+            containerVideo = findViewById(R.id.container_video)
+        }
+    }
+
+    private fun setupView() {
+        videoView.setOrientation(orientation, playViewModel.videoOrientation)
+    }
+
+    private fun setupObserve() {
+        observeVideoMeta()
         observeVideoProperty()
         observeOneTapOnboarding()
         observeBottomInsetsState()
         observeEventUserInfo()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        job.cancel()
+    private fun showVideoThumbnail() {
+        val currentThumbnail = videoView.getCurrentBitmap()
+        currentThumbnail?.let {
+            scope.launch {
+                videoView.showThumbnail(
+                        blurUtil.blurImage(it, radius = BLUR_RADIUS)
+                )
+            }
+        }
     }
 
     //region observe
-    private fun observeVOD() {
-        playViewModel.observableVOD.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVideo(it)
-                        )
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner, Observer { meta ->
+            meta.videoStream?.let {
+                videoView.setOrientation(orientation, it.orientation)
             }
+
+            videoViewOnStateChanged(videoPlayer = meta.videoPlayer)
         })
     }
 
     private fun observeVideoProperty() {
-        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer(::delegateVideoProperty))
+        playViewModel.observableVideoProperty.observe(viewLifecycleOwner, DistinctObserver {
+            if (!isYouTube) videoAnalyticHelper.onNewVideoState(playViewModel.userId, playViewModel.channelType, it.state)
+            if (playViewModel.videoPlayer.isYouTube) videoView.hide()
+            else {
+                videoView.show()
+                handleVideoStateChanged(it.state)
+            }
+
+            when (it.state) {
+                PlayViewerVideoState.Waiting -> videoLoadingView.showWaitingState()
+                is PlayViewerVideoState.Buffer -> videoLoadingView.show(source = it.state.bufferSource)
+                PlayViewerVideoState.Play, PlayViewerVideoState.End, PlayViewerVideoState.Pause -> videoLoadingView.hide()
+            }
+
+            if (!playViewModel.channelType.isVod) {
+                overlayVideoView.hide()
+                return@DistinctObserver
+            }
+            when (it.state) {
+                PlayViewerVideoState.End -> overlayVideoView.show()
+                else -> overlayVideoView.hide()
+            }
+        })
     }
 
     private fun observeOneTapOnboarding() {
-        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
+        viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, DistinctEventObserver {
+            if (!orientation.isLandscape && !playViewModel.videoOrientation.isHorizontal) oneTapView.showAnimated()
+        })
     }
 
     private fun observeBottomInsetsState() {
-        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             if (::containerVideo.isInitialized) {
                 if (it.isAnyShown) containerVideo.setCornerRadius(cornerRadius)
                 else containerVideo.setCornerRadius(0f)
-            }
-
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden, playViewModel.stateHelper)
-                        )
             }
         })
     }
 
     private fun observeEventUserInfo() {
-        playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
-            launch {
-                if (it.isBanned) sendEventBanned(it)
-                else if(it.isFreeze) sendEventFreeze(it)
+        playViewModel.observableEvent.observe(viewLifecycleOwner, DistinctObserver {
+            if (it.isFreeze || it.isBanned) {
+                oneTapView.hide()
             }
+
+            videoViewOnStateChanged(isFreezeOrBanned = it.isFreeze || it.isBanned)
         })
     }
     //endregion
 
-    //region Component Initialization
-    private fun initComponents(container: ViewGroup) {
-        val videoComponent = initVideoComponent(container)
-        val videoLoadingComponent = initVideoLoadingComponent(container)
-        val oneTapComponent = initOneTapComponent(container)
-        val overlayVideoComponent = initOverlayVideoComponent(container)
-
-        sendInitState()
-
-        layoutView(
-                container = container,
-                videoComponentId = videoComponent.getContainerId(),
-                videoLoadingComponentId = videoLoadingComponent.getContainerId(),
-                oneTapComponentId = oneTapComponent.getContainerId(),
-                overlayVideoComponentId = overlayVideoComponent.getContainerId()
-        )
-    }
-
-    private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-                .also(viewLifecycleOwner.lifecycle::addObserver)
-    }
-
-    private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-    }
-
-    private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
-        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-    }
-
-    private fun initOverlayVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-    }
-    //endregion
-
-    private fun sendInitState() {
-        launch(dispatchers.immediate) {
-            EventBusFactory.get(viewLifecycleOwner).emit(
-                    ScreenStateEvent::class.java,
-                    ScreenStateEvent.Init
-            )
+    private fun handleVideoStateChanged(state: PlayViewerVideoState) {
+        when (state) {
+            is PlayViewerVideoState.Buffer -> {
+                if (state.bufferSource == BufferSource.Broadcaster) showVideoThumbnail()
+                else videoView.hideThumbnail()
+            }
+            PlayViewerVideoState.Play,
+            PlayViewerVideoState.Pause,
+            PlayViewerVideoState.Waiting,
+            PlayViewerVideoState.End -> {
+                videoView.hideThumbnail()
+            }
         }
     }
 
-    //region layouting
-    private fun layoutView(
-            container: ViewGroup,
-            @IdRes videoComponentId: Int,
-            @IdRes videoLoadingComponentId: Int,
-            @IdRes oneTapComponentId: Int,
-            @IdRes overlayVideoComponentId: Int
+    //region OnStateChanged
+    private fun videoViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-
-        fun layoutVideo(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutVideoLoading(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutOneTap(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.TOP, R.id.gl_one_tap_post, ConstraintSet.BOTTOM)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutOverlayVideo(container: ViewGroup, @IdRes id: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
-                connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        layoutVideo(container, videoComponentId)
-        layoutVideoLoading(container, videoLoadingComponentId)
-        layoutOneTap(container , oneTapComponentId)
-        layoutOverlayVideo(container, overlayVideoComponentId)
+        if (isFreezeOrBanned) {
+            videoView.setPlayer(null)
+            videoView.hide()
+        } else if (videoPlayer is General) videoView.setPlayer(videoPlayer.exoPlayer)
     }
     //endregion
 
-    private fun delegateVideoProperty(prop: VideoPropertyUiModel) {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.VideoPropertyChanged(prop, playViewModel.stateHelper)
-                    )
-        }
-    }
-
-    private fun showOneTapOnboarding() {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.ShowOneTapOnboarding
-                    )
-        }
-    }
-
-    private fun sendEventBanned(eventUiModel: EventUiModel) {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(
-                                    PlayRoomEvent.Banned(
-                                            title = eventUiModel.bannedTitle,
-                                            message = eventUiModel.bannedMessage,
-                                            btnTitle = eventUiModel.bannedButtonTitle
-                                    )
-                            )
-                    )
-        }
-    }
-
-    private fun sendEventFreeze(eventUiModel: EventUiModel) {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner)
-                    .emit(
-                            ScreenStateEvent::class.java,
-                            ScreenStateEvent.OnNewPlayRoomEvent(
-                                    PlayRoomEvent.Freeze(
-                                            title = eventUiModel.freezeTitle,
-                                            message = eventUiModel.freezeMessage,
-                                            btnTitle = eventUiModel.freezeButtonTitle,
-                                            btnUrl = eventUiModel.freezeButtonUrl
-                                    )
-                            )
-                    )
-        }
+    companion object {
+        private const val BLUR_RADIUS = 25f
     }
 }

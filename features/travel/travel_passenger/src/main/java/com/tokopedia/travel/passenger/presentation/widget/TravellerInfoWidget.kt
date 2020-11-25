@@ -3,8 +3,8 @@ package com.tokopedia.travel.passenger.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.travel.passenger.R
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_widget_traveller_info.view.*
 
 /**
@@ -46,7 +46,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
         this.phoneCountry = phoneCountry
     }
 
-    fun getContactPhoneCountry(): String = phoneCountry
+    fun getContactPhoneCountry(): String = if (phoneCountry.isNotEmpty()) phoneCountry else "ID"
 
     fun getContactName(): String = tv_travel_contact_name.text.toString().trim()
 

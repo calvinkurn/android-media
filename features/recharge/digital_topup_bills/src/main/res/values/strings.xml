@@ -1,24 +1,18 @@
 <resources>
     <string name="app_name">digital_topup_bills</string>
 
-    <string name="digital_title_telco_page">Prabayar / Pascabayar</string>
-    <string name="title_empty_stock">Stok Habis</string>
+    <string name="digital_title_prepaid_page">Prabayar</string>
+    <string name="digital_title_postpaid_page">Pascabayar</string>
+    <string name="digital_title_fav_number">Nomor Favorit</string>
     <string name="digital_hint_input_numbers">Contoh 081234567890</string>
     <string name="error_message_contact_not_found">Aplikasi kontak tidak ditemukan</string>
-    <string name="title_reccent_transaction_widget">Transaksi Terakhir</string>
-    <string name="title_promo_code">Kode Promo: </string>
-    <string name="text_copy_promo_code">Salin</string>
-    <string name="text_has_copied_promo_code">Disalin</string>
-    <string name="title_promo">Promo</string>
-    <string name="title_telco_product_empty_state">Belum ada pilihan %s</string>
-    <string name="desc_telco_product_empty_state">Yah... %1$s buat nomor ini belum tersedia, coba cari %2$s untuk provider lain atau cek lagi lain kali, ya.</string>
-    <string name="digital_desc_add_to_mybills">You’ll be reminded to pay your bill every month on %s th</string>
-    <string name="input_number">Masukkan nomor</string>
+    <string name="title_telco_product_empty_state">Tidak ada pilihan %s</string>
+    <string name="desc_telco_product_empty_state">Yah... %s buat nomor ini sedang tidak tersedia. Tunggu sebentar lalu coba lagi, ya.</string>
     <string name="digital_title_input_number">Masukkan Nomor HP</string>
     <string name="digital_telco_error_min_phone_number">Nomor HP minimum 10 digit</string>
     <string name="digital_telco_error_max_phone_number">Nomor HP maksimum 14 digit</string>
     <string name="digital_btn_check_bill">Cek Tagihan</string>
-    <string name="digital_title_details">Details</string>
+    <string name="digital_title_details">Kuota Utama:</string>
     <string name="digital_title_price">Harga</string>
     <string name="digital_title_details_bills">Detail Tagihan</string>
     <string name="digital_see_more_btn">Lihat Detail</string>
@@ -27,4 +21,10 @@
     <string name="telco_title_showcase_promo">Diskon spesial buat kamu</string>
     <string name="telco_label_showcase_promo">Mau beli pulsa dan paket data lebih hemat? Pilih sendiri kode promonya!</string>
     <string name="telco_number_error_not_found">Nomor tidak valid</string>
+    <string name="telco_label_out_of_stock">Habis</string>
+    <string name="telco_other_recommendation">Rekomendasi Lainnya</string>
+    <string name="telco_title_filter_result">Hasil Filter</string>
+    <string name="telco_reset_filter">Reset</string>
+    <string name="telco_save_filter">Simpan</string>
+    <string name="telco_pick_product">Pilih</string>
 </resources>

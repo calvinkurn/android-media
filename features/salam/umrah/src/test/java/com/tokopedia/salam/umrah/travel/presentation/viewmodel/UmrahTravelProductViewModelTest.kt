@@ -1,12 +1,10 @@
 package com.tokopedia.salam.umrah.travel.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import org.junit.Assert.*
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
-import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentProductEntity
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelProduct
 import com.tokopedia.usecase.coroutines.Fail
@@ -14,13 +12,12 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 @RunWith(JUnit4::class)
 class UmrahTravelProductViewModelTest{
@@ -44,10 +41,12 @@ class UmrahTravelProductViewModelTest{
     @Test
     fun getListProduct_shouldReturnData(){
         //given
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(UmrahTravelAgentProductEntity::class.java to UmrahTravelAgentProductEntity(umrahTravelProducts)),
-                mapOf(),false
-        )
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = UmrahTravelAgentProductEntity::class.java
+        result[objectType] = UmrahTravelAgentProductEntity(umrahTravelProducts)
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { mGraphqlRepository.getReseponse(any(),any())} returns gqlResponseSuccess
 
         //when
@@ -62,10 +61,15 @@ class UmrahTravelProductViewModelTest{
     @Test
     fun getListProduct_shouldReturnError(){
         //given
-        val gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(UmrahTravelAgentProductEntity::class.java to listOf(GraphqlError())),false
-        )
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = UmrahTravelAgentProductEntity::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+
+        val gqlResponseFail = GraphqlResponse(result, errors, false)
+
         coEvery { mGraphqlRepository.getReseponse(any(),any())} returns gqlResponseFail
 
         //when

@@ -65,7 +65,7 @@ class SendGiftViewModel @Inject constructor(private val repository: SendGiftResp
             var msg : String? = null
             if (it is MessageErrorException) {
                 val errorsMessage = it.message?.split(",")?.get(0)?.split("|")?.toTypedArray()
-                msg = errorsMessage?.get(0)?.split("]")?.toTypedArray()?.get(0)
+                msg = errorsMessage?.get(0)?.split("]")?.toTypedArray()?.get(1)
             }
             prevalidateLiveData.value = ErrorMessage(msg ?: "")
         }

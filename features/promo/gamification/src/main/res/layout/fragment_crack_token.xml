@@ -28,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/bg_countdown_timer"
+                android:background="@drawable/gami_bg_countdown_timer"
                 android:paddingLeft="@dimen/dp_32"
                 android:paddingTop="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_32"
@@ -121,7 +121,7 @@
                             android:id="@+id/daily_prize"
                             android:layout_width="@dimen/dp_32"
                             android:layout_height="@dimen/dp_32"
-                            tools:src="@drawable/ic_empty_egg" />
+                            tools:src="@drawable/gami_ic_empty_egg" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -137,7 +137,7 @@
                             android:layout_width="@dimen/dp_32"
                             android:layout_height="@dimen/dp_32"
                             android:layout_margin="@dimen/dp_8"
-                            tools:src="@drawable/ic_empty_egg" />
+                            tools:src="@drawable/gami_ic_empty_egg" />
 
                         <TextView
                             android:id="@+id/tv_floating_counter"
@@ -145,7 +145,7 @@
                             android:layout_width="@dimen/dp_22"
                             android:layout_height="@dimen/dp_22"
                             android:layout_gravity="top|end"
-                            android:background="@drawable/circle_red_shadow"
+                            android:background="@drawable/gami_core_circle_red_shadow"
                             android:gravity="center"
                             android:textColor="@color/white"
                             tools:text="99+" />

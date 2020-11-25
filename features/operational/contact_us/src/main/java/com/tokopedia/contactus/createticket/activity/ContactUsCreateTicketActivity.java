@@ -1,75 +1,48 @@
 package com.tokopedia.contactus.createticket.activity;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.fragment.CreateTicketFormFragment;
-import com.tokopedia.core.app.BasePresenterActivity;
 
-public class ContactUsCreateTicketActivity extends BasePresenterActivity implements CreateTicketFormFragment.FinishContactUsListener {
+public class ContactUsCreateTicketActivity extends BaseSimpleActivity implements CreateTicketFormFragment.FinishContactUsListener {
 
     public static final String PARAM_TITLE = "PARAM_TITLE";
     public static final String PARAM_DESCRIPTION = "PARAM_DESCRIPTION";
     public static final String PARAM_DESCRIPTION_TITLE = "PARAM_DESCRIPTION_TITLE";
     public static final String PARAM_ATTACHMENT_TITLE = "PARAM_ATTACHMENT_TITLE";
 
-    public static Intent getCallingIntent(Activity activity,
-                                          String title,
-                                          String solutionId,
-                                          String invoiceId,
-                                          String descriptionTitle,
-                                          String attachmentTitle,
-                                          String description) {
-        Intent intent = new Intent(activity, ContactUsCreateTicketActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(PARAM_TITLE, title);
-        bundle.putString(ContactUsActivity.PARAM_SOLUTION_ID, solutionId);
-        bundle.putString(ContactUsActivity.PARAM_INVOICE_ID, invoiceId);
-        bundle.putString(PARAM_DESCRIPTION, description);
-        bundle.putString(PARAM_DESCRIPTION_TITLE, descriptionTitle);
-        bundle.putString(PARAM_ATTACHMENT_TITLE, attachmentTitle);
-        intent.putExtras(bundle);
-        return intent;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initView();
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
+    protected int getLayoutRes() {
         return R.layout.contactus_activity_create_ticket;
     }
 
-    @Override
-    protected void initView() {
+    private void initView() {
         Bundle bundle = getIntent().getExtras();
         if (bundle == null)
             bundle = new Bundle();
 
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
         CreateTicketFormFragment fragment;
         if (getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName()) == null) {
             fragment = CreateTicketFormFragment.createInstance(bundle);
         } else {
-            fragment = (CreateTicketFormFragment) getFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName());
+            fragment = (CreateTicketFormFragment) getSupportFragmentManager().findFragmentByTag(CreateTicketFormFragment.class.getSimpleName());
         }
 
         fragmentTransaction.replace(R.id.main_view, fragment, fragment.getClass().getSimpleName());
@@ -88,29 +61,15 @@ public class ContactUsCreateTicketActivity extends BasePresenterActivity impleme
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
-    }
-
-    @Override
     public void onFinishCreateTicket() {
         Toast.makeText(this, R.string.title_contact_finish, Toast.LENGTH_SHORT).show();
         setResult(RESULT_OK);
         finish();
+    }
+
+    @Nullable
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
     }
 }

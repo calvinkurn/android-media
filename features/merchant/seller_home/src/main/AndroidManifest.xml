@@ -58,6 +58,10 @@
                 <data android:scheme="@string/internal_scheme"
                     android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_other_settings"/>
+
+                <data android:scheme="@string/internal_scheme"
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_sellerhome_som_cacellation_request"/>
             </intent-filter>
 
             <meta-data
@@ -70,7 +74,7 @@
             android:exported="true"
             android:label="@string/menu_setting_title"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/MenuSettingStyle">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -99,6 +103,11 @@
                 <data
                     android:host="@string/host_sellerapp"
                     android:path="@string/path_centralized_promo"
+                    android:scheme="@string/internal_scheme" />
+
+                <data
+                    android:host="@string/host_sellerapp"
+                    android:path="@string/path_centralized_promo_first_voucher"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

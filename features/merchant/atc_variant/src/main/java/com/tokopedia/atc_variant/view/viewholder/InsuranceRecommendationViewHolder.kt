@@ -15,11 +15,11 @@ import com.tokopedia.atc_variant.view.AddToCartVariantActionListener
 import com.tokopedia.atc_variant.view.viewmodel.InsuranceRecommendationViewModel
 import com.tokopedia.date.util.SaldoDatePickerUtil
 import com.tokopedia.design.utils.CurrencyFormatUtil
-import com.tokopedia.purchase_platform.common.view.model.InsuranceApplicationValueViewModel
-import com.tokopedia.purchase_platform.common.view.model.InsuranceProductApplicationDetailsViewModel
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceApplicationValueViewModel
+import com.tokopedia.purchase_platform.common.feature.insurance.InsuranceProductApplicationDetailsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.purchase_platform.common.insurance.utils.*
+import com.tokopedia.purchase_platform.common.feature.insurance.*
 import kotlinx.android.synthetic.main.item_insurance_recommendation_product_page.view.*
 import java.util.*
 
@@ -64,7 +64,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listenerNormal: AddT
             }
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProductViewModel.productInfo.iconUrl)) {
-                ImageHandler.loadImage(itemView.context, itemView.insurance_image_icon, insuranceCartDigitalProductViewModel.productInfo.iconUrl, R.drawable.insurance_default_icon)
+                ImageHandler.loadImage(itemView.context, itemView.insurance_image_icon, insuranceCartDigitalProductViewModel.productInfo.iconUrl, com.tokopedia.design.R.drawable.insurance_default_icon)
             }
             itemView.insurance_tv_price.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceCartDigitalProductViewModel.pricePerProduct, false))
 

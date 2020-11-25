@@ -16,13 +16,15 @@ import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
 import com.tokopedia.attachvoucher.data.VoucherUiModel
-import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
+import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase.MVFilter.VoucherType
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactory
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherTypeFactoryImpl
 import com.tokopedia.attachvoucher.view.viewmodel.AttachVoucherViewModel
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.main.fragment_attachvoucher_attach_voucher.*
@@ -30,7 +32,6 @@ import javax.inject.Inject
 
 class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFactory>() {
 
-    var shopId: String = ""
     private val screenName = "attach_voucher"
 
     @Inject
@@ -55,21 +56,14 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initializeArguments(arguments)
         setupRecyclerView()
         setupObserver()
         setupFilter()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun initializeArguments(arguments: Bundle?) {
-        if (arguments == null) return
-        shopId = arguments.getString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID) ?: ""
-    }
-
     override fun loadData(page: Int) {
-        if (page != 1) return
-        viewModel.loadVouchers(shopId)
+        viewModel.loadVouchers(page)
     }
 
     private fun setupRecyclerView() {
@@ -85,26 +79,39 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeFilter() {
         viewModel.filter.observe(viewLifecycleOwner, Observer { type ->
+            adapter.clearSelected()
+            clearAllData()
+            loadInitialData()
             analytic.trackOnChangeFilter(type)
             when (type) {
-                VoucherType.CASH_BACK -> setActiveFilter(filterCashBack, filterFreeOngkir)
-                VoucherType.FREE_ONGKIR -> setActiveFilter(filterFreeOngkir, filterCashBack)
+                VoucherType.paramCashback -> setActiveFilter(filterCashBack, filterFreeOngkir)
+                VoucherType.paramFreeOngkir -> setActiveFilter(filterFreeOngkir, filterCashBack)
                 AttachVoucherViewModel.NO_FILTER -> clearFilter()
             }
         })
     }
 
     private fun observeVoucherResponse() {
-        viewModel.filteredVouchers.observe(viewLifecycleOwner, Observer { vouchers ->
-            adapter.clearSelected()
-            clearAllData()
-            renderList(vouchers)
-            if (vouchers.isEmpty()) {
+        viewModel.voucher.observe(viewLifecycleOwner, Observer { vouchers ->
+            changeState(vouchers)
+            renderList(vouchers, viewModel.hasNext)
+        })
+    }
+
+    private fun changeState(vouchers: List<VoucherUiModel>) {
+        if (isFirstPage() && vouchers.isEmpty()) {
+            if (viewModel.hasNoFilter()) {
                 changeActionState(View.GONE)
             } else {
-                changeActionState(View.VISIBLE)
+                flAttach?.hide()
             }
-        })
+        } else {
+            changeActionState(View.VISIBLE)
+        }
+    }
+
+    private fun isFirstPage(): Boolean {
+        return viewModel.currentPage == 1
     }
 
     private fun changeActionState(visibility: Int) {
@@ -124,6 +131,11 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun observeError() {
         viewModel.error.observe(viewLifecycleOwner, Observer { throwable ->
+            if (isFirstPage()) {
+                flAttach?.hide()
+            } else {
+                flAttach?.show()
+            }
             showGetListError(throwable)
             disableAttachButton()
         })
@@ -152,7 +164,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
                 amount = voucher.availableAmount.toIntOrZero(),
                 amountType = voucher.amountType ?: -1,
                 identifier = voucher.identifier,
-                voucherType = voucher.type ?: -1
+                voucherType = voucher.type ?: -1,
+                isPublic = voucher.isPublic
         )
         val stringVoucherPreview = CommonUtil.toJson(voucherPreview)
         return Intent().apply {
@@ -166,10 +179,10 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
 
     private fun setupFilter() {
         filterCashBack?.setOnClickListener {
-            viewModel.toggleFilter(VoucherType.CASH_BACK)
+            viewModel.toggleFilter(VoucherType.paramCashback)
         }
         filterFreeOngkir?.setOnClickListener {
-            viewModel.toggleFilter(VoucherType.FREE_ONGKIR)
+            viewModel.toggleFilter(VoucherType.paramFreeOngkir)
         }
     }
 
@@ -186,13 +199,8 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
     override fun onItemClicked(t: Visitable<*>?) {}
 
     companion object {
-        fun createInstance(shopId: String): AttachVoucherFragment {
-            val args = Bundle().apply {
-                putString(ApplinkConst.AttachVoucher.PARAM_SHOP_ID, shopId)
-            }
-            return AttachVoucherFragment().apply {
-                arguments = args
-            }
+        fun createInstance(): AttachVoucherFragment {
+            return AttachVoucherFragment()
         }
     }
 }

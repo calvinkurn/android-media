@@ -7,6 +7,7 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
@@ -18,6 +19,7 @@ import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
 import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
@@ -44,6 +46,8 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val atcUseCase by memoized<AddToCartUseCase>()
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
     val deletePostUseCase by memoized<DeletePostUseCase>()
+    val sendTopAdsUseCase by memoized<SendTopAdsUseCase>()
+    val playWidgetTools by memoized<PlayWidgetTools>()
 
     return FeedViewModel(
             FeedTestDispatcherProvider(),
@@ -58,7 +62,9 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
             sendVoteUseCase,
             atcUseCase,
             trackAffiliateClickUseCase,
-            deletePostUseCase
+            deletePostUseCase,
+            sendTopAdsUseCase,
+            playWidgetTools
     )
 }
 
@@ -111,6 +117,14 @@ fun FeatureBody.createFeedTestInstance() {
 
     val deletePostUseCase by memoized {
         mockk<DeletePostUseCase>(relaxed = true)
+    }
+
+    val sendTopAdsUseCase by memoized {
+        mockk<SendTopAdsUseCase>(relaxed = true)
+    }
+
+    val playWidgetTools by memoized {
+        mockk<PlayWidgetTools>(relaxed = true)
     }
 }
 

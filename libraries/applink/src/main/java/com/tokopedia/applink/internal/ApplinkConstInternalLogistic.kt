@@ -21,8 +21,8 @@ object ApplinkConstInternalLogistic {
     /**
      * @see logistic/logisticaddaddress/.../AddAddressActivity.java
      * @param {ref} = caller id
-     * @param token [type: Token (logisticdata) ] token for District Recommendation api hit (mandatory)
-     * @param PARAM_ADDRESS_MODEL [type: AddressModel (logisticdata) ] address model if you want
+     * @param token [type: Token (logisticCommon) ] token for District Recommendation api hit (mandatory)
+     * @param PARAM_ADDRESS_MODEL [type: AddressModel (logisticCommon) ] address model if you want
      *             edit mode (optional)
     */
     @JvmField
@@ -30,12 +30,18 @@ object ApplinkConstInternalLogistic {
 
     /**
      * @see logistic/logisticaddaddress/../PinpointMapActivity.kt
-     * @param token [type: Token (logisticdata) ] token for Kero api hit (mandatory)
+     * @param token [type: Token (logisticCommon) ] token for Kero api hit (mandatory)
      * */
     @JvmField
     val ADD_ADDRESS_V2 = "$INTERNAL_LOGISTIC/addaddress/v2/"
 
     @JvmField
     val DROPOFF_PICKER = "$INTERNAL_LOGISTIC/dropoff/"
+
+    @JvmField
+    val ORDER_TRACKING = "$INTERNAL_LOGISTIC/shipping/tracking/"
+
+    @JvmField
+    val MANAGE_ADDRESS = "$INTERNAL_LOGISTIC/manageaddress/"
 
 }

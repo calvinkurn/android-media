@@ -7,10 +7,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +15,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.network.R;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.unifycomponents.Toaster;
 
 /**
  * Created by ricoharisin on 5/30/16.
@@ -120,9 +119,9 @@ public class NetworkErrorHelper {
 
     public static void showSnackbar(Activity activity) {
         if (activity != null) {
-            ToasterError.make(BaseToaster.getContentView(activity),
+            Toaster.INSTANCE.make(activity.findViewById(android.R.id.content),
                     activity.getResources().getString(R.string.msg_network_error),
-                    BaseToaster.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v->{});
         }
     }
 
@@ -255,34 +254,6 @@ public class NetworkErrorHelper {
             e.printStackTrace();
         }
 
-    }
-
-    public static void showDialogCustomMSG(Context context, final RetryClickedListener listener, String message) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        LayoutInflater li = LayoutInflater.from(context);
-        @SuppressLint("InflateParams")
-        View promptsView = li.inflate(R.layout.error_network_dialog, null);
-        TextView msg = (TextView) promptsView.findViewById(R.id.msg);
-        msg.setText(message);
-        dialog.setView(promptsView);
-        if (listener != null) {
-            dialog.setPositiveButton(context.getString(R.string.title_try_again),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            listener.onRetryClicked();
-                            dialog.dismiss();
-                        }
-                    });
-        } else {
-            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-        }
-        dialog.create().show();
     }
 
     public interface RetryClickedListener {

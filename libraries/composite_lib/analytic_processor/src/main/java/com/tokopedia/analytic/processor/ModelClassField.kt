@@ -1,13 +1,12 @@
 package com.tokopedia.analytic.processor
 
-import com.tokopedia.analytic.processor.AnnotatedModelClass
-import com.tokopedia.analytic.processor.utils.*
 import com.squareup.javapoet.TypeName
 import com.squareup.kotlinpoet.asTypeName
 import com.sun.tools.javac.code.Symbol
 import com.sun.tools.javac.code.Type
+import com.tokopedia.analytic.annotation.DefinedInCollections
+import com.tokopedia.analytic.annotation.Key
 import com.tokopedia.analytic.processor.utils.*
-import com.tokopedia.annotation.Key
 import com.tokopedia.annotation.defaultvalues.*
 import org.jetbrains.annotations.NotNull
 import javax.lang.model.element.ElementKind
@@ -64,7 +63,7 @@ class ModelClassField(
 
             val keySet = HashMap<String, Pair<VariableElement, String>>()
 
-            elements.forEach {
+            elements.forEach { it ->
                 if (it.kind == ElementKind.FIELD && (clazz.nameAsKey || isElementKeyDefined(it as VariableElement))) {
                     val defaultAnnotation = it.getAnnotation(Default::class.java)
                     val key = getKey(it, clazz.nameAsKey)
@@ -139,6 +138,11 @@ class ModelClassField(
                         val name = it
                         throw Exception("Property ${name.simpleName} on class ${clazz.getClassName()} must have default value")
                     }
+                } else if (it.kind == ElementKind.FIELD && it.getAnnotation(DefinedInCollections::class.java) != null) {
+                    val getter = ElementFilter.methodsIn(clazz.element.enclosedElements)
+                            .find { func -> func.simpleName.toString() == "get${it.simpleName.toString().capitalize()}" }
+                    val isPrivate = it.modifiers.find { it == Modifier.PRIVATE }
+                    fields["collection${it.simpleName}"] = ModelClassField(it, "", "", false, getter, isPrivate != null)
                 }
             }
 

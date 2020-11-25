@@ -1,0 +1,22 @@
+[{
+  "data": {
+    "membershipStampProgress": {
+      "isUserRegistered": false,
+      "isShown": false,
+      "program": {
+        "id": 0,
+        "cardID": 0,
+        "sectionID": 0,
+        "quests": []
+      },
+      "infoMessage": {
+        "title": "",
+        "cta": {
+          "text": "",
+          "url": "",
+          "appLink": ""
+        }
+      }
+    }
+  }
+}]

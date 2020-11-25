@@ -1,10 +1,8 @@
 package com.tokopedia.analytic.processor
 
-import com.tokopedia.analytic.processor.AnnotatedModelClass
-import com.squareup.javapoet.ClassName
-import com.squareup.javapoet.JavaFile
-import com.squareup.javapoet.MethodSpec
-import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.*
+import com.tokopedia.analytic.annotation.CustomChecker
+import com.tokopedia.analytic.annotation.DefinedInCollections
 import javax.lang.model.element.Modifier
 
 // This class is used to generate the model bundler classes
@@ -23,6 +21,40 @@ class ModelClassGenerator(clazz: AnnotatedModelClass) : ClassGenerator(clazz) {
             bundleClassName,
             bundleClassName
         )
+
+    override fun addCheckerStatement(field: ModelClassField, putStatement: CodeBlock): CodeBlock.Builder {
+        val checkerStatement = CodeBlock.builder()
+
+        val fieldTypeName = TypeName.get(field.element.asType()) // tipe
+
+        //  double price = productListImpressionProduct.getPrice();
+        if (field.element.getAnnotation(DefinedInCollections::class.java) == null) {
+            checkerStatement.addStatement(
+                    "\$T \$L = \$N",
+                    fieldTypeName,
+                    field.key,
+                    getValueStatement(field)
+            )
+        } else {
+            checkerStatement.addStatement(
+                    "\$T \$L = \$N",
+                    fieldTypeName,
+                    field.element.simpleName,
+                    getValueStatement(field)
+            )
+        }
+
+        if (field.element.getAnnotation(CustomChecker::class.java) != null) {
+            createCustomCheckerCondition(field, checkerStatement, false)
+            checkerStatement.add(putStatement)
+            createCheckerSuccessBlock(field, checkerStatement)
+            createCheckerFailedBlock(field, checkerStatement)
+            checkerStatement.endControlFlow()
+        } else {
+            checkerStatement.add(putStatement)
+        }
+        return checkerStatement
+    }
 
     override val getBundleFromMap: MethodSpec.Builder = MethodSpec
         .methodBuilder("getBundle")

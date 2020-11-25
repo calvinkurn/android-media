@@ -6,9 +6,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.product.manage.item.common.util.ItemPickerType;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.seller.R;
+import com.tokopedia.seller.manageitem.common.util.ItemPickerType;
 
 /**
  * Created by nathan on 6/23/17.

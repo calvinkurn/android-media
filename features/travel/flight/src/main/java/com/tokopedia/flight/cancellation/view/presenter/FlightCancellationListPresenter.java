@@ -3,7 +3,7 @@ package com.tokopedia.flight.cancellation.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationGetCancellationListUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationListContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class FlightCancellationListPresenter extends BaseDaggerPresenter<FlightC
                 flightCancellationGetCancellationListUseCase.createRequestParams(
                         getView().getInvoiceId()
                 ),
-                new Subscriber<List<? extends FlightCancellationListViewModel>>() {
+                new Subscriber<List<? extends FlightCancellationListModel>>() {
                     @Override
                     public void onCompleted() {
 
@@ -43,8 +43,8 @@ public class FlightCancellationListPresenter extends BaseDaggerPresenter<FlightC
                     }
 
                     @Override
-                    public void onNext(List<? extends FlightCancellationListViewModel> flightCancellationListViewModels) {
-                        getView().setFlightCancellationList((List<FlightCancellationListViewModel>) flightCancellationListViewModels);
+                    public void onNext(List<? extends FlightCancellationListModel> flightCancellationListViewModels) {
+                        getView().setFlightCancellationList((List<FlightCancellationListModel>) flightCancellationListViewModels);
                         getView().renderList();
                     }
                 });

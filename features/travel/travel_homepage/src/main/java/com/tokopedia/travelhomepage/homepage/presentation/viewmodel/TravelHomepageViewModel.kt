@@ -3,21 +3,17 @@ package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.travelhomepage.homepage.data.ParamData
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
-import com.tokopedia.travelhomepage.homepage.data.TravelUnifiedSubhomepageData
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
+import com.tokopedia.travelhomepage.homepage.usecase.GetSubhomepageUnifiedDataUseCase
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
+import java.lang.reflect.Type
 import javax.inject.Inject
 
 /**
@@ -25,66 +21,67 @@ import javax.inject.Inject
  */
 
 class TravelHomepageViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val getEmptyModelsUseCase: GetEmptyModelsUseCase,
-        private val dispatcherProvider: TravelDispatcherProvider)
+        dispatcherProvider: TravelDispatcherProvider,
+        private val getSubhomepageUnifiedDataUseCase: GetSubhomepageUnifiedDataUseCase)
     : BaseViewModel(dispatcherProvider.io()) {
 
-    val travelItemList = MutableLiveData<List<TravelHomepageItemModel>>()
+    var travelItemList = mutableListOf<TravelHomepageItemModel>()
+    val travelItemListLiveData = MutableLiveData<MutableList<TravelHomepageItemModel>>()
     val isAllError = MutableLiveData<Boolean>()
     private val mapper = TravelHomepageMapper()
 
+    private var calledApiList: HashMap<String, String> = hashMapOf()
+
     fun getListFromCloud(rawQuery: String, isLoadFromCloud: Boolean) {
+        calledApiList = hashMapOf()
         launchCatchError(block = {
             val layoutResult = getEmptyModelsUseCase.getTravelLayoutSubhomepage(rawQuery, isLoadFromCloud)
             if (layoutResult is Success) {
-                travelItemList.postValue(layoutResult.data)
-                isAllError.postValue(false)
-            } else checkIfAllError()
+                travelItemList = layoutResult.data.toMutableList()
+                travelItemListLiveData.postValue(travelItemList)
+            } else isAllError.postValue(true)
         }) {
-            checkIfAllError()
+            isAllError.postValue(true)
         }
     }
 
-    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean) {
+    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean,
+                             type: Type) {
+        launch {
+            delay(200)
+            if (!calledApiList.containsKey(layoutData.position.toString())) {
+                calledApiList[layoutData.position.toString()] = layoutData.position.toString()
 
-        launchCatchError(block = {
-            val data = withContext(dispatcherProvider.ui()) {
-                val param = mapOf(DATA_TYPE_PARAM to layoutData.dataType, WIDGET_TYPE_PARAM to layoutData.widgetType, "data" to ParamData())
-                val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
-                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
-                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
-            }.getSuccessData<TravelUnifiedSubhomepageData.Response>()
+                val param = mapOf(DATA_TYPE_PARAM to layoutData.dataType,
+                        WIDGET_TYPE_PARAM to layoutData.widgetType, "data" to ParamData())
 
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[layoutData.position] = mapper.mapToViewModel(layoutData, data.response)
-                updatedList[layoutData.position].isLoaded = true
-                updatedList[layoutData.position].isSuccess = true
-                travelItemList.postValue(updatedList)
-            }
-        }) {
-            travelItemList.value?.let {
-                val updatedList = it.toMutableList()
-                updatedList[layoutData.position].isLoaded = true
-                updatedList[layoutData.position].isSuccess = false
-                travelItemList.postValue(updatedList)
-            }
-            checkIfAllError()
-        }
-    }
+                try {
+                    getSubhomepageUnifiedDataUseCase.execute(rawQuery, param, isFromCloud, type).let {
+                        val item = mapper.mapToViewModel(layoutData, it)
+                        item.isLoaded = true
+                        item.isSuccess = true
+                        item.isLoadFromCloud = false
+                        travelItemList[layoutData.position] = item
+                        travelItemListLiveData.postValue(travelItemList)
+                    }
 
-    private fun checkIfAllError() {
-        travelItemList.value?.let {
-            var isSuccess = false
-            for (item in it) {
-                if (item.isSuccess || !item.isLoaded) {
-                    isSuccess = true
-                    break
+                } catch (e: Throwable) {
+                    travelItemList[layoutData.position].isLoaded = true
+                    travelItemList[layoutData.position].isSuccess = false
+                    if (checkIfAllError()) isAllError.postValue(true)
+                    else travelItemListLiveData.postValue(travelItemList)
                 }
             }
-            isAllError.postValue(!isSuccess)
+        }
+    }
+
+    private fun checkIfAllError(): Boolean {
+        travelItemList.let {
+            for (item in it) {
+                if (item.isSuccess || !item.isLoaded) return false
+            }
+            return true
         }
     }
 

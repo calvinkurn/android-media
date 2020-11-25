@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.authentication.AuthConstant;
 import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -45,6 +46,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
         headerMap.put("X-Device", "android-" + VERSION_NAME);
         headerMap.put("X-Tkpd-Authorization", headerAuth == null ? "" : headerAuth);
         headerMap.put("Authorization", "Bearer " + userSession.getAccessToken());
+        headerMap.put(AuthConstant.HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX);
 
         return headerMap;
     }

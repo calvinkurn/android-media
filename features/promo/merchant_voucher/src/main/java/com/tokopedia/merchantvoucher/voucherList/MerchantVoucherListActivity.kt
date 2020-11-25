@@ -9,7 +9,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.share.DefaultShare
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -82,9 +83,17 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
             val shopInfo: ShopInfo? = (fragment as MerchantVoucherListFragment).shopInfo
             shopInfo?.let {
                 merchantVoucherTracking.clickShare()
-                (application as MerchantVoucherModuleRouter).goToShareShop(this@MerchantVoucherListActivity,
-                shopId, shopInfo.shopCore.url, getString(R.string.shop_label_share_formatted,
-                MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location))
+                val shareMsg = getString(R.string.shop_label_share_formatted,
+                        MethodChecker.fromHtml(shopInfo.shopCore.name).toString(), shopInfo.location)
+                val shareData = LinkerData.Builder.getLinkerBuilder()
+                        .setType(LinkerData.SHOP_TYPE)
+                        .setName(getString(R.string.message_share_shop))
+                        .setTextContent(shareMsg)
+                        .setCustMsg(shareMsg)
+                        .setUri(shopInfo.shopCore.url)
+                        .setId(shopId)
+                        .build()
+                DefaultShare(this@MerchantVoucherListActivity, shareData).show()
             }
         }
     }

@@ -20,6 +20,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 27/03/20
@@ -77,8 +78,8 @@ class HotelEvoucherViewModelTest {
     fun sendPdf_shouldBeSuccess() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(SharePdfDataResponse::class.java to SharePdfDataResponse(true)),
-                mapOf(),
+                mapOf<Type, Any>(SharePdfDataResponse::class.java to SharePdfDataResponse(true)),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -96,8 +97,8 @@ class HotelEvoucherViewModelTest {
     fun sendPdf_shouldBeFailed() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(SharePdfDataResponse::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(SharePdfDataResponse::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())

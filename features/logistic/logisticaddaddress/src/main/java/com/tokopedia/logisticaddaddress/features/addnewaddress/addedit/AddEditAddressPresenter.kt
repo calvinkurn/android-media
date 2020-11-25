@@ -2,14 +2,14 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
+import com.tokopedia.logisticaddaddress.utils.SimpleIdlingResource
+import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -33,16 +33,17 @@ class AddEditAddressPresenter
         getDistrictUseCase.unsubscribe()
     }
 
-    fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
+    fun saveAddress(model: SaveAddressDataModel, typeForm: String, isFullFlow: Boolean, isLogisticLabel: Boolean) {
         val formType = if (typeForm == AddressConstants.ANA_POSITIVE) "1" else "0"
+        SimpleIdlingResource.increment()
         addAddressUseCase
                 .execute(model, formType)
                 .subscribe(object : Subscriber<AddAddressResponse>() {
                     override fun onNext(response: AddAddressResponse) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
-                            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanSuccess(isFullFlow, isLogisticLabel)
                         } else {
-                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess(isFullFlow, isLogisticLabel)
                         }
                         response.keroAddAddress.data.run {
                             if (isSuccess == 1) {
@@ -54,13 +55,15 @@ class AddEditAddressPresenter
                         }
                     }
 
-                    override fun onCompleted() {}
+                    override fun onCompleted() {
+                        SimpleIdlingResource.decrement()
+                    }
 
                     override fun onError(e: Throwable) {
                         if (typeForm.equals(AddressConstants.ANA_POSITIVE, true)) {
-                            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanNotSuccess(e.printStackTrace().toString(), isFullFlow, isLogisticLabel)
                         } else {
-                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e.printStackTrace().toString(), eventLabel = LOGISTIC_LABEL)
+                            AddNewAddressAnalytics.eventClickButtonSimpanNegativeNotSuccess(e.printStackTrace().toString(), isFullFlow, isLogisticLabel)
                         }
                         view?.showError(e)
                     }
@@ -69,6 +72,7 @@ class AddEditAddressPresenter
     }
 
     fun getZipCodes(districtId: String) {
+        SimpleIdlingResource.increment()
         zipCodeUseCase.execute(districtId)
                 .subscribe(
                         { response ->
@@ -81,7 +85,7 @@ class AddEditAddressPresenter
                                     }
                                 }
                             }
-                        }, {}, {}
+                        }, {}, { SimpleIdlingResource.decrement() }
                 )
     }
 
@@ -89,7 +93,7 @@ class AddEditAddressPresenter
         autoCompleteUseCase.execute(query)
                 .subscribe(
                         { modelList ->
-                            getDistrict(modelList.first().placeId)
+                            getDistrict(modelList.data.first().placeId)
                         }, { t -> Timber.d(t) }, {})
     }
 

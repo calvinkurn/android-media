@@ -20,9 +20,6 @@ import rx.Observable;
 @Deprecated
 public interface ShopApi {
 
-    @GET(TkpdBaseURL.Shop.PATH_GET_LIKE_DISLIKE_REVIEW)
-    Observable<Response<TkpdResponse>> getLikeReview(@QueryMap Map<String, String> params);
-
     @FormUrlEncoded
     @POST(TkpdBaseURL.Shop.PATH_GET_SHOP_INFO)
     Observable<Response<TkpdResponse>> getInfo(@FieldMap Map<String, String> params);

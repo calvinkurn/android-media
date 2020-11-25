@@ -91,6 +91,6 @@ class DotIndicatorView : LinearLayout {
     }
 
     //override this to change indicator color as you want
-    fun getDefaultIndicatorSelected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_selected
-    fun getDefaultIndicatorUnselected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_unselected
+    fun getDefaultIndicatorSelected(): Int = R.drawable.indicator_onboarding_selected_default
+    fun getDefaultIndicatorUnselected(): Int = R.drawable.indicator_onboarding_unselected_default
 }

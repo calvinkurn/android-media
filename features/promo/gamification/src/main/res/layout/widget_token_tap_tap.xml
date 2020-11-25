@@ -8,7 +8,7 @@
         android:layout_height="@dimen/height_egg"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/ic_empty_egg" />
+        tools:srcCompat="@drawable/gami_ic_empty_egg" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageleft"
@@ -18,7 +18,7 @@
         android:layout_marginEnd="0dp"
         android:layout_marginRight="0dp"
         android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/ic_empty_egg" />
+        tools:srcCompat="@drawable/gami_ic_empty_egg" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageright"
@@ -28,7 +28,7 @@
         android:layout_marginStart="0dp"
         android:layout_marginLeft="0dp"
         android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/ic_empty_egg" />
+        tools:srcCompat="@drawable/gami_ic_empty_egg" />
 
 
     <com.tokopedia.gamification.cracktoken.customview.MaskedHeightImageView
@@ -37,7 +37,7 @@
         android:layout_height="@dimen/height_egg"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        tools:srcCompat="@drawable/ic_empty_egg" />
+        tools:srcCompat="@drawable/gami_ic_empty_egg" />
 
     <com.tokopedia.gamification.taptap.compoundview.TapCounterView
         android:layout_width="@dimen/dp_40"

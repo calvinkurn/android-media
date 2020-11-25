@@ -12,18 +12,18 @@
         android:layout_width="@dimen/shop_recommendation_width"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.topads.sdk.view.SquareImageView
             android:id="@+id/ivImageLeft"
             android:layout_width="@dimen/dp_72"
             android:layout_height="0dp"
-            android:background="@color/topads_gray_default_bg"
+            android:background="@color/Unify_N50"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/ivImageMiddle"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.design.image.SquareImageView
+        <com.tokopedia.topads.sdk.view.SquareImageView
             android:id="@+id/ivImageMiddle"
             android:layout_width="@dimen/dp_72"
             android:layout_height="0dp"
@@ -58,7 +58,7 @@
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars" />
 
-        <com.tokopedia.design.component.ButtonCompat
+        <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnFollow"
             android:layout_width="@dimen/dp_72"
             android:layout_height="wrap_content"
@@ -67,8 +67,8 @@
             android:layout_marginTop="@dimen/dp_30"
             android:layout_marginBottom="@dimen/dp_8"
             android:textAllCaps="false"
-            app:buttonCompatSize="small"
-            app:buttonCompatType="primary"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -86,7 +86,7 @@
             android:fontFamily="sans-serif"
             android:lineSpacingExtra="5sp"
             android:lines="2"
-            android:textColor="@color/black_38"
+            android:textColor="@color/Unify_N700_32"
             android:textSize="@dimen/sp_10"
             android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -118,7 +118,7 @@
             android:ellipsize="end"
             android:fontFamily="sans-serif"
             android:lines="1"
-            android:textColor="@color/black_70"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/ivProfile"

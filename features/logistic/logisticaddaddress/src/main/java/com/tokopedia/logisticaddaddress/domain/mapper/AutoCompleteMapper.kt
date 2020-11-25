@@ -1,11 +1,9 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.logisticaddaddress.data.entity.response.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
-import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SavedAddress
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
-import com.tokopedia.logisticaddaddress.features.autocomplete.model.ValidatedDistrict
+import com.tokopedia.logisticaddaddress.domain.model.autocomplete.PredictionsItem
+import com.tokopedia.logisticCommon.domain.model.Place
+import com.tokopedia.logisticCommon.domain.model.SuggestedPlace
 import javax.inject.Inject
 
 /**
@@ -13,39 +11,22 @@ import javax.inject.Inject
  */
 class AutoCompleteMapper @Inject constructor() {
 
-    fun mapAutoComplete(response: AutocompleteResponse): List<SuggestedPlace> {
-        val dataResponse = response.keroMapsAutocomplete.data.predictions
-        return dataResponse.map {
+    fun mapAutoComplete(response: AutocompleteResponse): Place {
+        val errorCode = response.keroMapsAutocomplete.errorCode
+        return Place().apply {
+            this.data = suggestedPlaceData(response.keroMapsAutocomplete.data.predictions)
+            this.errorCode = errorCode
+        }
+    }
+
+    private fun suggestedPlaceData(response: List<PredictionsItem>) : List<SuggestedPlace> {
+        return response.map {
             SuggestedPlace(
                     it.structuredFormatting.mainText,
                     it.structuredFormatting.secondaryText,
                     it.placeId
             )
         }
-    }
-
-    fun mapAddress(response: AddressResponse): List<SavedAddress> {
-        val data = response.keroAddressCorner.data
-        return data.map {
-            SavedAddress(
-                    it.addrId,
-                    it.addrName,
-                    it.address1,
-                    it.latitude,
-                    it.longitude
-            )
-        }
-    }
-
-    fun mapValidate(response: GetDistrictResponse): ValidatedDistrict {
-        val data = response.keroPlacesGetDistrict.data
-        return data?.let {
-            ValidatedDistrict(
-                    it.title,
-                    it.latitude,
-                    it.longitude
-            )
-        } ?: ValidatedDistrict()
     }
 
 }

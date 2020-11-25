@@ -1,17 +1,17 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.chat_common.R;
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel;
-import com.tokopedia.chat_common.data.MessageViewModel;
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod;
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener;
-import com.tokopedia.chat_common.R;
 
 /**
  * @author by nisie on 5/9/18.
@@ -41,10 +41,10 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
     }
 
     private void setupChatBubbleAlignment(View chatBalloon, FallbackAttachmentViewModel element) {
-        if (element.isOpposite()) {
-            setChatLeft(chatBalloon);
-        } else {
+        if (element.isSender()) {
             setChatRight(chatBalloon);
+        } else {
+            setChatLeft(chatBalloon);
         }
     }
 
@@ -53,8 +53,8 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
                 .left_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_LEFT, hour);
-        message.setTextColor(MethodChecker.getColor(context, R.color.black_70));
-        message.setLinkTextColor(MethodChecker.getColor(context, R.color.black_70));
+        message.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
+        message.setLinkTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
     }
 
     private void setChatRight(View chatBalloon) {
@@ -62,8 +62,8 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
                 .right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, chatBalloon);
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, hour);
-        message.setTextColor(MethodChecker.getColor(context, R.color.white));
-        message.setLinkTextColor(MethodChecker.getColor(context, R.color.white));
+        message.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
+        message.setLinkTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0));
     }
 
     private void setAlignParent(int alignment, View view) {

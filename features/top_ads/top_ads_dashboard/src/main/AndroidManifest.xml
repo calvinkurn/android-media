@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.topads.dashboard"
-    xmlns:tools="http://schemas.android.com/tools">
+    package="com.tokopedia.topads.dashboard">
 
     <application>
 
@@ -8,7 +7,7 @@
             android:name=".view.activity.TopAdsDashboardActivity"
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Green" >
+            android:theme="@style/Theme.White" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -22,16 +21,12 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_topads"
                     android:pathPattern="@string/path_topads_dashboard"/>
-                <data
-                    android:scheme="@string/sellerapp_scheme"
-                    android:host="@string/host_topads"/>
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.TopAdsAddCreditActivity"
+            android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity"
             android:label="@string/title_top_ads_add_credit"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" >
+            android:theme="@style/Theme.TopAds.Transparent" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -49,7 +44,7 @@
         </activity>
         <activity
             android:name="com.tokopedia.topads.credit.history.view.activity.TopAdsCreditHistoryActivity"
-            android:label="@string/title_top_ads_credit_history"
+            android:label="@string/topads_dash_desc_credit_label"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
             <intent-filter>
@@ -63,14 +58,46 @@
                     android:path="@string/path_topads_history_credit"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAutoTopUpActivity"
-            android:label="@string/title_top_ads_auto_topup"
-            android:theme="@style/Theme.White"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".view.activity.TopAdsPaymentCreditActivity"
             android:label="@string/title_top_ads_add_credit"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity"
+            android:label="@string/topads_dash_auto_topup_title"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_topads"
+                    android:path="@string/path_topads_auto_topup"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".view.activity.TopAdsGroupDetailViewActivity"
+            android:label="@string/topads_group_detail"
+            android:exported="true"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.activity.HiddenTrialActivity"
+            android:label="@string/top_ads_title_dashboard"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".view.activity.TopAdsKeywordInsightsActivity"
+            android:label="@string/top_ads_title_dashboard"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
     </application>

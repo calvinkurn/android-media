@@ -34,12 +34,4 @@ public class GMGetCashbackModel {
         this.cashback = cashback;
     }
 
-    public int getCashbackAmount() {
-        return cashbackAmount;
-    }
-
-    public void setCashbackAmount(int cashbackAmount) {
-        this.cashbackAmount = cashbackAmount;
-    }
-
 }

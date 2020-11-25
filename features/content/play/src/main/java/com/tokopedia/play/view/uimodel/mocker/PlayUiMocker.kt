@@ -15,11 +15,12 @@ object PlayUiMocker {
     fun getMockPinnedProduct() = PinnedProductUiModel(
             partnerName = "GSK Official Store",
             title = "Ayo belanja barang pilihan kami sebelum kehabisan!",
-            isPromo = true
+            hasPromo = true
     )
 
     fun getMockProductSheetContent() = PlayResult.Success(ProductSheetUiModel(
             title = "Barang & Promo Pilihan",
+            partnerId = 123,
             voucherList = List(5) { voucherIndex ->
                 MerchantVoucherUiModel(
                         type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,

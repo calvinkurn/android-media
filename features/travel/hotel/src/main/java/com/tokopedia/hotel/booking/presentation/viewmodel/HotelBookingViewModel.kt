@@ -1,15 +1,17 @@
 package com.tokopedia.hotel.booking.presentation.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.ticker.TravelTickerHotelPage
+import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.hotel.booking.data.model.CartDataParam
-import com.tokopedia.hotel.booking.data.model.HotelCart
-import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
-import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.roomlist.util.HotelUtil
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
@@ -32,11 +34,25 @@ import javax.inject.Inject
 class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                 private val getContactListUseCase: GetContactListUseCase,
                                                 private val upsertContactListUseCase: UpsertContactListUseCase,
+                                                private val travelTickerUseCase: TravelTickerCoroutineUseCase,
                                                 val dispatcher: TravelDispatcherProvider) : BaseViewModel(dispatcher.io()) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart.Response>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
+
+    val tokopointSumCouponResult = MutableLiveData<String>()
+
+    private val mutableTickerData = MutableLiveData<Result<TravelTickerModel>>()
+    val tickerData: LiveData<Result<TravelTickerModel>>
+        get() = mutableTickerData
+
+    fun fetchTickerData() {
+        launch(dispatcher.ui()) {
+            val tickerData = travelTickerUseCase.execute(TravelTickerInstanceId.HOTEL, TravelTickerHotelPage.BOOK)
+            mutableTickerData.postValue(tickerData)
+        }
+    }
 
     fun getContactList(query: String) {
         launch {
@@ -87,6 +103,18 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
             hotelCheckoutResult.postValue(Success(data.response))
         }) {
             hotelCheckoutResult.postValue(Fail(it))
+        }
+    }
+
+    fun getTokopointsSumCoupon(rawQuery: String) {
+        launchCatchError(block = {
+            val data = withContext(dispatcher.ui()) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TokopointsSumCoupon.Response::class.java)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TokopointsSumCoupon.Response>()
+            tokopointSumCouponResult.postValue(data.response.sumCouponUnitOpt)
+        }) {
+            tokopointSumCouponResult.postValue("")
         }
     }
 

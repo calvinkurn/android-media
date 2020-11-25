@@ -45,12 +45,33 @@ data class DFConfig(
 
     @SerializedName("df_singleton_service")
     @Expose
-    val useSingletonService: Boolean = true
+    val useSingletonService: Boolean = true,
+
+    @SerializedName("module_restricted_in_bg")
+    @Expose
+    val moduleRestrictInBackground: List<String>? = emptyList(),
+
+    @SerializedName("dl_in_bg_show_fallback_time")
+    @Expose
+    val timeout: Long = 30,
+
+    @SerializedName("cancel_dl_before_install")
+    @Expose
+    val cancelDownloadBeforeInstallInPage: Boolean = true
 
 ) {
-    fun allowRunningServiceFromActivity(): Boolean {
+    fun allowRunningServiceFromActivity(moduleName: String): Boolean {
         return useSingletonService &&
             downloadInBackground &&
-            !downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT)
+            !downloadInBackgroundExcludedSdkVersion.contains(Build.VERSION.SDK_INT) &&
+            isModuleAllowedDownloadInBg(moduleName)
+    }
+
+    private fun isModuleAllowedDownloadInBg(moduleName: String): Boolean {
+        return if (moduleRestrictInBackground.isNullOrEmpty()) {
+            true
+        } else {
+            moduleName !in moduleRestrictInBackground
+        }
     }
 }

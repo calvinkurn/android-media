@@ -11,17 +11,17 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListModel;
 import com.tokopedia.flight.common.view.BaseFlightActivity;
 
 import static com.tokopedia.flight.cancellation.view.fragment.FlightCancellationDetailFragment.EXTRA_CANCELLATION_DETAIL_PASS_DATA;
 
 public class FlightCancellationDetailActivity extends BaseFlightActivity implements HasComponent<FlightCancellationComponent> {
 
-    FlightCancellationListViewModel flightCancellationListViewModel;
+    FlightCancellationListModel flightCancellationListViewModel;
 
     public static Intent createIntent(Context context,
-                                      FlightCancellationListViewModel cancellationListViewModel) {
+                                      FlightCancellationListModel cancellationListViewModel) {
         Intent intent = new Intent(context, FlightCancellationDetailActivity.class);
         intent.putExtra(EXTRA_CANCELLATION_DETAIL_PASS_DATA, cancellationListViewModel);
         return intent;

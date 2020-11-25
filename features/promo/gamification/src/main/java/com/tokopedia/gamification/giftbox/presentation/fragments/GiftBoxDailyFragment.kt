@@ -16,20 +16,25 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.annotation.StringDef
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.gamification.R
 import com.tokopedia.gamification.audio.AudioFactory
+import com.tokopedia.gamification.di.ActivityContextModule
 import com.tokopedia.gamification.giftbox.analytics.GtmEvents
+import com.tokopedia.gamification.giftbox.data.di.GAMI_GIFT_DAILY_TRACE_PAGE
 import com.tokopedia.gamification.giftbox.data.di.component.DaggerGiftBoxComponent
+import com.tokopedia.gamification.giftbox.data.di.modules.AppModule
+import com.tokopedia.gamification.giftbox.data.di.modules.PltModule
 import com.tokopedia.gamification.giftbox.data.entities.*
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.ACTIVE
+import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.DEFAULT
 import com.tokopedia.gamification.giftbox.presentation.fragments.TokenUserState.Companion.EMPTY
 import com.tokopedia.gamification.giftbox.presentation.helpers.addListener
 import com.tokopedia.gamification.giftbox.presentation.helpers.doOnLayout
@@ -38,6 +43,7 @@ import com.tokopedia.gamification.giftbox.presentation.helpers.updateLayoutParam
 import com.tokopedia.gamification.giftbox.presentation.viewmodels.GiftBoxDailyViewModel
 import com.tokopedia.gamification.giftbox.presentation.views.*
 import com.tokopedia.gamification.pdp.data.LiveDataResult
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
@@ -59,6 +65,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     lateinit var loaderReminder: LoaderUnify
     lateinit var reminderLayout: RelativeLayout
     lateinit var fmReminder: FrameLayout
+    lateinit var imageInfo: AppCompatImageView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,18 +74,25 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     var isReminderSet = false
     var reminder: Reminder? = null
     var gameRemindMeCheck: GameRemindMeCheck? = null
+    lateinit var pltPerf: PageLoadTimePerformanceInterface
+
     @TokenUserState
     var tokenUserState: String = TokenUserState.DEFAULT
     var disableGiftBoxTap = false
     var autoApplyMessage = ""
+    var totalPrizeImagesCount = 0
+    var loadedPrizeImagesCount = 0
+    private val HTTP_STATUS_OK = "200"
 
-    override fun getLayout() = R.layout.fragment_gift_box_daily
+    override fun getLayout() = com.tokopedia.gamification.R.layout.fragment_gift_box_daily
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setupPlt()
         super.onCreate(savedInstanceState)
         context?.let {
             val component = DaggerGiftBoxComponent.builder()
-                    .baseAppComponent((it.applicationContext as BaseMainApplication).baseAppComponent)
+                    .activityContextModule(ActivityContextModule(it))
+                    .appModule(AppModule((context as AppCompatActivity).application))
                     .build()
             component.inject(this)
 
@@ -91,8 +105,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
+    private fun setupPlt() {
+        pltPerf = PltModule().providePerfInterface()
+        pltPerf.startMonitoring(GAMI_GIFT_DAILY_TRACE_PAGE)
+        pltPerf.startPreparePagePerformanceMonitoring()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
+
+        pltPerf.stopMonitoring()
 
         mAudiosManager?.let {
             it.destroy()
@@ -112,6 +134,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val v = super.onCreateView(inflater, container, savedInstanceState)
+        pltPerf.stopPreparePagePerformanceMonitoring()
+        pltPerf.startNetworkRequestPerformanceMonitoring()
         viewModel.getGiftBox()
         return v
     }
@@ -132,6 +156,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         loaderReminder = v.findViewById(R.id.loaderReminder)
         reminderLayout = v.findViewById(R.id.reminderLayout)
         fmReminder = v.findViewById(R.id.fmReminder)
+        imageInfo = v.findViewById(R.id.imageInfo)
         super.initViews(v)
         setTextSize()
         setShadows()
@@ -140,7 +165,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     fun setShadows() {
         context?.let {
-            val shadowColor = ContextCompat.getColor(it, R.color.gf_box_text_shadow)
+            val shadowColor = ContextCompat.getColor(it, com.tokopedia.gamification.R.color.gf_box_text_shadow)
             val shadowRadius = tvRewardFirstLine.dpToPx(5)
             val shadowOffset = tvRewardFirstLine.dpToPx(4)
             tvRewardFirstLine.setShadowLayer(shadowRadius, 0f, shadowOffset, shadowColor)
@@ -187,6 +212,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             RewardContainer.RewardState.POINTS_ONLY -> {
                                 val rewardAnim = rewardContainer.showSingleLargeRewardAnimation(giftBoxDailyView.fmGiftBox.top)
 
+                                val ovoPointsTextAnim = rewardContainer.ovoPointsTextAnimation()
+                                ovoPointsTextAnim.startDelay = startDelay + 100L
+                                ovoPointsTextAnim.start()
+
                                 val animatorSet = AnimatorSet()
                                 animatorSet.playTogether(stageLightAnim, rewardAnim)
                                 animatorSet.startDelay = startDelay
@@ -224,19 +253,20 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         viewModel.giftBoxLiveData.observe(viewLifecycleOwner, Observer { it ->
             when (it.status) {
                 LiveDataResult.STATUS.SUCCESS -> {
+                    pltPerf.stopNetworkRequestPerformanceMonitoring()
+                    pltPerf.startRenderPerformanceMonitoring()
                     if (it.data != null) {
                         val giftBoxEntity = it.data.first
                         val remindMeCheckEntity = it.data.second
 
                         val giftBoxStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
-                        val remindMeCheckStatusCode = giftBoxEntity.gamiLuckyHome?.resultStatus?.code
-                        if (giftBoxStatusCode == 200 && remindMeCheckStatusCode == 200) {
+                        val remindMeCheckStatusCode = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.code
+                        if (giftBoxStatusCode == HTTP_STATUS_OK && remindMeCheckStatusCode == HTTP_STATUS_OK) {
 
                             tokenUserState = giftBoxEntity.gamiLuckyHome.tokensUser.state
                             reminder = giftBoxEntity.gamiLuckyHome.reminder
                             when (tokenUserState) {
                                 TokenUserState.ACTIVE -> {
-                                    fadeInSoundIcon()
                                     if (!viewModel.campaignSlug.isNullOrEmpty()) {
                                         GtmEvents.viewGiftBoxPage(viewModel.campaignSlug!!, userSession?.userId)
                                     }
@@ -255,11 +285,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
                                     tvReminderMessage.text = reminder?.text
                                     setInitialUiForReminder()
-                                    playLoopSound()
                                     setClickEventOnReminder()
                                 }
                                 TokenUserState.EMPTY -> {
-                                    fadeOutSoundIcon()
                                     reminderLayout.visibility = View.VISIBLE
                                     renderGiftBoxActive(giftBoxEntity)
                                     tvRewardFirstLine.visibility = View.GONE
@@ -275,7 +303,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                                     hideLoader()
                                     val messageList = giftBoxEntity.gamiLuckyHome.resultStatus.message
                                     if (!messageList.isNullOrEmpty()) {
-                                        renderGiftBoxError(messageList[0], "Oke")
+                                        renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                     }
 
                                     tvReminderMessage.text = reminder?.text
@@ -288,29 +316,34 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         } else {
                             reminderLayout.visibility = View.GONE
 
-                            if (remindMeCheckStatusCode != 200) {
+                            if (remindMeCheckStatusCode != HTTP_STATUS_OK) {
 
                                 val messageList = remindMeCheckEntity?.gameRemindMeCheck?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
-                                    renderGiftBoxError(messageList[0], "Oke")
+                                    renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                 }
 
-                            } else if (giftBoxStatusCode != 200) {
+                            } else if (giftBoxStatusCode != HTTP_STATUS_OK) {
                                 val messageList = giftBoxEntity?.gamiLuckyHome?.resultStatus?.message
                                 if (!messageList.isNullOrEmpty()) {
-                                    renderGiftBoxError(messageList[0], "Oke")
+                                    renderGiftBoxError(messageList[0], getString(R.string.gami_oke))
                                 }
                             }
                         }
+                        handleInfoIcon(giftBoxStatusCode, giftBoxEntity.gamiLuckyHome?.infoUrl)
                     }
+                    pltPerf.stopRenderPerformanceMonitoring()
                 }
 
                 LiveDataResult.STATUS.LOADING -> showLoader()
 
                 LiveDataResult.STATUS.ERROR -> {
+                    pltPerf.stopNetworkRequestPerformanceMonitoring()
+                    pltPerf.startRenderPerformanceMonitoring()
                     hideLoader()
                     reminderLayout.visibility = View.GONE
-                    renderGiftBoxError(defaultErrorMessage, "Oke")
+                    renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
+                    pltPerf.stopRenderPerformanceMonitoring()
                 }
             }
         })
@@ -320,11 +353,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
 
                     if (it.data == null) {
-                        renderOpenBoxError(defaultErrorMessage, "Oke")
+                        renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                     } else {
                         val code = it.data?.gamiCrack.resultStatus.code
-                        if (code == 200) {
-                            fadeOutSoundIcon()
+                        if (code == HTTP_STATUS_OK) {
                             //set data in rewards first and then animate
                             disableGiftBoxTap = true
                             giftBoxRewardEntity = it.data
@@ -363,14 +395,16 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                             disableGiftBoxTap = false
                             val messageList = it.data?.gamiCrack?.resultStatus?.message
                             if (!messageList.isNullOrEmpty()) {
-                                renderOpenBoxError(messageList[0], "Oke")
+                                renderOpenBoxError(messageList[0], getString(R.string.gami_oke))
+                            } else {
+                                renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                             }
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     disableGiftBoxTap = false
-                    renderOpenBoxError(defaultErrorMessage, "Oke")
+                    renderOpenBoxError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -389,19 +423,19 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     val code = it.data?.gameRemindMe?.resultStatus?.code
                     val reason = it.data?.gameRemindMe?.resultStatus?.reason
 
-                    if (code == 200) {
+                    if (code == HTTP_STATUS_OK) {
                         renderReminderButton(true)
                     } else {
                         val messageList = it.data?.gameRemindMe?.resultStatus?.message
                         if (!messageList.isNullOrEmpty()) {
-                            showRemindMeError(messageList[0], "Oke")
+                            showRemindMeError(messageList[0], getString(R.string.gami_oke))
                         }
                     }
                 }
                 LiveDataResult.STATUS.ERROR -> {
                     loaderReminder.visibility = View.GONE
                     tvReminderBtn.visibility = View.VISIBLE
-                    showRemindMeError(defaultErrorMessage, "Oke")
+                    showRemindMeError(defaultErrorMessage, getString(R.string.gami_oke))
                 }
             }
         })
@@ -412,7 +446,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 LiveDataResult.STATUS.SUCCESS -> {
                     val code = it.data?.tokopointsSetAutoApply?.resultStatus?.code
                     val messageList = it.data?.tokopointsSetAutoApply?.resultStatus?.message
-                    if (code == 200) {
+                    if (code == HTTP_STATUS_OK) {
                         if (autoApplyMessage.isNotEmpty() && context != null) {
                             CustomToast.show(context!!, autoApplyMessage)
                         }
@@ -425,6 +459,15 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
             }
 
         })
+    }
+
+    private fun handleInfoIcon(statusCode: String?, infoUrl: String?) {
+        if (statusCode == HTTP_STATUS_OK && !infoUrl.isNullOrEmpty()) {
+            imageInfo.show()
+            imageInfo.setOnClickListener {
+                RouteManager.route(it.context, infoUrl)
+            }
+        }
     }
 
     fun handleButtonAction() {
@@ -469,9 +512,7 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     }
 
     override fun playLoopSound() {
-        if (tokenUserState != null && tokenUserState == TokenUserState.ACTIVE) {
-            super.playLoopSound()
-        }
+        // Don't want to play sound
     }
 
     fun renderUiForReminderCheck(remindMeCheckEntity: RemindMeCheckEntity) {
@@ -520,12 +561,12 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
     fun renderReminderButton(isUserReminded: Boolean) {
         context?.let {
             if (isUserReminded) {
-                fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_disabled_3d)
+                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_disabled_3d)
                 tvReminderBtn.text = reminder?.disableText
                 isReminderSet = true
             } else {
                 tvReminderBtn.text = reminder?.enableText
-                fmReminder.background = ContextCompat.getDrawable(it, R.drawable.gf_bg_green_3d)
+                fmReminder.background = ContextCompat.getDrawable(it, com.tokopedia.gamification.R.drawable.gf_bg_green_3d)
                 isReminderSet = false
             }
             tvReminderMessage.text = reminder?.text
@@ -537,17 +578,26 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         rewardContainer.setFinalTranslationOfCirclesTap(giftBoxDailyView.fmGiftBox.top)
 
         giftBoxDailyView.fmGiftBox.doOnLayout { fmGiftBox ->
-            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(R.dimen.gami_rv_coupons_height)
+            val heightOfRvCoupons = fmGiftBox.context.resources.getDimension(com.tokopedia.gamification.R.dimen.gami_rv_coupons_height)
             val lidTop = fmGiftBox.top
             var translationY = lidTop - heightOfRvCoupons + fmGiftBox.dpToPx(3)
-            if(isTablet){
+            if (isTablet) {
                 translationY -= fmGiftBox.dpToPx(8)
             }
 
             rewardContainer.rvCoupons.translationY = translationY
             val distanceFromLidTop = fmGiftBox.dpToPx(29)
-            val heightOfRewardText = fmGiftBox.dpToPx(31)
             rewardContainer.llRewardTextLayout.translationY = lidTop + distanceFromLidTop
+
+            tvTapHint.doOnLayout { tapHint ->
+                if (giftBoxDailyView.height > LARGE_PHONE_HEIGHT) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin) - tapHint.height
+                }
+
+                if (isTablet) {
+                    tapHint.translationY = lidTop - fmGiftBox.context.resources.getDimension(R.dimen.gami_tap_hint_margin_tablet) - tapHint.height
+                }
+            }
 
         }
         giftBoxDailyView.imageBoxFront.doOnLayout { imageBoxFront ->
@@ -594,6 +644,9 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
 
     override fun initialViewSetup() {
         super.initialViewSetup()
+
+        tvTapHint.setBackgroundResource(R.drawable.gami_bg_text_hint_box)
+        tvTapHint.setTextColor(ContextCompat.getColor(tvTapHint.context, R.color.gf_tap_hint))
         llBenefits.alpha = 0f
         llRewardMessage.alpha = 0f
         reminderLayout.alpha = 0f
@@ -642,24 +695,30 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                     frontImageUrl = ""
                 }
             }
+            val lidImages = arrayListOf<String>()
 
-            fadeInActiveStateViews(frontImageUrl, bgUrl)
+            if (imageUrlList != null && imageUrlList.size > 2) {
+                lidImages.addAll(imageUrlList.subList(2, imageUrlList.size))
+            }
+
+            if (!bgUrl.isNullOrEmpty())
+                fadeInActiveStateViews(frontImageUrl, bgUrl, lidImages)
         }
     }
 
     fun loadPrizeImagesAsync(entity: GiftBoxEntity, imageCallback: (() -> Unit)) {
-        var totalImagesCount = 0
-        var loadedImagesCount = 0
+        loadedPrizeImagesCount = 0
+        totalPrizeImagesCount = 0
 
         fun checkImageLoadStatus() {
-            loadedImagesCount += 1
-            if (loadedImagesCount == totalImagesCount) {
+            loadedPrizeImagesCount += 1
+            if (loadedPrizeImagesCount == totalPrizeImagesCount) {
                 imageCallback.invoke()
             }
         }
         entity.gamiLuckyHome.prizeList?.forEach {
             if (it.isSpecial) {
-                totalImagesCount += 1
+                totalPrizeImagesCount += 1
                 prizeViewLarge.setData(it.imageURL, it.text) {
                     checkImageLoadStatus()
                 }
@@ -670,17 +729,17 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallFirst.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 } else {
                     prizeViewSmallSecond.setData(it.imageURL, it.text) {
                         checkImageLoadStatus()
                     }
                     prizeViewSmallSecond.visibility = View.VISIBLE
-                    totalImagesCount += 1
+                    totalPrizeImagesCount += 1
                 }
             }
         }
-        if (totalImagesCount == loadedImagesCount) {
+        if (totalPrizeImagesCount == loadedPrizeImagesCount) {
             imageCallback.invoke()
         }
     }
@@ -690,16 +749,18 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         val tapHintAnim = ObjectAnimator.ofPropertyValuesHolder(tvTapHint, alphaProp)
         val tvBenefitsAnim = ObjectAnimator.ofPropertyValuesHolder(tvBenefits, alphaProp)
         val prizeListContainerAnim = ObjectAnimator.ofPropertyValuesHolder(llBenefits, alphaProp)
+        val infoAnim = ObjectAnimator.ofPropertyValuesHolder(imageInfo, alphaProp)
 
         val animatorSet = AnimatorSet()
-        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim)
+        animatorSet.playTogether(tapHintAnim, prizeListContainerAnim, tvBenefitsAnim, infoAnim)
         animatorSet.duration = 300L
 
         animatorSet.start()
     }
 
-    fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String) {
-        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, arrayListOf<String>(), imageCallback = {
+    private fun fadeInActiveStateViews(frontImageUrl: String, imageBgUrl: String, lidImages: List<String>) {
+        giftBoxDailyView.loadFiles(tokenUserState, frontImageUrl, imageBgUrl, lidImages, viewLifecycleOwner, imageCallback = {
+            giftBoxDailyView.imagesLoaded.lazySet(0)
             if (it) {
                 setPositionOfViewsAtBoxOpen(tokenUserState)
                 hideLoader()
@@ -728,6 +789,8 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
                 animatorSet.start()
             } else {
                 //Do nothing
+                hideLoader()
+                renderGiftBoxError(defaultErrorMessage, getString(R.string.gami_oke))
             }
         })
     }
@@ -754,13 +817,10 @@ class GiftBoxDailyFragment : GiftBoxBaseFragment() {
         }
     }
 
-    enum class GiftBoxState {
-        ACTIVE, EMPTY, ERROR, NO_INTERNET
-    }
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(ACTIVE, EMPTY)
+@StringDef(ACTIVE, EMPTY, DEFAULT)
 annotation class TokenUserState {
     companion object {
         const val ACTIVE = "active"

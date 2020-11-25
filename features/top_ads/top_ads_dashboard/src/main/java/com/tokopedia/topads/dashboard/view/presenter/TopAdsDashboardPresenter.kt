@@ -2,9 +2,13 @@ package com.tokopedia.topads.dashboard.view.presenter
 
 import android.content.res.Resources
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.data.model.CacheType
@@ -13,26 +17,32 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
-import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase.Companion.TOP_ADS_SOURCE
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant
 import com.tokopedia.topads.common.data.exception.ResponseErrorException
-import com.tokopedia.topads.common.data.model.DataDeposit
-import com.tokopedia.topads.common.domain.interactor.TopAdsDatePickerInteractor
-import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositUseCase
+import com.tokopedia.topads.common.data.internal.ParamObject
+import com.tokopedia.topads.common.data.response.groupitem.GetTopadsDashboardGroupStatistics
+import com.tokopedia.topads.common.data.response.groupitem.GroupItemResponse
+import com.tokopedia.topads.common.data.response.groupitem.GroupStatisticsResponse
+import com.tokopedia.topads.common.data.response.nongroupItem.GetDashboardProductStatistics
+import com.tokopedia.topads.common.data.response.nongroupItem.NonGroupResponse
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
+import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.*
-import com.tokopedia.topads.dashboard.data.model.ticker.Data
+import com.tokopedia.topads.dashboard.data.model.insightkey.InsightKeyData
 import com.tokopedia.topads.dashboard.domain.interactor.*
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDashboardView
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpData
-import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase
+import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import timber.log.Timber
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -42,194 +52,317 @@ import javax.inject.Inject
  */
 
 class TopAdsDashboardPresenter @Inject
-constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase,
+constructor(private val topAdsGetShopDepositUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Deposit>,
             private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-            private val topAdsDatePickerInteractor: TopAdsDatePickerInteractor,
-            private val topAdsPopulateTotalAdsUseCase: TopAdsPopulateTotalAdsUseCase,
-            private val topAdsGetStatisticsUseCase: TopAdsGetStatisticsUseCase,
-            private val topAdsAddSourceTaggingUseCase: TopAdsAddSourceTaggingUseCase,
-            private val topAdsGetPopulateDataAdUseCase: TopAdsGetPopulateDataAdUseCase,
-            private val deleteTopAdsStatisticsUseCase: DeleteTopAdsStatisticsUseCase,
-            private val deleteTopAdsTotalAdUseCase: DeleteTopAdsTotalAdUseCase,
+            private val topAdsGetGroupDataUseCase: TopAdsGetGroupDataUseCase,
+            private val topAdsGetGroupStatisticsUseCase: TopAdsGetGroupStatisticsUseCase,
+            private val topAdsGetProductStatisticsUseCase: TopAdsGetProductStatisticsUseCase,
+            private val topAdsGetProductKeyCountUseCase: TopAdsGetProductKeyCountUseCase,
+            private val topAdsGetGroupListUseCase: TopAdsGetGroupListUseCase,
+            private val topAdsGroupActionUseCase: TopAdsGroupActionUseCase,
+            private val topAdsProductActionUseCase: TopAdsProductActionUseCase,
+            private val topAdsGetGroupProductDataUseCase: TopAdsGetGroupProductDataUseCase,
+            private val topAdsInsightUseCase: TopAdsInsightUseCase,
+            private val getStatisticUseCase: GetStatisticUseCase,
             private val userSession: UserSessionInterface) : BaseDaggerPresenter<TopAdsDashboardView>() {
 
     var isShopWhiteListed: MutableLiveData<Boolean> = MutableLiveData()
     var expiryDateHiddenTrial: MutableLiveData<String> = MutableLiveData()
-    val HIDDEN_TRIAL_FEATURE = 21
-    val lastSelectionDatePickerIndex: Int
-        get() = topAdsDatePickerInteractor.lastSelectionDatePickerIndex
 
-    val lastSelectionDatePickerType: Int
-        get() = topAdsDatePickerInteractor.lastSelectionDatePickerType
+    companion object {
+        const val HIDDEN_TRIAL_FEATURE = 21
+        private const val SELECTION_TYPE_DEF = 0
+        private const val SELECTION_IND_DEF = 2
 
-    val endDate: Date
-        get() {
-            val endCalendar = Calendar.getInstance()
-            return topAdsDatePickerInteractor.getEndDate(endCalendar.time)
-        }
+        const val CAL_YYYY_MM_DD = "yyyy-MM-dd"
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        const val START_DATE = "startDate"
+        const val END_DATE = "endDate"
+        const val STATS_URL = """query topadsDashboardStatistics (${'$'}startDate: String!, ${'$'}endDate: String!,${'$'}shopID: Int!,${'$'}type:Int,${'$'}group:String){
+    topadsDashboardStatistics(startDate:${'$'}startDate,endDate:${'$'}endDate,shopID:${'$'}shopID,type:${'$'}type,group:${'$'}group){
+    data{
+      summary {
+        ads_impression_sum
+        ads_click_sum
+        ads_ctr_percentage
+        ads_cost_avg
+        ads_conversion_sum
+        ads_all_sold_sum
+        ads_cost_sum
+        ads_all_gross_profit
+        ads_follow_count
+        ads_impression_sum_fmt
+        ads_click_sum_fmt
+        ads_ctr_percentage_fmt
+        ads_cost_avg_fmt
+        ads_conversion_sum_fmt
+        ads_all_sold_sum_fmt
+        ads_cost_sum_fmt
+        ads_all_gross_profit_fmt
+        ads_follow_count_fmt
+        cost_sum
+        all_gross_profit
+        cost_sum_fmt
+        all_gross_profit_fmt
 
-    val startDate: Date
-        get() {
-            val startCalendar = Calendar.getInstance()
-            startCalendar.add(Calendar.DAY_OF_YEAR, -DatePickerConstant.DIFF_ONE_WEEK)
-            return topAdsDatePickerInteractor.getStartDate(startCalendar.time)
-        }
-
-    fun getPopulateDashboardData(rawQuery: String) {
-        val shopId: Int = userSession.shopId.toIntOrZero()
-        topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
-                .createRequestParams(rawQuery, shopId),
-                object : Subscriber<DashboardPopulateResponse>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_POPULATED_DATA#%s", e.localizedMessage)
-                        view?.onErrorPopulateData(e)
-                    }
-
-                    override fun onNext(dashboardPopulateResponse: DashboardPopulateResponse) {
-                        view?.onSuccessPopulateData(dashboardPopulateResponse)
-                    }
-                })
+      }
+      cells {
+        day
+        month
+        year
+        ads_impression_sum
+        ads_click_sum
+        ads_ctr_percentage
+        ads_cost_avg
+        ads_conversion_sum
+        ads_all_sold_sum
+        ads_cost_sum
+        ads_all_gross_profit
+        ads_impression_sum_fmt
+        ads_click_sum_fmt
+        ads_ctr_percentage_fmt
+        ads_cost_avg_fmt
+        ads_conversion_sum_fmt
+        ads_all_sold_sum_fmt
+        ads_cost_sum_fmt
+        ads_all_gross_profit_fmt
+        cost_sum
+        all_gross_profit
+        cost_sum_fmt
+        all_gross_profit_fmt
+        aff_impression_sum
+        aff_impression_sum_fmt
+      }
+    }
+  }
+}"""
+        const val DEPOSIT = """query topadsDashboardDeposits(${'$'}shop_id: Int!) {
+  topadsDashboardDeposits(shop_id: ${'$'}shop_id) {
+    data {
+      amount
+      amount_fmt
+    }
+  }
+}
+"""
     }
 
-    fun getShopDeposit() {
-        topAdsGetShopDepositUseCase.execute(TopAdsGetShopDepositUseCase.createParams(userSession.shopId),
-                object : Subscriber<DataDeposit>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        view?.onLoadTopAdsShopDepositError(e)
-                    }
-
-                    override fun onNext(dataDeposit: DataDeposit) {
-                        view?.onLoadTopAdsShopDepositSuccess(dataDeposit)
-                    }
-                })
+    @GqlQuery("DepositQuery", DEPOSIT)
+    fun getShopDeposit(onSuccess: ((dataDeposit: DepositAmount) -> Unit)) {
+        val params = mapOf(ParamObject.SHOP_id to userSession.shopId.toIntOrZero(),
+                ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_DASH)
+        topAdsGetShopDepositUseCase.setTypeClass(Deposit::class.java)
+        topAdsGetShopDepositUseCase.setRequestParams(params)
+        topAdsGetShopDepositUseCase.setGraphqlQuery(DepositQuery.GQL_QUERY)
+        topAdsGetShopDepositUseCase.execute({
+            onSuccess(it.topadsDashboardDeposits.data)
+        }
+                , {
+            it.printStackTrace()
+        })
     }
 
-    fun getShopInfo() {
-        gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(userSession.shopId.toIntOrZero()), source = TOP_ADS_SOURCE)
-        gqlGetShopInfoUseCase.execute(
+
+    fun getGroupData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
+                     startDate: String, endDate: String, onSuccess: ((GroupItemResponse.GetTopadsDashboardGroups) -> Unit)) {
+        topAdsGetGroupDataUseCase.setQuery(GraphqlHelper.loadRawString(resources,
+                com.tokopedia.topads.common.R.raw.query_get_groups_dashboard))
+        val requestParams = topAdsGetGroupDataUseCase.setParams(search, page, sort, status, startDate, endDate)
+        topAdsGetGroupDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>()  {
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<GroupItemResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<GroupItemResponse>
+                onSuccess(response.data.getTopadsDashboardGroups)
+            }
+        })
+    }
+
+    @GqlQuery("StatsList", STATS_URL)
+    fun getStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int, adType: String, onSuccesGetStatisticsInfo: ((dataStatistic: DataStatistic) -> Unit)) {
+        var requestParams = getStatisticUseCase.createRequestParams(startDate, endDate, selectedStatisticType, userSession.shopId, adType)
+        getStatisticUseCase.setQueryString(StatsList.GQL_QUERY)
+        getStatisticUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>()
+        {
+            override fun onCompleted() {
+            }
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<StatsData?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<StatsData>
+                val dataStatistic = response.data.topadsDashboardStatistics.data
+                onSuccesGetStatisticsInfo(dataStatistic)
+            }
+            override fun onError(e: Throwable) {
+               view?.onErrorGetStatisticsInfo(e)
+            }
+        })
+    }
+
+
+    fun getGroupStatisticsData(resources: Resources, page: Int, search: String, sort: String, status: Int?,
+                               startDate: String, endDate: String, groupIds: List<String>, onSuccess: ((GetTopadsDashboardGroupStatistics) -> Unit)) {
+        topAdsGetGroupStatisticsUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_group_statistics))
+        val params = topAdsGetGroupStatisticsUseCase.setParams(search, page, sort, status, startDate, endDate, groupIds)
+        topAdsGetGroupStatisticsUseCase.execute(params, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<GroupStatisticsResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<GroupStatisticsResponse>
+                response?.data?.getTopadsDashboardGroupStatistics?.let { onSuccess(it) }
+            }
+        })
+    }
+
+    fun getProductStats(resources: Resources, startDate: String, endDate: String, adIds: List<String>, onSuccess: ((GetDashboardProductStatistics) -> Unit)) {
+        topAdsGetProductStatisticsUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                com.tokopedia.topads.common.R.raw.gql_query_product_statistics))
+        topAdsGetProductStatisticsUseCase.setParams(startDate, endDate, adIds)
+        topAdsGetProductStatisticsUseCase.executeQuerySafeMode(
                 {
-                    if (isViewAttached) {
-                        view?.onSuccessGetShopInfo(it)
-                    }
+                    onSuccess(it.getDashboardProductStatistics)
                 },
                 {
-                    Timber.e(it, "P1#TOPADS_DASHBOARD_PRESENTER_GET_SHOP_INFO#%s", it.localizedMessage)
-                    if (isViewAttached) {
-                        view?.onErrorGetShopInfo(it)
-                    }
-                }
-        )
-    }
-
-    fun saveSourceTagging(@TopAdsSourceOption source: String) {
-        topAdsAddSourceTaggingUseCase.execute(TopAdsAddSourceTaggingUseCase.createRequestParams(source),
-                object : Subscriber<Void>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {}
-
-                    override fun onNext(aVoid: Void) {}
+                    it.printStackTrace()
                 })
     }
 
-    override fun detachView() {
-        super.detachView()
-        topAdsGetShopDepositUseCase.unsubscribe()
-        gqlGetShopInfoUseCase.cancelJobs()
-        topAdsPopulateTotalAdsUseCase.unsubscribe()
-        topAdsGetStatisticsUseCase.unsubscribe()
-        topAdsAddSourceTaggingUseCase.unsubscribe()
-        deleteTopAdsStatisticsUseCase.unsubscribe()
-        deleteTopAdsTotalAdUseCase.unsubscribe()
-        topAdsGetPopulateDataAdUseCase.unsubscribe()
-    }
-
-    fun isDateUpdated(startDate: Date?, endDate: Date?): Boolean {
-        if (startDate == null || endDate == null) {
-            return true
-        }
-        var dateText = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(startDate)
-        var dateTextCache = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(this.startDate)
-        if (!dateText.equals(dateTextCache, ignoreCase = true)) {
-            return true
-        }
-        dateText = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(endDate)
-        dateTextCache = SimpleDateFormat(TopAdsCommonConstant.REQUEST_DATE_FORMAT, Locale.ENGLISH).format(this.endDate)
-        return (!dateText.equals(dateTextCache, ignoreCase = true))
-    }
-
-    fun saveDate(startDate: Date, endDate: Date) {
-        topAdsDatePickerInteractor.saveDate(startDate, endDate)
-    }
-
-    fun saveSelectionDatePicker(selectionType: Int, lastSelection: Int) {
-        topAdsDatePickerInteractor.saveSelectionDatePicker(selectionType, lastSelection)
-    }
-
-    fun populateTotalAds() {
-        topAdsPopulateTotalAdsUseCase.execute(TopAdsPopulateTotalAdsUseCase.createRequestParams(userSession.shopId),
-                object : Subscriber<TotalAd>() {
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        view?.onErrorPopulateTotalAds(e)
-                    }
-
-                    override fun onNext(totalAd: TotalAd) {
-                        view?.onSuccessPopulateTotalAds(totalAd)
-                    }
+    fun getCountProductKeyword(resources: Resources, groupIds: List<String>, onSuccess: ((List<CountDataItem>) -> Unit)) {
+        topAdsGetProductKeyCountUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_total_products_keywords))
+        topAdsGetProductKeyCountUseCase.setParams(groupIds)
+        topAdsGetProductKeyCountUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.topAdsGetTotalAdsAndKeywords.data)
+                },
+                {
+                    it.printStackTrace()
                 })
     }
 
-    fun getTopAdsStatistic(startDate: Date, endDate: Date, @TopAdsStatisticsType selectedStatisticType: Int) {
-        topAdsGetStatisticsUseCase.execute(TopAdsGetStatisticsUseCase.createRequestParams(startDate, endDate,
-                selectedStatisticType, userSession.shopId), object : Subscriber<DataStatistic>() {
-            override fun onCompleted() {}
+    fun getGroupList(resources: Resources, search: String, onSuccess: ((List<GroupListDataItem>) -> Unit)) {
+        topAdsGetGroupListUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.query_get_group_list))
+        topAdsGetGroupListUseCase.setParams(search)
+        topAdsGetGroupListUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(it.getTopadsDashboardGroups.data)
+                },
+                {
+                    it.printStackTrace()
 
+                })
+    }
+
+    fun setGroupAction(onSuccess: ((action: String) -> Unit), action: String, groupIds: List<String>, resources: Resources) {
+        topAdsGroupActionUseCase.setQuery(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_group_action))
+        val requestParams = topAdsGroupActionUseCase.setParams(action, groupIds)
+        topAdsGroupActionUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>()
+        {
+            override fun onCompleted() {
+            }
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<GroupActionResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<GroupActionResponse>
+                response.data.topAdsEditGroupBulk?.data?.action?.let { onSuccess(it) }
+            }
             override fun onError(e: Throwable) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_STATISTIC#%s", e.localizedMessage)
                 view?.onErrorGetStatisticsInfo(e)
             }
+        })
+    }
 
-            override fun onNext(dataStatistic: DataStatistic) {
-                view?.onSuccesGetStatisticsInfo(dataStatistic)
+    fun setProductAction(onSuccess: ((action: String) -> Unit), action: String, adIds: List<String>, resources: Resources, selectedFilter: String?) {
+        topAdsProductActionUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources,
+                com.tokopedia.topads.common.R.raw.gql_query_product_action))
+        topAdsProductActionUseCase.setParams(action, adIds, selectedFilter)
+        topAdsProductActionUseCase.executeQuerySafeMode(
+                {
+                    onSuccess(action)
+                },
+                {
+                    it.printStackTrace()
+
+                })
+    }
+
+
+    fun getGroupProductData(resources: Resources, page: Int, groupId: Int?,
+                            search: String, sort: String, status: Int?, startDate: String, endDate: String, onSuccess: ((NonGroupResponse.TopadsDashboardGroupProducts) -> Unit), onEmpty: (() -> Unit)) {
+        topAdsGetGroupProductDataUseCase.setQueryString(GraphqlHelper.loadRawString(resources,
+                com.tokopedia.topads.common.R.raw.query_get_group_products_dashboard))
+        val requestParams = topAdsGetGroupProductDataUseCase.setParams(groupId, page, search, sort, status, startDate, endDate)
+        topAdsGetGroupProductDataUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<NonGroupResponse?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<NonGroupResponse>
+                val nonGroupResponse = response.data.topadsDashboardGroupProducts
+                if(nonGroupResponse.data.isEmpty()) {
+                    onEmpty()
+                } else {
+                    onSuccess(nonGroupResponse)
+                }
             }
         })
     }
 
-    fun getTickerTopAds(resources: Resources) {
-        val graphqlUseCase = GraphqlUseCase()
-        val shopId: Int = userSession.shopId.toIntOrZero()
-        val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.query_ticker), Data::class.java, variables, false)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
-            override fun onCompleted() {}
+    fun getInsight(resources: Resources, onSuccess: ((InsightKeyData) -> Unit)) {
+        topAdsInsightUseCase.setQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_query_insights_keyword))
+        val requestParams = topAdsInsightUseCase.setParams()
+        topAdsInsightUseCase.execute(requestParams, object : Subscriber<Map<Type, RestResponse>>() {
+            override fun onCompleted() {
 
-            override fun onError(e: Throwable) {
-                Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_GET_TICKER#%s", e.localizedMessage)
-                view?.onErrorGetTicker(e)
             }
 
-            override fun onNext(graphqlResponse: GraphqlResponse) {
-                val topAdsTicker = graphqlResponse.getData<Data>(Data::class.java)
-                view?.onSuccessGetTicker(topAdsTicker.topAdsTicker.data.message ?: listOf())
+            override fun onError(e: Throwable?) {
+
+            }
+
+            override fun onNext(typeResponse: Map<Type, RestResponse>) {
+                val token = object : TypeToken<DataResponse<JsonObject?>>() {}.type
+                val restResponse: RestResponse? = typeResponse[token]
+                val response = restResponse?.getData() as DataResponse<JsonObject>
+                val responseData = response.data.getAsJsonObject("topAdsGetKeywordInsights").getAsJsonPrimitive(TopAdsDashboardConstant.DATA)
+                val type = object : TypeToken<InsightKeyData>() {}.type
+                val data: InsightKeyData = Gson().fromJson(responseData.asString, type)
+                onSuccess(data)
             }
         })
     }
+
 
     fun getAutoAdsStatus(resources: Resources) {
         val graphqlUseCase = GraphqlUseCase()
         val shopId: Int = userSession.shopId.toIntOrZero()
         val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.query_auto_ads_status), AutoAdsResponse::class.java, variables, false)
+                com.tokopedia.topads.common.R.raw.query_auto_ads_status), AutoAdsResponse::class.java, variables, false)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(object : Subscriber<GraphqlResponse>() {
@@ -243,21 +376,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
                 view?.onSuccessAdsInfo(adsInfo.topAdsGetAutoAds.data)
             }
         })
-
-
     }
 
-    fun clearStatisticsCache() {
-        deleteTopAdsStatisticsUseCase.executeSync()
-    }
-
-    fun clearTotalAdCache() {
-        deleteTopAdsTotalAdUseCase.executeSync()
-    }
-
-    fun resetDate() {
-        topAdsDatePickerInteractor.resetDate()
-    }
 
     fun getExpiryDate(resources: Resources) {
 
@@ -321,7 +441,8 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             }
         })
     }
-    fun getAdsStatus(rawQuery: String){
+
+    fun getAdsStatus(rawQuery: String) {
         val graphqlUseCase = GraphqlUseCase()
         val shop_id: String = userSession.shopId
         val variables = mapOf<String, Any>("shopId" to shop_id.toInt())
@@ -332,7 +453,6 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", e.localizedMessage)
-                view?.onErrorGetAutoTopUpStatus(e)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
@@ -343,7 +463,7 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
 
     }
 
-    fun getAutoTopUpStatus(rawQuery: String) {
+    fun getAutoTopUpStatus(rawQuery: String, onSuccess: ((data: AutoTopUpStatus) -> Unit)) {
         val graphqlUseCase = GraphqlUseCase()
         val shopId: String = userSession.shopId
         val variables = mapOf<String, Any>(TopAdsDashboardConstant.SHOP_ID to shopId)
@@ -354,20 +474,38 @@ constructor(private val topAdsGetShopDepositUseCase: TopAdsGetShopDepositUseCase
             override fun onCompleted() {}
             override fun onError(e: Throwable) {
                 Timber.e(e, "P1#TOPADS_DASHBOARD_PRESENTER_AUTO_TOPADS_STATUS#%s", e.localizedMessage)
-                view?.onErrorGetAutoTopUpStatus(e)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse) {
                 val data = graphqlResponse.getSuccessData<AutoTopUpData.Response>()
 
-                if (data.response == null){
-                    view?.onErrorGetAutoTopUpStatus(Exception("Tidak ada data"))
-                } else if (data.response.errors.isEmpty()){
-                    view?.onSuccessGetAutoTopUpStatus(data.response.data)
-                } else {
-                    view?.onErrorGetAutoTopUpStatus(ResponseErrorException(data.response.errors))
+                when {
+                    data.response == null -> {
+                        Exception("Tidak ada data").printStackTrace()
+                    }
+                    data.response.errors.isEmpty() -> {
+                        onSuccess(data.response.data)
+                    }
+                    else -> {
+                        ResponseErrorException(data.response.errors).printStackTrace()
+                    }
                 }
             }
         })
+    }
+
+    override fun detachView() {
+        super.detachView()
+        topAdsGetShopDepositUseCase.cancelJobs()
+        gqlGetShopInfoUseCase.cancelJobs()
+        topAdsGetGroupDataUseCase.unsubscribe()
+        topAdsGetGroupProductDataUseCase.unsubscribe()
+        topAdsGetGroupDataUseCase.unsubscribe()
+        topAdsGetGroupProductDataUseCase.unsubscribe()
+        topAdsGetGroupStatisticsUseCase.unsubscribe()
+        topAdsGetProductKeyCountUseCase.cancelJobs()
+        topAdsGetProductStatisticsUseCase.cancelJobs()
+        topAdsGroupActionUseCase.unsubscribe()
+        topAdsInsightUseCase.unsubscribe()
     }
 }

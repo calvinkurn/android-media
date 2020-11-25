@@ -92,12 +92,12 @@ public class CategoryProductStyle99View extends
     @Override
     protected void onInitialDataRendered() {
         if (source == NATIVE) {
-            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+            tvTitle.setText(TextUtils.isEmpty(data.titleText) ? "" : data.titleText);
         } else {
             tvTitle.setVisibility(GONE);
         }
-        for (Operator operator : data.getOperatorList()) {
-            if (operator.getOperatorId().equals(data.getDefaultOperatorId())) {
+        for (Operator operator : data.operatorList) {
+            if (operator.getOperatorId().equals(data.defaultOperatorId)) {
                 operatorSelected = operator;
                 setBtnBuyDigitalText(operatorSelected.getRule().getButtonText());
                 if (!operatorSelected.getClientNumberList().isEmpty()) {
@@ -162,7 +162,7 @@ public class CategoryProductStyle99View extends
                 digitalProductChooserView.renderUpdateDataSelected(productSelectedState);
             }
         }
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             cbInstantCheckout.setChecked(isInstantCheckoutChecked);
         }
     }
@@ -292,7 +292,7 @@ public class CategoryProductStyle99View extends
 
             @Override
             public void tracking() {
-                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
+                actionListener.onProductSelected(data.name, productSelected.getDesc());
             }
         };
     }
@@ -403,11 +403,11 @@ public class CategoryProductStyle99View extends
         }
         if (canBeCheckout) {
             actionListener.storeLastInstantCheckoutUsed(
-                    data.getCategoryId(), cbInstantCheckout.isChecked()
+                    data.categoryId, cbInstantCheckout.isChecked()
             );
         }
-        preCheckoutProduct.setCategoryId(data.getCategoryId());
-        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setCategoryId(data.categoryId);
+        preCheckoutProduct.setCategoryName(data.name);
         preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
         preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);

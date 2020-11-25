@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rect_npl_timer"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_6"
+    android:paddingRight="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_6">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_time_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        android:textColor="@color/white"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
+        tools:text="Dirilis dalam " />
+
+    <com.tokopedia.unifycomponents.TimerUnify
+        android:id="@+id/timer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_rect_white_shop_home_npl_timer"
+        android:paddingBottom="@dimen/dp_2"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        android:visibility="gone"
+        app:unify_timer_background_color="@color/white"
+        app:unify_timer_colon_color="@color/clr_EF144A"
+        app:unify_timer_custom_box_height="16"
+        app:unify_timer_custom_box_width="14"
+        app:unify_timer_text_color="@color/clr_EF144A"
+        tools:visibility="visible" />
+</LinearLayout>
+

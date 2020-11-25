@@ -1,8 +1,8 @@
 package com.tokopedia.notifications
 
 import com.tokopedia.notifications.model.NotificationStatus
-import com.tokopedia.notifications.database.convertors.JsonObjectConverter
-import com.tokopedia.notifications.database.convertors.NotificationStatusConverter
+import com.tokopedia.notifications.data.converters.JsonObjectConverter
+import com.tokopedia.notifications.data.converters.NotificationStatusConverter
 import org.json.JSONObject
 import org.junit.Assert
 import org.junit.Test

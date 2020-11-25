@@ -83,3 +83,11 @@ internal infix fun Collection<Any>?.shouldNotContain(expectedValue: Any) {
         throw AssertionError("Collection still contain \"$expectedValue\"")
     }
 }
+
+internal fun <A, E> List<A>.listShouldBe(expectedList: List<E>, compare: (A, E) -> Unit) {
+    assert(size == expectedList.size) {
+        "Size should be equal. Actual size = $size, Expected size: ${expectedList.size}."
+    }
+
+    expectedList.forEachIndexed { index, t -> compare(this[index], t) }
+}

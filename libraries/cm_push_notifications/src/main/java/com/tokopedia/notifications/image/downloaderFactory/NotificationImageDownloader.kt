@@ -4,14 +4,12 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.notifications.model.BaseNotificationModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.concurrent.CancellationException
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.TimeoutException
 
 const val PARENT_DIR = "CM_RESOURCE"
 const val PNG_QUALITY = 95
@@ -22,21 +20,31 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
 
     protected abstract suspend fun verifyAndUpdate()
 
-    protected fun downloadAndStore(context: Context, url: String?, imageSizeAndTimeout: ImageSizeAndTimeout): String? {
-        val bitmap = url?.let { downloadImage(context, url, imageSizeAndTimeout) }
-        return bitmap?.let {
-            storeBitmapToFile(context, bitmap)
-        }
+    protected fun downloadAndStore(
+            context: Context, url: Any?,
+            properties: ImageSizeAndTimeout,
+            rounded: Int = 0
+    ): String? {
+        val bitmap = url?.let { downloadImage(context, url, rounded, properties) }
+        return bitmap?.let { storeBitmapToFile(context, bitmap) }
     }
 
-    private fun downloadImage(context: Context, url: String, imageSizeAndTimeout: ImageSizeAndTimeout): Bitmap? {
+    private fun downloadImage(
+            context: Context,
+            url: Any,
+            rounded: Int,
+            properties: ImageSizeAndTimeout
+    ): Bitmap? {
         try {
             return Glide.with(context)
                     .asBitmap()
-                    .load(url)
-                    .override(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
-                    .submit(imageSizeAndTimeout.width, imageSizeAndTimeout.height)
-                    .get(imageSizeAndTimeout.seconds, TimeUnit.SECONDS)
+                    .load(url).apply {
+                        if (rounded != 0) {
+                            transform(RoundedCorners(rounded))
+                        }
+                    }.override(properties.width, properties.height)
+                    .submit(properties.width, properties.height)
+                    .get(properties.seconds, TimeUnit.SECONDS)
         } catch (e: Exception) {
         }
         return null
@@ -86,5 +94,7 @@ enum class ImageSizeAndTimeout(val width: Int, val height: Int, val seconds: Lon
     CAROUSEL(720, 360, 10L),
     VISUAL_COLLAPSED(360, 64, 5L),
     VISUAL_EXPANDED(720, 360, 10L),
-    BANNER_COLLAPSED(180, 64, 5L)
+    BANNER_COLLAPSED(180, 64, 5L),
+    FREE_ONGKIR(290, 60, 5L),
+    STAR_REVIEW(60, 60, 5L)
 }

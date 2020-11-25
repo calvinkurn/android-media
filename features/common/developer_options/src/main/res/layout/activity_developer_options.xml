@@ -75,8 +75,33 @@
             android:text="Force Crash"
             android:textColor="@color/white" />
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_firebase_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="crash message"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send_firebase_crash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Send Firebase Exception"
+            android:textColor="@color/Neutral_N0" />
+
         <TextView
-            android:id="@+id/rn_dev_options"
+            android:id="@+id/goto_screen_recorder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -84,7 +109,7 @@
             android:background="@drawable/btn_share"
             android:gravity="center"
             android:padding="@dimen/margin_small"
-            android:text="RN Dev Options"
+            android:text="Open Screen Recorder"
             android:textColor="@color/white" />
 
         <CheckBox
@@ -117,6 +142,36 @@
             android:gravity="center"
             android:padding="@dimen/margin_small"
             android:text="Device ID: 1213124" />
+
+        <CheckBox
+            android:id="@+id/toggle_dark_mode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Force Dark Mode" />
+
+        <CheckBox
+            android:id="@+id/toggle_topads_debugger_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable TopAds Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_topads_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View TopAds Log"
+            android:textColor="@color/white" />
 
         <CheckBox
             android:id="@+id/toggle_applink_debugger_notif"
@@ -177,6 +232,18 @@
             android:layout_marginTop="@dimen/margin_small"
             android:padding="@dimen/margin_small"
             android:text="Enable Analytics Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_cassava"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Client Analytics Validator"
+            android:textColor="@color/white" />
 
         <TextView
             android:id="@+id/goto_analytics"
@@ -305,27 +372,6 @@
             android:text="Try RouteManager.route"
             android:textColor="@color/Neutral_N0" />
 
-        <TableLayout
-            android:stretchColumns="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TableRow>
-                <TextView
-                    android:text="@string/react_native_developer_mode"
-                    android:paddingRight="25dip"
-                    style="@style/TextView.Title.Bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <ToggleButton
-                    android:id="@+id/toggle_reactnative_mode"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_marginRight="0dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </TableRow>
-        </TableLayout>
-
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/ip_groupchat"
             android:layout_width="match_parent"
@@ -363,21 +409,6 @@
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TableRow>
-                <TextView
-                    android:text="Enable RN Developer Option"
-                    android:paddingRight="25dip"
-                    style="@style/TextView.Title.Bold"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <ToggleButton
-                    android:id="@+id/toggle_reactnative_dev_options"
-                    android:background="@drawable/btn_share"
-                    android:textColor="@color/white"
-                    android:layout_marginRight="1dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </TableRow>
 
             <TableRow>
                 <TextView
@@ -425,6 +456,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="@dimen/spacing_lvl4">
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_change_version_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:textSize="@dimen/fontSize_lvl4"
+                android:inputType="text"
+                android:hint="3.99"
+                app:backgroundTint="@color/Green_G500" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_change_version_code"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:textSize="@dimen/fontSize_lvl4"
+                android:inputType="number"
+                android:maxLength="9"
+                android:hint="399123456"
+                app:backgroundTint="@color/Green_G500" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/btn_change_version"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@drawable/btn_share"
+                android:gravity="center"
+                android:padding="@dimen/spacing_lvl3"
+                android:text="Change"
+                android:textColor="@color/Neutral_N0" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:text="Version change is for api purpose - app kill will change back" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:weightSum="5">
 
             <TextView
@@ -452,17 +528,34 @@
             android:padding="@dimen/margin_small"
             android:text="Fake response Activity"
             android:textColor="@color/white" />
-<!--
+
         <com.tokopedia.translator.ui.TranslatorSettingView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
--->
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/requestFcmToken"
             android:text="Request New FCM Token" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/resetOnboardingNavigation"
+            android:text="RESET ONBOARDING NAVIGATION!" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonAlwaysOldNavigation"
+            android:text="ALWAYS_OLD_NAVIGATION" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonAlwaysNewNavigation"
+            android:text="ALWAYS_NEW_NAVIGATION" />
     </LinearLayout>
 </ScrollView>

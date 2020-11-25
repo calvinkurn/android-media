@@ -1,0 +1,6 @@
+query setReminder($campaignID: Int!) {
+  notifier_setReminder(campaign: $campaignID) {
+    is_success
+    error_message
+  }
+}

@@ -39,7 +39,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getBoolean(key: String?, defaultValue: Boolean): Boolean {
-        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString())
+        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue.toString()) ?: defaultValue.toString()
         if (cacheValue.equals(defaultValue.toString(), ignoreCase = true) &&  !cacheValue.isEmpty()) {
             return cacheValue.equals("true", ignoreCase = true)
         }
@@ -80,7 +80,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getString(key: String?, defaultValue: String): String {
-        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)
+        val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)?: defaultValue
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
             return cacheValue
         }

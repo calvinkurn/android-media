@@ -3,21 +3,22 @@ package com.tokopedia.vouchergame.common.view
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.common.topupbills.view.bottomsheet.TopupBillsMenuBottomSheets
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.di.DaggerVoucherGameComponent
 import com.tokopedia.vouchergame.common.di.VoucherGameComponent
-import com.tokopedia.vouchergame.common.view.widget.VoucherGameMenuBottomSheets
 import javax.inject.Inject
 
 /**
  * @author by resakemal on 26/08/19
  */
-abstract class BaseVoucherGameActivity: BaseSimpleActivity(), VoucherGameMenuBottomSheets.MenuListener {
+abstract class BaseVoucherGameActivity: BaseSimpleActivity(), TopupBillsMenuBottomSheets.MenuListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -78,8 +79,11 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), VoucherGameMenuBot
     }
 
     private fun showBottomMenus() {
-        val voucherGameMenuBottomSheets = VoucherGameMenuBottomSheets()
+        val voucherGameMenuBottomSheets = TopupBillsMenuBottomSheets.newInstance()
         voucherGameMenuBottomSheets.listener = this
+        voucherGameMenuBottomSheets.setShowListener {
+            voucherGameMenuBottomSheets.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+        }
         voucherGameMenuBottomSheets.show(supportFragmentManager, TAG_VOUCHER_GAME_MENU)
     }
 

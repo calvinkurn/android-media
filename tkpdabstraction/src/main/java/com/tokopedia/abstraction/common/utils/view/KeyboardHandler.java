@@ -38,6 +38,4 @@ public class KeyboardHandler {
             inputMethodManager.showSoftInput(currentFocus, InputMethodManager.SHOW_IMPLICIT);
 
     }
-
-
 }

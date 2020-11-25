@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="swp_half_dp">0.5dp</dimen>
+    <dimen name="swp_dp_12">12dp</dimen>
+    <dimen name="swp_empty_saldo_image_size">200dp</dimen>
+    <dimen name="swd_dp_6">6dp</dimen>
+    <dimen name="swd_radio_button">22dp</dimen>
+    <dimen name="swd_corner_radius">3dp</dimen>
+    <dimen name="swd_rp_icon_width">52dp</dimen>
+    <dimen name="swd_rp_icon_padding">12dp</dimen>
+    <dimen name="swd_de_active_account_width">240dp</dimen>
+    <dimen name="swd_de_active_account_height">180dp</dimen>
+    <dimen name="swd_success_image_size">144dp</dimen>
+
+</resources>

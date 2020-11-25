@@ -22,6 +22,9 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 closedNote
                 reason
                 until
+                detail{
+                  openDate
+                }
             }
             createInfo{
                 openSince
@@ -62,6 +65,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 shopStatus
                 statusMessage
                 statusTitle
+                isIdle
             }
             bbInfo {
                 bbName
@@ -81,6 +85,18 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 phone
                 fax
             }
+            shopStats {
+                productSold
+                totalTx
+                totalShowcase
+            }
+            createInfo{
+                shopCreated
+                epochShopCreated
+                epochShopCreatedUTC
+                openSince
+            }
+            activeProduct
             shopHomeType
         }
     }

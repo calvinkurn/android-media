@@ -10,20 +10,10 @@ import dagger.Component
  */
 @PlayScope
 @Component(
-        modules = [PlayModule::class, PlayViewModelModule::class],
+        modules = [PlayModule::class, PlayViewModelModule::class, PlayViewerFragmentModule::class],
         dependencies = [BaseAppComponent::class]
 )
 interface PlayComponent {
-
-    fun inject(playFragment: PlayFragment)
-
-    fun inject(playVideoFragment: PlayVideoFragment)
-
-    fun inject(playInteractionFragment: PlayInteractionFragment)
-
-    fun inject(playErrorFragment: PlayErrorFragment)
-
-    fun inject(playBottomSheetFragment: PlayBottomSheetFragment)
 
     fun inject(playActivity: PlayActivity)
 }

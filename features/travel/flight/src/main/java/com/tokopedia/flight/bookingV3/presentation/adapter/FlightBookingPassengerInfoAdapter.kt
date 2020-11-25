@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.flight.bookingV2.presentation.viewmodel.SimpleViewModel
+import com.tokopedia.flight.detail.view.model.SimpleModel
 import kotlinx.android.synthetic.main.item_flight_booking_v3_passenger_detail.view.*
 
 /**
@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_flight_booking_v3_passenger_detail.vi
 
 class FlightBookingPassengerInfoAdapter: RecyclerView.Adapter<FlightBookingPassengerInfoAdapter.ViewHolder>() {
 
-    var list: List<SimpleViewModel> = listOf()
+    var list: List<SimpleModel> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false))
 
@@ -23,14 +23,14 @@ class FlightBookingPassengerInfoAdapter: RecyclerView.Adapter<FlightBookingPasse
         holder.bind(list[position])
     }
 
-    fun updateList(list: List<SimpleViewModel>) {
+    fun updateList(list: List<SimpleModel>) {
         this.list = list
         notifyDataSetChanged()
     }
 
     class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
 
-        fun bind(item: SimpleViewModel) {
+        fun bind(item: SimpleModel) {
             with(view) {
                 tv_title.text = item.label
                 tv_description.text = item.description

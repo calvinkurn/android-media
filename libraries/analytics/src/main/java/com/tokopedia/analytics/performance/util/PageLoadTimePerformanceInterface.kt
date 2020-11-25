@@ -15,5 +15,10 @@ interface PageLoadTimePerformanceInterface {
     fun startRenderPerformanceMonitoring()
     fun stopRenderPerformanceMonitoring()
 
+    fun startCustomMetric(tag: String)
+    fun stopCustomMetric(tag: String)
+
+    fun invalidate()
+
     fun getPltPerformanceData(): PltPerformanceData
 }

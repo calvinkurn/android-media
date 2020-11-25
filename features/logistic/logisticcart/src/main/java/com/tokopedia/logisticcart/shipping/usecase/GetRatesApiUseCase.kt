@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesApiGqlResponse
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.GraphqlHelper
 import rx.Observable
@@ -36,9 +36,7 @@ class GetRatesApiUseCase @Inject constructor(
                             graphqlResponse.getData<RatesApiGqlResponse>(RatesApiGqlResponse::class.java)
                     response?.let {
                         converter.convertModel(it.ratesData)
-                    } ?: throw MessageErrorException(
-                            graphqlResponse.getError(RatesApiGqlResponse::class.java)[0].message
-                    )
+                    } ?: throw MessageErrorException(context.getString(R.string.default_request_error_unknown))
                 }
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())

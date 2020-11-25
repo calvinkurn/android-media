@@ -8,7 +8,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RatesParam;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
@@ -17,8 +17,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase;
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.network.utils.ErrorHandler;
 
 import java.util.List;
@@ -39,6 +39,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     private final GetRatesApiUseCase ratesApiUseCase;
     private final RatesResponseStateConverter stateConverter;
     private final ShippingCourierConverter shippingCourierConverter;
+    private ShippingDurationContract.View view;
 
     @Inject
     public ShippingDurationPresenter(GetRatesUseCase ratesUseCase,
@@ -54,6 +55,7 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
     @Override
     public void attachView(ShippingDurationContract.View view) {
         super.attachView(view);
+        this.view = view;
     }
 
     @Override
@@ -61,21 +63,6 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         super.detachView();
         ratesUseCase.unsubscribe();
         ratesApiUseCase.unsubscribe();
-    }
-
-    /**
-     * This method is only called from express checkout,
-     * once express checkout is deleted, this should be deleted.
-     * If someone need to call courier recommendation, please use the other one
-     */
-    @Override
-    public void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId,
-                                          List<ShopShipment> shopShipmentList) {
-        if (getView() != null) {
-            getView().showLoading();
-            loadDuration(0, selectedServiceId, -1, false, false,
-                    shopShipmentList, false, shippingParam, "");
-        }
     }
 
     /**
@@ -89,9 +76,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                           boolean isLeasing, String pslCode,
                                           List<Product> products, String cartString,
                                           boolean isTradeInDropOff,
-                                          RecipientAddressModel recipientAddressModel) {
-        if (getView() != null) {
-            getView().showLoading();
+                                          RecipientAddressModel recipientAddressModel,
+                                          boolean isFulfillment, int preOrderTime,
+                                          String mvc) {
+        if (view != null) {
+            view.showLoading();
             ShippingParam shippingParam = getShippingParam(shipmentDetailData, products, cartString,
                     isTradeInDropOff, recipientAddressModel);
             int selectedSpId = 0;
@@ -99,19 +88,21 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                 selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode);
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, isFulfillment, preOrderTime, mvc);
         }
     }
 
     private void loadDuration(int selectedSpId, int selectedServiceId, int codHistory,
                               boolean isCorner, boolean isLeasing,
                               List<ShopShipment> shopShipmentList, boolean isRatesTradeInApi,
-                              ShippingParam shippingParam, String pslCode) {
+                              ShippingParam shippingParam, String pslCode,
+                              boolean isFulfillment, int preOrderTime, String mvc) {
         RatesParam param = new RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
+                .mvc(mvc)
                 .build();
 
         Observable<ShippingRecommendationData> observable;
@@ -129,28 +120,28 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                         new Subscriber<ShippingRecommendationData>() {
                             @Override
                             public void onCompleted() {
-
+                                //no-op
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                if (getView() != null) {
-                                    getView().showErrorPage(ErrorHandler.getErrorMessage(getView().getActivity(), e));
-                                    getView().stopTrace();
+                                if (view != null) {
+                                    view.showErrorPage(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                                    view.stopTrace();
                                 }
                             }
 
                             @Override
                             public void onNext(ShippingRecommendationData shippingRecommendationData) {
-                                if (getView() != null) {
-                                    getView().hideLoading();
+                                if (view != null) {
+                                    view.hideLoading();
                                     if (shippingRecommendationData.getErrorId() != null &&
                                             shippingRecommendationData.getErrorId().equals(ErrorProductData.ERROR_RATES_NOT_AVAILABLE)) {
-                                        getView().showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
-                                        getView().stopTrace();
+                                        view.showNoCourierAvailable(shippingRecommendationData.getErrorMessage());
+                                        view.stopTrace();
                                     } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
-                                            shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                                        if (getView().isDisableCourierPromo()) {
+                                            !shippingRecommendationData.getShippingDurationViewModels().isEmpty()) {
+                                        if (view.isDisableCourierPromo()) {
                                             for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
                                                 shippingDurationUiModel.getServiceData().setIsPromo(0);
                                                 for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
@@ -158,11 +149,11 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                                 }
                                             }
                                         }
-                                        getView().showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
-                                        getView().stopTrace();
+                                        view.showData(shippingRecommendationData.getShippingDurationViewModels(), shippingRecommendationData.getLogisticPromo());
+                                        view.stopTrace();
                                     } else {
-                                        getView().showNoCourierAvailable(getView().getActivity().getString(R.string.label_no_courier_bottomsheet_message));
-                                        getView().stopTrace();
+                                        view.showNoCourierAvailable(view.getActivity().getString(R.string.label_no_courier_bottomsheet_message));
+                                        view.stopTrace();
                                     }
                                 }
                             }
@@ -196,6 +187,8 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
         shippingParam.setProducts(products);
         shippingParam.setUniqueId(cartString);
         shippingParam.setTradeInDropOff(isTradeInDropOff);
+        shippingParam.setPreOrderDuration(shipmentDetailData.getShipmentCartData().getPreOrderDuration());
+        shippingParam.setFulfillment(shipmentDetailData.getShipmentCartData().isFulfillment());
 
         if (isTradeInDropOff && recipientAddressModel.getLocationDataModel() != null) {
             shippingParam.setDestinationDistrictId(String.valueOf(recipientAddressModel.getLocationDataModel().getDistrict()));

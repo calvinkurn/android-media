@@ -14,12 +14,28 @@ data class AddToCartRequestParams(
         var listTracker: String = "",
         var ucParams: String = "",
         var warehouseId: Int = 0,
-        var atcFromExternalSource: String = "",
-        var isSCP: Boolean = false
+        var atcFromExternalSource: String = ATC_FROM_OTHERS,
+        var isSCP: Boolean = false,
+        // analytics data
+        var productName: String = "",
+        var category: String = "",
+        var price: String = "",
+        var userId: String = "",
+        var categoryLevel1Id: String = "",
+        var categoryLevel1Name: String = "",
+        var categoryLevel2Id: String = "",
+        var categoryLevel2Name: String = "",
+        var categoryLevel3Id: String = "",
+        var categoryLevel3Name: String = ""
 ) {
     companion object {
-        val ATC_FROM_WISHLIST = "wishlist_list"
-        val ATC_FROM_RECENT_VIEW = "last_seen_list"
-        val ATC_FROM_RECOMMENDATION = "recommendation_list"
+        const val ATC_FROM_WISHLIST = "wishlist_list"
+        const val ATC_FROM_RECENT_VIEW = "last_seen_list"
+        const val ATC_FROM_RECOMMENDATION = "recommendation_list"
+        const val ATC_FROM_TOPCHAT = "topchat"
+        const val ATC_FROM_DISCOVERY = "discovery_page"
+        const val ATC_FROM_PLAY = "play"
+        const val ATC_FROM_PDP = ""
+        const val ATC_FROM_OTHERS = "others"
     }
 }

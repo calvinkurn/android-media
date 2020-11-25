@@ -1,6 +1,8 @@
 package com.tokopedia.hotel.booking
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.common.travel.ticker.domain.TravelTickerCoroutineUseCase
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
@@ -8,6 +10,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.hotel.booking.data.model.HotelCart
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutParam
 import com.tokopedia.hotel.booking.data.model.HotelCheckoutResponse
+import com.tokopedia.hotel.booking.data.model.TokopointsSumCoupon
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
@@ -25,6 +28,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 /**
  * @author by jessica on 27/03/20
@@ -46,10 +50,13 @@ class HotelBookingViewModelTest {
     @RelaxedMockK
     lateinit var upsertContactListUseCase: UpsertContactListUseCase
 
+    private val travelTickerCoroutineUseCase = mockk<TravelTickerCoroutineUseCase>()
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase, dispatcher)
+        hotelBookingViewModel = HotelBookingViewModel(graphqlRepository, getContactListUseCase, upsertContactListUseCase,
+                travelTickerCoroutineUseCase, dispatcher)
     }
 
     @Test
@@ -90,8 +97,8 @@ class HotelBookingViewModelTest {
         //given
         val cart = HotelCart.Response(HotelCart("123"))
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(HotelCart.Response::class.java to cart),
-                mapOf(),
+                mapOf<Type, Any>(HotelCart.Response::class.java to cart),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -109,8 +116,8 @@ class HotelBookingViewModelTest {
     fun getCartData_shouldReturnFail() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(HotelCart.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(HotelCart.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -128,8 +135,8 @@ class HotelBookingViewModelTest {
         //given
         val checkoutResponse = HotelCheckoutResponse.Response(HotelCheckoutResponse(redirectUrl = "www.tokopedia.com"))
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(HotelCheckoutResponse.Response::class.java to checkoutResponse),
-                mapOf(),
+                mapOf<Type, Any>(HotelCheckoutResponse.Response::class.java to checkoutResponse),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -147,8 +154,8 @@ class HotelBookingViewModelTest {
     fun checkOutCart_shouldBeFail() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(HotelCheckoutResponse.Response::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(HotelCheckoutResponse.Response::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -165,8 +172,8 @@ class HotelBookingViewModelTest {
     fun onCancelAppliedVoucher_shouldBeSuccess() {
         //given
         val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(FlightCancelVoucher::class.java to FlightCancelVoucher()),
-                mapOf(),
+                mapOf<Type, Any>(FlightCancelVoucher::class.java to FlightCancelVoucher()),
+                mapOf<Type, List<GraphqlError>>(),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -180,8 +187,8 @@ class HotelBookingViewModelTest {
     fun onCancelAppliedVoucher_shouldBeError() {
         //given
         val graphqlErrorResponse = GraphqlResponse(
-                mapOf(),
-                mapOf(FlightCancelVoucher::class.java to listOf(GraphqlError())),
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(FlightCancelVoucher::class.java to listOf(GraphqlError())),
                 false)
         coEvery {
             graphqlRepository.getReseponse(any(), any())
@@ -189,5 +196,77 @@ class HotelBookingViewModelTest {
 
         //when
         hotelBookingViewModel.onCancelAppliedVoucher("")
+    }
+
+    @Test
+    fun getTokopointsSumCoupon_isSuccess_shouldReturnData() {
+        //given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf<Type, Any>(TokopointsSumCoupon.Response::class.java to TokopointsSumCoupon.Response(TokopointsSumCoupon(sumCouponUnitOpt = "33 Kupon"))),
+                mapOf<Type, List<GraphqlError>>(),
+                false)
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } returns graphqlSuccessResponse
+
+        //when
+        hotelBookingViewModel.getTokopointsSumCoupon("")
+
+        //then
+        assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).equals("33 Kupon"))
+    }
+
+    @Test
+    fun getTokopointsSumCoupon_isFail_shouldNotUpdateData() {
+        //given
+        val graphqlFailResponse = GraphqlResponse(
+                mapOf<Type, Any>(),
+                mapOf<Type, List<GraphqlError>>(TokopointsSumCoupon.Response::class.java to listOf(GraphqlError())),
+                false)
+        coEvery {
+            graphqlRepository.getReseponse(any(), any())
+        } returns graphqlFailResponse
+
+        //when
+        hotelBookingViewModel.getTokopointsSumCoupon("")
+
+        //then
+        assert((hotelBookingViewModel.tokopointSumCouponResult.value as String).isEmpty())
+    }
+
+    @Test
+    fun getTickerData_shouldData() {
+        //given
+        val title = "Title ABC"
+        val message = "this is a message"
+        val response = TravelTickerModel(title = title, message = message, url = "", type = 0, status = 0,
+                endTime = "", startTime = "", instances = 0, page = "", isPeriod = true)
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Success(response)
+
+        //when
+        hotelBookingViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelBookingViewModel.tickerData.value
+        assert(actual is Success)
+        assert((actual as Success).data.title == title)
+        assert(actual.data.message == message)
+    }
+
+    @Test
+    fun getTickerData_shouldReturnFail() {
+        //given
+        coEvery {
+            travelTickerCoroutineUseCase.execute(any(), any())
+        } returns Fail(Throwable())
+
+        //when
+        hotelBookingViewModel.fetchTickerData()
+
+        //then
+        val actual = hotelBookingViewModel.tickerData.value
+        assert(actual is Fail)
     }
 }

@@ -9,26 +9,30 @@ data class ResponseBidInfo(
     data class Result(
             @field:SerializedName("topadsBidInfo")
             val topadsBidInfo: TopadsBidInfo = TopadsBidInfo()
-    ) {
-        data class TopadsBidInfo(
-                @field:SerializedName("data")
-                val data: List<DataItem> = listOf(),
-
-                @field:SerializedName("request_type")
-                val requestType: String = ""
-
-        ) {
-            data class DataItem(
-                    @field:SerializedName("suggestion_bid")
-                    val suggestionBid: Int = 0,
-
-                    @field:SerializedName("max_bid")
-                    val maxBid: Int = 0,
-
-                    @field:SerializedName("min_bid")
-                    val minBid: Int = 0
-
-            )
-        }
-    }
+    )
 }
+
+data class TopadsBidInfo(
+        @field:SerializedName("data")
+        val data: List<BidInfoDataItem> = listOf(),
+
+        @field:SerializedName("request_type")
+        val requestType: String = ""
+
+)
+data class BidInfoDataItem(
+        @field:SerializedName("suggestion_bid")
+        var suggestionBid: Int = 0,
+
+        @field:SerializedName("max_bid")
+        val maxBid: Int = 0,
+
+        @field:SerializedName("min_bid")
+        val minBid: Int = 0,
+
+        var keywordType: String = "Spesifik"
+
+)
+
+
+

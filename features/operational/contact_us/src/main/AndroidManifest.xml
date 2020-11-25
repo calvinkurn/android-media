@@ -59,6 +59,7 @@
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsActivity"
             android:hardwareAccelerated="true"
             android:label="@string/contact_us_title_home"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" >
 
             <intent-filter android:autoVerify="true">
@@ -73,11 +74,12 @@
         </activity>
         <activity
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".inboxticket2.view.activity.InboxListActivity"
             android:exported="true"
-            android:label="@string/inbox"
+            android:label="@string/contact_us_inbox"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" >
 
@@ -109,7 +111,7 @@
                     android:pathPattern="@string/path_ticket_detail"/>
             </intent-filter>
         </activity>
-        <activity android:name="com.tokopedia.contactus.inboxticket2.view.activity.ProvideRatingActivity"
+        <activity android:name="com.tokopedia.contactus.inboxticket2.view.activity.ContactUsProvideRatingActivity"
             android:exported="true"
             android:label="@string/survey_layanan"
             android:screenOrientation="portrait"

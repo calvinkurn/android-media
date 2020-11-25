@@ -28,7 +28,7 @@ public class GetOperatorsByCategoryIdUseCase extends UseCase<List<Operator>> {
         String categoryId = requestParams.getString(PARAM_CATEGORY_ID, "");
 
         return getDigitalCategoryByIdUseCase.createObservable(getDigitalCategoryByIdUseCase.createRequestParam(categoryId))
-                .map(productDigitalData -> productDigitalData.getCategoryData().getOperatorList());
+                .map(productDigitalData -> productDigitalData.getCategoryData().operatorList);
     }
 
     public RequestParams createRequestParam(String categoryId) {

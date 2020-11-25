@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_16">
+    android:padding="@dimen/notif_dp_16">
 
     <include
         android:id="@+id/parent_layout"
@@ -13,12 +14,12 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/notif_dp_0"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="@dimen/notif_sp_4"
         android:maxLines="2"
         android:textColor="@color/charcoal_grey_88"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/notif_sp_14"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,13 +28,13 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/body"
-        android:layout_width="@dimen/dp_0"
+        android:layout_width="@dimen/notif_dp_0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginTop="@dimen/notif_dp_2"
         android:ellipsize="end"
-        android:lineSpacingExtra="@dimen/sp_4"
+        android:lineSpacingExtra="@dimen/notif_sp_4"
         android:textColor="@color/charcoal_grey_40"
-        android:textSize="@dimen/sp_14"
+        android:textSize="@dimen/notif_sp_14"
         app:layout_constraintEnd_toEndOf="@+id/title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title"
@@ -44,10 +45,10 @@
         style="@style/Widget.MaterialComponents.CardView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_2"
-        android:layout_marginBottom="@dimen/dp_2"
+        android:layout_marginStart="@dimen/notif_dp_2"
+        android:layout_marginTop="@dimen/notif_dp_6"
+        android:layout_marginEnd="@dimen/notif_dp_2"
+        android:layout_marginBottom="@dimen/notif_dp_2"
         android:clipToPadding="false"
         app:cardCornerRadius="@dimen/dp_8"
         app:cardPreventCornerOverlap="false"
@@ -79,8 +80,8 @@
 
             <com.tokopedia.notifcenter.widget.ProductVariantLayout
                 android:id="@+id/pvl_variant"
-                android:layout_width="@dimen/dp_0"
-                android:layout_height="@dimen/dp_20"
+                android:layout_width="@dimen/notif_dp_0"
+                android:layout_height="@dimen/notif_dp_20"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
@@ -91,17 +92,17 @@
 
             <TextView
                 android:id="@+id/tv_product_name"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/notif_dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginTop="@dimen/notif_dp_2"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/Neutral_N700_96"
-                android:textSize="@dimen/sp_12"
+                android:textSize="@dimen/notif_sp_12"
                 app:layout_constraintEnd_toStartOf="@+id/iv_cart"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
@@ -124,7 +125,7 @@
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_product_price"
-                android:layout_width="@dimen/dp_0"
+                android:layout_width="@dimen/notif_dp_0"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
@@ -134,7 +135,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textColor="@color/orange_red"
-                android:textSize="@dimen/sp_12"
+                android:textSize="@dimen/notif_sp_12"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/iv_cart"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -144,8 +145,8 @@
 
             <ImageView
                 android:id="@+id/iv_cart"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_32"
+                android:layout_width="@dimen/notif_dp_50"
+                android:layout_height="@dimen/notif_dp_32"
                 android:background="@drawable/notifcenter_bg_rounded_stroke_grey"
                 android:padding="8dp"
                 app:layout_constraintBottom_toBottomOf="@+id/iv_thumbnail"

@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white"
     tools:context=".detail.presentation.fragment.AddEditProductDetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,10 +15,13 @@
             layout="@layout/add_edit_product_photo_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_18"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <include
@@ -27,9 +29,13 @@
             layout="@layout/add_edit_product_name_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl5"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_photo_layout" />
 
         <include
@@ -37,10 +43,14 @@
             layout="@layout/add_edit_product_category_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_34"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_name_layout" />
 
         <include
@@ -48,10 +58,14 @@
             layout="@layout/add_edit_product_catalog_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_18"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
             android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_category_layout" />
 
         <include
@@ -59,9 +73,13 @@
             layout="@layout/add_edit_product_price_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_36"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_catalog_layout" />
 
         <include
@@ -69,9 +87,13 @@
             layout="@layout/add_edit_product_wholesale_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl5"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_price_layout" />
 
         <include
@@ -79,9 +101,13 @@
             layout="@layout/add_edit_product_stock_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_34"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_wholesale_layout" />
 
         <include
@@ -89,9 +115,13 @@
             layout="@layout/add_edit_product_preorder_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_stock_layout" />
 
         <include
@@ -99,9 +129,13 @@
             layout="@layout/add_edit_product_condition_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_34"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_preorder_layout" />
 
         <include
@@ -109,30 +143,53 @@
             layout="@layout/add_edit_product_sku_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/add_edit_product_condition_layout" />
+
+        <include
+            android:id="@+id/add_edit_product_showcase_layout"
+            layout="@layout/add_edit_product_showcase_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginLeft="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/dp_32"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
+            android:layout_marginRight="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_sku_layout" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_40"
+            android:layout_marginStart="@dimen/spacing_lvl4"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginEnd="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:background="@drawable/rect_green_solid"
+            android:background="@drawable/product_add_edit_rect_green_solid"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/add_edit_product_sku_layout">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/add_edit_product_showcase_layout">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_submit_text"
+                android:contentDescription="@string/content_desc_tv_submit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/action_continue"
                 android:textAllCaps="false"
-                android:textColor="@android:color/white"
+                android:textColor="@color/Unify_N0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

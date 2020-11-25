@@ -102,24 +102,31 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.travelDestinationCityModel.observe(this, Observer {
+        destinationViewModel.travelDestinationCityModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     cityId = it.data.cityId
                     cityName = it.data.cityName
                     destinationViewModel.getInitialList()
+                    destinationViewModel.getAllContent(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary),
+                            GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
+                            GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list),
+                            GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article),
+                            cityId)
                 }
 
                 is Fail -> showNetworkErrorLayout()
             }
         })
 
-        destinationViewModel.travelDestinationItemList.observe(this, Observer {
+        destinationViewModel.travelDestinationItemList.observe(viewLifecycleOwner, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            it?.run {
+                if (it.isEmpty()) showNetworkErrorLayout()
+                else renderList(this) }
         })
 
-        destinationViewModel.isAllError.observe(this, Observer {
+        destinationViewModel.isAllError.observe(viewLifecycleOwner, Observer {
             it?.let { isAllError ->
                 if (isAllError) showNetworkErrorLayout()
             }
@@ -143,7 +150,9 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     }
 
     private fun showNetworkErrorLayout() {
-        NetworkErrorHelper.showEmptyState(context, view?.rootView) { destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl) }
+        NetworkErrorHelper.showEmptyState(context, view?.rootView) {
+            loadData(0)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -153,13 +162,6 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
 
         if (savedInstanceState != null) {
             webUrl = savedInstanceState.getString(SAVED_DESTINATION_WEB_URL, "")
-        }
-
-        if (cityId.isEmpty()) {
-            if (webUrl.last() != '/') webUrl += "/"
-            destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
-        } else {
-            destinationViewModel.getInitialList()
         }
     }
 
@@ -229,7 +231,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = travel_homepage_destination_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
@@ -246,11 +248,11 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsing_toolbar.title = cityName
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
 
@@ -284,14 +286,21 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     }
 
     override fun loadData(page: Int) { /* do nothing */
+        if (cityId.isEmpty()) {
+            if (webUrl.last() != '/') webUrl += "/"
+            destinationViewModel.getDestinationCityData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_data), webUrl)
+        } else {
+            destinationViewModel.getInitialList()
+            destinationViewModel.getAllContent(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary),
+                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
+                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list),
+                    GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article),
+                    cityId)
+        }
     }
 
     override fun clickAndRedirect(appUrl: String, webUrl: String) {
         RouteManager.route(context, appUrl)
-    }
-
-    override fun onCitySummaryVHBind() {
-        destinationViewModel.getDestinationSummaryData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_summary), cityId)
     }
 
     override fun onCitySummaryLoaded(imgUrls: List<String>, peekSize: Int, cityName: String) {
@@ -324,29 +333,6 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
 
     private fun getIndicatorFocus(): Int = R.drawable.widget_image_view_indicator_focus
     private fun getIndicator(): Int = R.drawable.widget_image_view_indicator
-
-    override fun onCityRecommendationVHBind() {
-        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
-                cityId, "ALL", CITY_RECOMMENDATION_ORDER)
-    }
-
-    override fun onCityDealsVHBind() {
-        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
-                cityId, "DEALS", CITY_DEALS_ORDER)
-    }
-
-    override fun onCityArticleVHBind() {
-        destinationViewModel.getCityArticles(GraphqlHelper.loadRawString(resources, R.raw.query_travel_destination_city_article), cityId)
-    }
-
-    override fun onOrderListVHBind() {
-        destinationViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), cityId)
-    }
-
-    override fun onCityEventVHBind() {
-        destinationViewModel.getCityRecommendationData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation),
-                cityId, "EVENTS", CITY_EVENT_ORDER)
-    }
 
     override fun onTrackOrderListImpression(list: List<TravelDestinationSectionModel.Item>, firstVisiblePosition: Int) {
         travelDestinationTrackingUtil.orderListImpression(list, firstVisiblePosition)

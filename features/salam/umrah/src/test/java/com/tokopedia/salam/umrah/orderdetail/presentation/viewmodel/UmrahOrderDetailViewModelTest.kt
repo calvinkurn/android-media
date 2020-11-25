@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.orderdetail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.salam.umrah.UmrahDispatchersProviderTest
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
@@ -14,12 +15,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.reflect.Type
 
 @RunWith(JUnit4::class)
 class UmrahOrderDetailViewModelTest{
@@ -38,10 +39,11 @@ class UmrahOrderDetailViewModelTest{
 
     @Test
     fun `getOrderDetail_SuccessRetreiveOrderDetail_ShouldSuccess`(){
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(UmrahOrderDetailsEntity.Response::class.java to UmrahOrderDetailsEntity.Response()),
-                mapOf(), false)
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns graphqlSuccessResponse
+        val result = HashMap<Type, Any>()
+        result[UmrahOrderDetailsEntity.Response::class.java] = UmrahOrderDetailsEntity.Response()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
 
         viewModel.getOrderDetail("","")
 
@@ -61,10 +63,11 @@ class UmrahOrderDetailViewModelTest{
 
     @Test
     fun `getMyUmrah_SuccessRetreiveMyUmrah_ShouldSuccess`(){
-        val graphqlSuccessResponse = GraphqlResponse(
-                mapOf(MyUmrahEntity.Response::class.java to MyUmrahEntity.Response()),
-                mapOf(), false)
-        coEvery { graphqlRepository.getReseponse(any(),any()) } returns graphqlSuccessResponse
+        val result = HashMap<Type, Any>()
+        result[MyUmrahEntity.Response::class.java] = MyUmrahEntity.Response()
+        val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
+        coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
 
         viewModel.getMyUmrahWidget("","")
 

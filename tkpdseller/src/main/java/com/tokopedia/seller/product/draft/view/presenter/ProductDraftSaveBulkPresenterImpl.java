@@ -2,12 +2,14 @@ package com.tokopedia.seller.product.draft.view.presenter;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.seller.product.draft.domain.interactor.SaveBulkDraftProductUseCase;
+import com.tokopedia.seller.product.draft.domain.interactor.SaveInstagramToProductDraftUseCase;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Subscriber;
@@ -18,10 +20,10 @@ import rx.Subscriber;
 
 public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPresenter {
     public static final int MIN_IMG_RESOLUTION = 300;
-    private SaveBulkDraftProductUseCase saveBulkDraftProductUseCase;
+    private SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase;
 
-    public ProductDraftSaveBulkPresenterImpl(SaveBulkDraftProductUseCase saveBulkDraftProductUseCase){
-        this.saveBulkDraftProductUseCase = saveBulkDraftProductUseCase;
+    public ProductDraftSaveBulkPresenterImpl(SaveInstagramToProductDraftUseCase saveInstagramToProductDraftUseCase){
+        this.saveInstagramToProductDraftUseCase = saveInstagramToProductDraftUseCase;
     }
 
     @Override
@@ -51,10 +53,11 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
             getView().hideDraftLoading();
             return;
         }
-        saveBulkDraftProductUseCase.execute(
-                SaveBulkDraftProductUseCase.generateUploadProductParam(
+
+        saveInstagramToProductDraftUseCase.execute(
+                SaveInstagramToProductDraftUseCase.Companion.generateUploadProductParam(
                         correctResolutionLocalPathList, correctResolutionInstagramDescList),
-                getSaveInstagramToDraftSubscriber());
+                getSaveInstagramToProductDraftSubscriber());
     }
 
     private boolean isResolutionCorrect(String localPath){
@@ -90,10 +93,35 @@ public class ProductDraftSaveBulkPresenterImpl extends ProductDraftSaveBulkPrese
         };
     }
 
+    // this is for seller app
+    private Subscriber<List<? extends Long>> getSaveInstagramToProductDraftSubscriber() {
+        return new Subscriber<List<? extends Long>>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) {
+                if(isViewAttached()) {
+                    getView().onErrorSaveBulkDraft(e);
+                }
+            }
+
+            @Override
+            public void onNext(List<? extends Long> productIds) {
+                if(isViewAttached()) {
+                    if(productIds != null) {
+                        List<Long> productIdList = new LinkedList<Long>(productIds);
+                        getView().onSaveBulkDraftSuccess(productIdList);
+                    }
+                }
+            }
+        };
+    }
+
     @Override
     public void detachView() {
         super.detachView();
-        saveBulkDraftProductUseCase.unsubscribe();
+        saveInstagramToProductDraftUseCase.unsubscribe();
     }
 
 }

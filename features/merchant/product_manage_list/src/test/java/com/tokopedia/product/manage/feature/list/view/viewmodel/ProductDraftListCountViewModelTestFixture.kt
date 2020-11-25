@@ -1,10 +1,9 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllProductsCountDraftUseCase
+import com.tokopedia.product.manage.common.draft.domain.usecase.ClearAllDraftProductsUseCase
+import com.tokopedia.product.manage.common.draft.domain.usecase.GetAllDraftProductsCountUseCase
 import com.tokopedia.product.manage.coroutine.TestCoroutineDispatchers
-import com.tokopedia.product.manage.feature.list.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.mockk
@@ -18,55 +17,44 @@ abstract class ProductDraftListCountViewModelTestFixture {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private lateinit var getAllProductsCountDraftUseCase: GetAllProductsCountDraftUseCase
-    private lateinit var clearAllDraftProductUseCase: ClearAllDraftProductUseCase
-    private lateinit var updateUploadingDraftProductUseCase: UpdateUploadingDraftProductUseCase
+    private lateinit var getAllDraftProductsCountUseCase: GetAllDraftProductsCountUseCase
+
+    private lateinit var clearAllDraftProductsCountUseCase: ClearAllDraftProductsUseCase
 
     protected lateinit var viewModel: ProductDraftListCountViewModel
 
     @Before
     fun setUp() {
-        getAllProductsCountDraftUseCase = mockk(relaxed = true)
-        clearAllDraftProductUseCase = mockk(relaxed = true)
-        updateUploadingDraftProductUseCase = mockk(relaxed = true)
+        getAllDraftProductsCountUseCase = mockk(relaxed = true)
+        clearAllDraftProductsCountUseCase = mockk(relaxed = true)
 
         viewModel = ProductDraftListCountViewModel(
-            getAllProductsCountDraftUseCase,
-            clearAllDraftProductUseCase,
-            updateUploadingDraftProductUseCase,
-            TestCoroutineDispatchers
+                getAllDraftProductsCountUseCase,
+                clearAllDraftProductsCountUseCase,
+                TestCoroutineDispatchers
         )
     }
 
     protected fun onGetAllDraftCount_thenReturn(draftCount: Long) {
-        every { getAllProductsCountDraftUseCase.getData(any()) } returns draftCount
+        every { getAllDraftProductsCountUseCase.getData(any()) } returns draftCount
     }
 
     protected fun onGetAllDraftCount_thenReturn(error: Throwable) {
-        every { getAllProductsCountDraftUseCase.getData(any()) } throws error
-    }
-
-    protected fun onFetchAllDraftCountWithUpdateUploading_thenReturn(isUploading: Boolean) {
-        every { updateUploadingDraftProductUseCase.getData(any()) } returns isUploading
-    }
-
-    protected fun onFetchAllDraftCountWithUpdateUploading_thenReturn(error: Throwable) {
-        every { updateUploadingDraftProductUseCase.getData(any()) } throws error
+        every { getAllDraftProductsCountUseCase.getData(any()) } throws error
     }
 
     protected fun verifyGetAllDraftCountCalled() {
-        verify { getAllProductsCountDraftUseCase.getData(RequestParams.EMPTY) }
+        verify { getAllDraftProductsCountUseCase.getData(RequestParams.EMPTY) }
     }
 
     protected fun verifyClearAllDraftCalled() {
-        verify { clearAllDraftProductUseCase.getData(RequestParams.EMPTY) }
+        verify { clearAllDraftProductsCountUseCase.getData(RequestParams.EMPTY) }
     }
 
     protected fun verifyUnsubscribeUseCaseCalled() {
         verifyAll {
-            getAllProductsCountDraftUseCase.unsubscribe()
-            clearAllDraftProductUseCase.unsubscribe()
-            updateUploadingDraftProductUseCase.unsubscribe()
+            getAllDraftProductsCountUseCase.unsubscribe()
+            clearAllDraftProductsCountUseCase.unsubscribe()
         }
     }
 }

@@ -24,8 +24,7 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.baselist.R;
-import com.tokopedia.design.base.BaseToaster;
-import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.List;
 
@@ -92,7 +91,6 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     private BaseListAdapter<T, F> adapter;
     protected SwipeRefreshLayout swipeToRefresh;
-    private Snackbar snackBarRetry;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private RecyclerView recyclerView;
 
@@ -431,21 +429,15 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         if (getActivity() == null) {
             return;
         }
-
-        if (snackBarRetry == null) {
-            String message = getMessageFromThrowable(getActivity(), throwable);
-
-            snackBarRetry = ToasterError.make(getView(), message, BaseToaster.LENGTH_INDEFINITE)
-                    .setAction(R.string.retry_label, listener);
-        }
-        snackBarRetry.show();
+        String message = getMessageFromThrowable(getActivity(), throwable);
+        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                getString(R.string.retry_label), listener);
     }
 
     protected void hideSnackBarRetry() {
-        if (snackBarRetry != null) {
-            snackBarRetry.dismiss();
-            snackBarRetry = null;
-        }
+        try{
+            Toaster.INSTANCE.getSnackBar().dismiss();
+        }catch (Exception e){}
     }
 
     protected String getMessageFromThrowable(Context context, Throwable t){

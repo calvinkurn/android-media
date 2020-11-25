@@ -1,18 +1,19 @@
 package com.tokopedia.common.topupbills.widget
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet.view.*
 import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
@@ -25,28 +26,43 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
                                                               defStyleAttr: Int = 0,
                                                               var listener: OnClickListener? = null,
                                                               val selected: String = "")
-    : BaseCustomView(context, attrs, defStyleAttr), SearchInputView.Listener {
+    : FrameLayout(context, attrs, defStyleAttr) {
 
     private var initialData: List<TopupBillsInputDropdownData> = listOf()
     private var displayData: List<TopupBillsInputDropdownData> = listOf()
-    set(value) {
-        field = value
-        with (vg_input_dropdown_recycler_view.adapter as TopupBillsInputDropdownAdapter) {
-            items = value
-            notifyDataSetChanged()
+        set(value) {
+            field = value
+            with(vg_input_dropdown_recycler_view.adapter as TopupBillsInputDropdownAdapter) {
+                items = value
+                notifyDataSetChanged()
+            }
         }
-    }
 
     init {
         View.inflate(context, getLayout(), this)
 
         vg_input_dropdown_recycler_view.adapter = TopupBillsInputDropdownAdapter(displayData)
 
-        vg_input_dropdown_search_view.setListener(this)
-        vg_input_dropdown_search_view.setResetListener {
+        vg_input_dropdown_search_view.searchBarTextField.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(text: Editable?) {
+                text?.let {
+                    displayData = initialData.filter { item -> item.label.contains(it, true) }
+                }
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+        })
+        vg_input_dropdown_search_view.clearListener = {
             displayData = initialData
         }
-        vg_input_dropdown_search_view.searchTextView.requestFocus()
+        vg_input_dropdown_search_view.searchBarTextField.requestFocus()
     }
 
     open fun getLayout(): Int {
@@ -58,23 +74,11 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
         displayData = data
     }
 
-    override fun onSearchSubmitted(text: String?) {
-
-    }
-
-    override fun onSearchTextChanged(text: String?) {
-        text?.let {
-            var filteredData = initialData.filter { item -> item.label.contains(it, true) }
-            if (filteredData.isEmpty()) filteredData = listOf(TopupBillsInputDropdownData(it))
-            displayData = filteredData
-        }
-    }
-
     fun setOnClickListener(listener: OnClickListener) {
         this.listener = listener
     }
 
-    inner class TopupBillsInputDropdownAdapter(var items: List<TopupBillsInputDropdownData>): RecyclerView.Adapter<TopupBillsInputDropdownViewHolder>() {
+    inner class TopupBillsInputDropdownAdapter(var items: List<TopupBillsInputDropdownData>) : RecyclerView.Adapter<TopupBillsInputDropdownViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsInputDropdownViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.view_topup_bills_input_dropdown_bottom_sheet_item, parent, false)
             return TopupBillsInputDropdownViewHolder(view)
@@ -90,7 +94,7 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
 
     }
 
-    inner class TopupBillsInputDropdownViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class TopupBillsInputDropdownViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: TopupBillsInputDropdownData) {
             with(itemView) {
                 vg_input_dropdown_label.text = element.label

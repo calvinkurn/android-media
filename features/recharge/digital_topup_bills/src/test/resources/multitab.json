@@ -1,0 +1,835 @@
+{
+    "rechargeCatalogProductInputMultiTab": {
+      "productInputs": [
+        {
+          "label": "Pulsa",
+          "needEnquiry": false,
+          "isShowingProduct": true,
+          "enquiryFields": [],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "placeholder": "",
+            "validations": [],
+            "dataCollections": [
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "3443",
+                    "attributes": {
+                      "desc": "15.000",
+                      "detail": "Masa berlaku 20 hari.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 15.000",
+                      "price": "Rp 15.000",
+                      "price_plain": 15000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 20 hari.",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "68",
+                    "attributes": {
+                      "desc": "25.000",
+                      "detail": "Masa berlaku 30 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 25.200",
+                      "price": "Rp 25.200",
+                      "price_plain": 25200,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 30 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3445",
+                    "attributes": {
+                      "desc": "30.000",
+                      "detail": "Masa berlaku 30 hari.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 30.000",
+                      "price": "Rp 30.000",
+                      "price_plain": 30000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 30 hari.",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "747",
+                    "attributes": {
+                      "desc": "40.000",
+                      "detail": "Masa berlaku 30 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp40.000",
+                      "price": "Rp 40.000",
+                      "price_plain": 40000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 30 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "69",
+                    "attributes": {
+                      "desc": "50.000",
+                      "detail": "Masa berlaku 45 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp50.000",
+                      "price": "Rp 50.000",
+                      "price_plain": 50000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 45 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3015",
+                    "attributes": {
+                      "desc": "75.000",
+                      "detail": "Masa berlaku 45 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 75.000",
+                      "price": "Rp 75.000",
+                      "price_plain": 75000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 45 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "70",
+                    "attributes": {
+                      "desc": "100.000",
+                      "detail": "Masa berlaku 60 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp100.000",
+                      "price": "Rp 100.000",
+                      "price_plain": 100000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 60 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "114",
+                    "attributes": {
+                      "desc": "150.000",
+                      "detail": "Masa berlaku 120 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp150.000",
+                      "price": "Rp 150.000",
+                      "price_plain": 150000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 120 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "115",
+                    "attributes": {
+                      "desc": "200.000",
+                      "detail": "Masa berlaku 150 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp200.000",
+                      "price": "Rp 200.000",
+                      "price_plain": 200000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 150 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "116",
+                    "attributes": {
+                      "desc": "300.000",
+                      "detail": "Masa berlaku 180 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp300.000",
+                      "price": "Rp 300.000",
+                      "price_plain": 300000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 180 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "117",
+                    "attributes": {
+                      "desc": "500.000",
+                      "detail": "Masa berlaku 240 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp500.000",
+                      "price": "Rp 500.000",
+                      "price_plain": 500000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 240 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "118",
+                    "attributes": {
+                      "desc": "1.000.000",
+                      "detail": "Masa berlaku 330 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp1.000.000",
+                      "price": "Rp 1.000.000",
+                      "price_plain": 1000000,
+                      "status": 1,
+                      "detail_compact": "Masa berlaku 330 hari",
+                      "category_id": 1,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "label": "Paket Data",
+          "needEnquiry": false,
+          "isShowingProduct": true,
+          "enquiryFields": [],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "placeholder": "",
+            "validations": [],
+            "dataCollections": [
+              {
+                "name": "Rekomendasi Untukmu",
+                "products": [
+                  {
+                    "id": "316",
+                    "attributes": {
+                      "desc": "Data 25.000",
+                      "detail": "Data 300 MB - 750MB + 1GB OMG!",
+                      "detail_url": "https://help.tokopedia.com/hc/en-us/articles/218066303-Operator-yang-Tersedia#telkomsel",
+                      "detail_url_text": "(sesuai zona terkait).",
+                      "info": "Rp25.000",
+                      "price": "Rp 25.000",
+                      "price_plain": 25000,
+                      "status": 1,
+                      "detail_compact": "Data 300 MB - 750MB + 1GB OMG!",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1951",
+                    "attributes": {
+                      "desc": "Data 12GB ",
+                      "detail": "12GB Kuota Utama + 2GB OMG! Masa aktif 30 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 100.000",
+                      "price": "Rp 100.000",
+                      "price_plain": 100000,
+                      "status": 1,
+                      "detail_compact": "12GB Kuota Utama + 2GB OMG! Masa aktif 30 hari",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "3017",
+                    "attributes": {
+                      "desc": "Paket Bicara Rp 25.000",
+                      "detail": "550 menit Nelpon ke sesama Telkomsel 50 menit Nelpon ke semua operator Masa aktif 7 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 25.000",
+                      "price": "Rp 25.000",
+                      "price_plain": 25000,
+                      "status": 1,
+                      "detail_compact": "550 menit Nelpon ke sesama Telkomsel 50 menit Nelpon ke semua operator Masa aktif 7 hari",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 24.900",
+                        "new_price_plain": 24900,
+                        "value_text": ""
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "4722",
+                    "attributes": {
+                      "desc": "MusicMAX SMULE VIP",
+                      "detail": "1GB Internet + 1GB MusicMAX + 30 Hari akses untuk SMULE VIP. Masa Aktif 30 Hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 25.000",
+                      "price": "Rp 25.000",
+                      "price_plain": 25000,
+                      "status": 1,
+                      "detail_compact": "1GB Internet + 1GB MusicMAX + 30 Hari akses untuk SMULE VIP. Masa Aktif 30 Hari",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 24.900",
+                        "new_price_plain": 24900,
+                        "value_text": ""
+                      }
+                    }
+                  },
+                  {
+                    "id": "146",
+                    "attributes": {
+                      "desc": "Data 50.000",
+                      "detail": "Data 800MB - 1.5GB + 1GB midnight + 3GB OMG!",
+                      "detail_url": "https://www.tokopedia.com/bantuan/telkomsel-paket-data/",
+                      "detail_url_text": "(sesuai zona terkait).",
+                      "info": "Rp50.000",
+                      "price": "Rp 50.000",
+                      "price_plain": 50000,
+                      "status": 1,
+                      "detail_compact": "Data 800MB - 1.5GB + 1GB midnight + 3GB OMG!",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1952",
+                    "attributes": {
+                      "desc": "Data 50GB",
+                      "detail": "50GB Kuota Utama + 2GB OMG! Masa aktif 30 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 200.000",
+                      "price": "Rp 200.000",
+                      "price_plain": 200000,
+                      "status": 1,
+                      "detail_compact": "50GB Kuota Utama + 2GB OMG! Masa aktif 30 hari",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 198.000",
+                        "new_price_plain": 198000,
+                        "value_text": ""
+                      }
+                    }
+                  },
+                  {
+                    "id": "4175",
+                    "attributes": {
+                      "desc": "Broadband Single Zone 6.5GB",
+                      "detail": "Broadband Single Zone 4.5GB+2GB Video",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 68.000",
+                      "price": "Rp 68.000",
+                      "price_plain": 68000,
+                      "status": 1,
+                      "detail_compact": "Broadband Single Zone 4.5GB+2GB Video",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4176",
+                    "attributes": {
+                      "desc": "Broadband Single Zone 10GB",
+                      "detail": "Broadband Single Zone 8GB+2GB Video",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 85.000",
+                      "price": "Rp 85.000",
+                      "price_plain": 85000,
+                      "status": 1,
+                      "detail_compact": "Broadband Single Zone 8GB+2GB Video",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1963",
+                    "attributes": {
+                      "desc": "Data GameMAX 25.000",
+                      "detail": "500MB Kuota Utama + 2.5GB Games (Mobile Legends, AOV, dan LINE Let's Get Rich) + 1 Game Voucher (1 Kristal AOV/Let's Get Rich Special Cube/3 hari All Access Pass/Talent Coin Vain Glory/Point Blank Strike Voucher) Penukaran di *363*678# Masa aktif 30 hari.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 25.000",
+                      "price": "Rp 25.000",
+                      "price_plain": 25000,
+                      "status": 1,
+                      "detail_compact": "500MB Kuota Utama + 2.5GB Games (Mobile Legends, AOV, dan LINE Let's Get Rich) + 1 Game Voucher (1 Kristal AOV/Let's Get Rich Special Cube/3 hari All Access Pass/Talent Coin Vain Glory/Point Blank Strike Voucher) Penukaran di *363*678# Masa aktif 30 hari.",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 24.900",
+                        "new_price_plain": 24900,
+                        "value_text": ""
+                      }
+                    }
+                  },
+                  {
+                    "id": "4178",
+                    "attributes": {
+                      "desc": "Internet Combo 10GB",
+                      "detail": "10GB Kuota Utama + 100 SMS + 100 Menit Nelpon (On Net) + 2GB VideoMax. Masa aktif 30 hari.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 100.000",
+                      "price": "Rp 100.000",
+                      "price_plain": 100000,
+                      "status": 1,
+                      "detail_compact": "10GB Kuota Utama + 100 SMS + 100 Menit Nelpon (On Net) + 2GB VideoMax. Masa aktif 30 hari.",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "2861",
+                    "attributes": {
+                      "desc": "Max Stream 12 GB, 30 Hari",
+                      "detail": "12GB Data untuk MAXstream. Masa Aktif 30 Hari. ",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 50.000",
+                      "price": "Rp 50.000",
+                      "price_plain": 50000,
+                      "status": 1,
+                      "detail_compact": "12GB Data untuk MAXstream. Masa Aktif 30 Hari. ",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4191",
+                    "attributes": {
+                      "desc": "Maxstream Gala 15GB",
+                      "detail": "15GB Kuota Maxstream (HBO Go, Viu, Vidio Gold, HOOQ)",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 100.000",
+                      "price": "Rp 100.000",
+                      "price_plain": 100000,
+                      "status": 1,
+                      "detail_compact": "15GB Kuota Maxstream (HBO Go, Viu, Vidio Gold, HOOQ)",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 96.900",
+                        "new_price_plain": 96900,
+                        "value_text": ""
+                      }
+                    }
+                  },
+                  {
+                    "id": "4193",
+                    "attributes": {
+                      "desc": "Maxstream Gala 30GB",
+                      "detail": "30GB Kuota Maxstream (HBO Go, Viu, Vidio Gold, HOOQ)",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 150.000",
+                      "price": "Rp 150.000",
+                      "price_plain": 150000,
+                      "status": 1,
+                      "detail_compact": "30GB Kuota Maxstream (HBO Go, Viu, Vidio Gold, HOOQ)",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 145.750",
+                        "new_price_plain": 145750,
+                        "value_text": ""
+                      }
+                    }
+                  },
+                  {
+                    "id": "3560",
+                    "attributes": {
+                      "desc": "Paket Bicara 40.000",
+                      "detail": "1700 menit Nelpon sesama Telkomsel  Masa aktif 7 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 40.000",
+                      "price": "Rp 40.000",
+                      "price_plain": 40000,
+                      "status": 1,
+                      "detail_compact": "1700 menit Nelpon sesama Telkomsel  Masa aktif 7 hari",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 39.800",
+                        "new_price_plain": 39800,
+                        "value_text": ""
+                      }
+                    }
+                  },
+                  {
+                    "id": "3562",
+                    "attributes": {
+                      "desc": "Paket Bicara 100.000",
+                      "detail": "9000 menit Nelpon sesama Telkomsel Masa aktif 30 hari",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 100.000",
+                      "price": "Rp 100.000",
+                      "price_plain": 100000,
+                      "status": 1,
+                      "detail_compact": "9000 menit Nelpon sesama Telkomsel Masa aktif 30 hari",
+                      "category_id": 2,
+                      "operator_id": 12,
+                      "promo": {
+                        "id": "0",
+                        "bonus_text": "",
+                        "new_price": "Rp 97.000",
+                        "new_price_plain": 97000,
+                        "value_text": ""
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "label": "Roaming",
+          "needEnquiry": false,
+          "isShowingProduct": true,
+          "enquiryFields": [],
+          "product": {
+            "name": "product_id",
+            "text": "Input Nominal",
+            "placeholder": "",
+            "validations": [],
+            "dataCollections": [
+              {
+                "name": "Produk Terlaris",
+                "products": [
+                  {
+                    "id": "1084",
+                    "attributes": {
+                      "desc": "Singapore Malaysia - Paket Data - 1 Hari",
+                      "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia tanpa batas waktu penggunaan (00.00 – 24.00) dengan kuota 200MB, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 50.000",
+                      "price": "Rp 50.000",
+                      "price_plain": 50000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya selama berada di Singapura/Malaysia tanpa batas waktu penggunaan (00.00 – 24.00) dengan kuota 200MB, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  }
+                ]
+              },
+              {
+                "name": "",
+                "products": [
+                  {
+                    "id": "1086",
+                    "attributes": {
+                      "desc": "Singapore Malaysia - Paket Data - 3 Hari",
+                      "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia tanpa batas waktu penggunaan (00.00 – 24.00) dengan kuota 1GB, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 120.000",
+                      "price": "Rp 120.000",
+                      "price_plain": 120000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya selama berada di Singapura/Malaysia tanpa batas waktu penggunaan (00.00 – 24.00) dengan kuota 1GB, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar. Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari  3 hari.  Informasi lebih lanjut. ",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1076",
+                    "attributes": {
+                      "desc": "Singapore Malaysia  - Paket 3in1 - 1 Hari",
+                      "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 200MB + 50 SMS + 50 Menit bicara ke semua operator, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.<b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.</b>",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 70.000",
+                      "price": "Rp 70.000",
+                      "price_plain": 70000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 200MB + 20 SMS + 20 Menit bicara ke semua operator, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1078",
+                    "attributes": {
+                      "desc": "Singapore Malaysia  - Paket 3in1 - 3 Hari",
+                      "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia  dengan kuota 1GB + 200 SMS + 200 Menit bicara ke semua operator, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar. <b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.</b>",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 200.000",
+                      "price": "Rp 200.000",
+                      "price_plain": 200000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 1GB + 200 SMS + 200 Menit bicara ke semua operator, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar. Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari  3 hari.  Informasi lebih lanjut. ",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1080",
+                    "attributes": {
+                      "desc": "Singapore Malaysia  - Paket 3in1 - 7 Hari",
+                      "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 2.5GB + 500 SMS + 500 Menit bicara ke semua operator, masa aktif 7 hari. Untuk pelanggan prabayar dan pascabayar. <b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.</b>",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 350.000",
+                      "price": "Rp 350.000",
+                      "price_plain": 350000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 2.56GB + 500 SMS + 500 Menit bicara ke semua operator, masa aktif 7 hari. Untuk pelanggan prabayar dan pascabayar. Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari  7 hari.  Informasi lebih lanjut. ",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1082",
+                    "attributes": {
+                      "desc": "Singapore Malaysia - Paket 3in1 - 30 Hari",
+                      "detail": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 5GB + 500 SMS + 500 Menit bicara ke semua operator, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar. <b> Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan. </b>",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 425.000",
+                      "price": "Rp 425.000",
+                      "price_plain": 425000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya selama berada di Singapura/Malaysia dengan kuota 5.12GB + 500 SMS + 500 Menit bicara ke semua operator, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar. Masa tunggu registrasi paket di Indonesia hingga tiba di Negara tujuan tidak lebih dari  30 hari.  Informasi lebih lanjut. ",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1072",
+                    "attributes": {
+                      "desc": "Umroh Plus - Paket Unlimited Data -  9 hari",
+                      "detail": "Internetan sepuasnya dengan kuota 5GB, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 275.000",
+                      "price": "Rp 275.000",
+                      "price_plain": 275000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 5.12GB, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1074",
+                    "attributes": {
+                      "desc": "Umroh Plus - Paket Unlimited Data -  14 hari",
+                      "detail": "Internetan sepuasnya dengan kuota 10GB, masa aktif 14 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 375.000",
+                      "price": "Rp 375.000",
+                      "price_plain": 375000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 10.24GB, masa aktif 14 hari. Untuk pelanggan prabayar dan pascabayar.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "1070",
+                    "attributes": {
+                      "desc": "Umroh Plus - Paket 3in1  - 9 Hari",
+                      "detail": "Internetan sepuasnya dengan kuota 5GB + 30 SMS + 60 menit bicara ke semua operator, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "https://www.tokopedia.com/bantuan/produk-digital/roaming/operator-paket-roaming-yang-tersedia/#paket-roaming-telkomsel",
+                      "detail_url_text": "Detail negara dan zona terkait.",
+                      "info": "Rp 340.000",
+                      "price": "Rp 340.000",
+                      "price_plain": 340000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 5.12GB + 30 SMS + 60 menit bicara ke semua operator, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4647",
+                    "attributes": {
+                      "desc": "Umroh Plus - Paket 3in1 - 14 Hari",
+                      "detail": "Internetan sepuasnya dengan kuota 10GB + 45 SMS + 45 menit bicara ke semua operator, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 550.000",
+                      "price": "Rp 550.000",
+                      "price_plain": 550000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 10GB + 45 SMS + 45 menit bicara ke semua operator, masa aktif 9 hari. Untuk pelanggan prabayar dan pascabayar. Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4648",
+                    "attributes": {
+                      "desc": "Asia Australia 30 hari",
+                      "detail": "Internetan sepuasnya dengan kuota 5GB, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 350.000",
+                      "price": "Rp 350.000",
+                      "price_plain": 350000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 5GB, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4651",
+                    "attributes": {
+                      "desc": "3in1 Asia Australia 3 hari",
+                      "detail": "Internetan sepuasnya dengan kuota 1GB + 200 SMS + 200 Menit Telepon, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 200.000",
+                      "price": "Rp 200.000",
+                      "price_plain": 200000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 1GB + 200 SMS + 200 Menit Telepon, masa aktif 3 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4658",
+                    "attributes": {
+                      "desc": "3in1 Asia Australia 30 hari",
+                      "detail": "Internetan sepuasnya dengan kuota 5GB + 500 SMS + 500 Menit Telepon, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 425.000",
+                      "price": "Rp 425.000",
+                      "price_plain": 425000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 5GB + 500 SMS + 500 Menit Telepon, masa aktif 30 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4663",
+                    "attributes": {
+                      "desc": "3in1 Asia Australia 7 hari",
+                      "detail": "",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 350,000",
+                      "price": "Rp 350.000",
+                      "price_plain": 350000,
+                      "status": 1,
+                      "detail_compact": "",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  },
+                  {
+                    "id": "4649",
+                    "attributes": {
+                      "desc": "3in1 Asia Australia 1 hari",
+                      "detail": "Internetan sepuasnya dengan kuota 200MB +50 SMS + 50 Menit Telepon, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "detail_url": "",
+                      "detail_url_text": "",
+                      "info": "Rp 70.000",
+                      "price": "Rp 70.000",
+                      "price_plain": 70000,
+                      "status": 1,
+                      "detail_compact": "Internetan sepuasnya dengan kuota 200MB +50 SMS + 50 Menit Telepon, masa aktif 1 hari. Untuk pelanggan prabayar dan pascabayar.  Disarankan pembelian paket di hari yang sama dengan hari keberangkatan ke negara tujuan.",
+                      "category_id": 20,
+                      "operator_id": 12,
+                      "promo": null
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+}

@@ -8,14 +8,12 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
 import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.FCMTokenReceiver;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.IFCMTokenReceiver;
 import com.tokopedia.core.gcm.di.DaggerFcmServiceComponent;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
-import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.fcmcommon.FirebaseMessagingManager;
 import com.tokopedia.fcmcommon.di.DaggerFcmComponent;
 import com.tokopedia.fcmcommon.di.FcmComponent;
@@ -38,10 +36,8 @@ import timber.log.Timber;
 
 public abstract class BaseNotificationMessagingService extends FirebaseMessagingService {
 
-    UserSessionInterface userSession;
-
-    @Inject
-    FirebaseMessagingManager fcmManager;
+    @Inject FirebaseMessagingManager fcmManager;
+    private UserSessionInterface userSession;
 
     @Override
     public void onCreate() {
@@ -54,7 +50,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
                 .build()
                 .inject(this);
     }
-
 
     public BaseNotificationMessagingService() {
         initUseSession();
@@ -102,7 +97,6 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     @Override
     public void onDestroy() {
         super.onDestroy();
-        fcmManager.clear();
     }
 
     private void updateApsFlyerToken(String refreshedToken) {
@@ -118,15 +112,15 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
         if (!TextUtils.isEmpty(token)) {
             String localToken = GCMHandler.getRegistrationId(getApplicationContext());
             if (!localToken.equals(token)) {
-                SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getApplicationContext()).legacySessionHandler();
-                if (sessionHandler.isV4Login()) {
+                UserSessionInterface userSession = new UserSession(this);
+                if (userSession.isLoggedIn()) {
                     IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(getBaseContext());
                     FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
                     tokenUpdate.setOldToken(localToken);
                     tokenUpdate.setNewToken(token);
                     tokenUpdate.setOsType(String.valueOf(1));
-                    tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
-                    tokenUpdate.setUserId(sessionHandler.getLoginID());
+                    tokenUpdate.setAccessToken(userSession.getAccessToken());
+                    tokenUpdate.setUserId(userSession.getUserId());
                     fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
                 } else {
                     FCMCacheManager.storeRegId(token, getBaseContext());

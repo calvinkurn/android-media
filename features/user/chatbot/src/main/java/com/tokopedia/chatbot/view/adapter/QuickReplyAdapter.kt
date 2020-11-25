@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.QuickReplyListener
 import com.tokopedia.design.component.Dialog
@@ -15,6 +16,7 @@ import com.tokopedia.design.component.Dialog
  * @author by yfsx on 08/05/18.
  */
 
+private const val ACTION_IMRESSION_QUICK_REPLIES = "impression quick reply"
 class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
                         private val listener: QuickReplyListener) : RecyclerView.Adapter<QuickReplyAdapter.Holder>() {
 
@@ -62,6 +64,10 @@ class QuickReplyAdapter(private var quickReplyList: List<QuickReplyViewModel>,
 
     fun setList(quickReplylist: List<QuickReplyViewModel>) {
         this.quickReplyList = quickReplylist
+        notifyDataSetChanged()
+        if (quickReplylist.isNotEmpty()){
+            ChatbotAnalytics.chatbotAnalytics.eventShowView(ACTION_IMRESSION_QUICK_REPLIES)
+        }
     }
 
     inner class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {

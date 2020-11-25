@@ -38,12 +38,9 @@ import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
-import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifyprinciples.UnifyThemeHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -58,8 +55,8 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFac
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel
-import com.tokopedia.vouchergame.detail.widget.OperatorInfoBottomSheets
-import com.tokopedia.vouchergame.detail.widget.ProductDetailBottomSheets
+import com.tokopedia.vouchergame.detail.widget.OperatorInfoWidget
+import com.tokopedia.vouchergame.detail.widget.ProductDetailWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.view.*
@@ -111,8 +108,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            UnifyThemeHelper.setTheme(it)
-
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 
@@ -140,7 +135,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        voucherGameViewModel.voucherGameProducts.observe(this, Observer {
+        voucherGameViewModel.voucherGameProducts.observe(viewLifecycleOwner, Observer {
             it.run {
                 input_field_container_shimmering.visibility = View.GONE
                 when(it) {
@@ -236,8 +231,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
         super.processMenuDetail(data)
         if (data.catalog.label.isNotEmpty()) {
-            voucherGameAnalytics.categoryName = data.catalog.label
-            (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
+            categoryName = data.catalog.label
+            voucherGameAnalytics.categoryName = categoryName
+            (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
         }
     }
 
@@ -254,6 +250,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onMenuDetailError(error: Throwable) {
 
+    }
+
+    override fun onLoadingMenuDetail(showLoading: Boolean) {
+        //do nothing
     }
 
     override fun onCatalogPluginDataError(error: Throwable) {
@@ -509,11 +509,20 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun showProductInfo(title: String = "", desc: String, imageUrl: String = "") {
         activity?.let {
-            val operatorInfoBottomSheets = OperatorInfoBottomSheets()
-            operatorInfoBottomSheets.title = title
-            operatorInfoBottomSheets.description = desc
-            operatorInfoBottomSheets.imageUrl = imageUrl
-            operatorInfoBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
+            val productInfoBottomSheet = BottomSheetUnify()
+            productInfoBottomSheet.setCloseClickListener {
+                productInfoBottomSheet.dismiss()
+            }
+
+            val productInfoWidget = OperatorInfoWidget(it)
+            productInfoWidget.title = title
+            productInfoWidget.description = desc
+            productInfoWidget.imageUrl = imageUrl
+            productInfoBottomSheet.setChild(productInfoWidget)
+
+            fragmentManager?.run {
+                productInfoBottomSheet.show(this, "Voucher template product info")
+            }
         }
     }
 
@@ -525,8 +534,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            getMenuDetail(it)
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                    com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                    R.raw.query_voucher_game_products),
                     voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
         }
     }
@@ -544,14 +554,23 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onDetailClicked(product: VoucherGameProduct) {
         activity?.let {
-            val productDetailBottomSheets = ProductDetailBottomSheets()
+            val productDetailBottomSheet = BottomSheetUnify()
             with(product.attributes) {
-                productDetailBottomSheets.title = desc
-                productDetailBottomSheets.description = detail
-                productDetailBottomSheets.urlLabel = detailUrlText
-                productDetailBottomSheets.url = detailUrl
+                productDetailBottomSheet.setTitle(desc)
+                productDetailBottomSheet.setCloseClickListener {
+                    productDetailBottomSheet.dismiss()
+                }
+
+                val productDetailWidget = ProductDetailWidget(it)
+                productDetailWidget.description = detail
+                productDetailWidget.url = detailUrl
+                productDetailWidget.urlLabel = detailUrlText
+                productDetailBottomSheet.setChild(productDetailWidget)
             }
-            productDetailBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
+
+            fragmentManager?.run {
+                productDetailBottomSheet.show(this, "Voucher template product detail")
+            }
         }
     }
 
@@ -597,25 +616,20 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        processCheckout()
+        processCheckoutData()
     }
 
-    private fun processCheckout() {
+    private fun processCheckoutData() {
         // Setup checkout pass data
         if (::voucherGameExtraParam.isInitialized) {
             selectedProduct?.run {
-                var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
-                        .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                var checkoutPassDataBuilder = getDefaultCheckoutPassDataBuilder()
                         .categoryId(voucherGameExtraParam.categoryId)
-                        .instantCheckout("0")
                         .isPromo(if (attributes.promo != null) "1" else "0")
                         .operatorId(voucherGameExtraParam.operatorId)
                         .productId(id)
                         .utmCampaign(voucherGameExtraParam.categoryId)
-                        .utmContent(GlobalConfig.VERSION_NAME)
-                        .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-                        .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-                        .voucherCodeCopied("")
+
                 if (hasFirstInput()) {
                     checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
                 }

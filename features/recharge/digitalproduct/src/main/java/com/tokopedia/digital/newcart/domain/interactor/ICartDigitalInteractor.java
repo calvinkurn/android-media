@@ -1,9 +1,9 @@
 package com.tokopedia.digital.newcart.domain.interactor;
 
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
 import com.tokopedia.digital.newcart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
 import com.tokopedia.digital.newcart.domain.model.VoucherDigital;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 
 import java.util.Map;
 
@@ -28,6 +28,6 @@ public interface ICartDigitalInteractor {
             Subscriber<CartDigitalInfoData> subscriber
     );
 
-    void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<String> subscriber);
+    void cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher, Subscriber<Boolean> subscriber);
 
 }

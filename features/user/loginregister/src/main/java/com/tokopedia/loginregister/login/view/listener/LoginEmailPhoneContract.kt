@@ -10,11 +10,13 @@ import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
+import com.tokopedia.loginregister.login.domain.pojo.RegisterPushNotifData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
 import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentialSubscriber
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
+import com.tokopedia.sessioncommon.data.PopupError
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import java.util.*
 
@@ -36,7 +38,9 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessLogin()
 
-        fun onSuccessLoginEmail()
+        fun onSuccessLoginEmail(loginTokenPojo: LoginTokenPojo)
+
+        fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
         fun showLoadingDiscover()
 
@@ -54,6 +58,8 @@ interface LoginEmailPhoneContract {
 
         fun stopTrace()
 
+        fun setLoginSuccessSellerApp()
+
         fun onErrorLoginEmail(email: String): Function1<Throwable, Unit>
 
         fun onErrorReloginAfterSQ(validateToken: String): Function1<Throwable, Unit>
@@ -70,9 +76,7 @@ interface LoginEmailPhoneContract {
 
         fun onErrorGetUserInfo(): Function1<Throwable, Unit>
 
-        fun onSuccessGetUserInfoAddPin(): Function1<ProfilePojo, Unit>
-
-        fun onGoToCreatePassword(): Function2<String, String, Unit>
+        fun showPopup(): Function1<PopupError, Unit>
 
         fun onGoToActivationPage(email: String): Function1<MessageErrorException, Unit>
 
@@ -125,8 +129,6 @@ interface LoginEmailPhoneContract {
         fun getFacebookCredential(fragment: Fragment, callbackManager: CallbackManager)
 
         fun getUserInfo()
-
-        fun getUserInfoAddPin()
 
         fun getUserInfoFingerprint()
 

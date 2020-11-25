@@ -12,11 +12,11 @@ import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
-                                 private val lastSeenPromoUseCase: GraphqlUseCase):
+                                 private val lastSeenPromoUseCase: GraphqlUseCase) :
         BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
     override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
@@ -39,8 +39,10 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val dataDetailCheckoutPromo = objects.getData<DataPromoCheckoutList>(DataPromoCheckoutList::class.java)
-                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData?:ArrayList(),
-                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext?:false)
+                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData
+                        ?: ArrayList(),
+                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext
+                                ?: false)
             }
         })
     }
@@ -53,6 +55,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         input.addProperty(PAGE, page)
         input.addProperty(LIMIT, 10)
         input.addProperty(INCLUDE_EXTRA_INFO, 0)
+        input.addProperty(API_VERSION, API_VERSION_VALUE)
         return input
     }
 
@@ -76,7 +79,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
 
             override fun onNext(objects: GraphqlResponse) {
                 val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(lastSeenPromoData.promoModels)
+                view.renderListLastSeen(lastSeenPromoData.promoModels, false)
             }
         })
     }
@@ -88,6 +91,7 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
     }
 
     companion object {
+        private val API_VERSION = "apiVersion"
         private val INPUT_GQL = "input"
         private val SERVICE_ID = "serviceID"
         private val CATEGORY_ID = "categoryID"
@@ -96,5 +100,6 @@ class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
         private val PAGE = "page"
         private val LIMIT = "limit"
         private val INCLUDE_EXTRA_INFO = "includeExtraInfo"
+        private val API_VERSION_VALUE = "2.0.0"
     }
 }

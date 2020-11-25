@@ -6,13 +6,13 @@ import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonViewModel;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentButtonModel;
 
 /**
  * @author by alvarisi on 3/26/18.
  */
 
-public class FlightCancellationAttachmentButtonViewHolder extends AbstractViewHolder<FlightCancellationAttachmentButtonViewModel> {
+public class FlightCancellationAttachmentButtonViewHolder extends AbstractViewHolder<FlightCancellationAttachmentButtonModel> {
 
     @LayoutRes
     public static int LAYOUT = com.tokopedia.flight.R.layout.item_flight_cancellation_attachment_button;
@@ -35,7 +35,7 @@ public class FlightCancellationAttachmentButtonViewHolder extends AbstractViewHo
     }
 
     @Override
-    public void bind(FlightCancellationAttachmentButtonViewModel element) {
+    public void bind(FlightCancellationAttachmentButtonModel element) {
 
     }
 }

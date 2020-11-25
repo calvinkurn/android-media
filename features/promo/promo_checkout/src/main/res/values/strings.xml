@@ -1,18 +1,19 @@
 <resources>
     <string name="app_name">promo_checkout</string>
-    <string name="activity_promo_list_title">Gunakan Promo/Kupon</string>
-    <string name="activity_promo_detail_title">Detail Kupon</string>
+    <string name="title_promo_checkout_list">Gunakan Promo/Kupon</string>
+    <string name="title_promo_checkout_detail">Detail Kupon</string>
     <string name="promo_label_hint_promo_code">Kode Promo</string>
     <string name="promo_label_input_promo_code">Ketik kode promo</string>
     <string name="promo_label_button_use">Gunakan</string>
     <string name="promo_title_last_seen">Promo Terakhir Dilihat</string>
     <string name="promo_title_category">Promo Terakhir Dilihat</string>
+    <string name="promo_title_for_this_category">Promo Untuk Kategori Ini:</string>
     <string name="promo_label_promo_code">Kode Promo:</string>
     <string name="promo_label_my_coupon">Kupon Saya:</string>
     <string name="promo_title_period">Berlaku Hingga</string>
     <string name="promo_label_min_transaction">Min. transaksi</string>
     <string name="promo_title_empty_list">Tidak Ada Kupon di Kategori Ini</string>
-    <string name="promo_label_empty_list">Ayo eksplor berbagai macam Kupon menarik di TokoPoints!</string>
+    <string name="promo_label_empty_list">Ayo eksplor berbagai macam Kupon menarik di Rewards!</string>
     <string name="promo_label_use">Gunakan</string>
     <string name="promo_label_cancel_use">Batal Gunakan</string>
     <string name="promo_label_coupon_not_eligible">Kupon Tidak Bisa Digunakan</string>

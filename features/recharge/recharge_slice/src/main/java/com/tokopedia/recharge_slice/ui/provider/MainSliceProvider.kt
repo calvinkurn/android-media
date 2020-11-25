@@ -5,6 +5,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat.createWithBitmap
 import androidx.core.graphics.drawable.IconCompat.createWithResource
@@ -57,7 +59,11 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
-        return createGetInvoiceSlice(sliceUri)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            createGetInvoiceSlice(sliceUri)
+        } else {
+            return null
+        }
     }
 
     private fun createPendingIntent(id: Int?, applink: String?, trackingClick: String): PendingIntent? {
@@ -86,6 +92,7 @@ class MainSliceProvider : SliceProvider() {
             0
     )
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createGetInvoiceSlice(sliceUri: Uri): Slice? {
         if (getRemoteConfigRechargeSliceEnabler(contextNonNull)) {
             val mainPendingIntent = PendingIntent.getActivity(
@@ -103,44 +110,53 @@ class MainSliceProvider : SliceProvider() {
                         setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                         header {
                             title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                            if (recommendationModel?.get(0)?.productName.isNullOrEmpty())
+                            if (recommendationModel.isNullOrEmpty() && !alreadyLoadData)
                                 subtitle = contextNonNull.resources.getString(R.string.slice_loading)
-                            else
-                                subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName?.capitalizeWords())
-                            primaryAction = SliceAction.create(
-                                    mainPendingIntent,
-                                    createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                    ICON_IMAGE,
-                                    contextNonNull.resources.getString(R.string.slice_search_title)
-                            )
-                        }
-                        recommendationModel?.indices?.let { recomRange ->
-                            var listProduct: MutableList<Product> = mutableListOf()
-                            for (i in recomRange) {
-                                var product = Product()
-                                row {
-                                    setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
-                                    recommendationModel.let {
-                                        it?.let {
-                                            product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
-                                            listProduct.add(i, product)
-                                        }
-                                        it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
-                                        it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
-                                    }
-                                    primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
-                                        SliceAction.create(
-                                                it,
-                                                createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
-                                                SMALL_IMAGE,
-                                                ""
-                                        )
-                                    }
+                            else if (recommendationModel.isNullOrEmpty() && alreadyLoadData) {
+                                title = contextNonNull.resources.getString(R.string.slice_empty_data)
+                                primaryAction = createPendingIntentNoAccess()?.let {
+                                    SliceAction.create(
+                                            it,
+                                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                            SMALL_IMAGE,
+                                            ""
+                                    )
                                 }
                             }
-                            if(alreadyLoadData && listProduct.size==3) {
-                                val trackingImpression = TrackingData(listProduct)
-                                Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                            else subtitle = (contextNonNull.resources.getString(R.string.slice_rekomendasi))
+                        }
+                        recommendationModel?.indices?.let { recomRange ->
+                            if (!recommendationModel.isNullOrEmpty()) {
+                                var listProduct: MutableList<Product> = mutableListOf()
+                                for (i in recomRange) {
+                                    if (!recommendationModel?.get(i)?.productName.isNullOrEmpty() && !recommendationModel?.get(i)?.appLink.isNullOrEmpty()
+                                            && recommendationModel?.get(i)?.productPrice != 0) {
+                                        var product = Product()
+                                        row {
+                                            setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
+                                            recommendationModel.let {
+                                                it?.let {
+                                                    product = Product(it.get(i).productId.toString(), it.get(i).productName, rupiahFormatter(it.get(i).productPrice))
+                                                    listProduct.add(i, product)
+                                                }
+                                                it?.get(i)?.productName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
+                                                it?.get(i)?.productPrice?.let { it1 -> setSubtitle(rupiahFormatter(it1)) }
+                                            }
+                                            primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, product.toString())?.let {
+                                                SliceAction.create(
+                                                        it,
+                                                        createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
+                                                        SMALL_IMAGE,
+                                                        ""
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                                if (alreadyLoadData && listProduct.isNotEmpty()) {
+                                    val trackingImpression = TrackingData(listProduct)
+                                    Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
+                                }
                             }
                         }
                     }
@@ -148,16 +164,16 @@ class MainSliceProvider : SliceProvider() {
                     return sliceNotLogin(sliceUri)
                 }
             } catch (e: Exception) {
-                return sliceNotLogin(sliceUri)
+                return sliceNoAccess(sliceUri)
             }
         } else {
             return sliceNoAccess(sliceUri)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNotLogin(sliceUri: Uri): Slice {
-        Timber.w(contextNonNull.resources.getString(R.string.slice_track_timber_impression) +
-                contextNonNull.resources.getString(R.string.slice_user_not_login))
+        Timber.w("""${contextNonNull.resources.getString(R.string.slice_track_timber_impression)}${contextNonNull.resources.getString(R.string.slice_user_not_login)}""")
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
             header {
@@ -174,6 +190,7 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun sliceNoAccess(sliceUri: Uri): Slice {
         return list(contextNonNull, sliceUri, INFINITY) {
             setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
@@ -227,9 +244,9 @@ class MainSliceProvider : SliceProvider() {
     fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
 
     override fun onCreateSliceProvider(): Boolean {
-        contextNonNull = context.applicationContext ?: return false
+        contextNonNull = context?.applicationContext ?: return false
         remoteConfig = FirebaseRemoteConfigImpl(contextNonNull)
-        LocalCacheHandler(context,APPLINK_DEBUGGER)
+        LocalCacheHandler(context, APPLINK_DEBUGGER)
         loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }

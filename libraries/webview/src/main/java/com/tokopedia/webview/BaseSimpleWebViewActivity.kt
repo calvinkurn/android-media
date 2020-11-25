@@ -17,16 +17,21 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.url.TokopediaUrl.Companion.getInstance
 import com.tokopedia.webview.ext.decode
 import com.tokopedia.webview.ext.encodeOnce
+import java.io.UnsupportedEncodingException
+import java.net.URLDecoder
 
 open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
-    private lateinit var url: String
-    private var showTitleBar = true
-    private var allowOverride = true
-    private var needLogin = false
-    private var title = ""
+    protected lateinit var url: String
+    var showTitleBar = true
+    var pullToRefresh = false
+    private set
+    protected var allowOverride = true
+    protected var needLogin = false
+    var webViewTitle = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         init(intent)
@@ -36,7 +41,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     private fun setupToolbar() {
         if (showTitleBar) {
-            updateTitle(title)
+            updateTitle(webViewTitle)
             supportActionBar?.show()
         } else {
             supportActionBar?.hide()
@@ -49,7 +54,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             showTitleBar = getBoolean(KEY_TITLEBAR, true)
             allowOverride = getBoolean(KEY_ALLOW_OVERRIDE, true)
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
-            title = getString(KEY_TITLE, DEFAULT_TITLE)
+            pullToRefresh = getBoolean(KEY_PULL_TO_REFRESH, false)
+            webViewTitle = getString(KEY_TITLE, DEFAULT_TITLE)
         }
 
         intent.data?.run {
@@ -68,8 +74,11 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
             isLoginRequire?.let { needLogin = it.toBoolean() }
 
+            val isPullToRefreshEnabled = getQueryParameter(KEY_PULL_TO_REFRESH)
+            isPullToRefreshEnabled?.let { pullToRefresh = it.toBoolean() }
+
             val needTitle = getQueryParameter(KEY_TITLE)
-            needTitle?.let { title = it }
+            needTitle?.let { webViewTitle = it }
         }
     }
 
@@ -85,18 +94,36 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         if (item.itemId == R.id.menu_home) {
             RouteManager.route(this, ApplinkConst.HOME)
         } else if (item.itemId == R.id.menu_help) {
-            RouteManager.route(this, ApplinkConst.CONTACT_US)
+            RouteManager.route(this, ApplinkConst.CONTACT_US_NATIVE)
         }
         return super.onOptionsItemSelected(item)
     }
 
     override fun getNewFragment(): Fragment {
-        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride)
+        if (::url.isInitialized) {
+            return createFragmentInstance()
+        } else {
+            this.finish()
+            return Fragment()
+        }
+    }
+
+    protected open fun createFragmentInstance(): Fragment {
+        return BaseSessionWebViewFragment.newInstance(url, needLogin, allowOverride, pullToRefresh)
     }
 
     override fun onResume() {
         super.onResume()
-        if (PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1) {
+        reloadWebViewIfNeeded()
+    }
+
+    private fun reloadWebViewIfNeeded(){
+        val needReload = try {
+            PersistentCacheManager.instance.get(KEY_CACHE_RELOAD_WEBVIEW, Int::class.javaPrimitiveType!!, 0) == 1
+        } catch (e:Exception) {
+            false
+        }
+        if (needReload) {
             PersistentCacheManager.instance.put(KEY_CACHE_RELOAD_WEBVIEW, 0)
             val f: Fragment? = fragment
             if (f is BaseSessionWebViewFragment) {
@@ -187,6 +214,9 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
 
     object DeeplinkIntent {
 
+        const val SELLERAPP_PACKAGE = "com.tokopedia.sellerapp"
+        const val CUSTOMERAPP_PACKAGE = "com.tokopedia.tkpd"
+
         @DeepLink(ApplinkConst.WEBVIEW_PARENT_HOME)
         @JvmStatic
         fun getInstanceIntentAppLinkBackToHome(context: Context, extras: Bundle): TaskStackBuilder {
@@ -232,6 +262,40 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             }
 
             return getStartIntent(context, webUrl, showToolbar, allowOverride, needLogin)
+        }
+
+        @DeepLink(ApplinkConst.BROWSER, ApplinkConst.SellerApp.BROWSER)
+        @JvmStatic
+        fun getCallingIntentOpenBrowser(context: Context?, extras: Bundle): Intent? {
+            val webUrl = extras.getString("url", getInstance().WEB)
+            val destinationIntent = Intent(Intent.ACTION_VIEW)
+            val decodedUrl: String?
+            decodedUrl = webUrl.decode()
+            val uriData = Uri.parse(decodedUrl)
+            destinationIntent.data = uriData
+            if (context == null) {
+                return destinationIntent
+            }
+            val resolveInfos = context.packageManager.queryIntentActivities(destinationIntent, 0)
+            // remove deeplink tokopedia if any
+            for (i in resolveInfos.indices.reversed()) {
+                val resolveInfo = resolveInfos[i]
+                val packageName = resolveInfo.activityInfo.packageName
+                if (packageName == CUSTOMERAPP_PACKAGE || packageName == SELLERAPP_PACKAGE) {
+                    resolveInfos.removeAt(i)
+                }
+            }
+
+            // return the first intent only (only if it is the only available browser)
+            return if (resolveInfos.size == 1) {
+                val resolveInfo = resolveInfos[0]
+                val browserIntent = Intent()
+                browserIntent.setClassName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name)
+                browserIntent.data = uriData
+                browserIntent
+            } else {
+                destinationIntent
+            }
         }
     }
 

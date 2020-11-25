@@ -8,7 +8,7 @@ import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import com.tokopedia.developer_options.R
 import com.tokopedia.pushnotif.ApplinkNotificationHelper
-import com.tokopedia.pushnotif.Constant
+import com.tokopedia.pushnotif.data.constant.Constant
 
 
 object ReviewNotificationExample {

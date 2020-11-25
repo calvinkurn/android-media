@@ -10,6 +10,8 @@ query suggestion($data: PropertySuggestionSearchParam!) {
       name
       location
       hotelCount
+      searchType
+      searchID
     }
     meta {
       keyword

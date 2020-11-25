@@ -11,95 +11,116 @@ class IrisSession(val context: Context) : Session {
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
 
-    override fun getUserId(): String {
-        return sharedPreferences.getString(KEY_USER_ID, "")?: ""
+    // variable to hold current session Id
+    private var sessionId: String? = null
+
+    // variable to hold first time Iris Session is created
+    private var initialVisit: Long = 0L
+    private var timestampOfDayChanged: Long = 0L
+
+    // variable to hold last time Iris Session is accessed
+    private var lastTrackingActivity: Long = 0L
+    // variable to hold last time Iris Session is accessed (from shared Preference)
+    private var lastTrackingActivityPref: Long = 0L
+
+    companion object {
+        const val THRESHOLD_EXPIRED_IF_NO_ACTIVITY = 1_800_000L //30 minutes
+        const val ONE_DAY_MILLIS = 86_400_000L
+        const val GMT_MILLIS = 25_200_000L // 7 hours
+        const val THRESHOLD_UPDATE_LAST_ACTIVITY = 10_000L // 10 seconds to prevent burst update shared pref
     }
 
-    override fun getDeviceId(): String {
-        return sharedPreferences.getString(KEY_DEVICE_ID, "")?:""
-    }
-
+    /**
+     * Session id:
+     * The session is created when there is no existing session
+     * The session will be expired if there is no tracking activity for more than 30 minutes
+     * The session will be renew if the day changed (GMT +7)
+     */
     override fun getSessionId(): String {
-
-        val beginningCurrent = Calendar.getInstance().timeInMillis
-        val beginningPrevious = sharedPreferences.getString(KEY_TIMESTAMP_PREVIOUS, beginningCurrent.toString())
-
-        var sessionId = sharedPreferences.getString(KEY_SESSION_ID, "")
-        if (sessionId != null && beginningPrevious != null) {
-            if (sessionId.isBlank() || shouldGenerateSession(beginningPrevious.toLong(), beginningCurrent)) {
-                sessionId = generateSessionId(beginningCurrent)
-                setSessionId(sessionId)
+        if (sessionId.isNullOrEmpty()) {
+            val sessionIdFromPref = sharedPreferences.getString(KEY_SESSION_ID, "")
+            if (sessionIdFromPref.isNullOrEmpty()) {
+                // The session is created when there is no existing session
+                return generateSessionId(System.currentTimeMillis())
+            } else {
+                sessionId = sessionIdFromPref
             }
         }
 
-        return sessionId?: ""
+        val currentTimeStamp = System.currentTimeMillis()
+        if (lastTrackingActivity == 0L) {
+            lastTrackingActivity = sharedPreferences.getLong(KEY_TIMESTAMP_LAST_ACTIVITY, 0L)
+            lastTrackingActivityPref = lastTrackingActivity
+        }
+        if (currentTimeStamp - lastTrackingActivity > THRESHOLD_EXPIRED_IF_NO_ACTIVITY) {
+            // The session will be expired if there is no tracking activity for more than 30 minutes
+            return generateSessionId(currentTimeStamp)
+        }
+
+        if (initialVisit == 0L) {
+            initialVisit = sharedPreferences.getLong(KEY_INITIAL_VISIT, 0L)
+            timestampOfDayChanged = generateNextDayGMT7(initialVisit)
+        }
+        if (currentTimeStamp > timestampOfDayChanged) {
+            // The session will be renew if the day changed (GMT +7)
+            return generateSessionId(currentTimeStamp)
+        }
+
+        setPrefTrackingTimeStamp(currentTimeStamp)
+        return sessionId ?: ""
     }
 
-    private fun generateSessionId(bc: Long) : String {
+    /**
+     * generate and store the result to cache and temp variable
+     */
+    private fun generateSessionId(timestamp: Long): String {
+        val uuid = generateUuid()
+        val domainHash = generateDomainHash()
 
-        val uuid = sharedPreferences.getString(KEY_UUID, generateUuid())
-        val initialVisit = sharedPreferences.getString(KEY_INITIAL_VISIT, bc.toString())
-        val domainHash = sharedPreferences.getString(KEY_DOMAIN_HASH, generateDomainHash())
-
-        setDomainHash(domainHash)
-        setTimestampPrevious(bc.toString())
-        setInitialVisit(initialVisit)
+        setInitialVisit(timestamp)
         setUuid(uuid)
 
-        return "$domainHash:$uuid:$initialVisit"
+        val generatedSessionIdResult = "$domainHash:$uuid:$timestamp"
+        setPrefSessionId(generatedSessionIdResult)
+        sessionId = generatedSessionIdResult
+        setPrefTrackingTimeStamp(timestamp)
+        return generatedSessionIdResult
     }
 
-    private fun shouldGenerateSession(bp: Long, bc: Long) : Boolean {
-        return isExpired(bp, bc) || isDayChanged(bp, bc)
+    private fun generateNextDayGMT7(utcTimestamp: Long): Long {
+        val beginningDayTimeStampUTC = utcTimestamp - (utcTimestamp % ONE_DAY_MILLIS)
+        val nextDayTimeStampUTC = beginningDayTimeStampUTC + ONE_DAY_MILLIS
+        var gmtNextDay = nextDayTimeStampUTC - GMT_MILLIS
+        if (gmtNextDay < utcTimestamp) {
+            gmtNextDay += ONE_DAY_MILLIS
+        }
+        return gmtNextDay
     }
 
-    private fun isExpired(bp: Long, bc: Long) : Boolean {
-        val thirtyMinutes = 1800
-        return (bp+thirtyMinutes) < bc
-    }
-
-    private fun isDayChanged(bp: Long, bc: Long) : Boolean {
-        val cal = Calendar.getInstance()
-        cal.time = Date(bp)
-        val dayBp = cal.get(Calendar.DAY_OF_YEAR)
-
-        cal.time = Date(bc)
-        val dayBc = cal.get(Calendar.DAY_OF_YEAR)
-        return dayBp != dayBc
-    }
-
-    private fun generateDomainHash() : String {
+    private fun generateDomainHash(): String {
         val data: ByteArray = DOMAIN_HASH.toByteArray(Charset.defaultCharset())
         return Base64.encodeToString(data, Base64.NO_WRAP).trim()
     }
 
-    private fun generateUuid() : String {
+    private fun generateUuid(): String {
         return UUID.randomUUID().toString().replace("-", "").toUpperCase()
     }
 
-    override fun setUserId(id: String) {
-        editor.putString(KEY_USER_ID, id)
-        editor.commit()
-    }
-
-    override fun setDeviceId(id: String) {
-        editor.putString(KEY_DEVICE_ID, id)
-        editor.commit()
-    }
-
-    private fun setTimestampPrevious(timestamp: String) {
-        editor.putString(KEY_TIMESTAMP_PREVIOUS, timestamp)
-        editor.commit()
-    }
-
-    override fun setSessionId(id: String) {
+    private fun setPrefSessionId(id: String) {
         editor.putString(KEY_SESSION_ID, id)
         editor.commit()
     }
 
-    private fun setDomainHash(domainHash: String?) {
-        editor.putString(KEY_DOMAIN_HASH, domainHash)
-        editor.commit()
+    /**
+     * Update timestamp of last tracking activity
+     */
+    private fun setPrefTrackingTimeStamp(timestamp: Long) {
+        lastTrackingActivity = timestamp
+        if (timestamp - lastTrackingActivityPref > THRESHOLD_UPDATE_LAST_ACTIVITY) {
+            lastTrackingActivityPref = timestamp
+            editor.putLong(KEY_TIMESTAMP_LAST_ACTIVITY, timestamp)
+            editor.apply()
+        }
     }
 
     private fun setUuid(uuid: String?) {
@@ -107,8 +128,10 @@ class IrisSession(val context: Context) : Session {
         editor.commit()
     }
 
-    private fun setInitialVisit(initialVisit: String?) {
-        editor.putString(KEY_INITIAL_VISIT, initialVisit)
+    private fun setInitialVisit(initialVisit: Long) {
+        this.initialVisit = initialVisit
+        timestampOfDayChanged = generateNextDayGMT7(initialVisit)
+        editor.putLong(KEY_INITIAL_VISIT, initialVisit)
         editor.commit()
     }
 }

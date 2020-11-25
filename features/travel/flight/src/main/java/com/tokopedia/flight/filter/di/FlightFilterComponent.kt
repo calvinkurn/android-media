@@ -8,7 +8,8 @@ import dagger.Component
  * @author by furqan on 17/02/2020
  */
 @FlightFilterScope
-@Component(modules = [FlightFilterModule::class, FlightFilterViewModelModule::class], dependencies = [FlightComponent::class])
+@Component(modules = [FlightFilterModule::class, FlightFilterViewModelModule::class],
+        dependencies = [FlightComponent::class])
 interface FlightFilterComponent {
     fun inject(flightFilterBottomSheet: FlightFilterBottomSheet)
 }

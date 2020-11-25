@@ -8,14 +8,8 @@ import com.tokopedia.product.manage.common.draft.data.db.AddEditProductDraftDb;
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepository;
 import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProductDraftRepositoryImpl;
 import com.tokopedia.product.manage.common.draft.data.db.source.AddEditProductDraftDataSource;
-import com.tokopedia.product.manage.item.main.add.di.ProductAddModule;
-import com.tokopedia.product.manage.item.main.add.di.ProductAddScope;
-import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
-import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
-import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl;
-import com.tokopedia.product.manage.item.main.draft.data.source.ProductDraftDataSource;
-import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
-import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
+import com.tokopedia.seller.manageitem.di.module.ProductAddModule;
+import com.tokopedia.seller.manageitem.di.scope.ProductAddScope;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
@@ -51,31 +45,11 @@ public class ProductDraftListModule extends ProductAddModule {
     @Provides
     ProductDraftListPresenter providePresenterDraft(FetchAllDraftProductUseCase fetchAllDraftProductUseCase,
                                                     DeleteSingleDraftProductUseCase deleteSingleDraftProductUseCase,
-                                                    UpdateUploadingDraftProductUseCase updateUploadingDraftProductUseCase,
                                                     ClearAllDraftProductUseCase clearAllDraftProductUseCase) {
-        return new ProductDraftListPresenterImpl(fetchAllDraftProductUseCase, deleteSingleDraftProductUseCase,
-                updateUploadingDraftProductUseCase, clearAllDraftProductUseCase);
-    }
-
-    // this is for product_manage_item
-    @ProductAddScope
-    @Provides
-    ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context) {
-        return new ProductDraftRepositoryImpl(productDraftDataSource, context);
-    }
-
-    // this is for product_manage_item
-    @ProductAddScope
-    @Provides
-    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context) {
-        return ProductDraftDB.getInstance(context);
-    }
-
-    // this is for product_manage_item
-    @ProductAddScope
-    @Provides
-    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB) {
-        return productDraftDB.getProductDraftDao();
+        return new ProductDraftListPresenterImpl(
+                fetchAllDraftProductUseCase,
+                deleteSingleDraftProductUseCase,
+                clearAllDraftProductUseCase);
     }
 
     @ProductAddScope

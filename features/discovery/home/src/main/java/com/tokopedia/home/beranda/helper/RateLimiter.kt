@@ -33,13 +33,12 @@ class RateLimiter<in KEY>(timeout: Int, timeUnit: TimeUnit) {
         val lastFetched = timestamps[key]
         val now = now()
         if (lastFetched == null) {
-            timestamps[key] = now
-            return true
+            return false
         }
         if (now - lastFetched > timeout) {
-            timestamps[key] = now
             return true
         }
+        timestamps[key] = now
         return false
     }
 

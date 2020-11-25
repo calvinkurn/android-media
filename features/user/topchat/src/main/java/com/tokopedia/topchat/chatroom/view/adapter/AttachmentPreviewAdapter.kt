@@ -15,6 +15,7 @@ class AttachmentPreviewAdapter(
 
     interface AttachmentPreviewListener {
         fun clearAttachmentPreview()
+        fun hideProductPreviewLayout()
     }
 
     private var attachments = arrayListOf<SendablePreview>()

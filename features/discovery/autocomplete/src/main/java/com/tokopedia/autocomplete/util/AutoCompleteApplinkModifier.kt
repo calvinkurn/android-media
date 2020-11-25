@@ -41,3 +41,28 @@ private fun getModifiedSearchResultApplink(applink: String?, searchParameter: Ma
 
     return ApplinkConst.DISCOVERY_SEARCH + "?" + UrlParamHelper.generateUrlParamString(applinkQueryParams)
 }
+
+internal fun getShopIdFromApplink(applink: String): String {
+    return applink.substringWithPrefixAndSuffix("tokopedia://shop/", "?")
+}
+
+private fun String.substringWithPrefixAndSuffix(prefix: String, suffix: String): String {
+    val suffixIndex = indexOf(suffix)
+
+    val startIndex = prefix.length
+    val endIndex = if (suffixIndex == -1) length else suffixIndex
+
+    return try {
+        if (startsWith(prefix)) {
+            substring(startIndex, endIndex)
+        } else {
+            ""
+        }
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+internal fun getProfileIdFromApplink(applink: String): String {
+    return applink.substringWithPrefixAndSuffix("tokopedia://people/", "?")
+}

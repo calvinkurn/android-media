@@ -87,13 +87,13 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_crack_empty_token, container, false);
+        rootView = inflater.inflate(com.tokopedia.gamification.R.layout.fragment_crack_empty_token, container, false);
         tokenEmptyImage = rootView.findViewById(R.id.empty_lucky_egg);
         getMoreTokenBtn = rootView.findViewById(R.id.get_more_token_button);
         ivContainer = rootView.findViewById(R.id.iv_container);
         toolbar = rootView.findViewById(R.id.toolbar);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
-        toolbarTitle.setText(getString(R.string.toko_points_title));
+        toolbarTitle.setText(getString(com.tokopedia.gamification.R.string.toko_points_title));
         widgetRewards = rootView.findViewById(R.id.widget_rewards);
         dailyPrizeLayout = rootView.findViewById(R.id.fl_daily_prize);
         ivDailyPrize = rootView.findViewById(R.id.empty_daily_prize);
@@ -124,8 +124,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
 
     private void setUpToolBar() {
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
-        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), R.color.black));
+        toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), com.tokopedia.abstraction.R.drawable.ic_action_back));
+        setDrawableColorFilter(toolbar.getNavigationIcon(), ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.black));
     }
 
     private void setDrawableColorFilter(Drawable drawable, int color) {
@@ -232,9 +232,11 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
 
     @Override
     protected void initInjector() {
-        GamificationComponent gamificationComponent =
-                GamificationComponentInstance.getComponent(getActivity().getApplication());
-        gamificationComponent.inject(this);
+        if (getActivity() != null) {
+            GamificationComponent gamificationComponent =
+                    GamificationComponentInstance.getComponent(getActivity());
+            gamificationComponent.inject(this);
+        }
         crackEmptyTokenPresenter.attachView(this);
     }
 

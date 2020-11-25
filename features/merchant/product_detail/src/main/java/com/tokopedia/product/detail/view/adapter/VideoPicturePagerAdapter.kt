@@ -6,10 +6,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
+import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 
-class VideoPicturePagerAdapter(var media: List<ProductMediaDataModel>,
+class VideoPicturePagerAdapter(var media: List<MediaDataModel>,
                                private val onPictureClickListener: ((Int) -> Unit)?,
                                fragmentManager: FragmentManager,
                                private val componentTrackData: ComponentTrackDataModel,
@@ -36,13 +36,13 @@ class VideoPicturePagerAdapter(var media: List<ProductMediaDataModel>,
         return f
     }
 
-    override fun getItemId(position: Int): Long = mediaId[position].hashCode().toLong()
+    override fun getItemId(position: Int): Long = mediaId[position]
 
     override fun containsItem(itemId: Long): Boolean = mediaId.contains(itemId)
 
     fun getRegisteredFragment(pos: Int): Fragment? = registeredFragment.get(pos)
 
-    fun setData(data: List<ProductMediaDataModel>) {
+    fun setData(data: List<MediaDataModel>) {
         media = data
         mediaId = media.map {
             it.hashCode().toLong()

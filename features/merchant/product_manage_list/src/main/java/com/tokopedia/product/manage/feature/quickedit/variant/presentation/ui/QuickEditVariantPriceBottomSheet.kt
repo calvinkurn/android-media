@@ -13,7 +13,7 @@ import com.tokopedia.product.manage.feature.quickedit.variant.adapter.viewholder
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
 
 class QuickEditVariantPriceBottomSheet(
-    private val onSaveVariantsPrice: (EditVariantResult) -> Unit
+    private val onSaveVariantsPrice: (EditVariantResult) -> Unit = {}
 ): QuickEditVariantBottomSheet(), ProductVariantListener {
 
     companion object {

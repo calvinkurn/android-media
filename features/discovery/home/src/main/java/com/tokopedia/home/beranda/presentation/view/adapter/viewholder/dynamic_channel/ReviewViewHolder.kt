@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -27,8 +28,15 @@ class ReviewViewHolder(
         private const val FPM_REVIEW = "home_review"
         private const val cardBg = "https://ecs7.tokopedia.net/android/others/review_home_bg.png"
     }
+    private var performanceMonitoring: PerformanceMonitoring? = null
+    private val performanceTraceName = "mp_home_review_widget_load_time"
+
+    init {
+        performanceMonitoring = PerformanceMonitoring()
+    }
 
     override fun bind(element: ReviewDataModel) {
+        performanceMonitoring?.startTrace(performanceTraceName)
         itemView.review_card_bg?.loadImage(cardBg)
         element.suggestedProductReview.let { suggestedProductReview ->
             if (suggestedProductReview.suggestedProductReview.linkURL.isEmpty()) {
@@ -45,18 +53,19 @@ class ReviewViewHolder(
                 itemView.addOnImpressionListener(element, object : ViewHintListener {
                     override fun onViewHint() {
                         HomePageTracking.homeReviewImpression(
-                                categoryListener.trackingQueue,
+                                categoryListener.getTrackingQueueObj(),
                                 suggestedProductReview.suggestedProductReview,
                                 adapterPosition,
                                 suggestedProductReview.suggestedProductReview.orderId,
                                 suggestedProductReview.suggestedProductReview.productId,
-                                element.channel.id
+                                element.channel.id,
+                                suggestedProductReview.suggestedProductReview.description
                         )
                         categoryListener.sendIrisTrackerHashMap(HomePageTracking.getHomeReviewImpressionIris(element.suggestedProductReview.suggestedProductReview,
                                 adapterPosition,
                                 suggestedProductReview.suggestedProductReview.orderId,
                                 suggestedProductReview.suggestedProductReview.productId,
-                                element.channel.id))
+                                element.channel.id, suggestedProductReview.suggestedProductReview.description))
                     }
                 })
 
@@ -65,7 +74,8 @@ class ReviewViewHolder(
                         HomePageTracking.homeReviewOnBlankSpaceClickTracker(
                                 suggestedProductReview.suggestedProductReview.orderId,
                                 suggestedProductReview.suggestedProductReview.productId,
-                                element.channel.id
+                                element.channel.id,
+                                suggestedProductReview.suggestedProductReview.description
                         )
                         reviewListener.onReviewClick(
                                 adapterPosition,
@@ -84,7 +94,9 @@ class ReviewViewHolder(
                             HomePageTracking.homeReviewOnRatingChangedTracker(
                                     suggestedProductReview.suggestedProductReview.orderId,
                                     suggestedProductReview.suggestedProductReview.productId,
-                                    position + 1
+                                    position,
+                                    suggestedProductReview.suggestedProductReview.description,
+                                    element.channel.id
                             )
                             reviewListener.onReviewClick(
                                     adapterPosition,
@@ -100,11 +112,15 @@ class ReviewViewHolder(
                 itemView.ic_close_review.setOnClickListener {
                     HomePageTracking.homeReviewOnCloseTracker(
                             suggestedProductReview.suggestedProductReview.orderId,
-                            suggestedProductReview.suggestedProductReview.productId
+                            suggestedProductReview.suggestedProductReview.productId,
+                            suggestedProductReview.suggestedProductReview.description,
+                            element.channel.id
                     )
                     reviewListener.onCloseClick()
                 }
             }
         }
+        performanceMonitoring?.stopTrace()
+        performanceMonitoring = null
     }
 }

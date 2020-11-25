@@ -8,6 +8,7 @@
   
   <com.tokopedia.unifycomponents.UnifyButton
     android:id="@+id/btnAddToWishlist"
+    android:contentDescription="@string/content_desc_btnAddToWishlist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
@@ -16,7 +17,7 @@
     android:layout_marginBottom="@dimen/dp_20"
     android:gravity="center"
     android:textAllCaps="false"
-    app:backgroundTint="@color/colorPrimary"
+    app:backgroundTint="@color/Unify_G500"
     app:layout_constraintBottom_toBottomOf="parent"/>
   
   <ProgressBar

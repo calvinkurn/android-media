@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_status_bar_height"
+        android:elevation="@dimen/sah_status_bar_elevation" />
+
+    <com.tokopedia.sellerhome.view.widget.toolbar.SellerHomeToolbar
+        android:id="@+id/sahToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/statusBarBackground"
+        android:minHeight="?attr/actionBarSize" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/sahContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/sahBottomNav"
+        android:layout_below="@id/sahToolbar"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:background="@drawable/sah_shadow"
+        android:layout_below="@id/sahToolbar"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        android:background="@drawable/sah_shadow"
+        android:rotation="@integer/shadow_inverted_rotation"
+        android:layout_above="@id/sahBottomNav"/>
+
+    <com.tokopedia.sellerhome.view.viewhelper.lottiebottomnav.LottieBottomNav
+        android:id="@+id/sahBottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:buttonColor="@color/color_bottom_nav_btn"
+        app:buttonsHeight="@dimen/shc_dimen_56dp"
+        app:offscreenPageLimit="4"
+        app:setViewPagerSwipeable="false"
+        tools:layout_height="@dimen/shc_dimen_56dp" />
+</RelativeLayout>

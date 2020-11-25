@@ -23,7 +23,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
@@ -172,24 +172,24 @@ internal fun ImageView.loadIcon(url: String?) {
     }
 }
 
+internal fun ImageView.loadImageTopRightCrop(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .transform(TopRightCrop())
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .placeholder(R.drawable.placeholder_grey)
+                .error(R.drawable.placeholder_grey)
+                .into(this)
+    }
+}
+
 internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
     if (labelGroup == null) hide()
     else showLabel(labelGroup)
 }
 
-internal fun Label.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showLabel(labelGroup)
-}
-
 private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
-    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
-        it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.determineLabelType(labelGroup.type)
-    }
-}
-
-private fun Label.showLabel(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
         it.determineLabelType(labelGroup.type)
@@ -239,8 +239,8 @@ private fun Label.trySetCustomLabelType(labelGroupType: String) {
 @ColorRes
 private fun String?.toUnifyLabelColor(): Int {
     return when(this) {
-        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
-        else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
+        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+        else -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
     }
 }
 
@@ -252,29 +252,22 @@ internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?)
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
+        it.setTextColor(labelGroup.type.toUnifyTextColor(context))
     }
 }
 
-internal fun Typography.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showTypography(labelGroup)
-}
-
-private fun Typography.showTypography(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
-    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
-        it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
-    }
-}
-
-private fun String?.toUnifyTextColor(): String {
-    return when(this) {
-        TEXT_DARK_ORANGE -> COLOR_TEXT_DARK_ORANGE
-        TEXT_DARK_RED -> COLOR_TEXT_DARK_RED
-        TEXT_DARK_GREY -> COLOR_TEXT_DARK_GREY
-        TEXT_LIGHT_GREY -> COLOR_TEXT_LIGHT_GREY
-        else -> this ?: ""
+private fun String?.toUnifyTextColor(context: Context): Int {
+    return try{
+        when(this) {
+            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, R.color.Unify_Y400)
+            TEXT_DARK_RED -> ContextCompat.getColor(context, R.color.Unify_R500)
+            TEXT_DARK_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_68)
+            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_44)
+            else -> Color.parseColor(this)
+        }
+    } catch (throwable: Throwable){
+        throwable.printStackTrace()
+        ContextCompat.getColor(context, R.color.Unify_N700)
     }
 }
 
@@ -301,5 +294,25 @@ internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) 
         hitRect.bottom += bottom
 
         parent.touchDelegate = TouchDelegate(hitRect, this)
+    }
+}
+
+internal fun renderLabelCampaign(
+        labelCampaignBackground: ImageView?,
+        textViewLabelCampaign: Typography?,
+        productCardModel: ProductCardModel
+) {
+    val labelCampaign = productCardModel.getLabelCampaign()
+
+    if (labelCampaign?.isShowLabelCampaign() == true) {
+        labelCampaignBackground?.show()
+        labelCampaignBackground?.loadImageTopRightCrop(labelCampaign.imageUrl)
+
+        textViewLabelCampaign?.show()
+        textViewLabelCampaign?.text = MethodChecker.fromHtml(labelCampaign.title)
+    }
+    else {
+        labelCampaignBackground?.hide()
+        textViewLabelCampaign?.hide()
     }
 }

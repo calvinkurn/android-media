@@ -1,0 +1,19 @@
+{
+  "readme": "Search Product Ticker Tracking",
+  "query": [
+    {
+      "event": "viewSearchResultIris",
+      "eventCategory": "search result",
+      "eventAction": "impression - ticker",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickSearchResult",
+      "eventCategory": "search result",
+      "eventAction": "click - ticker",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

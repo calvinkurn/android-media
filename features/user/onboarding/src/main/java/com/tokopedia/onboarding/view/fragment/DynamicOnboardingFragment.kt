@@ -1,5 +1,7 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +13,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
+import com.tokopedia.onboarding.data.OnboardingConstant
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.adapter.PageAdapter
@@ -30,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
+import java.util.*
 import javax.inject.Inject
 
 
@@ -46,6 +51,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private var dynamicOnboardingDataModel = ConfigDataModel()
     private var pagesAdapter = PageAdapter()
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun getScreenName(): String = OnboardingAnalytics.SCREEN_ONBOARDING
 
@@ -61,7 +67,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            dynamicOnboardingDataModel = it.getParcelable(ARG_DYNAMIC_ONBAORDING_DATA) as ConfigDataModel
+            dynamicOnboardingDataModel = it.getParcelable(ARG_DYNAMIC_ONBAORDING_DATA) ?: ConfigDataModel()
         }
 
         val executeViewCreatedWeave = object : WeaveInterface {
@@ -208,6 +214,11 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val page = RouteManager.getIntent(it, appLink)
 
             if (defferedDeeplinkPath.isEmpty()) {
+
+                if (appLink.contains(ApplinkConst.REGISTER)) {
+                    page.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, OnboardingConstant.PARAM_SOURCE_ONBOARDING)
+                }
+
                 if (appLink != ApplinkConst.HOME) {
                     taskStackBuilder.addNextIntent(homeIntent)
                     taskStackBuilder.addNextIntent(page)
@@ -225,8 +236,19 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun finishOnBoarding() {
         activity?.let {
+            saveFirstInstallTime()
             userSession.setFirstTimeUserOnboarding(false)
             it.finish()
+        }
+    }
+
+    private fun saveFirstInstallTime() {
+        context?.let {
+            val date = Date()
+            sharedPrefs = it.getSharedPreferences(
+                    OnboardingFragment.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    OnboardingFragment.KEY_FIRST_INSTALL_TIME_SEARCH, date.time).apply()
         }
     }
 

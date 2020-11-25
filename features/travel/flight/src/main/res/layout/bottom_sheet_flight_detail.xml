@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/spacing_lvl2">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/flightDetailDepartureAirportCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/flightDetailArrowView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3"
+            tools:text="CGK" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/flightDetailDepartureAirportName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="@+id/flightDetailDepartureAirportCode"
+            app:layout_constraintRight_toRightOf="@+id/flightDetailDepartureAirportCode"
+            app:layout_constraintTop_toBottomOf="@+id/flightDetailDepartureAirportCode"
+            app:typographyType="body_3"
+            tools:text="Jakarta" />
+
+        <com.tokopedia.flight.common.view.ArrowFlightView
+            android:id="@+id/flightDetailArrowView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_lvl2"
+            android:layout_marginRight="@dimen/spacing_lvl2"
+            app:layout_constraintBottom_toBottomOf="@+id/flightDetailDepartureAirportCode"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toRightOf="@+id/flightDetailDepartureAirportCode"
+            app:layout_constraintRight_toLeftOf="@+id/flightDetailArrivalAirportCode"
+            app:layout_constraintTop_toTopOf="@+id/flightDetailDepartureAirportCode" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/flightDetailArrivalAirportCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="@+id/flightDetailArrowView"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_3"
+            tools:text="BTJ" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/flightDetailArrivalAirportName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl1"
+            android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintLeft_toLeftOf="@+id/flightDetailArrivalAirportCode"
+            app:layout_constraintRight_toRightOf="@+id/flightDetailArrivalAirportCode"
+            app:layout_constraintTop_toBottomOf="@+id/flightDetailArrivalAirportCode"
+            app:typographyType="body_3"
+            tools:text="Banda Aceh" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/flightDetailTabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:elevation="@dimen/spacing_lvl2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flightDetailDepartureAirportName" />
+
+    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        android:id="@+id/flightDetailViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/flightDetailButtonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/spacing_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingTop="@dimen/spacing_lvl3"
+            android:paddingRight="@dimen/spacing_lvl4"
+            android:paddingBottom="@dimen/spacing_lvl3">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/flightDetailSelectButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/flight_label_choose_button"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

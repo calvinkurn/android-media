@@ -30,6 +30,7 @@ class AddRestVM constructor(
     val liveDataRestResponse = MutableLiveData<LiveDataResult<RestRecord>>()
     val liveDataTransactionEntity = MutableLiveData<LiveDataResult<TransactionEntity>>()
     val liveDataExport = MutableLiveData<LiveDataResult<String>>()
+    val liveDataDeleteRecord = MutableLiveData<LiveDataResult<Boolean>>()
 
     override val coroutineContext: CoroutineContext
         get() = workerDispatcher + ceh
@@ -92,6 +93,17 @@ class AddRestVM constructor(
                 liveDataExport.postValue(Success(text))
             } catch (ex: Exception) {
                 liveDataExport.postValue(Fail(ex))
+            }
+        }
+    }
+
+    fun delete(id: Int) {
+        launch {
+            try {
+                usecase.deleteRecord(id)
+                liveDataDeleteRecord.postValue(Success(true))
+            } catch (ex: Exception) {
+                liveDataDeleteRecord.postValue(Fail(ex))
             }
         }
     }

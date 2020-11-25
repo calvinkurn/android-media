@@ -2,9 +2,10 @@ package com.tokopedia.atc_common.domain.mapper
 
 import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
+import com.tokopedia.atc_common.data.model.response.AddToCartOccExternalGqlResponse
 import com.tokopedia.atc_common.data.model.response.AddToCartOccGqlResponse
-import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.DataResponse
+import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.ocs.OcsDataResponse
 import com.tokopedia.atc_common.domain.model.response.*
 import javax.inject.Inject
@@ -49,7 +50,29 @@ class AddToCartDataMapper @Inject constructor() {
                 success = it.data.success
                 message = it.data.message
                 cartId = it.data.detail.cartId.toString()
-                productId = it.data.detail.productId
+                productId = it.data.detail.productId.toInt()
+                quantity = it.data.detail.quantity
+                notes = it.data.detail.notes
+                shopId = it.data.detail.shopId
+                customerId = it.data.detail.customerId
+                warehouseId = it.data.detail.warehouseId
+                isTradeIn = it.data.detail.isTradeIn
+            }
+
+            addToCartDataModel
+        }
+    }
+
+    fun mapAddToCartOccResponse(addToCartOccGqlResponse: AddToCartOccExternalGqlResponse): AddToCartDataModel {
+        return addToCartOccGqlResponse.addToCartOccResponse.let {
+            val addToCartDataModel = AddToCartDataModel()
+            addToCartDataModel.status = it.status
+            addToCartDataModel.errorMessage = it.errorMessage
+            addToCartDataModel.data = DataModel().apply {
+                success = it.data.success
+                message = it.data.message
+                cartId = it.data.detail.cartId.toString()
+                productId = it.data.detail.productId.toInt()
                 quantity = it.data.detail.quantity
                 notes = it.data.detail.notes
                 shopId = it.data.detail.shopId

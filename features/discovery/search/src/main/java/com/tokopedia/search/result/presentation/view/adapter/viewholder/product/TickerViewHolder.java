@@ -45,7 +45,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> {
             @Override
             public void onDescriptionViewClick(@NotNull CharSequence charSequence) {
                 if (tickerListener != null && !TextUtils.isEmpty(element.getQuery())) {
-                    tickerListener.onTickerClicked(element.getQuery());
+                    tickerListener.onTickerClicked(element);
                 }
             }
 

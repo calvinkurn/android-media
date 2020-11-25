@@ -3,6 +3,7 @@ package com.tokopedia.hotel.booking.presentation.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -95,24 +96,24 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
     fun initView() {
         til_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
+        til_contact_name.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_hint))
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
-            (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+            (til_contact_name.getAutoCompleteTextView() as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
-
+            (til_contact_name.getAutoCompleteTextView() as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id -> autofillView(travelContactArrayAdapter.getItem(position)) }
         }
 
-        til_contact_name.editText.setText(contactData.name)
-        til_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+        til_contact_name.setEditableText(contactData.name)
 
         til_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
-        til_contact_email.editText.setText(contactData.email)
-        til_contact_email.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+        til_contact_email.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_hint))
+        til_contact_email.setEditableText(contactData.email)
 
-        til_contact_phone_number.editText.setText(contactData.phone)
-        til_contact_phone_number.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
+        til_contact_phone_number.setInputType(InputType.TYPE_CLASS_NUMBER)
+        til_contact_phone_number.setHint(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_hint))
+        til_contact_phone_number.setEditableText(contactData.phone)
 
         val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
@@ -136,8 +137,8 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
         if (contact != null) {
             selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
 
-            til_contact_email.editText.setText(contact.email)
-            til_contact_phone_number.editText.setText(contact.phoneNumber)
+            til_contact_email.setEditableText(contact.email)
+            til_contact_phone_number.setEditableText(contact.phoneNumber)
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
@@ -148,9 +149,9 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
     private fun onSaveButtonClicked() {
         if (validateData()) {
-            contactData.name = til_contact_name.editText.text.toString()
-            contactData.email = til_contact_email.editText.text.toString()
-            contactData.phone = til_contact_phone_number.editText.text.toString()
+            contactData.name = til_contact_name.getEditableValue()
+            contactData.email = til_contact_email.getEditableValue()
+            contactData.phone = til_contact_phone_number.getEditableValue()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
             bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_upsert_travel_contact_list),
@@ -168,16 +169,16 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
 
     private fun validateData(): Boolean {
         var isValid = true
-        if (til_contact_name.editText.text.isNullOrBlank()) {
-            til_contact_name.error = getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_error)
+        if (til_contact_name.getEditableValue().isNullOrBlank()) {
+            til_contact_name.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_error))
             isValid = false
         }
-        if (!isValidEmail(til_contact_email.editText.text.toString())) {
-            til_contact_email.error = getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_error)
+        if (!isValidEmail(til_contact_email.getEditableValue())) {
+            til_contact_email.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_error))
             isValid = false
         }
-        if (til_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
-            til_contact_phone_number.error = getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_error)
+        if (til_contact_phone_number.getEditableValue().length < MIN_PHONE_NUMBER_DIGIT) {
+            til_contact_phone_number.setError(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_phone_number_error))
             isValid = false
         }
         return isValid
@@ -194,7 +195,7 @@ class HotelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter
     }
 
     override fun getFilterText(): String {
-        return til_contact_name.editText.text.toString()
+        return til_contact_name.getEditableValue()
     }
 
     companion object {

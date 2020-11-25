@@ -10,63 +10,63 @@ open class CatalogProduct(
 
         @SerializedName("id")
         @Expose
-        val id: String = "",
+        var id: String = "",
         @SerializedName("attributes")
         @Expose
-        val attributes: Attributes = Attributes()
+        var attributes: Attributes = Attributes()
 
 ) {
         class Attributes(
                 @SerializedName("desc")
                 @Expose
-                val desc: String = "",
+                var desc: String = "",
                 @SerializedName("price")
                 @Expose
-                val price: String = "",
+                var price: String = "",
                 @SerializedName("price_plain")
                 @Expose
-                val pricePlain: String = "",
+                var pricePlain: String = "",
                 @SerializedName("promo")
                 @Expose
-                val promo: Promo? = Promo(),
+                var promo: Promo? = Promo(),
                 @SerializedName("product_labels")
                 @Expose
-                val productLabels: List<String> = listOf(),
+                var productLabels: List<String> = listOf(),
                 @SerializedName("detail")
                 @Expose
-                val detail: String = "",
+                var detail: String = "",
                 @SerializedName("detail_compact")
                 @Expose
-                val detailCompact: String = "",
+                var detailCompact: String = "",
                 @SerializedName("detail_url")
                 @Expose
-                val detailUrl: String = "",
+                var detailUrl: String = "",
                 @SerializedName("detail_url_text")
                 @Expose
-                val detailUrlText: String = ""
+                var detailUrlText: String = ""
         )
 
         class Promo(
                 @SerializedName("id")
                 @Expose
-                val id: String = "",
+                var id: String = "",
                 @SerializedName("bonus_text")
                 @Expose
-                val bonusText: String = "",
+                var bonusText: String = "",
                 @SerializedName("new_price")
                 @Expose
-                val newPrice: String = "",
+                var newPrice: String = "",
                 @SerializedName("new_price_plain")
                 @Expose
-                val newPricePlain: Int = 0,
+                var newPricePlain: Int = 0,
                 @SerializedName("tag")
                 @Expose
-                val tag: String = "",
+                var tag: String = "",
                 @SerializedName("terms")
                 @Expose
-                val terms: String = "",
+                var terms: String = "",
                 @SerializedName("value_text")
                 @Expose
-                val valueText: String = ""
+                var valueText: String = ""
         )
 }

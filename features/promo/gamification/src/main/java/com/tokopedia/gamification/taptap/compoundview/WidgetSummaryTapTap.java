@@ -67,7 +67,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     }
 
     private void init() {
-        parentView = LayoutInflater.from(getContext()).inflate(R.layout.widget_reward_summary_tap_tap, this, true);
+        parentView = LayoutInflater.from(getContext()).inflate(com.tokopedia.gamification.R.layout.widget_reward_summary_tap_tap, this, true);
         imageSinar = parentView.findViewById(R.id.image_sinar);
         rvRewards = parentView.findViewById(R.id.rv_rewards);
         btnTop = parentView.findViewById(R.id.btn_top);
@@ -75,10 +75,10 @@ public class WidgetSummaryTapTap extends FrameLayout {
         btnBottomRight = parentView.findViewById(R.id.btn_bottom_right);
         ivImageStar = parentView.findViewById(R.id.image_star);
         rewardsAdapter = new RewardsAdapter(null);
-        ImageHandler.loadImageWithId(ivImageStar, R.drawable.ic_star_summary);
+        ImageHandler.loadImageWithId(ivImageStar, com.tokopedia.gamification.R.drawable.ic_star_summary);
         imageSinar.loadRemoteImageDrawable("sinar_rewards_3_x.png");
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), R.drawable.item_divider_summary_page);
-        dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(R.dimen.dp_8));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), com.tokopedia.gamification.R.drawable.gf_item_divider_summary_page);
+        dividerItemDecoration.setHorizontalMargin(getResources().getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_8));
         rvRewards.addItemDecoration(dividerItemDecoration);
         initListBound(getScreenHeight(), 0);
     }
@@ -107,7 +107,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     public void inflateReward(List<CrackResultEntity> rewards) {
         rewardsAdapter.updateList(rewards);
         runLayoutAnimation();
-        rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), R.anim.animation_rotate_bg_crack_result);
+        rotateAnimationCrackResult = AnimationUtils.loadAnimation(getContext(), com.tokopedia.gamification.R.anim.animation_rotate_bg_crack_result);
         rotateAnimationCrackResult.setDuration(15000);
         imageSinar.startAnimation(rotateAnimationCrackResult);
 
@@ -182,7 +182,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
         @NonNull
         @Override
         public RewardsHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-            return new RewardsHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.recycler_item_rewards_summary, viewGroup, false));
+            return new RewardsHolder(LayoutInflater.from(viewGroup.getContext()).inflate(com.tokopedia.gamification.R.layout.recycler_item_rewards_summary, viewGroup, false));
         }
 
         @Override
@@ -213,7 +213,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
 
             public void bindData(CrackResultEntity crackResultEntity) {
 
-                ImageHandler.loadImage(getContext(), imageReward, crackResultEntity.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
+                ImageHandler.loadImage(getContext(), imageReward, crackResultEntity.getImageUrl(), com.tokopedia.design.R.color.grey_1100, com.tokopedia.design.R.color.grey_1100);
                 ArrayList<String> rewardString = null;
                 if (crackResultEntity.getBenefits() != null &&
                         crackResultEntity.getBenefits().size() != 0) {
@@ -241,7 +241,7 @@ public class WidgetSummaryTapTap extends FrameLayout {
     private void runLayoutAnimation() {
 
         final LayoutAnimationController controller =
-                AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_from_bottom);
+                AnimationUtils.loadLayoutAnimation(getContext(), com.tokopedia.gamification.R.anim.layout_animation_from_bottom);
 
         rvRewards.setLayoutAnimation(controller);
         rvRewards.getAdapter().notifyDataSetChanged();

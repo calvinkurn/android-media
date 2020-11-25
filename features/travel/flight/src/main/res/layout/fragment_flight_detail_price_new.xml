@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/spacing_lvl4">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceAdultLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_68"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_2"
+        tools:text="Dewasa (x1)" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceAdult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/flightDetailPriceAdultLabel"
+        app:typographyType="body_2"
+        tools:text="Rp7.600.000" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceChildLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flightDetailPriceAdultLabel"
+        app:typographyType="body_2"
+        tools:text="Anak (x1)"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceChild"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/flightDetailPriceChildLabel"
+        app:typographyType="body_2"
+        tools:text="Rp5.600.000"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceInfantLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flightDetailPriceChildLabel"
+        app:typographyType="body_2"
+        tools:text="Bayi (x1)"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceInfant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700_96"
+        android:visibility="gone"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/flightDetailPriceInfantLabel"
+        app:typographyType="body_2"
+        tools:text="Rp7.600.000"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/flightDetailPriceDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:background="@color/flight_search_list_background"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flightDetailPriceInfantLabel" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceTotalLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flight_detail_bottom_sheet_tab_price_subtotal"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintBottom_toBottomOf="@+id/flightDetailPriceTotal"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/flightDetailPriceTotal"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:text="Subtotal" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/flightDetailPriceTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/flightDetailPriceDivider"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="Rp7.600.000" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

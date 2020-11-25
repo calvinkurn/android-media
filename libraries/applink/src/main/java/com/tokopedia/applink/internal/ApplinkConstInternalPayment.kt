@@ -19,5 +19,17 @@ object ApplinkConstInternalPayment {
 
     @JvmField
     val PAYMENT_ADD_CREDIT_CARD = "$INTERNAL_PAYMENT/add-credit-card"
+    @JvmField
+    val PAYMENT_THANK_YOU_PAGE= "$INTERNAL_PAYMENT/thankyou"
+
+    // PMS
+
+    val INTERNAL_PMS = "${DeeplinkConstant.SCHEME_INTERNAL}://buyer"
+
+    val PMS_PAYMENT_LIST = "${INTERNAL_PMS}/payment"
+
+    // how to pay
+
+    val INTERNAL_HOW_TO_PAY = "${DeeplinkConstant.SCHEME_INTERNAL}://howtopay"
 
 }

@@ -8,8 +8,8 @@ import com.tokopedia.logisticcart.domain.executor.TestSceduler
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesApiGqlResponse
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.every
 import io.mockk.mockk
@@ -20,6 +20,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.TestSubscriber
+import java.lang.reflect.Type
 
 object GetRatesApiUseCaseTest : Spek({
     val context = mockk<Context>(relaxed = true)
@@ -70,11 +71,14 @@ object GetRatesApiUseCaseTest : Spek({
         Scenario("success response") {
             val success = RatesApiGqlResponse(RatesData())
             val mockViewModel = ShippingRecommendationData().apply { blackboxInfo = "test info" }
+
+            val result = HashMap<Type, Any>()
+            result[RatesApiGqlResponse::class.java] = success
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("gql return success data") {
                 every { gql.getExecuteObservable(any()) } answers {
-                    Observable.just(GraphqlResponse(mapOf(
-                            RatesApiGqlResponse::class.java to success
-                    ), mapOf(), false))
+                    Observable.just(gqlResponse)
                 }
                 every { converter.convertModel(any()) } answers { mockViewModel }
             }
@@ -102,13 +106,13 @@ object GetRatesApiUseCaseTest : Spek({
             val errorMsg = "Error Graphql"
             val errorGql = GraphqlError().apply { message = errorMsg }
 
+            val errors = HashMap<Type, List<GraphqlError>>()
+            errors[RatesApiGqlResponse::class.java] = listOf(errorGql)
+            val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
+
             Given("gql return error") {
                 every { gql.getExecuteObservable(any()) } answers {
-                    Observable.just(GraphqlResponse(mapOf(), mapOf(
-                            RatesApiGqlResponse::class.java to listOf(
-                                    errorGql
-                            )
-                    ), false))
+                    Observable.just(gqlResponse)
                 }
             }
 
@@ -118,9 +122,6 @@ object GetRatesApiUseCaseTest : Spek({
 
             Then("error with message error exception occured") {
                 tSubscriber.assertError(MessageErrorException::class.java)
-            }
-            Then("message should be equal with expected") {
-                assertEquals(errorMsg, tSubscriber.onErrorEvents.first().message)
             }
         }
 

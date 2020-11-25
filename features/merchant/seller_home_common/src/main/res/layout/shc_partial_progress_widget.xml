@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sahProgressOnSuccessLayout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/shc_medium_widget_height"
+    android:padding="@dimen/layout_lvl2"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProgressTitle"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="@dimen/spacing_lvl2"
+        android:maxLines="1"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:text="Progress Title" />
+
+    <com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWidget
+        android:id="@+id/shopScoreProgress"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvProgressTitle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProgressDescription"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:ellipsize="end"
+        android:lineSpacingExtra="@dimen/shc_line_spacing_6"
+        android:maxLines="2"
+        android:textColor="@color/shc_description"
+        app:layout_constraintBottom_toTopOf="@+id/tvProgressSeeDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/shopScoreProgress"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvProgressSeeDetails"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:maxLines="1"
+        android:paddingStart="@dimen/layout_lvl0"
+        android:paddingLeft="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/spacing_lvl2"
+        android:paddingRight="@dimen/spacing_lvl2"
+        android:textColor="@color/Green_G500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/icProgressArrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:text="Selengkapnya" />
+
+    <ImageView
+        android:id="@+id/icProgressArrow"
+        android:layout_width="@dimen/layout_lvl2"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl1"
+        app:layout_constraintBottom_toBottomOf="@id/tvProgressSeeDetails"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvProgressSeeDetails"
+        app:srcCompat="@drawable/ic_arrow_right_default" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

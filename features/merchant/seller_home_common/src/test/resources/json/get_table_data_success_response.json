@@ -1,0 +1,101 @@
+{
+  "data": {
+    "fetchSearchTableWidgetData": {
+      "data": [
+        {
+          "dataKey": "transactionBuyerOrigin",
+          "data": {
+            "headers": [
+              {
+                "title": "Kota",
+                "width": 20
+              },
+              {
+                "title": "Pembeli",
+                "width": 15
+              },
+              {
+                "title": "Pesanan",
+                "width": 15
+              },
+              {
+                "title": "Barang",
+                "width": 15
+              },
+              {
+                "title": "Nilai Pesanan",
+                "width": 20
+              },
+              {
+                "title": "% Nilai Pesanan",
+                "width": 15
+              }
+            ],
+            "rows": [
+              {
+                "columns": [
+                  {
+                    "value": "Jakarta Selatan",
+                    "type": 1
+                  },
+                  {
+                    "value": "3",
+                    "type": 1
+                  },
+                  {
+                    "value": "16",
+                    "type": 1
+                  },
+                  {
+                    "value": "30",
+                    "type": 1
+                  },
+                  {
+                    "value": "Rp626.640",
+                    "type": 1
+                  },
+                  {
+                    "value": "93.34%",
+                    "type": 1
+                  }
+                ],
+                "id": ""
+              },
+              {
+                "columns": [
+                  {
+                    "value": "Jakarta Barat",
+                    "type": 1
+                  },
+                  {
+                    "value": "1",
+                    "type": 1
+                  },
+                  {
+                    "value": "3",
+                    "type": 1
+                  },
+                  {
+                    "value": "3",
+                    "type": 1
+                  },
+                  {
+                    "value": "Rp44.700",
+                    "type": 1
+                  },
+                  {
+                    "value": "6.66%",
+                    "type": 1
+                  }
+                ],
+                "id": ""
+              }
+            ]
+          },
+          "error": false,
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}

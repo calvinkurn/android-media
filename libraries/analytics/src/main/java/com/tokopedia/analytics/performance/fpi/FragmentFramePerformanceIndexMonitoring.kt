@@ -30,7 +30,7 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     private var cacheManager: CacheManager? = null
     private var pageName: String? = null
 
-    var mainPerformanceData = FpiPerformanceData()
+    var mainPerformanceData: FpiPerformanceData? = FpiPerformanceData()
     private set
 
     protected val masterJob = SupervisorJob()
@@ -76,7 +76,9 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
                 )
                 cacheFpiDatabaseModel?.let {
                     if (it.fragmentHashCode != fragment?.hashCode().toString()) {
-                        sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        withContext(Dispatchers.Main) {
+                            sendPerformanceMonitoringData(it.fpiPerformanceData, pageName)
+                        }
                         cacheManager?.delete(pageName)
                     } else {
                         mainPerformanceData = it.fpiPerformanceData
@@ -109,25 +111,27 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
         flush()
     }
 
-    private fun sendPerformanceMonitoringData(performanceData: FpiPerformanceData, pageName: String) {
+    private fun sendPerformanceMonitoringData(performanceData: FpiPerformanceData?, pageName: String) {
         val performanceMonitoring = PerformanceMonitoring()
         performanceMonitoring.startTrace(String.format(METRICS_PERFORMANCE_MONITORING, pageName))
-        performanceMonitoring.putMetric(METRICS_ALL_FRAMES, performanceData.allFrames.toLong())
-        performanceMonitoring.putMetric(METRICS_JANKY_FRAMES, performanceData.jankyFrames.toLong())
-        performanceMonitoring.putMetric(METRICS_JANKY_FRAMES_PERCENTAGE, performanceData.jankyFramePercentage.toLong())
-        performanceMonitoring.putMetric(METRICS_FRAME_PERFORMANCE_INDEX, performanceData.framePerformanceIndex.toLong())
+        performanceData?.let {
+            performanceMonitoring.putMetric(METRICS_ALL_FRAMES, performanceData.allFrames.toLong())
+            performanceMonitoring.putMetric(METRICS_JANKY_FRAMES, performanceData.jankyFrames.toLong())
+            performanceMonitoring.putMetric(METRICS_JANKY_FRAMES_PERCENTAGE, performanceData.jankyFramePercentage.toLong())
+            performanceMonitoring.putMetric(METRICS_FRAME_PERFORMANCE_INDEX, performanceData.framePerformanceIndex.toLong())
+        }
         performanceMonitoring.stopTrace()
     }
 
     @TargetApi(Build.VERSION_CODES.N)
     private suspend fun startFrameMetrics() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && onFrameMetricAvailableListener == null) {
-            onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
-                val frameMetricsCopy = FrameMetrics(frameMetrics)
-                recordFrames(frameMetricsCopy)
-            }
-            onFrameMetricAvailableListener?.let {
-                withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
+                    val frameMetricsCopy = FrameMetrics(frameMetrics)
+                    recordFrames(frameMetricsCopy)
+                }
+                onFrameMetricAvailableListener?.let {
                     fragment?.activity?.window?.addOnFrameMetricsAvailableListener(it, Handler())
                 }
             }
@@ -135,13 +139,13 @@ class FragmentFramePerformanceIndexMonitoring : LifecycleObserver, CoroutineScop
     }
 
     private fun recordFrames(frameMetricsCopy: FrameMetrics) {
-        mainPerformanceData.incrementAllFrames()
+        mainPerformanceData?.incrementAllFrames()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val totalDurationMs = (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION)).toFloat()
             if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                mainPerformanceData.incremenetJankyFrames()
+                mainPerformanceData?.incremenetJankyFrames()
             }
-            onFrameListener?.onFrameRendered(mainPerformanceData)
+            mainPerformanceData?.let { onFrameListener?.onFrameRendered(it) }
         }
     }
 

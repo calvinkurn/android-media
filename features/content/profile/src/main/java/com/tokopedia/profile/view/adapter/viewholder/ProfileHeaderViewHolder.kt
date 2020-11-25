@@ -121,22 +121,22 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                 viewListener.goToFollower()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
             }
         }
 
         val goToFollowing = object : ClickableSpan() {
-            override fun onClick(p0: View?) {
+            override fun onClick(p0: View) {
                 viewListener.goToFollowing()
             }
 
-            override fun updateDrawState(ds: TextPaint?) {
+            override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
-                ds?.setUnderlineText(false)
-                ds?.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
+                ds.setUnderlineText(false)
+                ds.color = MethodChecker.getColor(itemView.context, com.tokopedia.design.R.color.black_54)
             }
         }
         if (spannableString.indexOf(followers) != -1) {

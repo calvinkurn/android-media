@@ -3,9 +3,8 @@ package com.tokopedia.kol.feature.comment.data.source;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.data.model.request.GraphqlRequest;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.comment.data.mapper.KolDeleteCommentMapper;
 import com.tokopedia.kol.feature.comment.data.mapper.KolGetCommentMapper;
@@ -22,6 +21,10 @@ import java.io.InputStreamReader;
 import javax.inject.Inject;
 
 import rx.Observable;
+
+import static com.tokopedia.kol.feature.comment.data.raw.GqlMutationCreateKolCommentKt.GQL_MUTATION_CREATE_KOL_COMMENT;
+import static com.tokopedia.kol.feature.comment.data.raw.GqlMutationDeleteKolCommentKt.GQL_MUTATION_DELETE_KOL_COMMENT;
+import static com.tokopedia.kol.feature.comment.data.raw.GqlQueryGetKolCommentKt.GQL_QUERY_GET_KOL_COMMENT;
 
 /**
  * @author by nisie on 11/2/17.
@@ -48,23 +51,23 @@ public class KolCommentSource {
     }
 
     public Observable<KolComments> getComments(RequestParams requestParams) {
-        return kolApi.getKolComment(getRequestPayload(requestParams, R.raw.query_get_kol_comment))
+        return kolApi.getKolComment(getRequestPayload(requestParams, GQL_QUERY_GET_KOL_COMMENT))
                 .map(kolGetCommentMapper);
     }
 
     public Observable<SendKolCommentDomain> sendComment(RequestParams requestParams) {
         return kolApi.sendKolComment(getRequestPayload(requestParams,
-                R.raw.mutation_create_kol_comment)).map(kolSendCommentMapper);
+                GQL_MUTATION_CREATE_KOL_COMMENT)).map(kolSendCommentMapper);
     }
 
     public Observable<Boolean> deleteKolComment(RequestParams requestParams) {
         return kolApi.deleteKolComment(getRequestPayload(requestParams,
-                R.raw.mutation_delete_kol_comment)).map(kolDeleteCommentMapper);
+                GQL_MUTATION_DELETE_KOL_COMMENT)).map(kolDeleteCommentMapper);
     }
 
-    private GraphqlRequest getRequestPayload(RequestParams requestParams, int rawResourceId) {
+    private GraphqlRequest getRequestPayload(RequestParams requestParams, String rawResource) {
         return new GraphqlRequest(
-                loadRawString(context.getResources(), rawResourceId),
+                rawResource,
                 requestParams.getParameters()
         );
     }

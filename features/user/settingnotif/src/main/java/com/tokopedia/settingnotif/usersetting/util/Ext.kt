@@ -14,6 +14,8 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * open notification system settings,
@@ -102,4 +104,13 @@ fun componentTextColor(state: Boolean): Int {
 inline fun <reified T> dataClone(src: Any): T {
     val json = CommonUtils.toJson(src)
     return CommonUtils.fromJson(json, T::class.java)
+}
+
+/**
+ * date formatter for last troubleshooter check
+ * @return: Long to String
+ * */
+fun Long.toLastCheckFormat(): String {
+    val df = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return df.format(this)
 }

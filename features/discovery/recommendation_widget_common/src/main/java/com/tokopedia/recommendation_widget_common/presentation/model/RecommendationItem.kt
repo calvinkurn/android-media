@@ -1,6 +1,5 @@
 package com.tokopedia.recommendation_widget_common.presentation.model
 
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class RecommendationItem(val productId: Int = 0,
@@ -16,6 +15,7 @@ data class RecommendationItem(val productId: Int = 0,
                               val priceInt: Int = 0,
                               val departmentId: Int = 0,
                               val rating: Int = 0,
+                              val ratingAverage: String = "",
                               val countReview: Int = 0,
                               val stock: Int = 0,
                               val recommendationType: String = "",
@@ -42,8 +42,6 @@ data class RecommendationItem(val productId: Int = 0,
                               val labelGroupList: List<RecommendationLabel> = listOf(),
                               val isGold: Boolean = false): ImpressHolder(){
 
-    fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -63,6 +61,7 @@ data class RecommendationItem(val productId: Int = 0,
         if (priceInt != other.priceInt) return false
         if (departmentId != other.departmentId) return false
         if (rating != other.rating) return false
+        if (ratingAverage != other.ratingAverage) return false
         if (countReview != other.countReview) return false
         if (stock != other.stock) return false
         if (recommendationType != other.recommendationType) return false

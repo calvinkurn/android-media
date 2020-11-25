@@ -2,7 +2,6 @@ package com.tokopedia.product_photo_adapter
 
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 
@@ -45,8 +44,8 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
     private fun hideCloseButton(recyclerView: RecyclerView) {
         recyclerView.adapter?.let {
             for (i in 0 until it.itemCount) {
-                val childView = recyclerView.getChildAt(i)
-                val closeButton = childView.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+                val childView: View? = recyclerView.getChildAt(i)
+                val closeButton: AppCompatImageView? = childView?.findViewById<AppCompatImageView?>(R.id.iv_delete_button)
                 closeButton?.visibility = View.GONE
             }
         }
@@ -67,8 +66,8 @@ class PhotoItemTouchHelperCallback(private val recyclerView: RecyclerView) : Ite
     private fun showCloseButton(recyclerView: RecyclerView) {
         recyclerView.adapter?.let {
             for (i in 0 until it.itemCount) {
-                val childView = recyclerView.getChildAt(i)
-                val closeButton = childView.findViewById<AppCompatImageView>(R.id.iv_delete_button)
+                val childView: View? = recyclerView.getChildAt(i)
+                val closeButton: AppCompatImageView? = childView?.findViewById(R.id.iv_delete_button)
                 closeButton?.visibility = View.VISIBLE
             }
         }

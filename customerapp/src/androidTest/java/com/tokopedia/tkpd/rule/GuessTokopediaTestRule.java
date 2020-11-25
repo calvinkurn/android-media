@@ -6,14 +6,13 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.UiDevice;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.EncoderDecoder;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.di.SessionModule;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.tkpd.ConsumerMainApplication;
+import com.tokopedia.user.session.UserSession;
 
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -76,12 +75,12 @@ public class GuessTokopediaTestRule<T extends Activity> extends BaseTokopediaTes
 
             ConsumerMainApplication application = (ConsumerMainApplication) InstrumentationRegistry.getTargetContext().getApplicationContext();
 
-            new GlobalCacheManager().deleteAll();
+            PersistentCacheManager.instance.delete();
 
-            SessionHandler.clearUserData(application);
+            new UserSession(application).logoutSession();
 
             // prevent auto complete textview in here
-            new LocalCacheHandler(application, SessionModule.LOGIN_CACHE).clearCache(SessionModule.LOGIN_CACHE);
+            new LocalCacheHandler(application, "LOGIN_CACHE").clearCache("LOGIN_CACHE");
 
 
             /**
@@ -104,7 +103,7 @@ public class GuessTokopediaTestRule<T extends Activity> extends BaseTokopediaTes
 
             mBase.evaluate();
 
-            new GlobalCacheManager().deleteAll();
+            PersistentCacheManager.instance.delete();
 
             SessionHandler.clearUserData(application);
         }

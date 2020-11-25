@@ -16,14 +16,14 @@ class ShopSearchProductDividerItemDecoration(
             val childCount = parent.childCount
             for (i in 0 until childCount) {
                 val left = if (getItemViewType(i) == ShopSearchProductFixResultViewHolder.LAYOUT) {
-                    parent.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
+                    parent.context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_16)
                 } else {
-                    parent.context.resources.getDimensionPixelOffset(R.dimen.dp_72)
+                    parent.context.resources.getDimensionPixelOffset(com.tokopedia.design.R.dimen.dp_72)
                 }
                 val child = parent.getChildAt(i)
                 val params = child.layoutParams as RecyclerView.LayoutParams
                 val top = child.bottom + params.bottomMargin
-                val bottom = top + parent.context.resources.getDimensionPixelSize(R.dimen.dp_half)
+                val bottom = top + parent.context.resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_half)
                 dividerDrawable.setBounds(left, top, right, bottom)
                 dividerDrawable.draw(c)
             }

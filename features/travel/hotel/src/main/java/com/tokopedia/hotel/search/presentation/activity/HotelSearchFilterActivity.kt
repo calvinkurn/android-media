@@ -35,12 +35,10 @@ class HotelSearchFilterActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            currentTag = tagFragment
-        } else {
-            currentTag = savedInstanceState.getString(ARG_SAVED_TAG, HotelSearchFilterFragment.TAG)
-        }
-        updateTitle(getString(com.tokopedia.design.R.string.label_filter))
+        currentTag = if (savedInstanceState == null) tagFragment
+        else savedInstanceState.getString(ARG_SAVED_TAG, HotelSearchFilterFragment.TAG)
+
+        updateTitle(getString(R.string.hotel_search_filter_label))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

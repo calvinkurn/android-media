@@ -2,8 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,7 +15,7 @@
             android:id="@+id/topadsBalanceTitle"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textColor="@color/setting_black_text"
+            android:textColor="@color/default_black_text"
             android:gravity="center_vertical"
             app:typographyType="body_2"
             app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
@@ -37,11 +36,12 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:gravity="center_vertical|end"
-            android:textColor="@color/setting_black_text"
+            android:textColor="@color/default_black_text"
             app:layout_constraintWidth_percent="0.5"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
+            app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
+            tools:text="Rp0"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guidelineVerticalLeft"

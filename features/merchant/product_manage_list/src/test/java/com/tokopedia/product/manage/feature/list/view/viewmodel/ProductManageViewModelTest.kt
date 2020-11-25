@@ -2,49 +2,51 @@ package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaData
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaResponse
+import com.tokopedia.product.manage.common.list.data.model.filter.ProductListMetaWrapper
+import com.tokopedia.product.manage.common.list.data.model.filter.Tab
 import com.tokopedia.product.manage.data.createEditVariantResult
 import com.tokopedia.product.manage.data.createProduct
 import com.tokopedia.product.manage.data.createProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
-import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
-import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaWrapper
-import com.tokopedia.product.manage.feature.filter.data.model.Tab
-import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.*
+import com.tokopedia.product.manage.feature.filter.data.model.*
+import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
+import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
+import com.tokopedia.product.manage.feature.list.data.model.Header
+import com.tokopedia.product.manage.feature.list.view.model.FilterTabViewModel.Active
+import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.ShowFilterTab
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
+import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.list.view.model.TopAdsInfo
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProduct
 import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult
-import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.*
+import com.tokopedia.product.manage.feature.multiedit.data.response.MultiEditProductResult.Result
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Data
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Header
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
-import com.tokopedia.product.manage.feature.list.data.model.FeaturedProductResponseModel
-import com.tokopedia.product.manage.feature.list.data.model.GoldManageFeaturedProductV2
-import com.tokopedia.product.manage.feature.list.data.model.Header
-import com.tokopedia.product.manage.feature.list.view.model.GetFilterTabResult.*
 import com.tokopedia.product.manage.verification.verifyErrorEquals
 import com.tokopedia.product.manage.verification.verifySuccessEquals
 import com.tokopedia.product.manage.verification.verifyValueEquals
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListData
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsCategory.AUTO_ADS
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoTopAdsResponse.*
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.*
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByCondition.*
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption.*
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption.*
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption.SortByName
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption.ASC
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCore
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -291,19 +293,20 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
         runBlocking {
             val shopId = "1500"
 
-            val price = "10000"
-            val priceFormatted = "Rp10.000"
+            val minPrice = PriceUiModel("10000", "Rp10.000")
+            val maxPrice = PriceUiModel("100000", "Rp100.000")
             val pictures = listOf(Picture("imageUrl"))
 
-            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000), pictures = pictures))
+            val productList = listOf(createProduct(name = "Tolak Angin Madu", price = Price(10000, 100000), pictures = pictures))
             val productListData = ProductListData(ProductList(header = null, data = productList))
 
             onGetProductList_thenReturn(productListData)
 
             viewModel.getProductList(shopId)
 
+            val topAdsInfo = TopAdsInfo(isTopAds = false, isAutoAds = false)
             val productViewModelList = listOf(createProductViewModel(
-                name = "Tolak Angin Madu", price = price, priceFormatted = priceFormatted))
+                name = "Tolak Angin Madu", minPrice = minPrice, maxPrice = maxPrice, topAds = topAdsInfo))
             val expectedProductList = Success(productViewModelList)
 
             viewModel.productListResult
@@ -375,13 +378,18 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
             val shopDomain = "http://www.tokopedia.com/#1"
             val shopCore = ShopCore(domain = shopDomain)
             val goldOS = ShopInfo.GoldOS(isGold = 1, isOfficial = 1)
+
             val shopInfoResponse = ShopInfo(shopCore = shopCore, goldOS = goldOS)
+            val shopInfoTopAdsData = ShopInfoTopAds(Data(AUTO_ADS, "auto ads"))
+            val shopInfoTopAdsResponse = ShopInfoTopAdsResponse(shopInfoTopAdsData)
 
             onGetShopInfo_thenReturn(shopInfoResponse)
+            onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse)
 
             viewModel.getGoldMerchantStatus()
 
-            val expectedResult = Success(ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore))
+            val data = ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
+            val expectedResult = Success(data)
 
             viewModel.shopInfoResult
                 .verifySuccessEquals(expectedResult)
@@ -761,6 +769,10 @@ class ProductManageViewModelTest: ProductManageViewModelTestFixture() {
 
     private fun onGetShopInfo_thenReturn(shopInfoResponse: ShopInfo) {
         coEvery { gqlGetShopInfoUseCase.executeOnBackground() } returns shopInfoResponse
+    }
+
+    private fun onGetShopInfoTopAds_thenReturn(shopInfoTopAdsResponse: ShopInfoTopAdsResponse) {
+        coEvery { geetShopInfoTopAdsUseCase.execute(any()) } returns shopInfoTopAdsResponse
     }
 
     private fun onGetShopInfo_thenError(error: Throwable) {

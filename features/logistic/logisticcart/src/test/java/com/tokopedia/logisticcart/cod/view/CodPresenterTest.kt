@@ -11,6 +11,7 @@ import io.mockk.verify
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import rx.Subscriber
+import java.lang.reflect.Type
 
 object CodPresenterTest : Spek({
 
@@ -40,11 +41,14 @@ object CodPresenterTest : Spek({
 
         Scenario("success response") {
             val successResponse = DummyProvider.getCodSuccess()
+
+            val result = HashMap<Type, Any>()
+            result[CodResponse::class.java] = successResponse
+            val gqlResponse = GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false)
+
             Given("usecase invoke on next") {
                 every { confirmUseCase.execute(any(), any())
-                } answers { secondArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(mapOf(
-                        CodResponse::class.java to successResponse
-                ), mapOf(), false)) }
+                } answers { secondArg<Subscriber<GraphqlResponse>>().onNext(gqlResponse) }
             }
 
             When("executed") {
@@ -64,20 +68,21 @@ object CodPresenterTest : Spek({
         }
 
         Scenario("success response with error graphql") {
-            val err = GraphqlError().apply { message = "error test" }
+            val errorGql = GraphqlError().apply { message = "error test" }
+            val errors = HashMap<Type, List<GraphqlError>>()
+            errors[CodResponse::class.java] = listOf(errorGql)
+            val gqlResponse = GraphqlResponse(HashMap<Type, Any?>(), errors, false)
             Given("usecase invoke on next") {
                 every { confirmUseCase.execute(any(), any())
                 } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(GraphqlResponse(mapOf(), mapOf(
-                            CodResponse::class.java to listOf(err)
-                    ), false))
+                    secondArg<Subscriber<GraphqlResponse>>().onNext(gqlResponse)
                 }
             }
             When("executed") {
                 presenter.confirmPayment()
             }
             Then("view shows error") {
-                verify { view.showError(err.message) }
+                verify { view.showError(errorGql.message) }
             }
         }
 

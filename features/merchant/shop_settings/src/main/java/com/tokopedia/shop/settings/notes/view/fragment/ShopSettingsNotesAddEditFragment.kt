@@ -7,17 +7,16 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
-import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.data.ShopNoteUiModel
 import com.tokopedia.shop.settings.notes.view.listener.ShopSettingsNotesAddEditView
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingsNoteAddEditPresenter
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_shop_notes_add_edit.*
 import javax.inject.Inject
 
@@ -25,7 +24,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
     private var isEdit = false
     private var isReturnablePolicy = false
-    private var shopNote = ShopNoteViewModel()
+    private var shopNote = ShopNoteUiModel()
 
     @Inject lateinit var presenter: ShopSettingsNoteAddEditPresenter
 
@@ -39,7 +38,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
 
-        fun createInstance(isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteViewModel = ShopNoteViewModel()) =
+        fun createInstance(isReturnablePolicy: Boolean, isEdit: Boolean, shopNoteModel: ShopNoteUiModel = ShopNoteUiModel()) =
                 ShopSettingsNotesAddEditFragment().apply { arguments = Bundle().apply {
                     putParcelable(PARAM_SHOP_NOTE, shopNoteModel)
                     putBoolean(PARAM_IS_RETURNABLE_POLICY, isReturnablePolicy)
@@ -62,7 +61,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         arguments?.let {
             isEdit = it.getBoolean(PARAM_IS_EDIT, false)
             isReturnablePolicy = it.getBoolean(PARAM_IS_RETURNABLE_POLICY, false)
-            shopNote = it.getParcelable(PARAM_SHOP_NOTE) ?: ShopNoteViewModel()
+            shopNote = it.getParcelable(PARAM_SHOP_NOTE) ?: ShopNoteUiModel()
         }
 
         if (isReturnablePolicy){
@@ -129,7 +128,9 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
     override fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null)
-            ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
-                    .setAction(R.string.title_retry){ presenter.saveNote(shopNote, isEdit) }.show()
+            Toaster.make(view!!, ErrorHandler.getErrorMessage(activity, throwable),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.title_retry), View.OnClickListener {
+                presenter.saveNote(shopNote, isEdit)
+            })
     }
 }

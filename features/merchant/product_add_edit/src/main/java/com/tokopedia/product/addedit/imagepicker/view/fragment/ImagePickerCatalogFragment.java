@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.imagepicker.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -32,7 +31,6 @@ import com.tokopedia.product.addedit.imagepicker.view.presenter.ImagePickerCatal
 import com.tokopedia.product.addedit.imagepicker.view.presenter.ImagePickerCatalogPresenter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -64,7 +62,7 @@ public class ImagePickerCatalogFragment extends BaseListFragment<CatalogModelVie
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_image_picker_catalog, container, false);
+        return inflater.inflate(R.layout.fragment_add_edit_image_picker_catalog, container, false);
     }
 
     @Nullable
@@ -108,7 +106,7 @@ public class ImagePickerCatalogFragment extends BaseListFragment<CatalogModelVie
     @Override
     public RecyclerView getRecyclerView(View view) {
         RecyclerView recyclerView = super.getRecyclerView(view);
-        int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
+        int spacing = getResources().getDimensionPixelSize(com.tokopedia.imagepicker.R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(InstagramConstant.SPAN_COUNT, spacing, false));
         RecyclerView.ItemAnimator itemAnimator = recyclerView.getItemAnimator();
         if (itemAnimator instanceof SimpleItemAnimator) {
@@ -127,7 +125,7 @@ public class ImagePickerCatalogFragment extends BaseListFragment<CatalogModelVie
         int spanCount = InstagramConstant.SPAN_COUNT;
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int availableWidth = screenWidth - getResources().getDimensionPixelSize(
-                R.dimen.image_picker_media_grid_spacing) * (spanCount - 1);
+                com.tokopedia.imagepicker.R.dimen.image_picker_media_grid_spacing) * (spanCount - 1);
         imageResize = availableWidth / spanCount;
         imageResize = (int) (imageResize * 0.85f);
         return imageResize;
