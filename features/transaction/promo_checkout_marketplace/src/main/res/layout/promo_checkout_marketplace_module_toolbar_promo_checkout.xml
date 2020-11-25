@@ -4,7 +4,7 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="horizontal"
     android:paddingEnd="0dp"
     android:paddingRight="0dp">
@@ -41,7 +41,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:gravity="center_vertical"
         android:text="Reset Promo"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:typographyType="heading_5" />
 
 
