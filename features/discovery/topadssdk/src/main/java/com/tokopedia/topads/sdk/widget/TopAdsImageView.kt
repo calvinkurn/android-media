@@ -132,11 +132,12 @@ class TopAdsImageView : AppCompatImageView {
                         }
 
                         override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData)
+                            topAdsImageViewImpressionListener?.onTopAdsImageViewImpression(imageData.adViewUrl
+                                    ?: "")
                             Timber.d("TopAdsImageView is loaded successfully")
 
                             this@TopAdsImageView.setOnClickListener {
-                                topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData)
+                                topAdsImageViewClickListener?.onTopAdsImageViewClicked(imageData.applink)
                                 Timber.d("TopAdsImageView is clicked")
                                 TopAdsUrlHitter(context).hitClickUrl(this@TopAdsImageView.javaClass.canonicalName,imageData.adClickUrl,"","","")
                             }

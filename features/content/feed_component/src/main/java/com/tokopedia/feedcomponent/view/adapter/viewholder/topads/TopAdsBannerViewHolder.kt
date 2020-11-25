@@ -49,7 +49,7 @@ class TopAdsBannerViewHolder(view: View,
     private fun bindTopAdsBanner(topAdsBanner: TopAdsImageViewModel) {
         itemView.top_ads_banner.loadImage(topAdsBanner)
         itemView.top_ads_banner.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(topAdsModel: TopAdsImageViewModel) {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
                 topAdsBannerListener?.onTopAdsViewImpression(topAdsBanner.bannerId
                         ?: "", topAdsBanner.imageUrl ?: "")
             }

@@ -4,7 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.model.InboxTopAdsBannerUiModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
@@ -41,9 +40,9 @@ class InboxTopAdsBannerViewHolder constructor(
     private fun bindTopAds(element: InboxTopAdsBannerUiModel) {
         if (element.hasAd()) {
             topAdsBanner?.setTopAdsImageViewImpression(object : TopAdsImageViewImpressionListener {
-                override fun onTopAdsImageViewImpression(topAdsModel: TopAdsImageViewModel) {
+                override fun onTopAdsImageViewImpression(viewUrl: String) {
                     if (!element.impressHolder.isInvoke) {
-                        hitTopAdsImpression(topAdsModel.adViewUrl?:"")
+                        hitTopAdsImpression(viewUrl)
                         element.impressHolder.invoke()
                     }
                 }
