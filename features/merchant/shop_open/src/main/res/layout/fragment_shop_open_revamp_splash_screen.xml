@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/txt_greeting"
-        android:textColor="@color/title_text"
+        android:textColor="@color/Unify_N700_96"
         android:lineSpacingExtra="@dimen/sp_6"
         android:letterSpacing="0.01"
         android:textStyle="bold"
@@ -44,7 +44,7 @@
         android:textSize="@dimen/sp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/title_text"
+        android:textColor="@color/Unify_N700_96"
         android:text="@string/shop_splash_screen_sub_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

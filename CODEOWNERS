@@ -75,7 +75,6 @@
 
 /features/merchant/product_draft_database/              @tokopedia/android-minionken-dev
 /features/merchant/product_add_edit/                    @tokopedia/android-minionken-dev
-/features/merchant/product_manage_item/                 @tokopedia/android-minionken-dev
 /features/merchant/shop_common/                         @tokopedia/android-minionken-dev
 /features/merchant/shop_open/                           @tokopedia/android-minionken-dev
 /features/merchant/shop_showcase/                       @tokopedia/android-minionken-dev
@@ -155,7 +154,7 @@
 /features/transaction/checkout/        		            @tokopedia/android-minionbob-dev
 /features/transaction/oneclickcheckout/        		    @tokopedia/android-minionbob-dev
 /features/transaction/promo_checkout_marketplace/       @tokopedia/android-minionbob-dev
-/features/logistic/logisticdata/                		@tokopedia/android-minionbob-dev
+/features/logistic/logisticCommon/                		@tokopedia/android-minionbob-dev
 /features/logistic/logisticaddaddress/          		@tokopedia/android-minionbob-dev
 /features/logistic/logisticorder/                    	@tokopedia/android-minionbob-dev
 /features/logistic/dropoff/                    	        @tokopedia/android-minionbob-dev

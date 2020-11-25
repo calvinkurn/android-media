@@ -33,5 +33,6 @@ data class ChannelGrid(
         val textColor: String = "",
         val benefit: ChannelBenefit = ChannelBenefit(),
         val recommendationType: String = "",
-        val shop: ChannelShop = ChannelShop()
+        val shop: ChannelShop = ChannelShop(),
+        val campaignCode: String = ""
 )
