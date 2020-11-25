@@ -38,7 +38,7 @@
         <ImageView
             android:id="@+id/iv_banner"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="192dp"
             android:scaleType="fitXY"
             android:src="@drawable/bg_button_white" />
 
@@ -81,7 +81,6 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:paddingTop="5dp"
-        android:paddingBottom="2dp"
         android:text=""
         android:textColor="@color/Unify_N700_96"
         android:textSize="14sp" />
