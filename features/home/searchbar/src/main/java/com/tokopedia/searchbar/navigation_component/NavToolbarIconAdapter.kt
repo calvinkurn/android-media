@@ -72,6 +72,10 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         return super.getItemViewType(position)
     }
 
+    override fun getItemId(position: Int): Long {
+        return iconConfig.iconList[position].id.toLong()
+    }
+
     fun resetIcon(iconConfig: IconConfig) {
         this.iconConfig = iconConfig
         notifyDataSetChanged()

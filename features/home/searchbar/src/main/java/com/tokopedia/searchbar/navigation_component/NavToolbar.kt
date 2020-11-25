@@ -132,6 +132,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
      */
     fun setIcon(iconBuilder: IconBuilder) {
         navIconAdapter = NavToolbarIconAdapter(iconBuilder.build(), this)
+        navIconAdapter?.setHasStableIds(true)
         val navIconRecyclerView = rv_icon_list
         navIconRecyclerView.adapter = navIconAdapter
         navIconRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
