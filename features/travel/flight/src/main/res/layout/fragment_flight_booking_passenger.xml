@@ -2,7 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/Unify_N50">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -110,7 +111,7 @@
                 android:id="@+id/container_passport_data"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/flight_dp_20"
+                android:layout_marginBottom="@dimen/flight_dp_10"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingTop="@dimen/flight_dp_10"
@@ -213,8 +214,8 @@
                 android:id="@+id/luggage_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/flight_dp_20"
-                android:layout_marginBottom="@dimen/flight_dp_20"
+                android:layout_marginTop="@dimen/flight_dp_10"
+                android:layout_marginBottom="@dimen/flight_dp_10"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_16"
@@ -245,8 +246,8 @@
                 android:id="@+id/meals_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/flight_dp_20"
-                android:layout_marginBottom="@dimen/flight_dp_20"
+                android:layout_marginTop="@dimen/flight_dp_10"
+                android:layout_marginBottom="@dimen/flight_dp_10"
                 android:background="@color/Unify_N0"
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_16"
