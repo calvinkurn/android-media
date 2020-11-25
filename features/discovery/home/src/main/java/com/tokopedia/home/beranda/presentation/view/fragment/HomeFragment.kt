@@ -587,9 +587,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 bottomSheet.dismiss()
             }
             childFragmentManager.run { bottomSheet.show(this,"onboarding navigation") }
-
-            //disabling the scroll so user can focus with coachmark first
-            homeRecyclerView?.isNestedScrollingEnabled = false
             saveFirstViewNavigation(false)
         }
     }
@@ -612,9 +609,6 @@ open class HomeFragment : BaseDaggerFragment(),
             val navigationBundle = Bundle()
             navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
-
-            //enable the scroll after user interact with coachmark
-            homeRecyclerView?.isNestedScrollingEnabled = true
             coachMark.dismissCoachMark()
         }
 
