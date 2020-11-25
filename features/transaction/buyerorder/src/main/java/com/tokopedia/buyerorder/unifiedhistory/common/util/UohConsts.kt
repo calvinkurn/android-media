@@ -77,7 +77,6 @@ object UohConsts {
     const val LS_PRINT_GQL_PARAM_UUID = "uuid"
     const val LS_PRINT_GQL_PARAM_VALUE = "value"
 
-    const val LS_LACAK_MWEB = "m.tokopedia.com/order-details/lsprint/{order_id}?track=1"
     const val WRONG_FORMAT_EMAIL = "Format email salah"
     const val EMAIL_MUST_NOT_BE_EMPTY = "E-mail harus diisi"
     const val CTA_ATC = "Lihat"

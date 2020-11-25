@@ -55,8 +55,7 @@ import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
@@ -81,7 +80,6 @@ import timber.log.Timber;
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
         LoginRegisterApplinkModule.class,
-        ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
         WebViewApplinkModule.class,
@@ -104,7 +102,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
-                    new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
