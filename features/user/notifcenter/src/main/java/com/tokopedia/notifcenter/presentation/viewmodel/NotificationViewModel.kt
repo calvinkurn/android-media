@@ -307,25 +307,6 @@ class NotificationViewModel @Inject constructor(
         )
     }
 
-
-    private fun getRecommendationVisitables(
-            page: Int,
-            recommendationWidget: RecommendationWidget
-    ): RecommendationDataModel {
-        var items: List<Visitable<*>> = recommendationWidget.recommendationItemList.map {
-            RecommendationUiModel(it)
-        }
-        if (isFirstPage(page)) {
-            items = items.toMutableList()
-            items.add(0, RecommendationTitleUiModel(recommendationWidget.title))
-        }
-        return RecommendationDataModel(items, recommendationWidget.hasNext)
-    }
-
-    private fun isFirstPage(page: Int): Boolean {
-        return page == 1
-    }
-
     private fun loadTopAdsBannerData() {
         launchCatchError(
                 dispatcher.io(),
@@ -360,5 +341,23 @@ class NotificationViewModel @Inject constructor(
 
         const val RECOM_WIDGET = "recom_widget"
         const val RECOM_SOURCE_INBOX_PAGE = "inbox"
+
+        private fun isFirstPage(page: Int): Boolean {
+            return page == 1
+        }
+
+        fun getRecommendationVisitables(
+                page: Int,
+                recommendationWidget: RecommendationWidget
+        ): RecommendationDataModel {
+            var items: List<Visitable<*>> = recommendationWidget.recommendationItemList.map {
+                RecommendationUiModel(it)
+            }
+            if (isFirstPage(page)) {
+                items = items.toMutableList()
+                items.add(0, RecommendationTitleUiModel(recommendationWidget.title))
+            }
+            return RecommendationDataModel(items, recommendationWidget.hasNext)
+        }
     }
 }
