@@ -727,9 +727,12 @@ open class HomeFragment : BaseDaggerFragment(),
             val floatingEggButtonFragment = floatingEggButtonFragment
             floatingEggButtonFragment?.let { updateEggBottomMargin(it) }
         })
-        getHomeViewModel().setRollanceNavigationType(RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                HomeRollanceConst.Navigation.EXP_NAME, HomeRollanceConst.Navigation.VARIANT_OLD
-        ))
+        getHomeViewModel().setRollanceNavigationType(
+                if (isNavRevamp()) {
+                    HomeRollanceConst.Navigation.VARIANT_REVAMP
+                } else {
+                    HomeRollanceConst.Navigation.VARIANT_OLD
+                })
     }
 
     private fun scrollToRecommendList() {
