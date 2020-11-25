@@ -10,7 +10,6 @@ import java.util.*
  */
 
 object TravelDateUtils {
-
     const val YYYY_MM_DD_T_HH_MM_SS = "yyyy-MM-dd'T'HH:mm:ss"
     const val YYYY_MM_DD = "yyyy-MM-dd"
     private val DEFAULT_LOCALE = Locale("in", "ID")
@@ -58,5 +57,14 @@ object TravelDateUtils {
     fun getTodayDate(format: String): String {
         val now = Calendar.getInstance().time
         return dateToString(format, now)
+    }
+
+    fun validateCheckInDate(checkIn: String): Pair<String, String> {
+        var checkInTemp = checkIn
+        if (checkIn.isEmpty()) checkInTemp = getTodayDate(YYYY_MM_DD_T_HH_MM_SS)
+        val checkInString = formatDate(YYYY_MM_DD_T_HH_MM_SS, YYYY_MM_DD, checkInTemp)
+        val checkOut = addTimeToSpesificDate(stringToDate(YYYY_MM_DD, checkInString), Calendar.DATE, 1)
+        val checkOutString = dateToString(YYYY_MM_DD, checkOut)
+        return Pair(checkInString, checkOutString)
     }
 }

@@ -1,36 +1,22 @@
 package com.tokopedia.travel_slice.ui.provider
 
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.os.StrictMode
-import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
-import androidx.slice.builders.*
-import com.bumptech.glide.Glide
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.data.HotelData
-import com.tokopedia.travel_slice.data.HotelList
+import com.tokopedia.travel_slice.data.HotelOrderListModel
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
-import com.tokopedia.travel_slice.usecase.GetPropertiesUseCase
-import com.tokopedia.travel_slice.usecase.GetSuggestionCityUseCase
-import com.tokopedia.travel_slice.utils.TravelDateUtils
+import com.tokopedia.travel_slice.ui.provider.HotelSliceProviderUtil.allowReads
+import com.tokopedia.travel_slice.utils.TravelDateUtils.validateCheckInDate
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSession
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import java.lang.Integer.max
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -40,16 +26,18 @@ import javax.inject.Inject
 class MainSliceProvider : SliceProvider() {
 
     private lateinit var contextNonNull: Context
-    private lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     @Inject
     lateinit var graphqlRepository: GraphqlRepository
 
-    private val getSuggestionCityUseCase by lazy { GetSuggestionCityUseCase(graphqlRepository) }
-    private val getPropertiesUseCase: GetPropertiesUseCase by lazy { GetPropertiesUseCase(graphqlRepository) }
+    @Inject
+    lateinit var hotelSliceRepository: HotelSliceRepository
 
-    private var hotelList = HotelList()
+    private var hotelList = listOf<HotelData>()
+    private var orderList = listOf<HotelOrderListModel>()
     private var status: Status = Status.INIT
+    private var checkIn: String = ""
+    private var city: String = ""
 
     override fun onCreateSliceProvider(): Boolean {
         status = Status.INIT
@@ -58,140 +46,106 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         contextNonNull = context ?: return null
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-             createGetHotelSlice(sliceUri)
-        } else null
+        init()
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return null
+        return when (sliceUri.lastPathSegment) {
+            BOOK_HOTEL -> createGetBookHotelSlice(sliceUri)
+            MY_BOOKING -> createGetHotelOrderSlice(sliceUri)
+            else -> null
+        }
     }
 
-    @RequiresApi(Build.VERSION_CODES.KITKAT)
-    private fun createGetHotelSlice(sliceUri: Uri): Slice? {
+    private fun init() {
         allowReads {
             GraphqlClient.init(contextNonNull)
         }
         DaggerTravelSliceComponent.builder().build().inject(this)
-        val mainPendingIntent = allowReads {
-            PendingIntent.getActivity(
-                    contextNonNull,
-                    0,
-                    allowReads {  RouteManager.getIntent(contextNonNull, "tokopedia://hotel/dashboard") },
-                    0
-            )
-        }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun createGetBookHotelSlice(sliceUri: Uri): Slice? {
         if (status == Status.INIT) {
             status = Status.LOADING
+
             getHotelData(sliceUri)
         }
-
-        return list(contextNonNull, sliceUri, ListBuilder.INFINITY) {
-            header {
-                if (hotelList.propertyList.isNotEmpty()) {
-                    hotelList.propertyList.firstOrNull()?.let {
-                        title = "Hotel di ${it.location.cityName}"
-                    }
-                } else title = "Hotel"
-
-                when (status) {
-                    Status.LOADING, Status.INIT -> subtitle = "Loading ..."
-                    Status.FAILURE -> {
-                        subtitle = "Gagal mendapatkan hotel"
-                        status = Status.INIT
-                    }
-                }
-                primaryAction = SliceAction.create(
-                        mainPendingIntent,
-                        IconCompat.createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                        ListBuilder.ICON_IMAGE,
-                        ""
-                )
+        return when (status) {
+            Status.INIT, Status.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
+            Status.SUCCESS -> {
+                if (hotelList.isEmpty()) HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+                else HotelSliceProviderUtil.getHotelRecommendationSlices(contextNonNull, sliceUri, city, checkIn, hotelList)
             }
-            gridRow {
-                if (status == Status.SUCCESS) {
-                    hotelList.propertyList.subList(0, kotlin.math.max(3, hotelList.propertyList.size)).forEach {
-                        it.image.firstOrNull()?.urlMax300?.let { image ->
-                            cell {
-                                addImage(IconCompat.createWithBitmap(image.getBitmap()), ListBuilder.LARGE_IMAGE)
-                                addTitleText(it.name)
-                                addText(it.roomPrice.firstOrNull()?.totalPrice ?: "")
-                                contentIntent = buildIntentFromHotelDetail(it.id, checkIn)
-                            }
-                        }
-                    }
-                    status = Status.INIT
-                }
-            }
+            Status.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            else -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
         }
     }
 
-    private fun buildIntentFromHotelDetail(hotelId: Long, checkIn: String): PendingIntent {
-        return PendingIntent.getActivity(
-                contextNonNull,
-                0,
-                allowReads {  RouteManager.getIntent(contextNonNull,
-                        "tokopedia://hotel/detail/$hotelId?check_in=$checkIn") },
-                0
-        )
+    private fun getHotelData(sliceUri: Uri) {
+        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            //get params from Uri
+            city = sliceUri.getQueryParameter(ARG_CITY) ?: DEFAULT_CITY_VALUE
+            val checkInOutDate = validateCheckInDate(sliceUri.getQueryParameter(ARG_CHECKIN) ?: "")
+            checkIn = checkInOutDate.first
+
+            //get hotel data from API
+            hotelList = hotelSliceRepository.getHotelData(city, checkIn, checkInOutDate.second)
+            status = Status.SUCCESS
+
+            //notify data changed
+            contextNonNull.contentResolver.notifyChange(sliceUri, null)
+        }) {
+            status = Status.FAILURE
+            contextNonNull.contentResolver.notifyChange(sliceUri, null)
+        }
     }
 
-    private fun String.getBitmap(): Bitmap? {
-        val futureTarget = Glide.with(contextNonNull)
-                .asBitmap()
-                .load(this)
-                .submit()
-        return futureTarget.get()
+    @RequiresApi(Build.VERSION_CODES.KITKAT)
+    private fun createGetHotelOrderSlice(sliceUri: Uri): Slice? {
+        if (status == Status.INIT) {
+            status = Status.LOADING
+
+            getHotelOrderData(sliceUri)
+        }
+        return when (status) {
+            Status.INIT, Status.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
+            Status.SUCCESS -> {
+                if (orderList.isNotEmpty()) HotelSliceProviderUtil.getMyHotelOrderSlices(contextNonNull, sliceUri, orderList)
+                else HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            }
+            Status.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            Status.USER_NOT_LOG_IN -> HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
+        }
     }
 
-    private var checkIn: String = ""
+    private fun getHotelOrderData(sliceUri: Uri) {
+        CoroutineScope(Dispatchers.IO).launchCatchError(block = {
+            val isLoggedIn = UserSession(contextNonNull).isLoggedIn
+            orderList = hotelSliceRepository.getHotelOrderData(isLoggedIn)
 
-    private fun getHotelData(sliceUri: Uri): HotelList {
-        GlobalScope.launch(Dispatchers.IO) {
-            try {
-                getSuggestionCityUseCase.cityParam = sliceUri.getQueryParameter(ARG_CITY)
-                        ?: DEFAULT_CITY_VALUE
-                val cityIdResponse = getSuggestionCityUseCase.executeOnBackground().firstOrNull()
-                if (cityIdResponse != null) {
-                    val checkInOutDate = validateCheckInDate(sliceUri.getQueryParameter(ARG_CHECKIN) ?: "")
-                    checkIn = checkInOutDate.first
-                    getPropertiesUseCase.createParam(checkInOutDate.first, checkInOutDate.second, cityIdResponse)
-                    hotelList = getPropertiesUseCase.executeOnBackground()
-                    status = Status.SUCCESS
-                    contextNonNull.contentResolver.notifyChange(sliceUri, null)
-                } else {
-                    status = Status.FAILURE
-                }
-            } catch (e: Exception) {
-                Log.d("ERRORR", e.localizedMessage)
+            status = Status.SUCCESS
+            contextNonNull.contentResolver.notifyChange(sliceUri, null)
+        }) {
+            if (it.message == "unauthorized user") {
+                status = Status.USER_NOT_LOG_IN
+                contextNonNull.contentResolver.notifyChange(sliceUri, null)
+            } else {
                 status = Status.FAILURE
                 contextNonNull.contentResolver.notifyChange(sliceUri, null)
             }
         }
-        return hotelList
     }
 
-    private fun validateCheckInDate(checkIn: String): Pair<String, String> {
-        var checkInTemp = checkIn
-        if (checkIn.isEmpty()) checkInTemp = TravelDateUtils.getTodayDate(TravelDateUtils.YYYY_MM_DD_T_HH_MM_SS)
-        val checkInString = TravelDateUtils.formatDate(TravelDateUtils.YYYY_MM_DD_T_HH_MM_SS, TravelDateUtils.YYYY_MM_DD, checkInTemp)
-        val checkOut = TravelDateUtils.addTimeToSpesificDate(TravelDateUtils.stringToDate(TravelDateUtils.YYYY_MM_DD, checkInString), Calendar.DATE, 1)
-        val checkOutString = TravelDateUtils.dateToString(TravelDateUtils.YYYY_MM_DD, checkOut)
-        return Pair(checkInString, checkOutString)
-    }
 
-    fun <T> allowReads(block: () -> T): T {
-        val oldPolicy = StrictMode.allowThreadDiskReads()
-        try {
-            return block()
-        } finally {
-            StrictMode.setThreadPolicy(oldPolicy)
-        }
-    }
-
-    enum class Status { SUCCESS, FAILURE, LOADING, INIT }
+    enum class Status { SUCCESS, FAILURE, LOADING, INIT, USER_NOT_LOG_IN }
 
     companion object {
         const val ARG_CITY = "city"
         const val ARG_CHECKIN = "checkIn"
         const val DEFAULT_CITY_VALUE = "Jakarta"
         const val DATA_PARAM = "data"
+
+        const val BOOK_HOTEL = "book_hotel"
+        const val MY_BOOKING = "my_booking"
     }
 }
