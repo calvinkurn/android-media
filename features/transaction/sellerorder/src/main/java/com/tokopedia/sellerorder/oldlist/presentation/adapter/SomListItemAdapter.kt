@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.sellerorder.R
@@ -76,7 +77,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
                         ic_label_due_card.visibility = View.VISIBLE
                         label_due_response_day_count.text = orderItem.deadlineText
                         ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
-                        ic_time.setColorFilter(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                        ic_time.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                         if (orderItem.deadlineColor.isNotEmpty() && !orderItem.deadlineColor.equals(LABEL_EMPTY, true)) {
                             holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(orderItem.deadlineColor))
                         }
