@@ -119,4 +119,5 @@
     <string name="title_notifcenter_promo_already_ended">Promo telah berakhir</string>
     <string name="title_notifcenter_see_more">Lihat Lebih Banyak</string>
     <string name="title_notifcenter_empty_with_recom">Belum ada notifikasi baru, nih. Coba cek pilihan produk menarik di bawah ini, yuk!</string>
+    <string name="title_success_bump_reminder">Siap-siap, kamu bakal jadi yang pertama dapat kabar saat barang ini tersedia lagi.</string>
 </resources>

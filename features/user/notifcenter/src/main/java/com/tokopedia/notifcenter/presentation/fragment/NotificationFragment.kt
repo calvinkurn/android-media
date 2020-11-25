@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -214,6 +215,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
             when (it.status) {
                 Status.SUCCESS -> {
+                    showMessage(R.string.title_success_bump_reminder)
                     rvAdapter?.finishBumpReminder(viewHolderState)
                     viewHolderLoading.remove(it.referer)
                 }
@@ -312,6 +314,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         view?.let {
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
                     .show()
+        }
+    }
+
+    private fun showMessage(@StringRes stringRes: Int) {
+        val msg = getString(stringRes)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
         }
     }
 
