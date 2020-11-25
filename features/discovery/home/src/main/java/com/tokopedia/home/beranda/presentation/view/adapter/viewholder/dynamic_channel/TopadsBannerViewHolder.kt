@@ -1,6 +1,5 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
-import android.util.Log
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.bumptech.glide.load.engine.GlideException
@@ -12,7 +11,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeTopAdsBannerDataModel
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewImpressionListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
@@ -59,14 +57,14 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
         }
 
         view.home_topads_image_view.setTopAdsImageViewImpression(object: TopAdsImageViewImpressionListener {
-            override fun onTopAdsImageViewImpression(topAdsModel: TopAdsImageViewModel) {
+            override fun onTopAdsImageViewImpression(viewUrl: String) {
                 BannerAdsTracking.sendBannerAdsImpressionTracking(
                         categoryListener.getTrackingQueueObj(),
                         element.channel,
                         categoryListener.userId,
                         adapterPosition,
                         false,
-                        topAdsModel.bannerId?:""
+                        element.topAdsImageViewModel?.bannerId?:""
                 )
                 BannerAdsTracking.sendBannerAdsImpressionTracking(
                         categoryListener.getTrackingQueueObj(),
@@ -74,12 +72,12 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
                         categoryListener.userId,
                         adapterPosition,
                         true,
-                        topAdsModel.bannerId?:""
+                        element.topAdsImageViewModel?.bannerId?:""
                 )
 
                 TopAdsUrlHitter(className).hitImpressionUrl(
                         itemView.context,
-                        topAdsModel.adViewUrl,
+                        viewUrl,
                         "",
                         "",
                         ""
@@ -88,15 +86,15 @@ class TopadsBannerViewHolder(val view: View, val categoryListener: HomeCategoryL
         })
 
         view.home_topads_image_view.setTopAdsImageViewClick(object: TopAdsImageViewClickListener {
-            override fun onTopAdsImageViewClicked(topAdsModel: TopAdsImageViewModel) {
+            override fun onTopAdsImageViewClicked(applink: String?) {
                 BannerAdsTracking.sendBannerAdsClickTracking(
                         element.channel,
                         categoryListener.userId,
                         adapterPosition,
-                        topAdsModel.bannerId?:""
+                        element.topAdsImageViewModel?.bannerId?:""
                 )
 
-                categoryListener.onSectionItemClicked(topAdsModel.applink?:"")
+                categoryListener.onSectionItemClicked(applink?:"")
             }
         })
     }
