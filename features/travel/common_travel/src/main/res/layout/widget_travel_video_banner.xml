@@ -12,7 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:padding="@dimen/spacing_lvl4"
+        android:paddingTop="@dimen/spacing_lvl4"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/spacing_lvl4"
+        android:paddingBottom="@dimen/spacing_lvl2"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -21,6 +24,7 @@
         tools:text="Video Banner Here" />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewTravelVideoBanner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/video_banner_margin"
@@ -35,7 +39,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivTravelVideoBanner"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl9"
+            android:layout_height="wrap_content"
             android:adjustViewBounds="true" />
 
     </androidx.cardview.widget.CardView>

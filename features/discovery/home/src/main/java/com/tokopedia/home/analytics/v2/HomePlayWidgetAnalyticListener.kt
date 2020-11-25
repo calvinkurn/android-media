@@ -13,6 +13,10 @@ import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
+/**
+ * https://docs.google.com/spreadsheets/d/1NR4Cfq5S4MjY_i4WqWRTqV0kguAKsi74N29q6rdb2K8/edit#gid=359560973 row 12-16, 20-21
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/61
+ */
 class HomePlayWidgetAnalyticListener(
         private val trackingQueue: TrackingQueue?,
         private val userId: String
@@ -21,7 +25,11 @@ class HomePlayWidgetAnalyticListener(
     var widgetId: String = ""
     var widgetName: String = ""
 
-    var widgetPosition = RecyclerView.NO_POSITION
+    private var mWidgetPosition: Int = RecyclerView.NO_POSITION
+
+    fun setWidgetPosition(value: Int) {
+        this.mWidgetPosition = value
+    }
 
     override fun onClickViewAll(view: PlayWidgetMediumView) = withWidgetPosition { pos ->
         TrackApp.getInstance().gtm.sendGeneralEvent(
@@ -42,11 +50,11 @@ class HomePlayWidgetAnalyticListener(
                 event = Event.PROMO_VIEW,
                 eventCategory = "homepage-cmp",
                 eventAction = "impression on play sgc banner",
-                eventLabel = "${item.imageUrl} - $channelPositionInList",
+                eventLabel = "${item.imageUrl} - $pos",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc banner - $widgetName",
+                                name = "/ - p$channelPositionInList - play sgc banner - $widgetName",
                                 creative = item.imageUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -64,11 +72,11 @@ class HomePlayWidgetAnalyticListener(
                 event = Event.PROMO_CLICK,
                 eventCategory = "homepage-cmp",
                 eventAction = Event.CLICK,
-                eventLabel = "click on banner play - ${item.imageUrl} - $channelPositionInList",
+                eventLabel = "click on banner play - ${item.imageUrl} - $pos",
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc banner - $widgetName",
+                                name = "/ - p$channelPositionInList - play sgc banner - $widgetName",
                                 creative = item.imageUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -90,7 +98,7 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc channel - ${item.title}",
+                                name = "/ - p$channelPositionInList - play sgc channel - ${item.title}",
                                 creative = item.video.coverUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -112,7 +120,7 @@ class HomePlayWidgetAnalyticListener(
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
                                 id = widgetId,
-                                name = "/ - p$pos - play sgc channel - ${item.title}",
+                                name = "/ - p$channelPositionInList - play sgc channel - ${item.title}",
                                 creative = item.video.coverUrl,
                                 position = channelPositionInList.toString()
                         )
@@ -143,7 +151,7 @@ class HomePlayWidgetAnalyticListener(
                         Event.KEY to CLICK_HOMEPAGE,
                         Category.KEY to "homepage-cmp",
                         Action.KEY to "click other content",
-                        Label.KEY to "${item.imageUrl} - $channelPositionInList",
+                        Label.KEY to "${item.imageUrl} - $pos",
                         BusinessUnit.KEY to ADS_SOLUTION,
                         CurrentSite.KEY to CurrentSite.DEFAULT,
                         UserId.KEY to userId
@@ -152,7 +160,7 @@ class HomePlayWidgetAnalyticListener(
     }
 
     private fun withWidgetPosition(onTrack: (Int) -> Unit) {
-        if (widgetPosition == RecyclerView.NO_POSITION) return
-        onTrack(widgetPosition)
+        if (mWidgetPosition == RecyclerView.NO_POSITION) return
+        onTrack(if (mWidgetPosition <= 2) 0 else 1) // following the old implementation
     }
 }

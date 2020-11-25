@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:singleLine="true"
         app:typographyType="heading_4"
-        android:textColor="@color/Neutral_N700"
+        android:textColor="@color/Unify_N700"
         tools:text="Blus Lengan pendek Wanita gaya" />
 
     <FrameLayout

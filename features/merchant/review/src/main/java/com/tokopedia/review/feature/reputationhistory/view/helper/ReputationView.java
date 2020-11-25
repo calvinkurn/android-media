@@ -1,7 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.view.helper;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.FrameLayout;
@@ -19,7 +18,6 @@ import com.tokopedia.review.R;
 
 public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationViewModel> {
 
-    private final String defaultLayout;
     LinearLayout reputationBadgeListener;
     TextView reputationPoints;
     @LayoutRes
@@ -27,19 +25,7 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
 
     public ReputationView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ReputationView);
-        try {
-            defaultLayout = styledAttributes.getString(R.styleable.ReputationView_default_layout);
-            if (defaultLayout != null) {
-                defaultLayoutId = getLayoutByName(separate(defaultLayout));
-            } else {
-                defaultLayoutId = R.layout.reputation_item_view;
-            }
-        } finally {
-            styledAttributes.recycle();
-        }
-
+        defaultLayoutId = R.layout.reputation_item_view_reputation;
         LayoutInflater.from(context).inflate(defaultLayoutId, this);
 
         reputationBadgeListener = (LinearLayout) findViewById(R.id.reputation_badge_listener);

@@ -2,8 +2,8 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.home.RechargeHomepageTestDispatchersProvider
-import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
-import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
+import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

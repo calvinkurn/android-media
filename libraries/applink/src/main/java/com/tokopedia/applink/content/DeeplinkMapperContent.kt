@@ -23,11 +23,6 @@ object DeeplinkMapperContent {
         }
     }
 
-    fun getRegisteredNavigationContent(deeplink: String): String {
-        return if (deeplink.startsWithPattern(ApplinkConst.PROFILE)) getRegisteredNavigation(deeplink)
-        else deeplink
-    }
-
     /**
      * tokopedia://people/{user_id}
      * tokopedia://people/{user_id}?after_post=true

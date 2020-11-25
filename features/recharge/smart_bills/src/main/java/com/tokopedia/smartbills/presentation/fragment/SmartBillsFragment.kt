@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
@@ -29,7 +28,6 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
-import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -49,6 +47,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.android.synthetic.main.fragment_smart_bills.*
 import java.util.*
 import javax.inject.Inject
@@ -77,6 +76,7 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
 
+    private var autoTick = false
     private var totalPrice = 0
     private var maximumPrice = 0
 
@@ -108,7 +108,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
                     if (ongoingMonth != null) {
                         viewModel.getStatementBills(
-                                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_bills),
                                 viewModel.createStatementBillsParams(ongoingMonth.month, ongoingMonth.year),
                                 swipeToRefresh?.isRefreshing ?: false
                         )
@@ -136,15 +135,22 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     val bills = it.data.bills
                     if (bills.isNotEmpty()) {
                         view_smart_bills_select_all_checkbox_container.show()
-                        renderList(it.data.bills)
-                        smartBillsAnalytics.impressionAllProducts(it.data.bills)
+                        renderList(bills)
+                        smartBillsAnalytics.impressionAllProducts(bills)
+
+                        // Auto select bills based on data
+                        autoTick = true
+                        bills.forEachIndexed { index, rechargeBills ->
+                            if (rechargeBills.isChecked) adapter.updateListByCheck(true, index)
+                        }
+                        autoTick = false
 
                         // Show coach mark
                         showOnboarding()
 
                         // Save maximum price
                         maximumPrice = 0
-                        for (bill in it.data.bills) {
+                        for (bill in bills) {
                             maximumPrice += bill.amount.toInt()
                         }
                     } else {
@@ -304,7 +310,6 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         smart_bills_checkout_view.setVisibilityLayout(true)
 
         viewModel.getStatementMonths(
-                GraphqlHelper.loadRawString(resources, R.raw.query_recharge_statement_months),
                 viewModel.createStatementMonthsParams(1),
                 swipeToRefresh?.isRefreshing ?: false
         )
@@ -352,7 +357,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
 
     override fun onItemChecked(item: RechargeBills, isChecked: Boolean) {
         if (isChecked) {
-            smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
+            // Do not trigger event if bill is auto-ticked
+            if (!autoTick) smartBillsAnalytics.clickTickBill(item, adapter.checkedDataList)
             totalPrice += item.amount.toInt()
         } else {
             smartBillsAnalytics.clickUntickBill(item)

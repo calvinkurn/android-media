@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.common_digital.common.data.api.exception.DigitalError;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
