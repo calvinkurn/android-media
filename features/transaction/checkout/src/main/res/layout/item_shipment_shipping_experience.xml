@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.ContainerUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/ll_shipping_experience_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/checkout_module_bg_shipping_container"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    app:container_color="GREEN">
 
     <include
         android:id="@+id/ll_shipping_experience_state_loading"
@@ -59,9 +58,9 @@
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/label_choose_shipping"
-                    android:contentDescription="@string/content_desc_label_choose_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_label_choose_shipping"
                     android:paddingLeft="@dimen/dp_9"
                     android:paddingRight="@dimen/dp_9"
                     android:text="@string/label_choose_shipping"
@@ -73,9 +72,9 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_shipping"
-                    android:contentDescription="@string/content_desc_icon_chevron_choose_shipping"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_shipping"
                     android:rotation="270"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -107,9 +106,9 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_duration"
-                    android:contentDescription="@string/content_desc_icon_chevron_choose_duration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_duration"
                     android:rotation="270"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -129,30 +128,30 @@
                     android:id="@+id/layout_mvc"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/icon_chevron_choose_courier"
                     android:layout_marginTop="@dimen/dp_13"
+                    app:layout_constraintEnd_toStartOf="@id/icon_chevron_choose_courier"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider">
 
                     <ImageView
                         android:id="@+id/img_mvc"
                         android:layout_width="@dimen/dp_14"
                         android:layout_height="@dimen/dp_14"
-                        android:visibility="visible"
                         android:layout_marginEnd="@dimen/dp_4"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/label_selected_shipping_courier"
-                        app:layout_constraintTop_toTopOf="@id/label_selected_shipping_courier"
+                        android:foregroundGravity="center_vertical"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="@id/label_selected_shipping_courier"
-                        android:foregroundGravity="center_vertical" />
+                        app:layout_constraintEnd_toStartOf="@id/label_selected_shipping_courier"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/label_selected_shipping_courier" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/label_selected_shipping_courier"
                         android:layout_width="0dp"
                         android:layout_height="@dimen/dp_18"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/img_mvc"
                         app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/img_mvc"
+                        app:layout_constraintTop_toTopOf="parent"
                         app:typographyType="heading_6"
                         app:typographyWeight="bold"
                         tools:text="Grab" />
@@ -199,10 +198,10 @@
 
                 <ImageView
                     android:id="@+id/icon_chevron_choose_courier"
-                    android:contentDescription="@string/content_desc_icon_chevron_choose_courier"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_13"
+                    android:contentDescription="@string/content_desc_icon_chevron_choose_courier"
                     android:rotation="270"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -242,9 +241,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dp_4"
+                        android:layout_toEndOf="@id/label_selected_free_shipping"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
-                        android:layout_toEndOf="@id/label_selected_free_shipping"
                         tools:text="Rp40.000"
                         tools:visibility="gone" />
 
@@ -325,4 +324,4 @@
 
     </FrameLayout>
 
-</LinearLayout>
+</com.tokopedia.unifycomponents.ContainerUnify>
