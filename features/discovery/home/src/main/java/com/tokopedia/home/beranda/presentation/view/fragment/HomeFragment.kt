@@ -525,11 +525,19 @@ open class HomeFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToDarkToolbar() {
-
+                                        navAbTestCondition(
+                                                ifNavRevamp = {
+                                                    navToolbar?.hideShadow()
+                                                }
+                                        )
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-
+                                        navAbTestCondition(
+                                                ifNavRevamp = {
+                                                    navToolbar?.showShadow()
+                                                }
+                                        )
                                     }
                                 }
                         ))
@@ -564,25 +572,11 @@ open class HomeFragment : BaseDaggerFragment(),
             var bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
-                val coachMarkItem = ArrayList<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
+                showCoachMark(bottomSheet)
+            }
 
-                val globalNavIcon = navToolbar?.getGlobalNavIconView()
-                globalNavIcon?.let {
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    globalNavIcon,
-                                    getString(R.string.onboarding_coachmark_title),
-                                    getString(R.string.onboarding_coachmark_description)
-                            )
-                    )
-                }
-                coachMark.container?.setOnClickListener {
-                    RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
-                    coachMark.dismissCoachMark()
-                }
-                bottomSheet.dismiss()
-                coachMark.showCoachMark(step = coachMarkItem, index =  0)
+            bottomSheet.setOnDismissListener {
+                showCoachMark(bottomSheet)
             }
 
             bottomSheet.setTitle("")
@@ -593,8 +587,40 @@ open class HomeFragment : BaseDaggerFragment(),
                 bottomSheet.dismiss()
             }
             childFragmentManager.run { bottomSheet.show(this,"onboarding navigation") }
+
+            //disabling the scroll so user can focus with coachmark first
+            homeRecyclerView?.isNestedScrollingEnabled = false
             saveFirstViewNavigation(false)
         }
+    }
+
+    private fun showCoachMark(bottomSheet: BottomSheetUnify) {
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        val coachMark = CoachMark2(requireContext())
+
+        val globalNavIcon = navToolbar?.getGlobalNavIconView()
+        globalNavIcon?.let {
+            coachMarkItem.add(
+                    CoachMark2Item(
+                            globalNavIcon,
+                            getString(R.string.onboarding_coachmark_title),
+                            getString(R.string.onboarding_coachmark_description)
+                    )
+            )
+        }
+        coachMark.container?.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
+            //enable the scroll after user interact with coachmark
+            homeRecyclerView?.isNestedScrollingEnabled = true
+            coachMark.dismissCoachMark()
+        }
+
+        coachMark.onDismissListener = {
+            //enable the scroll after user interact with coachmark
+            homeRecyclerView?.setNestedCanScroll(true)
+        }
+        bottomSheet.dismiss()
+        coachMark.showCoachMark(step = coachMarkItem, index = 0)
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -655,25 +681,25 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         if (recyclerView.canScrollVertically(1)) {
             navAbTestCondition(
+                    ifNavRevamp = {
+                        navToolbar?.let { it.showShadow() }
+                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
                         }
-            },
-                    ifNavRevamp = {
-                        navToolbar?.let { it.showShadow() }
             })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
             navAbTestCondition(
+                    ifNavRevamp = {
+                        navToolbar?.let { it.hideShadow() }
+                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    },
-                    ifNavRevamp = {
-                        navToolbar?.let { it.hideShadow() }
                     }
             )
             showFeedSectionViewHolderShadow(true)
@@ -1505,7 +1531,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun onPageLoadTimeEnd() {
         stickyContent
         navAbTestCondition(ifNavRevamp = {
-            if (isFirstViewNavigation()) showNavigationOnboarding()
+            showNavigationOnboarding()
         })
     }
 

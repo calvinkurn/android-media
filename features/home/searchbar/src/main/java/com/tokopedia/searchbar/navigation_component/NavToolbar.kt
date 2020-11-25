@@ -162,7 +162,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Hide shadow and adjust padding
      */
-    fun hideShadow(lineShadow: Boolean = false) {
+    fun hideShadow(lineShadow: Boolean = true) {
         if(shadowApplied){
             shadowApplied = false
             if (lineShadow) {
@@ -181,7 +181,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
     /**
      * Show shadow and adjust padding
      */
-    fun showShadow(lineShadow: Boolean = false) {
+    fun showShadow(lineShadow: Boolean = true) {
         if(!shadowApplied && toolbarAlwaysShowShadow){
             shadowApplied = true
 
@@ -474,7 +474,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Unify_N700)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.icon_enable_default_color)
 
     private fun getLightIconColor() = ContextCompat.getColor(context, R.color.Unify_N0)
 
