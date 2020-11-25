@@ -54,7 +54,10 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_hotel_room_list.*
 import kotlinx.android.synthetic.main.layout_sticky_hotel_date_and_guest.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -145,9 +148,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
             when (it) {
                 is Success -> {
                     context?.run {
-                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId,
-                                hotelRoomListPageModel.destinationType, hotelRoomListPageModel.destinationName,
-                                hotelRoomListPageModel.room, hotelRoomListPageModel.adult))
+                        startActivity(HotelBookingActivity.getCallingIntent(this, it.data.response.cartId))
                     }
                 }
                 is Fail -> {
@@ -217,7 +218,7 @@ class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>()
         filter_recycler_view.listener = this
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_room_list_filter_free_breakfast),
                 getString(R.string.hotel_room_list_filter_free_cancelable)),
-                R.color.hotel_snackbar_border)
+                com.tokopedia.unifyprinciples.R.color.Unify_G300)
 
         recycler_view.addItemDecoration(object : RecyclerView.ItemDecoration() {
             override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {

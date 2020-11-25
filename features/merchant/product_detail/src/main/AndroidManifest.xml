@@ -9,7 +9,6 @@
 
         <activity android:name=".view.activity.ProductDetailActivity"
             android:label="@string/title_activity_product_detail"
-            android:configChanges="uiMode"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 

@@ -16,6 +16,7 @@ interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
+    fun isNavOld(): Boolean
 
     /**
      * ProductSnapshotViewHolder
@@ -28,6 +29,7 @@ interface DynamicProductDetailListener {
     fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel)
     fun onSwipePicture(type: String, url: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?)
     fun shouldShowWishlist(): Boolean
+    fun shareProductFromContent(componentTrackDataModel: ComponentTrackDataModel?)
 
     /**
      * ProductInfoViewHolder
@@ -123,8 +125,9 @@ interface DynamicProductDetailListener {
     /**
      * ProductTickerViewHolder
      */
-    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?)
-    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?)
+    fun onTickerGeneralClicked(tickerTitle: String, tickerType: Int, url: String, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerShopClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
+    fun onTickerGoToRecomClicked(tickerTitle: String, tickerType: Int, componentTrackDataModel: ComponentTrackDataModel?, tickerDescription: String)
 
     /**
      * ProductTopAdsImageViewHolder
@@ -136,4 +139,9 @@ interface DynamicProductDetailListener {
      * ProductDetailInfoViewHolder
      */
     fun onSeeMoreDescriptionClicked(dataContent: List<ProductDetailInfoContent>)
+
+    /**
+     * ProductReportViewHolder
+     */
+    fun reportProductFromComponent(componentTrackDataModel: ComponentTrackDataModel?)
 }

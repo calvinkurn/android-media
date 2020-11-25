@@ -25,7 +25,29 @@ data class RecommendationFilterChipsEntity (
             val isActivated: Boolean = false,
             @SerializedName("options")
             val options: List<Option> = listOf()
-    )
+    ){
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is RecommendationFilterChip) return false
+
+            if (name != other.name) return false
+            if (value != other.value) return false
+            if (inputType != other.inputType) return false
+            if (isActivated != other.isActivated) return false
+            if (options != other.options) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = name.hashCode()
+            result = HASH_CODE * result + value.hashCode()
+            result = HASH_CODE * result + inputType.hashCode()
+            result = HASH_CODE * result + isActivated.hashCode()
+            result = HASH_CODE * result + options.hashCode()
+            return result
+        }
+    }
 
     data class Option(
             @SerializedName("name")
@@ -37,4 +59,8 @@ data class RecommendationFilterChipsEntity (
             @SerializedName("isActivated")
             val isActivated: Boolean = false
     )
+
+    companion object{
+        private const val HASH_CODE = 31
+    }
 }

@@ -275,7 +275,7 @@ fun View?.showToasterSuccess(message: String,
     this?.let {
         val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
         Toaster.toasterCustomBottomHeight = toasterOffset
-        Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
     }
 }
 
@@ -292,13 +292,13 @@ fun View?.showToasterError(message: String,
 
         Toaster.toasterCustomBottomHeight = toasterOffset
         if (ctaText.isNotEmpty()) {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
                 ctaListener?.invoke()
-            })
+            }).show()
         } else {
-            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
                 ctaListener?.invoke()
-            })
+            }).show()
         }
     }
 }

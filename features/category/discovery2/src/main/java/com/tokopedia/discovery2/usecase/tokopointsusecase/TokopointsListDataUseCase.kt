@@ -13,7 +13,7 @@ class TokopointsListDataUseCase @Inject constructor(private val tokopointsReposi
     suspend fun getTokopointsDataUseCase(componentId: String, pageEndPoint: String): Boolean {
         val componentsItem = getComponent(componentId, pageEndPoint)
         componentsItem?.let { component ->
-            component?.setComponentsItem(tokopointsRepository.getTokopointsData(componentId, getQueryParameterMap(1.toString(), 6), pageEndPoint))
+            component?.setComponentsItem(tokopointsRepository.getTokopointsData(componentId, getQueryParameterMap(1.toString(), 6), pageEndPoint), component.tabName)
             component?.noOfPagesLoaded = 1
             return true
         }

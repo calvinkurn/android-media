@@ -13,8 +13,6 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
-import com.tokopedia.common_digital.cart.view.model.cart.FintechProduct
 import com.tokopedia.digital.R
 import com.tokopedia.digital.newcart.di.DigitalCartComponent
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView
@@ -23,6 +21,8 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartMyBill
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData
+import com.tokopedia.digital.newcart.presentation.model.cart.FintechProduct
 import com.tokopedia.digital.newcart.presentation.presenter.DigitalCartMyBillsPresenter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography

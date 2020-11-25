@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/layout_lvl3"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmer_1"
@@ -50,25 +50,25 @@
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:id="@+id/image_1"
             android:layout_width="181dp"
-            android:layout_height="@dimen/dp_110"
+            android:layout_height="@dimen/travel_homepage_dp_110"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="65dp"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/travel_homepage_dp_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/travel_homepage_dp_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/travel_homepage_dp_12"
             app:corners="8" />
 
 
@@ -86,25 +86,25 @@
 
         <com.elyeproj.loaderviewlibrary.LoaderImageView
             android:layout_width="181dp"
-            android:layout_height="@dimen/dp_110"
+            android:layout_height="@dimen/travel_homepage_dp_110"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="65dp"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/travel_homepage_dp_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/travel_homepage_dp_12"
             app:corners="8" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="@dimen/layout_lvl1"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/travel_homepage_dp_12"
             app:corners="8" />
 
 
