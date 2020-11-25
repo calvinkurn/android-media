@@ -1,8 +1,10 @@
 package com.tokopedia.sessioncommon.domain.subscriber
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetLocationAdminUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 
@@ -12,11 +14,21 @@ import rx.Subscriber
 class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onSuccessGetProfile: (pojo: ProfilePojo) -> Unit,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
+                           private val getLocationAdminUseCase: GetLocationAdminUseCase? = null,
+                           val showLocationAdminPopUp: (() -> Unit)? = null,
+                           val showLocationAdminError: ((e: Throwable) -> Unit)? = null,
                            val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
+        if(GlobalConfig.isSellerApp()) {
+            getLocationAdmin(response)
+        } else {
+            onSuccessGetUserProfile(response)
+        }
+    }
 
+    private fun onSuccessGetUserProfile(response: GraphqlResponse) {
         val pojo = response.getData<ProfilePojo>(ProfilePojo::class.java)
         val errors = response.getError(ProfilePojo::class.java)
         if (pojo.profileInfo.userId.isNotBlank()
@@ -29,6 +41,30 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
             onErrorGetProfile(Throwable())
         }
         onFinished.invoke()
+    }
+
+    private fun getLocationAdmin(response: GraphqlResponse) {
+        val error = response.getError(ProfilePojo::class.java)
+
+        when {
+            error.isNullOrEmpty() -> {
+                val profile = response.getData<ProfilePojo>(ProfilePojo::class.java)
+                val shopId = profile.shopInfo.shopData.shopId.toIntOrNull() ?: 0
+
+                getLocationAdminUseCase?.let {
+                    it.execute(shopId, GetLocationAdminSubscriber(
+                        { onSuccessGetUserProfile(response) },
+                        showLocationAdminPopUp,
+                        showLocationAdminError
+                    ))
+                } ?: onSuccessGetUserProfile(response)
+            }
+            error.isNotEmpty() -> {
+                val message = error.firstOrNull()?.message.orEmpty()
+                onErrorGetProfile(MessageErrorException(message))
+            }
+            else -> onErrorGetProfile(Throwable())
+        }
     }
 
     private fun saveProfileData(pojo: ProfilePojo?) {
@@ -72,6 +108,4 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
         }
         onFinished.invoke()
     }
-
-
 }
