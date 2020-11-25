@@ -313,6 +313,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
     private val gson = Gson()
+    private var coachmarkIsShowing = false
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
@@ -576,7 +577,7 @@ open class HomeFragment : BaseDaggerFragment(),
             }
 
             bottomSheet.setOnDismissListener {
-                showCoachMark(bottomSheet)
+                if (!coachmarkIsShowing) showCoachMark(bottomSheet)
             }
 
             bottomSheet.setTitle("")
@@ -592,6 +593,7 @@ open class HomeFragment : BaseDaggerFragment(),
     }
 
     private fun showCoachMark(bottomSheet: BottomSheetUnify) {
+        coachmarkIsShowing = true
         val coachMarkItem = ArrayList<CoachMark2Item>()
         val coachMark = CoachMark2(requireContext())
 
@@ -610,11 +612,6 @@ open class HomeFragment : BaseDaggerFragment(),
             navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
             coachMark.dismissCoachMark()
-        }
-
-        coachMark.onDismissListener = {
-            //enable the scroll after user interact with coachmark
-            homeRecyclerView?.setNestedCanScroll(true)
         }
         bottomSheet.dismiss()
         coachMark.showCoachMark(step = coachMarkItem, index = 0)
