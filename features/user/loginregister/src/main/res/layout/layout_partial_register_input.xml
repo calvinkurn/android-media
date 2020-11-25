@@ -125,7 +125,7 @@
             android:visibility="gone"
             />
 
-        <com.tokopedia.unifycomponents.UnifyButton
+        <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/register_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,9 +134,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/register"
             android:textAllCaps="false"
-            app:unifyButtonSize="large"
-            app:unifyButtonType="main"
-            app:unifyButtonVariant="filled"/>
+            app:buttonCompatType="disable"/>
 
     </RelativeLayout>
 
