@@ -53,6 +53,7 @@ import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.filter.presentation.bottomsheet.SomFilterBottomSheet
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterCancelWrapper
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModelWrapper
 import com.tokopedia.sellerorder.list.di.DaggerSomListComponent
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListOrderAdapter
@@ -232,7 +233,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     private var menu: Menu? = null
     private var filterDate = ""
     private var somFilterBottomSheet: SomFilterBottomSheet? = null
-    private var isFromBottomSheetFilter = false
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + masterJob
@@ -396,7 +396,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     override fun onSwipeRefresh() {
-        isFromBottomSheetFilter = false
         shouldScrollToTop = true
         loadInitialData()
         dismissCoachMark()
@@ -413,7 +412,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     override fun onTabClicked(status: SomListFilterUiModel.Status, shouldScrollToTop: Boolean, refreshFilter: Boolean) {
         tabActive = if (status.isChecked) {
-            if (isFromBottomSheetFilter)
+            if (somListSortFilterTab?.isStatusFilterAppliedFromAdvancedFilter == true)
                 viewModel.setStatusOrderFilter(viewModel.getDataOrderListParams().statusList)
             else
                 viewModel.setStatusOrderFilter(status.id)
@@ -424,7 +423,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             SomAnalytics.eventClickStatusFilter(SomConsts.STATUS_ALL_ORDER, SomConsts.STATUS_NAME_ALL_ORDER)
             ""
         }
-        this.isFromBottomSheetFilter = false
         setDefaultSortByValue()
         if (viewModel.isMultiSelectEnabled) {
             somListLayoutManager?.findFirstVisibleItemPosition()?.let {
@@ -448,10 +446,12 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(SomFilterBottomSheet.KEY_SOM_LIST_GET_ORDER_PARAM, viewModel.getDataOrderListParams())
         somListSortFilterTab?.getSomFilterUi()?.let { somFilterList ->
+            val somFilterUiModelWrapper = SomFilterUiModelWrapper(somFilterList)
+            cacheManager?.put(SomFilterBottomSheet.KEY_SOM_FILTER_LIST, somFilterUiModelWrapper)
             somFilterBottomSheet = SomFilterBottomSheet.createInstance(
                     somListSortFilterTab?.getSelectedFilterStatusName().orEmpty(),
+                    somListSortFilterTab?.isStatusFilterAppliedFromAdvancedFilter ?: false,
                     viewModel.getDataOrderListParams().statusList,
-                    somFilterList,
                     filterDate,
                     filterOrderType != 0,
                     cacheManager?.id.orEmpty()
@@ -1493,7 +1493,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             filterData: SomListGetOrderListParam, somFilterUiModelList: List<SomFilterUiModel>,
             idFilter: String, filterDate: String, isRequestCancelFilterApplied: Boolean) {
         this.filterDate = filterDate
-        this.isFromBottomSheetFilter = true
         this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
         this.shouldScrollToTop = true
         isLoadingInitialData = true
