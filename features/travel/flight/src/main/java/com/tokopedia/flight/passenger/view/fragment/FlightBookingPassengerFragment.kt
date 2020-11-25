@@ -889,7 +889,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         til_nationality.setError(false)
 
         til_passport_issuer_country.setMessage("")
-        til_passport_issuer_country.setError(true)
+        til_passport_issuer_country.setError(false)
 
         when {
             isAdultPassenger() -> {
