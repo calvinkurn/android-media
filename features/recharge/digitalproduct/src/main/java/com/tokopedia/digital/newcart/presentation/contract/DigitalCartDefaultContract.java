@@ -1,8 +1,8 @@
 package com.tokopedia.digital.newcart.presentation.contract;
 
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.newcart.presentation.model.DigitalSubscriptionParams;
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData;
 
 public interface DigitalCartDefaultContract {
     interface View extends DigitalBaseContract.View {

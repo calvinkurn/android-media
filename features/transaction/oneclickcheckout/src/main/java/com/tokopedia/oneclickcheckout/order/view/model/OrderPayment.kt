@@ -8,21 +8,23 @@ data class OrderPayment(
         val isCalculationError: Boolean = false,
         val gatewayCode: String = "",
         val gatewayName: String = "",
-        val image: String = "",
-        val description: String = "",
         val minimumAmount: Long = 0,
         val maximumAmount: Long = 0,
         val fee: Double = 0.0,
         val walletAmount: Long = 0,
-        val metadata: String = "",
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
         val errorTickerMessage: String = "",
         val isEnableNextButton: Boolean = false,
         val isDisablePayButton: Boolean = false,
         // flag to determine continue using ovo flow
-        val isOvoOnlyCampaign: Boolean = false
+        val isOvoOnlyCampaign: Boolean = false,
+        val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
+        val ovoErrorData: OrderPaymentOvoErrorData? = null
 ) {
+    val isOvo: Boolean
+        get() = gatewayCode.contains("OVO")
+
     fun isError(): Boolean {
         return isCalculationError || errorMessage.message.isNotEmpty() || errorTickerMessage.isNotEmpty()
     }
@@ -55,8 +57,13 @@ data class OrderPaymentCreditCard(
         val isExpired: Boolean = false,
         val tncInfo: String = "",
         val selectedTerm: OrderPaymentInstallmentTerm? = null,
-        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData()
-)
+        val additionalData: OrderPaymentCreditCardAdditionalData = OrderPaymentCreditCardAdditionalData(),
+        val isDebit: Boolean = false
+) {
+    companion object {
+        internal const val DEBIT_GATEWAY_CODE = "DEBITONLINE"
+    }
+}
 
 data class OrderPaymentCreditCardsNumber(
         val availableCards: Int = 0,
@@ -88,3 +95,47 @@ data class OrderPaymentInstallmentTerm(
         var fee: Double = 0.0,
         var monthlyAmount: Double = 0.0
 )
+
+data class OrderPaymentOvoAdditionalData(
+        val activation: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val topUp: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val phoneNumber: OrderPaymentOvoActionData = OrderPaymentOvoActionData(),
+        val callbackUrl: String = "",
+        val customerData: OrderPaymentOvoCustomerData = OrderPaymentOvoCustomerData()
+) {
+    val isActivationRequired: Boolean
+        get() = activation.isRequired
+
+    val isPhoneNumberMissing: Boolean
+        get() = phoneNumber.isRequired
+}
+
+@Parcelize
+data class OrderPaymentOvoCustomerData(
+        val name: String = "",
+        val email: String = "",
+        val msisdn: String = ""
+): Parcelable
+
+data class OrderPaymentOvoActionData(
+        val isRequired: Boolean = false,
+        val buttonTitle: String = "",
+        val errorMessage: String = "",
+        val errorTicker: String = "",
+        val isHideDigital: Int = 0
+)
+
+data class OrderPaymentOvoErrorData(
+        val isBlockingError: Boolean = false,
+        val message: String = "",
+        val buttonTitle: String = "",
+        val type: Int = 0,
+        val callbackUrl: String = "",
+        val isHideDigital: Int = 0
+) {
+    companion object {
+        const val TYPE_ACTIVATION = 1
+        const val TYPE_TOP_UP = 2
+        const val TYPE_MISSING_PHONE = 3
+    }
+}

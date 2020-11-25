@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         tools:text="Avissa Suites" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,7 +23,7 @@
         app:typographyType="body_3"
         tools:text="Kamar Deluxe Double"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         />
 
     <LinearLayout
@@ -44,13 +44,13 @@
             android:gravity="center_vertical"
             android:layout_marginRight="@dimen/spacing_lvl2"
             android:layout_marginEnd="@dimen/spacing_lvl2"
-            android:textColor="@color/Neutral_N700_96"/>
+            android:textColor="@color/Unify_N700_96"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="@string/hotel_cancellation_page_required_cc"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"/>
 
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         tools:text="2 Kamar . 2 Tamu"
         app:typographyType="body_3"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         android:layout_marginTop="@dimen/spacing_lvl2"
         />
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/Green_G100"/>
+    <solid android:color="@color/Unify_G100"/>
     <corners android:radius="@dimen/layout_lvl2" />
     <stroke android:width="@dimen/hotel_1dp"
-        android:color="@color/Green_G500"/>
+        android:color="@color/Unify_G500"/>
 </shape>

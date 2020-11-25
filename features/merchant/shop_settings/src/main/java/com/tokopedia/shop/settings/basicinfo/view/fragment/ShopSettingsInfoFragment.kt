@@ -178,6 +178,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment() {
         setupToolbar()
         btnChangeShopInfo.setOnClickListener {
             moveToShopEditBasicInfoFragment()
+            ShopSettingsTracking.clickChange(shopId, getShopType())
         }
 
         vgShopStatusContainer.setOnClickListener {
