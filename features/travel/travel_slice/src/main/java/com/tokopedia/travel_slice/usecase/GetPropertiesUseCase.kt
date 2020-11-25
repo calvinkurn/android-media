@@ -8,12 +8,13 @@ import com.tokopedia.travel_slice.data.HotelParam
 import com.tokopedia.travel_slice.data.SuggestionCity
 import com.tokopedia.travel_slice.ui.provider.TravelSliceQuery
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 
 /**
  * @author by jessica on 19/10/20
  */
 
-class GetPropertiesUseCase(private val repository: GraphqlRepository) : UseCase<HotelList>() {
+class GetPropertiesUseCase @Inject constructor(private val repository: GraphqlRepository) : UseCase<HotelList>() {
 
     private var params = mapOf<String, Any>()
 
