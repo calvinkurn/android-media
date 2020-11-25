@@ -59,8 +59,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testNoLabelIntegrityAndHasRatingFloat())
     it.add(testPriorityRatingAverage())
     it.add(testLabelCampaign())
-    it.add(testNotifyMeButtonUnSubscribed())
-    it.add(testNotifyMeButtonSubscribed())
+    it.add(testNotifyMeButton())
 }
 
 private fun testOneLineProductName(): ProductCardModelMatcher {
@@ -1578,13 +1577,13 @@ private fun testLabelCampaign(): ProductCardModelMatcher {
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
 }
 
-private fun testNotifyMeButtonUnSubscribed(): ProductCardModelMatcher {
+private fun testNotifyMeButton(): ProductCardModelMatcher {
     val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
     val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
     val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
 
     val productCardModel = ProductCardModel(
-            productName = "Notify me button unsubscribed",
+            productName = "Notify me button",
             productImageUrl = productImageUrl,
             formattedPrice = "Rp8.999.000",
             shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
@@ -1600,9 +1599,6 @@ private fun testNotifyMeButtonUnSubscribed(): ProductCardModelMatcher {
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
             },
-            hasAddToCartButton = true,
-            notifyMeText = "Ingatkan Saya",
-            isNotifySubscribed = false
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
@@ -1623,59 +1619,7 @@ private fun testNotifyMeButtonUnSubscribed(): ProductCardModelMatcher {
         it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
         it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
         it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.btnNotify] = isDisplayed()
-    }
-
-    return ProductCardModelMatcher(productCardModel, productCardMatcher)
-}
-
-private fun testNotifyMeButtonSubscribed(): ProductCardModelMatcher {
-    val labelProductStatus = LabelGroup(position = LABEL_PRODUCT_STATUS, title = "Preorder", type = TRANSPARENT_BLACK)
-    val labelPrice = LabelGroup(position = LABEL_PRICE, title = "Grosir", type = LIGHT_GREEN)
-    val labelGimmick = LabelGroup(position = LABEL_GIMMICK, title = "Best Seller", type = "#FF8B00")
-
-    val productCardModel = ProductCardModel(
-            productName = "Notify me Button Subscribed",
-            productImageUrl = productImageUrl,
-            formattedPrice = "Rp7.999.000",
-            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
-                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
-            },
-            shopLocation = "DKI Jakarta",
-            ratingCount = 4,
-            reviewCount = 60,
-            freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            isTopAds = true,
-            labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
-                labelGroups.add(labelProductStatus)
-                labelGroups.add(labelPrice)
-                labelGroups.add(labelGimmick)
-            },
-            hasAddToCartButton = true,
-            notifyMeText = "Pengingat Aktif",
-            isNotifySubscribed = false
-    )
-
-    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
-        it[R.id.imageProduct] = isDisplayed()
-        it[R.id.labelProductStatus] = isDisplayedWithText(labelProductStatus.title)
-        it[R.id.textTopAds] = isDisplayed()
-        it[R.id.textViewGimmick] = isDisplayedWithText(labelGimmick.title)
-        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
-        it[R.id.labelPrice] = isDisplayedWithText(labelPrice.title)
-        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
-        it[R.id.imageShopBadge] = isDisplayed()
-        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.linearLayoutImageRating] = isDisplayed()
-        it[R.id.imageViewRating1] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating2] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating3] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating4] = withDrawable(R.drawable.product_card_ic_rating_active)
-        it[R.id.imageViewRating5] = withDrawable(R.drawable.product_card_ic_rating_default)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
-        it[R.id.imageFreeOngkirPromo] = isDisplayed()
-        it[R.id.buttonAddToCart] = isDisplayed()
-        it[R.id.btnNotify] = isDisplayed()
+        it[R.id.buttonNotify] = isDisplayed()
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
