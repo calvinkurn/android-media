@@ -589,7 +589,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         view?.sahGlobalError?.gone()
         recyclerView.visible()
 
-        hideLoading()
+        adapter.hideLoading()
+        hideSnackBarRetry()
         updateScrollListenerState(false)
 
         val mostWidgetData = if (adapter.data.size > widgets.size) adapter.data else widgets
@@ -613,6 +614,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         diffUtilResult.dispatchUpdatesTo(adapter)
         adapter.data.clear()
         adapter.data.addAll(newWidgets)
+
+        val isAnyWidgetFromCache = adapter.data.any { it.isFromCache }
+        if (!isAnyWidgetFromCache) {
+            view?.swipeRefreshLayout?.isEnabled = true
+            view?.swipeRefreshLayout?.isRefreshing = false
+        }
 
         recyclerView.post {
             requestVisibleWidgetsData()
@@ -809,7 +816,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView.post {
             adapter.notifyItemChanged(position)
         }
-        val isAnyLoadingWidget = adapter.data.any { it.isLoading }
+        val isAnyLoadingWidget = adapter.data.any { it.isLoading || (it.isLoaded && it.isFromCache) }
         if (!isAnyLoadingWidget) {
             view?.swipeRefreshLayout?.isRefreshing = false
             hideLoading()
