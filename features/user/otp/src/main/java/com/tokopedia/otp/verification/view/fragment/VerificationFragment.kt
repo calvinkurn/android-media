@@ -204,8 +204,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-
-        showLoading()
         viewModel.otpValidate(
                 code = code,
                 otpType = otpData.otpType.toString(),
@@ -446,6 +444,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
 
         viewBound.pin?.onPinChangedListener = object : PinUnify.OnPinChangedListener {
             override fun onFinish(value: CharSequence?) {
+                showLoading()
                 validate(value.toString())
             }
 
@@ -655,6 +654,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         if (phoneNumber.contains(phoneHint)) {
             phoneNumber = phoneNumber.substring(phoneNumber.length - 4, phoneNumber.length)
             viewBound.pin?.value = phoneNumber
+            showLoading()
             validate(phoneNumber)
         }
     }
