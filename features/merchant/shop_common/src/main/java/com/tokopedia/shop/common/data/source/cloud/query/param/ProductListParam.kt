@@ -6,5 +6,5 @@ data class ProductListParam(
     @SerializedName("id")
     val id: String,
     @SerializedName("value")
-    val value: List<String>
+    val value: Any
 )

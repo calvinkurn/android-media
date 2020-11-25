@@ -24,7 +24,7 @@ class FilterMapper {
         fun mapToRequestParam(sortOption: SortOption): ProductListParam {
             val sortId = sortOption.id.name
             val option = sortOption.option.name
-            return ProductListParam(sortId, listOf(option))
+            return ProductListParam(sortId, option)
         }
 
         fun mapKeysToFilterOptionList(filterKeys: List<String>): List<FilterOption> {
