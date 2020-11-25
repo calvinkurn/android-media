@@ -344,7 +344,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 globalEvent.value = OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE)
                 return@launch
             }
-            param = param.copy(profile = UpdateCartOccProfileRequest(
+            param = param.copy(profile = param.profile.copy(
                     addressId = addressId
             ))
             globalEvent.value = OccGlobalEvent.Loading

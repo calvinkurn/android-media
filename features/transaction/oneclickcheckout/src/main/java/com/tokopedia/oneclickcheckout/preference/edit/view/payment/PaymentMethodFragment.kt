@@ -20,11 +20,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
@@ -53,6 +55,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         private const val MERCHANT_CODE = "tokopedia"
         private const val PROFILE_CODE = "EXPRESS_SAVE"
+
+        private const val QUERY_PARAM_EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
+        private const val QUERY_PARAM_USER_ID = "user_id"
+        private const val QUERY_PARAM_SUCCESS = "success"
+        private const val QUERY_PARAM_GATEWAY_CODE = "gateway_code"
 
         fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
@@ -286,9 +293,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
-            val isSuccess = uri.getQueryParameter("success")
+            val isSuccess = uri.getQueryParameter(QUERY_PARAM_SUCCESS)
             if (isSuccess != null && isSuccess.equals("true", true)) {
-                val gatewayCode = uri.getQueryParameter("gateway_code")
+                val gatewayCode = uri.getQueryParameter(QUERY_PARAM_GATEWAY_CODE)
                 if (gatewayCode != null) {
                     preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                     goToNextStep(gatewayCode, generateMetadata(uri))
@@ -298,9 +305,28 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         }
 
         private fun generateMetadata(uri: Uri): String {
-            val map: HashMap<String, String> = HashMap()
+            val map: HashMap<String, Any> = HashMap()
             for (key in uri.queryParameterNames) {
-                map[key] = uri.getQueryParameter(key) ?: ""
+                val value = uri.getQueryParameter(key) ?: ""
+                when (key) {
+                    QUERY_PARAM_EXPRESS_CHECKOUT_PARAM -> {
+                        try {
+                            map[key] = JsonParser().parse(value)
+                        } catch (e: Exception) {
+                            //failed parse json string
+                            map[key] = value
+                        }
+                    }
+                    QUERY_PARAM_USER_ID -> {
+                        map[key] = value.toLongOrZero()
+                    }
+                    QUERY_PARAM_SUCCESS -> {
+                        map[key] = value.toBoolean()
+                    }
+                    else -> {
+                        map[key] = value
+                    }
+                }
             }
             return Gson().toJson(map)
         }
