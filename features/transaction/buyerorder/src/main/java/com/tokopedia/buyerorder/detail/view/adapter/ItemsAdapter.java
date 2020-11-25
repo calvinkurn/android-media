@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.R;
 import com.tokopedia.buyerorder.common.util.ApplinkOMSConstant;
 import com.tokopedia.buyerorder.detail.data.ActionButton;
@@ -174,6 +175,17 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         itemsList.get(position).setTapActions(actionButtons);
         itemsList.get(position).setTapActionsLoaded(true);
         notifyItemChanged(position);
+    }
+
+    private void onClick(String uri) {
+        pdfUri = uri;
+        if (isdownloadable(uri)) {
+            getView().askPermission();
+        } else {
+            if (getView() != null && getView().getActivity() != null && getView().getActivity().getApplicationContext() != null && getView().getActivity() != null) {
+                RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
+            }
+        }
     }
 
     private View.OnClickListener getActionButtonClickListener(final String uri) {

@@ -216,6 +216,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private String _helplink;
     private View dividerDiscount;
     private LinearLayout llDiscount;
+    private OrderDetails orderDetails;
 
     @Override
     protected String getScreenName() {
@@ -305,6 +306,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setDetailsData(OrderDetails details) {
         hideProgressBar();
+        this.orderDetails = details;
         setStatus(details.status());
         clearDynamicViews();
         if (details.conditionalInfo().text() != null && !details.conditionalInfo().text().equals("")) {
@@ -797,7 +799,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems(" - order", status.status());
+                        presenter.onBuyAgainItems(orderDetails.getItems(), " - order", status.status());
                     }
                 });
             } else {
@@ -831,7 +833,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems(" - order", status.status());
+                            presenter.onBuyAgainItems(orderDetails.getItems(), " - order", status.status());
                         }
                     });
                 } else {
@@ -1041,10 +1043,33 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             String shopId = String.valueOf(this.shopInfo.getShopId());
             String applink = "tokopedia://topchat/askseller/" + shopId;
             Intent intent = RouteManager.getIntent(getContext(), applink);
-            presenter.assignInvoiceDataTo(intent);
+            setIntentInvoiceData(intent);
             intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
             startActivity(intent);
         }
+    }
+
+    private void setIntentInvoiceData(Intent intentInvoiceData) {
+        if (orderDetails == null) return;
+        String id = orderDetails.getInvoiceId();
+        String invoiceCode = orderDetails.getInvoiceCode();
+        String productName = orderDetails.getProductName();
+        String date = orderDetails.getBoughtDate();
+        String imageUrl = orderDetails.getProductImageUrl();
+        String invoiceUrl = orderDetails.getInvoiceUrl();
+        String statusId = orderDetails.getStatusId();
+        String status = orderDetails.getStatusInfo();
+        String totalPriceAmount = orderDetails.getTotalPriceAmount();
+
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
+        intentInvoiceData.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
 
     private RemoteConfig getABTestRemoteConfig() {

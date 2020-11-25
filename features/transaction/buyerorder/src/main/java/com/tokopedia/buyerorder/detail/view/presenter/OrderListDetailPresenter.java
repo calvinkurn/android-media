@@ -389,30 +389,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
     }
 
-    @Override
-    public void assignInvoiceDataTo(Intent intent) {
-        if (orderDetails == null) return;
-        String id = orderDetails.getInvoiceId();
-        String invoiceCode = orderDetails.getInvoiceCode();
-        String productName = orderDetails.getProductName();
-        String date = orderDetails.getBoughtDate();
-        String imageUrl = orderDetails.getProductImageUrl();
-        String invoiceUrl = orderDetails.getInvoiceUrl();
-        String statusId = orderDetails.getStatusId();
-        String status = orderDetails.getStatusInfo();
-        String totalPriceAmount = orderDetails.getTotalPriceAmount();
-
-        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
-        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
-    }
-
     public void updateOrderCancelReason(String cancelReason, String orderId,
                                         int cancelOrReplacement, String url) {
         if (getView() == null || getView().getActivity() == null)
