@@ -71,7 +71,7 @@ import javax.inject.Inject
 private const val EXP_NAME = "Navigation Revamp"
 private const val VARIANT_OLD = "existing navigation"
 private const val VARIANT_REVAMP = "navigation revamp"
-private const val FEED_PAGE = "feed page"
+private const val FEED_PAGE = "feed"
 
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener {
 
