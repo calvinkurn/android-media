@@ -193,4 +193,5 @@ yang ditemukan</string>
     <string name="title_topchat_as_seller">Sebagai Penjual</string>
     <string name="title_topchat_see_detail">Lihat Selengkapnya</string>
     <string name="title_topchat_reply_from_broadcast">Reply from Broadcast Chat</string>
+    <string name="action_pay">Bayar</string>
 </resources>

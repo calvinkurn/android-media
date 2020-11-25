@@ -137,6 +137,11 @@ class PartialButtonActionView private constructor(val view: View,
                 this.buttonType = UnifyButton.Type.MAIN
                 this.isEnabled = true
             }
+            ProductDetailConstant.KEY_BUTTON_SECONDARY_GRAY -> {
+                this.buttonVariant = UnifyButton.Variant.GHOST
+                this.buttonType = UnifyButton.Type.ALTERNATE
+                this.isEnabled = true
+            }
             else -> {
                 this.buttonVariant = UnifyButton.Variant.GHOST
                 this.buttonType = UnifyButton.Type.TRANSACTION

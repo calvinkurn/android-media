@@ -118,7 +118,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        orderDetailViewModel.orderDetailData.observe(this, Observer {
+        orderDetailViewModel.orderDetailData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     renderTransactionDetail(it.data)
@@ -140,7 +140,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
             stopTrace()
         })
 
-        orderDetailViewModel.crossSellData.observe(this, Observer {
+        orderDetailViewModel.crossSellData.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> renderCrossSelling(it.data)
                 is Fail -> {
@@ -385,7 +385,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
         if (orderDetail.contactUs.helpText.isNotBlank()) {
             val helpLabel = TextView(context)
             helpLabel.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+            helpLabel.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
 
             val spannableString = createHyperlinkText(orderDetail.contactUs.helpText,
                     orderDetail.contactUs.helpUrl)
@@ -411,7 +411,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
 
                 if (button.weight == 1) {
                     buttonCompat.background = ContextCompat.getDrawable(it, R.drawable.bg_hotel_rect_rounded_stroke_gray)
-                    buttonCompat.setTextColor(ContextCompat.getColor(it, R.color.hotel_grey_500))
+                    buttonCompat.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N200))
                 } else if (button.weight == 2) {
                     buttonCompat.buttonType = UnifyButton.Type.TRANSACTION
                 }
@@ -444,7 +444,7 @@ class HotelOrderDetailFragment : HotelBaseFragment(), ContactAdapter.OnClickCall
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
                     context?.let {
-                        ds.color = ContextCompat.getColor(it, R.color.hotel_green_250) // specific color for this link
+                        ds.color = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G400) // specific color for this link
                     }
                 }
             }, hyperlinkIndex, endIndexOfLink - "<hyperlink>".length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
