@@ -2,14 +2,18 @@ package com.tokopedia.otp.notif.view.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.util.LetUtil
+import com.tokopedia.otp.R
 import com.tokopedia.otp.common.IOnBackPressed
 import com.tokopedia.otp.common.LoadingDialog
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.analytics.TrackingOtpUtil
 import com.tokopedia.otp.common.di.OtpComponent
@@ -27,7 +31,7 @@ import javax.inject.Inject
  * Created by Ade Fulki on 14/09/20.
  */
 
-class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
+class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -41,6 +45,8 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     override val viewBound = SettingNotifViewBinding()
+
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_PUSH_NOTIF_SETTING
 
@@ -105,6 +111,10 @@ class SettingNotifFragment : BaseOtpFragment(), IOnBackPressed {
     }
 
     private fun initView() {
+        (activity as AppCompatActivity).supportActionBar?.apply {
+            title = getString(R.string.title_setting_push_notif)
+            setDisplayShowTitleEnabled(true)
+        }
         showLoading()
         viewBound.mainImage?.setImageUrl(LINK_IMG_PHONE_OTP_PUSH_NOTIF)
         viewModel.deviceStatusPushNotif()

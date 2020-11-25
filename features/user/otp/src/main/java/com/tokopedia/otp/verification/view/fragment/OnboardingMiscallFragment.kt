@@ -2,11 +2,13 @@ package com.tokopedia.otp.verification.view.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.otp.common.analytics.TrackingOtpConstant
 import com.tokopedia.otp.common.abstraction.BaseOtpFragment
 import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.abstraction.BaseOtpToolbarFragment
 import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.data.OtpData
 import com.tokopedia.otp.verification.domain.pojo.ModeListData
@@ -21,7 +23,7 @@ import com.tokopedia.utils.permission.request
  * ade.hadian@tokopedia.com
  */
 
-class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
+class OnboardingMiscallFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     private lateinit var otpData: OtpData
     private lateinit var modeListData: ModeListData
@@ -29,6 +31,8 @@ class OnboardingMiscallFragment : BaseOtpFragment(), IOnBackPressed {
     override val viewBound = OnboardingMisscallViewBinding()
 
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
+
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
 
     override fun getScreenName(): String = TrackingOtpConstant.Screen.SCREEN_COTP_MISSCALL
 

@@ -3,6 +3,7 @@ package com.tokopedia.otp.notif.view.viewbinding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.ImageUnify
@@ -28,6 +29,7 @@ class ReceiverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
     var imagePhone: ImageUnify? = null
     var imageTime: ImageUnify? = null
     var imageLocation: ImageUnify? = null
+    var toolbar: Toolbar? = null
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
@@ -41,5 +43,6 @@ class ReceiverNotifViewBinding @Inject constructor() : BaseOtpViewBinding() {
                 imagePhone = findViewById(R.id.image_phone)
                 imageTime = findViewById(R.id.image_time)
                 imageLocation = findViewById(R.id.image_location)
+                toolbar = findViewById(R.id.toolbar_otp)
             }
 }

@@ -21,11 +21,6 @@ class ReceiverNotifActivity : BaseOtpActivity() {
         return ReceiverNotifFragment.createInstance(bundle)
     }
 
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_cancel_grey_otp)
-    }
-
     override fun onBackPressed() {
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
         (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
