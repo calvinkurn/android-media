@@ -6,7 +6,7 @@ import com.tokopedia.inbox.common.TestInboxCoroutineDispatcher
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.domain.data.notification.InboxNotificationResponse
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
-import com.tokopedia.inbox.viewmodel.util.FileUtil
+import com.tokopedia.inboxcommon.util.FileUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -14,6 +14,7 @@ import io.mockk.every
 import io.mockk.invoke
 import io.mockk.mockk
 import io.mockk.verify
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -23,20 +24,22 @@ class InboxViewModelTest {
 
     private val useCase: InboxNotificationUseCase = mockk(relaxed = true)
     private val dispatcher = TestInboxCoroutineDispatcher()
-    private val viewModel = InboxViewModel(useCase, dispatcher)
 
     private val notificationObserver: Observer<Result<InboxCounter>> = mockk(relaxed = true)
 
-    @Test
-    fun `test get data inbox properly`() {
-        // given
-        val expectedValue = successGetInboxData?.notifications?.inboxCounter
+    private val viewModel = InboxViewModel(useCase, dispatcher)
 
+    @Before fun setUp() {
         viewModel.notifications.observeForever(notificationObserver)
+    }
+
+    @Test fun `getNotifications should return the data correctly`() {
+        // given
+        val expectedValue = inboxCounter.notifications.inboxCounter
 
         every { useCase.getNotification(captureLambda(), any()) } answers {
             val onSuccess = lambda<(InboxCounter) -> Unit>()
-            expectedValue?.let { onSuccess.invoke(it) }
+            onSuccess.invoke(expectedValue)
         }
 
         // when
@@ -44,18 +47,13 @@ class InboxViewModelTest {
 
         // then
         verify(exactly = 1) {
-            expectedValue?.let {
-                notificationObserver.onChanged(Success(it))
-            }
+            notificationObserver.onChanged(Success(expectedValue))
         }
     }
 
-    @Test
-    fun `test get throwable inbox notification`() {
+    @Test fun `getNotifications should throw the Fail state`() {
         // given
         val expectedValue = Throwable()
-
-        viewModel.notifications.observeForever(notificationObserver)
 
         every { useCase.getNotification(any(), captureLambda()) } answers {
             val onError = lambda<(Throwable) -> Unit>()
@@ -72,7 +70,7 @@ class InboxViewModelTest {
     }
 
     companion object {
-        val successGetInboxData = FileUtil.parse<InboxNotificationResponse>(
+        val inboxCounter: InboxNotificationResponse = FileUtil.parse(
                 "/success_get_inbox_data.json",
                 InboxNotificationResponse::class.java
         )
