@@ -11,7 +11,7 @@ class SomDetailLogisticInfoActivity: BaseSimpleActivity() {
         return SomDetailLogisticInfoFragment.newInstance()
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_som_detail_logistic_info
-    }
+    override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 }
