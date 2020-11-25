@@ -3,12 +3,15 @@ package com.tokopedia.promotionstarget.domain.presenter
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.IntDef
 import androidx.annotation.StringDef
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.notifications.inApp.CmDialogVisibilityContract
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.di.IO
 import com.tokopedia.promotionstarget.data.di.MAIN
@@ -69,12 +72,8 @@ class GratificationPresenter @Inject constructor(val context: Context,
     var dataConsumer: DataConsumer? = null
 
     init {
-        val startTime = System.currentTimeMillis()
-        Log.e(TAG,"gratification presenter init start time seconds:${startTime/1000}")
         componentProvider.getComponent(context)
                 .inject(this)
-        val endTime = System.currentTimeMillis()
-        Log.e(TAG,"gratification presenter init stop time seconds:${endTime/1000}")
     }
 
 
@@ -133,14 +132,9 @@ class GratificationPresenter @Inject constructor(val context: Context,
                             closeCurrentActivity: Boolean,
                             inAppId: Long?
     ) {
-        val curStartTime = System.currentTimeMillis()
-        Log.e(TAG,"gratification processApis start time seconds:${curStartTime/1000}, millis = $curStartTime")
-
         val map = notificationUseCase.getQueryParams(notificationID, notificationEntryType, paymentID)
         val notifResponse = notificationUseCase.getResponse(map)
         val reason = notifResponse.response?.resultStatus?.code
-        val notificationTime = System.currentTimeMillis()
-        Log.e(TAG,"gratification notification response time mills:${notificationTime - curStartTime} ")
 
         if (reason == GratifResultStatus.SUCCESS) {
             val code = notifResponse.response.promoCode
@@ -148,20 +142,20 @@ class GratificationPresenter @Inject constructor(val context: Context,
                 val couponDetail = tpCouponDetailUseCase.getResponse(tpCouponDetailUseCase.getQueryParams(code))
                 val couponStatus = couponDetail?.coupon?.realCode ?: ""
 
-                val couponTime = System.currentTimeMillis()
-                Log.e(TAG,"gratification coupon response time mills:${couponTime - notificationTime}")
-
                 if (couponStatus.isNotEmpty()) {
                     withContext(uiWorker) {
                         weakActivity?.get()?.let { activity ->
-                            if (notificationEntryType == NotificationEntryType.PUSH) {
-                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
-                            } else if (dialogVisibilityContract?.isDialogVisible(activity) == true) {
-                                Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
-                                gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
-                            } else {
-                                Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
-                                performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
+                            val handler = Handler(Looper.getMainLooper())
+                            handler.postAtFrontOfQueue {
+                                if (notificationEntryType == NotificationEntryType.PUSH) {
+                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
+                                } else if (dialogVisibilityContract?.isDialogVisible(activity) == true) {
+                                    Timber.d("$TAG Android Side ERROR pop-up is already visible for screen name = $screenName")
+                                    gratifPopupCallback?.onIgnored(GratifPopupIngoreType.DIALOG_ALREADY_ACTIVE)
+                                } else {
+                                    Timber.d("$TAG ALL GOOD show dialog, notifId=$notificationID")
+                                    performShowDialog(activity, notifResponse.response, couponDetail, notificationEntryType, gratifPopupCallback, screenName, closeCurrentActivity, inAppId)
+                                }
                             }
                         }
                     }
@@ -178,8 +172,6 @@ class GratificationPresenter @Inject constructor(val context: Context,
             Timber.d("$TAG GRATIF ENGINE FAIL, notifId = $notificationID, resultStatus=$reason")
             gratifPopupCallback?.onIgnored(GratifPopupIngoreType.NO_SUCCESS)
         }
-        val endTime = System.currentTimeMillis()
-        Log.e(TAG,"gratification processApis end time seconds:${endTime/1000}")
     }
 
     private fun performShowDialog(activity: Activity,
@@ -201,13 +193,13 @@ class GratificationPresenter @Inject constructor(val context: Context,
 
         dialog?.setOnDismissListener { dialogInterface ->
             dialogVisibilityContract?.onDialogDismiss(activity)
-            gratifPopupCallback?.onDismiss(dialogInterface)
+            gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
             val userId = UserSession(activity).userId
             GratificationAnalyticsHelper.handleDismiss(userId, notificationEntryType, gratifNotification, couponDetail, screenName)
         }
         dialog?.setOnCancelListener { dialogInterface ->
             dialogVisibilityContract?.onDialogDismiss(activity)
-            gratifPopupCallback?.onDismiss(dialogInterface)
+            gratifPopupCallback?.onDismiss(dialogInterface, notificationEntryType)
         }
     }
 
@@ -305,7 +297,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
 
     interface GratifPopupCallback {
         fun onShow(dialog: DialogInterface)
-        fun onDismiss(dialog: DialogInterface)
+        fun onDismiss(dialog: DialogInterface, notificationEntryType: Int)
         fun onIgnored(@GratifPopupIngoreType reason: Int)
         fun onExeption(ex: Exception)
     }
@@ -315,7 +307,7 @@ class GratificationPresenter @Inject constructor(val context: Context,
 
         }
 
-        override fun onDismiss(dialog: DialogInterface) {
+        override fun onDismiss(dialog: DialogInterface, @NotificationEntryType notificationEntryType: Int) {
 
         }
 

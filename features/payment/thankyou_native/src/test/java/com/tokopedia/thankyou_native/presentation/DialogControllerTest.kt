@@ -23,22 +23,8 @@ class DialogControllerTest {
     fun testShowGratificationDialog() {
         val dialogController = DialogController(gratifPoresenter)
         val paymentId = 0L
-        val callback = object : GratifPopupCallback {
-            override fun onShow(dialog: DialogInterface) {
-                //Do nothing
-            }
+        val callback = object : GratificationPresenter.AbstractGratifPopupCallback() {
 
-            override fun onDismiss(dialog: DialogInterface) {
-                //Do nothing
-            }
-
-            override fun onIgnored(reason: Int) {
-                //Do nothing
-            }
-
-            override fun onExeption(ex: Exception) {
-                //Do nothing
-            }
         }
         val screenName = javaClass.name
         dialogController.showGratifDialog(mockk(), paymentId, gratifPopupCallback = callback, screenName = screenName)

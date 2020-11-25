@@ -5,7 +5,9 @@ import androidx.annotation.VisibleForTesting
 import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.notifications.inApp.DialogHandlerContract
 import com.tokopedia.notifications.inApp.InAppPopupContract
+import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppListener
 import com.tokopedia.promotionstarget.cm.ActivityProvider
 import com.tokopedia.promotionstarget.cm.broadcast.PendingData
 import com.tokopedia.promotionstarget.data.notification.NotificationEntryType
@@ -26,11 +28,13 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                                  val mapOfPendingInApp: ConcurrentHashMap<Int, PendingData>,
                                  val broadcastScreenNames: ArrayList<String>,
                                  val activityProvider: ActivityProvider,
-                                 val remoteConfigImpl: FirebaseRemoteConfigImpl?
+                                 val remoteConfigImpl: FirebaseRemoteConfigImpl?,
+                                 val cmInAppListener: CmInAppListener,
+                                 dataConsumer: DataConsumer
 ) : InAppPopupContract, DialogHandlerContract {
 
     val TAG = "CmDialogHandler"
-    val callbackProvider = GratifPopupCallbackProvider()
+    val callbackProvider = GratifPopupCallbackProvider(dataConsumer)
 
     fun showPushDialog(activity: Activity, gratificationId: String, screenName: String) {
         val tempWeakActivity = WeakReference(activity)
@@ -38,7 +42,7 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
                 callbackProvider.getCallbackTypePush(gratificationPresenter, tempWeakActivity), screenName)
     }
 
-    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String?, gratifPopupCallback: GratifPopupCallback, screenName: String, inAppId:Long): Job? {
+    fun showOrganicDialog(currentActivity: WeakReference<Activity>?, customValues: String?, gratifPopupCallback: GratifPopupCallback, screenName: String, inAppId: Long): Job? {
         if (customValues.isNullOrEmpty()) return null
         try {
             val json = JSONObject(customValues)
@@ -86,7 +90,7 @@ class GratificationDialogHandler(val gratificationPresenter: GratificationPresen
     @VisibleForTesting
     fun handleShowOrganic(currentActivity: Activity, data: CMInApp, entityHashCode: Int, screenName: String) {
         val job = showOrganicDialog(WeakReference(currentActivity), data.customValues,
-                callbackProvider.getCallbackTypeOrganic(this, data), screenName, data.id)
+                callbackProvider.getCallbackTypeOrganic(this, data, cmInAppListener), screenName, data.id)
 
         if (job != null)
             mapOfGratifJobs[entityHashCode] = job

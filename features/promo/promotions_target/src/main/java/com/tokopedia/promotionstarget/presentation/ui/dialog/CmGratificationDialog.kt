@@ -26,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.notifications.inApp.CMInAppManager
 import com.tokopedia.promotionstarget.R
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
@@ -76,6 +77,7 @@ class CmGratificationDialog {
     private var notificationEntryType = NotificationEntryType.ORGANIC
     private var screenName = ""
     private var closeCurrentActivity = false
+    private var inAppId: Long? = null
 
     protected fun getLayout(): Int {
         return R.layout.dialog_gratification
@@ -95,6 +97,7 @@ class CmGratificationDialog {
         this.notificationEntryType = notificationEntryType
         this.screenName = screenName
         this.closeCurrentActivity = closeCurrentActivity
+        this.inAppId = inAppId
 
         val pair = prepareBottomSheet(activityContext, onShowListener)
         bottomSheetDialog = pair.second
@@ -237,6 +240,7 @@ class CmGratificationDialog {
 
                 val userId = UserSession(btnAction.context).userId
                 GratificationAnalyticsHelper.handleClickSecondaryCta(userId, notificationEntryType, gratifNotification, couponDetailResponse, screenName)
+                isInteracted()
             }
             btnAction2.post { expandBottomSheet() }
         }
@@ -301,6 +305,7 @@ class CmGratificationDialog {
     private fun setClickEvent(couponStatus: Int?) {
         btnAction.setOnClickListener {
             handleButtonAction(couponStatus)
+            isInteracted()
         }
     }
 
@@ -413,6 +418,12 @@ class CmGratificationDialog {
             }
         } else {
             RouteManager.route(context, applink)
+        }
+    }
+
+    private fun isInteracted() {
+        if (inAppId != null) {
+            CMInAppManager.getInstance().dataConsumer.interactedWithView(inAppId!!)
         }
     }
 }

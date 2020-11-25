@@ -3,7 +3,6 @@ package com.tokopedia.promotionstarget.domain.presenter
 import android.app.Activity
 import android.content.DialogInterface
 import android.os.Debug
-import android.util.Log
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.promotionstarget.data.coupon.TokopointsCouponDetailResponse
 import com.tokopedia.promotionstarget.data.notification.GratifNotification
@@ -20,9 +19,6 @@ class DialogCreator {
                            screenName: String,
                            closeCurrentActivity: Boolean,
                            inAppId: Long?): BottomSheetDialog? {
-        val curTime = System.currentTimeMillis()
-        val TAG = "GratifTag"
-        Log.e(TAG, "gratification show dialog start time seconds:${curTime / 1000}")
         return CmGratificationDialog().show(activity,
                 gratifNotification,
                 couponDetail,
@@ -32,8 +28,6 @@ class DialogCreator {
                         gratifPopupCallback?.onShow(dialog)
                     }
                     Debug.stopMethodTracing()
-                    val endTime = System.currentTimeMillis()
-                    Log.e(TAG, "gratification show dialog finish time seconds:${endTime / 1000}")
                 }, screenName, closeCurrentActivity, inAppId)
     }
 }

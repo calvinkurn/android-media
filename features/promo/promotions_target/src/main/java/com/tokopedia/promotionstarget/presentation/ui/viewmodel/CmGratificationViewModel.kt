@@ -1,8 +1,6 @@
 package com.tokopedia.promotionstarget.presentation.ui.viewmodel
 
 import android.app.Application
-import android.content.SharedPreferences
-import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataConsumer
 import com.tokopedia.promotionstarget.data.LiveDataResult
 import com.tokopedia.promotionstarget.data.autoApply.AutoApplyResponse
 import com.tokopedia.promotionstarget.data.di.IO
@@ -28,7 +26,6 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
 ) : BaseAndroidViewModel(uiDispatcher, app) {
 
     val autoApplyLiveData: SingleLiveEvent<LiveDataResult<AutoApplyResponse>> = SingleLiveEvent()
-    val dataConsumer:DataConsumer?=null
 
     fun autoApply(code: String) {
         launchCatchError(block = {
@@ -43,19 +40,16 @@ class CmGratificationViewModel @Inject constructor(@Named(MAIN)
         })
     }
 
-    fun updateGratification(notificationID: String?, notificationEntryType: Int, popupType: Int, screenName: String, inAppId:Long?) {
+    fun updateGratification(notificationID: String?, notificationEntryType: Int, popupType: Int, screenName: String, inAppId: Long?) {
         launchCatchError(block = {
             withContext(workerDispatcher) {
                 if (!notificationID.isNullOrEmpty()) {
                     Locks.notificationMutex.withLock {
                         val map = updateGratifNotificationUsecase.getQueryParams(notificationID.toInt(),
-                                    notificationEntryType,
-                                    popupType,
-                                    screenName)
+                                notificationEntryType,
+                                popupType,
+                                screenName)
                         updateGratifNotificationUsecase.getResponse(map)
-
-                        if(inAppId!=null)
-                            dataConsumer?.interactedWithView(inAppId)
                     }
                 }
             }

@@ -85,15 +85,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
     private fun decideDialogs(selectedFragment: Fragment?, thanksPageData: ThanksPageData) {
         if (selectedFragment is InstantPaymentFragment && !isGratifDisabled()) {
             dialogController.showGratifDialog(WeakReference(this), thanksPageData.paymentID, object : GratificationPresenter.AbstractGratifPopupCallback() {
-
-                override fun onShow(dialog: DialogInterface) {
-                    //Do nothing
-                }
-
-                override fun onDismiss(dialog: DialogInterface) {
-                    //Do nothing
-                }
-
                 override fun onIgnored(reason: Int) {
                     showAppFeedbackBottomSheet(thanksPageData)
                 }
