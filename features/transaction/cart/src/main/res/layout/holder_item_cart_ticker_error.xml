@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:paddingStart="@dimen/dp_8"
     android:paddingTop="@dimen/dp_8"
     android:paddingEnd="@dimen/dp_8"
@@ -22,7 +22,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/r_100">
+            android:background="@color/Unify_R100">
 
             <ImageView
                 android:id="@+id/imageView2"
@@ -42,7 +42,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/ticker_action"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +59,7 @@
                 android:paddingStart="@dimen/dp_16"
                 android:paddingLeft="@dimen/dp_16"
                 android:text="Lihat"
-                android:textColor="@color/unify_G500"
+                android:textColor="@color/Unify_G500"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

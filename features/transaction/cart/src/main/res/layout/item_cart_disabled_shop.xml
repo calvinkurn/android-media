@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Neutral_N0"
+    android:background="@color/Unify_N0"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
@@ -12,7 +12,7 @@
         android:id="@+id/v_divider_item_cart_error"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/unify_N75"
+        android:background="@color/Unify_N75"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="heading_6"
             app:typographyWeight="bold"
             tools:text="Makmur  adalah aaaaaa bbbbb" />

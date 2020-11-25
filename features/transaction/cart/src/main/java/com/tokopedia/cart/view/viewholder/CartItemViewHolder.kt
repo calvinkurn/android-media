@@ -357,7 +357,7 @@ class CartItemViewHolder constructor(itemView: View,
 
     private fun createProductInfoText(it: String): Typography {
         return Typography(itemView.context).apply {
-            setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
             setType(Typography.SMALL)
             text = if (layoutProductInfo.childCount > 0) ", $it" else it
         }
@@ -523,7 +523,7 @@ class CartItemViewHolder constructor(itemView: View,
 
                 setNotesWidth()
             }
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.light_G500))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_G500))
         } else {
             // No notes at all
             this.etRemark.visibility = View.GONE
@@ -533,7 +533,7 @@ class CartItemViewHolder constructor(itemView: View,
             this.tvLabelRemarkOption.text = tvLabelRemarkOption.context.getString(R.string.label_button_add_note)
             this.tvLabelRemarkOption.visibility = View.VISIBLE
             this.etRemark.setText("")
-            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            tvLabelRemarkOption.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
             tvLabelRemarkOption.setPadding(0, 0, 0, 0)
         }
 
@@ -651,10 +651,10 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderActionWishlist(action: ActionData, data: CartItemHolderData) {
         if (data.cartItemData?.originData?.isWishlisted == true && action.id == ACTION_WISHLISTED) {
             textMoveToWishlist.text = action.message
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_32))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_44))
             textMoveToWishlist.setOnClickListener { }
         } else if (data.cartItemData?.originData?.isWishlisted == false && action.id == ACTION_WISHLIST) {
-            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Neutral_N700_68))
+            textMoveToWishlist.setTextColor(ContextCompat.getColor(itemView.context, R.color.Unify_N700_68))
             textMoveToWishlist.setOnClickListener {
                 actionListener?.onWishlistCheckChanged(data.cartItemData?.originData?.productId, data.cartItemData?.originData?.cartId
                         ?: 0, ivProductImage)

@@ -7,7 +7,7 @@
                     <gradient
                         android:endColor="#00000000"
                         android:gradientRadius="120"
-                        android:startColor="#aaaaaaaa"
+                        android:startColor="@color/Unify_N200"
                         android:type="radial" />
                 </shape>
             </item>
@@ -19,7 +19,7 @@
                 <shape android:shape="oval">
                     <size android:width="32dp"
                         android:height="32dp" />
-                    <solid android:color="@android:color/white" />
+                    <solid android:color="@color/Unify_N0" />
                 </shape>
             </item>
         </layer-list>
