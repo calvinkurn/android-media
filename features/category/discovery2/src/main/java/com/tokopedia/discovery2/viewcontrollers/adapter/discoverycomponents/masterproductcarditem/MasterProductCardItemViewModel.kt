@@ -1,10 +1,12 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem
 
 import android.app.Application
+import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.StockWording
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.data.campaignnotifymeresponse.CampaignNotifyMeRequest
@@ -39,8 +41,10 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     @Inject
     lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
+
     @Inject
     lateinit var campaignNotifyUserCase: CampaignNotifyUserCase
+
     @Inject
     lateinit var productCardItemUseCase: ProductCardItemUseCase
 
@@ -50,8 +54,15 @@ class MasterProductCardItemViewModel(val application: Application, val component
         components.data?.let {
             if (!it.isNullOrEmpty()) {
                 dataItem.value = it[0]
+                setProductStockWording(it[0])
                 productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(it[0], components.name)
             }
+        }
+    }
+
+    private fun setProductStockWording(dataItem: DataItem) {
+        if(dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()){
+            dataItem.stockWording = getStockWord(dataItem)
         }
     }
 
@@ -149,5 +160,55 @@ class MasterProductCardItemViewModel(val application: Application, val component
 
     override fun loggedInCallback() {
         subscribeUser()
+    }
+
+    private fun getStockWord(dataItem: DataItem): StockWording {
+        val stockWordData = StockWording()
+        var stockWordTitle = dataItem.stockWording?.title
+        var stockAvailableCount: String? = ""
+        dataItem.let {
+            if (!stockWordTitle.isNullOrEmpty()) {
+                stockWordData.title = stockWordTitle
+            } else {
+                val campaignSoldCount = it.campaignSoldCount
+                val threshold: Int? = it.threshold.toIntOrZero()
+                val customStock: Int? = it.customStock.toIntOrZero()
+
+                if (campaignSoldCount != null && threshold != null && customStock != null) {
+                    if (campaignSoldCount.toIntOrZero() > 0) {
+                        when {
+                            customStock == 0 -> {
+                                stockWordTitle = getStockText(R.string.terjual_habis)
+                            }
+                            customStock == 1 -> {
+                                stockWordTitle = getStockText(R.string.stok_terakhir_beli_sekarang)
+                            }
+                            customStock <= threshold -> {
+                                stockWordTitle = getStockText(R.string.tersisa)
+                                stockAvailableCount = customStock.toString()
+                            }
+                            else -> {
+                                stockWordTitle = getStockText(R.string.terjual)
+                                stockAvailableCount = campaignSoldCount.toString()
+                            }
+                        }
+                        stockWordTitle += stockAvailableCount
+                    } else {
+                        stockWordTitle = getStockText(R.string.masih_tersedia)
+                    }
+                }
+                stockWordData.title = stockWordTitle
+            }
+        }
+        return stockWordData
+    }
+
+    private fun getStockText(textID: Int): String {
+        var stockText = ""
+        try {
+            stockText = application.applicationContext.resources.getString(textID)
+        } catch (exception: Resources.NotFoundException) {
+        }
+        return stockText
     }
 }
