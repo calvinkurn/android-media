@@ -56,10 +56,9 @@ class ProductExoPlayer(val context: Context) {
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
 
-        if (lastVideoPosition != 0L && lastVideoPosition != C.TIME_UNSET) {
+        if (lastVideoPosition != 0L) {
             exoPlayer.seekTo(lastVideoPosition)
         }
-
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, lastVideoPosition == 0L, false)
     }

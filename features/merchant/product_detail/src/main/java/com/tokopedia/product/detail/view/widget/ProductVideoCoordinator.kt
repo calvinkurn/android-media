@@ -75,6 +75,10 @@ class ProductVideoCoordinator(
         videoPlayer?.destroy()
     }
 
+    fun onStop() {
+        videoPlayer?.stop()
+    }
+
     private fun configureLifecycle(lifecycleOwner: LifecycleOwner) {
         if (lifecycleOwner is Fragment) {
             lifecycleOwner.viewLifecycleOwnerLiveData.observe(lifecycleOwner, {

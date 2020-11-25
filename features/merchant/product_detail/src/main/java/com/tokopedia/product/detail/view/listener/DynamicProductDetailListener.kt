@@ -20,7 +20,6 @@ interface DynamicProductDetailListener {
     fun getApplicationContext(): Application?
     fun getLifecycleFragment(): Lifecycle
     fun refreshPage()
-    fun getVideoDataById(videoId: String): ProductVideoDataModel
 
     /**
      * ProductSnapshotViewHolder

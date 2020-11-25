@@ -228,7 +228,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var alreadyPerformSellerMigrationAction = false
     private var isAutoSelectVariant = false
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
-    private var productVideoDataModel: List<ProductVideoDataModel> = listOf()
 
     //View
     private lateinit var varToolbar: Toolbar
@@ -1471,12 +1470,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            productVideoDataModel = productInfo.data.media.filter {
-                it.type == "video"
-            }.map {
-                ProductVideoDataModel(videoId = it.id, videoUrl = it.videoURLAndroid)
-            }
-
             updateProductId()
             renderVariant(viewModel.variantData)
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
@@ -3116,12 +3109,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             onSwipeRefresh()
         }
-    }
-
-    override fun getVideoDataById(videoId: String): ProductVideoDataModel {
-        return productVideoDataModel.firstOrNull {
-            it.videoId == videoId
-        } ?: ProductVideoDataModel()
     }
 
     override fun onTopAdsImageViewClicked(model: TopAdsImageDataModel, applink: String?, bannerId: String, bannerName: String) {

@@ -43,6 +43,7 @@ class VideoPictureView @JvmOverloads constructor(
         videoPictureAdapter?.updateData(listOfImage ?: listOf())
         resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
         productVideoCoordinator?.onScrollChangedListener(pdp_view_pager, 0)
+        productVideoCoordinator?.onStop()
     }
 
     private fun setupViewPager(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
