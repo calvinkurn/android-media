@@ -313,6 +313,7 @@ open class HomeFragment : BaseDaggerFragment(),
     private var autoRefreshRunnable: TimerRunnable = TimerRunnable(listener = this)
     private var serverOffsetTime: Long = 0L
     private val gson = Gson()
+    private var coachmarkIsShowing = false
 
     private lateinit var playWidgetCoordinator: PlayWidgetCoordinator
 
@@ -525,11 +526,19 @@ open class HomeFragment : BaseDaggerFragment(),
                                     }
 
                                     override fun onSwitchToDarkToolbar() {
-
+                                        navAbTestCondition(
+                                                ifNavRevamp = {
+                                                    navToolbar?.hideShadow()
+                                                }
+                                        )
                                     }
 
                                     override fun onSwitchToLightToolbar() {
-
+                                        navAbTestCondition(
+                                                ifNavRevamp = {
+                                                    navToolbar?.showShadow()
+                                                }
+                                        )
                                     }
                                 }
                         ))
@@ -564,25 +573,11 @@ open class HomeFragment : BaseDaggerFragment(),
             var bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
-                val coachMarkItem = ArrayList<CoachMark2Item>()
-                val coachMark = CoachMark2(requireContext())
+                showCoachMark(bottomSheet)
+            }
 
-                val globalNavIcon = navToolbar?.getGlobalNavIconView()
-                globalNavIcon?.let {
-                    coachMarkItem.add(
-                            CoachMark2Item(
-                                    globalNavIcon,
-                                    getString(R.string.onboarding_coachmark_title),
-                                    getString(R.string.onboarding_coachmark_description)
-                            )
-                    )
-                }
-                coachMark.container?.setOnClickListener {
-                    RouteManager.route(context, ApplinkConst.HOME_NAVIGATION)
-                    coachMark.dismissCoachMark()
-                }
-                bottomSheet.dismiss()
-                coachMark.showCoachMark(step = coachMarkItem, index =  0)
+            bottomSheet.setOnDismissListener {
+                if (!coachmarkIsShowing) showCoachMark(bottomSheet)
             }
 
             bottomSheet.setTitle("")
@@ -595,6 +590,31 @@ open class HomeFragment : BaseDaggerFragment(),
             childFragmentManager.run { bottomSheet.show(this,"onboarding navigation") }
             saveFirstViewNavigation(false)
         }
+    }
+
+    private fun showCoachMark(bottomSheet: BottomSheetUnify) {
+        coachmarkIsShowing = true
+        val coachMarkItem = ArrayList<CoachMark2Item>()
+        val coachMark = CoachMark2(requireContext())
+
+        val globalNavIcon = navToolbar?.getGlobalNavIconView()
+        globalNavIcon?.let {
+            coachMarkItem.add(
+                    CoachMark2Item(
+                            globalNavIcon,
+                            getString(R.string.onboarding_coachmark_title),
+                            getString(R.string.onboarding_coachmark_description)
+                    )
+            )
+        }
+        coachMark.container?.setOnClickListener {
+            val navigationBundle = Bundle()
+            navigationBundle.putString(ApplinkConsInternalNavigation.PARAM_PAGE_SOURCE, ApplinkConsInternalNavigation.SOURCE_HOME)
+            RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
+            coachMark.dismissCoachMark()
+        }
+        bottomSheet.dismiss()
+        coachMark.showCoachMark(step = coachMarkItem, index = 0)
     }
 
     private val afterInflationCallable: Callable<Any?>
@@ -655,25 +675,25 @@ open class HomeFragment : BaseDaggerFragment(),
         }
         if (recyclerView.canScrollVertically(1)) {
             navAbTestCondition(
+                    ifNavRevamp = {
+                        navToolbar?.let { it.showShadow() }
+                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.showShadow()
                         }
-            },
-                    ifNavRevamp = {
-                        navToolbar?.let { it.showShadow() }
             })
             showFeedSectionViewHolderShadow(false)
             homeRecyclerView?.setNestedCanScroll(false)
         } else { //home feed now can scroll up, so hide maintoolbar shadow
             navAbTestCondition(
+                    ifNavRevamp = {
+                        navToolbar?.let { it.hideShadow() }
+                    },
                     ifNavOld = {
                         if (oldToolbar != null && oldToolbar?.getViewHomeMainToolBar() != null) {
                             oldToolbar?.hideShadow()
                         }
-                    },
-                    ifNavRevamp = {
-                        navToolbar?.let { it.hideShadow() }
                     }
             )
             showFeedSectionViewHolderShadow(true)

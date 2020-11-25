@@ -96,12 +96,13 @@
                     android:layout_height="@dimen/dp_14"/>
 
                 <TextView
+                    android:layout_gravity="center"
                     android:id="@+id/et_search"
                     android:contentDescription="@string/content_desc_et_search"
                     android:gravity="center_vertical"
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/dp_36"
                     android:hint="@string/search_tokopedia"
                     android:inputType="none"
                     android:focusable="false"
@@ -132,7 +133,6 @@
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"
-            android:layout_marginTop="@dimen/dp_4"
             android:background="@color/Unify_N200"/>
     </LinearLayout>
 </androidx.appcompat.widget.Toolbar>
