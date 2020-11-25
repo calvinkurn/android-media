@@ -335,7 +335,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
                                                 Bundle data, String notifTitle) {
         mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(getInboxReputationIntent(this));
-        mNotificationPass.classParentStack = InboxReputationActivity.class;
+        mNotificationPass.classParentStack = getHomeClass();
         mNotificationPass.title = notifTitle;
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);

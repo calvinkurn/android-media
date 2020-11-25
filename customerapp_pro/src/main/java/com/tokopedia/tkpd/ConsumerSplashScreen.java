@@ -17,6 +17,7 @@ import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.intl.R;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.loginregister.login.service.RegisterPushNotifService;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -38,6 +39,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     public static final String WARM_TRACE = "gl_warm_start";
     public static final String SPLASH_TRACE = "gl_splash_screen";
+    private static final String REMOTE_CONFIG_KEY_REGISTER_PUSH_NOTIF = "android_user_register_otp_push_notif_login_page";
 
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
@@ -79,6 +81,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
                 checkInstallReferrerInitialised();
                 syncFcmToken();
+                registerPushNotif();
                 return checkApkTempered();
             }
         };
@@ -88,6 +91,12 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     private void syncFcmToken() {
         SyncFcmTokenService.Companion.startService(this);
+    }
+
+    private void registerPushNotif() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            RegisterPushNotifService.Companion.startService(getApplicationContext());
+        }
     }
 
     @NotNull
