@@ -1496,6 +1496,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         this.isFromBottomSheetFilter = true
         this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
         this.shouldScrollToTop = true
+        isLoadingInitialData = true
         somListSortFilterTab?.updateSomListFilterUi(somFilterUiModelList)
         somListSortFilterTab?.updateCounterSortFilter(filterDate)
         val selectedStatusFilterKey = somFilterUiModelList.find {
@@ -1506,7 +1507,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
         loadFilters(false)
-        isLoadingInitialData = true
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         } else {
