@@ -29,7 +29,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:lineSpacingExtra="6sp"
             android:text="@string/shop_page_setting_dashboard"
-            android:textColor="@color/Unify_G400"
+            android:textColor="@color/Unify_G500"
             android:textSize="14sp"
             app:typographyType="heading_5" />
 
