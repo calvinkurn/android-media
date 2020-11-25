@@ -565,10 +565,11 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata }) } returns null
+        val gatewayCode = "gatewayCode"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } returns null
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
@@ -579,12 +580,13 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
         val responseMessage = "message"
         val response = MessageErrorException(responseMessage)
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata }) } throws response
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } throws response
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
@@ -595,11 +597,12 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
         val response = Exception()
-        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata }) } throws response
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.metadata == metadata && it.profile.gatewayCode == gatewayCode }) } throws response
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
@@ -611,7 +614,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
 
         // When
-        orderSummaryPageViewModel.updateCreditCard("")
+        orderSummaryPageViewModel.choosePayment("", "")
 
         // Then
         coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
@@ -622,11 +625,12 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Given
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
         val metadata = "metadata"
+        val gatewayCode = "gatewayCode"
         val occPrompt = OccPrompt()
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
 
         // When
-        orderSummaryPageViewModel.updateCreditCard(metadata)
+        orderSummaryPageViewModel.choosePayment(gatewayCode, metadata)
 
         // Then
         assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)

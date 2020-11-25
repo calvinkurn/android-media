@@ -33,6 +33,8 @@ data class Payment(
         val creditCard: PaymentCreditCard = PaymentCreditCard(),
         @SerializedName("error_message")
         val errorMessage: PaymentErrorMessage = PaymentErrorMessage(),
+        @SerializedName("occ_revamp_error_message")
+        val occRevampErrorMessage: PaymentRevampErrorMessage = PaymentRevampErrorMessage(),
         @SerializedName("ticker_message")
         val tickerMessage: String = "",
         @SerializedName("is_enable_next_button")
@@ -57,6 +59,20 @@ data class PaymentErrorMessageButton(
         val text: String = "",
         @SerializedName("link")
         val link: String = ""
+)
+
+data class PaymentRevampErrorMessage(
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("button")
+        val button: PaymentRevampErrorMessageButton = PaymentRevampErrorMessageButton()
+)
+
+data class PaymentRevampErrorMessageButton(
+        @SerializedName("text")
+        val text: String = "",
+        @SerializedName("action")
+        val action: String = ""
 )
 
 data class PaymentCreditCard(

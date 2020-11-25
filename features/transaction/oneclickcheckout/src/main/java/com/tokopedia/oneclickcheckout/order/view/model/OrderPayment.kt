@@ -14,6 +14,7 @@ data class OrderPayment(
         val walletAmount: Long = 0,
         val creditCard: OrderPaymentCreditCard = OrderPaymentCreditCard(),
         val errorMessage: OrderPaymentErrorMessage = OrderPaymentErrorMessage(),
+        val revampErrorMessage: OrderPaymentRevampErrorMessage = OrderPaymentRevampErrorMessage(),
         val errorTickerMessage: String = "",
         val isEnableNextButton: Boolean = false,
         val isDisablePayButton: Boolean = false,
@@ -21,8 +22,7 @@ data class OrderPayment(
         val isOvoOnlyCampaign: Boolean = false,
         val ovoData: OrderPaymentOvoAdditionalData = OrderPaymentOvoAdditionalData(),
         val ovoErrorData: OrderPaymentOvoErrorData? = null,
-        val customErrorMessage: String = "",
-        val customErrorButton: String = ""
+        val errorData: OrderPaymentErrorData? = null
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
@@ -50,6 +50,27 @@ data class OrderPaymentErrorMessageButton(
         val text: String = "",
         val link: String = ""
 )
+
+data class OrderPaymentRevampErrorMessage(
+        val message: String = "",
+        val button: OrderPaymentRevampErrorMessageButton = OrderPaymentRevampErrorMessageButton()
+)
+
+data class OrderPaymentRevampErrorMessageButton(
+        val text: String = "",
+        val action: String = ""
+)
+
+data class OrderPaymentErrorData(
+        val message: String = "",
+        val buttonText: String = "",
+        val action: String = ""
+) {
+    companion object {
+        internal const val ACTION_CHOOSE_CC = "CHOOSE_CC"
+        internal const val ACTION_CHOOSE_PAYMENT = "CHOOSE_PAYMENT"
+    }
+}
 
 data class OrderPaymentCreditCard(
         val numberOfCards: OrderPaymentCreditCardsNumber = OrderPaymentCreditCardsNumber(),

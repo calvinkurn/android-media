@@ -325,6 +325,13 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
                 link
             }
           }
+          occ_revamp_error_message {
+            message
+            button {
+                text
+                action
+            }
+          }
           ticker_message
           is_enable_next_button
           is_disable_pay_button

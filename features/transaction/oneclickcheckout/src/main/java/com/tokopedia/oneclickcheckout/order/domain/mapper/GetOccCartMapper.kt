@@ -183,13 +183,19 @@ class GetOccCartMapper @Inject constructor() {
         val payment = data.profileResponse.payment
         return OrderPayment(payment.enable != 0, false, payment.gatewayCode, payment.gatewayName,
                 payment.minimumAmount, payment.maximumAmount, payment.fee, payment.walletAmount,
-                mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), data.errorTicker,
+                mapPaymentCreditCard(payment, data), mapPaymentErrorMessage(payment.errorMessage), mapPaymentRevampErrorMessage(payment.occRevampErrorMessage), data.errorTicker,
                 payment.isEnableNextButton, payment.isDisablePayButton, payment.isOvoOnlyCampaign, mapPaymentOvoData(payment.ovoAdditionalData, data))
     }
 
     private fun mapPaymentErrorMessage(errorMessage: PaymentErrorMessage): OrderPaymentErrorMessage {
         return OrderPaymentErrorMessage(errorMessage.message,
                 OrderPaymentErrorMessageButton(errorMessage.button.text, errorMessage.button.link)
+        )
+    }
+
+    private fun mapPaymentRevampErrorMessage(errorMessage: PaymentRevampErrorMessage): OrderPaymentRevampErrorMessage {
+        return OrderPaymentRevampErrorMessage(errorMessage.message,
+                OrderPaymentRevampErrorMessageButton(errorMessage.button.text, errorMessage.button.action)
         )
     }
 

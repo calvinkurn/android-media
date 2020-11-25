@@ -249,14 +249,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    /*private fun generateServiceDuration(tempServiceDuration: String?): String {
-        return if (tempServiceDuration == null || !tempServiceDuration.contains("(") || !tempServiceDuration.contains(")")) {
-            view.context.getString(R.string.lbl_no_exact_shipping_duration)
-        } else {
-            view.context.getString(R.string.lbl_shipping_duration_prefix, tempServiceDuration.substring(tempServiceDuration.indexOf("(") + 1, tempServiceDuration.indexOf(")")))
-        }
-    }*/
-
     private fun showPayment() {
         val paymentModel = preference.preference.payment
 
@@ -288,10 +280,10 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 setPaymentActiveAlpha()
                 setupPaymentInstallment(payment.creditCard)
             } else {
-                if (payment.customErrorMessage.isNotEmpty()) {
+                if (payment.errorData != null) {
                     // general error
-                    val message = payment.customErrorMessage
-                    val button = payment.customErrorButton
+                    val message = payment.errorData.message
+                    val button = payment.errorData.buttonText
 
                     val span = SpannableString("$message $button")
                     if (button.isNotBlank()) {
@@ -300,16 +292,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                             span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                         }
                         tvPaymentErrorMessage?.setOnClickListener {
-                            listener.choosePayment(preference)
+                            when (payment.errorData.action) {
+                                OrderPaymentErrorData.ACTION_CHOOSE_PAYMENT -> listener.choosePayment(preference)
+                                OrderPaymentErrorData.ACTION_CHOOSE_CC -> listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+                            }
                         }
                     }
                     tvPaymentErrorMessage?.text = span
                     tvPaymentErrorMessage?.visible()
                     btnChangePayment?.invisible()
                     tvPaymentOvoErrorAction?.gone()
-                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
-                        /* no-op */
-                    }
                     setPaymentErrorAlpha(false)
                 } else if (payment.errorMessage.message.isNotEmpty()) {
                     // cc error
@@ -334,9 +326,6 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     tvPaymentErrorMessage?.visible()
                     btnChangePayment?.invisible()
                     tvPaymentOvoErrorAction?.gone()
-                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
-                        /* no-op */
-                    }
                     setPaymentErrorAlpha(payment.isCalculationError)
                 } else if (payment.ovoErrorData != null) {
                     // ovo error
@@ -390,17 +379,11 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     } else {
                         setPaymentActiveAlpha()
                     }
-                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
-                        listener.choosePayment(preference)
-                    }
                 } else {
                     // fallback
                     tvPaymentErrorMessage?.gone()
                     tvPaymentOvoErrorAction?.gone()
                     setPaymentErrorAlpha(payment.isCalculationError)
-                    setMultiViewsOnClickListener(ivPayment, tvPaymentName, tvPaymentDetail, btnChangePayment) {
-                        listener.choosePayment(preference)
-                    }
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
