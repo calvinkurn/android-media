@@ -61,6 +61,7 @@ import rx.schedulers.Schedulers;
 public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final int PER_SECOND = 1000;
+    private static final int LIVE_TRACKING_VIEW_REQ = 1;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
     private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
     private static final String ARGUMENTS_CALLER = "ARGUMENTS_CALLER";
@@ -336,8 +337,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     }
 
     private void setLiveTrackingButton() {
-        if (TextUtils.isEmpty(mTrackingUrl))
-            liveTrackingButton.setVisibility(View.GONE);
+        if (TextUtils.isEmpty(mTrackingUrl)) {
+            /*contoh ae, revert later*/
+            liveTrackingButton.setVisibility(View.VISIBLE);
+            liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener());
+        }
         else {
             liveTrackingButton.setVisibility(View.VISIBLE);
             liveTrackingButton.setOnClickListener(onLiveTrackingClickedListener());
@@ -390,10 +394,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
             mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
-           /* String applink = String.format("%s?url=%s", ApplinkConst.WEBVIEW, mTrackingUrl);
-            RouteManager.route(getActivity(), applink);*/
+           /*put testing url here*/
+           String url = "https://gosend-livetracking.gojek.co.id/go-send/livetracking/detail?trackingId=qnjRDswv7X6JNFUbAiXm58HOeHo3FdEEo8vf_ZVH6sFt8zFRWDedTQPCVnL4ucbO9BUPkrWD0Z-0B3ZSu4NV0A%3D%3D";
             if (getContext() != null) {
-                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), mTrackingUrl), 12);
+                startActivityForResult(LiveTrackingActivity.Companion.createIntent(getContext(), url), LIVE_TRACKING_VIEW_REQ);
             }
         };
     }
