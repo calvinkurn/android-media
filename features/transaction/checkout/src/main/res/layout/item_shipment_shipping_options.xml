@@ -212,7 +212,7 @@
                 android:inputType="textCapWords"
                 android:textSize="@dimen/sp_14"
                 android:theme="@style/TransactionEditText"
-                app:backgroundTint="@color/grey_300" />
+                app:backgroundTint="@color/Unify_N100" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -232,7 +232,7 @@
                 android:inputType="phone"
                 android:textSize="@dimen/sp_14"
                 android:theme="@style/TransactionEditText"
-                app:backgroundTint="@color/grey_300" />
+                app:backgroundTint="@color/Unify_N100" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <EditText
@@ -251,6 +251,6 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        android:background="@color/Unify_N100" />
 
 </LinearLayout>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/bg_promo_potency" />
+    <solid android:color="@color/Unify_R100" />
     <stroke
         android:width="@dimen/dp_1"
-        android:color="@color/bg_promo_potency" />
+        android:color="@color/Unify_R100" />
     <corners android:radius="@dimen/dp_16" />
     <padding
         android:bottom="0dp"

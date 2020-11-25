@@ -4,7 +4,7 @@
     android:id="@+id/ll_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:foreground="?selectableItemBackground"
     android:paddingLeft="@dimen/dp_9"
     android:paddingTop="@dimen/dp_16"
