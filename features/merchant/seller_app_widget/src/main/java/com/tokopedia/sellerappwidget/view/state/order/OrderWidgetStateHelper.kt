@@ -22,8 +22,14 @@ object OrderWidgetStateHelper {
         remoteView.setTextViewText(R.id.tvSawSmallOrderUpdated, "$updated $updatedFmt")
     }
 
-    fun showEmptyState(context: Context, appWidgetManager: AppWidgetManager, widgetIds: Array<Int>, widgetItems: List<OrderUiModel>) {
-
+    fun updateViewOnEmpty(remoteViews: RemoteViews) {
+        with(remoteViews) {
+            setInt(R.id.containerSawOrderListEmpty, Const.Method.SET_VISIBILITY, View.VISIBLE)
+            setInt(R.id.containerSawOrderListLoading, Const.Method.SET_VISIBILITY, View.GONE)
+            setInt(R.id.containerSawOrderListError, Const.Method.SET_VISIBILITY, View.GONE)
+            setInt(R.id.containerSawOrderListNoLogin, Const.Method.SET_VISIBILITY, View.GONE)
+            setInt(R.id.containerSawOrderListSuccess, Const.Method.SET_VISIBILITY, View.GONE)
+        }
     }
 
     fun updateViewOnSuccess(remoteViews: RemoteViews) {

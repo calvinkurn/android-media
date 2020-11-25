@@ -16,12 +16,14 @@ object Const {
         const val ORDER_ITEM = "item"
         const val ORDER_ITEMS = "items"
         const val ORDER_STATUS_ID = "order_status_id"
+        const val APP_LINK = "app_link"
     }
 
     object Action {
         const val REFRESH = "com.tokopedia.sellerappwidget.REFRESH"
         const val ITEM_CLICK = "com.tokopedia.sellerappwidget.ITEM_CLICK"
         const val SWITCH_ORDER = "com.tokopedia.sellerappwidget.SWITCH_ORDER"
+        const val OPEN_APPLINK = "com.tokopedia.sellerappwidget.OPEN_APPLINK"
     }
 
     object Method {

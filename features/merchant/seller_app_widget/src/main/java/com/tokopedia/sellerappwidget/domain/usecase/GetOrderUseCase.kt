@@ -22,7 +22,12 @@ class GetOrderUseCase @Inject constructor(
 ) : BaseUseCase<List<OrderUiModel>>() {
 
     override suspend fun executeOnBackground(): List<OrderUiModel> {
-        return dummy()
+        val rand = (Math.random() * 100).toInt()
+        return if (rand % 2 == 0) {
+            emptyList()
+        } else {
+            dummy()
+        }
         /*val gqlRequest = GraphqlRequest(QUERY, GetOrderResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
         val errors: List<GraphqlError>? = gqlResponse.getError(GetOrderResponse::class.java)

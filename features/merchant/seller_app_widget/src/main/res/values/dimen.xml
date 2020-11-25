@@ -12,7 +12,9 @@
     <dimen name="saw_dimen_18dp">18dp</dimen>
     <dimen name="saw_dimen_46dp">46dp</dimen>
     <dimen name="saw_dimen_80dp">80dp</dimen>
+    <dimen name="saw_dimen_88dp">88dp</dimen>
     <dimen name="saw_dimen_98dp">98dp</dimen>
+    <dimen name="saw_dimen_124dp">124dp</dimen>
     <dimen name="saw_dimen_142dp">142dp</dimen>
     <dimen name="saw_dimen_106dp">106dp</dimen>
     <dimen name="saw_dimen_148dp">148dp</dimen>

@@ -6,11 +6,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.RemoteViews
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder
-import com.tokopedia.kotlin.extensions.view.pxToDp
-import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
@@ -54,6 +51,7 @@ class OrderAppWidget : AppWidgetProvider() {
             Const.Action.REFRESH -> refreshWidget(context, intent)
             Const.Action.ITEM_CLICK -> onOrderItemClick(context, intent)
             Const.Action.SWITCH_ORDER -> switchOrder(context, intent)
+            Const.Action.OPEN_APPLINK -> openAppLink(context, intent)
         }
         super.onReceive(context, intent)
     }
@@ -69,6 +67,14 @@ class OrderAppWidget : AppWidgetProvider() {
 
     override fun onDisabled(context: Context?) {
         super.onDisabled(context)
+    }
+
+    private fun openAppLink(context: Context, intent: Intent) {
+        val appLink = intent.getStringExtra(Const.Extra.APP_LINK).orEmpty()
+        val appLinkIntent = RouteManager.getIntent(context, appLink).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        context.startActivity(appLinkIntent)
     }
 
     private fun switchOrder(context: Context, intent: Intent) {
@@ -119,7 +125,7 @@ class OrderAppWidget : AppWidgetProvider() {
                 val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
 
                 when {
-                    widgetItems.isEmpty() -> OrderWidgetEmptyState.setupEmptyState()
+                    widgetItems.isEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
                     else -> {
                         OrderWidgetSuccessState.setupSuccessState(context, remoteViews, userSession, widgetItems, orderStatusId, widgetId)
                     }

@@ -9,12 +9,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.R
-import com.tokopedia.sellerappwidget.common.AppWidgetHelper
-import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.common.Utils
-import com.tokopedia.sellerappwidget.common.WidgetSize
+import com.tokopedia.sellerappwidget.common.*
 import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.sellerappwidget.view.remoteview.OrderWidgetRemoteViewService
@@ -54,11 +50,7 @@ object OrderWidgetSuccessState {
 
             setupRefreshIntent(context, remoteViews, R.id.btnSawSmallOrderRefresh, widgetId)
 
-            val sellerAppIntent = RouteManager.getIntent(context, ApplinkConst.SellerApp.SELLER_APP_HOME).apply {
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
-            val sellerAppPendingIntent = PendingIntent.getBroadcast(context, 0, sellerAppIntent, 0)
-            setOnClickPendingIntent(R.id.orderSawSmallHeader, sellerAppPendingIntent)
+            registerAppLinkIntent(context, R.id.orderSawSmallHeader, ApplinkConst.SellerApp.SELLER_APP_HOME, widgetId)
         }
     }
 
