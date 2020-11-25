@@ -1241,19 +1241,4 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendGeneralEvent(gtmData);
     }
 
-    public void eventClickWishlistNavToolbar(String userId) {
-        Map<String, Object> gtmData = getGtmData(
-                EventName.CLICK_NAVIGATION_DRAWER,
-                EventCategory.CART,
-                EventAction.CLICK_WISHLIST_NAV,
-                ""
-        );
-        gtmData.put(ExtraKey.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE);
-        gtmData.put(ExtraKey.USER_ID, userId);
-        gtmData.put(ExtraKey.BUSINESS_UNIT, CustomDimension.DIMENSION_BUSINESS_UNIT_HOME_BROWSE);
-        gtmData.put(ExtraKey.PAGE_TYPE, "");
-        gtmData.put(ExtraKey.PAGE_PATH, "");
-
-        sendGeneralEvent(gtmData);
-    }
 }
