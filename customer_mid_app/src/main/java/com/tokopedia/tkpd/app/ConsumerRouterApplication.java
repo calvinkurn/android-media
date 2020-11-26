@@ -79,9 +79,6 @@ import com.tokopedia.promogamification.common.GamificationRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
-import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.tkpd.ConsumerSplashScreen;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
@@ -154,8 +151,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     Lazy<ReactUtils> reactUtils;
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
     private OmsComponent omsComponent;
-    private DaggerShopComponent.Builder daggerShopBuilder;
-    private ShopComponent shopComponent;
     private ReactNativeComponent reactNativeComponent;
     private TokopointComponent tokopointComponent;
     private TetraDebugger tetraDebugger;
