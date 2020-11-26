@@ -71,7 +71,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
     lateinit var recyclerView: RecyclerView
-    lateinit var scrollView: ScrollView
+    private var scrollView: ScrollView? = null
     lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
@@ -117,8 +117,8 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
         scrollView = view.findViewById(R.id.scrollView)
-        scrollView.viewTreeObserver?.addOnScrollChangedListener {
-            scrollView.run {
+        scrollView?.viewTreeObserver?.addOnScrollChangedListener {
+            scrollView?.run {
                 if (scrollY > 100) {
                     navToolbar?.showShadow(lineShadow = true)
                 } else {
