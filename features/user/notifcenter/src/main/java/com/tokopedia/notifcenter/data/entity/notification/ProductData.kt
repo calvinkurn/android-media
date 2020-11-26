@@ -53,7 +53,7 @@ data class ProductData(
         @SerializedName("variant")
         val variant: List<Variant> = listOf(),
         @SerializedName("has_reminder")
-        val hasReminder: Boolean = false
+        var hasReminder: Boolean = false
 ) {
     var loadingReminderState: Boolean = false
 
@@ -63,5 +63,6 @@ data class ProductData(
 
     fun update(productData: ProductData) {
         loadingReminderState = productData.loadingReminderState
+        hasReminder = productData.hasReminder
     }
 }

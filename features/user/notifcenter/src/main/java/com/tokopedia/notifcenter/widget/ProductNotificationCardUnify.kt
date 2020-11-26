@@ -35,7 +35,10 @@ class ProductNotificationCardUnify(
     private var btnAtc: UnifyButton? = null
     private var btnReminder: UnifyButton? = null
     private var btnDeleteReminder: UnifyButton? = null
+
     private var listener: NotificationItemListener? = null
+    private var notification: NotificationUiModel? = null
+    private var adapterPosition: Int? = null
 
     init {
         initView()
@@ -69,7 +72,7 @@ class ProductNotificationCardUnify(
     ) {
         if (product != null) {
             show()
-            initField(listener)
+            initField(listener, notification, adapterPosition)
             bindProductImage(product)
             bindProductCampaign(product)
             bindProductVariant(product)
@@ -79,30 +82,10 @@ class ProductNotificationCardUnify(
             bindProductClick(product)
             bindBuyClick(product)
             bindAtcClick(product)
-            bindReminder(product, notification, adapterPosition)
-            bindDeleteReminder(product, notification, adapterPosition)
+            bindReminder(product)
+            bindDeleteReminder(product)
         } else {
             hide()
-        }
-    }
-
-    private fun bindDeleteReminder(
-            product: ProductData,
-            notification: NotificationUiModel?,
-            adapterPosition: Int
-    ) {
-        if (product.hasEmptyStock() && product.hasReminder && notification != null) {
-            btnDeleteReminder?.show()
-            bindDeleteReminderState(product)
-            btnDeleteReminder?.setOnClickListener {
-                if (!product.loadingReminderState) {
-                    product.loadingReminderState = true
-                    bindDeleteReminderState(product)
-                    listener?.deleteReminder(product, notification, adapterPosition)
-                }
-            }
-        } else {
-            btnDeleteReminder?.hide()
         }
     }
 
@@ -118,20 +101,17 @@ class ProductNotificationCardUnify(
         }
     }
 
-    fun bumpReminderState(product: ProductData) {
-        if (product.hasEmptyStock() && product.hasReminder) {
-            bindDeleteReminderState(product)
-        } else {
-            bindBumpReminderState(product)
-        }
+    fun bumpReminderState(product: ProductData?) {
+        product ?: return
+        bindReminder(product)
+        bindDeleteReminder(product)
     }
 
-    private fun bindReminder(
-            product: ProductData,
-            notification: NotificationUiModel?,
-            adapterPosition: Int
-    ) {
-        if (product.hasEmptyStock() && !product.hasReminder && notification != null) {
+    private fun bindReminder(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.hasEmptyStock() && !product.hasReminder &&
+                notification != null && adapterPosition != null) {
             btnReminder?.show()
             bindBumpReminderState(product)
             btnReminder?.setOnClickListener {
@@ -146,6 +126,25 @@ class ProductNotificationCardUnify(
         }
     }
 
+    private fun bindDeleteReminder(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.hasEmptyStock() && product.hasReminder &&
+                notification != null && adapterPosition != null) {
+            btnDeleteReminder?.show()
+            bindDeleteReminderState(product)
+            btnDeleteReminder?.setOnClickListener {
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindDeleteReminderState(product)
+                    listener?.deleteReminder(product, notification, adapterPosition)
+                }
+            }
+        } else {
+            btnDeleteReminder?.hide()
+        }
+    }
+
     fun goToPdp(product: ProductData?) {
         if (product == null) return
         RouteManager.route(
@@ -155,8 +154,14 @@ class ProductNotificationCardUnify(
         )
     }
 
-    private fun initField(listener: NotificationItemListener?) {
+    private fun initField(
+            listener: NotificationItemListener?,
+            notification: NotificationUiModel?,
+            adapterPosition: Int
+    ) {
         this.listener = listener
+        this.notification = notification
+        this.adapterPosition = adapterPosition
     }
 
     private fun bindProductImage(product: ProductData) {

@@ -60,9 +60,9 @@ class CarouselProductNotificationViewHolder constructor(
             element: NotificationUiModel,
             payload: PayloadBumpReminderState
     ) {
-        val indexToUpdate = rvAdapter.notification?.productData?.indexOf(
-                payload.productData
-        )
+        val indexToUpdate = rvAdapter.notification?.productData?.indexOfFirst {
+            it.productId == payload.productData.productId
+        }
         if (indexToUpdate != null && indexToUpdate != RecyclerView.NO_POSITION) {
             val product = rvAdapter.notification?.productData?.get(indexToUpdate)
             product?.update(payload.productData)

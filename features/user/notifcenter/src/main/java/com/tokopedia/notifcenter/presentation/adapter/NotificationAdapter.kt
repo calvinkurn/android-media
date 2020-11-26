@@ -106,7 +106,11 @@ class NotificationAdapter constructor(
     }
 
     fun finishDeleteReminder(viewHolderState: ViewHolderState?) {
-        updateLoadingBumpReminderFor(viewHolderState, false)
+        updateLoadingBumpReminderFor(
+                viewHolderState = viewHolderState,
+                isLoading = false,
+                hasReminder = false
+        )
     }
 
     fun loadingStateReminder(viewHolderState: ViewHolderState?) {
@@ -114,12 +118,17 @@ class NotificationAdapter constructor(
     }
 
     fun finishBumpReminder(viewHolderState: ViewHolderState?) {
-        updateLoadingBumpReminderFor(viewHolderState, false)
+        updateLoadingBumpReminderFor(
+                viewHolderState = viewHolderState,
+                isLoading = false,
+                hasReminder = true
+        )
     }
 
     private fun updateLoadingBumpReminderFor(
             viewHolderState: ViewHolderState?,
-            isLoading: Boolean
+            isLoading: Boolean,
+            hasReminder: Boolean? = null
     ) {
         viewHolderState ?: return
         val notif = viewHolderState.visitable as? NotificationUiModel ?: return
@@ -129,11 +138,14 @@ class NotificationAdapter constructor(
         )
         val position = elementData.first
         val item = elementData.second
-        if (viewHolderState.payload is ProductData) {
+        if (viewHolderState.payload is ProductData && position != RecyclerView.NO_POSITION) {
             val payload = PayloadBumpReminderState(
                     viewHolderState.payload, item
             )
             viewHolderState.payload.loadingReminderState = isLoading
+            hasReminder?.let {
+                viewHolderState.payload.hasReminder = it
+            }
             notifyItemChanged(position, payload)
         }
     }

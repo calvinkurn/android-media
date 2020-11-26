@@ -23,7 +23,7 @@ import com.tokopedia.unifycomponents.toPx
 class NotificationProductLongerContentBottomSheet : NotificationLongerContentBottomSheet() {
 
     private var listener: NotificationItemListener? = null
-    private var products: ArrayMap<ProductData, ProductNotificationCardUnify?> = ArrayMap()
+    private var products: ArrayMap<Int, ProductNotificationCardUnify?> = ArrayMap()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,8 +51,8 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
             val index = notification?.productData?.indexOf(payload) ?: return
             val product = notification?.productData?.get(index)
             product?.update(payload)
-            val productView = products[product]
-            productView?.bindBumpReminderState(payload)
+            val productView = products[product?.productId]
+            productView?.bumpReminderState(product)
         }
     }
 
@@ -77,8 +77,8 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
             val index = notification?.productData?.indexOf(payload) ?: return
             val product = notification?.productData?.get(index)
             product?.update(payload)
-            val productView = products[product]
-            productView?.bumpReminderState(payload)
+            val productView = products[product?.productId]
+            productView?.bumpReminderState(product)
         }
     }
 
@@ -88,7 +88,7 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
             val productView: ProductNotificationCardUnify? = view?.findViewById(R.id.pc_single)
             bind(productView, product, index)
             contentContainer?.addView(view)
-            products[product] = productView
+            products[product.productId] = productView
         }
     }
 
