@@ -74,43 +74,43 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
     @Override
     public void getTickerInfo(Context context) {
-        if (getView() == null)
-            return;
-        Map<String, Object> requestInfo = new HashMap<>();
-        Input input = new Input();
-        UserSession userSession = new UserSession(context);
-        input.setRequest_by("buyer");
-        input.setUser_id(userSession.getUserId());
-        input.setClient("mobile");
+        if (getView() != null) {
+            Map<String, Object> requestInfo = new HashMap<>();
+            Input input = new Input();
+            UserSession userSession = new UserSession(context);
+            input.setRequest_by("buyer");
+            input.setUser_id(userSession.getUserId());
+            input.setClient("mobile");
 
-        requestInfo.put("input", input);
-        tickerUseCase = new GraphqlUseCase();
-        GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.tickerinfo), TickerResponse.class, requestInfo, false);
-        tickerUseCase.addRequest(graphqlRequest);
-        tickerUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+            requestInfo.put("input", input);
+            tickerUseCase = new GraphqlUseCase();
+            GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.tickerinfo), TickerResponse.class, requestInfo, false);
+            tickerUseCase.addRequest(graphqlRequest);
+            tickerUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    e.printStackTrace();
-                    view.showErrorNetwork(e.toString());
                 }
-            }
 
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                // Show ticker
-                if (graphqlResponse != null) {
-                    TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
-                    if (view != null) {
-                        view.updateTicker(tickerResponse);
+                @Override
+                public void onError(Throwable e) {
+                    if (isViewAttached()) {
+                        e.printStackTrace();
+                        view.showErrorNetwork(e.toString());
                     }
                 }
-            }
-        });
+
+                @Override
+                public void onNext(GraphqlResponse graphqlResponse) {
+                    // Show ticker
+                    if (graphqlResponse != null) {
+                        TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
+                        if (view != null) {
+                            view.updateTicker(tickerResponse);
+                        }
+                    }
+                }
+            });
+        }
     }
 }
