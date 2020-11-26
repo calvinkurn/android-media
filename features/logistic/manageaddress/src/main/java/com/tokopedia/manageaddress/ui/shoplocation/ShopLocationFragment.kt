@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.di.shoplocation.ShopLocationComponent
+import com.tokopedia.manageaddress.util.ManageAddressConstant.BOTTOMSHEET_TITLE_ATUR_LOKASI
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_action_shop_address.view.*
 
@@ -62,6 +63,17 @@ class ShopLocationFragment : BaseDaggerFragment(), ShopLocationItemAdapter.ShopL
                     bottomSheetAddressType?.dismiss()
                 }
             }
+        }
+
+        bottomSheetAddressType?.apply {
+            setTitle(BOTTOMSHEET_TITLE_ATUR_LOKASI)
+            setCloseClickListener { dismiss() }
+            setChild(viewBottomSheetAddressType)
+            setOnDismissListener { dismiss() }
+        }
+
+        fragmentManager?.let {
+            bottomSheetAddressType?.show(it, "show")
         }
     }
 
