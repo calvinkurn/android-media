@@ -9,6 +9,7 @@ import android.os.Vibrator
 
 import android.content.Context.CLIPBOARD_SERVICE
 import com.tokopedia.buyerorder.R
+import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.ParseException
 import java.text.SimpleDateFormat
 
@@ -20,7 +21,7 @@ object Utils {
     fun copyTextToClipBoard(label: String, textVoucherCode: String, context: Context) {
         val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(label, textVoucherCode)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
     @JvmStatic
     fun vibrate(context: Context) {
@@ -49,5 +50,23 @@ object Utils {
             e.printStackTrace()
         }
         return result
+    }
+
+    @JvmStatic
+    fun getTickerType(typeStr: String): Int {
+        return when (typeStr) {
+            BuyerConsts.TICKER_TYPE_ERROR -> {
+                Ticker.TYPE_ERROR
+            }
+            BuyerConsts.TICKER_TYPE_INFORMATION -> {
+                Ticker.TYPE_INFORMATION
+            }
+            BuyerConsts.TICKER_TYPE_WARNING -> {
+                Ticker.TYPE_WARNING
+            }
+            else -> {
+                Ticker.TYPE_ANNOUNCEMENT
+            }
+        }
     }
 }

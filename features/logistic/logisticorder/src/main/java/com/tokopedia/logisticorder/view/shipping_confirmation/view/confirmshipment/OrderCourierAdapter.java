@@ -1,7 +1,5 @@
 package com.tokopedia.logisticorder.view.shipping_confirmation.view.confirmshipment;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +7,13 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.logisticorder.R;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierViewModel;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.CourierUiModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 
 import java.util.List;
 
@@ -22,13 +23,13 @@ import java.util.List;
 
 public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapter.OrderCourierViewHolder> {
 
-    private List<CourierViewModel> modelList;
+    private List<CourierUiModel> modelList;
 
     private OrderCourierAdapterListener listener;
 
-    public OrderCourierAdapter(ListCourierViewModel courierViewModel,
+    public OrderCourierAdapter(ListCourierUiModel courierUiModel,
                                OrderCourierAdapterListener listener) {
-        this.modelList = courierViewModel.getCourierViewModelList();
+        this.modelList = courierUiModel.getCourierUiModelList();
         this.listener = listener;
     }
 
@@ -42,18 +43,18 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
 
     @Override
     public void onBindViewHolder(@NonNull OrderCourierViewHolder holder, int position) {
-        final CourierViewModel currentViewModel = modelList.get(position);
-        if (currentViewModel.getCourierImageUrl() == null
-                || currentViewModel.getCourierImageUrl().isEmpty())
+        final CourierUiModel currentUiModel = modelList.get(position);
+        if (currentUiModel.getCourierImageUrl() == null
+                || currentUiModel.getCourierImageUrl().isEmpty())
             holder.courierLogo.setVisibility(View.GONE);
         else {
             holder.courierLogo.setVisibility(View.VISIBLE);
-            ImageHandler.LoadImage(holder.courierLogo, currentViewModel.getCourierImageUrl());
+            ImageHandler.LoadImage(holder.courierLogo, currentUiModel.getCourierImageUrl());
         }
-        holder.courierName.setText(currentViewModel.getCourierName());
-        holder.courierCheckBox.setChecked(currentViewModel.isSelected());
-        holder.courierPlaceHolder.setOnClickListener(onCourierSelectedListener(currentViewModel));
-        holder.courierCheckBox.setOnClickListener(onCourierSelectedListener(currentViewModel));
+        holder.courierName.setText(currentUiModel.getCourierName());
+        holder.courierCheckBox.setChecked(currentUiModel.isSelected());
+        holder.courierPlaceHolder.setOnClickListener(onCourierSelectedListener(currentUiModel));
+        holder.courierCheckBox.setOnClickListener(onCourierSelectedListener(currentUiModel));
     }
 
     @Override
@@ -85,12 +86,12 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
         }
     }
 
-    private View.OnClickListener onCourierSelectedListener(final CourierViewModel courierViewModel) {
+    private View.OnClickListener onCourierSelectedListener(final CourierUiModel courierUiModel) {
         return view -> {
             clearSelectedList();
-            courierViewModel.setSelected(true);
+            courierUiModel.setSelected(true);
             notifyDataSetChanged();
-            listener.onCourierSelected(courierViewModel);
+            listener.onCourierSelected(courierUiModel);
         };
     }
 
@@ -102,7 +103,7 @@ public class OrderCourierAdapter extends RecyclerView.Adapter<OrderCourierAdapte
 
     public interface OrderCourierAdapterListener {
 
-        void onCourierSelected(CourierViewModel courierViewModel);
+        void onCourierSelected(CourierUiModel courierUiModel);
 
     }
 }

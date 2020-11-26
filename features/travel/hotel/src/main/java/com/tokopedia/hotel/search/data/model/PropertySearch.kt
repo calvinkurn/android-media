@@ -10,7 +10,15 @@ data class PropertySearch(
 
         @SerializedName("propertyDisplayInfo")
         @Expose
-        val displayInfo: DisplayInfo = DisplayInfo()
+        val displayInfo: DisplayInfo = DisplayInfo(),
+
+        @SerializedName("filters")
+        @Expose
+        val filters: List<FilterV2> = listOf(),
+
+        @SerializedName("quickFilter")
+        @Expose
+        val quickFilter: List<QuickFilter> = listOf()
 ) {
 
     data class Response(

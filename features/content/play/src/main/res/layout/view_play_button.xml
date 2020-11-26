@@ -1,46 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:id="@+id/cl_play_control_round"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:layout_height="match_parent"
+    tools:layout_width="match_parent"
+    >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_play_control_round"
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_play"
+        android:layout_width="@dimen/dp_64"
+        android:layout_height="@dimen/dp_64"
+        app:layout_constraintBottom_toTopOf="@id/tv_watch_again"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:srcCompat="@drawable/ic_play_play_round"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_watch_again"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:layout_width="match_parent"
-        tools:layout_height="match_parent"
-        >
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:text="@string/play_watch_again"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_play"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        tools:textColor="@color/black"
+        />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_play"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
-            app:layout_constraintBottom_toTopOf="@id/tv_watch_again"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:srcCompat="@drawable/ic_play_play_round"
-            />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_watch_again"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:text="@string/play_watch_again"
-            android:textColor="@color/Neutral_N0"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/iv_play"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            tools:textColor="@color/black"
-            />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</merge>
+</androidx.constraintlayout.widget.ConstraintLayout>

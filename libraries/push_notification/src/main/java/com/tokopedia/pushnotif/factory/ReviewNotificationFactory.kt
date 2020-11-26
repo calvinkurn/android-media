@@ -16,12 +16,12 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.pushnotif.ApplinkNotificationHelper
-import com.tokopedia.pushnotif.Constant
+import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.R
-import com.tokopedia.pushnotif.db.model.ReviewNotificationModel
-import com.tokopedia.pushnotif.model.ApplinkNotificationModel
+import com.tokopedia.pushnotif.data.model.ReviewNotificationModel
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
+import com.tokopedia.pushnotif.services.ReviewNotificationBroadcastReceiver
 import com.tokopedia.pushnotif.util.PendingIntentUtil
-import com.tokopedia.pushnotif.util.ReviewNotificationBroadcastReceiver
 import java.util.concurrent.TimeUnit
 
 class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(context) {
@@ -56,11 +56,13 @@ class ReviewNotificationFactory(context: Context) : BaseNotificationFactory(cont
         }
     }
 
-    override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notifcationType: Int, notificationId: Int): Notification {
+    override fun createNotification(applinkNotificationModel: ApplinkNotificationModel, notificationType: Int, notificationId: Int): Notification {
+        storeToTransaction(context, notificationType, notificationId, applinkNotificationModel)
+
         cacheManager.delete(TAG)
         cacheManager.put(TAG, ReviewNotificationModel(
                 applinkNotificationModel,
-                notifcationType,
+                notificationType,
                 notificationId
         ), TimeUnit.DAYS.toMillis(7))
 

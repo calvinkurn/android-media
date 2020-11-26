@@ -12,9 +12,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -28,7 +30,7 @@ import com.tokopedia.common_category.factory.product.ProductTypeFactoryImpl
 import com.tokopedia.common_category.fragment.BaseBannedProductFragment
 import com.tokopedia.common_category.interfaces.ProductCardListener
 import com.tokopedia.common_category.interfaces.QuickFilterListener
-import com.tokopedia.common_category.model.bannedCategory.Data
+import com.tokopedia.common_category.model.bannedCategory.BannedData
 import com.tokopedia.common_category.model.productModel.ProductsItem
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
@@ -197,11 +199,12 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
             when (it) {
                 is Success -> {
                     addBannedProductScreen()
-                    val bannedData = Data()
+                    val bannedData = BannedData()
                     bannedData.bannedMsgHeader = getString(R.string.find_nav_banned_product)
                     bannedData.bannedMessage = it.data[0]
                     bannedData.displayButton = it.data[1].isNotEmpty()
                     bannedData.appRedirection = it.data[1]
+                    bannedData.name = findNavScreenName
                     showBannedProductScreen(bannedData)
                 }
             }
@@ -524,7 +527,7 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun wishListEnabledTracker(wishListTrackerUrl: String) {
     }
 
-    override fun topAdsTrackerUrlTrigger(url: String) {
+    override fun topAdsTrackerUrlTrigger(url: String, id: String, name: String, imageURL: String) {
     }
 
     override fun onQuickFilterSelected(option: Option) {
@@ -640,5 +643,9 @@ class FindNavFragment : BaseBannedProductFragment(), ProductCardListener,
     override fun addBannedProductScreen() {
         super.addBannedProductScreen()
         view?.findViewById<View>(R.id.layout_banned_screen)?.show()
+    }
+
+    override fun getSwipeRefreshLayout(): SwipeRefreshLayout? {
+        return view?.findViewById<SwipeToRefresh>(R.id.swipe_refresh_layout)
     }
 }

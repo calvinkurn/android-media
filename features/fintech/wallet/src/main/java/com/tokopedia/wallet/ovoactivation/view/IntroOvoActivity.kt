@@ -12,7 +12,7 @@ class IntroOvoActivity : BaseOvoActivationActivity(), IntroOvoFragment.OvoFragme
     }
 
     private fun isTokoCashActive(): Boolean {
-        val tokocashActive = intent.data.getQueryParameter(WALLET_PARAM_TOKOCASH_ACTIVE)
+        val tokocashActive = intent.data?.getQueryParameter(WALLET_PARAM_TOKOCASH_ACTIVE)
         return if (tokocashActive.isNullOrBlank())
            false
         else  tokocashActive.toBoolean()

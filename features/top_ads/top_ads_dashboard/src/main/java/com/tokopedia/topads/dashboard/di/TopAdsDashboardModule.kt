@@ -1,23 +1,11 @@
 package com.tokopedia.topads.dashboard.di
 
 import android.content.Context
-import com.google.gson.JsonArray
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.FingerprintManager
-import com.tokopedia.graphql.GraphqlCacheManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.data.repository.GraphqlRepositoryImpl
-import com.tokopedia.graphql.coroutines.data.source.GraphqlCacheDataStore
-import com.tokopedia.graphql.coroutines.data.source.GraphqlCloudDataStore
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi
-import com.tokopedia.product.manage.item.main.add.di.ProductAddScope
 import com.tokopedia.shop.common.R
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonUrl
@@ -41,13 +29,11 @@ import com.tokopedia.topads.dashboard.data.source.TopAdsDashboardDataSource
 import com.tokopedia.topads.dashboard.data.source.cloud.TopAdsDashboardDataSourceCloud
 import com.tokopedia.topads.dashboard.data.source.cloud.serviceapi.TopAdsDashboardApi
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase
-import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsTotalAdUseCase
 import com.tokopedia.topads.dashboard.domain.repository.TopAdsDashboardRepository
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -81,12 +67,6 @@ class TopAdsDashboardModule {
     fun provideWSRetrofit(@ShopQualifier okHttpClient: OkHttpClient,
                           retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(ShopCommonUrl.BASE_WS_URL).client(okHttpClient).build()
-    }
-
-    @TopAdsDashboardScope
-    @Provides
-    fun provideShopApi(@ShopWsQualifier retrofit: Retrofit): ShopApi {
-        return retrofit.create(ShopApi::class.java)
     }
 
     @Provides
@@ -189,10 +169,6 @@ class TopAdsDashboardModule {
     @TopAdsDashboardScope
     @Provides
     fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
-
-    @TopAdsDashboardScope
-    @Provides
-    fun provideDeleteTopAdsTotalAdUseCase(@ApplicationContext context: Context) = DeleteTopAdsTotalAdUseCase(context)
 
     @TopAdsDashboardScope
     @Provides

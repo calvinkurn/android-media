@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layoutParent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/dividerTitle"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewVariantMain"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/multiple_variant_selection_list_height"
+        android:paddingLeft="@dimen/spacing_lvl4"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingRight="@dimen/layout_lvl0"
+        android:paddingEnd="@dimen/layout_lvl0"
+        app:layout_constraintTop_toBottomOf="@+id/dividerTitle" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardViewVariantMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="@dimen/layout_lvl1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewVariantMain">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            android:text="@string/action_variant_save" />
+
+    </androidx.cardview.widget.CardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

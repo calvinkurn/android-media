@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.loading.LoadingStateView
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.R
-import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
 import com.tokopedia.shop.common.util.TextHtmlUtils
@@ -68,18 +68,20 @@ class ShopNoteDetailFragment: BaseDaggerFragment(), ShopNoteDetailView {
     }
 
     override fun initInjector() {
-        DaggerShopNoteComponent
-                .builder()
-                .shopNoteModule(ShopNoteModule())
-                .shopComponent(ShopComponentInstance.getComponent(activity?.application))
-                .build()
-                .inject(this)
+        activity?.let {
+            DaggerShopNoteComponent
+                    .builder()
+                    .shopNoteModule(ShopNoteModule())
+                    .shopComponent(ShopComponentHelper().getComponent(it.application, it))
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onErrorGetShopNoteList(e: Throwable?) {
         loadingStateView.setViewState(LoadingStateView.VIEW_ERROR)
-        val textRetryError = loadingStateView.errorView.findViewById<TextView>(R.id.message_retry)
-        val buttonRetryError = loadingStateView.errorView.findViewById<TextView>(R.id.button_retry)
+        val textRetryError = loadingStateView.errorView.findViewById<TextView>(com.tokopedia.abstraction.R.id.message_retry)
+        val buttonRetryError = loadingStateView.errorView.findViewById<TextView>(com.tokopedia.abstraction.R.id.button_retry)
         textRetryError.text = ErrorHandler.getErrorMessage(activity, e)
         buttonRetryError.setOnClickListener { getShopDetail() }
     }

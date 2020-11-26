@@ -2,7 +2,6 @@ package com.tokopedia.groupchat.room.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,10 +17,8 @@ import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
-import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.groupchat.room.di.PlayComponent
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 
 import com.tokopedia.groupchat.R

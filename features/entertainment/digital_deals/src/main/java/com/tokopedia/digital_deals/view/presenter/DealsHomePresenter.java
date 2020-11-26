@@ -419,12 +419,20 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     public void onClickBanner(ProductItem productItem) {
-        String applink;
+        String deeplink = "tokopedia://";
+        String fullPathWWW = "https://www.tokopedia.com/";
+        String domainWithWWW = "www.tokopedia.com/";
+        String domainWithoutWWW = "tokopedia.com/";
+        String applink = "";
         if (!TextUtils.isEmpty(productItem.getSeoUrl())) {
-            if (productItem.getSeoUrl().contains("www.tokopedia.com")) {
-                applink = productItem.getSeoUrl().replace("https://www.tokopedia.com/", "tokopedia://");
-                RouteManager.route(getView().getActivity(), applink);
+            if (productItem.getSeoUrl().contains(domainWithWWW)) {
+                applink = productItem.getSeoUrl().replace(fullPathWWW, deeplink);
+            } else if(productItem.getSeoUrl().contains(domainWithoutWWW)) {
+                applink = productItem.getSeoUrl().replace(domainWithoutWWW, deeplink);
+            } else {
+                applink = productItem.getSeoUrl();
             }
+            RouteManager.route(getView().getActivity(), applink);
         }
     }
 
@@ -447,11 +455,15 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     private CategoryItem getCarouselOrTop(List<CategoryItem> categoryList, String carouselOrTop) {
 
-        if (categoryList.get(1).getName().equalsIgnoreCase(carouselOrTop)) {
-            return categoryList.get(1);
-        } else {
-            return categoryList.get(0);
+        if(categoryList != null && categoryList.size() > 0) {
+            if (categoryList.get(1) != null && categoryList.get(1).getName().equalsIgnoreCase(carouselOrTop)) {
+                return categoryList.get(1);
+            } else {
+                return categoryList.get(0);
+            }
         }
+
+        return null;
     }
 
     private List<CategoryItem> getCuratedDeals(List<CategoryItem> categoryItems, String carouselOrTop) {

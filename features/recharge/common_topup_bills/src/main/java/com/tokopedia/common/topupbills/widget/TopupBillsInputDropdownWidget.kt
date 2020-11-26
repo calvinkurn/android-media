@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.common.topupbills.R
@@ -12,7 +13,6 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsInputDropdownData
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet.view.*
 import kotlinx.android.synthetic.main.view_topup_bills_input_dropdown_bottom_sheet_item.view.*
 import org.jetbrains.annotations.NotNull
@@ -25,17 +25,17 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
                                                               defStyleAttr: Int = 0,
                                                               var listener: OnClickListener? = null,
                                                               val selected: String = "")
-    : BaseCustomView(context, attrs, defStyleAttr), SearchInputView.Listener {
+    : FrameLayout(context, attrs, defStyleAttr), SearchInputView.Listener {
 
     private var initialData: List<TopupBillsInputDropdownData> = listOf()
     private var displayData: List<TopupBillsInputDropdownData> = listOf()
-    set(value) {
-        field = value
-        with (vg_input_dropdown_recycler_view.adapter as TopupBillsInputDropdownAdapter) {
-            items = value
-            notifyDataSetChanged()
+        set(value) {
+            field = value
+            with(vg_input_dropdown_recycler_view.adapter as TopupBillsInputDropdownAdapter) {
+                items = value
+                notifyDataSetChanged()
+            }
         }
-    }
 
     init {
         View.inflate(context, getLayout(), this)
@@ -74,7 +74,7 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
         this.listener = listener
     }
 
-    inner class TopupBillsInputDropdownAdapter(var items: List<TopupBillsInputDropdownData>): RecyclerView.Adapter<TopupBillsInputDropdownViewHolder>() {
+    inner class TopupBillsInputDropdownAdapter(var items: List<TopupBillsInputDropdownData>) : RecyclerView.Adapter<TopupBillsInputDropdownViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TopupBillsInputDropdownViewHolder {
             val view = LayoutInflater.from(parent.context).inflate(R.layout.view_topup_bills_input_dropdown_bottom_sheet_item, parent, false)
             return TopupBillsInputDropdownViewHolder(view)
@@ -90,7 +90,7 @@ class TopupBillsInputDropdownWidget @JvmOverloads constructor(@NotNull context: 
 
     }
 
-    inner class TopupBillsInputDropdownViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    inner class TopupBillsInputDropdownViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(element: TopupBillsInputDropdownData) {
             with(itemView) {
                 vg_input_dropdown_label.text = element.label

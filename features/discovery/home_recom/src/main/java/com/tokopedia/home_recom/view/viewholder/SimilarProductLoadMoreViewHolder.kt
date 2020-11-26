@@ -20,7 +20,7 @@ class SimilarProductLoadMoreViewHolder(itemView: View) : AbstractViewHolder<Load
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.loading_layout
+        val LAYOUT = com.tokopedia.baselist.R.layout.loading_layout
     }
 
 }

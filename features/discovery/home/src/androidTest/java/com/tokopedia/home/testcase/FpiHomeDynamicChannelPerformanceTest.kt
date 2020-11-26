@@ -11,6 +11,8 @@ import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils.writeFPIPerformanceFile
 import com.tokopedia.home.environment.InstrumentationHomeTestActivity
 import com.tokopedia.home.R
+import com.tokopedia.home.mock.HomeMockResponseConfig
+import com.tokopedia.test.application.util.setupGraphqlMockResponseWithCheck
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +29,12 @@ class FpiHomeDynamicChannelPerformanceTest {
     val TEST_CASE_OVERALL_SCROLL_PERFORMANCE = "test_case_overall_scroll"
 
     @get:Rule
-    var activityRule: ActivityTestRule<InstrumentationHomeTestActivity> = ActivityTestRule(InstrumentationHomeTestActivity::class.java)
+    var activityRule = object: ActivityTestRule<InstrumentationHomeTestActivity>(InstrumentationHomeTestActivity::class.java) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            setupGraphqlMockResponseWithCheck(HomeMockResponseConfig())
+        }
+    }
 
     //for testing purpose, to check if mock response is working
 //    @Test

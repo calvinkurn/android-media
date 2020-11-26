@@ -22,11 +22,11 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.Iris
-import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -43,6 +43,7 @@ import com.tokopedia.loginphone.common.di.DaggerLoginRegisterPhoneComponent
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifications.CMPushNotificationManager
+import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.track.TrackApp
@@ -64,8 +65,10 @@ class ChooseAccountFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var analytics: LoginPhoneNumberAnalytics
+
     @Named(SessionModule.SESSION_MODULE)
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
@@ -78,7 +81,11 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     private lateinit var adapter: AccountAdapter
     private lateinit var toolbarShopCreation: Toolbar
 
+    lateinit var mIris: Iris
     lateinit var viewModel: com.tokopedia.loginphone.chooseaccount.data.ChooseAccountViewModel
+
+    private var selectedAccount: UserDetail? = null
+    private var selectedPhoneNo: String? = null
 
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
@@ -202,7 +209,28 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     }
 
     override fun onSelectedAccount(account: UserDetail, phone: String) {
-        loginToken(account, phone)
+        if (account.challenge2Fa) {
+            open2FA(account, phone)
+        } else {
+            loginToken(account, phone)
+        }
+    }
+
+    private fun open2FA(account: UserDetail, phone: String) {
+        selectedAccount = account
+        selectedPhoneNo = phone
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OtpConstant.OtpType.AFTER_LOGIN_PHONE)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, account.email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID_ENC, account.userIdEnc)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, viewModel.accessToken)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ID, account.userId)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OtpConstant.OtpMode.PIN);
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_FROM_2FA, true);
+        startActivityForResult(intent, REQUEST_CODE_PIN_CHALLENGE)
     }
 
     private fun getAccountList() {
@@ -359,8 +387,13 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         this.viewModel.accountList = accountList
 
         if (accountList.userDetails.size == 1 && accountList.msisdn.isNotEmpty()) {
+            adapter.setList(accountList.userDetails, accountList.msisdn)
             val userDetail = accountList.userDetails[0]
-            loginToken(userDetail, accountList.msisdn)
+            if (userDetail.challenge2Fa) {
+                open2FA(userDetail, accountList.msisdn)
+            } else {
+                loginToken(userDetail, accountList.msisdn)
+            }
         } else {
             dismissLoadingProgress()
             adapter.setList(accountList.userDetails, accountList.msisdn)
@@ -379,6 +412,12 @@ class ChooseAccountFragment : BaseDaggerFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
             onSuccessLogin(userSessionInterface.temporaryUserId)
+        } else if (requestCode == REQUEST_CODE_PIN_CHALLENGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (selectedAccount != null && !selectedPhoneNo.isNullOrEmpty()) {
+                    loginToken(selectedAccount, selectedPhoneNo ?: "")
+                }
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
@@ -405,6 +444,9 @@ class ChooseAccountFragment : BaseDaggerFragment(),
         private val MENU_ID_LOGOUT = 111
 
         const val FACEBOOK_LOGIN_TYPE = "fb"
+        const val REQUEST_CODE_PIN_CHALLENGE = 112
+        const val PARAM_IS_2FA_KEY = "KEY_FROM_2FA_CHALLENGE"
+        const val PARAM_IS_2FA = 113
 
         fun createInstance(bundle: Bundle): Fragment {
             val fragment = ChooseAccountFragment()

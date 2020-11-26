@@ -3,12 +3,9 @@ package com.tokopedia.product.detail.common.data.model.carttype
 
 import com.google.gson.annotations.SerializedName
 
-data class CartRedirectionResponse(
-        @SerializedName("cart_redirection")
-        val cartRedirection: CartRedirection? = null
-)
-
 data class CartTypeData(
+        @SerializedName("product_id")
+        val productId: String = "",
         @SerializedName("available_buttons")
         val availableButtons: List<AvailableButton> = listOf(),
         @SerializedName("config_name")

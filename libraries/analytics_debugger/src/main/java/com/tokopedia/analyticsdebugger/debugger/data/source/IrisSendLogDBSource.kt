@@ -1,10 +1,13 @@
 package com.tokopedia.analyticsdebugger.debugger.data.source
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 
 import com.tokopedia.analyticsdebugger.database.IrisSendLogDB
 import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
 import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
+import com.tokopedia.kotlin.extensions.clear
 
 import java.util.HashMap
 
@@ -16,21 +19,32 @@ class IrisSendLogDBSource @Inject
 constructor(context: Context) {
 
     private val irisLogSendDao: IrisLogSendDao
+    private val sp: SharedPreferences
+
+    companion object {
+        const val IRIS_COUNT_DEBUG_PREF = "iris_count_debug_pref"
+        const val ROW_COUNT = "row_count"
+    }
 
     init {
         irisLogSendDao = TkpdAnalyticsDatabase.getInstance(context).irisLogSendDao()
+        sp = context.getSharedPreferences(IRIS_COUNT_DEBUG_PREF, Context.MODE_PRIVATE)
     }
 
     fun deleteAll(): Observable<Boolean> {
         return Observable.unsafeCreate { subscriber ->
             irisLogSendDao.deleteAll()
+            sp.clear()
             subscriber.onNext(true)
         }
     }
 
-    fun insertAll(irisSendLogDB: IrisSendLogDB): Observable<Boolean> {
+    @SuppressLint("ApplySharedPref")
+    fun insertAll(irisSendLogDB: IrisSendLogDB, rowCount: Int): Observable<Boolean> {
         return Observable.fromCallable {
             irisLogSendDao.insertAll(irisSendLogDB)
+            val currentCount = sp.getInt(ROW_COUNT, 0)
+            sp.edit().putInt(ROW_COUNT, currentCount + rowCount).commit()
             true
         }
     }
@@ -56,4 +70,7 @@ constructor(context: Context) {
         }
     }
 
+    fun getCount(): Int {
+        return sp.getInt(ROW_COUNT, 0)
+    }
 }

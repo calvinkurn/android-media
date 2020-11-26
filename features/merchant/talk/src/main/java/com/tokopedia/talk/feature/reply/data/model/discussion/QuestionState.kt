@@ -24,5 +24,8 @@ data class QuestionState(
         val isFollowed: Boolean = false,
         @SerializedName("isMasked")
         @Expose
-        val isMasked: Boolean = false
+        val isMasked: Boolean = false,
+        @SerializedName("isYours")
+        @Expose
+        val isYours: Boolean = false
 )

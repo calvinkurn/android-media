@@ -3,8 +3,11 @@ package com.tokopedia.product.addedit.imagepicker.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
+
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+import com.tokopedia.product.addedit.R;
 import com.tokopedia.product.addedit.tracking.ProductAddChooseImageTracking;
 import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking;
 import com.tokopedia.user.session.UserSession;
@@ -24,6 +27,9 @@ public class ImagePickerAddProductActivity extends ImagePickerActivity {
         isAddProduct = getIntent().getBooleanExtra(IS_ADD, false);
         super.onCreate(savedInstanceState);
         userSession = new UserSession(getContext());
+        // change the word selanjutnya to lanjut
+        TextView tvDone = findViewById(com.tokopedia.imagepicker.R.id.tv_done);
+        tvDone.setText(getString(R.string.action_continue));
     }
 
     public static Intent getIntent(Context context, ImagePickerBuilder imagePickerBuilder, boolean isEditProduct, boolean isAddProduct) {

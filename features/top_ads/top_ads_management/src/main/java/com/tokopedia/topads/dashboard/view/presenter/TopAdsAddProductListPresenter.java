@@ -1,9 +1,8 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.base.list.seller.common.util.ItemType;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
@@ -15,6 +14,7 @@ import com.tokopedia.topads.dashboard.view.TopAdsSearchProductView;
 import com.tokopedia.topads.dashboard.view.mapper.TopAdsProductModelMapper;
 import com.tokopedia.topads.dashboard.view.model.NonPromotedTopAdsAddProductModel;
 import com.tokopedia.topads.dashboard.view.model.PromotedTopAdsAddProductModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     public static final int PAGE_ROW = 12;
 
 
-    private SessionHandler sessionHandler;
+    private UserSession sessionHandler;
     private TopAdsProductListUseCase topAdsProductListUseCase;
     private Map<String, String> params;
     private TopAdsSearchProductView view;
@@ -40,6 +40,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
     private DefaultErrorSubscriber.ErrorNetworkListener errorNetworkListener;
     private NetworkStatus networkStatus;
     private int networkCallCount = 0;
+
     public TopAdsAddProductListPresenter() {
         page = 0;
         params = new TKPDMapParam<>();
@@ -57,7 +58,7 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         page = 0;
     }
 
-    public void setSessionHandler(SessionHandler sessionHandler) {
+    public void setSessionHandler(UserSession sessionHandler) {
         this.sessionHandler = sessionHandler;
     }
 
@@ -77,9 +78,9 @@ public class TopAdsAddProductListPresenter extends BaseDaggerPresenter<TopAdsSea
         return (isHitNetwork() && networkCallCount <= 0);
     }
 
-    private void fillParam(SessionHandler sessionHandler) {
+    private void fillParam(UserSession sessionHandler) {
         if (sessionHandler != null)
-            params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, sessionHandler.getShopID());
+            params.put(TopAdsNetworkConstant.PARAM_SHOP_ID, sessionHandler.getShopId());
         if (query != null) {
             params.put(TopAdsNetworkConstant.PARAM_KEYWORD, query);
         } else {

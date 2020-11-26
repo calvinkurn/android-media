@@ -20,6 +20,7 @@ import org.junit.Test
 
 import org.junit.Before
 import org.junit.Rule
+import java.lang.reflect.Type
 
 class SmartBillsViewModelTest {
 
@@ -45,9 +46,13 @@ class SmartBillsViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
 
-        gqlResponseFail = GraphqlResponse(
-                mapOf(),
-                mapOf(MessageErrorException::class.java to listOf(GraphqlError())), false)
+        val result = HashMap<Type, Any?>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = MessageErrorException::class.java
+
+        result[objectType] = null
+        errors[objectType] = listOf(GraphqlError())
+        gqlResponseFail = GraphqlResponse(result, errors, false)
 
         smartBillsViewModel =
                 SmartBillsViewModel(graphqlRepository, smartBillsRepository, SmartBillsTestDispatchersProvider())
@@ -59,9 +64,12 @@ class SmartBillsViewModelTest {
     @Test
     fun getStatementMonths_Success() {
         val statementMonthsResponse = RechargeStatementMonths.Response(listOf(RechargeStatementMonths(0, "April", 4, 2020, true)))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeStatementMonths.Response::class.java to statementMonthsResponse),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeStatementMonths.Response::class.java
+        result[objectType] = statementMonthsResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         smartBillsViewModel.getStatementMonths("", mapParams)
@@ -76,9 +84,12 @@ class SmartBillsViewModelTest {
     @Test
     fun getStatementMonths_Fail_EmptyResponse() {
         val statementMonthsResponse = RechargeStatementMonths.Response(listOf())
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeStatementMonths.Response::class.java to statementMonthsResponse),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeStatementMonths.Response::class.java
+        result[objectType] = statementMonthsResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         smartBillsViewModel.getStatementMonths("", mapParams)
@@ -102,9 +113,12 @@ class SmartBillsViewModelTest {
                 RechargeBills(0, 1, "test", checkoutFields = listOf(checkoutField))
             )
         ))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeStatementBills.Response::class.java to statementBillsResponse),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeStatementBills.Response::class.java
+        result[objectType] = statementBillsResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         smartBillsViewModel.getStatementBills("", mapParams)
@@ -129,9 +143,12 @@ class SmartBillsViewModelTest {
         val statementBillsResponse = RechargeStatementBills.Response(RechargeStatementBills(
                 month = 4, monthText = "April", isOngoing = true, bills = listOf()
         ))
-        val gqlResponseSuccess = GraphqlResponse(
-                mapOf(RechargeStatementBills.Response::class.java to statementBillsResponse),
-                mapOf(), false)
+        val result = HashMap<Type, Any>()
+        val errors = HashMap<Type, List<GraphqlError>>()
+        val objectType = RechargeStatementBills.Response::class.java
+        result[objectType] = statementBillsResponse
+        val gqlResponseSuccess = GraphqlResponse(result, errors, false)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
 
         smartBillsViewModel.getStatementBills("", mapParams)
@@ -156,10 +173,10 @@ class SmartBillsViewModelTest {
 
     @Test
     fun runMultiCheckout_Success() {
-        val successResponseAttributes = RechargeMultiCheckoutResponse.MultiCheckoutResponseAttributes()
-        successResponseAttributes.allSuccess = true
-        successResponseAttributes.redirectUrl = "https://www.tokopedia.com"
-        successResponseAttributes.queryString = "test_query_string"
+        val successResponseAttributes = RechargeMultiCheckoutResponse.MultiCheckoutResponseAttributes(true,
+                redirectUrl = "https://www.tokopedia.com",
+                queryString = "test_query_string"
+        )
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", successResponseAttributes)
         coEvery { smartBillsRepository.postMultiCheckout(any()) } returns mockMultiCheckoutResponse
 
@@ -177,9 +194,10 @@ class SmartBillsViewModelTest {
 
     @Test
     fun runMultiCheckout_Success_Partial() {
-        val errorResponseAttributes = RechargeMultiCheckoutResponse.MultiCheckoutResponseAttributes()
-        errorResponseAttributes.allSuccess = false
-        errorResponseAttributes.errors = listOf(RechargeMultiCheckoutResponse.Error(0, 1, "error"))
+        val errorResponseAttributes = RechargeMultiCheckoutResponse.MultiCheckoutResponseAttributes(
+                false,
+                listOf(RechargeMultiCheckoutResponse.Error(0, 1, "error"))
+        )
         val mockMultiCheckoutResponse = RechargeMultiCheckoutResponse("test", "0123456789", errorResponseAttributes)
         coEvery { smartBillsRepository.postMultiCheckout(any()) } returns mockMultiCheckoutResponse
 

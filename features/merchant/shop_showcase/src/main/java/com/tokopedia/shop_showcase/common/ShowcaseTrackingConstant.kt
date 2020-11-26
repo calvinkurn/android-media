@@ -13,3 +13,6 @@ const val ETALASE_SETTING_PAGE = "etalase setting page"
 const val ADD_SHOWCASE_PAGE = "add etalase page"
 const val EDIT_SHOWCASE_PAGE = "edit etalase page"
 const val PAGE_TYPE_VALUE = "/shoppage"
+
+const val CLICK_FINISH_SUCCESS = "click finish success"
+const val CLICK_FINISH_ERROR = "click finish error"

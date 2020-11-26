@@ -1,13 +1,13 @@
 package com.tokopedia.centralizedpromo.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.domain.mapper.PostMapper
 import com.tokopedia.centralizedpromo.view.model.PostListUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.sellerhome.domain.model.GetPostDataResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.centralizedpromo.domain.model.GetPostDataResponse
 import com.tokopedia.sellerhome.domain.usecase.BaseGqlUseCase
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject

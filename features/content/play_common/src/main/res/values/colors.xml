@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="play_placeholder_shadow">#1E31353B</color>
+    <color name="play_chat_background">#6631353B</color>
+    <color name="play_background_overlay_82">#CCFFFFFF</color>
+
+    <color name="play_top_gradient_darker">#80000000</color>
+    <color name="play_top_gradient_neutral">#417D7D7D</color>
+    <color name="play_top_gradient_lighter">#00000000</color>
+
+    <color name="play_bottom_gradient_lighter">#00000000</color>
+    <color name="play_bottom_gradient_darker">#B331353B</color>
 </resources>

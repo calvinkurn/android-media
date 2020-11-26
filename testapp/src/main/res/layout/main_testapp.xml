@@ -3,19 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="12dp"
-    android:orientation="vertical">
-    <EditText
-        android:id="@+id/editTextUser"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <EditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword" />
+    android:orientation="vertical"
+    android:background="#004900">
     <Button
         android:id="@+id/loginButton"
-        android:text="Login"
+        android:text="Login (NEW FLOW)"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
@@ -29,8 +21,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
+        android:id="@+id/testGqlButton"
+        android:text="Test GQL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/devOptButton"
+        android:text="Developer Options"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
         android:id="@+id/button"
         android:text="open"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/useOldPageButton"
+        android:text="use old login page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_64"/>
 </LinearLayout>

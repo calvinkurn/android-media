@@ -35,6 +35,12 @@ class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
     var isCarousel = false
     var etalaseId = ""
     var labelGroupList: List<LabelGroupViewModel> = listOf()
+    var pdpViewCount: String = ""
+    var stockLabel: String = ""
+    var stockBarPercentage: Int = 0
+    var isUpcoming: Boolean = false
+    var etalaseType: Int? = null
+    var hideGimmick: Boolean = false
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -100,6 +106,7 @@ class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
         private val BADGE_FREE_RETURN = "Free Return"
         private val LABEL_CASHBACK = "Cashback"
         private val LABEL_PERCENTAGE = "%"
+        const val THRESHOLD_VIEW_COUNT = 1000
     }
 
 }

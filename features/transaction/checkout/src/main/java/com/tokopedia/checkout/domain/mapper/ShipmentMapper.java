@@ -2,10 +2,14 @@ package com.tokopedia.checkout.domain.mapper;
 
 import android.text.TextUtils;
 
+import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.purchase_platform.common.feature.button.ABTestButton;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyAdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyEmptyCartInfoUiModel;
@@ -84,7 +88,6 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setKeroDiscomToken(shipmentAddressFormDataResponse.getKeroDiscomToken());
             dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
             dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
-            dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
             dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
             dataResult.setHidingCourier(shipmentAddressFormDataResponse.getHideCourier());
             dataResult.setIsBlackbox(shipmentAddressFormDataResponse.getIsBlackbox() == 1);
@@ -92,9 +95,10 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setError(!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setErrorMessage(UtilsKt.convertToString(shipmentAddressFormDataResponse.getErrors()));
             dataResult.setShowOnboarding(shipmentAddressFormDataResponse.isShowOnboarding());
-            dataResult.setIneligbilePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligbilePromoDialogEnabled());
+            dataResult.setIneligiblePromoDialogEnabled(shipmentAddressFormDataResponse.isIneligiblePromoDialogEnabled());
             dataResult.setOpenPrerequisiteSite(shipmentAddressFormDataResponse.isOpenPrerequisiteSite());
             dataResult.setEligibleNewShippingExperience(shipmentAddressFormDataResponse.isEligibleNewShippingExperience());
+            dataResult.setAbTestButton(new ABTestButton(shipmentAddressFormDataResponse.getAbTestButton().getEnable()));
 
             if (shipmentAddressFormDataResponse.getDisabledFeatures() != null &&
                     shipmentAddressFormDataResponse.getDisabledFeatures().contains(CheckoutDisabledFeaturesKt.multiAddress) &&
@@ -115,9 +119,6 @@ public class ShipmentMapper implements IShipmentMapper {
                         case CheckoutDisabledFeaturesKt.dropshipper:
                             dataResult.setDropshipperDisable(true);
                             break;
-                        case CheckoutDisabledFeaturesKt.multiAddress:
-                            dataResult.setMultipleDisable(true);
-                            break;
                         case CheckoutDisabledFeaturesKt.orderPrioritas:
                             dataResult.setOrderPrioritasDisable(true);
                             break;
@@ -136,7 +137,9 @@ public class ShipmentMapper implements IShipmentMapper {
             Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
             DataAddressData dataAddressData = new DataAddressData();
             if (addresses != null) {
-                if (addresses.getData() != null) {
+                if (addresses.getData() != null &&
+                        shipmentAddressFormDataResponse.getGroupAddress() != null &&
+                        shipmentAddressFormDataResponse.getGroupAddress().size() > 0) {
                     com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultTradeInAddress = null;
                     for (com.tokopedia.checkout.data.model.response.shipment_address_form.Data dataAddress : addresses.getData()) {
                         if (dataAddress.getKey().equals(AddressesData.DEFAULT_ADDRESS)) {
@@ -148,7 +151,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     if (defaultTradeInAddress != null && addresses.getActive().equals(AddressesData.TRADE_IN_ADDRESS)) {
                         UserAddress defaultAddressData = getUserAddress(defaultTradeInAddress);
                         dataAddressData.setDefaultAddress(defaultAddressData);
-                    } else if (shipmentAddressFormDataResponse.getIsMultiple() == 0) {
+                    } else {
                         com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
                                 shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
                         UserAddress defaultAddressData = getUserAddress(defaultAddress);
@@ -169,12 +172,10 @@ public class ShipmentMapper implements IShipmentMapper {
                     }
                 }
             } else {
-                if (shipmentAddressFormDataResponse.getIsMultiple() == 0) {
-                    com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
-                            shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
-                    UserAddress defaultAddressData = getUserAddress(defaultAddress);
-                    dataAddressData.setDefaultAddress(defaultAddressData);
-                }
+                com.tokopedia.checkout.data.model.response.shipment_address_form.UserAddress defaultAddress =
+                        shipmentAddressFormDataResponse.getGroupAddress().get(0).getUserAddress();
+                UserAddress defaultAddressData = getUserAddress(defaultAddress);
+                dataAddressData.setDefaultAddress(defaultAddressData);
             }
 
             AddressesData addressesData = new AddressesData();
@@ -185,7 +186,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
             if (shipmentAddressFormDataResponse.getTickers() != null && !shipmentAddressFormDataResponse.getTickers().isEmpty()) {
                 Ticker ticker = shipmentAddressFormDataResponse.getTickers().get(0);
-                dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
+                dataResult.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage(), ""));
             }
 
             if (!isDisableEgold) {
@@ -460,6 +461,24 @@ public class ShipmentMapper implements IShipmentMapper {
                                 groupShopResult.setFulfillmentName(groupShop.getWarehouse().getCityName());
                             }
 
+                            if (groupShop.getShipmentInformation() != null) {
+                                FreeShippingData freeShippingData = new FreeShippingData();
+                                freeShippingData.setBadgeUrl(groupShop.getShipmentInformation().getFreeShipping().getBadgeUrl());
+                                freeShippingData.setEligible(groupShop.getShipmentInformation().getFreeShipping().getEligible());
+
+                                PreorderData preorderData = new PreorderData();
+                                preorderData.setDuration(groupShop.getShipmentInformation().getPreorder().getDuration());
+                                preorderData.setPreorder(groupShop.getShipmentInformation().getPreorder().isPreorder());
+
+                                ShipmentInformationData shipmentInformationData = new ShipmentInformationData();
+                                shipmentInformationData.setEstimation(groupShop.getShipmentInformation().getEstimation());
+                                shipmentInformationData.setShopLocation(groupShop.getShipmentInformation().getShopLocation());
+                                shipmentInformationData.setFreeShipping(freeShippingData);
+                                shipmentInformationData.setPreorder(preorderData);
+
+                                groupShopResult.setShipmentInformationData(shipmentInformationData);
+                            }
+
                             if (groupShop.getShop() != null) {
                                 Shop shopResult = new Shop();
 
@@ -489,6 +508,7 @@ public class ShipmentMapper implements IShipmentMapper {
                                 shopResult.setProvinceId(groupShop.getShop().getProvinceId());
                                 shopResult.setCityId(groupShop.getShop().getCityId());
                                 shopResult.setCityName(groupShop.getShop().getCityName());
+                                shopResult.setShopAlertMessage(groupShop.getShop().getShopAlertMessage());
 
                                 groupShopResult.setShop(shopResult);
                             }
@@ -664,6 +684,13 @@ public class ShipmentMapper implements IShipmentMapper {
                                     if (product.getFreeReturns() != null) {
                                         productResult.setFreeReturnLogo(product.getFreeReturns().getFreeReturnsLogo());
                                     }
+
+                                    if (product.getVariantDescriptionDetail() != null) {
+                                        productResult.setVariant(product.getVariantDescriptionDetail().getVariantDescription());
+                                    }
+
+                                    productResult.setProductAlertMessage(product.getProductAlertMessage());
+                                    productResult.setProductInformation(product.getProductInformation());
 
                                     if (!UtilsKt.isNullOrEmpty(product.getProductShipment())) {
                                         List<ProductShipment> productShipmentListResult = new ArrayList<>();

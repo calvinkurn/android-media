@@ -188,10 +188,10 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
 
     private fun initModelFromSavedInstanceState(data: Bundle?) {
         stepperModel = data?.let {
-            data.getParcelable(STEPPER_MODEL_EXTRA) as PMCancellationQuestionnaireStepperModel
+            data.getParcelable(STEPPER_MODEL_EXTRA) ?: PMCancellationQuestionnaireStepperModel()
         } ?: PMCancellationQuestionnaireStepperModel()
         pmCancellationQuestionnaireData = data?.let {
-            data.getParcelable(QUESTIONNAIRE_DATA_EXTRA) as PMCancellationQuestionnaireData
+            data.getParcelable(QUESTIONNAIRE_DATA_EXTRA) ?: PMCancellationQuestionnaireData()
         } ?: PMCancellationQuestionnaireData()
     }
 
@@ -305,7 +305,9 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     }
 
     private fun sendClickSendAnswerButtonTrackingEvent() {
-        powerMerchantTracking.eventPMCancellationQuestionnaireClickSendAnswer()
+        val options = pmCancellationQuestionnaireStepperModel
+            .listQuestionnaireAnswer[currentPosition - 1].answers
+        powerMerchantTracking.eventClickCancellationQuestionnaireSendAnswer(options)
     }
 
     private fun sendClickNextQuestionButtonTrackingEvent() {
@@ -313,12 +315,13 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
             isFirstPage() -> {
                 val rating = pmCancellationQuestionnaireStepperModel
                         .listQuestionnaireAnswer[currentPosition - 1].answers[0].toIntOrZero()
-                powerMerchantTracking.eventPMCancellationClickNextQuestionButtonFirstPage(rating)
+                powerMerchantTracking.eventClickCancellationQuestionnaireSubmitRating(rating)
             }
-            else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage(
-                    pmCancellationQuestionnaireStepperModel
-                            .listQuestionnaireAnswer[currentPosition - 1].question
-            )
+            else -> {
+                val options = pmCancellationQuestionnaireStepperModel
+                    .listQuestionnaireAnswer[currentPosition - 1].answers
+                powerMerchantTracking.eventClickCancellationQuestionnaireSubmitReason(options)
+            }
         }
     }
 

@@ -13,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -220,6 +221,11 @@ open class PlayActivity : BaseSimpleActivity() {
                 analytics.eventPipClosed(channelId)
             }
         }
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        SplitCompat.install(this)
+        super.onConfigurationChanged(newConfig)
     }
 
     companion object {

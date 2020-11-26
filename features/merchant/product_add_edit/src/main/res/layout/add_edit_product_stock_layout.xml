@@ -27,6 +27,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfu_available_stock"
+        android:contentDescription="@string/content_desc_tfu_available_stock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl4"
@@ -38,6 +39,7 @@
 
     <com.tokopedia.unifycomponents.TextFieldUnify
         android:id="@+id/tfu_minimum_order"
+        android:contentDescription="@string/content_desc_tfu_minimum_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

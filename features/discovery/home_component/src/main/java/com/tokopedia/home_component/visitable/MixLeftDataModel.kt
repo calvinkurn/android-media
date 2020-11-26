@@ -5,15 +5,16 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.model.ChannelModel
 
 data class MixLeftDataModel(
-        val channelModel: ChannelModel
+        val channelModel: ChannelModel,
+        val isCache: Boolean = false
 ): HomeComponentVisitable {
     override fun visitableId(): String? {
         return channelModel.id
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ChannelModel) {
-            channelModel == b
+        return if (b is MixLeftDataModel) {
+            channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }
 

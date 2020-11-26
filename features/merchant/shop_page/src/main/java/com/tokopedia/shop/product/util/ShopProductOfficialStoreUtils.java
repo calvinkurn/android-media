@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.utils.network.URLGenerator;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity;
 import com.tokopedia.shop.product.view.activity.SimpleWebViewActivity;
 
 import java.io.UnsupportedEncodingException;
@@ -67,7 +67,7 @@ public class ShopProductOfficialStoreUtils {
                     }
                     // Pointing specific page on apps will be break the page
                     page = params.get(URL_QUERY_PAGE);
-                    activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword, id,
+                    activity.startActivity(ShopProductListResultActivity.createIntent(activity, shopId, keyword, id,
                             "", params.get(URL_QUERY_SORT), ""));
                     break;
                 case URL_PATH_PRODUCT:
@@ -81,7 +81,7 @@ public class ShopProductOfficialStoreUtils {
                     }
                     // Pointing specific page on apps will be break the page
                     page = uri.getLastPathSegment();
-                    activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword,
+                    activity.startActivity(ShopProductListResultActivity.createIntent(activity, shopId, keyword,
                             null, "", params.get(URL_QUERY_SORT), ""));
                     break;
             }
@@ -92,7 +92,7 @@ public class ShopProductOfficialStoreUtils {
                 keyword = params.get(URL_QUERY_KEYWORD);
             }
             page = params.get(URL_QUERY_PAGE);
-            activity.startActivity(ShopProductListActivity.createIntent(activity, shopId, keyword,
+            activity.startActivity(ShopProductListResultActivity.createIntent(activity, shopId, keyword,
                     null, "", params.get(URL_QUERY_SORT), ""));
         }
     }

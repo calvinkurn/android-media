@@ -47,11 +47,12 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
     private var btnText = ""
     private var appLink = ""
     private var templateKey = ""
+    private var notificationId = ""
 
     private var listener: LongerContentListener? = null
 
     interface LongerContentListener {
-        fun trackOnClickCtaButton(templateKey: String)
+        fun trackOnClickCtaButton(templateKey: String, notificationId: String)
     }
 
     override fun onAttach(context: Context) {
@@ -105,7 +106,7 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
         }
 
         ctaButton.setOnClickListener {
-            listener?.trackOnClickCtaButton(templateKey)
+            listener?.trackOnClickCtaButton(templateKey, notificationId)
             RouteManager.route(it.context, appLink)
             dismiss()
         }
@@ -160,6 +161,7 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
             btnText = getParamString(BaseNotificationFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
             appLink = getParamString(BaseNotificationFragment.PARAM_CTA_APPLINK, arguments, null, "")
             templateKey = getParamString(BaseNotificationFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
+            notificationId = getParamString(BaseNotificationFragment.PARAM_NOTIF_ID, arguments, null, "")
         }
     }
 

@@ -20,6 +20,8 @@ import com.tokopedia.cart.view.ActionListener;
 import com.tokopedia.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.cart.view.uimodel.CartItemHolderData;
 import com.tokopedia.cart.view.uimodel.CartShopHolderData;
+import com.tokopedia.unifycomponents.ImageUnify;
+import com.tokopedia.unifycomponents.Label;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -47,7 +49,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CheckBox cbSelectShop;
     private Typography tvShopName;
     private ImageView imgShopBadge;
-    private ImageView imgFulfillment;
     private Typography tvFulfillDistrict;
     private RecyclerView rvCartItem;
 
@@ -55,6 +56,14 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private Ticker tickerError;
     private LinearLayout layoutWarning;
     private Ticker tickerWarning;
+
+    private Typography separatorPreOrder;
+    private Label labelPreOrder;
+    private Typography separatorIncident;
+    private Label labelIncident;
+    private Typography separatorFreeShipping;
+    private ImageView imgFreeShipping;
+    private Label labelFulfillment;
 
     private ActionListener actionListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -84,8 +93,15 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         layoutWarning = itemView.findViewById(R.id.layout_warning);
         tickerWarning = itemView.findViewById(R.id.ticker_warning);
 
-        imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
+
+        separatorPreOrder = itemView.findViewById(R.id.separator_pre_order);
+        labelPreOrder = itemView.findViewById(R.id.label_pre_order);
+        separatorIncident = itemView.findViewById(R.id.separator_incident);
+        labelIncident = itemView.findViewById(R.id.label_incident);
+        separatorFreeShipping = itemView.findViewById(R.id.separator_free_shipping);
+        imgFreeShipping = itemView.findViewById(R.id.img_free_shipping);
+        labelFulfillment = itemView.findViewById(R.id.label_fulfillment);
 
         initCheckboxWatcherDebouncer(compositeSubscription);
     }
@@ -137,7 +153,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         String shopName = cartShopHolderData.getShopGroupAvailableData().getShopName();
         tvShopName.setText(shopName);
-        tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(cartShopHolderData));
+        tvShopName.setOnClickListener(v -> actionListener.onCartShopNameClicked(
+                cartShopHolderData.getShopGroupAvailableData().getShopId(),
+                cartShopHolderData.getShopGroupAvailableData().getShopName())
+        );
 
         if (cartShopHolderData.getShopGroupAvailableData().isOfficialStore() || cartShopHolderData.getShopGroupAvailableData().isGoldMerchant()) {
             if (!cartShopHolderData.getShopGroupAvailableData().getShopBadge().isEmpty()) {
@@ -159,7 +178,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
         cbSelectShop.setOnCheckedChangeListener(new CheckboxWatcher(checkboxWatcherListener));
-        imgFulfillment.setVisibility(cartShopHolderData.getShopGroupAvailableData().isFulfillment() ?
+        labelFulfillment.setVisibility(cartShopHolderData.getShopGroupAvailableData().isFulfillment() ?
                 View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getFulfillmentName())) {
             tvFulfillDistrict.setVisibility(View.VISIBLE);
@@ -168,6 +187,9 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tvFulfillDistrict.setVisibility(View.GONE);
         }
 
+        renderPreOrder(cartShopHolderData);
+        renderIncidentLabel(cartShopHolderData);
+        renderFreeShipping(cartShopHolderData);
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {
@@ -263,5 +285,40 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         };
+    }
+
+    private void renderPreOrder(CartShopHolderData cartShopHolderData) {
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getPreOrderInfo())) {
+            labelPreOrder.setText(cartShopHolderData.getShopGroupAvailableData().getPreOrderInfo());
+            labelPreOrder.setVisibility(View.VISIBLE);
+            separatorPreOrder.setVisibility(View.VISIBLE);
+        } else {
+            labelPreOrder.setVisibility(View.GONE);
+            separatorPreOrder.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderIncidentLabel(CartShopHolderData cartShopHolderData) {
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getIncidentInfo())) {
+            labelIncident.setText(cartShopHolderData.getShopGroupAvailableData().getIncidentInfo());
+            labelIncident.setVisibility(View.VISIBLE);
+            separatorIncident.setVisibility(View.VISIBLE);
+        } else {
+            labelIncident.setVisibility(View.GONE);
+            separatorIncident.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderFreeShipping(CartShopHolderData cartShopHolderData) {
+        if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getFreeShippingBadgeUrl())) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                    imgFreeShipping, cartShopHolderData.getShopGroupAvailableData().getFreeShippingBadgeUrl()
+            );
+            imgFreeShipping.setVisibility(View.VISIBLE);
+            separatorFreeShipping.setVisibility(View.VISIBLE);
+        } else {
+            imgFreeShipping.setVisibility(View.GONE);
+            separatorFreeShipping.setVisibility(View.GONE);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.tim
 
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.R
@@ -10,7 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewH
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.unifyprinciples.Typography
 
-class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
+class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var timerSprintSaleItemViewModel: TimerSprintSaleItemViewModel
     private val tvHours: Typography = itemView.findViewById(R.id.tv_hours)
     private val tvMinutes: Typography = itemView.findViewById(R.id.tv_minutes)
@@ -35,19 +36,32 @@ class TimerSprintSaleItemViewHolder(itemView: View, private val fragment: Fragme
                 tvTitle.text = itemView.context.getString(R.string.discovery_sale_ends_in)
             }
         }
+    }
 
-        timerSprintSaleItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { componentItem ->
-            if (!componentItem.data.isNullOrEmpty()) {
-                timerSprintSaleItemViewModel.startTimer()
-                sendSprintSaleTimerTrack()
-            }
-        })
 
-        timerSprintSaleItemViewModel.getTimerData().observe(fragment.viewLifecycleOwner, Observer {
-            tvHours.text = String.format(TIME_DISPLAY_FORMAT, it.hours)
-            tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, it.minutes)
-            tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, it.seconds)
-        })
+    override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
+        lifecycleOwner?.let {
+            timerSprintSaleItemViewModel.getComponentLiveData().observe(it, Observer { componentItem ->
+                if (!componentItem.data.isNullOrEmpty()) {
+                    timerSprintSaleItemViewModel.startTimer()
+                    sendSprintSaleTimerTrack()
+                }
+            })
+
+            timerSprintSaleItemViewModel.getTimerData().observe(it, Observer { timerData ->
+                tvHours.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
+                tvMinutes.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
+                tvSeconds.text = String.format(TIME_DISPLAY_FORMAT, timerData.seconds)
+            })
+        }
+    }
+
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let { it ->
+            timerSprintSaleItemViewModel.getComponentLiveData().removeObservers(it)
+            timerSprintSaleItemViewModel.getTimerData().removeObservers(it)
+        }
     }
 
     private fun sendSprintSaleTimerTrack() {

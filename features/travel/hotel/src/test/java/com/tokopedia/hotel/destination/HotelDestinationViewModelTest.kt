@@ -30,7 +30,7 @@ import java.lang.reflect.Type
 
 
 @RunWith(JUnit4::class)
-class HotelHomepageViewModelTest {
+class HotelDestinationViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()

@@ -53,4 +53,5 @@ public class TopAdsNewCostShopFragment extends TopAdsNewCostFragment<TopAdsCreat
     protected TopAdsDetailShopViewModel initiateDetailAd() {
         return new TopAdsDetailShopViewModel();
     }
+
 }

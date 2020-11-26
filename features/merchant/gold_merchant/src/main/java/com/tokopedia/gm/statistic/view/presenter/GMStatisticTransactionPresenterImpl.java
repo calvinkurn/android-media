@@ -1,11 +1,9 @@
 package com.tokopedia.gm.statistic.view.presenter;
 
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.domain.interactor.GMStatGetTransactionGraphUseCase;
-import com.tokopedia.gm.statistic.view.model.GMGraphViewModel;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
-import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
 
@@ -14,19 +12,19 @@ import rx.Subscriber;
  */
 public class GMStatisticTransactionPresenterImpl extends GMStatisticTransactionPresenter {
     private GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase;
-    private SessionHandler sessionHandler;
+    private UserSessionInterface userSessionInterface;
 
     public GMStatisticTransactionPresenterImpl(
             GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
-            SessionHandler sessionHandler) {
+            UserSessionInterface userSession) {
         super();
         this.gmStatGetTransactionGraphUseCase = gmStatGetTransactionGraphUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSessionInterface = userSession;
     }
 
     @Override
     public void loadDataWithDate(final GMModuleRouter gmModuleRouter, long startDate, long endDate) {
-        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate, sessionHandler.getShopID()), new Subscriber<GMTransactionGraphMergeModel>() {
+        gmStatGetTransactionGraphUseCase.execute(GMStatGetTransactionGraphUseCase.createRequestParam(startDate, endDate, userSessionInterface.getShopId()), new Subscriber<GMTransactionGraphMergeModel>() {
             @Override
             public void onCompleted() {
 

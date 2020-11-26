@@ -1,0 +1,9 @@
+query topAdsGetKeywordInsights($shopId:Int!,$insightType:String!){
+  topAdsGetKeywordInsights(shopId:$shopId,insightType:$insightType){
+    data
+    errors{
+      code
+      detail
+    }
+  }
+}

@@ -27,8 +27,6 @@ public interface ShipmentAdapterActionListener {
 
     void onChangeAddress();
 
-    void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel, String cartIds);
-
     void onChooseShipmentDuration(ShipmentCartItemModel shipmentCartItemModel,
                                   RecipientAddressModel recipientAddressModel,
                                   int cartPosition);
@@ -86,8 +84,6 @@ public interface ShipmentAdapterActionListener {
                              boolean isTradeInDropOff);
 
     void onCourierPromoCanceled(String shipperName, String promoCode);
-
-    boolean isToogleYearEndPromoOn();
 
     void onPurchaseProtectionLogicError();
 

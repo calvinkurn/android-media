@@ -42,7 +42,7 @@ class CMPushNotificationManager : CoroutineScope {
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_token_capture_foreground_enable", true)
 
     private val isPushEnable: Boolean
-        get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false) || BuildConfig.DEBUG
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_CM_PUSH_ENABLE, false) || BuildConfig.DEBUG
 
     private val isInAppEnable: Boolean
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
@@ -142,21 +142,25 @@ class CMPushNotificationManager : CoroutineScope {
         if (null == remoteMessage)
             return
 
-        if (null == remoteMessage.data)
-            return
+        val data = remoteMessage.data ?: return
 
+        val dataString = data.toString()
         try {
-            if (isFromCMNotificationPlatform(remoteMessage.data)) {
-                val confirmationValue = remoteMessage.data[CMConstant.PayloadKeys.SOURCE]
-                val bundle = PayloadConverter.convertMapToBundle(remoteMessage.data)
+            if (isFromCMNotificationPlatform(data)) {
+                val confirmationValue = data[CMConstant.PayloadKeys.SOURCE]
+                val bundle = PayloadConverter.convertMapToBundle(data)
                 if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
-                } else if (isPushEnable){
+                } else if (isPushEnable) {
                     PushController(applicationContext).handleNotificationBundle(bundle)
+                } else if (!(confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || confirmationValue.equals(CMConstant.PayloadKeys.FCM_EXTRA_CONFIRMATION_VALUE))){
+                    Timber.w("${CMConstant.TimberTags.TAG}validation;reason='not_cm_source';data='${dataString.
+                    take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "CMPushNotificationManager: handlePushPayload ", e)
+            Timber.w( "${CMConstant.TimberTags.TAG}exception;err='${Log.getStackTraceString(e)
+                    .take(CMConstant.TimberTags.MAX_LIMIT)}';data='${dataString.take(CMConstant.TimberTags.MAX_LIMIT)}'")
         }
 
     }

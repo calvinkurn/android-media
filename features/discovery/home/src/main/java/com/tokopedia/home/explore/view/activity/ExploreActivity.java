@@ -14,7 +14,6 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.material.tabs.TabLayout;
@@ -23,7 +22,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
@@ -56,14 +54,6 @@ public class ExploreActivity extends BaseTabActivity implements HasComponent<Exp
     private CoordinatorLayout root;
     private int position = 0;
     private List<String> sectionList = new ArrayList<>();
-
-    @DeepLink(ApplinkConst.HOME_EXPLORE)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return new Intent(context, ExploreActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

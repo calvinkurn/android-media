@@ -1,35 +1,11 @@
 package com.tokopedia.product.manage.item.category.view.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ProductCategory(var categoryId: Int = -1, var categoryName: String = "", var categoryList: Array<String>? = null) : Parcelable {
-    constructor(parcel: Parcel) : this(
-            parcel.readInt(),
-            parcel.readString(),
-            parcel.createStringArray()) {
-    }
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(categoryId)
-        parcel.writeString(categoryName)
-        parcel.writeStringArray(categoryList)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<ProductCategory> {
-        override fun createFromParcel(parcel: Parcel): ProductCategory {
-            return ProductCategory(parcel)
-        }
-
-        override fun newArray(size: Int): Array<ProductCategory?> {
-            return arrayOfNulls(size)
-        }
-    }
 
     private fun setPrintedString() {
         val size = categoryList?.size ?: 0

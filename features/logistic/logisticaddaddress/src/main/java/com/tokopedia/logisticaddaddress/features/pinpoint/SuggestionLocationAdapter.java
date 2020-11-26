@@ -248,8 +248,8 @@ public class SuggestionLocationAdapter extends ArrayAdapter<PredictionResult>
             // Confirm that the query completed successfully, otherwise return null
             final Status status = autocompletePredictions.getStatus();
             if (!status.isSuccess()) {
-                String noConnection = getContext().getResources().getString(R.string.msg_no_connection) + ".\n"
-                        + getContext().getResources().getString(R.string.error_no_connection2) + ".";
+                String noConnection = getContext().getResources().getString(com.tokopedia.abstraction.R.string.msg_no_connection) + ".\n"
+                        + getContext().getResources().getString(com.tokopedia.abstraction.R.string.error_no_connection2) + ".";
                 Snackbar snackbar = SnackbarManager.make((Activity) getContext(), noConnection, Snackbar.LENGTH_LONG);
                 if (!snackbar.isShownOrQueued()) {
                     KeyboardHandler.DropKeyboard(getContext(), ((Activity) getContext()).findViewById(android.R.id.content));

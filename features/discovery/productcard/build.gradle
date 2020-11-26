@@ -46,10 +46,12 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
+    implementation rootProject.ext.dbDependencies.sqliteFramework
 
     androidTestImplementation rootProject.ext.miscDependencies.multiDex
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
     androidTestImplementation rootProject.ext.testDependencies.androidRulesVersion
+    androidTestImplementation rootProject.ext.playServicesDependencies.analytics
     androidTestImplementation rootProject.ext.playServicesDependencies.core
     androidTestImplementation rootProject.ext.testDependencies.junit
     androidTestImplementation project(rootProject.ext.libraries.akamaiBotLib)

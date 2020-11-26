@@ -25,5 +25,5 @@ data class Benefits(
         @SerializedName("isAutoApply") val isAutoApply: Boolean,
         @SerializedName("autoApplyMsg") val autoApplyMsg: String,
         @SerializedName("dummyCode") val dummyCode: String,
-        @SerializedName("referenceID") val referenceID: Int?
+        @SerializedName("referenceID") val referenceID: String?
 )

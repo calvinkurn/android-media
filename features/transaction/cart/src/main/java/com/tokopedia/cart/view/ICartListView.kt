@@ -1,5 +1,6 @@
 package com.tokopedia.cart.view
 
+import android.view.View
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.purchase_platform.common.feature.insurance.response.InsuranceCartDigitalProduct
@@ -7,10 +8,13 @@ import com.tokopedia.purchase_platform.common.feature.insurance.response.Insuran
 import com.tokopedia.cart.data.model.response.recentview.RecentView
 import com.tokopedia.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.cart.domain.model.cartlist.CartListData
+import com.tokopedia.cart.domain.model.cartlist.OutOfServiceData
+import com.tokopedia.cart.domain.model.cartlist.UndoDeleteCartData
 import com.tokopedia.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import java.util.*
@@ -20,6 +24,8 @@ import java.util.*
  */
 
 interface ICartListView : CustomerView {
+
+    fun refreshCart()
 
     fun getAllShopDataList(): List<CartShopHolderData>
 
@@ -46,25 +52,33 @@ interface ICartListView : CustomerView {
                                     checkoutProductEligibleForCashOnDelivery: Boolean,
                                     condition: Int)
 
-    fun renderErrorToShipmentForm(message: String)
+    fun renderErrorToShipmentForm(message: String, ctaText: String = "")
 
     fun renderErrorToShipmentForm(throwable: Throwable)
 
-    fun renderDetailInfoSubTotal(qty: String, subtotalPrice: String, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
+    fun renderErrorToShipmentForm(outOfServiceData: OutOfServiceData)
+
+    fun renderDetailInfoSubTotal(qty: String, subtotalBeforeSlashedPrice: Double, subtotalPrice: Double, selectAllItem: Boolean, unselectAllItem: Boolean, noAvailableItems: Boolean)
 
     fun updateCashback(cashback: Double)
 
-    fun showToastMessageRed(message: String)
+    fun showToastMessageRed(message: String, ctaText: String = "", ctaClickListener: View.OnClickListener? = null)
 
     fun showToastMessageRed(throwable: Throwable)
 
-    fun showToastMessageGreen(message: String)
+    fun showToastMessageGreen(message: String, showDefaultAction: Boolean = true)
+
+    fun showToastMessageGreen(message: String, action: String, onClickListener: View.OnClickListener)
 
     fun renderLoadGetCartData()
 
     fun renderLoadGetCartDataFinish()
 
-    fun onDeleteCartDataSuccess(deletedCartIds: List<String>)
+    fun onDeleteCartDataSuccess(deletedCartIds: List<String>, removeAllItems: Boolean, forceExpandCollapsedUnavailableItems: Boolean)
+
+    fun onUndoDeleteCartDataSuccess(undoDeleteCartData: UndoDeleteCartData)
+
+    fun onAddCartToWishlistSuccess(message: String, productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean)
 
     fun stopCartPerformanceTrace()
 
@@ -72,7 +86,7 @@ interface ICartListView : CustomerView {
 
     fun renderRecentView(recentViewList: List<RecentView>?)
 
-    fun renderWishlist(wishlists: List<Wishlist>?)
+    fun renderWishlist(wishlists: List<Wishlist>?, forceReload: Boolean)
 
     fun renderRecommendation(recommendationWidget: RecommendationWidget?)
 
@@ -124,5 +138,7 @@ interface ICartListView : CustomerView {
 
     fun resetRecentViewList()
 
-    fun sendATCTrackingURL(clickUrl: String)
+    fun sendATCTrackingURL(recommendationItem: RecommendationItem)
+
+    fun reCollapseExpandedDeletedUnavailableItems()
 }

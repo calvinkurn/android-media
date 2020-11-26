@@ -26,13 +26,13 @@
         android:layout_gravity="center_horizontal"
         app:srcCompat="@drawable/gf_ic_circle_2" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/image_circle_reward"
         android:layout_width="95dp"
         android:layout_height="95dp"
         android:scaleType="centerCrop"
         android:layout_gravity="center_horizontal"
-        app:srcCompat="@drawable/gf_ic_ovo_large" />
+        app:remoteFileName="ic_ovo.png" />
 
     <RelativeLayout
         android:id="@+id/ll_reward_text"
@@ -60,7 +60,7 @@
             app:typographyType="heading_5"
             app:typographyWeight="bold" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.tkpd.remoteresourcerequest.view.DeferredImageView
             android:id="@+id/image_small_reward"
             android:layout_width="57dp"
             android:layout_height="57dp"

@@ -1,11 +1,10 @@
 package com.tokopedia.topads.dashboard.view.adapter
 
 import android.content.Context
-import androidx.annotation.LayoutRes
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-
+import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsStatisticsType
 import com.tokopedia.topads.dashboard.data.model.Summary
@@ -23,6 +22,7 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
     var selectedTabPosition = 0
         private set
     private var listener: OnRecyclerTabItemClick? = null
+
     @TopAdsStatisticsType
     private var selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
 
@@ -53,11 +53,11 @@ class TopAdsTabAdapter(private val context: Context) : RecyclerView.Adapter<TabL
     }
 
     private fun getStringConversion(selectedStatisticType: Int): String = when (selectedStatisticType) {
-            TopAdsStatisticsType.SHOP_ADS ->  context.getString(R.string.label_top_ads_conversion_store)
-            TopAdsStatisticsType.PRODUCT_ADS ->  context.getString(R.string.label_top_ads_conversion_product)
-            TopAdsStatisticsType.ALL_ADS, TopAdsStatisticsType.HEADLINE_ADS ->  context.getString(R.string.label_top_ads_conversion)
-            else ->  context.getString(R.string.label_top_ads_conversion)
-        }
+        TopAdsStatisticsType.SHOP_ADS -> context.getString(R.string.label_top_ads_conversion_store)
+        TopAdsStatisticsType.PRODUCT_ADS -> context.getString(R.string.label_top_ads_conversion_product)
+        TopAdsStatisticsType.ALL_ADS, TopAdsStatisticsType.HEADLINE_ADS -> context.getString(R.string.label_top_ads_conversion)
+        else -> context.getString(R.string.label_top_ads_conversion)
+    }
 
     fun setItemLayout(@LayoutRes itemLayout: Int) {
         this.itemLayout = itemLayout

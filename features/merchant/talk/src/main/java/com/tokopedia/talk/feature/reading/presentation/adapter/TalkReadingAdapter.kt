@@ -1,6 +1,7 @@
 package com.tokopedia.talk.feature.reading.presentation.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingEmptySpace
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingUiModel
 
 class TalkReadingAdapter(
@@ -15,5 +16,10 @@ class TalkReadingAdapter(
                 return
             }
         }
+    }
+
+    fun addEmptySpace() {
+        visitables.add(visitables.size, TalkReadingEmptySpace())
+        notifyItemInserted(visitables.size)
     }
 }

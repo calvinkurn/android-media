@@ -23,7 +23,7 @@ import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.vie
 class ShopHomeMultipleImageColumnViewHolder(
         itemView: View,
         private val previousViewHolder: AbstractViewHolder<*>?,
-        listener: ShopHomeDisplayWidgetListener
+        private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -34,13 +34,10 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE = 2
     }
 
-    private val shopHomeMultipleImageColumnAdapter by lazy {
-        ShopHomeMultipleImageColumnAdapter(
-                listener
-        )
-    }
+    private var shopHomeMultipleImageColumnAdapter: ShopHomeMultipleImageColumnAdapter? = null
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
+        shopHomeMultipleImageColumnAdapter = ShopHomeMultipleImageColumnAdapter(listener)
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -73,10 +70,10 @@ class ShopHomeMultipleImageColumnViewHolder(
             }
         }
 
-        shopHomeMultipleImageColumnAdapter.setShopHomeDisplayWidgetUiModelData(element)
-        shopHomeMultipleImageColumnAdapter.setParentPosition(adapterPosition)
-        shopHomeMultipleImageColumnAdapter.setHeightRatio(getHeightRatio(element))
-        shopHomeMultipleImageColumnAdapter.submitList(element.data)
+        shopHomeMultipleImageColumnAdapter?.setShopHomeDisplayWidgetUiModelData(element)
+        shopHomeMultipleImageColumnAdapter?.setParentPosition(adapterPosition)
+        shopHomeMultipleImageColumnAdapter?.setHeightRatio(getHeightRatio(element))
+        shopHomeMultipleImageColumnAdapter?.submitList(element.data)
     }
 
     private fun getIndexRatio(data: ShopHomeDisplayWidgetUiModel, index: Int): Int {

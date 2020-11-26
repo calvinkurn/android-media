@@ -1,0 +1,6 @@
+query productShopSpeedQuery($shopId: Int){
+  ProductShopPackSpeedQuery(shopId: $shopId){
+    hour
+    speedFmt
+  }
+}

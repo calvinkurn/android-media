@@ -1,18 +1,18 @@
 package com.tokopedia.oneclickcheckout.preference.list.di
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCase
-import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceListModelMapper
+import com.tokopedia.oneclickcheckout.common.domain.mapper.PreferenceModelMapper
+import com.tokopedia.oneclickcheckout.common.domain.GetPreferenceListUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
+import com.tokopedia.oneclickcheckout.preference.list.domain.SetDefaultPreferenceUseCase
+import com.tokopedia.oneclickcheckout.preference.list.domain.SetDefaultPreferenceUseCaseImpl
 import com.tokopedia.oneclickcheckout.preference.list.domain.model.SetDefaultPreferenceGqlResponse
 import dagger.Module
 import dagger.Provides
 
-@PreferenceListScope
 @Module
 class PreferenceListModule {
 
@@ -30,8 +30,14 @@ class PreferenceListModule {
 
     @PreferenceListScope
     @Provides
-    internal fun providesGetPreferenceListUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, preferenceListModelMapper: PreferenceListModelMapper): GetPreferenceListUseCase {
-        return GetPreferenceListUseCase(context, GraphqlUseCase(graphqlRepository), preferenceListModelMapper)
+    internal fun providesSetDefaultPreferenceUseCase(graphqlUseCase: GraphqlUseCase<SetDefaultPreferenceGqlResponse>): SetDefaultPreferenceUseCase {
+        return SetDefaultPreferenceUseCaseImpl(graphqlUseCase)
+    }
+
+    @PreferenceListScope
+    @Provides
+    internal fun providesGetPreferenceListUseCase(graphqlRepository: GraphqlRepository): GetPreferenceListUseCase {
+        return GetPreferenceListUseCaseImpl(GraphqlUseCase(graphqlRepository), PreferenceModelMapper)
     }
 
     @PreferenceListScope

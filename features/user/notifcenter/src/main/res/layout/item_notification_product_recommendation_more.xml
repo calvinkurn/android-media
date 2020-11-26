@@ -13,7 +13,7 @@
         android:background="@color/clr_ae31353b"
         android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="@dimen/sp_18"
+        android:textSize="@dimen/notif_sp_18"
         android:textStyle="bold"
         tools:text="+99" />
 </com.tokopedia.notifcenter.widget.RoundedFrameLayout>

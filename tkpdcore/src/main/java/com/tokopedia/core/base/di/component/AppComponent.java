@@ -29,7 +29,6 @@ import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
-import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
@@ -102,8 +101,6 @@ public interface AppComponent {
     PostExecutionThread postExecutionThread();
 
     ChuckerInterceptor ChuckerInterceptor();
-
-    SessionHandler sessionHandler();
 
     GCMHandler gcmHandler();
 

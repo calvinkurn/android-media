@@ -2,24 +2,14 @@ package com.tokopedia.home.viewModel.homeRecommendation
 
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeRecommendationDataModel
-import com.tokopedia.home.beranda.presentation.viewModel.HomeRecommendationViewModel
-import com.tokopedia.home.rules.TestDispatcherProvider
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import io.mockk.coEvery
-import io.mockk.mockk
-import org.spekframework.spek2.dsl.TestBody
-import org.spekframework.spek2.style.gherkin.FeatureBody
-import java.lang.Exception
 import java.util.concurrent.TimeoutException
 
-
-fun TestBody.createHomeRecommendationViewModel(): HomeRecommendationViewModel{
-    val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase>()
-    return HomeRecommendationViewModel(getHomeRecommendationUseCase, TestDispatcherProvider())
-}
-
-fun FeatureBody.createHomeRecommendationViewModelTestInstance() {
-    val getHomeRecommendationUseCase by memoized<GetHomeRecommendationUseCase> { mockk(relaxed = true) }
-}
+/**
+ * Created by Lukas on 14/05/20.
+ */
 
 fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: HomeRecommendationDataModel) {
     setParams("", 0, 10, 0)
@@ -38,4 +28,20 @@ fun GetHomeRecommendationUseCase.givenDataReturn(homeRecommendationDataModel: Ho
 
 fun GetHomeRecommendationUseCase.givenThrowReturn() {
     coEvery { executeOnBackground() } throws TimeoutException()
+}
+
+fun TopAdsImageViewUseCase.givenDataReturn(data: ArrayList<TopAdsImageViewModel>){
+    coEvery { getImageData(any()) } returns data
+}
+
+fun TopAdsImageViewUseCase.givenDataReturn(data: ArrayList<TopAdsImageViewModel>, secondData: ArrayList<TopAdsImageViewModel>){
+    coEvery { getImageData(any()) } returns data andThen secondData
+}
+
+fun TopAdsImageViewUseCase.givenDataReturnAndThenThrows(data: ArrayList<TopAdsImageViewModel>){
+    coEvery { getImageData(any()) } returns data andThenThrows TimeoutException()
+}
+
+fun TopAdsImageViewUseCase.givenThrows(){
+    coEvery { getImageData(any()) } throws TimeoutException()
 }

@@ -35,7 +35,7 @@ class SomDetailProductsCardAdapter(private val actionListener: SomDetailAdapter.
         if (listProducts[position].note.isNotEmpty()) {
             holder.itemView.divider_product.visibility = View.VISIBLE
             holder.itemView.tv_product_notes.visibility = View.VISIBLE
-            holder.itemView.tv_product_notes.text = listProducts[position].note.replace("\\n", System.getProperty("line.separator"))
+            holder.itemView.tv_product_notes.text = listProducts[position].note.replace("\\n", System.getProperty("line.separator")?: "")
         } else {
             holder.itemView.divider_product.visibility = View.GONE
             holder.itemView.tv_product_notes.visibility = View.GONE

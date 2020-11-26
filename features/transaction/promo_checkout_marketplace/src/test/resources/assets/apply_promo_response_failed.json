@@ -1,0 +1,17 @@
+{
+  "validate_use_promo_revamp": {
+    "status": "OK",
+    "message": [],
+    "error_code": "200",
+    "code": "200000",
+    "promo": {
+      "global_success": false,
+      "message": {
+        "state": "",
+        "color": "",
+        "text": ""
+      },
+      "success": false
+    }
+  }
+}

@@ -36,10 +36,11 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.playCore)
+    implementation rootProject.ext.playServicesDependencies.core
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }

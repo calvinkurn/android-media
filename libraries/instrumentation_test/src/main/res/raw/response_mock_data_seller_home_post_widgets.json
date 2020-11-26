@@ -1,0 +1,40 @@
+{
+  "data": {
+    "getPostWidgetData": {
+      "data": [
+        {
+          "datakey": "sellerInfo",
+          "list": [],
+          "errorMsg": ""
+        },
+        {
+          "datakey": "article",
+          "list": [
+            {
+              "title": "Maksimalkan Fitur Dekorasi Toko Buat Tokomu Tampil Beda",
+              "url": "https://seller.tokopedia.com/edu/fitur-dekorasi-toko/",
+              "applink": "https://seller.tokopedia.com/edu/fitur-dekorasi-toko/",
+              "subtitle": "<p>Fitur &#183; 13 AUG 20</p>",
+              "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/03/Dekorasi-toko-480x206.png"
+            },
+            {
+              "title": "Konten Pilihan Hari Ini: Baru! Kini Seller Bisa Live Streaming di Tokopedia Play",
+              "url": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/",
+              "applink": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/",
+              "subtitle": "<p>Panduan Berjualan &#183; 13 AUG 20</p>",
+              "featuredMediaURL": "https://seller.tokopedia.com/edu/konten-pilihan-hari-ini/konten-hari-ini-agustus/"
+            },
+            {
+              "title": "Tips Mudah Live Streaming untuk Pemula",
+              "url": "https://seller.tokopedia.com/edu/tips-live-streaming/",
+              "applink": "https://seller.tokopedia.com/edu/tips-live-streaming/",
+              "subtitle": "<p>Fitur &#183; 12 AUG 20</p>",
+              "featuredMediaURL": "https://ecs7.tokopedia.net/img/blog/seller/2020/08/Live-Streaming-1-480x206.jpg"
+            }
+          ],
+          "errorMsg": ""
+        }
+      ]
+    }
+  }
+}

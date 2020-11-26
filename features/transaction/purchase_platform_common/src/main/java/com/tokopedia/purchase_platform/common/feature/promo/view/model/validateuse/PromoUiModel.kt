@@ -15,7 +15,7 @@ data class PromoUiModel(
         var titleDescription: String = "",
         var isTokopediaGerai: Boolean = false,
         var globalSuccess: Boolean = false,
-        var trackingDetails: List<TrackingDetailsItem?> = listOf(),
+        var trackingDetailUiModels: List<TrackingDetailsItemUiModel?> = listOf(),
         var messageUiModel: MessageUiModel = MessageUiModel(),
         var gatewayId: String = "",
         var isCoupon: Int = -1,

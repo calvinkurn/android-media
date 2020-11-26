@@ -37,8 +37,6 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: ProductEditCategoryPresenter
 
-    private val appRouter : Context? by lazy { activity?.application as? Context }
-
     private lateinit var productCategoryRecommendationAdapter: ProductCategoryRecommendationAdapter
 
     override fun getScreenName(): String? = null
@@ -62,13 +60,13 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
         }
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(SAVED_PRODUCT_CATEGORY)) {
-                productCategory = savedInstanceState.getParcelable(SAVED_PRODUCT_CATEGORY)
+                productCategory = savedInstanceState.getParcelable(SAVED_PRODUCT_CATEGORY) ?: ProductCategory()
             }
             if (savedInstanceState.containsKey(SAVED_PRODUCT_CATALOG)) {
-                productCatalog = savedInstanceState.getParcelable(SAVED_PRODUCT_CATALOG)
+                productCatalog = savedInstanceState.getParcelable(SAVED_PRODUCT_CATALOG) ?: ProductCatalog()
             }
             if (savedInstanceState.containsKey(SAVED_NAME)) {
-                name = savedInstanceState.getString(SAVED_NAME)
+                name = savedInstanceState.getString(SAVED_NAME, "")
             }
             if (savedInstanceState.containsKey(SAVED_CATEGORY_ID)) {
                 presenter.categoryId = savedInstanceState.getLong(SAVED_CATEGORY_ID)
@@ -84,13 +82,13 @@ abstract class BaseProductEditCategoryFragment : BaseDaggerFragment(),
     open fun restoreSaveInstance(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
             if(containsKey(EXTRA_NAME)){
-                name = getString(EXTRA_NAME)
+                name = getString(EXTRA_NAME, "")
             }
             if(containsKey(EXTRA_CATALOG)){
-                productCatalog = getParcelable(EXTRA_CATALOG)
+                productCatalog = getParcelable(EXTRA_CATALOG) ?: ProductCatalog()
             }
             if(containsKey(EXTRA_CATEGORY)){
-                productCategory = getParcelable(EXTRA_CATEGORY)
+                productCategory = getParcelable(EXTRA_CATEGORY)?: ProductCategory()
             }
         }
     }

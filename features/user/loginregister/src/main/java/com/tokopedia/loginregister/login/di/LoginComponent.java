@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.di;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment;
+import com.tokopedia.loginregister.login.view.fragment.SellerSeamlessLoginFragment;
 
 import dagger.Component;
 
@@ -14,7 +15,8 @@ import dagger.Component;
 @Component(modules = {
         LoginModule.class,
         LoginQueryModule.class,
-        LoginUseCaseModule.class
+        LoginUseCaseModule.class,
+        SeamlessSellerViewModelModule.class
 }, dependencies = LoginRegisterComponent.class)
 public interface LoginComponent {
 
@@ -22,5 +24,6 @@ public interface LoginComponent {
 
     public void inject(LoginEmailPhoneFragment fragment);
 
+    void inject(SellerSeamlessLoginFragment fragment);
 
 }

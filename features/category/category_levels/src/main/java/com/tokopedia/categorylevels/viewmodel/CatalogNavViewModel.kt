@@ -2,7 +2,7 @@ package com.tokopedia.categorylevels.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.categorylevels.data.catalogModel.SearchCatalog
+import com.tokopedia.common_category.data.catalogModel.SearchCatalog
 import com.tokopedia.categorylevels.domain.usecase.CatalogUseCase
 import com.tokopedia.common_category.usecase.DynamicFilterUseCase
 import com.tokopedia.filter.common.data.DynamicFilterModel

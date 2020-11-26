@@ -23,12 +23,7 @@ fun String.runCommand(workingDir: File): String? {
 }
 
 fun String.runCommandGroovy(workingDir: File): String? {
-    try {
-        return ProcessGroovyMethods.getText(Runtime.getRuntime().exec(this))
-    } catch (e: IOException) {
-        e.printStackTrace()
-        return null
-    }
+    return ProcessGroovyMethods.getText(Runtime.getRuntime().exec(this))
 }
 
 fun String.trimSpecial(): String {

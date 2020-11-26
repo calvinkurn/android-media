@@ -118,6 +118,7 @@ public class AnalyticsTrackerUtil {
         String CLICK_COUPON_ON_CATALOG = "view coupon on catalog";
         String KEY_EVENT_ACTION_PROFILE_VALUE = "click on button verifikasi";
         String KEY_EVENT_ACTION_PROFILE_VALUE_BATAL = "click on button batal";
+        String KEY_EVENT_CLICK_DYNAMICITEM="click reward section";
     }
 
     public interface EcommerceKeys {

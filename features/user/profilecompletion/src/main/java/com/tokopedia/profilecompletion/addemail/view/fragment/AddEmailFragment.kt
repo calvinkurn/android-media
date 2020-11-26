@@ -34,7 +34,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject lateinit var userSession: UserSessionInterface
-  
+
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val viewModel by lazy { viewModelProvider.get(AddEmailViewModel::class.java) }
@@ -158,7 +158,8 @@ class AddEmailFragment : BaseDaggerFragment() {
 
     private fun onSuccessAddEmail(result: AddEmailResult) {
         dismissLoading()
-      
+
+        // update userSession for a new email
         userSession.email = result.email
 
         activity?.run {

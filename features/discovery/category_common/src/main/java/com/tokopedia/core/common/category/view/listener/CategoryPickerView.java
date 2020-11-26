@@ -17,8 +17,6 @@ public interface CategoryPickerView extends CustomerView {
 
     void renderCategory(List<CategoryViewModel> map, long categoryId);
 
-    void renderCategoryFromSelected(List<CategoryLevelViewModel> categoryLevelDomainModels);
-
     void showRetryEmpty();
 
     void hideRetryEmpty();

@@ -21,7 +21,6 @@ import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
@@ -86,8 +85,6 @@ public interface ProductComponent {
     ThreadExecutor threadExecutor();
 
     PostExecutionThread postExecutionThread();
-
-    SessionHandler sessionHandler();
 
     GCMHandler gcmHandler();
 

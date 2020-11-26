@@ -26,5 +26,4 @@ class DigitalSearchInputView @JvmOverloads constructor(@NotNull context: Context
     override fun getCloseImageButtonResourceId(): Int {
         return R.id.image_button_close
     }
-
 }

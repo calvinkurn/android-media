@@ -6,6 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <FrameLayout
+        android:visibility="invisible"
+        android:id="@+id/fmCoupons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include layout="@layout/list_item_coupons"/>
+    </FrameLayout>
+
     <ViewFlipper
         android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
@@ -50,12 +58,12 @@
                 android:layout_marginBottom="76dp"
                 android:alpha="0"
                 android:background="@drawable/gf_bg_big_timer"
-                android:paddingStart="16dp"
-                android:paddingLeft="16dp"
-                android:paddingTop="8dp"
-                android:paddingEnd="16dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="8dp"
+                android:paddingStart="@dimen/dp_32"
+                android:paddingLeft="@dimen/dp_32"
+                android:paddingTop="@dimen/dp_8"
+                android:paddingEnd="@dimen/dp_32"
+                android:paddingRight="@dimen/dp_32"
+                android:paddingBottom="@dimen/dp_8"
                 android:textColor="@android:color/white"
                 app:typographyType="heading_1"
                 app:typographyWeight="bold"
@@ -64,10 +72,10 @@
             <ProgressBar
                 android:id="@+id/progress_bar_timer"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+                android:layout_width="@dimen/dp_90"
+                android:layout_height="@dimen/dp_90"
                 android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="60dp"
+                android:layout_marginBottom="@dimen/dp_60"
                 android:background="@drawable/gf_cp_timer"
                 android:indeterminate="false"
                 android:max="100"
@@ -79,32 +87,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="78dp"
+                android:layout_marginBottom="@dimen/dp_78"
                 android:alpha="0"
-                android:text="60"
+                tools:text="60"
                 android:textColor="@android:color/white"
-                android:textSize="40sp"
+                android:textSize="@dimen/gami_sp_40"
                 app:typographyType="heading_1"
                 app:typographyWeight="bold"
                 tools:alpha="1" />
 
-            <FrameLayout
-                android:id="@+id/fm_waktu_habis"
+            <View
+                android:id="@+id/view_dim"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"/>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image_waktu"
-                    android:layout_width="209dp"
-                    android:layout_height="59dp"
-                    app:srcCompat="@drawable/gf_ic_waktu" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/image_habis"
-                    android:layout_width="211dp"
-                    android:layout_height="58dp"
-                    app:srcCompat="@drawable/gf_ic_habis" />
-            </FrameLayout>
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottie_timeup"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                 />
 
             <com.tokopedia.gamification.giftbox.presentation.views.RewardSummaryView
                 android:id="@+id/rewardSummary"
@@ -161,8 +162,11 @@
                 app:typographyType="heading_5"
                 app:typographyWeight="reguler" />
         </LinearLayout>
+
+        <include layout="@layout/fragment_gift_box_inactive"/>
     </ViewFlipper>
 
     <include layout="@layout/gami_gift_box_toolbar" />
+
 
 </FrameLayout>

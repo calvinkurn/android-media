@@ -1,8 +1,14 @@
 package com.tokopedia.tokopoints.view.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class CouponFilterItem {
+
+    @SerializedName("id")
     private int id;
+    @SerializedName("name")
     private String name;
+    @SerializedName("isSelected")
     private boolean isSelected;
 
     public int getId() {

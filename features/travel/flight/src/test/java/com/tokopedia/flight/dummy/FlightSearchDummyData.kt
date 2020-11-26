@@ -1,15 +1,15 @@
 package com.tokopedia.flight.dummy
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
-import com.tokopedia.flight.search.data.api.single.response.Route
-import com.tokopedia.flight.search.presentation.model.FlightAirlineModel
-import com.tokopedia.flight.search.presentation.model.FlightFareModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.*
+import com.tokopedia.flight.searchV4.data.cloud.single.Route
+import com.tokopedia.flight.searchV4.presentation.model.FlightAirlineModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightFareModel
 import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchMetaModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV4.presentation.model.statistics.*
 
 /**
  * @author by furqan on 13/05/2020
@@ -79,15 +79,15 @@ val JOURNEY_LIST_DATA = arrayListOf(
 )
 
 val META_MODEL_NEED_REFRESH = FlightSearchMetaModel(
-        "CGK", "BTJ", "2020-11-11", true, -1, 11, 1, 10,
+        "CGK", "BTJ", "2020-11-11", true, -1, 11,
         arrayListOf("GA", "QA"), "asdasd", "", 0)
 
 val META_MODEL_NOT_NEED_REFRESH = FlightSearchMetaModel(
-"CGK", "BTJ", "2020-11-11", false, -1, 11, 3, 10,
+        "CGK", "BTJ", "2020-11-11", false, -1, 11,
         arrayListOf("QA", "QC"), "asdasd", "", 1800)
 
 val META_MODEL_NEED_REFRESH_MAX_RETRY = FlightSearchMetaModel(
-        "CGK", "BTJ", "2020-11-11", true, -1, 11, 12, 10,
+        "CGK", "BTJ", "2020-11-11", true, -1, 11,
         arrayListOf("GA", "QA"), "asdasd", "", 0)
 
 val DEPARTURE_JOURNEY = FlightJourneyModel(

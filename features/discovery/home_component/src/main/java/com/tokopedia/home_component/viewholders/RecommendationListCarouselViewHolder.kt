@@ -33,14 +33,21 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 
 class RecommendationListCarouselViewHolder(itemView: View,
-                                           private val listCarouselListener: RecommendationListCarouselListener,
-                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
+                                           private val listCarouselListener: RecommendationListCarouselListener?,
+                                           private val parentRecycledViewPool: RecyclerView.RecycledViewPool?): AbstractViewHolder<RecommendationListCarouselDataModel>(itemView), CoroutineScope {
 
     private val masterJob = SupervisorJob()
 
+    private var isCacheData = false
+
     override val coroutineContext = masterJob + Dispatchers.Main
 
+    override fun bind(element: RecommendationListCarouselDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     override fun bind(element: RecommendationListCarouselDataModel) {
+        isCacheData = element.isCache
         val listCarouselTitle = itemView.findViewById<Typography>(R.id.list_carousel_title)
         val listCarouselDescription = itemView.findViewById<Typography>(R.id.list_carousel_description)
         val listCarouselView = itemView.findViewById<View>(R.id.list_carousel_view)
@@ -60,7 +67,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
             if(channelConfig.hasCloseButton){
                 listCarouselCloseButton.show()
                 listCarouselCloseButton.setOnClickListener {
-                    listCarouselListener.onBuyAgainCloseChannelClick(channel, adapterPosition)
+                    listCarouselListener?.onBuyAgainCloseChannelClick(channel, adapterPosition)
                 }
             }else {
                 listCarouselCloseButton.hide()
@@ -133,7 +140,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                         throwable.printStackTrace()
                     }
                 }
-                adapter = RecommendationListAdapter(newList, listCarouselListener)
+                adapter = RecommendationListAdapter(newList, listCarouselListener, isCacheData)
                 setRecycledViewPool(parentRecycledViewPool)
                 clearItemRecyclerViewDecoration(this)
                 if (channel.channelGrids.size > 1) {
@@ -171,8 +178,10 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
 
     private fun setViewportImpression(element: RecommendationListCarouselDataModel) {
-        itemView.addOnImpressionListener(element.channelModel) {
-            listCarouselListener.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
+        if (!isCacheData) {
+            itemView.addOnImpressionListener(element.channelModel) {
+                listCarouselListener?.onRecommendationCarouselChannelImpression(element.channelModel, adapterPosition)
+            }
         }
     }
 
@@ -193,22 +202,25 @@ class RecommendationListCarouselViewHolder(itemView: View,
 
     class HomeRecommendationListViewHolder(
             itemView: View,
-            val listCarouselListener: RecommendationListCarouselListener
+            val listCarouselListener: RecommendationListCarouselListener?,
+            val isCacheData: Boolean
     ): RecommendationListCarouselItem(itemView) {
         private val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
 
         override fun bind(recommendation: HomeRecommendationListCarousel) {
             recommendationCard.applyCarousel()
             if(recommendation is HomeRecommendationListData) {
-                itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener.onRecommendationCarouselGridImpression(
-                            recommendation.channelModel,
-                            recommendation.grid,
-                            adapterPosition,
-                            recommendation.parentPosition,
-                            false
-                    )
-                }
+                if (!isCacheData) {
+                    itemView.addOnImpressionListener(recommendation) {
+                        listCarouselListener?.onRecommendationCarouselGridImpression(
+                                recommendation.channelModel,
+                                recommendation.grid,
+                                adapterPosition,
+                                recommendation.parentPosition,
+                                false
+                        )
+                    }
+            }
                 recommendationCard.setProductModel(
                         ProductCardModel(
                                 productImageUrl = recommendation.recommendationImageUrl,
@@ -216,17 +228,17 @@ class RecommendationListCarouselViewHolder(itemView: View,
                                 discountPercentage = recommendation.recommendationDiscountLabel,
                                 slashedPrice = recommendation.recommendationSlashedPrice,
                                 formattedPrice = recommendation.recommendationPrice,
-                                hasAddToCartButton = recommendation.channelModel.channelConfig.hasCloseButton,
+                                hasAddToCartButton = recommendation.grid.hasBuyButton,
                                 isTopAds = recommendation.isTopAds
                         )
                 )
                 val addToCartButton = recommendationCard.findViewById<UnifyButton>(R.id.buttonAddToCart)
                 addToCartButton.text = itemView.context.getString(R.string.home_global_component_buy_again)
                 recommendationCard.setAddToCartOnClickListener {
-                    recommendation.listener.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
+                    recommendation.listener?.onBuyAgainOneClickCheckOutClick(recommendation.grid, recommendation.channelModel, adapterPosition)
                 }
                 itemView.setOnClickListener {
-                    listCarouselListener.onRecommendationProductClick(
+                    listCarouselListener?.onRecommendationProductClick(
                             recommendation.channelModel,
                             recommendation.grid,
                             adapterPosition,
@@ -235,7 +247,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
                 }
             } else if(recommendation is HomeRecommendationListSeeMoreData) {
                 itemView.addOnImpressionListener(recommendation) {
-                    listCarouselListener.onRecommendationCarouselGridImpression(
+                    listCarouselListener?.onRecommendationCarouselGridImpression(
                             recommendation.channel,
                             null,
                             adapterPosition,
@@ -254,7 +266,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun bind(homeRecommendationListData: HomeRecommendationListCarousel) {
             if(homeRecommendationListData is HomeRecommendationListSeeMoreData) {
                 container.setOnClickListener {
-                    homeRecommendationListData.listener.onRecommendationSeeMoreClick(
+                    homeRecommendationListData.listener?.onRecommendationSeeMoreCardClick(
                             applink = homeRecommendationListData.channel.channelHeader.applink,
                             channelModel = homeRecommendationListData.channel
                     )
@@ -278,17 +290,20 @@ class RecommendationListCarouselViewHolder(itemView: View,
             val channelModel: ChannelModel,
             val grid: ChannelGrid,
             val parentPosition: Int,
-            val listener: RecommendationListCarouselListener,
+            val listener: RecommendationListCarouselListener?,
             val productData: ProductCardModel
     ): HomeRecommendationListCarousel()
 
     data class HomeRecommendationListSeeMoreData(
             val channel: ChannelModel,
-            val listener: RecommendationListCarouselListener,
+            val listener: RecommendationListCarouselListener?,
             val parentPosition: Int
     ): HomeRecommendationListCarousel()
 
-    class RecommendationListAdapter(private val recommendationList: List<HomeRecommendationListCarousel>, private val listener: RecommendationListCarouselListener): RecyclerView.Adapter<RecommendationListCarouselItem>() {
+    class RecommendationListAdapter(
+            private val recommendationList: List<HomeRecommendationListCarousel>,
+            private val listener: RecommendationListCarouselListener?,
+            private val isCacheData: Boolean): RecyclerView.Adapter<RecommendationListCarouselItem>() {
         companion object{
             private const val LAYOUT_TYPE_CAROUSEL = 87
             private const val LAYOUT_TYPE_NON_CAROUSEL = 90
@@ -298,9 +313,9 @@ class RecommendationListCarouselViewHolder(itemView: View,
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendationListCarouselItem {
             val inflater = LayoutInflater.from(parent.context)
             return when (viewType) {
-                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener)
+                LAYOUT_TYPE_CAROUSEL -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card_carousel, parent, false), listener, isCacheData)
                 LAYOUT_SEE_ALL_BUTTON -> HomeRecommendationSeeMoreViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_see_more, parent, false))
-                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener)
+                else -> HomeRecommendationListViewHolder(inflater.inflate(R.layout.layout_dynamic_recommendation_list_card, parent, false), listener, isCacheData)
             }
         }
 

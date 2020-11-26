@@ -32,5 +32,14 @@
         <item name="android:windowBackground">@null</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+    <style name="RewardSummary">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="GiftTapTapCampaignOverButton">
+        <item name="android:layout_width">0dp</item>
+    </style>
 
 </resources>

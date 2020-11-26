@@ -16,7 +16,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl1"
             android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
             app:srcCompat="@drawable/ic_seller_migration_warning"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -27,7 +26,6 @@
             android:layout_height="wrap_content"
             android:text="@string/seller_migration_warning_title"
             android:layout_marginStart="@dimen/layout_lvl1"
-            android:layout_marginLeft="@dimen/layout_lvl1"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintStart_toEndOf="@id/seller_migration_warning_icon"

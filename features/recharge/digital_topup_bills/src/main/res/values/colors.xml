@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="digital_telco_bg_grey">#F3F4F5</color>
-    <color name="digital_text_enquiry_non_active">#1e000000</color>
-    <color name="digital_cardview_light_background">#FFFFFFFF</color>
-    <color name="digital_orange_price">#fa591d</color>
+    <color name="telco_light_bg">#F3FEF3</color>
 </resources>

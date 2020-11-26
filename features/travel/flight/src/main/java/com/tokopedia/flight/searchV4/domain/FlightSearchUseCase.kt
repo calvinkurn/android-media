@@ -1,9 +1,9 @@
 package com.tokopedia.flight.searchV4.domain
 
-import com.tokopedia.flight.search.presentation.model.FlightSearchMetaModel
 import com.tokopedia.flight.searchV4.data.FlightSearchRepository
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchMetaEntity
 import com.tokopedia.flight.searchV4.data.cloud.single.FlightSearchRequestModel
+import com.tokopedia.flight.searchV4.presentation.model.FlightSearchMetaModel
 import javax.inject.Inject
 
 /**
@@ -34,8 +34,6 @@ class FlightSearchUseCase @Inject constructor(private val flightSearchRepository
                     needRefresh,
                     refreshTime,
                     maxRetry,
-                    0,
-                    0,
                     airlineList,
                     requestId,
                     internationalTag,

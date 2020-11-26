@@ -5,10 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.common.OfficialStoreConstant
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
 import com.tokopedia.officialstore.official.presentation.viewmodel.ProductFlashSaleDataModel
 import com.tokopedia.productcard.ProductCardGridView
-import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class ProductFlashSaleViewHolder(
         view: View,
@@ -38,7 +39,16 @@ class ProductFlashSaleViewHolder(
                 }
                 addOnImpressionListener(impressHolder) {
                     if (element.productModel.isTopAds) {
-                        ImpresionTask(className).execute(element.grid.impression)
+                        context?.run {
+                            TopAdsUrlHitter(className).hitImpressionUrl(
+                                    this,
+                                    element.grid.impression,
+                                    element.grid.id.toString(),
+                                    element.grid.name,
+                                    element.grid.imageUrl,
+                                    OfficialStoreConstant.TopAdsComponent.getProductCardTopAdsComponentName(channel)
+                            )
+                        }
                     }
                     dcEventHandler.onFlashSaleCardImpressed(adapterPosition, element.grid, channel)
                     grid.isImpressed = true

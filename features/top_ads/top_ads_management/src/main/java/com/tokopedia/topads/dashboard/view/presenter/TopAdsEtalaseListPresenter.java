@@ -8,5 +8,5 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsEtalaseListView;
  */
 public interface TopAdsEtalaseListPresenter extends CustomerPresenter<TopAdsEtalaseListView> {
 
-    void populateEtalaseList(String shopId);
+    void populateEtalaseList(String shopId, String userId, String deviceId);
 }

@@ -29,6 +29,7 @@ import com.tokopedia.imagepicker.common.util.FileUtils
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_IS_EDITTED
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.item.BuildConfig
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
@@ -181,7 +182,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startPriceActivity() {
         activity?.run {
-            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, officialStore,
+            this@BaseProductAddEditFragment.startActivityForResult(ProductEditPriceActivity.createIntent(this, currentProductAddViewModel?.productPrice, currentProductAddViewModel?.productStock?.stockCount, officialStore,
                     currentProductAddViewModel?.productVariantViewModel?.hasSelectedVariant()
                             ?: false, isGoldMerchant), REQUEST_CODE_GET_PRICE)
         }
@@ -307,7 +308,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun eventClickYesGoldMerchantAddProduct() {
-        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 AppEventTracking.Event.CLICK_GOLD_MERCHANT,
                 AppEventTracking.Category.GOLD_MERCHANT,
                 AppEventTracking.Action.CLICK,
@@ -448,7 +449,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             }
         }
         if (currentProductViewModel.productLogistic?.weight ?: 0 > 0) {
-            labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType!!))}")
+            labelViewWeightLogisticProduct.setContent("${currentProductViewModel.productLogistic?.weight} ${getString(ProductEditWeightLogisticFragment.getWeightTypeTitle(currentProductViewModel.productLogistic?.weightType ?: ProductEditWeightType.GRAM))}")
             labelViewWeightLogisticProduct.setSubTitle("")
         }
         if (currentProductViewModel.productStock?.isActive == true) {
@@ -509,8 +510,8 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun onAddImagePickerClicked() {
         var catalogId = ""
-        if (currentProductAddViewModel?.productCatalog?.catalogId!! > 0) {
-            catalogId = currentProductAddViewModel!!.productCatalog?.catalogId.toString()
+        if (currentProductAddViewModel?.productCatalog?.catalogId.orZero() > 0) {
+            catalogId = currentProductAddViewModel?.productCatalog?.catalogId.orZero().toString()
         }
         val intent = AddProductImagePickerBuilder.createPickerIntentWithCatalog(context,
                 currentProductAddViewModel?.productPictureList?.convertToListImageString(), catalogId)
@@ -597,7 +598,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun eventAddProductAdd(label: String) {
-        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ADD,
@@ -605,7 +606,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     private fun eventAddProductEdit(label: String) {
-        TrackApp.getInstance()!!.gtm.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_EDIT,

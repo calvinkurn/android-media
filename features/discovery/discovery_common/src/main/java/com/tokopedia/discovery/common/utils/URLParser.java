@@ -1,11 +1,10 @@
 package com.tokopedia.discovery.common.utils;
 
-import android.content.Context;
 import android.net.Uri;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class URLParser {
@@ -32,24 +31,21 @@ public class URLParser {
 		return map;
 	}
 
-	public static String getPathSegment(int i, String url) {
-		List<String> path = Uri.parse(url).getPathSegments();
-		if (path.size()>i)
-			return path.get(i);
-		else
-			return "";
+	public HashMap<String, String> getParamKeyValueMapDecoded() {
+		HashMap<String, String> map = new HashMap<>();
+		ArrayList<String> keylist = getSetQueryKey();
+		for (int i = 0; i < keylist.size(); i++) {
+			map.put(keylist.get(i), decodeUtf8(uri.getQueryParameter(keylist.get(i))));
+		}
+		return map;
 	}
 
-	public String getDepIDfromURI (Context context) {
-		List<String> Path = uri.getPathSegments();
-		String iden = null;
-		for (int i = 1; i < Path.size(); i++) {
-			if (i == 1) {
-				iden = Path.get(i);
-			} else {
-				iden = iden+"_"+Path.get(i);
-			}
+	private String decodeUtf8(String encodedString) {
+		try {
+			return URLDecoder.decode(encodedString, "UTF-8");
 		}
-		return iden;
+		catch (Exception e) {
+			return encodedString;
+		}
 	}
 }

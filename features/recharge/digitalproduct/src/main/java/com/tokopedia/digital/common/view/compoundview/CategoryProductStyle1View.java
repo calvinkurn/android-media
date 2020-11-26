@@ -88,7 +88,7 @@ public class CategoryProductStyle1View extends
     @Override
     protected void onInitialDataRendered() {
         if (source == NATIVE) {
-            tvTitle.setText(TextUtils.isEmpty(data.getTitleText()) ? "" : data.getTitleText());
+            tvTitle.setText(TextUtils.isEmpty(data.titleText) ? "" : data.titleText);
         } else {
             tvTitle.setVisibility(GONE);
         }
@@ -149,7 +149,7 @@ public class CategoryProductStyle1View extends
                 digitalProductChooserView.renderUpdateDataSelected(productSelectedState);
             }
         }
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             cbInstantCheckout.setChecked(isInstantCheckoutChecked);
         }
     }
@@ -163,11 +163,11 @@ public class CategoryProductStyle1View extends
      * apakah mendukung instant instantCheckout ?
      */
     private void renderInstantCheckoutOption() {
-        if (data.isInstantCheckout()) {
+        if (data.isInstantCheckout) {
             layoutCheckout.setVisibility(VISIBLE);
             cbInstantCheckout.setOnCheckedChangeListener(getInstantCheckoutChangeListener());
             cbInstantCheckout.setChecked(
-                    actionListener.isRecentInstantCheckoutUsed(data.getCategoryId())
+                    actionListener.isRecentInstantCheckoutUsed(data.categoryId)
             );
         } else {
             cbInstantCheckout.setChecked(false);
@@ -182,7 +182,7 @@ public class CategoryProductStyle1View extends
     }
 
     private void renderClientNumberInputForm() {
-        final ClientNumber clientNumber = data.getClientNumberList().get(0);
+        final ClientNumber clientNumber = data.clientNumberList.get(0);
         clearHolder(holderClientNumber);
         clientNumberInputView.setActionListener(getActionListenerClientNumberInput());
         clientNumberInputView.renderData(clientNumber);
@@ -199,7 +199,7 @@ public class CategoryProductStyle1View extends
             clientNumberInputView.setText(lastClientNumberHistory);
         } else {
             if (!TextUtils.isEmpty(lastOperatorHistory)) {
-                for (Operator operator : data.getOperatorList()) {
+                for (Operator operator : data.operatorList) {
                     if (operator.getOperatorId().equals(lastOperatorHistory)) {
                         setOperator(operator);
                         break;
@@ -210,7 +210,7 @@ public class CategoryProductStyle1View extends
 
         if (source == WIDGET) {
             if (hasLastOrderHistoryData()) {
-                if (!data.getClientNumberList().isEmpty()) {
+                if (!data.clientNumberList.isEmpty()) {
                     clientNumberInputView.setAdapterAutoCompleteClientNumber(historyClientNumber.getRecentClientNumberList());
                 }
             }
@@ -228,7 +228,7 @@ public class CategoryProductStyle1View extends
             showProducts();
         }
         setBtnBuyDigitalText(operator.getRule().getButtonText());
-        actionListener.onOperatorSelected(data.getName(), operator.getName());
+        actionListener.onOperatorSelected(data.name, operator.getName());
     }
 
     private void showProducts() {
@@ -261,15 +261,15 @@ public class CategoryProductStyle1View extends
     private PreCheckoutProduct generatePreCheckoutData() {
         PreCheckoutProduct preCheckoutProduct = new PreCheckoutProduct();
         boolean canBeCheckout = false;
-        if (!data.getClientNumberList().isEmpty() && !isClientNumberValid()) {
+        if (!data.clientNumberList.isEmpty() && !isClientNumberValid()) {
             if (clientNumberInputView.getText().isEmpty()) {
                 clientNumberInputView.setErrorText(
                         context.getString(
                                 R.string.message_error_digital_client_number_not_filled
-                        ) + " " + data.getClientNumberList().get(0).getText().toLowerCase()
+                        ) + " " + data.clientNumberList.get(0).getText().toLowerCase()
                 );
             } else {
-                for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
+                for (Validation validation : data.clientNumberList.get(0).getValidation()) {
                     if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
                         clientNumberInputView.setErrorText(
                                 validation.getError()
@@ -279,13 +279,13 @@ public class CategoryProductStyle1View extends
                 }
             }
         } else if (operatorSelected == null) {
-            if (data.getOperatorList().size() == 1
-                    && !data.getClientNumberList().isEmpty()
+            if (data.operatorList.size() == 1
+                    && !data.clientNumberList.isEmpty()
                     && !clientNumberInputView.isValidInput(
-                    data.getOperatorList().get(0).getPrefixList())
+                    data.operatorList.get(0).getPrefixList())
                     ) {
                 preCheckoutProduct.setErrorCheckout(
-                        data.getClientNumberList().get(0).getText()
+                        data.clientNumberList.get(0).getText()
                                 + " " + context.getString(
                                 R.string.message_error_digital_client_number_format_invalid
                         )
@@ -297,10 +297,10 @@ public class CategoryProductStyle1View extends
             }
         } else if (productSelected == null) {
             if (operatorSelected.getRule().getProductViewStyle() == SINGLE_PRODUCT
-                    && !data.getClientNumberList().isEmpty()
+                    && !data.clientNumberList.isEmpty()
                     && !clientNumberInputView.isValidInput(operatorSelected.getPrefixList())) {
                 preCheckoutProduct.setErrorCheckout(
-                        data.getClientNumberList().get(0).getText()
+                        data.clientNumberList.get(0).getText()
                                 + " " + context.getString(
                                 R.string.message_error_digital_client_number_format_invalid
                         )
@@ -320,11 +320,11 @@ public class CategoryProductStyle1View extends
         }
         if (canBeCheckout) {
             actionListener.storeLastInstantCheckoutUsed(
-                    data.getCategoryId(), cbInstantCheckout.isChecked()
+                    data.categoryId, cbInstantCheckout.isChecked()
             );
         }
-        preCheckoutProduct.setCategoryId(data.getCategoryId());
-        preCheckoutProduct.setCategoryName(data.getName());
+        preCheckoutProduct.setCategoryId(data.categoryId);
+        preCheckoutProduct.setCategoryName(data.name);
         preCheckoutProduct.setClientNumber(clientNumberInputView.getText());
         preCheckoutProduct.setInstantCheckout(cbInstantCheckout.isChecked());
         preCheckoutProduct.setCanBeCheckout(canBeCheckout);
@@ -335,7 +335,7 @@ public class CategoryProductStyle1View extends
         if (clientNumberInputView.getText().isEmpty()) {
             return false;
         } else {
-            for (Validation validation : data.getClientNumberList().get(0).getValidation()) {
+            for (Validation validation : data.clientNumberList.get(0).getValidation()) {
                 if (!Pattern.matches(validation.getRegex(), getClientNumber())) {
                     return false;
                 }
@@ -373,7 +373,7 @@ public class CategoryProductStyle1View extends
                     String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempClientNumber);
                     boolean operatorFound = false;
                     outerLoop:
-                    for (Operator operator : data.getOperatorList()) {
+                    for (Operator operator : data.operatorList) {
                         for (String prefix : operator.getPrefixList()) {
                             if (validClientNumber.startsWith(prefix)) {
                                 setOperator(operator);
@@ -408,13 +408,13 @@ public class CategoryProductStyle1View extends
             @Override
             public void onClientNumberHasFocus(String clientNumber) {
                 actionListener.onClientNumberClicked(clientNumber,
-                        data.getClientNumberList().get(0),
+                        data.clientNumberList.get(0),
                         historyClientNumber.getRecentClientNumberList());
             }
 
             @Override
             public void onClientNumberCleared() {
-                actionListener.onClientNumberCleared(data.getClientNumberList().get(0),
+                actionListener.onClientNumberCleared(data.clientNumberList.get(0),
                         historyClientNumber.getRecentClientNumberList());
             }
 
@@ -459,7 +459,7 @@ public class CategoryProductStyle1View extends
 
             @Override
             public void tracking() {
-                actionListener.onProductSelected(data.getName(), productSelected.getDesc());
+                actionListener.onProductSelected(data.name, productSelected.getDesc());
             }
         };
     }

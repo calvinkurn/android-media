@@ -24,7 +24,7 @@ class ImageDualAnnouncementUiModel
  * @param redirectUrlBottom redirect url in http for Bottom image click
  * @param blastId           blast id for campaign.
  */
-(
+constructor(
         messageId: String,
         fromUid: String,
         from: String,
@@ -37,8 +37,11 @@ class ImageDualAnnouncementUiModel
         var redirectUrlTop: String,
         var imageUrlBottom: String,
         var redirectUrlBottom: String,
-        val blastId: Int
-) : BaseChatViewModel(messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message), Visitable<TopChatTypeFactory> {
+        val blastId: Int,
+        source: String
+) : BaseChatViewModel(
+        messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, message, source
+), Visitable<TopChatTypeFactory> {
 
     override fun type(typeFactory: TopChatTypeFactory): Int {
         return typeFactory.type(this)

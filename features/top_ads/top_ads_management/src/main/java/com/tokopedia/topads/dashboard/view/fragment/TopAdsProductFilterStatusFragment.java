@@ -26,4 +26,14 @@ public class TopAdsProductFilterStatusFragment extends TopAdsFilterStatusFragmen
     public String[] getStatusNameList() {
         return getResources().getStringArray(R.array.top_ads_filter_status_list_entries);
     }
+
+    @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
+    }
 }

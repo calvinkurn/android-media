@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.R
 import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
 
-class RecentViewTitleViewHolder(itemView: View) : AbstractViewHolder<ReecentViewTitleViewModel>(itemView) {
+class RecentViewTitleViewHolder(itemView: View) : AbstractViewHolder<RecentViewTitleViewModel>(itemView) {
 
-    override fun bind(element: ReecentViewTitleViewModel) {
+    override fun bind(element: RecentViewTitleViewModel) {
         itemView.titleTextView?.text = element.title
     }
 

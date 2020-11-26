@@ -12,18 +12,19 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
         .addStatement(
             "\$T $BUNDLE_NAME = new \$T()",
             bundleClassName,
-            bundleClassName
-        )
+            bundleClassName)
+
 
     override val getBundleFromMap: MethodSpec.Builder = MethodSpec
         .methodBuilder("getBundle")
         .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
         .addParameter(
-                ParameterGenerator.createParameterizedParameter(
-                        "data",
-                        ClassName.get(Map::class.java),
-                        TypeName.get(String::class.java),
-                        ClassName.get("java.lang", "Object")
+                ParameterGenerator
+                        .createParameterizedParameter(
+                                "data",
+                                ClassName.get(Map::class.java),
+                                TypeName.get(String::class.java),
+                                ClassName.get("java.lang", "Object")
                 )
         )
         .addStatement(
@@ -83,8 +84,8 @@ class EventClassGenerator(clazz: AnnotatedEventClass) : ClassGenerator(clazz) {
         getBundleFromMap
             .beginControlFlow("try ")
             .addStatement(
-                "\$T.checkRequired(\$T.Companion.getRules(), \$N)",
-                ClassName.get("com.analytic.paramchecker", "AnalyticRequirementChecker"),
+                    "\$T.INSTANCE.checkRequired(\$T.Companion.getRules(), \$N)",
+                    ClassName.get("com.tokopedia.gtmutil", "AnalyticRequirementChecker"),
                 (clazz as AnnotatedEventClass).rulesClass,
                 BUNDLE_NAME
             )

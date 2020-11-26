@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_deals_popular_brand">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txtDealsPopularBrandTitle"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:textColor="@color/Neutral_N700_96"
+            app:layout_constraintEnd_toStartOf="@+id/txtDealsPopularBrandSeeAll"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/txtDealsPopularBrandSeeAll"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="Brand Popular" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txtDealsPopularBrandSeeAll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/txtDealsPopularBrandTitle"
+        app:typographyType="body_3"
+        tools:text="Lihat semua"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textColor="@color/Green_G500"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDealsBrandPopular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/deals_dp_12"
+            android:paddingRight="@dimen/deals_dp_12"
+            app:layout_constraintTop_toBottomOf="@+id/txtDealsPopularBrandTitle" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/shimmering"
+        layout="@layout/item_deals_brand_populars_shimmering"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

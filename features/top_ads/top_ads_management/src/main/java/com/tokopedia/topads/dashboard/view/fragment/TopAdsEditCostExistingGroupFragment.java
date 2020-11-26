@@ -14,6 +14,7 @@ import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTyp
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
@@ -112,6 +113,11 @@ public class TopAdsEditCostExistingGroupFragment extends TopAdsEditCostFragment<
                 Arrays.asList(Integer.parseInt(adFromIntent.getId()))));
         daggerPresenter.getBidInfo(TopAdsNetworkConstant.BID_INFO_TYPE_GROUP,
                 suggestions, TopAdsNetworkConstant.SOURCE_EDIT_COST_GROUP);
+    }
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+
     }
 
     @Override

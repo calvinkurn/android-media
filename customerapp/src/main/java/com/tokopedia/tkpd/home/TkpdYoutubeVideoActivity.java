@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.events.view.utils.CirclePageIndicator;
+import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.SlidingImageBannerAdapter;
 import com.tokopedia.tkpd.home.analytics.HomeGATracking;

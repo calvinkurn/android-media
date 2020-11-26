@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <View
+        android:id="@+id/top_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:background="@color/grey_separator" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16">
+
+        <ImageView
+            android:id="@+id/custom_image"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/ic_power_merchant"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/custom_title"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_4"
+            android:textColor="@color/light_N700_96"
+            android:visibility="gone"
+            android:layout_marginStart="@dimen/dp_4"
+            app:layout_constraintEnd_toStartOf="@+id/custom_arrow"
+            app:layout_constraintStart_toEndOf="@+id/custom_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="heading_4"
+            tools:text="Bangga Buatan Indonesia"
+            app:layout_goneMarginStart="@dimen/dp_0"
+            app:layout_constrainedWidth="true"
+            tools:visibility="visible" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/title_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="custom_title,custom_image"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/custom_desc"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Neutral_N700_68"
+            android:visibility="gone"
+            app:layout_constraintEnd_toStartOf="@+id/custom_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_barrier"
+            app:typographyType="body_2"
+            tools:text="Buktikan kamu bangga beli produk dalam negeri.Bacass SK untuk dapat cashback."
+            tools:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/custom_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_0"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_right_info"
+            tools:visibility="visible"
+            android:visibility="gone" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:id="@+id/bottom_separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_8"
+        tools:visibility="visible"
+        android:visibility="gone"
+        android:background="@color/grey_separator" />
+</LinearLayout>

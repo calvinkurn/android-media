@@ -82,6 +82,7 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
         if (uri == null) {
             return createResultAndNotify(activity, false, null, "No Uri in given activity's intent.");
         }
+        AppUtil.logAirBnbUsage(uri);
         String uriString = uri.toString();
         DeepLinkEntry entry = findEntry(uriString);
         if (entry != null) {
@@ -198,6 +199,7 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
         if (uri == null) {
             throw new Exception("No Uri in given activity's intent.");
         }
+        AppUtil.logAirBnbUsage(uri);
         String uriString = uri.toString();
         DeepLinkEntry entry = findEntry(uriString);
         if (entry != null) {
@@ -276,6 +278,7 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
         if (uri == null) {
             throw new Exception("No Uri in given activity's intent.");
         }
+        AppUtil.logAirBnbUsage(uri);
         String uriString = uri.toString();
         DeepLinkEntry entry = findEntry(uriString);
         if (entry != null) {

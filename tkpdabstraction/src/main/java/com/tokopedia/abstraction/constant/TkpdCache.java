@@ -16,5 +16,6 @@ public class TkpdCache {
         public static final String KEY_LOCATION = "KEY_FP_LOCATION";
         public static final String KEY_LOCATION_LAT = "KEY_FP_LOCATION_LAT";
         public static final String KEY_LOCATION_LONG = "KEY_FP_LOCATION_LONG";
+        public static final String ETALASE_ADD_PROD = "ETALASE_ADD_PROD";
     }
 }

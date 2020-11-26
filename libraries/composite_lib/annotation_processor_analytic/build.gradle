@@ -32,7 +32,7 @@ compileTestKotlin {
 project.ext {
     artifactId = 'annotation'
     groupId = 'com.tokopedia.analytic'
-    versionName = "0.0.1-alpha"
+    versionName = "0.0.3"
     artifactName = "annotation_processor_analytic"
 }
 

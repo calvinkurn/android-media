@@ -2,22 +2,22 @@ package com.tokopedia.topads.dashboard.data.source.cloud;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupDomainMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsDetailGroupMapper;
 import com.tokopedia.topads.dashboard.data.mapper.TopAdsSearchGroupMapper;
+import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.request.CreateGroupRequest;
+import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.data.model.request.EditGroupRequest;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.DataResponseCreateGroup;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
-import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
-import com.tokopedia.topads.dashboard.data.model.request.DataRequest;
 import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +50,7 @@ public class TopAdsGroupAdsDataSource {
 
     public Observable<List<GroupAd>> searchGroupAds(String keyword) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(TopAdsNetworkConstant.PARAM_SHOP_ID, SessionHandler.getShopID(context));
+        param.put(TopAdsNetworkConstant.PARAM_SHOP_ID, new UserSession(context).getShopId());
         param.put(TopAdsNetworkConstant.PARAM_KEYWORD, keyword);
         return topAdsManagementApi.searchGroupAd(param).map(topAdsSearchGroupMapper);
     }

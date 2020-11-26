@@ -26,51 +26,64 @@ import kotlinx.android.synthetic.main.home_component_lego_banner.view.*
  * Created by Devara on 2020-04-28
  */
 class DynamicLegoBannerViewHolder(itemView: View,
-                                  val legoListener: DynamicLegoBannerListener,
-                                  val homeComponentListener: HomeComponentListener,
+                                  val legoListener: DynamicLegoBannerListener?,
+                                  val homeComponentListener: HomeComponentListener?,
                                   val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
+
+    private var isCacheData = false
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.home_component_lego_banner
     }
 
     override fun bind(element: DynamicLegoBannerDataModel) {
+        isCacheData = element.isCache
         setHeaderComponent(element)
         setGrids(element)
     }
 
+    override fun bind(element: DynamicLegoBannerDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
+
     private fun setGrids(element: DynamicLegoBannerDataModel) {
-        val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
-        val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
-        setViewportImpression(element)
+        if (element.channelModel.channelGrids.isNotEmpty()) {
+            val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+            val defaultSpanCount = getRecyclerViewDefaultSpanCount(element)
+            if (!isCacheData) {
+                setViewportImpression(element)
+            }
+            parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
+            recyclerView.setHasFixedSize(true)
+            if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                    GridSpacingItemDecoration(defaultSpanCount, 0, true))
 
-        parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
-        recyclerView.setHasFixedSize(true)
-        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(defaultSpanCount, 0, true))
+            recyclerView.layoutManager = GridLayoutManager(
+                    itemView.context,
+                    defaultSpanCount,
+                    GridLayoutManager.VERTICAL, false)
 
-        recyclerView.layoutManager = GridLayoutManager(
-                itemView.context,
-                defaultSpanCount,
-                GridLayoutManager.VERTICAL, false)
-
-        recyclerView.adapter = LegoItemAdapter(
-                legoListener,
-                element.channelModel,
-                adapterPosition+1)
+            recyclerView.adapter = LegoItemAdapter(
+                    legoListener,
+                    element.channelModel,
+                    adapterPosition + 1,
+                    isCacheData)
+        } else {
+            legoListener?.getDynamicLegoBannerData(element.channelModel)
+        }
     }
 
     private fun setViewportImpression(element: DynamicLegoBannerDataModel) {
         itemView.addOnImpressionListener(element.channelModel) {
             when (element.channelModel.channelConfig.layout) {
                 DynamicChannelLayout.LAYOUT_6_IMAGE -> {
-                    legoListener.onChannelImpressionSixImage(element.channelModel, adapterPosition)
+                    legoListener?.onChannelImpressionSixImage(element.channelModel, adapterPosition)
                 }
                 DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
-                    legoListener.onChannelImpressionThreeImage(element.channelModel, adapterPosition)
+                    legoListener?.onChannelImpressionThreeImage(element.channelModel, adapterPosition)
                 }
                 DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-                    legoListener.onChannelImpressionFourImage(element.channelModel, adapterPosition)
+                    legoListener?.onChannelImpressionFourImage(element.channelModel, adapterPosition)
                 }
             }
         }
@@ -83,9 +96,10 @@ class DynamicLegoBannerViewHolder(itemView: View,
         }
     }
 
-    class LegoItemAdapter(private val listener: DynamicLegoBannerListener,
+    class LegoItemAdapter(private val listener: DynamicLegoBannerListener?,
                           private val channel: ChannelModel,
-                          private val parentPosition: Int) : RecyclerView.Adapter<LegoItemViewHolder>() {
+                          private val parentPosition: Int,
+                          private val isCacheData: Boolean) : RecyclerView.Adapter<LegoItemViewHolder>() {
         private var grids: List<ChannelGrid> = channel.channelGrids
         private val layout = channel.channelConfig.layout
         companion object{
@@ -106,7 +120,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 val grid = grids[position]
                 setLegoViewData(holder, grid)
                 setLegoClickListener(holder, grid, position)
-                setLegoImpressionListener(holder)
+                if (!isCacheData) {
+                    setLegoImpressionListener(holder)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -125,13 +141,13 @@ class DynamicLegoBannerViewHolder(itemView: View,
             holder.itemView.addOnImpressionListener(channel) {
                 when (layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> {
-                        listener.onImpressionGridSixImage(channel, parentPosition)
+                        listener?.onImpressionGridSixImage(channel, parentPosition)
                     }
                     DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
-                        listener.onImpressionGridThreeImage(channel, parentPosition)
+                        listener?.onImpressionGridThreeImage(channel, parentPosition)
                     }
                     DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-                        listener.onImpressionGridFourImage(channel, parentPosition)
+                        listener?.onImpressionGridFourImage(channel, parentPosition)
                     }
                 }
             }
@@ -141,13 +157,13 @@ class DynamicLegoBannerViewHolder(itemView: View,
             holder.imageView.setOnClickListener {
                 when (layout) {
                     DynamicChannelLayout.LAYOUT_6_IMAGE -> {
-                        listener.onClickGridSixImage(channel, grid, position, parentPosition)
+                        listener?.onClickGridSixImage(channel, grid, position, parentPosition)
                     }
                     DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> {
-                        listener.onClickGridThreeImage(channel, grid, position, parentPosition)
+                        listener?.onClickGridThreeImage(channel, grid, position, parentPosition)
                     }
                     DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-                        listener.onClickGridFourImage(channel, grid, position, parentPosition)
+                        listener?.onClickGridFourImage(channel, grid, position, parentPosition)
                     }
                 }
             }
@@ -168,14 +184,14 @@ class DynamicLegoBannerViewHolder(itemView: View,
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
                 when (element.channelModel.channelConfig.layout) {
-                    DynamicChannelLayout.LAYOUT_6_IMAGE -> legoListener.onSeeAllSixImage(element.channelModel, adapterPosition)
-                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> legoListener.onSeeAllThreemage(element.channelModel, adapterPosition)
-                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> legoListener.onSeeAllFourImage(element.channelModel, adapterPosition)
+                    DynamicChannelLayout.LAYOUT_6_IMAGE -> legoListener?.onSeeAllSixImage(element.channelModel, adapterPosition)
+                    DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE -> legoListener?.onSeeAllThreemage(element.channelModel, adapterPosition)
+                    DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> legoListener?.onSeeAllFourImage(element.channelModel, adapterPosition)
                 }
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
             }
         })
     }

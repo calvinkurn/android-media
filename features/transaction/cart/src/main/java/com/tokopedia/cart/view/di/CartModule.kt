@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.AtcConstant
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.R
@@ -24,13 +25,13 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.RemoveInsuranceProductUsecase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.UpdateInsuranceProductDataUsecase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
+import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
+import com.tokopedia.purchase_platform.common.schedulers.IOSchedulers
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -131,13 +132,6 @@ class CartModule {
 
     @Provides
     @CartScope
-    @Named("shopGroupSimplifiedQuery")
-    fun provideGetCartListSimplifiedQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_shop_group_simplified)
-    }
-
-    @Provides
-    @CartScope
     fun provideResources(@ApplicationContext context: Context): Resources {
         return context.resources
     }
@@ -155,17 +149,18 @@ class CartModule {
     @Provides
     @CartScope
     @Named("UpdateReloadUseCase")
-    fun provideGetCartListSimplifiedUseCase(@Named("shopGroupSimplifiedQuery") queryString: String,
-                                            cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
-            GetCartListSimplifiedUseCase(queryString, GraphqlUseCase(), cartSimplifiedMapper, IOSchedulers)
+    fun provideGetCartListSimplifiedUseCase(cartSimplifiedMapper: CartSimplifiedMapper): GetCartListSimplifiedUseCase =
+            GetCartListSimplifiedUseCase(GraphqlUseCase(), cartSimplifiedMapper, IOSchedulers)
 
     @Provides
     @CartScope
     fun provideICartListPresenter(getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase,
                                   deleteCartUseCase: DeleteCartUseCase,
+                                  undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                   updateCartUseCase: UpdateCartUseCase,
                                   compositeSubscription: CompositeSubscription,
                                   addWishListUseCase: AddWishListUseCase,
+                                  addCartToWishlistUseCase: AddCartToWishlistUseCase,
                                   removeWishListUseCase: RemoveWishListUseCase,
                                   updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                   userSessionInterface: UserSessionInterface,
@@ -174,6 +169,7 @@ class CartModule {
                                   getWishlistUseCase: GetWishlistUseCase,
                                   getRecommendationUseCase: GetRecommendationUseCase,
                                   addToCartUseCase: AddToCartUseCase,
+                                  addToCartExternalUseCase: AddToCartExternalUseCase,
                                   getInsuranceCartUseCase: GetInsuranceCartUseCase,
                                   removeInsuranceProductUsecase: RemoveInsuranceProductUsecase,
                                   updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase,
@@ -183,10 +179,10 @@ class CartModule {
                                   validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
-                updateCartUseCase, compositeSubscription,
-                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                undoDeleteCartUseCase, updateCartUseCase, compositeSubscription, addWishListUseCase,
+                addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                 userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
-                getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
+                getWishlistUseCase, getRecommendationUseCase, addToCartUseCase, addToCartExternalUseCase,
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase,
                 updateCartCounterUseCase, updateCartAndValidateUseUseCase,
@@ -199,6 +195,13 @@ class CartModule {
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
+    }
+
+    @Provides
+    @CartScope
+    @Named(AtcConstant.MUTATION_ATC_EXTERNAL)
+    fun provideAddToCartExternalMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_external)
     }
 
 }

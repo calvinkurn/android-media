@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.*
@@ -37,7 +38,9 @@ import rx.subscriptions.CompositeSubscription
 object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartUseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -51,6 +54,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
+    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
@@ -62,15 +66,14 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase,
-                    updateCartUseCase, compositeSubscription,
-                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                    validateUsePromoRevampUseCase, TestSchedulers
+                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
             )
         }
 
@@ -83,7 +86,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
             lateinit var result: Map<String, Any>
 
             When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), false)
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem()), AddToCartDataModel(), false)
             }
 
             Then("should be containing 1 product") {
@@ -105,7 +108,7 @@ object CartListPresenterAddToCartRecommendationAnalyticsTest : Spek({
             lateinit var result: Map<String, Any>
 
             When("generate add to cart recommendation data analytics") {
-                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(RecommendationItem()), AddToCartDataModel(), true)
+                result = cartListPresenter.generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData(false, RecommendationItem()), AddToCartDataModel(), true)
             }
 
             Then("should be containing 1 product") {

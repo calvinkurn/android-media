@@ -32,10 +32,14 @@ public class DashboardModule {
 
     @DashboardScope
     @Provides
-    AffiliateCuratedProductPresenter provideAffiliateProductBoughtPresenter(@ApplicationContext Context context) {
+    AffiliateCuratedProductPresenter provideAffiliateProductBoughtPresenter(
+            @ApplicationContext Context context,
+            GetCuratedProductListUseCase curatedProductListUseCase,
+            GetCuratedProductSortUseCase curatedProductSortUseCase) {
         return new AffiliateCuratedProductPresenter(
-                new GetCuratedProductListUseCase(context),
-                new GetCuratedProductSortUseCase(context));
+                curatedProductListUseCase,
+                curatedProductSortUseCase
+        );
     }
 
     @DashboardScope

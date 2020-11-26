@@ -60,7 +60,7 @@
 
     <style name="CreateAdsBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
-        <item name="behavior_peekHeight">1000dp</item>
     </style>
+
 
 </resources>

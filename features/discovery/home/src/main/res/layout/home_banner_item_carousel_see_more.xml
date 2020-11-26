@@ -49,7 +49,7 @@
             android:id="@+id/banner_mix_arrow"
             android:layout_width="@dimen/home_banner_mix_arrow_icon_size"
             android:layout_height="@dimen/home_banner_mix_arrow_icon_size"
-            app:srcCompat="@drawable/ic_home_banner_mix_see_more"
+            app:srcCompat="@drawable/ic_product_action_see_more_arrow_normal_352"
             app:layout_constraintBottom_toTopOf="@+id/tv_dc_mix_see_more"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -31,9 +31,9 @@ class AdsViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parcela
     }
 
     protected constructor(`in`: Parcel) {
-        adsUrl = `in`.readString()
-        adsLink = `in`.readString()
-        adsId = `in`.readString()
+        adsUrl = `in`.readString() ?: ""
+        adsLink = `in`.readString() ?: ""
+        adsId = `in`.readString() ?: ""
     }
 
     override fun writeToParcel(dest: Parcel, flags: Int) {

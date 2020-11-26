@@ -13,5 +13,6 @@ data class VoucherPreview(
         val amount: Int = -1,
         val amountType: Int = -1,
         val identifier: String = "",
-        val voucherType: Int = -1
+        val voucherType: Int = -1,
+        val isPublic: Int = 1
 )

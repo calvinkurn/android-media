@@ -18,6 +18,7 @@ public class PaymentData {
     public String itemPrice = "";
     public boolean newBuyer;
     public boolean monthlyNewBuyer;
+    public boolean isFromNative;
 
     public boolean isNewBuyer() {
         return newBuyer;

@@ -4,31 +4,32 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.TopAdsManagementRouter;
+import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.TopAdsManagementService;
-import com.tokopedia.topads.common.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsProductAdInteractorImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsShopAdInteractorImpl;
-import com.tokopedia.topads.dashboard.data.model.data.ShopAd;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCreatePromoShopActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsEditShopMainPageActivity;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailProductPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailShopViewPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by zulfikarrahman on 12/29/16.
@@ -114,7 +115,7 @@ public class TopAdsDetailShopFragment extends TopAdsDetailStatisticFragment<TopA
     protected void initialPresenter() {
         super.initialPresenter();
         presenter = new TopAdsDetailShopViewPresenterImpl(getActivity(), this,
-                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new SessionHandler(getActivity())),
+                new TopAdsProductAdInteractorImpl(new TopAdsManagementService(new UserSession(getActivity())),
                         new TopAdsCacheDataSourceImpl(getActivity())),
                 new TopAdsShopAdInteractorImpl(getActivity()));
     }

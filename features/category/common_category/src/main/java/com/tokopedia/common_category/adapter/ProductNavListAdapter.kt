@@ -169,7 +169,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                 item.adapter_position = position
 
                 if (item.isTopAds) {
-                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl)
+                    onItemChangeView.topAdsTrackerUrlTrigger(item.productImpTrackingUrl, item.id?.toString() ?: "", item.name, item.imageURL)
                     viewedTopAdsList.add(item)
                 } else {
                     viewedProductList.add(item)

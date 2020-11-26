@@ -1,18 +1,18 @@
 package com.tokopedia.iris.data
 
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
+import android.util.Log
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.iris.WhiteList.CM_REALTIME_EVENT_LIST
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
 import com.tokopedia.iris.util.*
-import com.tokopedia.iris.worker.IrisService
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
@@ -51,8 +51,7 @@ class TrackingRepository(
     private fun getLineDBSend() = getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_DB_SEND, 400)
     private fun getBatchPerPeriod()= getRemoteConfig().getLong(REMOTE_CONFIG_IRIS_BATCH_SEND, 5)
 
-    suspend fun saveEvent(data: String, session: Session,
-                          eventName: String?, eventCategory: String?, eventAction: String?) =
+    suspend fun saveEvent(data: String, session: Session) =
         withContext(Dispatchers.IO) {
             try {
                 val tracking = Tracking(data, userSession.userId, userSession.deviceId,
@@ -67,12 +66,10 @@ class TrackingRepository(
                 } else if (dbCount >= getLineDBSend()) {
                     // if the line is big, send it
                     if (dbCount % 5 == 0) {
-                        val i = Intent(context, IrisService::class.java)
-                        i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
-                        IrisService.enqueueWork(context, i)
-
                         IrisAnalytics.getInstance(context).setAlarm(true, force = true)
-                        Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                        if (dbCount % 50 == 0) {
+                            Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                        }
                     }
                 }
             } catch (e: Throwable) {
@@ -97,16 +94,29 @@ class TrackingRepository(
         }
     }
 
-    suspend fun sendSingleEvent(data: String, session: Session): Boolean {
-        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
-            userSession.userId, userSession.deviceId)
-        val requestBody = ApiService.parse(dataRequest)
-        val response = apiService.sendSingleEventAsync(requestBody)
-        val isSuccessFul = response.isSuccessful
-        if (!isSuccessFul) {
-            Timber.e("P1#IRIS#sendSingleEventNotSuccess %s", data)
+    suspend fun sendSingleEvent(data: String, session: Session, eventName: String?): Boolean {
+        try {
+            val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
+                    userSession.userId, userSession.deviceId)
+            val requestBody = ApiService.parse(dataRequest)
+            val response = apiService.sendSingleEventAsync(requestBody)
+            val isSuccessFul = response.isSuccessful
+            if (!isSuccessFul) {
+                Timber.e("P1#IRIS_REALTIME_ERROR#not_success;data='${data.take(ERROR_MAX_LENGTH).trim()}'")
+                eventName?.let {
+                    if (CM_REALTIME_EVENT_LIST.contains(it))
+                        saveEvent(data, session)
+                }
+            }
+            return isSuccessFul
+        } catch (e: Exception) {
+            Timber.e("P1#IRIS_REALTIME_ERROR#exception;data='${data.take(ERROR_MAX_LENGTH).trim()}';err='${Log.getStackTraceString(e).take(ERROR_MAX_LENGTH).trim()}'")
+            eventName?.let {
+                if (CM_REALTIME_EVENT_LIST.contains(it))
+                    saveEvent(data, session)
+            }
+            return false
         }
-        return isSuccessFul
     }
 
     /**
@@ -165,5 +175,9 @@ class TrackingRepository(
         val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetworkInfo = connectivityManager.activeNetworkInfo
         return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
+    companion object {
+        const val ERROR_MAX_LENGTH = 1000
     }
 }

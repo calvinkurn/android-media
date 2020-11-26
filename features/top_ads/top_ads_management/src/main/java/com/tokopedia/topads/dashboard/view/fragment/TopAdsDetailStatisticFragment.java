@@ -126,6 +126,6 @@ public abstract class TopAdsDetailStatisticFragment<T extends TopAdsDetailViewPr
         impr.setContent(ad.getStatTotalImpression());
         click.setContent(ad.getStatTotalClick());
         ctr.setContent(ad.getStatTotalCtr());
-        favorite.setContent(ad.getStatTotalConversion());
+        favorite.setContent(ad.getStatTotalSold());
     }
 }

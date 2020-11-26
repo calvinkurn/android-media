@@ -8,7 +8,6 @@ import com.tokopedia.core.common.category.di.module.CategoryPickerModule;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.statistic.data.repository.GMStatRepositoryImpl;
 import com.tokopedia.gm.statistic.data.source.GMStatDataSource;
@@ -95,8 +94,8 @@ public class GMStatisticModule {
     @Provides
     GMStatisticTransactionPresenter provideGmStatisticTransactionPresenter(
             GMStatGetTransactionGraphUseCase gmStatGetTransactionGraphUseCase,
-            SessionHandler sessionHandler) {
-        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, sessionHandler);
+            UserSessionInterface userSessionInterface) {
+        return new GMStatisticTransactionPresenterImpl(gmStatGetTransactionGraphUseCase, userSessionInterface);
     }
 
     @GMStatisticScope

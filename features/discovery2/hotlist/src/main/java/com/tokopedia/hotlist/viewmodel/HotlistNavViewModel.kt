@@ -146,8 +146,12 @@ class HotlistNavViewModel @Inject constructor(private var hotlistDetailUseCase: 
         })
     }
 
-    fun sendTopAds(url: String) {
-        sendTopAdsUseCase.executeOnBackground(url)
+    fun sendTopAdsImpressions(url: String, id: String, name: String, imageURL: String) {
+        sendTopAdsUseCase.hitImpressions(url, id, name, imageURL)
+    }
+
+    fun sendTopAdsClick(url: String, id: String, name: String, imageURL: String) {
+        sendTopAdsUseCase.hitClick(url, id, name, imageURL)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

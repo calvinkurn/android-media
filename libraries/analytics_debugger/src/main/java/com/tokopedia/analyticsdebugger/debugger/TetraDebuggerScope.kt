@@ -56,4 +56,11 @@ class TetraDebuggerScope(private val context: Context) : CoroutineScope, TetraDe
             job.cancel()
         }
     }
+
+    companion object {
+        @JvmStatic
+        fun getInstance(context: Context): TetraDebugger {
+            return TetraDebuggerScope(context)
+        }
+    }
 }

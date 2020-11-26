@@ -2,6 +2,7 @@ package com.tokopedia.topads.view.adapter.etalase.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import kotlinx.android.synthetic.main.topads_create_layout_product_filter_list_item.view.*
@@ -24,6 +25,7 @@ class EtalaseItemViewHolder(val view: View, var actionClick: ((pos:Int) -> Unit)
 
     override fun bind(item: EtalaseItemViewModel) {
         item.let {
+            view.check.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_check))
             view.title.text = it.result.name
             view.subtitle.text = String.format("%d produk", it.result.count)
             if(item.checked){

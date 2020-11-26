@@ -427,5 +427,6 @@
  -keep class com.tokopedia.product.manage.feature.quickedit.stock.data.** { *; }
  -keep class com.tokopedia.shop.common.data.source.cloud.model.productlist.** { *; }
  -keep class com.tokopedia.product.manage.feature.stockreminder.data.** { *; }
-
+ -keep public class com.android.installreferrer.** { *; }
  -dontwarn com.squareup.javapoet.**
+ -dontwarn com.tokopedia.topads.dashboard.view.sheet.**

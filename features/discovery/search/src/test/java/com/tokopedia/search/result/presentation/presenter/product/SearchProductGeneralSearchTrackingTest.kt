@@ -23,8 +23,14 @@ private const val responseCode4NoRelatedKeyword = "${generalSearchTrackingDirect
 private const val responseCode5RelatedSearch = "${generalSearchTrackingDirectory}response-code-5-related-search.json"
 private const val responseCode6RelatedSearch = "${generalSearchTrackingDirectory}response-code-6-related-search.json"
 private const val responseCode7SuggestedSearch = "${generalSearchTrackingDirectory}response-code-7-suggested-search.json"
+private const val withRedirection = "${generalSearchTrackingDirectory}with-redirection.json"
+private const val withGlobalNav = "${generalSearchTrackingDirectory}with-global-nav.json"
+private const val withGlobalNavEmptySource = "${generalSearchTrackingDirectory}with-global-nav-empty-source.json"
 
 internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestFixtures() {
+
+    private val keyword = "samsung"
+    private val source = "none"
 
     private fun `Test General Search Tracking`(searchProductModel: SearchProductModel, previousKeyword: String, expectedGeneralSearchTrackingModel: GeneralSearchTrackingModel) {
         `Given Search Product Setup`(searchProductModel, previousKeyword)
@@ -39,6 +45,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         `Given View is first active tab`()
         `Given View with previous keyword`(previousKeyword)
         `Given View reload data immediately calls load data`()
+        `Given View getQueryKey will return the keyword`()
     }
 
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
@@ -58,7 +65,7 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
     private fun `Given View reload data immediately calls load data`() {
         every { productListView.reloadData() }.answers {
             val searchParameter : Map<String, Any> = mutableMapOf<String, Any>().also {
-                it[SearchApiConst.Q] = "samsung"
+                it[SearchApiConst.Q] = keyword
                 it[SearchApiConst.START] = "0"
                 it[SearchApiConst.UNIQUE_ID] = "unique_id"
                 it[SearchApiConst.USER_ID] = productListPresenter.userId
@@ -66,6 +73,10 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
 
             productListPresenter.loadData(searchParameter)
         }
+    }
+
+    private fun `Given View getQueryKey will return the keyword`() {
+        every { productListView.queryKey } returns keyword
     }
 
     private fun `When View is created`() {
@@ -91,11 +102,12 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "none - none"
@@ -111,11 +123,12 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758,65",
                 categoryNameMapping = "Fashion Pria,Handphone & Tablet,Fashion Wanita",
                 relatedKeyword = "none - none"
@@ -131,11 +144,12 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = false,
+                isResultFound = false.toString(),
                 categoryIdMapping = "",
                 categoryNameMapping = "",
                 relatedKeyword = "none - none"
@@ -151,11 +165,12 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel =  GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "65",
                 categoryNameMapping = "Handphone & Tablet",
                 relatedKeyword = "$previousKeyword - none"
@@ -171,14 +186,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -191,16 +207,17 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        "${searchProductModel.searchProduct.related.relatedKeyword}," +
-                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+                        "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -213,15 +230,16 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -234,16 +252,17 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
                 relatedKeyword = "$previousKeyword - " +
-                        "${searchProductModel.searchProduct.related.relatedKeyword}," +
-                        searchProductModel.searchProduct.related.otherRelated.joinToString(",") { it.keyword }
+                        "${searchProductModel.searchProduct.data.related.relatedKeyword}," +
+                        searchProductModel.searchProduct.data.related.otherRelatedList.joinToString(",") { it.keyword }
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -256,14 +275,15 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.related.relatedKeyword}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.related.relatedKeyword}"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
@@ -276,14 +296,80 @@ internal class SearchProductGeneralSearchTrackingTest: ProductListPresenterTestF
         val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
                 eventLabel = String.format(
                         SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
-                        searchProductModel.searchProduct.query,
-                        searchProductModel.searchProduct.keywordProcess,
-                        searchProductModel.searchProduct.responseCode
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
                 ),
-                isResultFound = true,
+                isResultFound = true.toString(),
                 categoryIdMapping = "1759,1758",
                 categoryNameMapping = "Fashion Pria,Fashion Wanita",
-                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.suggestion.suggestion}"
+                relatedKeyword = "$previousKeyword - ${searchProductModel.searchProduct.data.suggestion.suggestion}"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking With Redirection`() {
+        val searchProductModel = withRedirection.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
+                ),
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking With Global Nav`() {
+        val searchProductModel = withGlobalNav.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val source =  "recharge"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
+                ),
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
+        )
+
+        `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)
+    }
+
+    @Test
+    fun `General Search Tracking With Global Nav Empty Source`() {
+        val searchProductModel = withGlobalNavEmptySource.jsonToObject<SearchProductModel>()
+        val previousKeyword = ""
+        val source =  "other"
+        val expectedGeneralSearchTrackingModel = GeneralSearchTrackingModel(
+                eventLabel = String.format(
+                        SearchEventTracking.Label.KEYWORD_TREATMENT_RESPONSE,
+                        keyword,
+                        searchProductModel.searchProduct.header.keywordProcess,
+                        searchProductModel.searchProduct.header.responseCode,
+                        source
+                ),
+                isResultFound = true.toString(),
+                categoryIdMapping = "65",
+                categoryNameMapping = "Handphone & Tablet",
+                relatedKeyword = "none - none"
         )
 
         `Test General Search Tracking`(searchProductModel, previousKeyword, expectedGeneralSearchTrackingModel)

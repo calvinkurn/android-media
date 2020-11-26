@@ -16,14 +16,6 @@ public class ProfileData {
     @Expose
     private UserInfo userInfo;
 
-    public ShopStats getShopStats() {
-        return shopStats;
-    }
-
-    public void setShopStats(ShopStats shopStats) {
-        this.shopStats = shopStats;
-    }
-
     public ShopInfo getShopInfo() {
         return shopInfo;
     }

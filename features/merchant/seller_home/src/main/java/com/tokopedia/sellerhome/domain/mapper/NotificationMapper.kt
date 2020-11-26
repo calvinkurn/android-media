@@ -1,8 +1,8 @@
 package com.tokopedia.sellerhome.domain.mapper
 
 import com.tokopedia.sellerhome.domain.model.ChatModel
+import com.tokopedia.sellerhome.domain.model.GetNotificationsResponse
 import com.tokopedia.sellerhome.domain.model.NotifCenterUnreadModel
-import com.tokopedia.sellerhome.domain.model.NotificationsModel
 import com.tokopedia.sellerhome.domain.model.SellerOrderStatusModel
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
@@ -16,11 +16,11 @@ import javax.inject.Inject
 
 class NotificationMapper @Inject constructor() {
 
-    fun mapRemoteModelToUiModel(notification: NotificationsModel?): NotificationUiModel {
+    fun mapRemoteModelToUiModel(notification: GetNotificationsResponse): NotificationUiModel {
         return NotificationUiModel(
-                chat = getChatUiModel(notification?.chat),
-                notifCenterUnread = getNotifCenterUnreadUiModel(notification?.notifCenterUnread),
-                sellerOrderStatus = getSellerOrderStatusUiModel(notification?.sellerOrderStatus)
+                chat = getChatUiModel(notification.notifications?.chat),
+                notifCenterUnread = getNotifCenterUnreadUiModel(notification.notifCenterUnread),
+                sellerOrderStatus = getSellerOrderStatusUiModel(notification.notifications?.sellerOrderStatus)
         )
     }
 

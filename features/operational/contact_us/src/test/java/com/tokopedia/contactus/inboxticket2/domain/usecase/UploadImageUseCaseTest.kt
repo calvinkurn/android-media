@@ -2,7 +2,6 @@ package com.tokopedia.contactus.inboxticket2.domain.usecase
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.contactus.inboxticket2.data.UploadImageContactUs
 import com.tokopedia.contactus.orderquery.data.Data
 import com.tokopedia.contactus.orderquery.data.ImageUpload
 import com.tokopedia.contactus.orderquery.data.ImageUploadResult

@@ -27,6 +27,7 @@ public class LinkerData implements Parcelable {
     public static final String FEED_TYPE = "feed";
     public static final String GROUPCHAT_TYPE = "tokopedia_play";
     public static final String INDI_CHALLENGE_TYPE = "tokopedia_challenge";
+    public static final String PLAY_BROADCASTER = "play_broadcaster";
 
     private String type = "";
     private String typeUrl = "";

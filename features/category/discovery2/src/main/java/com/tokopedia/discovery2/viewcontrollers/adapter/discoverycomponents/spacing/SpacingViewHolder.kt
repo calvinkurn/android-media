@@ -1,6 +1,5 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.spacing
 
-import android.graphics.Color
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -39,7 +38,7 @@ class SpacingViewHolder(itemView: View, private val fragment: Fragment) : Abstra
         })
 
         spacingViewModel.getViewBackgroundColor().observe(fragment.viewLifecycleOwner, Observer {
-            parentView.setBackgroundColor(Color.parseColor(it))
+            parentView.setBackgroundColor(it)
         })
     }
 }

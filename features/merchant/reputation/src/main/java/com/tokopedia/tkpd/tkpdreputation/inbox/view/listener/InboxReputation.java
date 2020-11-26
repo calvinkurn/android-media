@@ -55,6 +55,10 @@ public interface InboxReputation {
 
         void clickFromWhitespace(boolean source);
 
+        void onClickOvoIncentiveTickerDescription(ProductRevIncentiveOvoDomain productRevIncentiveOvoDomain);
+
+        void onDismissOvoIncentiveTicker(String title);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {

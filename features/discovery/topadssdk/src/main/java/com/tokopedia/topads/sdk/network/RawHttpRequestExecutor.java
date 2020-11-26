@@ -1,19 +1,17 @@
 package com.tokopedia.topads.sdk.network;
 
+import android.util.Log;
+
+import com.tokopedia.topads.sdk.BuildConfig;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Set;
-
-import android.util.Log;
-
-import com.tokopedia.topads.sdk.BuildConfig;
 
 
 /**

@@ -1,0 +1,133 @@
+{
+  "validate_use_promo_revamp": {
+    "status": "OK",
+    "message": [],
+    "error_code": "200",
+    "code": "200000",
+    "promo": {
+      "global_success": true,
+      "message": {
+        "state": "",
+        "color": "",
+        "text": ""
+      },
+      "success": true,
+      "codes": [],
+      "promo_code_id": 0,
+      "title_description": "Promo ",
+      "discount_amount": 0,
+      "cashback_wallet_amount": 0,
+      "cashback_advocate_referral_amount": 0,
+      "cashback_voucher_description": "",
+      "invoice_description": "",
+      "gateway_id": "",
+      "is_coupon": 0,
+      "coupon_description": "",
+      "is_tokopedia_gerai": false,
+      "voucher_orders": [
+        {
+          "code": "POMA3A96FB",
+          "success": true,
+          "unique_id": "239594-0-301643",
+          "cart_id": 0,
+          "order_id": 0,
+          "shop_id": 239594,
+          "is_po": 0,
+          "duration": "0",
+          "warehouse_id": 8100659,
+          "address_id": 0,
+          "type": "merchant",
+          "cashback_wallet_amount": 20000,
+          "discount_amount": 0,
+          "invoice_description": "",
+          "title_description": "Promo Cashback POMA3A96FB",
+          "message": {
+            "state": "green",
+            "color": "#ade3af",
+            "text": "Kamu berpotensi dapat cashback sebesar Rp20.000 setelah pesanan selesai"
+          },
+          "benefit_details": [
+            {
+              "code": "POMA3A96FB",
+              "type": "",
+              "order_id": 1,
+              "unique_id": "239594-0-301643",
+              "discount_amount": 0,
+              "discount_details": [],
+              "cashback_amount": 20000,
+              "cashback_details": [
+                {
+                  "amount_idr": 20000,
+                  "amount_points": 20000,
+                  "benefit_type": "cashback"
+                }
+              ],
+              "promo_type": {
+                "is_bebas_ongkir": false,
+                "is_exclusive_shipping": false
+              },
+              "benefit_product_details": [
+                {
+                  "product_id": 775172855,
+                  "cashback_amount": 20000,
+                  "cashback_amount_idr": 0,
+                  "discount_amount": 0,
+                  "is_bebas_ongkir": false
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "benefit_details": [],
+      "benefit_summary_info": {
+        "final_benefit_text": "Total benefit anda: ",
+        "final_benefit_amount": 20000,
+        "final_benefit_amount_str": "Rp20.000",
+        "summaries": [
+          {
+            "description": "Total cashback: ",
+            "type": "cashback",
+            "amount_str": "Rp20.000",
+            "amount": 20000,
+            "section_name": "Cashback",
+            "section_description": "",
+            "details": [
+              {
+                "section_name": "",
+                "description": "Total Cashback OVO Points ",
+                "type": "ovo_points",
+                "amount": 20000,
+                "amount_str": "Rp20.000",
+                "points": 20000,
+                "points_str": ""
+              }
+            ]
+          }
+        ]
+      },
+      "tracking_details": [
+        {
+          "product_id": 775172855,
+          "promo_codes_tracking": "POMA3A96FB",
+          "promo_details_tracking": "M:1:20000:green"
+        }
+      ],
+      "additional_info": {
+        "message_info": {
+          "message": "Kamu bisa hemat Rp20.000",
+          "detail": "1 promo dipakai"
+        },
+        "usage_summaries": [
+          {
+            "description": "Cashback OVO Points",
+            "type": "cashback",
+            "amount_str": "20.000",
+            "amount": 20000
+          }
+        ],
+        "sp_ids": []
+      }
+    }
+  }
+}

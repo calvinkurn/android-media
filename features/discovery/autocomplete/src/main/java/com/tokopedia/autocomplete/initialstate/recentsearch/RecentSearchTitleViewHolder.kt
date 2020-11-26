@@ -11,15 +11,18 @@ import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
 class RecentSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<RecentSearchTitleViewModel>(itemView) {
 
     override fun bind(element: RecentSearchTitleViewModel) {
-        itemView.titleTextView?.text = element.title
-        itemView.actionDeleteButton?.visibility = if (element.isVisible) View.VISIBLE else View.GONE
+        bindTitle(element)
         bindActionDeleteButton(element)
-        itemView.actionDeleteButton?.setOnClickListener { clickListener.onDeleteAllRecentSearch() }
+    }
+
+    private fun bindTitle(item: RecentSearchTitleViewModel) {
+        itemView.titleTextView?.text = item.title
     }
 
     private fun bindActionDeleteButton(item: RecentSearchTitleViewModel) {
         itemView.actionDeleteButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.actionDeleteButton?.text = item.labelAction
+            itemView.actionDeleteButton?.setOnClickListener { clickListener.onDeleteAllRecentSearch() }
         }
     }
 

@@ -1,10 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter;
 
-import com.google.android.material.tabs.TabLayout;
+import android.text.TextUtils;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import android.text.TextUtils;
+
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.List;
 
 /**
@@ -16,7 +19,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 
     public SectionsPagerAdapter(FragmentManager fm, List<Fragment> fragmentList, TabLayout indicator) {
-        super(fm);
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         this.fragmentList = fragmentList;
         this.indicator = indicator;
     }

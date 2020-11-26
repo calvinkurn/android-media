@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/spacing_lvl4"
+    android:paddingEnd="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    android:background="?selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/ivSearchResultProduct"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="4"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSearchResultProductTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivSearchResultProduct"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Top Secret Kado Natal"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvSearchResultProductDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyWeight="reguler"
+        app:typographyType="body_3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/ivSearchResultProduct"
+        app:layout_constraintTop_toBottomOf="@id/tvSearchResultProductTitle"
+        tools:text="Stok: 29"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

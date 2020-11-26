@@ -8,7 +8,6 @@ include 'features:discovery:productcard'
 include 'features:discovery:wishlist_common'
 include 'features:discovery:topadssdk'
 include 'features:fcm_common'
-include 'features:merchant:gold_merchant_resource'
 include 'features:transaction:atc_common'
 
 include 'libraries:analytics'

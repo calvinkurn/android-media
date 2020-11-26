@@ -1,8 +1,6 @@
 package com.tokopedia.common_category.usecase
 
-import android.content.Context
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common_category.R
+import com.tokopedia.common_category.data.raw.GQL_NAV_DYNAMIC_FILTER
 import com.tokopedia.common_category.model.filter.FilterResponse
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -13,12 +11,11 @@ import rx.Observable
 import javax.inject.Inject
 
 
-class DynamicFilterUseCase @Inject constructor(private val context: Context) : UseCase<DynamicFilterModel>() {
+class DynamicFilterUseCase @Inject constructor() : UseCase<DynamicFilterModel>() {
     override fun createObservable(requestParams: RequestParams?): Observable<DynamicFilterModel> {
 
         val graphqlUseCase = GraphqlUseCase()
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.gql_nav_dynamic_attribute), FilterResponse::class.java, requestParams?.parameters, false)
+        val graphqlRequest = GraphqlRequest(GQL_NAV_DYNAMIC_FILTER, FilterResponse::class.java, requestParams?.parameters, false)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

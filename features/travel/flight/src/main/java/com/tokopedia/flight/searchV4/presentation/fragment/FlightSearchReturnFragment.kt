@@ -13,17 +13,13 @@ import com.tokopedia.flight.airport.view.model.FlightAirportModel
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.view.HorizontalProgressBar
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataModel
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_COMBINE_DONE
 import com.tokopedia.flight.searchV4.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_PRICE_MODEL
-import com.tokopedia.flight.searchV4.presentation.model.FlightJourneyModel
-import com.tokopedia.flight.searchV4.presentation.model.FlightSearchSeeAllResultModel
-import com.tokopedia.flight.searchV4.presentation.model.SearchErrorEnum
+import com.tokopedia.flight.searchV4.presentation.model.*
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV4.presentation.viewmodel.FlightSearchReturnViewModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.fragment_flight_search_return.*
@@ -131,12 +127,16 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
 
     override fun onShowAllClicked() {
         super.onShowAllClicked()
-        showSeeAllResultDialog(flightSearchReturnViewModel.priceModel.departurePrice.adult)
+        flightSearchReturnViewModel.priceModel.departurePrice?.let {
+            showSeeAllResultDialog(it.adult)
+        }
     }
 
     override fun onShowBestPairingClicked() {
         super.onShowBestPairingClicked()
-        showSeeBestPairingDialog(flightSearchReturnViewModel.priceModel.departurePrice.adultCombo)
+        flightSearchReturnViewModel.priceModel.departurePrice?.let {
+            showSeeBestPairingDialog(it.adultCombo)
+        }
     }
 
     private fun renderDepartureJourney(flightJourneyModel: FlightJourneyModel) {
@@ -162,28 +162,34 @@ class FlightSearchReturnFragment : FlightSearchFragment() {
     }
 
     private fun resetDepartureLabelPrice() {
-        if (flightSearchReturnViewModel.isBestPairing) {
-            if (flightSearchReturnViewModel.isViewOnlyBestPairing &&
-                    flightSearchReturnViewModel.priceModel.departurePrice.adultNumericCombo > 0) {
-                departureTripLabel.setPrice(flightSearchReturnViewModel.priceModel.departurePrice.adultCombo)
+        flightSearchReturnViewModel.priceModel.departurePrice?.let {
+            if (flightSearchReturnViewModel.isBestPairing) {
+                if (flightSearchReturnViewModel.isViewOnlyBestPairing &&
+                        it.adultNumericCombo > 0) {
+                    departureTripLabel.setPrice(it.adultCombo)
+                } else {
+                    departureTripLabel.setPrice(it.adult)
+                }
             } else {
-                departureTripLabel.setPrice(flightSearchReturnViewModel.priceModel.departurePrice.adult)
+                departureTripLabel.setPrice(it.adult)
             }
-        } else {
-            departureTripLabel.setPrice(flightSearchReturnViewModel.priceModel.departurePrice.adult)
         }
     }
 
     private fun showSeeAllResultView() {
-        adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
-                flightSearchReturnViewModel.priceModel.departurePrice.adultNumeric, false), false))
-        flightSearchReturnViewModel.isViewOnlyBestPairing = true
+        flightSearchReturnViewModel.priceModel.departurePrice?.let {
+            adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
+                    it.adultNumeric, false), false))
+            flightSearchReturnViewModel.isViewOnlyBestPairing = true
+        }
     }
 
     private fun showSeeBestPairingResultView() {
-        adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
-                flightSearchReturnViewModel.priceModel.departurePrice.adultNumericCombo, false), true))
-        flightSearchReturnViewModel.isViewOnlyBestPairing = false
+        flightSearchReturnViewModel.priceModel.departurePrice?.let {
+            adapter.addElement(FlightSearchSeeAllResultModel(FlightCurrencyFormatUtil.convertToIdrPrice(
+                    it.adultNumericCombo, false), true))
+            flightSearchReturnViewModel.isViewOnlyBestPairing = false
+        }
     }
 
     private fun showSeeAllResultDialog(normalPrice: String) {

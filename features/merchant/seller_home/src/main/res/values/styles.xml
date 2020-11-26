@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="NavigationMenuItemTextAppearance">
         <item name="android:ellipsize">end</item>
@@ -13,5 +13,25 @@
 
     <style name="CentralizedPromoTheme" parent="Theme.White">
         <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="DialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="MenuSettingStyle" parent="Base.Theme">
+        <item name="toolbarTheme">@style/Toolbar.Transparent</item>
+        <item name="titleTextAppearance">@style/TitleTextAppearance.White</item>
+    </style>
+
+    <style name="Toolbar.Transparent" parent="Base.Toolbar.Theme">
+        <item name="android:statusBarColor" tools:targetApi="lollipop">@color/transparent</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="actionModeBackground">@android:color/transparent</item>
+        <item name="android:actionModeBackground">@android:color/transparent</item>
+        <item name="android:textColorPrimary">@color/font_black_primary_70</item>
+        <item name="android:actionMenuTextColor">@color/font_black_primary_70</item>
+        <item name="android:textColorSecondary">@color/font_black_primary_70</item>
     </style>
 </resources>

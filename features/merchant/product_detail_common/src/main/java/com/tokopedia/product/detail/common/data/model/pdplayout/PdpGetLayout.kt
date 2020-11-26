@@ -9,5 +9,7 @@ data class PdpGetLayout(
         @SerializedName("components")
         val components: List<Component> = listOf(),
         @SerializedName("name")
-        val generalName: String = ""
+        val generalName: String = "",
+        @SerializedName("pdpSession")
+        val pdpSession: String = ""
 )

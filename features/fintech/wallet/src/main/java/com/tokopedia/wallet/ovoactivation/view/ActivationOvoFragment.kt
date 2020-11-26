@@ -54,9 +54,9 @@ class ActivationOvoFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            registeredApplink = it.getString(ActivationOvoActivity.REGISTERED_APPLINK)
-            phoneNumber = it.getString(ActivationOvoActivity.PHONE_NUMBER)
-            changeMsisdnApplink = it.getString(ActivationOvoActivity.CHANGE_MSISDN_APPLINK)
+            registeredApplink = it.getString(ActivationOvoActivity.REGISTERED_APPLINK, "")
+            phoneNumber = it.getString(ActivationOvoActivity.PHONE_NUMBER, "")
+            changeMsisdnApplink = it.getString(ActivationOvoActivity.CHANGE_MSISDN_APPLINK, "")
         }
 
         activationDesc.text = setContentAndBoldPhoneNumber()

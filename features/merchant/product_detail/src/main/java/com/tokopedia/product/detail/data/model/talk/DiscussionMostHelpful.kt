@@ -9,5 +9,14 @@ data class DiscussionMostHelpful(
         val totalQuestion: Int = 0,
         @SerializedName("question")
         @Expose
-        val questions: List<Question>? = null
+        val questions: List<Question>? = null,
+        @SerializedName("productID")
+        @Expose
+        val productId: String = "",
+        @SerializedName("shopID")
+        @Expose
+        val shopId: String = "",
+        @SerializedName("shopURL")
+        @Expose
+        val shopUrl: String = ""
 )

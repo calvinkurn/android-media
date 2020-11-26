@@ -1,17 +1,22 @@
 package com.tokopedia.productcard
 
 import android.graphics.Paint
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
 import android.view.View
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.productcard.utils.initLabelGroup
-import com.tokopedia.productcard.utils.loadIcon
-import com.tokopedia.productcard.utils.shouldShowWithAction
+import com.tokopedia.productcard.utils.*
+import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifyprinciples.getTypeface
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
+
 
 internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderTextGimmick(productCardModel)
@@ -25,9 +30,8 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderRating(productCardModel)
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
+    renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
-    renderStockPercentage(productCardModel)
-    renderStockLabel(productCardModel)
     renderTextShipping(productCardModel)
 }
 
@@ -46,7 +50,9 @@ private fun View.renderPdpCountView(productCardModel: ProductCardModel) {
 
 private fun View.renderTextProductName(productCardModel: ProductCardModel) {
     textViewProductName?.shouldShowWithAction(productCardModel.productName.isNotEmpty()) {
-        it.text = MethodChecker.fromHtml(productCardModel.productName)
+        val productNameFromHtml = MethodChecker.fromHtml(productCardModel.productName)
+        it.contentDescription = context.getString(R.string.content_desc_textViewProductName, productNameFromHtml)
+        it.text = productNameFromHtml
     }
 }
 
@@ -56,19 +62,24 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
     }
 
     textViewSlashedPrice?.shouldShowWithAction(productCardModel.slashedPrice.isNotEmpty()) {
+        it.contentDescription = context.getString(R.string.content_desc_textViewSlashedPrice, productCardModel.slashedPrice)
         it.text = productCardModel.slashedPrice
         it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
-    labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+    if (productCardModel.isShowDiscountOrSlashPrice())
+        labelPrice?.initLabelGroup(null)
+    else
+        labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
     val priceToRender = productCardModel.getPriceToRender()
 
     textViewPrice?.shouldShowWithAction(priceToRender.isNotEmpty()) {
+        it.contentDescription  = context.getString(R.string.content_desc_textViewPrice, priceToRender)
         it.text = priceToRender
     }
 }
@@ -79,13 +90,14 @@ private fun ProductCardModel.getPriceToRender(): String {
 
 private fun View.renderShopBadge(productCardModel: ProductCardModel) {
     val shopBadge = productCardModel.shopBadgeList.find { it.isShown && it.imageUrl.isNotEmpty() }
-    imageShopBadge?.shouldShowWithAction(shopBadge != null) {
+    imageShopBadge?.shouldShowWithAction(productCardModel.isShowShopBadge()) {
         it.loadIcon(shopBadge?.imageUrl ?: "")
     }
 }
 
 private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
     textViewShopLocation?.shouldShowWithAction(productCardModel.shopLocation.isNotEmpty()) {
+        it.contentDescription = context.getString(R.string.content_desc_textViewShopLocation, productCardModel.shopLocation)
         it.text = productCardModel.shopLocation
     }
 }
@@ -141,27 +153,92 @@ private fun View.renderTextReview(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
-    textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
+    if (productCardModel.willShowRatingAndReviewCount())
+        textViewIntegrity?.initLabelGroup(null)
+    else
+        textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
+private fun View.renderShopRating(productCardModel: ProductCardModel) {
+    if (productCardModel.isShowShopRating()) {
+        imageShopRating?.visible()
+        imageShopRating.setImageResource(getShopRatingDrawable(productCardModel))
+        textViewShopRating?.shouldShowWithAction(productCardModel.isShowShopRating()) {
+            it.setShopRatingText(productCardModel.shopRating)
+        }
+    }
+    else {
+        imageShopRating?.gone()
+        textViewShopRating?.gone()
+    }
+}
+
+private fun Typography.setShopRatingText(shopRating: String) {
+    val boldTypeface = getTypeface(this.context, ROBOTO_BOLD)
+    val regularTypeface = getTypeface(this.context, ROBOTO_REGULAR)
+
+    if (boldTypeface != null && regularTypeface != null) {
+        setShopRatingTextWithMultipleTypeface(shopRating, regularTypeface, boldTypeface)
+    }
+    else {
+        text = MethodChecker.fromHtml(shopRating)
+    }
+}
+
+private fun Typography.setShopRatingTextWithMultipleTypeface(shopRating: String, regularTypeface: Typeface, boldTypeface: Typeface) {
+    val startBold = shopRating.indexOf(OPEN_BOLD_TAG)
+    val endBold = shopRating.indexOf(CLOSE_BOLD_TAG)
+
+    if (startBold in 0 until endBold) {
+        changeFontInsideBoldTag(shopRating, startBold, endBold, regularTypeface, boldTypeface)
+    }
+    else {
+        text = MethodChecker.fromHtml(shopRating)
+    }
+}
+
+private fun Typography.changeFontInsideBoldTag(shopRating: String, startBold: Int, endBold: Int, regularTypeface: Typeface, boldTypeface: Typeface) {
+    try {
+        val beforeBoldTag = MethodChecker.fromHtml(shopRating.substring(0, startBold)).toString()
+        val inBoldTag = shopRating.substring(startBold + OPEN_BOLD_TAG.length, endBold)
+        val afterBoldTag = " " + MethodChecker.fromHtml(shopRating.substring(endBold + CLOSE_BOLD_TAG.length, shopRating.length)).toString()
+
+        val spannableShopRating = SpannableString(beforeBoldTag + inBoldTag + afterBoldTag)
+
+        val beforeBoldTagStart = 0
+        val beforeBoldTagEnd = beforeBoldTag.length
+        val inBoldTagEnd = beforeBoldTagEnd + inBoldTag.length
+        val afterBoldTagEnd = inBoldTagEnd + afterBoldTag.length
+
+        val charcoalGrey44 = ContextCompat.getColor(this.context, R.color.charcoal_grey_44)
+        val charcoalGrey68 = ContextCompat.getColor(this.context, R.color.charcoal_grey_68)
+
+        spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface, charcoalGrey44), beforeBoldTagStart, beforeBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableShopRating.setSpan(CustomTypefaceSpan("", boldTypeface, charcoalGrey68), beforeBoldTagEnd, inBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        spannableShopRating.setSpan(CustomTypefaceSpan("", regularTypeface, charcoalGrey44), inBoldTagEnd, afterBoldTagEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        text = spannableShopRating
+    }
+    catch (e: Exception) {
+        text = MethodChecker.fromHtml(shopRating)
+    }
+}
+
+private fun getShopRatingDrawable(productCardModel: ProductCardModel) =
+        if (productCardModel.isShopRatingYellow) R.drawable.product_card_ic_rating_active
+        else R.drawable.product_card_ic_shop_rating
+
 private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
-    imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.freeOngkir.isActive) {
+    imageFreeOngkirPromo?.shouldShowWithAction(productCardModel.isShowFreeOngkirBadge()) {
         it.loadIcon(productCardModel.freeOngkir.imageUrl)
     }
 }
 
 private fun View.renderTextShipping(productCardModel: ProductCardModel) {
-    textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
+    if (productCardModel.isShowFreeOngkirBadge())
+        textViewShipping?.initLabelGroup(null)
+    else
+        textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
 
-private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
-    progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        it.progress = productCardModel.stockBarPercentage
-    }
-}
 
-private fun View.renderStockLabel(productCardModel: ProductCardModel) {
-    textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
-        it.text = productCardModel.stockBarLabel
-    }
-}

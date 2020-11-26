@@ -2,21 +2,21 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.request.DataSuggestions;
-import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.module.TopAdsCreatePromoModule;
 import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
@@ -27,6 +27,7 @@ import com.tokopedia.topads.dashboard.view.model.TopAdsDetailGroupViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailShopViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewProductPresenter;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +77,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
     @Override
     protected void initialVar() {
         super.initialVar();
-        detailAd.setShopId(Long.parseLong(SessionHandler.getShopID(getActivity())));
+        detailAd.setShopId(Long.parseLong(new UserSession(getActivity()).getShopId()));
         detailAd.setType(TopAdsNetworkConstant.TYPE_PRODUCT_STAT);
     }
 
@@ -88,8 +89,7 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
                 stepperModel = new TopAdsCreatePromoWithoutGroupModel();
             }
             stepperModel.setDetailGroupCostViewModel(detailAd);
-            topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()),
-                    stepperModel.getSource());
+            topAdsDetailNewProductPresenter.getBalance(getResources());
         }
     }
 
@@ -116,6 +116,13 @@ public class TopAdsNewCostWithoutGroupFragment extends TopAdsNewCostFragment<Top
             setResultAdSaved(topAdsDetailAdViewModel);
             stepperListener.finishPage();
         }
+    }
+
+    @Override
+    public void onBalanceCheck(TopAdsDepositResponse.Data topAdsDepositResponse) {
+        topAdsDetailNewProductPresenter.saveAd(stepperModel.getDetailProductViewModel(), new ArrayList<>(stepperModel.getTopAdsProductViewModels()),
+                stepperModel.getSource(),topAdsDepositResponse);
+
     }
 
     private void setResultAdSaved(TopAdsDetailAdViewModel topAdsDetailAdViewModel) {

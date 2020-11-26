@@ -301,7 +301,7 @@ public class AddAddressFragment extends BaseDaggerFragment
         if (getActivity() == null) return;
         if (message == null || TextUtils.isEmpty(message)) {
             Toaster.INSTANCE.make(getView(),
-                    getActivity().getResources().getString(R.string.msg_network_error),
+                    getActivity().getResources().getString(com.tokopedia.abstraction.R.string.msg_network_error),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", v -> {
                     });
         } else {
@@ -621,8 +621,8 @@ public class AddAddressFragment extends BaseDaggerFragment
 
         ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(
                 getContext(),
-                R.layout.item_autocomplete_text_double_row,
-                R.id.item,
+                com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.design.R.id.item,
                 zipCodes);
 
         zipCodeTextView.setAdapter(zipCodeAdapter);

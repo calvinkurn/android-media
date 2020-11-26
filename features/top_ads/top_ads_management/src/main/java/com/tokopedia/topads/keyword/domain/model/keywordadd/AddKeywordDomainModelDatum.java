@@ -16,12 +16,14 @@ public class AddKeywordDomainModelDatum implements Parcelable {
     private String groupId;
     private String shopId;
     private String source;
+    private int priceBid;
 
-    public AddKeywordDomainModelDatum(String keywordTag, int keyWordTypeId, String groupId, String shopId) {
+    public AddKeywordDomainModelDatum(String keywordTag, int keyWordTypeId, String groupId, String shopId,int priceBid) {
         this.keywordTag = keywordTag;
         this.keyWordTypeId = keyWordTypeId;
         this.groupId = groupId;
         this.shopId = shopId;
+        this.priceBid = priceBid;
     }
 
     public AddKeywordDomainModelDatum(String keywordTag, int keyWordTypeId, String groupId, String shopId, String source) {
@@ -38,6 +40,7 @@ public class AddKeywordDomainModelDatum implements Parcelable {
         groupId = in.readString();
         shopId = in.readString();
         source = in.readString();
+        priceBid = in.readInt();
     }
 
     public static final Creator<AddKeywordDomainModelDatum> CREATOR = new Creator<AddKeywordDomainModelDatum>() {
@@ -51,6 +54,15 @@ public class AddKeywordDomainModelDatum implements Parcelable {
             return new AddKeywordDomainModelDatum[size];
         }
     };
+
+
+    public void setPriceBid(int priceBid) {
+        this.priceBid = priceBid;
+    }
+
+    public int getPriceBid() {
+        return priceBid;
+    }
 
     public String getShopId() {
         return shopId;
@@ -104,5 +116,6 @@ public class AddKeywordDomainModelDatum implements Parcelable {
         parcel.writeString(groupId);
         parcel.writeString(shopId);
         parcel.writeString(source);
+        parcel.writeInt(priceBid);
     }
 }

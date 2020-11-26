@@ -47,7 +47,7 @@ class ShopProductsEmptyViewHolder(
                 view.context,
                 imageViewEmptyImage,
                 URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE,
-                R.drawable.ic_loading_image
+                com.tokopedia.design.R.drawable.ic_loading_image
         )
         textTitle.text = element.title
         textDescription.text = element.description

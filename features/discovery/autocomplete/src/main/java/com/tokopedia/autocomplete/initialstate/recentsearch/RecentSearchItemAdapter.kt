@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
+import com.tokopedia.autocomplete.initialstate.RECENT_SEARCH_SEE_MORE_LIMIT
 
 class RecentSearchItemAdapter(private val listener: InitialStateItemClickListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -13,13 +14,15 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
         private const val TEMPLATE_ONE_LINE = "list_single_line"
         private const val TYPE_ONE_LINE = 1
         private const val TYPE_TWO_LINE = 2
+        private const val DEFAULT_SHOWN_SEE_MORE = 3
     }
 
-
     private var data: List<BaseItemInitialStateSearch> = ArrayList()
+    private var seeMore: Boolean = false
 
-    fun setData(data: List<BaseItemInitialStateSearch>) {
+    fun setData(data: List<BaseItemInitialStateSearch>, seeMore: Boolean) {
         this.data = data
+        this.seeMore = seeMore
         notifyDataSetChanged()
     }
 
@@ -54,6 +57,7 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return if (seeMore || data.size < RECENT_SEARCH_SEE_MORE_LIMIT) data.size
+        else DEFAULT_SHOWN_SEE_MORE
     }
 }

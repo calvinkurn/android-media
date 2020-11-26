@@ -1,11 +1,12 @@
 package com.tokopedia.officialstore.official.data.model.dynamic_channel
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.productcard.ProductCardModel
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class Grid(
         @Expose @SerializedName("freeOngkir") val freeOngkir: FreeOngkir?,
         @Expose @SerializedName("id") val id: Long,
@@ -22,58 +23,7 @@ data class Grid(
         @Expose @SerializedName("impression") val impression: String,
         @Expose @SerializedName("cashback") val cashback: String,
         @Expose @SerializedName("discountPercentage") val discountPercentage: String,
-        @Expose @SerializedName("labelGroup") val labelGroup: List<ProductCardModel.LabelGroup> = listOf(),
+        @Expose @SerializedName("labelGroup") val labelGroup: List<ProductCardModel.LabelGroup> = arrayListOf(),
         // Impression purposed
         var isImpressed: Boolean = false
-) : Parcelable {
-
-    private constructor(parcel: Parcel) : this(
-            freeOngkir = parcel.readParcelable(FreeOngkir::class.java.classLoader),
-            id = parcel.readLong(),
-            name = parcel.readString() ?: "",
-            applink = parcel.readString() ?: "",
-            price = parcel.readString() ?: "",
-            slashedPrice = parcel.readString() ?: "",
-            discount = parcel.readString() ?: "",
-            imageUrl = parcel.readString() ?: "",
-            label = parcel.readString() ?: "",
-            soldPercentage = parcel.readLong(),
-            attribution = parcel.readString() ?: "",
-            productClickUrl = parcel.readString() ?: "",
-            impression = parcel.readString() ?: "",
-            cashback = parcel.readString() ?: "",
-            discountPercentage = parcel.readString() ?: "",
-            labelGroup = arrayListOf<ProductCardModel.LabelGroup>().apply {
-                parcel.readList(this, ProductCardModel.LabelGroup::class.java.classLoader)
-            },
-            isImpressed = parcel.readByte().toInt() != 0
-    )
-
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
-        dest?.run {
-            writeParcelable(freeOngkir, flags)
-            writeLong(id)
-            writeString(name)
-            writeString(applink)
-            writeString(price)
-            writeString(slashedPrice)
-            writeString(discount)
-            writeString(imageUrl)
-            writeString(label)
-            writeLong(soldPercentage)
-            writeString(attribution)
-            writeString(productClickUrl)
-            writeString(impression)
-            writeString(cashback)
-            writeString(discountPercentage)
-            writeList(labelGroup)
-            writeByte((if(isImpressed) 1 else 0).toByte())
-        }
-    }
-
-    override fun describeContents() = 0
-
-    companion object {
-        @JvmField val CREATOR = createParcel { Grid(it) }
-    }
-}
+) : Parcelable

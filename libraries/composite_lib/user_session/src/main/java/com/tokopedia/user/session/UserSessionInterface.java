@@ -164,4 +164,14 @@ public interface UserSessionInterface {
 
     long getFcmTimestamp();
 
+    String getGTMLoginID();
+
+    String getAndroidId();
+
+    String getAdsId();
+
+    boolean isAffiliate();
+
+    boolean hasShownSaldoIntroScreen();
+
 }

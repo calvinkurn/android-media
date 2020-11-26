@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="title_entertainment">Entertainment</string>
+    <string name="title_event_entertainment">Event</string>
     <string name="title_home_event">Event Home</string>
     <string name="host_event" translatable="false">event</string>
     <string name="path_event_home" translatable="false">/home</string>

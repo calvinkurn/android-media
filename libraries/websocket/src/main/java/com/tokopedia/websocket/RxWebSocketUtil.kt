@@ -66,6 +66,11 @@ class RxWebSocketUtil private constructor(interceptors: List<Interceptor>?,
         webSocket?.send(msg) ?: throw WebSocketException("websocket not open")
     }
 
+    fun close() {
+        val webSocket = webSocketMap
+        webSocket?.close(1001, "disconnected by client")
+    }
+
     companion object {
 
         private var instance: RxWebSocketUtil? = null

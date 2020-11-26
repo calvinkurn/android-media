@@ -61,6 +61,7 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
                 tab = intentExtras.getInt(ARGS_TAB);
             }
             reputationId = intentExtras.getString(REPUTATION_ID, "");
+            isFromApplink = intentExtras.getBoolean(ARGS_IS_FROM_APPLINK, false);
         }
 
         return InboxReputationDetailFragment.createInstance(tab, isFromApplink, reputationId);
@@ -77,6 +78,16 @@ public class InboxReputationDetailActivity extends BaseSimpleActivity implements
         Bundle bundle = new Bundle();
         bundle.putInt(InboxReputationDetailActivity.ARGS_POSITION, adapterPosition);
         bundle.putInt(InboxReputationDetailActivity.ARGS_TAB, tab);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getCallingIntent(Context context,
+                                          String reputationId) {
+        Intent intent = new Intent(context, InboxReputationDetailActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(REPUTATION_ID, reputationId);
+        bundle.putBoolean(ARGS_IS_FROM_APPLINK, true);
         intent.putExtras(bundle);
         return intent;
     }

@@ -2,6 +2,7 @@ package com.tokopedia.play.domain
 
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.play.util.exception.DefaultErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -18,9 +19,13 @@ class PostAddToCartUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): AddToCartDataModel {
         require(parameters.paramsAllValueInString.isEmpty()) { "Please provide add to cart params" }
-        return addToCartUseCase.createObservable(parameters)
-                .toBlocking()
-                .single()
+        return try {
+             addToCartUseCase.createObservable(parameters)
+                    .toBlocking()
+                    .single()
+        } catch (exception: Exception) {
+            throw DefaultErrorException(exception)
+        }
     }
 
 }

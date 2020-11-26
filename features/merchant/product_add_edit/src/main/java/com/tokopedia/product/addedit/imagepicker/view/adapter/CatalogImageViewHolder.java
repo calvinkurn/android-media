@@ -13,7 +13,7 @@ import com.tokopedia.product.addedit.imagepicker.view.model.CatalogModelView;
  */
 
 public class CatalogImageViewHolder extends AbstractViewHolder<CatalogModelView> {
-    public static final int LAYOUT = R.layout.item_media_catalog;
+    public static final int LAYOUT = R.layout.product_add_edit_item_media_catalog;
 
     private ImageView imageCatalog;
     private View ivCheck;

@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/white"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.sortfilter.SortFilter
+        android:id="@+id/search_product_quick_sort_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        app:sort_filter_relationship="AND"
+        app:sort_filter_type="advanced"
+        android:background="@color/white"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/shimmeringView"
+        android:visibility="gone"
+        layout="@layout/search_quick_filter_shimmering_layout" />
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -12,7 +31,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:divider="@android:color/transparent"
             android:descendantFocusability="blocksDescendants"
             android:clipToPadding="false"
@@ -21,4 +40,4 @@
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

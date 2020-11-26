@@ -13,7 +13,7 @@
     <string name="kol_error_delete">Terjadi kesalahan saat menghapus post.</string>
 
     <!--Kol Comment-->
-    <string name="title_comment_kol">Comments</string>
+    <string name="kol_title_comment">Comments</string>
     <string name="prompt_delete_comment_kol">Apakah anda ingin menghapus komen ini?</string>
     <string name="success_delete_kol_comment">Sukses menghapus komentar</string>
     <string name="see_more_comments">Lihat Comments Sebelumnya</string>
@@ -27,7 +27,7 @@
     <string name="title_create_post">Create Post</string>
 
     <!--Kol Post Detail-->
-    <string name="title_kol_post_detail">Post Detail</string>
+    <string name="kol_title_post_detail">Post Detail</string>
     <string name="add_your_comment">Masukan komen kamu</string>
     <string name="see_all_comment">Lihat Semua Comments (%d)</string>
     <string name="post_detail_follow_success_toast">Cek Feeds mu sekarang untuk melihat update TopProfile ini</string>
@@ -48,8 +48,17 @@
     <!--Kol Comment-->
     <string name="kol_reply">Balas</string>
 
+    <!--Kol Media Preview-->
+    <string name="kol_title_media_preview">Media Preview</string>
+
+    <!--Kol Video Detail-->
+    <string name="kol_title_video_detail">Video Detail</string>
+
+    <!--Kol Post Youtube-->
+    <string name="kol_title_post_youtube">Post Youtube</string>
+
     <!--Report-->
-    <string name="title_kol_report">Laporan Konten</string>
+    <string name="kol_title_report">Laporan Konten</string>
     <string name="kol_help_understand">Bantu Kami Memahami Apa yang Terjadi. Apa yang salah dari konten tersebut?</string>
     <string name="kol_reason_here">Isi alasan di sini</string>
     <string name="kol_reason_type_spam" translatable="false">spam</string>

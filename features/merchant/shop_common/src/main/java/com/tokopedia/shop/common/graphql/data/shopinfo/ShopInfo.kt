@@ -76,9 +76,25 @@ data class ShopInfo(
 
         @SerializedName("gold")
         @Expose
-        val gold: Gold = Gold()
+        val gold: Gold = Gold(),
+
+        @SerializedName("activeProduct")
+        @Expose
+        val activeProduct: String = "",
+
+        @SerializedName("shopStats")
+        @Expose
+        val shopStats: ShopStats = ShopStats(),
+
+        @SerializedName("shopSnippetURL")
+        @Expose
+        val shopSnippetUrl: String = ""
 
 ) {
+    fun isShopInfoNotEmpty():Boolean {
+        return shopCore.shopID.isNotEmpty()
+    }
+
     fun mapToShopInfoData(): ShopInfoData {
         val shipmentsData = shipments.map {
             it.mapToShipmentData()
@@ -95,7 +111,8 @@ data class ShopInfo(
                 goldOS.isOfficial,
                 goldOS.isGold,
                 createdInfo.openSince,
-                shipmentsData
+                shipmentsData,
+                shopSnippetUrl
         )
     }
 
@@ -207,7 +224,11 @@ data class ShopInfo(
     data class CreatedInfo(
             @SerializedName("openSince")
             @Expose
-            val openSince: String = ""
+            val openSince: String = "",
+
+            @SerializedName("shopCreated")
+            @Expose
+            val shopCreated: String = ""
     )
 
     data class TopContent(
@@ -244,5 +265,19 @@ data class ShopInfo(
             @SerializedName("fax")
             @Expose
             val fax: String = ""
+    )
+
+    data class ShopStats(
+            @SerializedName("productSold")
+            @Expose
+            val productSold: String = "",
+
+            @SerializedName("totalTx")
+            @Expose
+            val totalTx: String = "",
+
+            @SerializedName("totalShowcase")
+            @Expose
+            val totalShowcase: String = ""
     )
 }

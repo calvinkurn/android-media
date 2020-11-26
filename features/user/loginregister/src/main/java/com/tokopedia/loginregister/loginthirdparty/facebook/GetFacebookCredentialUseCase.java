@@ -2,10 +2,9 @@ package com.tokopedia.loginregister.loginthirdparty.facebook;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
-
-import android.text.TextUtils;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -17,15 +16,12 @@ import com.facebook.GraphRequest;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookRequestData;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.sessioncommon.ErrorHandlerSession;
 import com.tokopedia.usecase.RequestParams;
-
-import org.json.JSONException;
+import com.tokopedia.utils.phonenumber.PhoneNumberUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -111,7 +107,7 @@ public class GetFacebookCredentialUseCase {
                                 subscriber.onSuccessEmail(accessToken, data.getEmail());
                             } else if (!data.getPhone().isEmpty()) {
                                 subscriber.onSuccessPhone(accessToken,
-                                        PhoneNumberUtils.INSTANCE.transform(data.getPhone()));
+                                        PhoneNumberUtil.transform(data.getPhone()));
                             } else {
                                 LoginManager.getInstance().logOut();
                                 subscriber.onError(new MessageErrorException(

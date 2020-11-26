@@ -6,11 +6,11 @@
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
+
         <activity
-            android:name=".cotp.view.activity.VerificationActivity"
-            android:label="@string/title_verify"
+            android:name=".verification.view.activity.VerificationActivity"
+            android:label="@string/title_activity_activation"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -21,25 +21,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_global"
                     android:pathPattern="@string/path_cotp"/>
-            </intent-filter>
-
-        </activity>
-
-        <activity
-            android:name=".validator.view.activity.ValidatorActivity"
-            android:label="@string/title_activity_activation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.White">
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_otp_validator"/>
             </intent-filter>
 
         </activity>

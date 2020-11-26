@@ -6,6 +6,7 @@ import com.tokopedia.notifications.image.downloaderFactory.ImageSizeAndTimeout
 import com.tokopedia.notifications.image.downloaderFactory.NotificationImageDownloader
 import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationStatus
+import timber.log.Timber
 
 class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : NotificationImageDownloader(baseNotificationModel) {
     override suspend fun verifyAndUpdate() {
@@ -13,6 +14,8 @@ class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : Noti
             if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download_collapsed';data='${
+                baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
                 return
             }
         }
@@ -20,6 +23,8 @@ class VisualImageDownloader(baseNotificationModel: BaseNotificationModel) : Noti
             if (startsWith(CMConstant.HTTP) || startsWith(CMConstant.WWW)) {
                 baseNotificationModel.status = NotificationStatus.COMPLETED
                 baseNotificationModel.type = CMConstant.NotificationType.DROP_NOTIFICATION
+                Timber.w("${CMConstant.TimberTags.TAG}validation;reason='image_download_expanded';data='${
+                baseNotificationModel.toString().take(CMConstant.TimberTags.MAX_LIMIT)}'")
             }
         }
     }

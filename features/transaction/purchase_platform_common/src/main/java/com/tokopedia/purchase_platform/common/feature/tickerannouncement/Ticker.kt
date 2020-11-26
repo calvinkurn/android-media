@@ -9,5 +9,7 @@ data class Ticker(
     @field:SerializedName("message")
     val message: String,
     @field:SerializedName("page")
-    val page: String
+    val page: String,
+    @field:SerializedName("title")
+    val title: String
 )

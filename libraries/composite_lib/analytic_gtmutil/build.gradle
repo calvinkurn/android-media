@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticParam
+    api rootProject.ext.tkpdInternalLibDependencies.analyticAnnotation
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+project.ext {
+    artifactId = 'gtmutil'
+    groupId = 'com.tokopedia.analytic'
+    versionName = "0.0.3"
+    artifactName = "analytic_gtmutil-release"
+}
+
+apply from: '../publish_local.gradle'

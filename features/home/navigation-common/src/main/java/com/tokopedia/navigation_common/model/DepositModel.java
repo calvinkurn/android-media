@@ -9,9 +9,11 @@ import com.google.gson.annotations.SerializedName;
 public class DepositModel {
 
     @SerializedName(value = "deposit", alternate = {"buyer_usable"})
+    @Expose
     private long buyerUsable = 0;
 
     @SerializedName("seller_usable")
+    @Expose
     private long sellerUsable = 0;
 
     public long getBuyerUsable() {

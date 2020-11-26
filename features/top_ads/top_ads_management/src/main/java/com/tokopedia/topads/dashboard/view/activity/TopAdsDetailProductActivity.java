@@ -6,37 +6,37 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.utils.ApplinkUtils;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.topads.R;
-import com.tokopedia.topads.TopAdsManagementRouter;
-import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener;
-import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
-import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
-import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
-import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsManagementRouter;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
+import com.tokopedia.topads.common.view.listener.OneUseGlobalLayoutListener;
+import com.tokopedia.topads.common.view.utils.ShowCaseDialogFactory;
+import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
+import com.tokopedia.topads.dashboard.data.model.data.ProductAd;
+import com.tokopedia.topads.dashboard.utils.ApplinkUtils;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsDetailProductFragment;
+import com.tokopedia.topads.dashboard.view.fragment.TopAdsNewScheduleNewGroupFragment;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TopAdsDetailProductActivity extends BaseSimpleActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
+public class TopAdsDetailProductActivity extends TopAdsBaseActivity implements TopAdsDetailProductFragment.TopAdsDetailProductFragmentListener {
 
     public static final String TAG = TopAdsDetailProductFragment.class.getSimpleName();
 
@@ -48,7 +48,7 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
         if (GlobalConfig.isSellerApp()) {
             String userId = extras.getString("user_id", "");
             if (!TextUtils.isEmpty(userId)) {
-                if (SessionHandler.getLoginID(context).equalsIgnoreCase(userId)) {
+                if (new UserSession(context).getUserId().equalsIgnoreCase(userId)) {
                     Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
                     return getCallingIntent(context, extras.getString("ad_id", ""))
                             .setData(uri.build())
@@ -99,11 +99,6 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
     @Override
     protected String getTagFragment() {
         return TAG;
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
     }
 
     @Override

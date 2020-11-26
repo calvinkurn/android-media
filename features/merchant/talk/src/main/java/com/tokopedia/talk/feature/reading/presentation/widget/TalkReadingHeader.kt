@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.sortfilter.SortFilter.Companion.RELATIONSHIP_AND
 import com.tokopedia.sortfilter.SortFilter.Companion.TYPE_QUICK
-import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_CATEGORY
+import com.tokopedia.talk.feature.reading.data.mapper.TalkReadingMapper.SORT_LATEST
 import com.tokopedia.talk.feature.reading.presentation.adapter.uimodel.TalkReadingHeaderModel
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -33,18 +33,21 @@ class TalkReadingHeader : BaseCustomView {
     fun bind(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {
         this.readingHeaderProductImage.loadImage(talkReadingHeaderModel.productImageUrl)
         this.readingHeaderProductName.text = talkReadingHeaderModel.productName
-        this.readingHeaderTicker.setTextDescription(context.getString(R.string.reading_ticker))
         initSortFilter(talkReadingHeaderModel, onCategoryModifiedListener, showBottomSheet)
     }
 
     fun updateSelectedSort(chipText: String) {
         val sortChip = this.readingHeaderChips.chipItems.first()
-        if(chipText != SORT_CATEGORY) {
+        if(chipText != SORT_LATEST) {
             sortChip.type = ChipsUnify.TYPE_SELECTED
             sortChip.selectedItem = arrayListOf(chipText)
         } else {
             sortChip.type = ChipsUnify.TYPE_NORMAL
         }
+    }
+
+    fun clearAllSort(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {
+        initSortFilter(talkReadingHeaderModel, onCategoryModifiedListener, showBottomSheet)
     }
 
     private fun initSortFilter(talkReadingHeaderModel: TalkReadingHeaderModel, onCategoryModifiedListener: OnCategoryModifiedListener, showBottomSheet: () -> Unit) {

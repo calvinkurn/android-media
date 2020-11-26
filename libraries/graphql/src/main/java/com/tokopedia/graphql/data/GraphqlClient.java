@@ -64,7 +64,7 @@ public class GraphqlClient {
                 tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));
 
                 FakeResponseInterceptorProvider provider = new FakeResponseInterceptorProvider();
-                Interceptor interceptor = provider.getInterceptor(context.getApplicationContext());
+                Interceptor interceptor = provider.getGqlInterceptor(context.getApplicationContext());
                 if (interceptor != null) {
                     tkpdOkHttpBuilder.addInterceptor(interceptor);
                 }
@@ -75,7 +75,7 @@ public class GraphqlClient {
                     tkpdOkHttpBuilder,
                     new TkpdAuthInterceptor(context, (NetworkRouter) context.getApplicationContext(), userSession),
                     new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession),
-                    new TkpdAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
+                    TkpdAuthenticator.Companion.createAuthenticator(context, (NetworkRouter) context.getApplicationContext(), userSession),
                     new StringResponseConverter(),
                     new GsonBuilder());
             sFingerprintManager = new FingerprintManager(userSession);
@@ -165,7 +165,7 @@ public class GraphqlClient {
         }
     }
 
-    private static Retrofit getRetrofit() {
+    public static Retrofit getRetrofit() {
         if (sRetrofit == null) {
             throw new RuntimeException("Please call init() before using graphql library");
         }

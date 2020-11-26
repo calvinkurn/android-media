@@ -2,6 +2,7 @@ package com.tokopedia.flight.passenger.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.travel.country_code.domain.TravelCountryCodeByIdUseCase
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
@@ -9,8 +10,6 @@ import com.tokopedia.travel.passenger.data.entity.TravelUpsertContactModel
 import com.tokopedia.travel.passenger.domain.GetContactListUseCase
 import com.tokopedia.travel.passenger.domain.UpsertContactListUseCase
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +20,8 @@ import javax.inject.Inject
 class FlightPassengerViewModel @Inject constructor(private val getContactListUseCase: GetContactListUseCase,
                                                    private val upsertContactListUseCase: UpsertContactListUseCase,
                                                    private val getPhoneCodeByIdUseCase: TravelCountryCodeByIdUseCase,
-                                                   dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+                                                   private val dispatcherProvider: TravelDispatcherProvider)
+    : BaseViewModel(dispatcherProvider.io()) {
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     var nationalityData = MutableLiveData<TravelCountryPhoneCode>()
     var passportIssuerCountryData = MutableLiveData<TravelCountryPhoneCode>()
@@ -32,12 +32,14 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
                     filterType = filterType,
                     product = GetContactListUseCase.PARAM_PRODUCT_FLIGHT)
 
-            contactListResult.value = contacts.map {
-                if (it.fullName.isBlank()) {
-                    it.fullName = "${it.firstName} ${it.lastName}"
-                }
-                return@map it
-            }.toMutableList()
+            contactListResult.postValue(
+                    contacts.map {
+                        if (it.fullName.isBlank()) {
+                            it.fullName = "${it.firstName} ${it.lastName}"
+                        }
+                        return@map it
+                    }.toMutableList()
+            )
         }
     }
 
@@ -51,7 +53,7 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     }
 
     fun getNationalityById(rawQuery: String, paramId: String) {
-        launch(Dispatchers.IO) {
+        launch(dispatcherProvider.ui()) {
             when (val result = getPhoneCodeByIdUseCase.execute(rawQuery, paramId)) {
                 is Success -> {
                     nationalityData.postValue(result.data)
@@ -61,7 +63,7 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     }
 
     fun getPassportIssuerCountryById(rawQuery: String, paramId: String) {
-        launch(Dispatchers.IO) {
+        launch(dispatcherProvider.ui()) {
             when (val result = getPhoneCodeByIdUseCase.execute(rawQuery, paramId)) {
                 is Success -> {
                     passportIssuerCountryData.postValue(result.data)

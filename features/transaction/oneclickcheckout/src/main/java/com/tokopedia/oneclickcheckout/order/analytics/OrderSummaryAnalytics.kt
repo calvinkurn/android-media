@@ -153,25 +153,29 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         )
     }
 
-    fun eventViewOrderSummaryPage(ee: Map<String, Any>) {
+    fun eventViewOrderSummaryPage(userId: String, paymentType: String, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
                 Key.EVENT_ACTION, EventAction.VIEW_ORDER_SUMMARY_PAGE,
                 Key.EVENT_LABEL, "success",
-                Key.E_COMMERCE, ee
+                Key.E_COMMERCE, ee,
+                ExtraKey.USER_ID, userId,
+                ExtraKey.PAYMENT_TYPE, paymentType
         )
         sendEnhancedEcommerce(dataLayer)
     }
 
-    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, paymentId: String, ee: Map<String, Any>) {
+    fun eventClickBayarSuccess(isButtonPilihPembayaran: Boolean, userId: String, paymentId: String, paymentType: String, ee: Map<String, Any>) {
         val dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.ORDER_SUMMARY,
                 Key.EVENT_ACTION, if (isButtonPilihPembayaran) EventAction.CLICK_PILIH_PEMBAYARAN else EventAction.CLICK_BAYAR,
                 Key.EVENT_LABEL, "success",
                 Key.E_COMMERCE, ee,
-                Key.PAYMENT_ID, paymentId
+                Key.PAYMENT_ID, paymentId,
+                ExtraKey.USER_ID, userId,
+                ExtraKey.PAYMENT_TYPE, paymentType
         )
         sendEnhancedEcommerce(dataLayer)
     }
@@ -282,6 +286,39 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
                 EventCategory.ORDER_SUMMARY,
                 EventAction.VIEW_ONBOARDING_TICKER
         )
+    }
+
+    fun eventViewPreselectedCourierOption(spId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+                spId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickUbahWhenDurationError(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_UBAH_WHEN_DURATION_ERROR,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickSelectedDurationOption(serviceId: String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_SELECTED_DURATION_OPTION,
+                serviceId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
     }
 
     companion object {

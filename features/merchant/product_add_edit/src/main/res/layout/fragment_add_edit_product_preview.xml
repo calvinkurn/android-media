@@ -58,8 +58,8 @@
                 layout="@layout/add_edit_product_description_step_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/add_product_detail_step_layout" />
@@ -84,15 +84,16 @@
                 android:layout_marginLeft="@dimen/spacing_lvl4"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/add_product_variant_step_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/add_product_variant_step_layout"
+                android:layout_marginStart="@dimen/spacing_lvl4" />
 
             <include
                 android:id="@+id/edit_product_promotion_step_layout"
                 layout="@layout/add_edit_product_promotion_step_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -103,16 +104,27 @@
                 layout="@layout/edit_product_status_step_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginLeft="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/dp_35"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edit_product_promotion_step_layout" />
+
+            <include
+                layout="@layout/add_edit_product_no_variant_preview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/layout_lvl3"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edit_product_promotion_step_layout" />
+                app:layout_constraintTop_toBottomOf="@+id/edit_product_status_layout" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -126,10 +138,14 @@
         android:visibility="gone"
         tools:visibility="visible">
 
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+        <com.tokopedia.unifycomponents.LoaderUnify
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_loading_indeterminate" />
+
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+

@@ -2,9 +2,9 @@ package com.tokopedia.topads.common.view.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.listener.StepperListener
-import com.tokopedia.seller.base.view.activity.BaseStepperActivity
 import com.tokopedia.topads.keyword.view.model.TopAdsKeywordNewStepperModel
 
 abstract class TopAdsNewBaseStepperFragment<T : TopAdsKeywordNewStepperModel> : BaseDaggerFragment() {

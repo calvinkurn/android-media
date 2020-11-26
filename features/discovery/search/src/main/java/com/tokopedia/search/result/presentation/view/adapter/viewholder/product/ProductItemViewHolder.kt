@@ -31,10 +31,12 @@ abstract class ProductItemViewHolder(
                 ratingCount = rating.toRatingCount(isTopAds),
                 reviewCount = countReview,
                 freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
-                isTopAds = isTopAds,
+                isTopAds = isTopAds || isOrganicAds,
                 ratingString = ratingString,
                 hasThreeDots = true,
-                labelGroupList = labelGroupList.toProductCardModelLabelGroup()
+                labelGroupList = labelGroupList.toProductCardModelLabelGroup(),
+                shopRating = shopRating,
+                isShopRatingYellow = isShopRatingYellow
         )
     }
 

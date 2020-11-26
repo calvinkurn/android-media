@@ -9,14 +9,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
@@ -33,69 +31,46 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.buyerorder.common.util.UnifiedOrderListRouter;
 import com.tokopedia.buyerorder.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.cart.view.CartFragment;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.MaintenancePage;
-import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
-import com.tokopedia.events.EventModuleRouter;
-import com.tokopedia.events.di.DaggerEventComponent;
-import com.tokopedia.events.di.EventComponent;
-import com.tokopedia.events.di.EventModule;
+import com.tokopedia.developer_options.config.DevOptConfig;
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flight.orderlist.view.fragment.FlightOrderListFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.HomeInternalRouter;
-import com.tokopedia.home.account.AccountHomeRouter;
-import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
-import com.tokopedia.home.account.di.AccountHomeInjection;
-import com.tokopedia.home.account.di.AccountHomeInjectionImpl;
 import com.tokopedia.homecredit.view.fragment.FragmentCardIdCamera;
 import com.tokopedia.homecredit.view.fragment.FragmentSelfieIdCamera;
-import com.tokopedia.nps.helper.InAppReviewHelper;
-import com.tokopedia.inbox.common.ResolutionRouter;
-import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
+import com.tokopedia.inboxreputation.presentation.activity.InboxReputationActivity;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.linker.interfaces.LinkerRouter;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.loyalty.di.component.TokopointComponent;
 import com.tokopedia.loyalty.router.LoyaltyModuleRouter;
-import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -103,51 +78,37 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
-import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
+import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.inApp.viewEngine.CmInAppConstant;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.di.DaggerOmsComponent;
 import com.tokopedia.oms.di.OmsComponent;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
-import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.promogamification.common.GamificationRouter;
-import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.seller.LogisticRouter;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.purchase.detail.activity.OrderHistoryActivity;
-import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
-import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
-import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.AppNotificationReceiver;
 import com.tokopedia.tkpd.fcm.appupdate.FirebaseRemoteAppUpdate;
-import com.tokopedia.tkpd.home.analytics.HomeAnalytics;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
-import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
-import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.tkpd.utils.DeferredResourceInitializer;
 import com.tokopedia.tkpd.utils.FingerprintModelGenerator;
+import com.tokopedia.tkpd.utils.GQLPing;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeModule;
 import com.tokopedia.tkpdreactnative.router.ReactNativeRouter;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -159,6 +120,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -167,13 +129,14 @@ import dagger.Lazy;
 import io.hansel.hanselsdk.Hansel;
 import okhttp3.Interceptor;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
 import rx.Observable;
 import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
 
 
 /**
@@ -181,28 +144,21 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
  */
 public abstract class ConsumerRouterApplication extends MainApplication implements
         TkpdCoreRouter,
-        SellerModuleRouter,
         ReactApplication,
-        ReputationRouter,
         AbstractionRouter,
-        LogisticRouter,
         ApplinkRouter,
-        ShopModuleRouter,
         LoyaltyModuleRouter,
         GamificationRouter,
         ReactNativeRouter,
         NetworkRouter,
         GlobalNavRouter,
-        AccountHomeRouter,
         OmsModuleRouter,
-        EventModuleRouter,
         PhoneVerificationRouter,
         TkpdAppsFlyerRouter,
         UnifiedOrderListRouter,
         LinkerRouter,
         DigitalRouter,
         CMRouter,
-        ResolutionRouter,
         KYCRouter {
 
     @Inject
@@ -211,7 +167,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     Lazy<ReactUtils> reactUtils;
 
     private DaggerReactNativeComponent.Builder daggerReactNativeBuilder;
-    private EventComponent eventComponent;
     private OmsComponent omsComponent;
     private DaggerShopComponent.Builder daggerShopBuilder;
     private ShopComponent shopComponent;
@@ -222,6 +177,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private TetraDebugger tetraDebugger;
     private Iris mIris;
+    private static final String ENABLE_ASYNC_CMPUSHNOTIF_INIT = "android_async_cmpushnotif_init";
+    private static final String ENABLE_ASYNC_IRIS_INIT = "android_async_iris_init";
+
 
     @Override
     public void onCreate() {
@@ -230,9 +188,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initFirebase();
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
+        warmUpGQLClient();
+        initIris();
         performLibraryInitialisation();
-        DeeplinkHandlerActivity.createApplinkDelegateInBackground();
+        DeeplinkHandlerActivity.createApplinkDelegateInBackground(ConsumerRouterApplication.this);
         initResourceDownloadManager();
+    }
+
+    private void warmUpGQLClient(){
+        if(remoteConfig.getBoolean(RemoteConfigKey.EXECUTE_GQL_CONNECTION_WARM_UP, false)) {
+            try{
+            GQLPing gqlPing = GraphqlClient.getRetrofit().create(GQLPing.class);
+            Call<String> gqlPingCall = gqlPing.pingGQL();
+            gqlPingCall.enqueue(new Callback<String>() {
+                @Override
+                public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                    if(response != null && response.body() != null) {
+                        Timber.d("Success %s", response.body());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    Timber.d("Failure");
+                }
+            });
+            } catch (Exception ex){
+                Timber.d("GQL Ping exception %s", ex.getMessage());
+            }
+        }
     }
 
     private void performLibraryInitialisation(){
@@ -243,12 +227,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return initLibraries();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(initWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(initWeave, ENABLE_ASYNC_CMPUSHNOTIF_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean initLibraries(){
         initCMPushNotification();
-        initIris();
         initTetraDebugger();
         return true;
     }
@@ -278,7 +261,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private void initIris() {
-        mIris = IrisAnalytics.Companion.getInstance(this);
+        mIris = IrisAnalytics.Companion.getInstance(ConsumerRouterApplication.this);
         WeaveInterface irisInitializeWeave = new WeaveInterface() {
             @NotNull
             @Override
@@ -286,7 +269,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return executeIrisInitialize();
             }
         };
-        Weaver.Companion.executeWeaveCoRoutineNow(irisInitializeWeave);
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(irisInitializeWeave, ENABLE_ASYNC_IRIS_INIT, ConsumerRouterApplication.this);
     }
 
     private boolean executeIrisInitialize(){
@@ -318,17 +301,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public ShopComponent getShopComponent() {
-        if (shopComponent == null) {
-            if(daggerShopBuilder == null){
-                daggerShopBuilder = DaggerShopComponent.builder().shopModule(new ShopModule());
-            }
-            shopComponent = daggerShopBuilder.appComponent(getApplicationComponent()).build();
-        }
-        return shopComponent;
     }
 
     @Override
@@ -418,30 +390,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToCreateMerchantRedirect(Context context) {
-        Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public Interceptor getChuckerInterceptor() {
         return getAppComponent().ChuckerInterceptor();
-    }
-
-
-    @Override
-    public Intent getTrainOrderListIntent(Context context) {
-        String WEB_DOMAIN = TokopediaUrl.Companion.getInstance().getTIKET();
-        String KAI_WEBVIEW = WEB_DOMAIN + "kereta-api";
-        String PATH_USER_BOOKING_LIST = "/user/bookings";
-        String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
-        String TRAIN_ORDER_LIST = KAI_WEBVIEW + PATH_USER_BOOKING_LIST + PARAM_DIGITAL_ISPULSA;
-        return RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, TRAIN_ORDER_LIST);
-    }
-
-    @Override
-    public void sendAnalyticsUserAttribute(UserAttributeData userAttributeData) {
-        HomeAnalytics.setUserAttribute(this, userAttributeData);
     }
 
     @Override
@@ -456,12 +406,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private Intent getInboxReputationIntent(Context context) {
-        return TkpdReputationInternalRouter.getInboxReputationActivityIntent(context);
-    }
-
-    @Override
-    public Fragment getReputationHistoryFragment() {
-        return SellerReputationFragment.createInstance();
+        return RouteManager.getIntent(context, ApplinkConst.REPUTATION);
     }
 
     @Override
@@ -475,21 +420,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         sessionHandler.forceLogout();
         PersistentCacheManager.instance.delete(DigitalCache.NEW_DIGITAL_CATEGORY_AND_FAV);
         new CacheApiClearAllUseCase(this).executeSync();
-        TkpdSellerLogout.onLogOut(appComponent, this);
-    }
-
-    @Override
-    public Intent getRegisterIntent(Context context) {
-        return RegisterInitialActivity.getCallingIntent(context);
     }
 
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
-    }
-
-    @Override
-    public Intent getPhoneVerificationActivityIntent(Context context) {
-        return PhoneVerificationActivationActivity.getIntent(context, false, false);
     }
 
     @Override
@@ -520,11 +454,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
-    }
-
-    @Override
     public void onForceLogout(Activity activity) {
         SessionHandler sessionHandler = new SessionHandler(activity);
         sessionHandler.forceLogout();
@@ -544,16 +473,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void sendForceLogoutAnalytics(Response response, boolean isInvalidToken,
+    public void sendForceLogoutAnalytics(String url, boolean isInvalidToken,
                                          boolean isRequestDenied) {
-        ServerErrorHandler.sendForceLogoutAnalytics(response.request().url().toString(),
+        ServerErrorHandler.sendForceLogoutAnalytics(url,
                 isInvalidToken, isRequestDenied);
     }
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    public void showForceLogoutTokenDialog(String path) {
+        ServerErrorHandler.showForceLogoutDialog(path);
+        ServerErrorHandler.sendForceLogoutTokenAnalytics(path);
     }
 
     @Override
@@ -596,56 +525,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DiscomActivity.newInstance(activity, token);
-    }
-
-    @Override
-    public Intent getGeoLocationActivityIntent(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, false);
-    }
-
-    @Override
-    public Intent getPhoneVerificationActivationIntent(Context context) {
-        return PhoneVerificationActivationActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public Intent tkpdCartCheckoutGetLoyaltyOldCheckoutCouponActiveIntent(
-            Context context, String platform, String category, String defaultSelectedTab) {
-        return LoyaltyActivity.newInstanceCouponActive(context, platform, category, defaultSelectedTab);
-    }
-
-    @Override
-    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
-        return ReviewShopFragment.createInstance(shopId, shopDomain);
-    }
-
-    @Override
-    public Class getReviewFragmentClass() {
-        return ReviewShopFragment.class;
-    }
-
-    @Override
     public void logInvalidGrant(Response response) {
-        AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
-    }
-
-    @Override
-    public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
-        boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
-        if(eventComponent == null){
-            eventComponent = DaggerEventComponent.builder()
-                    .baseAppComponent((this).getBaseAppComponent())
-                    .eventModule(new EventModule(this))
-                    .build();
-        }
-        if (!isEventOMS) {
-            return eventComponent.getVerifyCartWrapper().verifyPromo(requestParams);
-        } else {
-            return new PostVerifyCartWrapper(this, eventComponent.getPostVerifyCartUseCase())
-                    .verifyPromo(requestParams);
-        }
+        AnalyticsLog.logInvalidGrant(this, response.request().url().toString());
     }
 
     @Override
@@ -672,19 +553,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public ApplinkDelegate applinkDelegate() {
         return DeeplinkHandlerActivity.getApplinkDelegateInstance();
-    }
-
-    @Override
-    public void setCartCount(Context context, int count) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-        localCacheHandler.putInt(CartConstant.CACHE_TOTAL_CART, count);
-        localCacheHandler.applyEditor();
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
     }
 
     @Override
@@ -764,55 +632,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getCartFragment(Bundle bundle) {
-        return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
-    }
-
-    @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
         return OfficialHomeContainerFragment.newInstance(bundle);
     }
 
     @Override
-    public Intent getManageAddressIntent(Context context) {
-        return new Intent(context, ManagePeopleAddressActivity.class);
-    }
-
-    @Override
-    public void goToManageShopShipping(Context context) {
-        UnifyTracking.eventManageShopShipping(context);
-        context.startActivity(new Intent(context, EditShippingActivity.class));
-    }
-
-    @Override
-    public void goToManageShopProduct(Context context) {
-        Intent intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
-    }
-
-    @Override
-    public void goToSaldo(Context context) {
-
-        if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
-        } else {
-            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
-                    ApplinkConst.WebViewUrl.SALDO_DETAIL));
-        }
-
-        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(),
-                "com.tokopedia.saldodetails.activity.SaldoDepositActivity");
-    }
-
-    @Override
     public ApplicationUpdate getAppUpdate(Context context) {
         return new FirebaseRemoteAppUpdate(context);
-    }
-
-    @Override
-    public String getStringRemoteConfig(String key, String defaultValue) {
-        return remoteConfig.getString(key, defaultValue);
     }
 
     @Override
@@ -835,37 +661,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public AccountHomeInjection getAccountHomeInjection() {
-        return new AccountHomeInjectionImpl();
-    }
-
-    public void doLogoutAccount(Context activity) {
-        new GlobalCacheManager().deleteAll();
-        PersistentCacheManager.instance.delete();
-        EtalaseUtils.clearEtalaseCache(getApplicationContext());
-        TrackApp.getInstance().getMoEngage().logoutEvent();
-        SessionHandler.clearUserData(activity);
-        NotificationModHandler notif = new NotificationModHandler(activity);
-        notif.dismissAllActivedNotifications();
-        NotificationModHandler.clearCacheAllNotification(activity);
-
-        Intent intent = getHomeIntent(activity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        activity.startActivity(intent);
-        AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        refreshFCMTokenFromForegroundToCM();
-
-        setTetraUserId("");
-    }
-
-    @Override
     public Fragment getFlightOrderListFragment() {
         return FlightOrderListFragment.createInstance();
-    }
-
-    @Override
-    public boolean isEnableInterestPick() {
-        return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
     }
 
     @Override
@@ -891,30 +688,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
-        return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(
-            FragmentManager manager,
-            Context context,
-            BottomSheets.BottomSheetDismissListener dismissListener
-    ) {
-        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-        rating.setDialogDismissListener(dismissListener);
-        rating.showDialog(manager, context);
-    }
-
-    @Override
-    public void showSimpleAppRatingDialog(Activity activity) {
-        if(!InAppReviewHelper.launchInAppReview(activity)) {
-            SimpleAppRatingDialog.show(activity);
-        }
+        return DevOptConfig.isChuckNotifEnabled(this);
     }
 
     private void initCMPushNotification() {
         CMPushNotificationManager.getInstance().init(ConsumerRouterApplication.this);
+        List<String> excludeScreenList = new ArrayList<>();
+        excludeScreenList.add(CmInAppConstant.ScreenListConstants.SPLASH);
+        excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_ACTIVITY);
+        excludeScreenList.add(CmInAppConstant.ScreenListConstants.DEEPLINK_HANDLER_ACTIVITY);
+        CMInAppManager.getInstance().setExcludeScreenList(excludeScreenList);
         refreshFCMTokenFromBackgroundToCM(FCMCacheManager.getRegistrationId(ConsumerRouterApplication.this), false);
     }
 
@@ -926,11 +709,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void refreshFCMFromInstantIdService(String token) {
         CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(token, true);
-    }
-
-    @Override
-    public void refreshFCMTokenFromForegroundToCM() {
-        CMPushNotificationManager.getInstance().refreshFCMTokenFromForeground(FCMCacheManager.getRegistrationId(this), true);
     }
 
     @Override
@@ -968,21 +746,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTalkCallingIntent(Context mContext){
-        return null;
-    }
-
-    @Override
-    public Intent getLoginGoogleIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginFacebookIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getLoginWebviewIntent(Context context, String name, String url) {
         return null;
     }
 }

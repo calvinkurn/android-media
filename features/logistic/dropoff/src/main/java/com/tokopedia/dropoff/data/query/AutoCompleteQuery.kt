@@ -4,6 +4,7 @@ object AutoCompleteQuery {
     val keroAutoCompleteGeocode = """
         query KeroMapsAutoComplete(${'$'}param: String!) {
           kero_maps_autocomplete(input: ${'$'}param) {
+            error_code
             data {
               predictions {
                 description

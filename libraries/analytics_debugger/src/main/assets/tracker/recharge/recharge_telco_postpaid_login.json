@@ -1,0 +1,97 @@
+{
+  "readme": "Telco postpaid login",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "openScreen",
+      "screenName": "/digital/pascabayar",
+      "isLoggedInStatus": "{{true|false}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "category": "{{.*}}",
+      "digitalCategoryId": "{{.*}}",
+      "clientId": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "shopId": "{{.*}}",
+      "appsflyerId": "{{.*}}",
+      "networkSpeed": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "input from favorite number",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "view_item_list",
+      "eventCategory": "digital - homepage",
+      "eventAction": "impression recent icon",
+      "eventLabel": "{{.*}}",
+      "sessionIris": "{{.*}}",
+      "item_list": "{{.*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}",
+          "dimension40": "{{.*}}"
+        }
+      ]
+    },
+    {
+      "event": "select_content",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click recent icon",
+      "eventLabel": "{{.* - .*}}",
+      "sessionIris": "{{.*}}",
+      "item_list": "{{.* - .* - .* - .*}}",
+      "items": [
+        {
+          "item_id": "{{.*}}",
+          "item_name": "{{.*}}",
+          "item_brand": "{{.*}}",
+          "item_variant": "{{.*}}",
+          "item_category": "{{.*}}",
+          "index": "{{\\d*.\\d*}}",
+          "price": "{{\\d*.\\d*|\\d.\\d+E\\d}}"
+        }
+      ]
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click tab promo",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click tab recent",
+      "eventLabel": "{{.*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    },
+    {
+      "event": "clickHomepage",
+      "eventCategory": "digital - homepage",
+      "eventAction": "click cek tagihan",
+      "eventLabel": "{{.* - .*}}",
+      "currentSite": "tokopediadigital",
+      "userId": "{{.*}}",
+      "businessUnit": "recharge",
+      "sessionIris": "{{.*}}"
+    }
+  ]
+}

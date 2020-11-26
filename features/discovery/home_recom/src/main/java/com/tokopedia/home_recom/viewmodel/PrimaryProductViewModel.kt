@@ -73,11 +73,11 @@ class PrimaryProductViewModel @Inject constructor(
             }
 
             override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                _addWishlistLiveData.postValue(Response.error(errorMessage))
+                _removeWishlistLiveData.postValue(Response.error(errorMessage))
             }
 
             override fun onSuccessRemoveWishlist(productId: String?) {
-                _addWishlistLiveData.postValue(Response.success(productId))
+                _removeWishlistLiveData.postValue(Response.success(productId))
             }
         })
     }
@@ -115,8 +115,8 @@ class PrimaryProductViewModel @Inject constructor(
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
         addToCartUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(dispatcher.getSchedulerIO())
+                .observeOn(dispatcher.getSchedulerMain())
                 .subscribe(object : Subscriber<AddToCartDataModel>() {
                     override fun onCompleted() {
 
@@ -145,8 +145,8 @@ class PrimaryProductViewModel @Inject constructor(
         val requestParams = RequestParams.create()
         requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
         addToCartUseCase.createObservable(requestParams)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(dispatcher.getSchedulerIO())
+                .observeOn(dispatcher.getSchedulerMain())
                 .subscribe(object : Subscriber<AddToCartDataModel>() {
                     override fun onCompleted() {}
 

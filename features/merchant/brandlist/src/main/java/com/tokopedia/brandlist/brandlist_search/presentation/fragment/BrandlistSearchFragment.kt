@@ -28,7 +28,7 @@ import com.tokopedia.brandlist.brandlist_search.di.DaggerBrandlistSearchComponen
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchAdapterTypeFactory
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.BrandlistSearchResultAdapter
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.*
-import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultViewModel
+import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewmodel.BrandlistSearchResultUiModel
 import com.tokopedia.brandlist.brandlist_search.presentation.viewmodel.BrandlistSearchViewModel
 import com.tokopedia.brandlist.common.Constant
 import com.tokopedia.brandlist.common.LoadAllBrandState
@@ -85,6 +85,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
     private val defaultBrandLetter: String = ""
     private var totalBrandsNumber: Int = 0
     private var recyclerViewLastState: Parcelable? = null
+    private var lastTimeChipIsClicked: Long = 0L
 
     private val endlessScrollListener: EndlessRecyclerViewScrollListener by lazy {
         object : EndlessRecyclerViewScrollListener(layoutManager) {
@@ -93,7 +94,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 viewModel.loadMoreBrands(brandFirstLetter)
                 isLoadMore = true
 
-                if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultViewModel) {
+                if (adapterBrandSearch?.getVisitables()?.lastOrNull() is BrandlistSearchResultUiModel) {
                     adapterBrandSearch?.showLoading()
                 }
             }
@@ -130,7 +131,7 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
         adapterBrandSearch = BrandlistSearchResultAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = adapterBrandSearch
-        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(R.dimen.dp_16).toInt()))
+        recyclerView?.addItemDecoration(MarginItemDecoration(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()))
         return view
     }
 
@@ -306,10 +307,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
 
                     val existingTotalBrands: Int = viewModel.getTotalBrandSizeForChipHeader()
                     if (!isLoadMore && existingTotalBrands !== totalBrandsFiltered) {
-                        adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, recyclerViewLastState)
+                        adapterBrandSearch?.updateHeaderChipsBrandSearch(this, totalBrandsFiltered, selectedChip, lastTimeChipIsClicked, recyclerViewLastState)
                     }
 
-                    var _brandlistSearchMapperResult: List<BrandlistSearchResultViewModel> = listOf()
+                    var _brandlistSearchMapperResult: List<BrandlistSearchResultUiModel> = listOf()
                     if (totalBrandPerCharacter == 0) {
                         adapterBrandSearch?.mappingBrandSearchNotFound(
                                 _brandlistSearchMapperResult,
@@ -369,9 +370,10 @@ class BrandlistSearchFragment : BaseDaggerFragment(),
                 imgUrl, true, keywordSearch)
     }
 
-    override fun onClickedChip(position: Int, chipName: String, recyclerViewState: Parcelable?) {
+    override fun onClickedChip(position: Int, chipName: String, current: Long, recyclerViewState: Parcelable?) {
         selectedChip = position
         recyclerViewLastState = recyclerViewState
+        lastTimeChipIsClicked = current
 
         if (position > 0 && position < 2) {     // Load Semua Brand
             isLoadMore = false

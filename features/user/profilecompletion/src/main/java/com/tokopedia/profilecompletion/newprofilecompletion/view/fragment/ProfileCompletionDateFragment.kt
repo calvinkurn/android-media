@@ -49,7 +49,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
     private var dateObservable: Observable<String>? = null
     private var yearObservable: Observable<String>? = null
     private var monthObservable: Observable<Int>? = null
-    private var selectedDate : String = ""
+    private var selectedDate: String = ""
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -103,11 +103,11 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             val dateString = actxtDate?.text.toString()
             val yearString = actxtYear?.text.toString()
 
-            if(dateString.isNotEmpty() && yearString.isNotEmpty()) {
+            if (dateString.isNotEmpty() && yearString.isNotEmpty()) {
                 selectedDate = formatDateParam(yearString.toInt(), position, dateString.toInt())
             }
 
-            if(selectedDate.isNotEmpty()) {
+            if (selectedDate.isNotEmpty()) {
                 context?.let { ctx -> viewModel.editBodUserProfile(ctx, selectedDate) }
             } else {
                 profileCompletionFragment?.onFailedEditProfile(getString(R.string.invalid_date))
@@ -135,7 +135,7 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
 
     private fun initialVar() {
         val monthsIndo = DateFormatSymbols(Locale.getDefault()).months
-        val adapter = ArrayAdapter(activity, androidx.appcompat.R.layout.select_dialog_item_material, monthsIndo)
+        val adapter = ArrayAdapter(requireActivity(), androidx.appcompat.R.layout.select_dialog_item_material, monthsIndo)
         actxtMonth?.setAdapter(adapter)
 
         dateObservable = actxtDate?.let { ProfileCompletionEvents.text(it) }
@@ -149,12 +149,12 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
             integer != 0
         }
 
-        val allField = Observable.combineLatest(dateMapper, yearMapper, monthMapper) {
-            date, year, month -> date && month && year
+        val allField = Observable.combineLatest(dateMapper, yearMapper, monthMapper) { date, year, month ->
+            date && month && year
         }.map { aBoolean -> aBoolean }
 
-        val onError = Action1 {
-            obj: Throwable -> obj.printStackTrace()
+        val onError = Action1 { obj: Throwable ->
+            obj.printStackTrace()
         }
 
         allField.subscribe(txtProceed?.let { ProfileCompletionProperties.enabledFrom(it) }, onError)
@@ -163,19 +163,21 @@ class ProfileCompletionDateFragment : BaseDaggerFragment() {
 
     private fun initialObserver() {
         viewModel.editBodUserProfileResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
-                    if(it.data.isSuccess) {
-                         profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_DOB)
+                    if (it.data.isSuccess) {
+                        profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_DOB)
                     } else {
-                        if(it.data.birthDateMessage.isNotEmpty()) {
+                        if (it.data.birthDateMessage.isNotEmpty()) {
                             profileCompletionFragment?.onFailedEditProfile(it.data.birthDateMessage)
                         } else {
                             profileCompletionFragment?.onFailedEditProfile(ErrorHandler.getErrorMessage(context, RuntimeException()))
                         }
                     }
                 }
-                is Fail -> { profileCompletionFragment?.onFailedEditProfile(ErrorHandler.getErrorMessage(context, it.throwable))  }
+                is Fail -> {
+                    profileCompletionFragment?.onFailedEditProfile(ErrorHandler.getErrorMessage(context, it.throwable))
+                }
             }
         })
     }

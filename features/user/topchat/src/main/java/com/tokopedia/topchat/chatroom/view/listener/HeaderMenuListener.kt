@@ -1,11 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.listener
 
-import com.tokopedia.chat_common.data.BlockedStatus
-
 /**
  * @author by nisie on 10/01/19.
  */
-interface HeaderMenuListener{
+interface HeaderMenuListener {
 
     fun onGoToShop()
 
@@ -13,8 +11,14 @@ interface HeaderMenuListener{
 
     fun onDeleteConversation()
 
-    fun onGoToChatSetting(blockedStatus: BlockedStatus)
-
     fun onGoToReportUser()
+
+    fun onClickBlockPromo()
+
+    fun onClickAllowPromo()
+
+    fun blockChat()
+
+    fun unBlockChat()
 
 }

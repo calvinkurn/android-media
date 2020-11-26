@@ -27,7 +27,7 @@ class VideoViewModel : BaseGroupChatPojo, Visitable<GroupChatTypeFactory>, Parce
     }
 
     protected constructor(`in`: Parcel) {
-        videoId = `in`.readString()
+        videoId = `in`.readString() ?: ""
         videoLive = `in`.readByte().toInt() != 0
     }
 

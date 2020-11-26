@@ -91,4 +91,7 @@
     <item type="id" name="text_edit_shipping_province"/>
     <item type="id" name="text_edit_shipping_city"/>
     <item type="id" name="text_edit_shipping_district"/>
+
+    <item type="id" name="action_search"/>
+    <item type="id" name="action_cart"/>
 </resources>

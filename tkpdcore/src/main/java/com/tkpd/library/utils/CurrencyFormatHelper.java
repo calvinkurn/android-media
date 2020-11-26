@@ -19,28 +19,6 @@ public final class CurrencyFormatHelper {
 	public static final int RUPIAH = 1;
 	public static final int OTHER = -1;
 
-
-	public static String RemoveNonNumeric(String string){
-		String numeric;
-		numeric = string.replace(",", "");
-		return numeric;
-	}
-
-	public static String removeCurrencyPrefix(String string){
-		if (string == null) return null;
-		int count = 0;
-		for (int i=0, sizei = string.length();i<sizei ; i++) {
-			char charString = string.charAt(i);
-			if (Character.isDigit(charString)){
-				break;
-			}
-			else {
-				count++;
-			}
-		}
-		return string.substring(count);
-	}
-
 	public static int SetToDollar(EditText et){
 		try {
 			if(et.length()>0)

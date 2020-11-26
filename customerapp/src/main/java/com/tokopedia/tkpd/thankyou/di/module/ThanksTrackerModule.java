@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.thankyou.data.factory.ThanksTrackerFactory;
 import com.tokopedia.tkpd.thankyou.data.mapper.DigitalTrackerMapper;
 import com.tokopedia.tkpd.thankyou.data.repository.ThanksTrackerRepository;
@@ -16,6 +15,8 @@ import com.tokopedia.tkpd.thankyou.di.scope.ThanksTrackerScope;
 import com.tokopedia.tkpd.thankyou.domain.usecase.ThankYouPageTrackerUseCase;
 import com.tokopedia.tkpd.thankyou.view.ThanksTracker;
 import com.tokopedia.tkpd.thankyou.view.presenter.ThanksTrackerPresenter;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -40,8 +41,15 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    DigitalTrackerMapper digitalTrackerMapper(SessionHandler sessionHandler) {
-        return new DigitalTrackerMapper(sessionHandler);
+    DigitalTrackerMapper digitalTrackerMapper(UserSessionInterface userSessionInterface) {
+        return new DigitalTrackerMapper(userSessionInterface);
+    }
+
+
+    @Provides
+    @ThanksTrackerScope
+    UserSessionInterface userSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @Provides
@@ -50,14 +58,14 @@ public class ThanksTrackerModule {
                                                        DigitalTrackerMapper digitalTrackerMapper,
                                                        @ApplicationContext Context context,
                                                        Gson gson,
-                                                       SessionHandler sessionHandler,
+                                                       UserSessionInterface userSessionInterface,
                                                        GCMHandler gcmHandler) {
         return new ThanksTrackerFactory(
                 digitalTrackerApi,
                 digitalTrackerMapper,
                 context,
                 gson,
-                sessionHandler,
+                userSessionInterface,
                 gcmHandler
         );
     }

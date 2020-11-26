@@ -9,7 +9,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 /**
  * Created by Lukas on 30/08/19
  */
-class SimilarProductRecommendationItemDataModel(
+data class SimilarProductRecommendationItemDataModel(
         val productItem: RecommendationItem,
         val listener: RecommendationListener
 ) : SimilarProductRecommendationDataModel {

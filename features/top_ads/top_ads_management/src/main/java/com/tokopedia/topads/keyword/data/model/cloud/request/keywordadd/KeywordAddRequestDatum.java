@@ -28,6 +28,18 @@ public class KeywordAddRequestDatum {
     @Expose
     private String source;
 
+    public int getPriceBid() {
+        return priceBid;
+    }
+
+    public void setPriceBid(int priceBid) {
+        this.priceBid = priceBid;
+    }
+
+    @SerializedName("price_bid")
+    @Expose
+    private int priceBid;
+
     public String getGroupId() {
         return groupId;
     }

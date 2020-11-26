@@ -167,8 +167,8 @@ class PlayCardViewHolder(
         helper?.onActivityResume()
     }
 
-    fun pause(){
-        helper?.onActivityPause()
+    fun pause(shouldPausePlay: Boolean){
+        helper?.onActivityPause(shouldPausePlay)
     }
 
     fun getHelper() = helper

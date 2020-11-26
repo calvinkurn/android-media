@@ -15,6 +15,8 @@ import rx.Observable;
 public class TopAdsEtalaseListUseCase extends UseCase<List<Etalase>> {
 
     public static final String SHOP_ID = "shop_id";
+    public static final String USER_ID = "user_id";
+    public static final String DEVICE_ID = "device_id";
     private final TopAdsEtalaseListRepository topAdsEtalaseListRepository;
 
     public TopAdsEtalaseListUseCase(TopAdsEtalaseListRepository topAdsEtalaseListRepository) {
@@ -24,12 +26,16 @@ public class TopAdsEtalaseListUseCase extends UseCase<List<Etalase>> {
 
     @Override
     public Observable<List<Etalase>> createObservable(RequestParams requestParams) {
-        return topAdsEtalaseListRepository.getEtalaseList(requestParams.getString(SHOP_ID, ""));
+        return topAdsEtalaseListRepository.getEtalaseList(requestParams.getString(SHOP_ID, ""),
+                requestParams.getString(USER_ID, ""),
+                requestParams.getString(DEVICE_ID, ""));
     }
 
-    public static RequestParams createRequestParams(String shopId){
+    public static RequestParams createRequestParams(String shopId, String userId, String deviceId) {
         RequestParams params = RequestParams.create();
         params.putString(SHOP_ID, shopId);
+        params.putString(USER_ID, userId);
+        params.putString(DEVICE_ID, deviceId);
         return params;
     }
 }

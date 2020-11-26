@@ -1,6 +1,5 @@
 package com.tokopedia.centralizedpromo.domain.usecase
 
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.domain.mapper.OnGoingPromotionMapper
 import com.tokopedia.centralizedpromo.domain.model.GetPromotionListResponseWrapper
 import com.tokopedia.centralizedpromo.view.model.Footer
@@ -8,6 +7,7 @@ import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.centralizedpromo.view.model.Status
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.utils.TestHelper
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

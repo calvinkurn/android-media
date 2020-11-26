@@ -46,9 +46,9 @@ import kotlin.math.abs
 
 @SuppressLint("SyntheticAccessor")
 class MixLeftComponentViewHolder (itemView: View,
-                                  val mixLeftComponentListener: MixLeftComponentListener,
-                                  val homeComponentListener: HomeComponentListener,
-                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
+                                  val mixLeftComponentListener: MixLeftComponentListener?,
+                                  val homeComponentListener: HomeComponentListener?,
+                                  private val parentRecycledViewPool: RecyclerView.RecycledViewPool?)
     : AbstractViewHolder<MixLeftDataModel>(itemView), CoroutineScope, CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixLeftAdapter
@@ -65,6 +65,8 @@ class MixLeftComponentViewHolder (itemView: View,
 
     private lateinit var layoutManager: LinearLayoutManager
 
+    private var isCacheData = false
+
 
     companion object {
         @LayoutRes
@@ -73,6 +75,7 @@ class MixLeftComponentViewHolder (itemView: View,
     }
 
     override fun bind(element: MixLeftDataModel) {
+        isCacheData = element.isCache
         initVar()
         setupBackground(element.channelModel)
         setupList(element.channelModel)
@@ -80,27 +83,30 @@ class MixLeftComponentViewHolder (itemView: View,
         setHeaderComponent(element)
 
         itemView.addOnImpressionListener(element.channelModel)  {
-            mixLeftComponentListener.onMixLeftImpressed(element.channelModel, adapterPosition)
+            if (!isCacheData)
+                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, adapterPosition)
         }
     }
 
+    override fun bind(element: MixLeftDataModel, payloads: MutableList<Any>) {
+        bind(element)
+    }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
-        mixLeftComponentListener.onProductCardImpressed(channelModel, channelGrid, position - 1)
+        if (!isCacheData)
+            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, position)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        //because we have empty value at beginning of list, we need to reduce pos by 1
-        mixLeftComponentListener.onProductCardClicked(channelModel, channelGrid, position, applink)
+        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-        mixLeftComponentListener.onSeeMoreCardClicked(channel, applink)
+        mixLeftComponentListener?.onSeeMoreCardClicked(channel, applink)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-        mixLeftComponentListener.onEmptyCardClicked(channel, applink, parentPos)
+        mixLeftComponentListener?.onEmptyCardClicked(channel, applink, parentPos)
     }
 
     private fun initVar() {
@@ -115,7 +121,8 @@ class MixLeftComponentViewHolder (itemView: View,
         if (channel.channelBanner.imageUrl.isNotEmpty()) {
             loadingBackground.show()
             image.addOnImpressionListener(channel){
-                mixLeftComponentListener.onImageBannerImpressed(channel, adapterPosition)
+                if (!isCacheData)
+                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
             }
             image.loadImage(channel.channelBanner.imageUrl, FPM_MIX_LEFT, object : ImageHandler.ImageLoaderStateListener{
                 override fun successLoad() {
@@ -140,23 +147,24 @@ class MixLeftComponentViewHolder (itemView: View,
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this))
+        listData.add(CarouselEmptyCardDataModel(channel, adapterPosition, this, channel.channelBanner.applink))
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
-            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
 
-        adapter = MixLeftAdapter(listData,typeFactoryImpl)
-        recyclerView.adapter = adapter
         launch {
             try {
                 recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-                parentRecycledViewPool.let {recyclerView.setRecycledViewPool(it) }
+                parentRecycledViewPool?.let {recyclerView.setRecycledViewPool(it) }
             }
             catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
         }
+
+        if(channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty())
+            listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+        adapter = MixLeftAdapter(listData,typeFactoryImpl)
+        recyclerView.adapter = adapter
         recyclerView.addOnScrollListener(getParallaxEffect())
     }
 
@@ -212,12 +220,15 @@ class MixLeftComponentViewHolder (itemView: View,
                                     element.isFreeOngkirActive,
                                     element.freeOngkirImageUrl
                             ),
-                            isOutOfStock = element.isOutOfStock
+                            isOutOfStock = element.isOutOfStock,
+                            ratingCount = element.rating,
+                            reviewCount = element.countReview
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this
+                    listener = this,
+                    componentName = FPM_MIX_LEFT
             ))
         }
         return list
@@ -246,11 +257,11 @@ class MixLeftComponentViewHolder (itemView: View,
     private fun setHeaderComponent(element: MixLeftDataModel) {
         itemView.home_component_header_view.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                mixLeftComponentListener.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+                mixLeftComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener.onChannelExpired(channelModel, adapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, adapterPosition, element)
             }
         })
     }

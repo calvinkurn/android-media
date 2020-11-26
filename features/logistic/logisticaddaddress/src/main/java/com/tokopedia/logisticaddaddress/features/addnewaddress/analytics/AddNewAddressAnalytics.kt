@@ -57,7 +57,7 @@ object AddNewAddressAnalytics {
     private const val VIEW_TOASTER_ALAMAT_TIDAK_SESUAI_DENGAN_PETA = "view toaster alamat tidak sesuai dengan peta"
 
     @JvmStatic
-    fun sendScreenName(activity: Activity, screenName: String) {
+    fun sendScreenName(screenName: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 

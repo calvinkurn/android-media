@@ -34,9 +34,9 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.BaseGroupChatPojo
 ) : BaseGroupChatPojo(), Visitable<GroupChatTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readString(),
-            parcel.readString(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
             parcel.readInt(),
             parcel.readParcelable(InteruptViewModel::class.java.classLoader)) {

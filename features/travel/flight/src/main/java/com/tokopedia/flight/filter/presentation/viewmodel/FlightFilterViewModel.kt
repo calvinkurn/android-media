@@ -8,13 +8,13 @@ import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
 import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.model.*
-import com.tokopedia.flight.search.domain.FlightSearchCountUseCase
-import com.tokopedia.flight.search.domain.FlightSearchStatisticsUseCase
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat
-import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel
+import com.tokopedia.flight.searchV4.domain.FlightSearchCountUseCase
+import com.tokopedia.flight.searchV4.domain.FlightSearchStatisticsUseCase
+import com.tokopedia.flight.searchV4.presentation.model.filter.DepartureTimeEnum
+import com.tokopedia.flight.searchV4.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.searchV4.presentation.model.statistics.AirlineStat
+import com.tokopedia.flight.searchV4.presentation.model.statistics.FlightSearchStatisticModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -118,8 +118,7 @@ class FlightFilterViewModel @Inject constructor(
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.let {
-                mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(it)))
+                mutableStatisticModel.postValue(flightSearchStatisticUseCase.execute(it))
             }
         }
     }
@@ -127,8 +126,7 @@ class FlightFilterViewModel @Inject constructor(
     private fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
-                mediatorFlightCount.postValue(flightSearchCountUseCase.executeCoroutine(flightSearchCountUseCase
-                        .createRequestParams(filterModel.value!!)))
+                mediatorFlightCount.postValue(flightSearchCountUseCase.execute(filterModel.value!!))
             }
         }
     }

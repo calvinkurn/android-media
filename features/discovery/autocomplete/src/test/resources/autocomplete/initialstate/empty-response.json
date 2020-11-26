@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": "recent_search",
+      "header": "Terakhir Dicari",
+      "label_action": "Hapus Semua",
+      "items": []
+    },
+    {
+      "id": "recent_view",
+      "header": "Terakhir Dilihat",
+      "label_action": "",
+      "items": []
+    },
+    {
+      "id": "popular_search",
+      "header": "Pencarian Populer",
+      "label_action": "Refresh",
+      "items": []
+    }
+  ]
+}

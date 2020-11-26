@@ -20,7 +20,6 @@ class ProductEditCatalogPickerActivity : BaseSimpleActivity(), HasComponent<Prod
     companion object {
         const val EXTRA_PRODUCT_NAME = "product_name"
         const val EXTRA_CATEGORY_ID = "category_id"
-        const val EXTRA_JSON_CATALOG = "json_catalog"
         const val EXTRA_CATALOG = "catalog"
 
         fun createIntent(context: Context, productName: String, categoryId: Long, choosenCatalog: ProductCatalog) =

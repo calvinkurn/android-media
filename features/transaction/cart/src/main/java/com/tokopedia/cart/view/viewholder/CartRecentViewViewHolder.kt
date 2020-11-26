@@ -30,6 +30,10 @@ class CartRecentViewViewHolder(val view: View, val listener: ActionListener?) : 
         itemView.rv_recent_view.layoutManager = layoutManager
         itemView.rv_recent_view.adapter = recentViewAdapter
         itemView.rv_recent_view.scrollToPosition(element.lastFocussPosition)
+        if (!element.hasSentImpressionAnalytics) {
+            listener?.onRecentViewImpression()
+            element.hasSentImpressionAnalytics = true
+        }
     }
 
 }

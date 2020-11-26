@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -26,7 +25,6 @@ import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
@@ -193,18 +191,20 @@ public class ProductDraftListActivity extends BaseSimpleActivity
         hideProgressDialog();
         hasSaveInstagramToDraft = true;
         if (draftProductIdList.size() == 1) {
-            if(GlobalConfig.isSellerApp()) {
-                String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
-                        .buildUpon()
-                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, draftProductIdList.get(0).toString())
-                        .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
-                        .build()
-                        .toString();
-                Intent intent = RouteManager.getIntent(this, uri);
-                startActivity(intent);
-            } else {
-                startActivity(ProductDraftAddActivity.Companion.createInstance(this, draftProductIdList.get(0)));
-            }
+            //TODO milhamj remove comment
+//            if(GlobalConfig.isSellerApp()) {
+            String uri = Uri.parse(ApplinkConstInternalMechant.MERCHANT_OPEN_PRODUCT_PREVIEW)
+                    .buildUpon()
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_ID, draftProductIdList.get(0).toString())
+                    .appendQueryParameter(ApplinkConstInternalMechant.QUERY_PARAM_MODE, ApplinkConstInternalMechant.MODE_EDIT_DRAFT)
+                    .build()
+                    .toString();
+            Intent intent = RouteManager.getIntent(this, uri);
+            startActivity(intent);
+//            } else {
+//                startActivity(ProductDraftAddActivity.Companion.createInstance(this,
+//                draftProductIdList.get(0)));
+//            }
         } else {
             Toast.makeText(this, MethodChecker.fromHtml(getString(R.string.product_draft_instagram_save_success, draftProductIdList.size())), Toast.LENGTH_LONG).show();
             ProductDraftListFragment productDraftListFragment = (ProductDraftListFragment) getSupportFragmentManager().findFragmentByTag(TAG);

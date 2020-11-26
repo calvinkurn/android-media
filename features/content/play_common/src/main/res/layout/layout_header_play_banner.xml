@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/channel_title_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/channel_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:maxEms="12"
+        android:textSize="@dimen/sp_14"
+        android:lines="1"
+        android:ellipsize="end"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        app:typographyType="heading_3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/channel_subtitle"
+        tools:visibility="visible"
+        tools:text="Hypebeast Banget Pokoknya" />
+
+    <TextView
+        android:id="@+id/channel_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/fontSize_lvl2"
+        android:lines="1"
+        android:ellipsize="end"
+        android:textIsSelectable="false"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        tools:text="Berakhir dalam"
+        tools:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/see_all_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="end"
+        android:lineSpacingExtra="3sp"
+        android:text="@string/lihat_semua"
+        android:textColor="@color/tkpd_main_green"
+        android:textSize="@dimen/fontSize_lvl3"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/channel_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/channel_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

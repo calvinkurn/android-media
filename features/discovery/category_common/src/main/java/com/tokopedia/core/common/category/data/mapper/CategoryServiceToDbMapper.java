@@ -1,8 +1,8 @@
 package com.tokopedia.core.common.category.data.mapper;
 
-import com.tokopedia.core.common.category.data.source.cloud.model.Category;
-import com.tokopedia.core.common.category.data.source.cloud.model.CategoryServiceModel;
 import com.tokopedia.core.common.category.data.source.db.CategoryDataBase;
+import com.tokopedia.core.common.category.domain.model.CategoriesResponse;
+import com.tokopedia.core.common.category.domain.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import rx.functions.Func1;
  * @author sebastianuskh on 4/4/17.
  */
 
-public class CategoryServiceToDbMapper implements Func1<CategoryServiceModel, List<CategoryDataBase>> {
+public class CategoryServiceToDbMapper implements Func1<CategoriesResponse, List<CategoryDataBase>> {
     @Override
-    public List<CategoryDataBase> call(CategoryServiceModel serviceModel) {
-        List<Category> categories = serviceModel.getData().getCategories();
+    public List<CategoryDataBase> call(CategoriesResponse categoriesResponse) {
+        List<Category> categories = categoriesResponse.getCategories().getCategories();
 
         return mapCategories(categories, CategoryDataBase.LEVEL_ONE_PARENT);
     }
@@ -39,7 +39,7 @@ public class CategoryServiceToDbMapper implements Func1<CategoryServiceModel, Li
         dbModel.setId(Long.parseLong(category.getId()));
         dbModel.setName(category.getName());
         dbModel.setParentId((long)parent);
-        boolean hasChild = category.getChild() != null && !category.getChild().isEmpty();
+        boolean hasChild = !category.getChild().isEmpty();
         dbModel.setHasChild(hasChild);
         if (hasChild){
             dbModels.addAll(mapCategories(category.getChild(), Integer.parseInt(category.getId())));

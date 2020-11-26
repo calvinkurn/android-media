@@ -46,7 +46,7 @@ data class RechargeMultiCheckoutResponse(
             @Expose
             val errors: List<Error> = listOf()
     ): AttributesCheckout() {
-        constructor(allSuccess: Boolean, errors: List<Error>, redirectUrl: String = "",
+        constructor(allSuccess: Boolean = false, errors: List<Error> = listOf(), redirectUrl: String = "",
                     callbackUrlSuccess: String = "", callbackUrlFailed: String = "",
                     queryString: String = "", parameter: Parameter = Parameter(),
                     thanksUrl: String = ""): this(allSuccess, errors) {

@@ -79,7 +79,10 @@ public class FingerprintModelGenerator {
             AdvertisingIdClient.Info adInfo;
             try {
                 adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
-            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+            } catch (IOException
+                    | GooglePlayServicesNotAvailableException
+                    | GooglePlayServicesRepairableException
+                    | IllegalStateException e) {
                 e.printStackTrace();
                 return "";
             }

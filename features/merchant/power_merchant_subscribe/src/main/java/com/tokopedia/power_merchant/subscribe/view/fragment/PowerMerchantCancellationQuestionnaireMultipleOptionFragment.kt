@@ -8,16 +8,24 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.gm.common.constant.GMParamTracker
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import com.tokopedia.power_merchant.subscribe.view.adapter.MultipleOptionAdapter
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
+import javax.inject.Inject
 
 class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
     : BaseDaggerFragment(), MultipleOptionAdapter.MultipleOptionAdapterListener {
+
+    @Inject
+    lateinit var tracker: PowerMerchantTracking
 
     private lateinit var parentActivity: PMCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
@@ -44,9 +52,15 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
         }
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getQuestionnaireScreenName()
 
     override fun initInjector() {
+        getComponent(BaseAppComponent::class.java)?.let {
+            DaggerPowerMerchantSubscribeComponent.builder()
+                .baseAppComponent(it)
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -106,6 +120,7 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
     override fun onOptionChecked(isChecked: Boolean, optionValue: String) {
         stepperModel?.listQuestionnaireAnswer?.let {
             if (isChecked) {
+                trackClickQuestionnaireOption(optionValue)
                 it[position].answers.add(optionValue)
             } else {
                 it[position].answers.remove(optionValue)
@@ -113,4 +128,15 @@ class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
         }
     }
 
+    private fun trackClickQuestionnaireOption(option: String) {
+        if(parentActivity.isFinalPage()) {
+            tracker.eventClickCancellationFeatureQuestionnaire(option)
+        } else {
+            tracker.eventClickCancellationReasonQuestionnaire(option)
+        }
+    }
+
+    private fun getQuestionnaireScreenName(): String {
+        return "${GMParamTracker.ScreenName.PM_CANCEL_QUESTIONNAIRE}${position+1}"
+    }
 }

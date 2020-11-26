@@ -7,13 +7,6 @@
     <color name="play_loading_overlay_background">#B331353B</color>
 
     <!--Background-->
-    <color name="play_top_gradient_darker">#80000000</color>
-    <color name="play_top_gradient_neutral">#417D7D7D</color>
-    <color name="play_top_gradient_lighter">#00000000</color>
-
-    <color name="play_bottom_gradient_lighter">#00000000</color>
-    <color name="play_bottom_gradient_darker">#B331353B</color>
-
     <color name="play_video_background">#26292E</color>
     <color name="play_error_background">#26292E</color>
     <color name="play_error_text_color">#AEFFFFFF</color>
@@ -22,9 +15,6 @@
 
     <color name="play_product_sheet_divider">#E0E0E0</color>
     <color name="play_variant_placeholder_divider">#F3F4F5</color>
-
-    <color name="play_product_action_container_ambient">#00000000</color>
-    <color name="play_product_action_container_shadow">#1E31353B</color>
 
     <color name="play_atc_image_disabled">#DBDEE2</color>
     <color name="play_solid_black">#000000</color>

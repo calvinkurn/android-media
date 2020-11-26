@@ -15,7 +15,6 @@
         android:layout_height="@dimen/dp_28"
         android:layout_marginEnd="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
-        tools:src="@drawable/icon_penjualan"
         tools:visibility="visible" />
 
     <LinearLayout

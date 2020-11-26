@@ -36,7 +36,7 @@ class VideoPicturePagerAdapter(var media: List<MediaDataModel>,
         return f
     }
 
-    override fun getItemId(position: Int): Long = mediaId[position].hashCode().toLong()
+    override fun getItemId(position: Int): Long = mediaId[position]
 
     override fun containsItem(itemId: Long): Boolean = mediaId.contains(itemId)
 

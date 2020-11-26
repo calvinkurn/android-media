@@ -69,7 +69,7 @@ class SomConfirmShippingViewModelTest {
 
         //then
         assert(somConfirmShippingViewModel.confirmShippingResult.value is Success)
-        assert((somConfirmShippingViewModel.confirmShippingResult.value as Success<SomConfirmShipping.Data.MpLogisticConfirmShipping>).data.listMessage.first() == "msg1")
+        assert((somConfirmShippingViewModel.confirmShippingResult.value as Success<SomConfirmShipping.Data.MpLogisticConfirmShipping>).data.listMessage.first() == "Ok1")
     }
 
     @Test
@@ -159,7 +159,7 @@ class SomConfirmShippingViewModelTest {
 
         //then
         assert(somConfirmShippingViewModel.changeCourierResult.value is Success)
-        assert((somConfirmShippingViewModel.changeCourierResult.value as Success<SomChangeCourier.Data>).data.mpLogisticChangeCourier.listMessage.first() == "msg1")
+        assert((somConfirmShippingViewModel.changeCourierResult.value as Success<SomChangeCourier.Data>).data.mpLogisticChangeCourier.listMessage.first() == "Ok1")
     }
 
     @Test

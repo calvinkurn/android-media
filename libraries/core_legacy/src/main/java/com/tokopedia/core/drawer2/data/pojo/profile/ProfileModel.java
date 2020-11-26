@@ -36,16 +36,8 @@ public class ProfileModel {
         this.errorMessage = errorMessage;
     }
 
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
     public void setStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
-    }
-
-    public int getResponseCode() {
-        return responseCode;
     }
 
     public void setResponseCode(int responseCode) {

@@ -16,27 +16,36 @@
 
     <TextView
         android:id="@+id/tvBankName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         android:textColor="@color/sbank_text_color"
+        app:layout_constraintEnd_toStartOf="@+id/ivBankImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="BNA" />
 
     <TextView
         android:id="@+id/tvBankAccountNumber"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         android:textColor="@color/sbank_text_color"
+        app:layout_constraintEnd_toStartOf="@+id/ivBankImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvBankName"
         tools:text="BNA" />
 
     <TextView
         android:id="@+id/tvBankAccountHolderName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         android:textColor="@color/sbank_text_color"
+        app:layout_constraintEnd_toEndOf="@+id/tvBankName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvBankAccountNumber"
         tools:text="BNA" />
@@ -46,30 +55,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
+        android:visibility="visible"
         app:closeButtonVisibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/tvBankAccountHolderName"
         app:tickerShapeType="loose"
-        app:tickerType="error"
-        android:visibility="visible" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvAccountPrimaryTag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/sbank_bg_primary"
-        android:paddingStart="@dimen/dp_4"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingTop="@dimen/dp_3"
-        android:paddingEnd="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4"
-        android:paddingBottom="@dimen/dp_3"
-        android:visibility="gone"
-        android:text="@string/main_account"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="@+id/tickerBankAccount"
-        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
-        app:typographyType="heading_5" />
+        app:tickerType="error" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvAccountPending"
@@ -84,8 +74,8 @@
         android:paddingRight="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_3"
         android:text="@string/sbank_verification_in_progress"
-        android:visibility="gone"
         android:textColor="@color/white"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/tickerBankAccount"
         app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_5" />
@@ -95,6 +85,7 @@
         android:id="@+id/btnHapus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/sbank_bg_hapus"
         android:paddingStart="@dimen/dp_10"
         android:paddingLeft="@dimen/dp_10"
@@ -103,29 +94,9 @@
         android:paddingRight="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_4"
         android:text="@string/menu_delete"
-        android:visibility="gone"
-        android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/Neutral_N700_68"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
-        app:typographyType="heading_6" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/btnMakePrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@drawable/sbank_bg_make_primary"
-        android:paddingStart="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_4"
-        android:paddingEnd="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_4"
-        android:text="@string/sbank_make_bank_primary"
-        android:visibility="gone"
-        android:textColor="@color/green_500"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_6" />
 
@@ -142,8 +113,8 @@
         android:paddingRight="@dimen/dp_10"
         android:paddingBottom="@dimen/dp_4"
         android:text="@string/sbank_isi_data"
-        android:visibility="gone"
         android:textColor="@color/green_500"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tickerBankAccount"
         app:typographyType="heading_6" />

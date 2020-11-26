@@ -11,11 +11,11 @@
         "readyToShip": 10,
         "shipped": 146,
         "arriveAtDestination": 0
-      },
-      "notifcenter_unread": {
-        "notif_unread": "0",
-        "notif_unread_int": 0
       }
+    },
+    "notifcenter_unread": {
+      "notif_unread": "0",
+      "notif_unread_int": 0
     }
   }
 }

@@ -32,8 +32,13 @@ class ObtainedBenefitViewHolder(val view: View) : AbstractViewHolder<ObtainedAft
         if (!::inflater.isInitialized)
             inflater = LayoutInflater.from(context)
         val paymentModeItemView = inflater.inflate(R.layout.thank_payment_mode_item, null, false)
-        paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
-                .text = benefitMap.benefitName
+        val modeName = paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaymentModeName)
+        modeName.text = if (benefitMap.isBBICashBack) {
+            getString(R.string.thank_potensi_cashback) + "\n" + benefitMap.benefitName
+        } else {
+            benefitMap.benefitName
+        }
+
         paymentModeItemView.findViewById<TextView>(R.id.tvInvoicePaidWithModeValue)
                 .text = benefitMap.benefitAmount
         return paymentModeItemView

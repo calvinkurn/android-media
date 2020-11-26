@@ -1,0 +1,20 @@
+{
+  "GetPromoSuggestion": {
+    "PromoHistory": [
+      {
+        "PromoCode": "DICICILAJA",
+        "PromoContent": {
+          "ID": 897126,
+          "Name": "DICICILAJAJULI",
+          "Public": true,
+          "Status": 1,
+          "BaseCode": "DICICILAJA",
+          "IsBackdoor": false,
+          "PromoType": 32,
+          "PromoTitle": "Cashback dengan Home Credit ",
+          "Description": "Dapatkan Cashback hingga Rp150.000 dengan Home Credit di Tokopedia"
+        }
+      }
+    ]
+  }
+}

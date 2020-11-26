@@ -1,11 +1,11 @@
 package com.tokopedia.shop.search.di.module
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
+import com.tokopedia.shop.common.di.ShopPageContext
 import com.tokopedia.shop.search.ShopSearchProductConstant.UNIVERSE_SEARCH_QUERY
 import com.tokopedia.shop.search.di.scope.ShopSearchProductScope
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -19,21 +19,20 @@ import dagger.Provides
 @ShopSearchProductScope
 @Module(includes = [ShopSearchProductViewModelModule::class])
 class ShopSearchProductModule {
-
     @Provides
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @ShopSearchProductScope
     @Provides
     fun provideUserSessionInterface(
-            @ApplicationContext context: Context
+            @ShopPageContext context: Context
     ): UserSessionInterface = UserSession(context)
 
     @ShopSearchProductScope
     @Provides
     @Named(UNIVERSE_SEARCH_QUERY)
     fun provideUniverseSearchQuery(
-            @ApplicationContext context: Context
+            @ShopPageContext context: Context
     ): String = GraphqlHelper.loadRawString(
             context.resources,
             R.raw.gql_universe_search
@@ -47,5 +46,5 @@ class ShopSearchProductModule {
 
     @ShopSearchProductScope
     @Provides
-    fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
+    fun provideTrackingQueue(@ShopPageContext context: Context) = TrackingQueue(context)
 }

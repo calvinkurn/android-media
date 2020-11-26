@@ -1,6 +1,7 @@
 package com.tokopedia.notifications.di.module
 
 import android.content.Context
+import com.tokopedia.atc_common.domain.AddToCartAnalytics
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -17,6 +18,8 @@ import com.tokopedia.notifications.di.scope.CMNotificationContext
 import com.tokopedia.notifications.di.scope.CMNotificationScope
 import com.tokopedia.notifications.domain.AmplificationUseCase
 import com.tokopedia.notifications.domain.AttributionUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -27,6 +30,14 @@ import javax.inject.Named
     @CMNotificationContext
     fun provideCMNotificationContext(): Context {
         return context
+    }
+
+    @Provides
+    @CMNotificationScope
+    fun provideUserSession(
+            @CMNotificationContext context: Context
+    ): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Provides
@@ -48,9 +59,10 @@ import javax.inject.Named
     fun provideAtcUseCase(
             @Named(ATC_MUTATION_QUERY) query: String,
             useCase: RxUseCase,
-            mapper: AddToCartDataMapper
+            mapper: AddToCartDataMapper,
+            analytics: AddToCartAnalytics
     ): AddToCartUseCase {
-        return AddToCartUseCase(query, useCase, mapper)
+        return AddToCartUseCase(query, useCase, mapper, analytics)
     }
 
     @Provides

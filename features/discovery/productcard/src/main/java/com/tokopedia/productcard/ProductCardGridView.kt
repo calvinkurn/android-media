@@ -41,6 +41,9 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         renderProductCardContent(productCardModel)
 
+        renderStockPercentage(productCardModel)
+        renderStockLabel(productCardModel)
+
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
@@ -84,6 +87,18 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
     override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
+    }
+
+    private fun View.renderStockPercentage(productCardModel: ProductCardModel) {
+        progressBarStock?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            progressBarStock.progress = productCardModel.stockBarPercentage
+        }
+    }
+
+    private fun View.renderStockLabel(productCardModel: ProductCardModel) {
+        textViewStockLabel?.shouldShowWithAction(productCardModel.stockBarLabel.isNotEmpty()) {
+            textViewStockLabel.text = productCardModel.stockBarLabel
+        }
     }
 
     private fun renderOutOfStockView(productCardModel: ProductCardModel) {

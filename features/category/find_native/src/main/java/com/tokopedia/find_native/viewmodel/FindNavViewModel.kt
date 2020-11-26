@@ -18,7 +18,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class FindNavViewModel @Inject constructor() : ViewModel() {
+class FindNavViewModel @Inject constructor(private val findNavRepository: FindNavRepository,
+                                           private val findNavParamBuilder: FindNavParamBuilder) : ViewModel() {
 
     private val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
     private val mProductCount = MutableLiveData<List<String>>()
@@ -26,11 +27,7 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
     private var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
     private var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     private var mRelatedLinkList = MutableLiveData<Result<List<RelatedLinkData>>>()
-    private val findNavParamBuilder: FindNavParamBuilder by lazy { FindNavParamBuilder() }
     private var isQuerySafe: Boolean = false
-
-    @Inject
-    lateinit var findNavRepository: FindNavRepository
 
     fun fetchProductList(start: Int, productId: String, rows: Int, uniqueId: String,
                          selectedSort: HashMap<String, String>, selectedFilter: HashMap<String, String>) {
@@ -83,14 +80,14 @@ class FindNavViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun checkForBannedData(searchProduct: SearchProduct): Boolean {
-        return searchProduct.errorMessage != null &&  searchProduct.errorMessage!!.isNotEmpty()
+        return searchProduct.errorMessage?.isNotEmpty() ?: false
     }
 
     fun fetchQuickFilterList(productId: String) {
         val reqParams = findNavParamBuilder.generateQuickFilterParams(productId)
         viewModelScope.launchCatchError(block = {
             findNavRepository.getQuickFilterList(reqParams.paramsAllValueInString)?.let {
-                mQuickFilterModel.value = Success(it as List<Filter>)
+                mQuickFilterModel.value = Success(it)
             }
         }, onError = {
             it.printStackTrace()

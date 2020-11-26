@@ -144,6 +144,8 @@ public interface ShipmentContract {
         void updateButtonPromoCheckout(PromoUiModel promoUiModel);
 
         void resetCourier(ShipmentCartItemModel shipmentCartItemModel);
+
+        void setHasRunningApiCall(boolean hasRunningApiCall);
     }
 
     interface AnalyticsActionListener {
@@ -214,9 +216,6 @@ public interface ShipmentContract {
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             boolean isReloadAfterPriceChangeHinger,
                                             String cornerId, String deviceId, String leasingId);
-
-        void processReloadCheckoutPageFromMultipleAddress(RecipientAddressModel recipientAddressModel,
-                                                          ArrayList<ShipmentCartItemModel> shipmentCartItemModels);
 
         void processCheckout(boolean hasInsurance,
                              boolean isOneClickShipment, boolean isTradeIn,
@@ -309,7 +308,7 @@ public interface ShipmentContract {
 
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(List<ShipmentCartItemModel> shipmentCartItemModels);
 
-        boolean isIneligbilePromoDialogEnabled();
+        boolean isIneligiblePromoDialogEnabled();
 
         void processSubmitHelpTicket(CheckoutData checkoutData);
 

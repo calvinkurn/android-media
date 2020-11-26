@@ -6,44 +6,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/tp_margin_medium"
-    android:background="@drawable/bg_tp_ticker_new"
     android:paddingLeft="@dimen/tp_padding_regular"
     android:paddingRight="@dimen/tp_padding_regular"
     android:visibility="gone"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/container_dynamic_links"
     tools:visibility="visible">
 
-    <ImageView
-        android:id="@+id/ic_close_ticker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_4"
-        android:padding="@dimen/dp_2"
-        android:tint="@color/tp_ticker_close_icon"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close_24dp" />
-
-    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
-        android:id="@+id/view_pager_ticker"
-        android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginTop="@dimen/tp_padding_small"
-        app:layout_constraintEnd_toStartOf="@+id/ic_close_ticker"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.tokopedia.unifycomponents.PageControl
-        android:id="@+id/page_indicator_ticker"
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_new"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:indicator_color="@color/tp_ticker_indicator_default_color"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/dp_16"
+        app:autoSlideDelayNumber="5000"
+        app:closeButtonVisibility="gone"
+        app:enableAutoSlide="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/view_pager_ticker" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerShapeType="loose"
+        app:tickerType="announcement" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

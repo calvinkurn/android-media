@@ -40,7 +40,6 @@ include "features:promo:promotions_target"
 include 'tkpdcore'
 include 'tkpdabstraction'
 include 'tkpdtransaction-common'
-include 'tkpdsession'
 include 'tkpddesign'
 
 //apply from: "features/promo/tokopoints/compile_tokopoints.gradle"

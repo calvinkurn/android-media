@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.flight.common.constant.FlightUrl
 import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
@@ -24,7 +26,7 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
     var selectedPassengerId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val extras = savedInstanceState ?: intent.extras
+        val extras = savedInstanceState ?: intent.extras ?: Bundle()
         passengerModel = extras.getParcelable(EXTRA_PASSENGER)
         selectedPassengerId = extras.getString(EXTRA_SELECTED_PASSENGER_ID)
 
@@ -59,6 +61,10 @@ class FlightBookingPassengerActivity : BaseFlightActivity(), HasComponent<Flight
         return DaggerFlightPassengerComponent.builder()
                 .flightComponent(flightComponent)
                 .build()
+    }
+
+    override fun navigateToHelpPage() {
+        RouteManager.route(this, FlightUrl.FLIGHT_PASSENGER_HELP_URL)
     }
 
     companion object {

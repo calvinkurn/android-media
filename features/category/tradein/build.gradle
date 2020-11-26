@@ -14,7 +14,7 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion rootProject.ext.compileSdkVersion
 }
 
 dependencies {
@@ -65,7 +65,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.irisSession)
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
-    
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.junit

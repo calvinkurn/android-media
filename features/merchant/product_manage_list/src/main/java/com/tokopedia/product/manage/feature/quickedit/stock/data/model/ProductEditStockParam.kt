@@ -1,13 +1,10 @@
 package com.tokopedia.product.manage.feature.quickedit.stock.data.model
 
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ShopParam
+import com.tokopedia.product.manage.feature.quickedit.common.data.model.ShopParam
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import kotlinx.android.parcel.Parcelize
 
-@Parcelize
 data class ProductEditStockParam(
         @SerializedName("productID")
         @Expose
@@ -21,4 +18,4 @@ data class ProductEditStockParam(
         @SerializedName("shop")
         @Expose
         var shop: ShopParam = ShopParam()
-) : Parcelable
+)

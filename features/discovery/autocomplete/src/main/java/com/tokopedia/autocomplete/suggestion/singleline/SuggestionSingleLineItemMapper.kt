@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.suggestion.singleline
 
-import com.tokopedia.autocomplete.suggestion.SuggestionItem
+import com.tokopedia.autocomplete.suggestion.domain.model.SuggestionItem
 
 fun SuggestionItem.convertSuggestionItemToSingleLineVisitableList(searchTerm: String, position: Int): SuggestionSingleLineViewModel {
     val item = SuggestionSingleLineViewModel()

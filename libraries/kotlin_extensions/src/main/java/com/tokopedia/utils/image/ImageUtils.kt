@@ -1,5 +1,6 @@
 package com.tokopedia.utils.image
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -10,13 +11,9 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.BitmapImageViewTarget
 import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
 import com.bumptech.glide.signature.ObjectKey
 import com.tokopedia.kotlin.extensions.R
@@ -78,6 +75,19 @@ object ImageUtils {
         }
     }
 
+    fun loadImageCircleWithPlaceHolder(context: Context?, imageView: ImageView,
+                                       url: String?) {
+        context?.let {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.ic_loading_placeholder)
+                    .error(R.drawable.ic_loading_error)
+                    .into(getCircleImageViewTarget(imageView))
+        }
+    }
+
     fun loadImageRounded2(context: Context, imageview: ImageView, url: String?, radius: Float) {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
@@ -103,7 +113,11 @@ object ImageUtils {
     }
 
     fun loadImageWithoutPlaceholderAndError(imageview: ImageView, url: String) {
-        if (imageview.context != null) {
+        val context = imageview.context
+        if (context != null) {
+            if (context is Activity && (context.isFinishing)) {
+                return
+            }
             Glide.with(imageview.context)
                     .load(url)
                     .dontAnimate()
@@ -200,7 +214,8 @@ object ImageUtils {
                     FIT_CENTER -> fitCenter()
                     CENTER_CROP -> centerCrop()
                     CENTER_INSIDE -> centerInside()
-                    else -> { }
+                    else -> {
+                    }
                 }
 
                 into(object : CustomTarget<Drawable>() {

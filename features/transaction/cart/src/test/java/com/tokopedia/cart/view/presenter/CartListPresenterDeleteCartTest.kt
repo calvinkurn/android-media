@@ -1,6 +1,7 @@
 package com.tokopedia.cart.view.presenter
 
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartExternalUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.cart.domain.usecase.*
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
@@ -36,7 +37,9 @@ import rx.subscriptions.CompositeSubscription
 object CartListPresenterDeleteCartTest : Spek({
 
     val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase = mockk()
-    val deleteCartListUseCase: DeleteCartUseCase = mockk()
+    val deleteCartUseCase: DeleteCartUseCase = mockk()
+    val undoDeleteCartUseCase: UndoDeleteCartUseCase = mockk()
+    val addCartToWishlistUseCase: AddCartToWishlistUseCase = mockk()
     val updateCartUseCase: UpdateCartUseCase = mockk()
     val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase = mockk()
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
@@ -50,6 +53,7 @@ object CartListPresenterDeleteCartTest : Spek({
     val getWishlistUseCase: GetWishlistUseCase = mockk()
     val getRecommendationUseCase: GetRecommendationUseCase = mockk()
     val addToCartUseCase: AddToCartUseCase = mockk()
+    val addToCartExternalUseCase: AddToCartExternalUseCase = mockk()
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val removeInsuranceProductUsecase: RemoveInsuranceProductUsecase = mockk()
     val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase = mockk()
@@ -61,15 +65,14 @@ object CartListPresenterDeleteCartTest : Spek({
 
         val cartListPresenter by memoized {
             CartListPresenter(
-                    getCartListSimplifiedUseCase, deleteCartListUseCase,
-                    updateCartUseCase, compositeSubscription,
-                    addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
+                    getCartListSimplifiedUseCase, deleteCartUseCase, undoDeleteCartUseCase,
+                    updateCartUseCase, compositeSubscription, addWishListUseCase,
+                    addCartToWishlistUseCase, removeWishListUseCase, updateAndReloadCartUseCase,
                     userSessionInterface, clearCacheAutoApplyStackUseCase, getRecentViewUseCase,
                     getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
-                    getInsuranceCartUseCase, removeInsuranceProductUsecase,
-                    updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                    updateCartCounterUseCase, updateCartAndValidateUseUseCase,
-                    validateUsePromoRevampUseCase, TestSchedulers
+                    addToCartExternalUseCase, getInsuranceCartUseCase, removeInsuranceProductUsecase,
+                    updateInsuranceProductDataUsecase, seamlessLoginUsecase, updateCartCounterUseCase,
+                    updateCartAndValidateUseUseCase, validateUsePromoRevampUseCase, TestSchedulers
             )
         }
 
@@ -83,7 +86,7 @@ object CartListPresenterDeleteCartTest : Spek({
             val deleteCartData = DeleteCartData(isSuccess = true)
 
             Given("success delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             Given("empty cart list data") {
@@ -98,7 +101,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should render success") {
                 verify {
-                    view.renderInitialGetCartListDataSuccess(emptyCartListData)
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), true, false)
                 }
             }
         }
@@ -115,7 +118,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             Given("success delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             When("process delete cart item") {
@@ -125,7 +128,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"))
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
                 }
             }
         }
@@ -142,7 +145,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             Given("success delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             When("process delete cart item") {
@@ -152,7 +155,7 @@ object CartListPresenterDeleteCartTest : Spek({
 
             Then("should success delete") {
                 verify {
-                    view.onDeleteCartDataSuccess(arrayListOf("0"))
+                    view.onDeleteCartDataSuccess(arrayListOf("0"), false, false)
                 }
             }
         }
@@ -166,7 +169,7 @@ object CartListPresenterDeleteCartTest : Spek({
             }
 
             Given("fail delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
+                every { deleteCartUseCase.createObservable(any()) } returns Observable.just(deleteCartData)
             }
 
             When("process delete cart item") {
@@ -188,7 +191,7 @@ object CartListPresenterDeleteCartTest : Spek({
             val exception = CartResponseErrorException("fail testing delete")
 
             Given("fail delete") {
-                every { deleteCartListUseCase.createObservable(any()) } returns Observable.error(exception)
+                every { deleteCartUseCase.createObservable(any()) } returns Observable.error(exception)
             }
 
             When("process delete cart item") {

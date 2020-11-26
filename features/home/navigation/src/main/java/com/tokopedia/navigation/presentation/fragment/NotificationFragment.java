@@ -1,15 +1,17 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import androidx.annotation.Nullable;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -22,6 +24,8 @@ import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.NotificationPresenter;
 import com.tokopedia.navigation.presentation.view.NotificationView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.ArrayList;
@@ -46,11 +50,19 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Inject NotificationPresenter presenter;
     @Inject GlobalNavAnalytics globalNavAnalytics;
 
+    private RemoteConfig remoteConfig;
+
     private boolean isHasAdded = false;
 
     @Override
     public int resLayout() {
         return R.layout.fragment_notification;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+         remoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
     private void initInjector() {
@@ -155,7 +167,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         List<DrawerNotification.ChildDrawerNotification> childBuyer = new ArrayList<>();
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_PEMBAYARAN,
                 getString(R.string.menunggu_pembayaran), ApplinkConst.PMS));
-        if (((AccountHomeRouter) getContext().getApplicationContext()).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
 
             childBuyer.add(new DrawerNotification.ChildDrawerNotification(MENUNGGU_KONFIRMASI,
                     getString(R.string.menunggu_konfirmasi), ApplinkConst.MARKETPLACE_WAITING_CONFIRMATION));
@@ -257,7 +269,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private boolean shouldAddUserInfo() {
         return getActivity()!= null
                 && getActivity().getApplicationContext() instanceof GlobalNavRouter
-                && ((GlobalNavRouter) getActivity().getApplicationContext())
-                .getBooleanRemoteConfig(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
+                && remoteConfig.getBoolean(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
     }
 }

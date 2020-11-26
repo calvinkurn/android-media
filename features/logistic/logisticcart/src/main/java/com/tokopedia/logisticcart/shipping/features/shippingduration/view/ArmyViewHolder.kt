@@ -1,8 +1,8 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.logisticcart.R

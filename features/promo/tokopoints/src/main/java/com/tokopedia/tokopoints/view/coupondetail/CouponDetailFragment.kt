@@ -34,8 +34,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
@@ -60,6 +63,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.tp_content_coupon_detail.*
+import kotlinx.android.synthetic.main.tp_coupon_notfound_error.*
 import kotlinx.android.synthetic.main.tp_fragment_coupon_detail.*
 import kotlinx.android.synthetic.main.tp_layout_coupon_detail_button.*
 import kotlinx.android.synthetic.main.tp_layout_swipe_coupon_code.*
@@ -176,7 +180,12 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             when (it) {
                 is Loading -> showLoader()
                 is ErrorMessage -> {
-                    showError(NetworkDetector.isConnectedToInternet(context))
+                    val internetStatus = NetworkDetector.isConnectedToInternet(context)
+                    if (!internetStatus) {
+                        showError(internetStatus)
+                    } else {
+                        showCouponError()
+                    }
                 }
                 is Success -> {
                     stopNetworkRequestPerformanceMonitoring()
@@ -220,6 +229,13 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         server_error_view?.showErrorUi(networkError)
     }
 
+    private fun showCouponError() {
+        container?.displayedChild = CONTAINER_COUPON_ERROR
+        btnError.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.TOKOPEDIA_REWARD)
+        }
+    }
+
     override fun hideLoader() {
         container?.displayedChild = CONTAINER_DATA
     }
@@ -253,43 +269,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun openWebView(url: String) {
         RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, url)
-    }
-
-    override fun showRedeemCouponDialog(cta: String, code: String, title: String) {
-        context?.let {
-            val adb = AlertDialog.Builder(context!!)
-            adb.setTitle(R.string.tp_label_use_coupon)
-            val messageBuilder = StringBuilder()
-                    .append(getString(R.string.tp_label_coupon))
-                    .append(" ")
-                    .append("<strong>")
-                    .append(title)
-                    .append("</strong>")
-                    .append(" ")
-                    .append(getString(R.string.tp_mes_coupon_part_2))
-            adb.setMessage(MethodChecker.fromHtml(messageBuilder.toString()))
-            adb.setPositiveButton(R.string.tp_label_use) { dialogInterface, i ->
-                //Call api to validate the coupon
-                mPresenter.redeemCoupon(code, cta)
-
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
-                        title)
-            }
-            adb.setNegativeButton(R.string.tp_label_later) { dialogInterface, i ->
-                AnalyticsTrackerUtil.sendEvent(context,
-                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
-                        AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
-                        AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
-                        title)
-            }
-            val dialog = adb.create()
-            dialog.show()
-            decorateDialog(dialog)
-        }
-
     }
 
     private fun openPhoneVerificationBottomSheet() {
@@ -366,7 +345,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         }
 
         try {
-            val btnAction2 = view!!.findViewById<TextView>(com.tokopedia.session.R.id.btn_continue)
+            val btnAction2 = view!!.findViewById<TextView>(R.id.btn_continue)
             val progressBar = view!!.findViewById<ProgressBar>(R.id.progress_refetch_code)
             btnAction2.setText(R.string.tp_label_refresh_repeat)
             btnAction2.isEnabled = true
@@ -394,7 +373,11 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     }
 
     private fun setCouponToUi(data: CouponValueEntity) {
-        if (view == null || data.isEmpty) {
+        if (view == null) {
+            return
+        }
+        if (data.isEmpty) {
+            showCouponError()
             return
         }
         hideLoader()
@@ -415,6 +398,9 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         description.text = data.title
         ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
 
+        if (data.isIs_show_button) {
+            btnAction2.show()
+        }
         if (data.usage != null) {
             label.visibility = View.VISIBLE
             label.text = data.usage.text
@@ -428,9 +414,10 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
                 } else {
                     btnAction2.visibility = View.VISIBLE
                 }
+                if (data.usage.btnUsage.type.equals("disable", ignoreCase = true)) {
+                    btnAction2.isEnabled = false
+                }
             }
-
-
         }
 
         if (TextUtils.isEmpty(data.minimumUsageLabel)) {
@@ -466,7 +453,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
             } else {
                 val code = mRealCode as String
                 if (!TextUtils.isEmpty(code)) {
-                    showRedeemCouponDialog(data.cta, code, data.title)
+                    mPresenter.redeemCoupon(code, data.cta)
                     AnalyticsTrackerUtil.sendEvent(context,
                             AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
                             AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
@@ -529,7 +516,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
 
     private fun setSwipeUi(swipeDetail: CouponSwipeDetail) = view?.apply {
-        ll_container_button.displayedChild = CONTAINER_SWIPE
+        layout_coupon_swipe.show()
         card_swipe?.apply {
             setTitle(swipeDetail.text)
             setOnSwipeListener(object : SwipeCardView.OnSwipeListener {
@@ -562,6 +549,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private fun setupInfoPager(info: String, tnc: String) {
         view?.apply {
             tnc_content.loadData(getLessDisplayData(tnc, tnc_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
+            tnc_content.setMargin(0, 0, 0, 0)
             how_to_use_content.loadData(getLessDisplayData(info, how_to_use_see_more), COUPON_MIME_TYPE, UTF_ENCODING)
 
             tnc_see_more.setOnClickListener { v -> loadWebViewInBottomsheet(tnc, getString(R.string.tnc_coupon_catalog)) }
@@ -749,6 +737,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         private val CONTAINER_DATA = 1
         private val CONTAINER_ERROR = 2
         private val CONTAINER_SWIPE = 1
+        private val CONTAINER_COUPON_ERROR = 3
 
 
         fun newInstance(extras: Bundle): Fragment {

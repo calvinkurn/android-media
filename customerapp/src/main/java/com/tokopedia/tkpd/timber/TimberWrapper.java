@@ -28,7 +28,6 @@ import timber.log.Timber;
  * TimberWrapper.init(application);
  */
 public class TimberWrapper {
-    private static final String APP_TYPE = "customerApp";
     private static final int PRIORITY_LENGTH = 2;
 
     private static final String[] LOGENTRIES_TOKEN = new String[]{
@@ -50,6 +49,8 @@ public class TimberWrapper {
 
     private static final String REMOTE_CONFIG_KEY_LOG = "android_customer_app_log_config";
 
+    private static final Object LOCK = new Object();
+
     public static void init(Application application) {
         LogManager.init(application);
         if (LogManager.instance != null) {
@@ -64,15 +65,20 @@ public class TimberWrapper {
     }
 
     public static void initByRemoteConfig(@NonNull Context context, @NonNull RemoteConfig remoteConfig){
-        Timber.uprootAll();
         boolean isDebug = GlobalConfig.DEBUG;
         if (isDebug) {
-            Timber.plant(new TimberDebugTree());
+            plantNewTree(new TimberDebugTree());
         } else {
+            plantTimberReleaseTree(context, remoteConfig);
+        }
+    }
+
+    private static void plantTimberReleaseTree(Context context, @NonNull RemoteConfig remoteConfig) {
+        try {
             String logConfigString = remoteConfig.getString(REMOTE_CONFIG_KEY_LOG);
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
-                if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
+                if (dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
                     UserSession userSession = new UserSession(context);
                     TimberReportingTree timberReportingTree = new TimberReportingTree(dataLogConfig.getTags());
                     timberReportingTree.setUserId(userSession.getUserId());
@@ -81,9 +87,18 @@ public class TimberWrapper {
                     timberReportingTree.setVersionCode(GlobalConfig.VERSION_CODE);
                     timberReportingTree.setClientLogs(dataLogConfig.getClientLogs());
                     timberReportingTree.setQueryLimits(dataLogConfig.getQueryLimits());
-                    Timber.plant(timberReportingTree);
+                    plantNewTree(timberReportingTree);
                 }
             }
+        } catch (Throwable throwable) {
+            // do nothing
+        }
+    }
+
+    private static void plantNewTree(Timber.DebugTree tree){
+        synchronized (LOCK) {
+            Timber.uprootAll();
+            Timber.plant(tree);
         }
     }
 
@@ -99,6 +114,6 @@ public class TimberWrapper {
         String session = LoggerUtils.INSTANCE.getLogSession(context);
         String serverHost = String.format("android-main-app-p%s", priority);
         String parser = String.format("android-main-app-p%s-parser", priority);
-        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, APP_TYPE, GlobalConfig.DEBUG, priority);
+        return new ScalyrConfig(SCALYR_TOKEN, session, serverHost, parser, context.getPackageName(), GlobalConfig.DEBUG, priority);
     }
 }

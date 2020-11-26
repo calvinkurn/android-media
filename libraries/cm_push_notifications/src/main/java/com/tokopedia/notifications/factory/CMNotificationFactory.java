@@ -13,6 +13,8 @@ import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.common.PersistentEvent;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
+import timber.log.Timber;
+
 /**
  * @author lalit.singh
  */
@@ -33,8 +35,12 @@ public class CMNotificationFactory {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && isChannelBlocked(context, baseNotificationModel)) {
             //todo notify to server for Blocked Channel By User.
         } else {
-            if (baseNotificationModel.getType() == null)
+            if (baseNotificationModel.getType() == null) {
+                Timber.w(CMConstant.TimberTags.TAG + "validation;reason='type_missing';data='" +
+                        baseNotificationModel.toString().substring(0, (Math.min(baseNotificationModel.toString().length(),
+                         CMConstant.TimberTags.MAX_LIMIT))) + "'");
                 return null;
+            }
             switch (baseNotificationModel.getType()) {
 
                 case CMConstant.NotificationType.GENERAL:

@@ -10,7 +10,6 @@ import com.tokopedia.topads.dashboard.domain.model.TopAdsDetailGroupDomainModel;
 import java.util.List;
 
 import rx.Observable;
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 
 
 /**

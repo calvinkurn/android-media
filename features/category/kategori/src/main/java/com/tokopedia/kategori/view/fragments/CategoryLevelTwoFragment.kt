@@ -70,16 +70,16 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        initView()
         setUpObserver()
+        initView()
     }
 
     private fun setUpObserver() {
-            categoryLevelTwoViewModel.getCategoryChildren().observe(viewLifecycleOwner, Observer {
+        categoryLevelTwoViewModel.getLevelTwoList().observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     categoryLevelTwoAdapter.pushTrackingEvents()
-                    categoryLevelTwoAdapter =  CategoryLevelTwoAdapter(it.data.toMutableList(), activityStateListener?.getActivityTrackingQueue())
+                    categoryLevelTwoAdapter = CategoryLevelTwoAdapter(it.data.toMutableList(), activityStateListener?.getActivityTrackingQueue())
                     slave_list.adapter = categoryLevelTwoAdapter
                 }
             }
@@ -99,7 +99,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         }
     }
 
-    private fun getSpanSizeLookUp():GridLayoutManager.SpanSizeLookup{
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (slave_list.adapter?.getItemViewType(position)) {

@@ -42,6 +42,12 @@ sealed class ProductMenuViewModel(
         product
     )
 
+    data class SeeTopAds(override val product: ProductViewModel): ProductMenuViewModel(
+        R.string.product_manage_see_promo_ads_menu,
+        R.drawable.ic_manage_product_topads,
+        product
+    )
+
     data class SetCashBack(override val product: ProductViewModel): ProductMenuViewModel(
         R.string.product_manage_menu_set_cashback,
         R.drawable.ic_product_manage_cashback,

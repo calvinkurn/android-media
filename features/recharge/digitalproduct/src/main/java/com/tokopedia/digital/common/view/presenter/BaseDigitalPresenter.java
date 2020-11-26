@@ -180,7 +180,7 @@ public abstract class BaseDigitalPresenter<T extends CustomerView> extends BaseD
                 .isPromo("0")
                 .operatorId(operatorId)
                 .productId(productId)
-                .utmCampaign((productDigitalData.getCategoryData().getName()))
+                .utmCampaign((productDigitalData.getCategoryData().name))
                 .utmContent(versionInfoApplication)
                 .idemPotencyKey(generateATokenRechargeCheckout(userLoginId))
                 .utmSource(DigitalCheckoutPassData.Companion.getUTM_SOURCE_ANDROID())

@@ -45,6 +45,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(),
         PromoCheckOutExchangeCouponAdapter.ListenerCouponExchange {
 
     private var containerParent: ViewGroup? = null
+
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
     val marketplacePromoLastSeenAdapter: MarketplacePromoLastSeenAdapter by lazy { MarketplacePromoLastSeenAdapter(arrayListOf(), this) }

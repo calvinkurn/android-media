@@ -1,8 +1,0 @@
-{
-    getCampaignLabel{
-        data{
-            label_name
-            status_id
-        }
-    }
-}

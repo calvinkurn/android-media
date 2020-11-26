@@ -1,7 +1,9 @@
 package com.tokopedia.loyalty.view.presenter;
 
 import android.content.res.Resources;
+import android.util.Log;
 
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -13,6 +15,7 @@ import com.tokopedia.loyalty.R;
 import com.tokopedia.loyalty.domain.entity.response.promocodesave.PromoCacheResponse;
 import com.tokopedia.loyalty.view.data.PromoData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
+import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.loyalty.view.util.PromoTrackingUtil;
 import com.tokopedia.loyalty.view.view.IPromoListView;
 import com.tokopedia.network.constant.ErrorNetMessage;
@@ -29,6 +32,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author anggaprasetiyo on 02/01/18.
@@ -81,6 +85,10 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
+
                 observableListPromo = null;
                 handleErrorInitialPage(e);
                 if (page == 1) view.stopPerformanceMonitoring();
@@ -156,6 +164,9 @@ public class PromoListPresenter implements IPromoListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof JsonSyntaxException) {
+                    Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                }
             }
 
             @Override

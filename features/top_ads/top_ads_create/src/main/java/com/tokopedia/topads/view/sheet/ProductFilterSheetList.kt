@@ -1,9 +1,9 @@
 package com.tokopedia.topads.view.sheet
 
-import android.content.Context
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import android.widget.FrameLayout
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.topads.create.R
@@ -13,21 +13,34 @@ import com.tokopedia.topads.view.adapter.etalase.EtalaseAdapterTypeFactoryImpl
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseItemViewModel
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
 import com.tokopedia.topads.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.topads_create_fragment_product_list_sheet_filter.*
 
 /**
  * Author errysuprayogi on 07,May,2019
  */
-class ProductFilterSheetList {
+class ProductFilterSheetList : BottomSheetUnify(){
 
-    private var dialog: BottomSheetDialog? = null
     private var adapter: EtalaseAdapter? = null
+    var elementList =  mutableListOf<EtalaseViewModel>()
     private var selectedItem: ResponseEtalase.Data.ShopShowcasesByShopID.Result = ResponseEtalase.Data.ShopShowcasesByShopID.Result()
     var onItemClick: ((ResponseEtalase.Data.ShopShowcasesByShopID.Result) -> Unit)? = null
 
-    private fun setupView(context: Context) {
-        dialog?.let {
-            val elementList = mutableListOf<EtalaseViewModel>(
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        var contentView = View.inflate(context, R.layout.topads_create_fragment_product_list_sheet_filter, null)
+        setChild(contentView)
+        setTitle(getString(R.string.filter))
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        initView();
+    }
+
+    private fun initView() {
+        if(elementList.isEmpty()) {
+            elementList = mutableListOf<EtalaseViewModel>(
                     EtalaseShimerViewModel(),
                     EtalaseShimerViewModel(),
                     EtalaseShimerViewModel(),
@@ -35,31 +48,15 @@ class ProductFilterSheetList {
                     EtalaseShimerViewModel(),
                     EtalaseShimerViewModel()
             )
-            adapter = EtalaseAdapter(EtalaseAdapterTypeFactoryImpl(this::onItemClick), elementList)
-            it.recyclerView.setLayoutManager(LinearLayoutManager(context))
-            it.recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
-            it.recyclerView.adapter = adapter
-            it.setOnShowListener { dialogInterface ->
-                val dialog = dialogInterface as BottomSheetDialog
-                val frameLayout = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-                if (frameLayout != null) {
-                    val behavior = BottomSheetBehavior.from(frameLayout)
-                    behavior.isHideable = false
-                }
-            }
-            it.btn_close.setOnClickListener { dismissDialog() }
         }
-    }
-
-    fun show() {
-        dialog!!.show()
-    }
-
-    fun dismissDialog() {
-        dialog!!.dismiss()
+        adapter = EtalaseAdapter(EtalaseAdapterTypeFactoryImpl(this::onItemClick), elementList)
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+        recyclerView.adapter = adapter
     }
 
     fun updateData(data: MutableList<EtalaseViewModel>) {
+        elementList = data
         adapter?.updateData(data)
     }
 
@@ -75,17 +72,12 @@ class ProductFilterSheetList {
             onItemClick?.invoke(selectedItem)
         }
         adapter?.notifyDataSetChanged()
-        dismissDialog()
+        dismiss()
     }
 
     companion object {
-
-        fun newInstance(context: Context): ProductFilterSheetList {
-            val fragment = ProductFilterSheetList()
-            fragment.dialog = BottomSheetDialog(context, R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog?.setContentView(R.layout.topads_create_fragment_product_list_sheet_filter)
-            fragment.setupView(context)
-            return fragment
+        fun newInstance(): ProductFilterSheetList {
+            return ProductFilterSheetList()
         }
     }
 }

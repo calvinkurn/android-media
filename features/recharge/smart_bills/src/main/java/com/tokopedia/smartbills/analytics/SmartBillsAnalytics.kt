@@ -14,9 +14,20 @@ class SmartBillsAnalytics {
 
     var userId: String = ""
 
+    fun eventOpenScreen() {
+        val loginStatus = if (userId.isEmpty()) "false" else "true"
+        val mapOpenScreen = mutableMapOf(
+                Key.IS_LOGIN_STATUS to loginStatus,
+                Key.USER_ID to userId
+        )
+        mapOpenScreen.putAll(ADDITIONAL_INFO_MAP)
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(SCREEN_NAME_INITAL, mapOpenScreen)
+    }
+
     fun clickSubscription() {
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
                 Action.CLICK_LANGGANAN,
                 Label.LANGGANAN)
@@ -26,11 +37,27 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickAllBills() {
+    fun clickAllBills(value: Boolean) {
+        if (value) clickTickAllBills() else clickUntickAllBills()
+    }
+
+    private fun clickTickAllBills() {
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
                 Action.CLICK_ALL_TAGIHAN,
+                Label.ALL_TAGIHAN)
+        map[Key.USER_ID] = userId
+        map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
+        map.putAll(ADDITIONAL_INFO_MAP)
+        TrackApp.getInstance().gtm.sendGeneralEvent(map)
+    }
+
+    private fun clickUntickAllBills() {
+        val map = TrackAppUtils.gtmData(
+                Event.CLICK_SMART_BILLS,
+                CATEGORY_SMART_BILLS,
+                Action.UNCLICK_ALL_TAGIHAN,
                 Label.ALL_TAGIHAN)
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
@@ -41,23 +68,23 @@ class SmartBillsAnalytics {
     fun clickTickBill(tickedBill: RechargeBills, selectedBills: List<RechargeBills>) {
         val actionField = mapOf(EnhanceEccomerce.LIST to LIST_VALUE)
         val ecommerce = with (EnhanceEccomerce) {
-            val products = createEcommerceProducts(selectedBills)
-            products.mapIndexed { index, item ->
+            val products = createEcommerceProducts(selectedBills).mapIndexed { index, item ->
                 val map = item.toMutableMap()
                 map[POSITION] = index
+                map[LIST] = LIST_VALUE
                 return@mapIndexed map
             }
             DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(
                     ACTION_FIELD, actionField,
-                    PRODUCTS, DataLayer.listOf(products)
+                    PRODUCTS, ArrayList(products)
             )))
         }
 
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.PRODUCT_CLICK,
                 CATEGORY_SMART_BILLS,
                 Action.CLICK_TICK_BILL,
-                "${tickedBill.categoryID} - ${tickedBill.productID}")
+                "${tickedBill.categoryName} - ${tickedBill.productName}")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
         map.putAll(ADDITIONAL_INFO_MAP)
@@ -67,10 +94,10 @@ class SmartBillsAnalytics {
 
     fun clickUntickBill(untickedBill: RechargeBills) {
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
                 Action.CLICK_UNTICK_BILL,
-                "${untickedBill.categoryID} - ${untickedBill.productID}")
+                "${untickedBill.categoryName} - ${untickedBill.productName}")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
         map.putAll(ADDITIONAL_INFO_MAP)
@@ -82,7 +109,7 @@ class SmartBillsAnalytics {
             val impressions = createEcommerceProducts(bills)
             DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(
                     CURRENCY_CODE, CURRENCY_CODE_VALUE,
-                    IMPRESSIONS, DataLayer.listOf(impressions)
+                    IMPRESSIONS, ArrayList(impressions)
             ))
         }
 
@@ -98,26 +125,26 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickPay(selectedBills: List<RechargeBills>) {
+    fun clickPay(selectedBills: List<RechargeBills>, totalBillsCount: Int) {
         val actionField = mapOf(EnhanceEccomerce.STEP to STEP_VALUE, EnhanceEccomerce.OPTION to OPTION_VALUE)
         val ecommerce = with (EnhanceEccomerce) {
-            val products = createEcommerceProducts(selectedBills)
-            products.map {
+            val products = createEcommerceProducts(selectedBills).map {
                 val map = it.toMutableMap()
                 map[QUANTITY] = 1
                 return@map map
             }
-            DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(
+            DataLayer.mapOf(ECOMMERCE, DataLayer.mapOf(CHECKOUT, DataLayer.mapOf(
                     ACTION_FIELD, actionField,
-                    PRODUCTS, DataLayer.listOf(products)
+                    PRODUCTS, ArrayList(products)
             )))
         }
 
+        val areAllBills = selectedBills.size == totalBillsCount
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.CHECKOUT,
                 CATEGORY_SMART_BILLS,
-                Action.CLICK_BAYAR,
-                Label.BAYAR)
+                if (areAllBills) Action.CLICK_BAYAR_FULL else Action.CLICK_BAYAR_PARTIAL,
+                "${Label.BAYAR} - $totalBillsCount - ${selectedBills.size}")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_INITAL
         map.putAll(ADDITIONAL_INFO_MAP)
@@ -125,12 +152,12 @@ class SmartBillsAnalytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
-    fun clickPayFailed() {
+    fun clickPayFailed(totalBillsCount: Int, selectedBillsCount: Int) {
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
                 Action.CLICK_BAYAR,
-                Label.GAGAL)
+                "${Label.GAGAL} - $totalBillsCount - $selectedBillsCount")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_DETAIL
         map.putAll(ADDITIONAL_INFO_MAP)
@@ -139,10 +166,10 @@ class SmartBillsAnalytics {
 
     fun clickBillDetail(bill: RechargeBills) {
         val map = TrackAppUtils.gtmData(
-                Event.SMART_BILLS,
+                Event.CLICK_SMART_BILLS,
                 CATEGORY_SMART_BILLS,
                 Action.CLICK_DETAIL,
-                "${bill.categoryID} - ${bill.productID}")
+                "${bill.categoryName} - ${bill.productName}")
         map[Key.USER_ID] = userId
         map[Key.SCREEN_NAME] = SCREEN_NAME_DETAIL
         map.putAll(ADDITIONAL_INFO_MAP)
@@ -155,7 +182,7 @@ class SmartBillsAnalytics {
                 DataLayer.mapOf(
                         NAME, it.productName,
                         ID, it.productID,
-                        PRICE, it.amountText,
+                        PRICE, it.amount.toString(),
                         BRAND, NONE,
                         CATEGORY, it.categoryName,
                         VARIANT, NONE

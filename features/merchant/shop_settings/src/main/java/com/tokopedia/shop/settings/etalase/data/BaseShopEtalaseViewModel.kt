@@ -48,8 +48,8 @@ abstract class BaseShopEtalaseViewModel() : Parcelable, Visitable<BaseShopEtalas
     }
 
     protected constructor(`in`: Parcel) : this() {
-        this.id = `in`.readString()
-        this.name = `in`.readString()
+        this.id = `in`.readString()?: ""
+        this.name = `in`.readString()?: ""
         this.count = `in`.readInt()
         this.type = `in`.readInt()
         this.isPrimaryEtalase = `in`.readByte().toInt() != 0

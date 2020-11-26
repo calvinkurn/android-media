@@ -1,19 +1,17 @@
 package com.tokopedia.applink.Hotlist
 
-import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalCategory
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 
 object DeeplinkMapperHotlist {
 
-
     fun getRegisteredHotlist(deeplink: String): String {
-
-            if (deeplink.startsWith(ApplinkConst.HOME_HOTLIST)) {
-                return deeplink.replace(ApplinkConst.HOME_HOTLIST, ApplinkConstInternalCategory.INTERNAL_HOTLIST_REVAMP)
-            }
+        val uri = Uri.parse(deeplink)
+        val query = uri.pathSegments[0].replace("-","+")
+        if (deeplink.startsWith(ApplinkConst.HOME_HOTLIST)) {
+            return ApplinkConstInternalDiscovery.SEARCH_RESULT + "?q=" + query
+        }
         return deeplink
     }
 }

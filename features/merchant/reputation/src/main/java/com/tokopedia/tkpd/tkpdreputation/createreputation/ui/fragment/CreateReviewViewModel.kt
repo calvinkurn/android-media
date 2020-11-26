@@ -80,7 +80,7 @@ class CreateReviewViewModel @Inject constructor(@Named("Main")
 
     fun initImageData(): MutableList<BaseImageReviewViewModel> {
         imageData.clear()
-        imageData.add(DefaultImageReviewModel())
+        imageData.add(DefaultImageReviewViewModel())
         return imageData
     }
 

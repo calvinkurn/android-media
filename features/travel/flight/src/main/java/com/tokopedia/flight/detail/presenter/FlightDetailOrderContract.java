@@ -114,6 +114,8 @@ public interface FlightDetailOrderContract {
 
         void actionCancelOrderButtonClicked();
 
+        void actionCancelOrderWithoutDialog();
+
         void onHelpButtonClicked(String contactUsUrl);
 
         void actionReorderButtonClicked();

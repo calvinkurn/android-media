@@ -1,0 +1,19 @@
+{
+  tokopediaRewardIntroPage {
+     resultStatus {
+        code
+        status
+      }
+    header
+    title
+    subtitle
+    imageURL
+    CTA {
+      icon
+      text
+      url
+      appLink
+      type
+    }
+  }
+}

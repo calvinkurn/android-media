@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.brandlist.R
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.NewBrandUiModel
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.NewBrandAdapter
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.unifyprinciples.Typography
 
 class NewBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingListener) :
-        AbstractViewHolder<NewBrandViewModel>(itemView) {
+        AbstractViewHolder<NewBrandUiModel>(itemView) {
 
     private var context: Context? = null
     private var adapter: NewBrandAdapter? = null
@@ -32,7 +32,7 @@ class NewBrandViewHolder(itemView: View?, listener: BrandlistPageTrackingListene
         }
     }
 
-    override fun bind(element: NewBrandViewModel?) {
+    override fun bind(element: NewBrandUiModel?) {
 
         headerView?.text = element?.header?.title
 

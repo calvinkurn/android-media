@@ -16,6 +16,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_done"
+            android:contentDescription="@string/content_desc_tv_done"
             style="@style/TextView.Title.Green"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,8 +33,9 @@
 
     </androidx.appcompat.widget.Toolbar>
 
-    <FrameLayout
+    <fragment
         android:id="@+id/parent_view"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

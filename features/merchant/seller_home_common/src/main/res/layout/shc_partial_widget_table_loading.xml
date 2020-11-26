@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/shimmerTableWidgetWidget"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="@dimen/layout_lvl2">
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shcTableLoader0"
+        android:layout_width="@dimen/shc_dimen_88dp"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        app:corners="10"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shcTableLoader1"
+        android:layout_width="@dimen/shc_dimen_88dp"
+        android:layout_height="@dimen/layout_lvl1"
+        app:corners="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/shcTableLoader0" />
+
+    <View
+        android:id="@+id/shcTableLoaderHorLine0"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/shc_dimen_1dp"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shcTableLoader0" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shcTableLoader"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/shc_dimen_140dp"
+        android:layout_marginBottom="@dimen/shc_dimen_140dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shcTableLoaderHorLine0" />
+</androidx.constraintlayout.widget.ConstraintLayout>

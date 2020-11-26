@@ -1,6 +1,6 @@
 package com.tokopedia.cart.view.subscriber
 
-import com.tokopedia.cart.domain.model.cartlist.UpdateCartData
+import com.tokopedia.cart.domain.model.updatecart.UpdateCartData
 import com.tokopedia.cart.view.ICartListView
 import rx.Subscriber
 

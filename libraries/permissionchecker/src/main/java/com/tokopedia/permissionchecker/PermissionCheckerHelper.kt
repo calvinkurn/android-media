@@ -331,10 +331,12 @@ class PermissionCheckerHelper {
         return true
     }
 
-    fun onRequestPermissionsResult(context: Context, requestCode: Int,
+    fun onRequestPermissionsResult(context: Context?, requestCode: Int,
                                    permissions: Array<String>,
                                    grantResults: IntArray) {
-
+        if (context == null) {
+            return
+        }
         var permissionsDenied: Array<String> = arrayOf()
         var permissionsDeniedNeedToShowRationale: Array<String> = arrayOf()
 

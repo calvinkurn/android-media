@@ -26,9 +26,10 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.DialogForceLogout;
 import com.tokopedia.core.service.ErrorNetworkReceiver;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core2.R;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,7 +56,7 @@ public class BaseActivity extends AppCompatActivity implements
     private static final long DISMISS_TIME = 10000;
     protected Boolean isAllowFetchDepartmentView = false;
 
-    protected SessionHandler sessionHandler;
+    protected UserSessionInterface userSessionInterface;
 
     protected GCMHandler gcmHandler;
 
@@ -72,7 +73,8 @@ public class BaseActivity extends AppCompatActivity implements
         if (MaintenancePage.isMaintenance(this)) {
             startActivity(MaintenancePage.createIntent(this));
         }
-        sessionHandler = new SessionHandler(getBaseContext());
+
+        userSessionInterface = new UserSession(getBaseContext());
         gcmHandler = new GCMHandler(this);
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         globalCacheManager = new GlobalCacheManager();
@@ -118,7 +120,6 @@ public class BaseActivity extends AppCompatActivity implements
                 screenName = this.getClass().getSimpleName();
             }
         }
-        sessionHandler = null;
         gcmHandler = null;
         globalCacheManager = null;
     }
@@ -136,9 +137,9 @@ public class BaseActivity extends AppCompatActivity implements
                     @Override
                     public Boolean call(Boolean b) {
                         TrackApp.getInstance().getGTM()
-                                .pushUserId(SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                                .pushUserId(userSessionInterface.getGTMLoginID());
                         TrackingUtils.eventOnline(BaseActivity.this,
-                                SessionHandler.getGTMLoginID(MainApplication.getAppContext()));
+                                userSessionInterface.getGTMLoginID());
                         return true;
                     }
                 })
@@ -238,9 +239,5 @@ public class BaseActivity extends AppCompatActivity implements
 
     public BaseAppComponent getBaseAppComponent() {
         return ((MainApplication) getApplication()).getBaseAppComponent();
-    }
-
-    protected void setGoldMerchant(ShopModel shopModel) {
-        sessionHandler.setGoldMerchant(shopModel.info.shopIsGold);
     }
 }

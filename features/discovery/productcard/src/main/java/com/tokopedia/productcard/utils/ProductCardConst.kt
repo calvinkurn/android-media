@@ -30,3 +30,9 @@ internal const val COLOR_TEXT_DARK_ORANGE = "#FF8B00"
 internal const val COLOR_TEXT_DARK_RED = "#EF144A"
 internal const val COLOR_TEXT_DARK_GREY = "#AD31353B"
 internal const val COLOR_TEXT_LIGHT_GREY = "#7031353B"
+
+internal const val ROBOTO_BOLD = "RobotoBold.ttf"
+internal const val ROBOTO_REGULAR = "RobotoRegular.ttf"
+
+internal const val OPEN_BOLD_TAG = "<b>"
+internal const val CLOSE_BOLD_TAG = "</b>"

@@ -79,10 +79,18 @@ public class InputPriceHolderView extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    Long price = Long.parseLong(s.toString());
+                    if (price <= maxPayment) {
+                        priceInput = price;
+                    }
+                } else {
+                    priceInput = 0;
+                }
+                actionListener.onInputPriceByUserFilled(priceInput);
+
                 if (isUserInputValid(s.toString(), minPayment, maxPayment)) {
-                    priceInput = Long.parseLong(s.toString());
                     errorInputError.setVisibility(GONE);
-                    actionListener.onInputPriceByUserFilled(priceInput);
                     actionListener.enableCheckoutButton();
                 } else {
                     errorInputError.setVisibility(VISIBLE);

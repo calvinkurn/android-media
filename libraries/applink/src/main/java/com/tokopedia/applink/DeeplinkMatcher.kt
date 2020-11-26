@@ -80,7 +80,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
             add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
             add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
-            add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
+            add(Pattern(GT, 0, mapOf(0 to "hotel")) to HOTEL)
             add(Pattern(EQ, 1, mapOf(0 to "travel-entertainment")) to TRAVEL_HOMEPAGE)
             add(Pattern(EQ, 2, mapOf(0 to "travel-entertainment")) to TRAVEL_HOMEPAGE)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
@@ -92,6 +92,7 @@ class DeeplinkMatcher() {
             add(Pattern(EQ, 2, mapOf(0 to "terms", 1 to "aktivasi-powermerchant")) to OTHER)
             add(Pattern(EQ, 1, null) to SHOP)
             add(Pattern(EQ, 2, null) to PRODUCT)
+            add(Pattern(EQ, 3, mapOf(1 to "campaign")) to ETALASE)
         }
     }
 

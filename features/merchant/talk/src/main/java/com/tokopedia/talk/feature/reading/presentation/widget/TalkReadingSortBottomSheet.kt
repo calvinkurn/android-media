@@ -56,11 +56,8 @@ class TalkReadingSortBottomSheet(
             SortOption.INFORMATIVENESS_DISPLAY_NAME -> {
                 SortOption.SortByInformativeness(isSelected = true)
             }
-            SortOption.TIME_DISPLAY_NAME -> {
-                SortOption.SortByTime(isSelected = true)
-            }
             else -> {
-                SortOption.SortByLike(isSelected = true)
+                SortOption.SortByTime(isSelected = true)
             }
         }
     }

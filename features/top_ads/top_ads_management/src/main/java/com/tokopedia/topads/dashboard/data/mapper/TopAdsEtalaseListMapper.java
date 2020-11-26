@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.data.mapper;
 
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topads.dashboard.data.model.data.DataEtalase;
 import com.tokopedia.topads.dashboard.data.model.data.Etalase;
-import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import java.util.List;
 

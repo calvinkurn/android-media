@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.list.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.sellerorder.common.domain.model.TickerInfo
 
 /**
  * Created by fwidjaja on 2019-08-29.
@@ -84,7 +85,11 @@ data class SomListOrder (
 
                     @SerializedName("cancel_request_origin_note")
                     @Expose
-                    val cancelRequestOriginNote: String = ""
+                    val cancelRequestOriginNote: String = "",
+
+                    @SerializedName("ticker_info")
+                    @Expose
+                    val tickerInfo: TickerInfo = TickerInfo()
             ) {
                 data class OrderLabel (
                         @SerializedName("flag_name")

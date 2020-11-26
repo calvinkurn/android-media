@@ -1,19 +1,19 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.data.cloud.entity.CancellationRequestEntity;
 import com.tokopedia.flight.cancellation.data.cloud.entity.EstimateRefundResultEntity;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationEstimateRefundUseCase;
 import com.tokopedia.flight.cancellation.domain.FlightCancellationRequestUseCase;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationReviewContract;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -72,15 +72,12 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
                 viewModel.getCancellationReasonAndAttachment().getReason() : null;
         String reasonId = (viewModel.getCancellationReasonAndAttachment() != null) ?
                 viewModel.getCancellationReasonAndAttachment().getReasonId() : null;
-        List<FlightCancellationAttachmentModel> attachmentViewModelList = (viewModel.getCancellationReasonAndAttachment() != null) ?
-                viewModel.getCancellationReasonAndAttachment().getAttachments() : null;
 
         flightCancellationRequestUseCase.execute(
                 flightCancellationRequestUseCase.createRequest(
                         getView().getInvoiceId(),
                         reason,
                         reasonId,
-                        attachmentViewModelList,
                         viewModel.getGetCancellations()
                 ),
                 new Subscriber<CancellationRequestEntity>() {
@@ -107,7 +104,11 @@ public class FlightCancellationReviewPresenter extends BaseDaggerPresenter<Fligh
     private void setRefundView() {
         if (isRefundable()) {
             if (getView().getCancellationWrapperViewModel().getCancellationReasonAndAttachment().isShowEstimateRefund()) {
-                getView().showEstimateValue();
+                ArrayList<String> estimationNotes = new ArrayList<>();
+                estimationNotes.add(getView().getActivity().getString(R.string.flight_cancellation_estimate_note_cashback));
+                estimationNotes.add(getView().getActivity().getString(R.string.flight_cancellation_estimate_note_additional));
+
+                getView().showEstimateValue(estimationNotes);
                 getView().hideRefundDetail();
             } else {
                 getView().hideEstimateValue();

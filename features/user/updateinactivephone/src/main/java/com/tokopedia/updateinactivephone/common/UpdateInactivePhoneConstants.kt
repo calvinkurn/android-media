@@ -40,6 +40,8 @@ interface UpdateInactivePhoneConstants {
             val USER_ID = "userId"
             val OLD_PHONE = "oldPhone"
             val FILE_UPLOADED = "fileUploaded"
+            val ID_CARD_IMAGE = "idCardImage"
+            val SAVING_BOOK_IMAGE = "savingBookImage"
         }
     }
 

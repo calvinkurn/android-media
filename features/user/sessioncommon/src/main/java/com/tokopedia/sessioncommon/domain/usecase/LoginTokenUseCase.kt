@@ -60,6 +60,12 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
         execute(requestParams, subscriber, R.raw.mutation_login_phone)
     }
 
+    fun executeLoginTokenSeamless(requestParams: Map<String, Any>, subscriber:
+    Subscriber<GraphqlResponse>) {
+        userSession.setToken(TokenGenerator().createBasicTokenGQL(), "")
+        execute(requestParams, subscriber, R.raw.mutation_login_token_seamless)
+    }
+
     fun execute(requestParams: Map<String, Any>, subscriber:
     Subscriber<GraphqlResponse>, resId : Int) {
         val query = GraphqlHelper.loadRawString(resources, resId)
@@ -94,6 +100,7 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
 
         val SOCIAL_TYPE_FACEBOOK:String = "1"
         val SOCIAL_TYPE_GOOGLE:String = "7"
+        val SOCIAL_TYPE_SEAMLESS:String = "12"
 
         fun generateParamLoginEmail(email: String, password: String):
                 Map<String, Any> {
@@ -165,6 +172,18 @@ class LoginTokenUseCase @Inject constructor(val resources: Resources,
 
             return requestParams
         }
+
+        fun generateParamLoginSeamless(code: String):
+                Map<String, Any> {
+            val requestParams = HashMap<String, Any>()
+
+            requestParams[PARAM_SOCIAL_TYPE] = SOCIAL_TYPE_SEAMLESS
+            requestParams[PARAM_ACCESS_TOKEN] = code
+            requestParams[PARAM_GRANT_TYPE] = TokenGenerator().encode(TYPE_EXTENSION)
+
+            return requestParams
+        }
+
     }
 
     fun unsubscribe() {

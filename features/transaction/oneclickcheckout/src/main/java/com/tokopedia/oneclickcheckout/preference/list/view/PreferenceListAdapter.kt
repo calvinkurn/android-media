@@ -3,7 +3,7 @@ package com.tokopedia.oneclickcheckout.preference.list.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.oneclickcheckout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 
 class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val currentProfileId: Int = -1) : RecyclerView.Adapter<PreferenceListViewHolder>() {
 

@@ -5,11 +5,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.CLAIMED
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.DOUBLE_COLUMNS
+import com.tokopedia.discovery2.Constant.ClaimCouponConstant.HABIS
 import com.tokopedia.discovery2.Constant.ClaimCouponConstant.NOT_LOGGEDIN
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.OUT_OF_STOCK
-import com.tokopedia.discovery2.Constant.ClaimCouponConstant.UNCLAIMED
 import com.tokopedia.discovery2.GenerateUrl
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
@@ -47,7 +45,7 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
     fun getComponentData(): LiveData<DataItem> {
-        val status = checkClaimStatus(components.data?.getOrElse(0) { DataItem() })
+        val status = getClaimStatus(components.data?.getOrElse(0) { DataItem() })
         components.data?.get(0)?.status = status
         componentData.value = components.data?.get(0)
         return componentData
@@ -85,22 +83,22 @@ class ClaimCouponItemViewModel(val application: Application, private val compone
     }
 
 
-    private fun checkClaimStatus(item: DataItem?): String {
-        var status = if (item?.couponCode.isNullOrEmpty()) CLAIMED else UNCLAIMED
-        if (item?.isDisabled == true || item?.isDisabledBtn == true) {
-            status = OUT_OF_STOCK
+    private fun getClaimStatus(item: DataItem?): String {
+        item?.let {
+            return it.claimButtonStr ?: HABIS
         }
-        return status
+        return HABIS
     }
 
     fun setClick(context: Context, status: String?) {
-        var applink = ""
-        if (status == UNCLAIMED) {
-            applink = GenerateUrl.getClaimCoupon(components.data?.get(0)?.couponCode ?: "")
-        } else if (status == CLAIMED || status == OUT_OF_STOCK) {
-            applink = GenerateUrl.getClaimCoupon(components.data?.get(0)?.slug ?: "")
-        }
+        val applink = GenerateUrl.getClaimCouponApplink(components.data?.get(0)?.slug ?: "")
         navigate(context, applink)
+    }
+
+    fun getCouponSlug(): String? {
+        if (components.data.isNullOrEmpty()) return ""
+
+        return components.data?.get(0)?.slug
     }
 
     private fun getQueryMap(): Map<String, Any> {

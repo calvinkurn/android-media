@@ -9,9 +9,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class DataChangeAddressRequest {
 
-    @SerializedName("cart_id")
+    @SerializedName("cart_id_str")
     @Expose
-    private long cartId;
+    private String cartIdStr;
 
     @SerializedName("product_id")
     @Expose
@@ -29,8 +29,8 @@ public class DataChangeAddressRequest {
     @Expose
     private int quantity;
 
-    public void setCartId(long cartId) {
-        this.cartId = cartId;
+    public void setCartIdStr(String cartIdStr) {
+        this.cartIdStr = cartIdStr;
     }
 
     public void setProductId(int productId) {

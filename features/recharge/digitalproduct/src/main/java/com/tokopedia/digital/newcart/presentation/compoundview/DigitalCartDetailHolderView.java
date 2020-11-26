@@ -76,6 +76,12 @@ public class DigitalCartDetailHolderView extends LinearLayout {
         }
     }
 
+    public void removeAdditionalInfo() {
+        detailToggleAppCompatTextView.setVisibility(GONE);
+        adapter.setInfos(new ArrayList<>(this.mainInfos));
+        adapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();

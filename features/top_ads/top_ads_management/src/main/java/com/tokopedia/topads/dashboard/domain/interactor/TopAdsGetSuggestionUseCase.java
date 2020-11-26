@@ -1,10 +1,10 @@
 package com.tokopedia.topads.dashboard.domain.interactor;
 
-import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.topads.common.model.shopmodel.ShopModel;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.request.GetSuggestionBody;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.data.repository.ShopInfoRepository;
 import com.tokopedia.topads.dashboard.domain.TopAdsGroupAdsRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

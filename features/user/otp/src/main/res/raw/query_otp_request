@@ -1,7 +1,0 @@
-query otp_request($otpType: String!, $mode: String, $email: String, $otpDigit: Int){
-    OTPRequest(otpType: $otpType, mode: $mode, email: $email, otpDigit: $otpDigit) {
-        success
-        message
-        errorMessage
-    }
-}

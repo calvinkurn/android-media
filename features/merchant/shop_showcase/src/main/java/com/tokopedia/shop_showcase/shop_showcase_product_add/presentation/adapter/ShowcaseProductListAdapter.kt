@@ -13,7 +13,7 @@ import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.model.ShowcaseProduct
 import com.tokopedia.shop_showcase.shop_showcase_product_add.presentation.viewholder.ShowcaseProductItemViewHolder
 import kotlinx.android.synthetic.main.fragment_shop_showcase_product_add.view.*
-import kotlinx.android.synthetic.main.item_add_product_showcase_grid.view.*
+import kotlinx.android.synthetic.main.item_product_card_horizontal.view.*
 
 /**
  * @author by Rafli Syam on 2020-03-09
@@ -40,12 +40,12 @@ class ShowcaseProductListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShowcaseProductItemViewHolder {
         val view = if (viewType == VIEW_SHOW_CASE) {
-            LayoutInflater.from(context).inflate(R.layout.item_add_product_showcase_grid, parent, false)
+            LayoutInflater.from(context).inflate(R.layout.item_product_card_horizontal, parent, false)
         }
         else {
             LayoutInflater.from(context).inflate(R.layout.item_showcase_product_loading, parent, false)
         }
-        return ShowcaseProductItemViewHolder(view, context)
+        return ShowcaseProductItemViewHolder(view)
     }
 
     override fun getItemCount(): Int {
@@ -63,34 +63,38 @@ class ShowcaseProductListAdapter(
         val item = shopProductList[position]
         holder.bind(item)
         if (item is ShowcaseProduct) {
-            holder.itemView.parent_card_view.setOnClickListener {
-                val cardState = !item.ishighlighted
-                if (cardState) {
-                    val targetExcluded = excludedProduct.singleOrNull {
-                        it.productId == item.productId
-                    }
-                    if(targetExcluded == null) {
-                        item.isNewAppended = true
-                    }
-                    if(deletedProduct.size > 0)
-                        deletedProduct.remove(item)
-                    selectedProduct.add(item)
-                } else {
-                    item.isNewAppended = false
-                    val targetedProduct = selectedProduct.singleOrNull {
-                        it.productId == item.productId
-                    }
-                    if(targetedProduct != null) {
-                        deletedProduct.add(targetedProduct)
-                        selectedProduct.remove(targetedProduct)
-                    }
-                }
-                item.ishighlighted = cardState
-                holder.renderCardState(item)
-                showProductCounter(getSelectedProductSize())
-                viewListener.onCLickProductCardTracking()
+            holder.itemView.parent_item_product_card.setOnClickListener {
+                chooseProduct(holder, item)
+            }
+
+            holder.itemView.card_checkbox.setOnClickListener {
+                chooseProduct(holder, item)
             }
         }
+    }
+
+    private fun chooseProduct(holder: ShowcaseProductItemViewHolder, item: ShowcaseProduct) {
+        val cardState = !item.ishighlighted
+        if (cardState) {
+            item.isNewAppended = excludedProduct.none { excludedProduct ->
+                excludedProduct.productId == item.productId
+            }
+            if(deletedProduct.size > 0)
+                deletedProduct.remove(item)
+            selectedProduct.add(item)
+        } else {
+            item.isNewAppended = false
+            val targetedProduct = selectedProduct.singleOrNull {
+                it.productId == item.productId
+            }
+            if(targetedProduct != null) {
+                selectedProduct.remove(targetedProduct)
+            }
+        }
+        item.ishighlighted = cardState
+        holder.renderCardState(item)
+        showProductCounter(getSelectedProductSize())
+        viewListener.onCLickProductCardTracking()
     }
 
     fun updateShopProductList(isLoadNextPage: Boolean,
@@ -109,10 +113,6 @@ class ShowcaseProductListAdapter(
             showProductCounter(getSelectedProductSize())
         }
         notifyDataSetChanged()
-    }
-
-    fun isShowCaseProductItem(position: Int): Boolean {
-        return shopProductList[position] is ShowcaseProduct
     }
 
     fun showLoadingProgress() {

@@ -3,14 +3,13 @@ package com.tokopedia.webview;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.play.core.splitcompat.SplitCompat;
@@ -26,7 +25,6 @@ import com.tokopedia.network.utils.URLGenerator;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.UnsupportedEncodingException;
@@ -220,7 +218,7 @@ public class TkpdWebView extends WebView {
         } else {
             if (!GlobalConfig.DEBUG)
                 Crashlytics.log(
-                        getContext().getString(R.string.error_message_url_invalid_crashlytics) + url);
+                        getContext().getString(com.tokopedia.webview.R.string.error_message_url_invalid_crashlytics) + url);
 
             super.loadUrl(url);
         }

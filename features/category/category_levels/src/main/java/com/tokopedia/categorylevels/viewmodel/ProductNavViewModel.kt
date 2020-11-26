@@ -121,8 +121,12 @@ class ProductNavViewModel @Inject constructor(var subCategoryUseCaseV3: SubCateg
         return mDynamicFilterModel
     }
 
-    fun sendTopAds(url: String) {
-        sendTopAdsUseCase.executeOnBackground(url)
+    fun sendTopAdsImpressions(url: String, productId: String, productName: String, imageUrl: String) {
+        sendTopAdsUseCase.hitImpressions(url, productId, productName, imageUrl)
+    }
+
+    fun sendTopAdsClick(url: String, productId: String, productName: String, imageUrl: String) {
+        sendTopAdsUseCase.hitClick(url, productId, productName, imageUrl)
     }
 
     override fun onCleared() {

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_recharge_home_banner_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+        android:id="@+id/circular_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        app:autoScroll="true"
+        app:isInfinite="true"
+        app:layout_constraintDimensionRatio="4:3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
+        android:id="@+id/indicator_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/layout_lvl1"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginLeft="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:orientation="horizontal"
+        app:circle_height="@dimen/spacing_lvl3"
+        app:circle_margin="@dimen/spacing_lvl1"
+        app:circle_width="@dimen/spacing_lvl3"
+        app:drawable="@drawable/banner_green_indicator_focus"
+        app:drawable_unselected="@drawable/banner_green_indicator_default"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circular_view_pager"
+        tools:background="@android:color/holo_blue_bright"
+        tools:layout_height="@dimen/layout_lvl1"
+        tools:layout_width="200dp" />
+
+    <TextView
+        android:id="@+id/see_all_promo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginRight="@dimen/spacing_lvl4"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
+        android:fontFamily="sans-serif-medium"
+        android:lineSpacingExtra="3sp"
+        android:text="@string/recharge_home_banner_see_all_label"
+        android:textColor="#03ac0e"
+        android:textSize="@dimen/fontSize_lvl2"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/circular_view_pager" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

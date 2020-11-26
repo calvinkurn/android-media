@@ -15,35 +15,35 @@ class BrandlistPageAdapterTypeFactory(
         private val searchListener: AllBrandNotFoundViewHolder.Listener
 ) : BaseAdapterTypeFactory(), BrandlistPageTypeFactory {
 
-    override fun type(featuredBrandViewModel: FeaturedBrandViewModel): Int {
-        return if (featuredBrandViewModel.featuredBrands.isEmpty()) HideViewHolder.LAYOUT
+    override fun type(featuredBrandUiModel: FeaturedBrandUiModel): Int {
+        return if (featuredBrandUiModel.featuredBrands.isEmpty()) HideViewHolder.LAYOUT
         else FeaturedBrandViewHolder.LAYOUT
     }
 
-    override fun type(popularBrandViewModel: PopularBrandViewModel): Int {
-        return if (popularBrandViewModel.popularBrands.isEmpty()) HideViewHolder.LAYOUT
+    override fun type(popularBrandUiModel: PopularBrandUiModel): Int {
+        return if (popularBrandUiModel.popularBrands.isEmpty()) HideViewHolder.LAYOUT
         else PopularBrandViewHolder.LAYOUT
     }
 
-    override fun type(newBrandViewModel: NewBrandViewModel): Int {
-        return if (newBrandViewModel.newBrands.isEmpty()) HideViewHolder.LAYOUT
+    override fun type(newBrandUiModel: NewBrandUiModel): Int {
+        return if (newBrandUiModel.newBrands.isEmpty()) HideViewHolder.LAYOUT
         else NewBrandViewHolder.LAYOUT
     }
 
-    override fun type(allBrandHeaderViewModel: AllBrandHeaderViewModel): Int {
-        return if (allBrandHeaderViewModel.title.isNullOrEmpty()) HideViewHolder.LAYOUT
+    override fun type(allBrandHeaderUiModel: AllBrandHeaderUiModel): Int {
+        return if (allBrandHeaderUiModel.title.isNullOrEmpty()) HideViewHolder.LAYOUT
         else AllBrandHeaderViewHolder.LAYOUT
     }
 
-    override fun type(allBrandGroupHeaderViewModel: AllBrandGroupHeaderViewModel): Int {
+    override fun type(allBrandGroupHeaderUiModel: AllBrandGroupHeaderUiModel): Int {
         return AllBrandGroupHeaderViewHolder.LAYOUT
     }
 
-    override fun type(allBrandViewModel: AllBrandViewModel): Int {
+    override fun type(allBrandUiModel: AllBrandUiModel): Int {
         return AllBrandViewHolder.LAYOUT
     }
 
-    override fun type(allbrandNotFoundViewModel: AllbrandNotFoundViewModel): Int {
+    override fun type(allbrandNotFoundUiModel: AllbrandNotFoundUiModel): Int {
         return AllBrandNotFoundViewHolder.LAYOUT
     }
 

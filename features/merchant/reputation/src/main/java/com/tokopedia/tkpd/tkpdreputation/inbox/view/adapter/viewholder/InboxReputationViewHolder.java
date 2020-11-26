@@ -4,17 +4,18 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.LayoutRes;
+
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.ShopReputationView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.customview.UserReputationView;
-import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.utils.TimeConverter;
@@ -27,7 +28,7 @@ public class InboxReputationViewHolder extends AbstractViewHolder<InboxReputatio
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_item;
-    private final InboxReputation.View viewListener;
+    private final com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputation.View viewListener;
 
     private View mainView;
     private TextView textDeadline;

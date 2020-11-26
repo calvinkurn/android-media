@@ -1,7 +1,7 @@
 package com.tokopedia.profilecompletion.settingprofile.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -39,10 +39,9 @@ class ProfileInfoViewModel @Inject constructor(
     val uploadProfilePictureResponse = MutableLiveData<Result<UploadProfilePictureResult>>()
 
     fun getUserProfileInfo(context: Context) {
-        val rawQuery = GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)
-        if (!rawQuery.isNullOrEmpty()) {
+        GraphqlHelper.loadRawString(context.resources, R.raw.query_user_profile_completion)?.let { query ->
             userProfileInfoUseCase.run {
-                setGraphqlQuery(rawQuery)
+                setGraphqlQuery(query)
                 execute(
                         {
                             it.profileCompletionData.apply {

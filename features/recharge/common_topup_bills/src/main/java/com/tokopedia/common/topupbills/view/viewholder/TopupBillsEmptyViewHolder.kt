@@ -15,8 +15,8 @@ class TopupBillsEmptyViewHolder(itemView: View) : AbstractViewHolder<EmptyModel>
 
     override fun bind(element: EmptyModel) {
         with(itemView) {
-            title_empty_product.text = element.title
-            desc_empty_product.text = element.description
+            topupbills_title_empty_product.text = element.title
+            topupbills_desc_empty_product.text = element.description
         }
     }
 

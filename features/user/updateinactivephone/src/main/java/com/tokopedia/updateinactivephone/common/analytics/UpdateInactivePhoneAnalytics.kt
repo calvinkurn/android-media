@@ -161,6 +161,69 @@ class UpdateInactivePhoneAnalytics @Inject constructor(private val userSessionIn
         TrackApp.getInstance().gtm.sendGeneralEvent(gtmData)
     }
 
+    fun eventClickButtonNext() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_SELUNJANTYA,
+                UpdateInactivePhoneEventConstants.LABEL_CLICK
+        ))
+    }
+
+    fun eventSuccessClickButtonNext() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_SELUNJANTYA,
+                UpdateInactivePhoneEventConstants.LABEL_SUCCESS
+        ))
+    }
+
+    fun eventFailedClickButtonNext(message: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_SELUNJANTYA,
+                UpdateInactivePhoneEventConstants.LABEL_FAILED + message
+        ))
+    }
+
+    fun eventClickButtonSubmission() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_KIRIM_PENGAJUAN,
+                UpdateInactivePhoneEventConstants.LABEL_CLICK
+        ))
+    }
+
+    fun eventSuccessClickButtonSubmission() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_KIRIM_PENGAJUAN,
+                UpdateInactivePhoneEventConstants.LABEL_SUCCESS
+        ))
+    }
+
+    fun eventFailedClickButtonSubmission(message: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_KIRIM_PENGAJUAN,
+                UpdateInactivePhoneEventConstants.LABEL_FAILED + message
+        ))
+    }
+
+    fun eventClickButtonMainPage() {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                UpdateInactivePhoneEventConstants.EVENT_CLICK_OTP,
+                UpdateInactivePhoneEventConstants.CATEGORY_INACTIVE_PHONE,
+                UpdateInactivePhoneEventConstants.CLICK_BUTTON_KEMBALI_HALAMAN_UTAMA,
+                ""
+        ))
+    }
+
     fun screen(screen: String?) {
         if (TextUtils.isEmpty(screen)) {
             return

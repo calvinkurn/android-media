@@ -13,6 +13,8 @@ import java.lang.Exception
 
 const val KEY_INSTALL_REF_SHARED_PREF_FILE_NAME = "install_ref"
 const val KEY_INSTALL_REF_INITIALISED = "install_ref_initialised"
+const val KEY_SCREEN_NAME = "screenName"
+const val SCREEN_NAME = "install_referral"
 
 class InstallReferral {
 
@@ -66,8 +68,10 @@ class InstallReferral {
                 val localCacheHandler = LocalCacheHandler(applicationContext, KEY_INSTALL_REF_SHARED_PREF_FILE_NAME)
                 val installRefInitialised = localCacheHandler.getBoolean(KEY_INSTALL_REF_INITIALISED)
 
-                if (!installRefInitialised)
+                if (!installRefInitialised) {
                     localCacheHandler.putBoolean(KEY_INSTALL_REF_INITIALISED, true)
+                    localCacheHandler.applyEditor()
+                }
             }
 
             override fun onInstallReferrerServiceDisconnected() {
@@ -87,7 +91,8 @@ class InstallReferral {
     private fun trackIfFromCampaignUrl(referrer: String) {
         val uri = Uri.parse(referrer)
         if (uri != null && InstallUtils.isValidCampaignUrl(uri)) {
-            val campaign = InstallUtils.splitquery(uri)
+            var campaign: MutableMap<String, Any> = InstallUtils.splitquery(uri).toMutableMap()
+            campaign[KEY_SCREEN_NAME] = SCREEN_NAME
             TrackApp.getInstance().gtm.sendCampaign(campaign)
         }
     }

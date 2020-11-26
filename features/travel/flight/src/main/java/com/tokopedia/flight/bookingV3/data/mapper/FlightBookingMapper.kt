@@ -13,8 +13,8 @@ import com.tokopedia.flight.passenger.constant.FlightBookingPassenger
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel
 import com.tokopedia.flight.passenger.view.model.FlightBookingPassengerModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceModel
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV4.presentation.model.FlightPriceModel
+import com.tokopedia.flight.searchV4.presentation.model.filter.RefundableEnum
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import java.util.*
@@ -213,25 +213,29 @@ class FlightBookingMapper {
                 flightDetailViewModel.isRefundable = if (journey.routes[0].refundable) RefundableEnum.REFUNDABLE else RefundableEnum.NOT_REFUNDABLE
 
                 if (index == 0) {
-                    if (flightPriceModel.comboKey.isNullOrEmpty()) {
-                        flightDetailViewModel.adultNumericPrice = flightPriceModel.departurePrice.adultNumeric
-                        flightDetailViewModel.childNumericPrice = flightPriceModel.departurePrice.childNumeric
-                        flightDetailViewModel.infantNumericPrice = flightPriceModel.departurePrice.infantNumeric
-                    } else {
-                        flightDetailViewModel.adultNumericPrice = flightPriceModel.departurePrice.adultNumericCombo
-                        flightDetailViewModel.childNumericPrice = flightPriceModel.departurePrice.childNumericCombo
-                        flightDetailViewModel.infantNumericPrice = flightPriceModel.departurePrice.infantNumericCombo
+                    flightPriceModel.departurePrice?.let {
+                        if (flightPriceModel.comboKey.isNullOrEmpty()) {
+                            flightDetailViewModel.adultNumericPrice = it.adultNumeric
+                            flightDetailViewModel.childNumericPrice = it.childNumeric
+                            flightDetailViewModel.infantNumericPrice = it.infantNumeric
+                        } else {
+                            flightDetailViewModel.adultNumericPrice = it.adultNumericCombo
+                            flightDetailViewModel.childNumericPrice = it.childNumericCombo
+                            flightDetailViewModel.infantNumericPrice = it.infantNumericCombo
+                        }
                     }
 
                 } else if (index == 1) {
-                    if (flightPriceModel.comboKey.isNullOrEmpty()) {
-                        flightDetailViewModel.adultNumericPrice = flightPriceModel.returnPrice.adultNumeric
-                        flightDetailViewModel.childNumericPrice = flightPriceModel.returnPrice.childNumeric
-                        flightDetailViewModel.infantNumericPrice = flightPriceModel.returnPrice.infantNumeric
-                    } else {
-                        flightDetailViewModel.adultNumericPrice = flightPriceModel.returnPrice.adultNumericCombo
-                        flightDetailViewModel.childNumericPrice = flightPriceModel.returnPrice.childNumericCombo
-                        flightDetailViewModel.infantNumericPrice = flightPriceModel.returnPrice.infantNumericCombo
+                    flightPriceModel.returnPrice?.let {
+                        if (flightPriceModel.comboKey.isNullOrEmpty()) {
+                            flightDetailViewModel.adultNumericPrice = it.adultNumeric
+                            flightDetailViewModel.childNumericPrice = it.childNumeric
+                            flightDetailViewModel.infantNumericPrice = it.infantNumeric
+                        } else {
+                            flightDetailViewModel.adultNumericPrice = it.adultNumericCombo
+                            flightDetailViewModel.childNumericPrice = it.childNumericCombo
+                            flightDetailViewModel.infantNumericPrice = it.infantNumericCombo
+                        }
                     }
                 }
 

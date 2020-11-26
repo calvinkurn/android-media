@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.analytic.MerchantVoucherTracking
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -124,14 +125,19 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
                 snackbar.show()
             }
         }
-        btnUseVoucher.hide()
+        if (merchantVoucherViewModel?.isPublic == false) {
+            btnContainer?.show()
+            btnUseVoucher?.show()
+        } else {
+            btnUseVoucher.hide()
+        }
     }
 
     private fun copyVoucherCodeToClipboard() {
         val voucherCode = merchantVoucherViewModel?.voucherCode
         val clipboard = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText(voucherCode, voucherCode)
-        clipboard.primaryClip = clip
+        clipboard.setPrimaryClip(clip)
     }
 
     override fun onSuccessUseVoucher(useMerchantVoucherQueryResult: UseMerchantVoucherQueryResult) {

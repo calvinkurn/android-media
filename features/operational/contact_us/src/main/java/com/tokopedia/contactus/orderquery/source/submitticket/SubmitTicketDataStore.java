@@ -19,7 +19,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
-import com.tokopedia.core.util.ImageUploadHandler;
+import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -35,6 +35,7 @@ import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
+import static com.tokopedia.contactus.inboxticket2.domain.usecase.UploadImageUseCaseKt.IMAGE_QUALITY;
 
 /**
  * Created by baghira on 16/05/18.
@@ -191,7 +192,9 @@ public class SubmitTicketDataStore {
 
                         File file;
                         try {
-                            file = ImageUploadHandler.writeImageToTkpdPath(ImageUploadHandler.compressImage(imageUpload.getFileLoc()));
+                            file = ImageUtils.writeImageToTkpdPath(
+                                    ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE,
+                                    ImageUtils.compressImageFile(imageUpload.getFileLoc(), IMAGE_QUALITY).getAbsolutePath());
                         } catch (IOException e) {
                             throw new RuntimeException(context.getString(R.string.contact_us_error_upload_image));
                         }

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/filterDetailContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/colorSampleImageView"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/filterDetailTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_13"
+        android:textColor="@color/Neutral_N700_96"
+        app:typographyType="heading_5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/colorSampleImageView"
+        app:layout_constraintBottom_toTopOf="@id/filterDetailDescription"
+        app:layout_goneMarginLeft="@dimen/dp_16"
+        app:layout_goneMarginStart="@dimen/dp_16"
+        app:layout_goneMarginBottom="@dimen/dp_18"
+        tools:text="DKI Jakarta"/>
+
+    <com.tokopedia.unifycomponents.NotificationUnify
+        android:id="@+id/newNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        app:notificationTitle="@string/sort_filter_new_notification"
+        app:notificationType="text_type"
+        app:layout_constraintStart_toEndOf="@id/filterDetailTitle"
+        app:layout_constraintTop_toTopOf="@id/filterDetailTitle"
+        app:layout_constraintBottom_toBottomOf="@id/filterDetailTitle"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/filterDetailCheckBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_18"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_18"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/filterDetailDescription"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginRight="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_11"
+        android:textColor="@color/Neutral_N700_68"
+        android:visibility="gone"
+        app:typographyType="body_3"
+        app:layout_constraintStart_toStartOf="@id/filterDetailTitle"
+        app:layout_constraintTop_toBottomOf="@id/filterDetailTitle"
+        app:layout_constraintEnd_toStartOf="@id/filterDetailCheckBox"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="gone"
+        tools:text="Dapatkan uang kembalian untuk bayar belanja berikutnya." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

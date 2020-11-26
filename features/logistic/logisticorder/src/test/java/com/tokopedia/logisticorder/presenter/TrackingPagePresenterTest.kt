@@ -8,12 +8,10 @@ import com.tokopedia.logisticorder.usecase.entity.RetryAvailability
 import com.tokopedia.logisticorder.usecase.entity.RetryAvailabilityResponse
 import com.tokopedia.logisticorder.usecase.entity.RetryBookingResponse
 import com.tokopedia.logisticorder.view.ITrackingPageFragment
-import com.tokopedia.logisticorder.viewmodel.TrackingUiModel
+import com.tokopedia.logisticorder.uimodel.TrackingUiModel
 import com.tokopedia.user.session.UserSession
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
+import io.mockk.*
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import rx.Observable
@@ -37,6 +35,12 @@ class TrackingPagePresenterTest {
                 retryPickUpUseCase,
                 userSession,
                 view)
+    }
+
+    @Before
+    fun setup(){
+        MockKAnnotations.init(this)
+        trackingPagePresenter.attachView(view)
     }
 
     /**
@@ -112,10 +116,10 @@ class TrackingPagePresenterTest {
     }
 
     /**
-    * Retry Pickup
-    * */
-   @Test
-   fun `retry pickup | on success`(){
+     * Retry Pickup
+     * */
+    @Test
+    fun `retry pickup | on success`(){
         val retryBookingResponse = RetryBookingResponse()
         every {
             retryPickUpUseCase.execute(any())
@@ -174,8 +178,8 @@ class TrackingPagePresenterTest {
     }
 
     /**
-    * OnDestroy
-    * */
+     * OnDestroy
+     * */
     @Test
     fun `on destroy`() {
         trackingPagePresenter.onDetach()

@@ -126,8 +126,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private fun getDataBundle() {
         arguments?.let {
-            categoryId = it.getString(CATEGORY_ID)
-            menuId = it.getString(MENU_ID)
+            categoryId = it.getString(CATEGORY_ID, "")
+            menuId = it.getString(MENU_ID, "")
         }
     }
 
@@ -169,7 +169,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
             val passData = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                     .categoryId(categoryId)
-                    .clientNumber(it.clientNumber)
                     .instantCheckout("0")
                     .isPromo("0")
                     .operatorId(it.operatorId)
@@ -178,6 +177,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .needGetCart(true)
+                    .isFromPDP(true)
                     .build()
             checkoutPassDataState = passData
             navigateToCart(passData)

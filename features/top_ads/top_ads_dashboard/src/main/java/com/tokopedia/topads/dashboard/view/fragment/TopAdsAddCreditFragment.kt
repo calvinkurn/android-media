@@ -106,6 +106,7 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
                 it.finish()
             }
         }
+
     }
 
     private fun getUrl(selected: DataCredit): String {

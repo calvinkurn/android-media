@@ -1,9 +1,13 @@
 package com.tokopedia.loyalty.view.presenter;
 
+import android.util.Log;
+
+import com.google.gson.JsonSyntaxException;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.loyalty.view.data.PromoMenuData;
 import com.tokopedia.loyalty.view.interactor.IPromoInteractor;
+import com.tokopedia.loyalty.view.util.CommonConstant;
 import com.tokopedia.loyalty.view.view.IPromoListActivityView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 
@@ -15,6 +19,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author anggaprasetiyo on 04/01/18.
@@ -46,6 +51,11 @@ public class PromoListActivityPresenter implements IPromoListActivityPresenter {
 
                         e.printStackTrace();
                         view.hideProgressLoading();
+
+                        if (e instanceof JsonSyntaxException) {
+                            Timber.w(CommonConstant.LOYALTY_JSON_PARSE_TAG, Log.getStackTraceString(e), PromoCodePresenter.class.getCanonicalName());
+                        }
+                        
                         if (e instanceof UnknownHostException) {
                             /* Ini kalau ga ada internet */
                             view.renderErrorNoConnectionGetPromoMenuDataList(

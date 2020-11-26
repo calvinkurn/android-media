@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -19,4 +20,6 @@ interface DynamicFeedTypeFactory {
     fun type(topadsShopViewModel: TopadsShopViewModel): Int
 
     fun type(highlightViewModel: HighlightViewModel): Int
+
+    fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int
 }

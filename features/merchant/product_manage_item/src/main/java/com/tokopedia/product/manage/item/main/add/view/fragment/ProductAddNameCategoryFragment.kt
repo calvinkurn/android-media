@@ -49,7 +49,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
                 flagReset = savedInstanceState.getBoolean(SAVED_RESET_DATA)
             }
             if (savedInstanceState.containsKey(SAVED_PRODUCT_NAME)) {
-                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)
+                productName = savedInstanceState.getParcelable(SAVED_PRODUCT_NAME)?: ProductName()
             }
             if (savedInstanceState.containsKey(SAVED_PRODUCT_IMAGES)){
                 productPictureList = savedInstanceState.getStringArrayList(SAVED_PRODUCT_IMAGES)

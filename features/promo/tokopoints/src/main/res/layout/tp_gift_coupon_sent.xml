@@ -5,8 +5,8 @@
     android:id="@+id/gift_coupon_sent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/dp_16"
-    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginLeft="@dimen/tp_margin_medium"
+    android:layout_marginRight="@dimen/tp_margin_medium"
     android:background="@color/transparent">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_centerInParent="true"
@@ -17,9 +17,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_160"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/tp_margin_small"
             app:cardCornerRadius="@dimen/dp_8"
-            app:cardElevation="@dimen/dp_0"
+            app:cardElevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="@dimen/dp_30"
-                android:padding="@dimen/dp_16">
+                android:padding="@dimen/tp_padding_medium">
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
                     tool:text="Hore, hadiah kupon yang kamu kirim sudah sampai di penerima!" />
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/btn_sentSuccess"
-                    android:layout_width="@dimen/dp_0"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/dp_40"
                     android:layout_marginTop="@dimen/dp_50"
                     android:background="@drawable/bg_rounded_gift_sendbtn"

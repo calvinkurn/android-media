@@ -41,10 +41,10 @@ public class FallbackAttachmentViewHolder extends BaseChatViewHolder<FallbackAtt
     }
 
     private void setupChatBubbleAlignment(View chatBalloon, FallbackAttachmentViewModel element) {
-        if (element.isOpposite()) {
-            setChatLeft(chatBalloon);
-        } else {
+        if (element.isSender()) {
             setChatRight(chatBalloon);
+        } else {
+            setChatLeft(chatBalloon);
         }
     }
 

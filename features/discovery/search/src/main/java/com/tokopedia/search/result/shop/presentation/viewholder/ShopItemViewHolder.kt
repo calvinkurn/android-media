@@ -9,7 +9,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gm.resource.GMConstant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.search.R
 import com.tokopedia.search.result.shop.presentation.listener.ShopListener
@@ -65,7 +64,7 @@ internal class ShopItemViewHolder(
             imageViewShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
                     shopViewItem.isOfficial -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.search_ic_official_store))
-                    shopViewItem.isGoldShop -> imageViewShopBadge.setImageDrawable(GMConstant.getGMDrawable(context))
+                    shopViewItem.isGoldShop -> imageViewShopBadge.setImageDrawable(MethodChecker.getDrawable(context, com.tokopedia.gm.common.R.drawable.ic_power_merchant))
                 }
             }
         }

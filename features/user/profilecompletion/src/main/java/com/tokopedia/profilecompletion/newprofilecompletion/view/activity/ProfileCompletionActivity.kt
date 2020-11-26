@@ -53,7 +53,7 @@ class ProfileCompletionActivity : BaseSimpleActivity(), HasComponent<ProfileComp
     fun onFinishedForm() {
         val fragment = ProfileCompletionFinishedFragment.createInstance()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.container, fragment, fragment.javaClass.simpleName)
+        fragmentTransaction.replace(parentViewResourceID, fragment, fragment.javaClass.simpleName)
         fragmentTransaction.commit()
     }
 

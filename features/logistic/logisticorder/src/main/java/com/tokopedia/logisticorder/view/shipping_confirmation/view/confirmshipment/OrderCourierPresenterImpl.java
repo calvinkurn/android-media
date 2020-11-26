@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierViewModel;
+import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.ListCourierUiModel;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailData;
 import com.tokopedia.logisticorder.view.shipping_confirmation.view.data.order.OrderDetailShipmentModel;
 import com.tokopedia.user.session.UserSession;
@@ -53,7 +53,7 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
         interactor.onGetCourierList(
                 data.getShipmentId(),
                 AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), new TKPDMapParam<>()),
-                new Subscriber<ListCourierViewModel>() {
+                new Subscriber<ListCourierUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -68,10 +68,10 @@ public class OrderCourierPresenterImpl implements OrderCourierPresenter {
                     }
 
                     @Override
-                    public void onNext(ListCourierViewModel courierViewModel) {
+                    public void onNext(ListCourierUiModel courierUiModel) {
                         if (view != null) {
                             view.hideLoading();
-                            view.receiveShipmentData(courierViewModel);
+                            view.receiveShipmentData(courierUiModel);
                         }
                     }
                 });

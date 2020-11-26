@@ -29,8 +29,8 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
+    public void setArguments(Bundle bundle) {
+        super.setArguments(bundle);
         selectedStatusPromo = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, selectedStatusPromo);
     }
 
@@ -74,5 +74,15 @@ public class TopAdsFilterStatusPromoFragment extends TopAdsFilterRadioButtonFrag
             intent.putExtra(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS_PROMO, Integer.parseInt(getSelectedRadioValue()));
         }
         return intent;
+    }
+
+    @Override
+    protected void initInjector() {
+
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 }

@@ -59,4 +59,9 @@ public abstract class TransactionAnalytics {
     protected void sendGeneralEvent(Map<String, Object> eventData) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(eventData);
     }
+
+    protected Map<String, Object> getGtmData(String event, String eventCategory,
+                                             String eventAction, String eventLabel) {
+        return TrackAppUtils.gtmData(event, eventCategory, eventAction, eventLabel);
+    }
 }

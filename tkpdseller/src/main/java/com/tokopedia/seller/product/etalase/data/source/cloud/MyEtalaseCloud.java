@@ -5,11 +5,12 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.product.manage.item.main.base.data.source.cloud.model.myetalase.MyEtalaseListServiceModel;
+import com.tokopedia.seller.product.common.utils.GetData;
 import com.tokopedia.seller.product.etalase.data.source.cloud.api.MyEtalaseApi;
 import com.tokopedia.seller.product.etalase.data.source.cloud.model.AddEtalaseServiceModel;
-import com.tokopedia.seller.shopscore.data.common.GetData;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -40,7 +41,8 @@ public class MyEtalaseCloud {
 
     private TKPDMapParam<String, String> generateFetchMyEtalaseParam(int page) {
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        param.put(SHOP_ID, SessionHandler.getShopID(context));
+        UserSessionInterface userSession = new UserSession(context);
+        param.put(SHOP_ID, userSession.getShopId());
         param.put(PAGE, String.valueOf(page));
         return param;
     }

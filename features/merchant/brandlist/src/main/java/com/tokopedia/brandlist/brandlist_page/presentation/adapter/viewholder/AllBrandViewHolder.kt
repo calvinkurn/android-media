@@ -12,13 +12,13 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.brandlist.R
 import com.tokopedia.brandlist.brandlist_page.data.model.Brand
-import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandViewModel
+import com.tokopedia.brandlist.brandlist_page.presentation.adapter.viewmodel.AllBrandUiModel
 import com.tokopedia.brandlist.common.listener.BrandlistPageTrackingListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 
 @SuppressLint("NewApi")
-class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel>(itemView) {
+class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandUiModel>(itemView) {
 
     private var context: Context? = null
     private var brandNewBadgeView: AppCompatTextView? = null
@@ -58,7 +58,7 @@ class AllBrandViewHolder(itemView: View?) : AbstractViewHolder<AllBrandViewModel
         }
     }
 
-    override fun bind(element: AllBrandViewModel?) {
+    override fun bind(element: AllBrandUiModel?) {
 
         val index = element?.index
         val brand = element?.brand

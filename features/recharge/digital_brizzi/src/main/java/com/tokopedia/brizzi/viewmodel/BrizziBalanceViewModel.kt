@@ -3,12 +3,12 @@ package com.tokopedia.brizzi.viewmodel
 import android.content.Intent
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthKey
+import com.tokopedia.brizzi.data.BrizziInquiryLogResponse
+import com.tokopedia.brizzi.data.BrizziTokenResponse
+import com.tokopedia.brizzi.mapper.BrizziCardObjectMapper
 import com.tokopedia.common_electronic_money.data.EmoneyInquiry
 import com.tokopedia.common_electronic_money.data.EmoneyInquiryError
 import com.tokopedia.common_electronic_money.util.NfcCardErrorTypeDef
-import com.tokopedia.brizzi.mapper.BrizziCardObjectMapper
-import com.tokopedia.brizzi.data.BrizziInquiryLogResponse
-import com.tokopedia.brizzi.data.BrizziTokenResponse
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,8 +22,6 @@ import id.co.bri.sdk.Callback
 import id.co.bri.sdk.exception.BrizziException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
@@ -66,31 +64,29 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
                 brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
             }
-            Executors.newSingleThreadScheduledExecutor().schedule({
-                brizziInstance.getBalanceInquiry(intent, object : Callback {
-                    override fun OnFailure(brizziException: BrizziException?) {
-                        brizziException?.let {
-                            handleError(it)
-                        }
+            brizziInstance.getBalanceInquiry(intent, object : Callback {
+                override fun OnFailure(brizziException: BrizziException?) {
+                    brizziException?.let {
+                        handleError(it)
                     }
+                }
 
-                    override fun OnSuccess(brizziCardObject: BrizziCardObject) {
-                        issuerId.postValue(ISSUER_ID_BRIZZI)
-                        val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
-                        balanceInquiry.attributesEmoneyInquiry?.let {
-                            logBrizzi(0, it.cardNumber, rawLogBrizzi, "success", it.lastBalance.toDouble())
+                override fun OnSuccess(brizziCardObject: BrizziCardObject) {
+                    issuerId.postValue(ISSUER_ID_BRIZZI)
+                    val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
+                    balanceInquiry.attributesEmoneyInquiry?.let {
+                        logBrizzi(0, it.cardNumber, rawLogBrizzi, "success", it.lastBalance.toDouble())
 
-                            balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
-                                if (attributes.pendingBalance == 0) {
-                                    emoneyInquiry.postValue(balanceInquiry)
-                                } else {
-                                    writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
-                                }
+                        balanceInquiry.attributesEmoneyInquiry?.let { attributes ->
+                            if (attributes.pendingBalance == 0) {
+                                emoneyInquiry.postValue(balanceInquiry)
+                            } else {
+                                writeBalanceToCard(intent, rawLogBrizzi, brizziInstance)
                             }
                         }
                     }
-                })
-            }, 1, TimeUnit.SECONDS)
+                }
+            })
         }) {
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_REFRESH_TOKEN)
         }

@@ -2,7 +2,6 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.dynamicFilterModel
 import com.tokopedia.search.result.shop.presentation.viewmodel.testinstance.searchShopModel
@@ -20,18 +19,8 @@ internal class SearchShopHandleViewVisibilityChangedTest: SearchShopViewModelTes
         `Then verify search shop and dynamic filter API is called once`()
     }
 
-    private fun `Given search shop API call will be successful`() {
-        searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
-        getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
-    }
-
     private fun `When handle view is visible and added`() {
         searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-    }
-
-    private fun `Then verify search shop and dynamic filter API is called once`() {
-        searchShopFirstPageUseCase.isExecuted()
-        getDynamicFilterUseCase.isExecuted()
     }
 
     @Test

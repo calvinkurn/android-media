@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView
     android:id="@+id/see_all_button"
+    android:contentDescription="@string/content_desc_see_all_button"
     android:layout_marginRight="@dimen/dp_16"
     android:layout_marginEnd="@dimen/dp_16"
     android:layout_width="wrap_content"

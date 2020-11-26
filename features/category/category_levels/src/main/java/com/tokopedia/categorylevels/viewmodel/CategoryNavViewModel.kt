@@ -3,6 +3,9 @@ package com.tokopedia.categorylevels.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.common_category.data.catalogModel.CatalogListResponse
+import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
 import com.tokopedia.common_category.model.bannedCategory.Data
 import com.tokopedia.common_category.usecase.repository.CategoryNavRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -16,8 +19,9 @@ import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 private const val IS_ADULT = 1
+private const val IS_BANNED = 1
 
-class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
+class CategoryNavViewModel @Inject constructor(val pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface?) : ViewModel(), CoroutineScope {
     private val jobs = SupervisorJob()
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + jobs
@@ -27,13 +31,23 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
 
     private var categoryDetail = MutableLiveData<Result<Data>>()
     private var redirectionUrl = MutableLiveData<Result<String>>()
-    private var adultProduct = MutableLiveData<Result<String>>()
+    private var adultProduct = MutableLiveData<Result<Data>>()
+    private var hasCatalog = MutableLiveData<Boolean>()
 
     fun fetchCategoryDetail(departmentId: String) {
         launchCatchError(block = {
-            val categoryDetailResponse = categoryNavRepository.getCategoryDetail(departmentId)
-            categoryDetailResponse?.let {
-                handleCategoryResponse(it)
+            pageLoadTimePerformanceMonitoring?.stopPreparePagePerformanceMonitoring()
+            pageLoadTimePerformanceMonitoring?.startNetworkRequestPerformanceMonitoring()
+            val graphqlResponse = categoryNavRepository.getCategoryDetailWithCatalogCount(departmentId)
+            pageLoadTimePerformanceMonitoring?.stopNetworkRequestPerformanceMonitoring()
+            pageLoadTimePerformanceMonitoring?.startRenderPerformanceMonitoring()
+            graphqlResponse?.let {
+                it.getData<CatalogListResponse>(CatalogListResponse::class.java).searchCatalog?.let { searchCatalog ->
+                    hasCatalog.value = searchCatalog.count != 0
+                }
+                it.getData<BannedCategoryResponse>(BannedCategoryResponse::class.java).categoryDetailQuery?.data?.let { data ->
+                    handleCategoryResponse(data)
+                }
             }
         }, onError = {
             categoryDetail.value = Fail(it)
@@ -45,7 +59,7 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
             redirectionEnabled(it.appRedirectionURL) -> {
                 handleForRedirectionIfEnabled(it.appRedirectionURL)
             }
-            checkIfAdult(it.isAdult) -> {
+            checkIfAdult(it.isAdult, it.isBanned) -> {
                 handleForAdultProduct(it)
             }
             else -> {
@@ -59,15 +73,15 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
     }
 
     private fun handleForAdultProduct(data: Data) {
-        adultProduct.value = Success(data.name.toString())
+        adultProduct.value = Success(data)
     }
 
     private fun handleForRedirectionIfEnabled(appRedirection: String?) {
         redirectionUrl.value = Success(appRedirection.toString())
     }
 
-    private fun checkIfAdult(isAdult: Int): Boolean {
-        return isAdult == IS_ADULT
+    private fun checkIfAdult(isAdult: Int, isBanned: Int): Boolean {
+        return isAdult == IS_ADULT && isBanned != IS_BANNED
     }
 
     private fun redirectionEnabled(url: String?): Boolean {
@@ -87,8 +101,12 @@ class CategoryNavViewModel @Inject constructor() : ViewModel(), CoroutineScope {
         return redirectionUrl
     }
 
-    fun getAdultProductLiveData(): MutableLiveData<Result<String>> {
+    fun getAdultProductLiveData(): MutableLiveData<Result<Data>> {
         return adultProduct
+    }
+
+    fun getHasCatalogLiveData(): MutableLiveData<Boolean> {
+        return hasCatalog
     }
 }
 

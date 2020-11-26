@@ -43,7 +43,7 @@
                                         android:focusable="true"
                                         android:visibility="gone"
                                         tools:visibility="visible"
-                                        app:srcCompat="@drawable/ic_product_action_wishlist_gray_28"
+                                        app:srcCompat="@drawable/recom_ic_product_action_wishlist_gray_28"
                                         android:contentDescription="@string/recom_app_name"
                                         app:layout_constraintEnd_toEndOf="parent"
                                         app:layout_constraintTop_toTopOf="parent"/>
@@ -70,7 +70,7 @@
                                         android:id="@+id/product_discount"
                                         android:layout_width="@dimen/dp_0"
                                         android:layout_height="wrap_content"
-                                        android:background="@drawable/background_discount_product"
+                                        android:background="@drawable/recom_background_discount_product"
                                         android:textColor="@color/discount"
                                         android:textStyle="bold"
                                         android:textSize="@dimen/sp_10"
@@ -224,33 +224,14 @@
                                         android:layout_height="wrap_content"
                                         android:id="@+id/barrier"
                                         app:barrierDirection="bottom"
-                                        app:constraint_referenced_ids="review_count,rating,location,badge,product_image"
-                                        tools:layout_editor_absoluteY="19dp"
-                                        tools:layout_editor_absoluteX="19dp"/>
+                                        app:constraint_referenced_ids="review_count,rating,location,badge,product_image"/>
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
-                        <include layout="@layout/error_product_info_layout"
-                            android:id="@+id/container_error"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:visibility="gone"/>
+                        <include layout="@layout/error_product_info_layout" />
 
-                        <include layout="@layout/empty_product_info"
-                            android:id="@+id/container_empty"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            tools:visibility="gone"/>
+                        <include layout="@layout/empty_product_info" />
 
-                        <include layout="@layout/shimmering_product_info"
-                            android:id="@+id/container_loading"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:visibility="gone"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginLeft="5dp"
-                            tools:visibility="visible"/>
+                        <include layout="@layout/shimmering_product_info" />
                 </FrameLayout>
         </com.tokopedia.unifycomponents.CardUnify>
 </com.tokopedia.unifycomponents.ContainerUnify>

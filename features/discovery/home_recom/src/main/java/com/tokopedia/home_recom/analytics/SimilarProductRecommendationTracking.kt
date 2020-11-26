@@ -27,6 +27,7 @@ object SimilarProductRecommendationTracking {
     private const val ACTION_IMPRESSION_PRODUCT_RECOMMENDATION_NON_LOGIN = "impression - product recommendation - non login"
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION = "click - product recommendation"
     private const val ACTION_CLICK_PRODUCT_RECOMMENDATION_NON_LOGIN = "click - product recommendation - non login"
+    private const val EVENT_ACTION_CLICK_ANNOTATION_CHIP = "click annotation chips"
 
     private const val IMPRESSION = "impressions"
     private const val CLICK = "click"
@@ -73,7 +74,7 @@ object SimilarProductRecommendationTracking {
                 DataLayer.mapOf(
                         FIELD_PRODUCT_NAME, item.name,
                         FIELD_PRODUCT_ID, item.productId,
-                        FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                        FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                         FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                         FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -94,7 +95,7 @@ object SimilarProductRecommendationTracking {
         return DataLayer.mapOf(
                 FIELD_PRODUCT_NAME, item.name,
                 FIELD_PRODUCT_ID, item.productId,
-                FIELD_PRODUCT_PRICE, item.getPriceIntFromString(),
+                FIELD_PRODUCT_PRICE, item.priceInt.toString(),
                 FIELD_PRODUCT_BRAND, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_VARIANT, VALUE_NONE_OTHER,
                 FIELD_PRODUCT_CATEGORY, item.categoryBreadcrumbs,
@@ -252,5 +253,17 @@ object SimilarProductRecommendationTracking {
                 EVENT_LABEL, VALUE_EMPTY
         )
         getTracker().sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventUserClickAnnotationChip(
+            chipValue: String){
+        val tracker = getTracker()
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_CLICK_RECOMMENDATION,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ANNOTATION_CHIP,
+                EVENT_LABEL, chipValue
+        )
+        tracker.sendEnhanceEcommerceEvent(data)
     }
 }

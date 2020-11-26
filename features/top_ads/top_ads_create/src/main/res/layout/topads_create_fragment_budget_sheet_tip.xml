@@ -1,46 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/topads_create_bg_top_round"
-    android:padding="@dimen/dp_16">
+    android:background="@drawable/topads_bg_top_round">
 
 
-    <ImageView
-        android:id="@+id/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dp_2"
-        app:layout_constraintBottom_toBottomOf="@+id/typography22"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/typography22"
-        app:srcCompat="@drawable/topads_create_ic_group_close" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography22"
-        style="@style/TextView.TitleBig.Bold"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:gravity="center_vertical"
-        android:text="@string/seputar_biaya_iklan"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_close"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="@+id/typography23"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/typography23"
-        app:srcCompat="@drawable/topads_create_ic_checklist" />
+        app:layout_constraintTop_toTopOf="@+id/typography23" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography23"
@@ -57,15 +31,14 @@
         app:typographyType="body_2" />
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="@+id/typography25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/typography25"
-        app:srcCompat="@drawable/topads_create_ic_checklist" />
+        app:layout_constraintTop_toTopOf="@+id/typography25" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography25"
@@ -81,15 +54,14 @@
         app:typographyType="body_2" />
 
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_2"
         app:layout_constraintBottom_toBottomOf="@+id/typography26"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/typography26"
-        app:srcCompat="@drawable/topads_create_ic_checklist" />
+        app:layout_constraintTop_toTopOf="@+id/typography26" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography26"

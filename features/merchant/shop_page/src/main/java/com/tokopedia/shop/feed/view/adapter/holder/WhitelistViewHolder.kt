@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
-import kotlinx.android.synthetic.main.item_post_entry.view.*
+import kotlinx.android.synthetic.main.item_post_entry_shop_page.view.*
 
 /**
  * @author by yfsx on 16/05/19.
@@ -19,7 +19,7 @@ class WhitelistViewHolder(v: View,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_post_entry
+        val LAYOUT = R.layout.item_post_entry_shop_page
 
         private const val FORMAT_NAME = "{{name}}"
     }

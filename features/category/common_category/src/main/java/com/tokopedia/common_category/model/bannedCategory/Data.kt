@@ -12,6 +12,15 @@ class Data() : Parcelable {
     @SerializedName("name")
     var name: String? = null
 
+    @SerializedName("parent")
+    var parent: String? = null
+
+    @SerializedName("rootId")
+    var rootId: String? = null
+
+    @SerializedName("url")
+    var url: String? = null
+
     @SerializedName("bannedMsg")
     var bannedMessage: String? = null
 
@@ -43,6 +52,9 @@ class Data() : Parcelable {
     constructor(parcel: Parcel) : this() {
         id = parcel.readValue(Int::class.java.classLoader) as? Int
         name = parcel.readString()
+        parent = parcel.readString()
+        rootId = parcel.readString()
+        url = parcel.readString()
         bannedMessage = parcel.readString()
         bannedMsgHeader = parcel.readString()
         redirectionURL = parcel.readString()
@@ -67,6 +79,9 @@ class Data() : Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeValue(id)
         parcel.writeString(name)
+        parcel.writeString(parent)
+        parcel.writeString(rootId)
+        parcel.writeString(url)
         parcel.writeString(bannedMessage)
         parcel.writeString(bannedMsgHeader)
         parcel.writeString(redirectionURL)

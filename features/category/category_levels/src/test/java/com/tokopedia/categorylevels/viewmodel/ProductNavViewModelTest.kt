@@ -21,7 +21,10 @@ class ProductNavViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    private var trackUrl: String = "test"
+    private var trackUrl: String = "testUrl"
+    private var trackId: String = "testId"
+    private var trackName: String = "testName"
+    private var trackImage: String = "testImage"
     private var subCategoryV3UseCase: SubCategoryV3UseCase = mockk()
     private var dynamicFilterUseCase: DynamicFilterUseCase = mockk()
     private var quickFilterUseCase: QuickFilterUseCase = mockk()
@@ -38,13 +41,25 @@ class ProductNavViewModelTest {
     @Test
     fun testSendTopAds() {
         var url = ""
+        var id = ""
+        var name = ""
+        var image = ""
         val slotUrl = slot<String>()
-        every { sendTopAdsUseCase.executeOnBackground(capture(slotUrl)) } answers {
+        val slotId = slot<String>()
+        val slotName = slot<String>()
+        val slotImage = slot<String>()
+        every { sendTopAdsUseCase.hitImpressions(capture(slotUrl), capture(slotId), capture(slotName), capture(slotImage)) } answers {
             url = slotUrl.captured
+            id = slotId.captured
+            name = slotName.captured
+            image = slotImage.captured
         }
 
-        productNavViewModel.sendTopAds(trackUrl)
+        productNavViewModel.sendTopAdsImpressions(trackUrl, trackId,trackName,trackImage)
 
         Assert.assertEquals(trackUrl, url)
+        Assert.assertEquals(trackId, id)
+        Assert.assertEquals(trackName, name)
+        Assert.assertEquals(trackImage, image)
     }
 }

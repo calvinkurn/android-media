@@ -29,7 +29,7 @@ class AnalyticsDebuggerDetailActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
-        return AnalyticsDebuggerDetailFragment.newInstance(intent.extras)
+        return AnalyticsDebuggerDetailFragment.newInstance(intent.extras?: Bundle())
     }
 
     companion object {

@@ -1,5 +1,7 @@
 package com.tokopedia.websocket
 
+import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.authentication.HEADER_RELEASE_TRACK
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import okhttp3.*
@@ -24,6 +26,7 @@ class WebSocketOnSubscribe internal constructor(private val client: OkHttpClient
                 .header("Origin", TokopediaUrl.getInstance().WEB)
                 .header("Accounts-Authorization", "Bearer $accessToken")
                 .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
+                .header(HEADER_RELEASE_TRACK, GlobalConfig.VERSION_NAME_SUFFIX)
                 .build()
     }
 

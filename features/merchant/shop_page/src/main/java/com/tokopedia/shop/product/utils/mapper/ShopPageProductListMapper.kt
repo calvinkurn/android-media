@@ -1,10 +1,11 @@
 package com.tokopedia.shop.product.utils.mapper
 
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef.ETALASE_CAMPAIGN
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
@@ -14,11 +15,14 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgr
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
+import com.tokopedia.shop.product.view.datamodel.ShopProductViewModel.Companion.THRESHOLD_VIEW_COUNT
 import java.text.NumberFormat
 import java.text.ParseException
 import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
+
+    private const val POSTFIX_VIEW_COUNT="%1s orang"
 
     fun mapToShopProductEtalaseListDataModel(
             listShopEtalaseModel: List<ShopEtalaseModel>
@@ -30,6 +34,7 @@ object ShopPageProductListMapper {
         val id = if (shopEtalaseModel.type == ShopEtalaseTypeDef.ETALASE_DEFAULT) shopEtalaseModel.alias else shopEtalaseModel.id
         return ShopEtalaseItemDataModel(
                 id,
+                shopEtalaseModel.alias,
                 shopEtalaseModel.name,
                 shopEtalaseModel.type,
                 shopEtalaseModel.badge,
@@ -38,7 +43,7 @@ object ShopPageProductListMapper {
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String): ShopProductViewModel =
+    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, etalaseType: Int? = null): ShopProductViewModel =
             with(shopProduct) {
                 ShopProductViewModel().also {
                     it.id = productId
@@ -64,6 +69,22 @@ object ShopPageProductListMapper {
                     it.freeOngkirPromoIcon = freeOngkir.imgUrl
                     it.etalaseId = etalaseId
                     it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
+                    it.etalaseType = etalaseType
+                    if(it.etalaseType == ETALASE_CAMPAIGN) {
+                        it.isUpcoming  = campaign.isUpcoming
+                        if (!campaign.isUpcoming) {
+                            val viewCount = stats.viewCount
+                            if (viewCount >= THRESHOLD_VIEW_COUNT)
+                                it.pdpViewCount = String.format(POSTFIX_VIEW_COUNT, viewCount.thousandFormatted())
+                            it.stockLabel = labelGroupList.firstOrNull { labelGroup ->
+                                labelGroup.position.isEmpty()
+                            }?.title ?: ""
+                            it.stockBarPercentage = campaign.stockSoldPercentage.toInt()
+                        }
+                        it.hideGimmick = campaign.hideGimmick
+                        it.displayedPrice = campaign.discountedPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                        it.originalPrice = campaign.originalPriceFmt.toFloatOrZero().getCurrencyFormatted()
+                    }
                 }
             }
 
@@ -137,7 +158,7 @@ object ShopPageProductListMapper {
     fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
-        } catch (ignored: ParseException) {
+        } catch (ignored: Exception) {
             0
         }
 
@@ -152,8 +173,8 @@ object ShopPageProductListMapper {
         return ProductCardModel(
                 productImageUrl = shopProductViewModel.imageUrl ?: "",
                 productName = shopProductViewModel.name ?: "",
-                discountPercentage = discountPercentage,
-                slashedPrice = shopProductViewModel.originalPrice ?: "",
+                discountPercentage = discountPercentage.takeIf { !shopProductViewModel.hideGimmick } ?: "",
+                slashedPrice = shopProductViewModel.originalPrice.orEmpty().takeIf { !shopProductViewModel.hideGimmick } ?: "",
                 formattedPrice = shopProductViewModel.displayedPrice ?: "",
                 ratingCount = shopProductViewModel.rating.toInt(),
                 reviewCount = totalReview,
@@ -161,7 +182,10 @@ object ShopPageProductListMapper {
                 labelGroupList = shopProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = true
+                hasThreeDots = true,
+                pdpViewCount = shopProductViewModel.pdpViewCount,
+                stockBarLabel = shopProductViewModel.stockLabel,
+                stockBarPercentage = shopProductViewModel.stockBarPercentage
         )
     }
 

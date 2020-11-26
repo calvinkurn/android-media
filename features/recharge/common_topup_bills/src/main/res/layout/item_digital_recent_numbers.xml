@@ -22,7 +22,7 @@
         app:cardCornerRadius="@dimen/dp_16" >
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/icon_operator"
+            android:id="@+id/topupbills_recent_icon_operator"
             android:layout_width="@dimen/dp_40"
             android:layout_height="@dimen/dp_40"
             android:layout_gravity="center"
@@ -32,7 +32,7 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
-        android:id="@+id/text_client_number"
+        android:id="@+id/topupbills_recent_client_number"
         style="@style/TextView.Micro.Bold"
         android:layout_marginBottom="@dimen/dp_4"
         android:gravity="center_horizontal"
@@ -42,7 +42,7 @@
         tools:text="081322867354" />
 
     <TextView
-        android:id="@+id/text_product_name"
+        android:id="@+id/topupbills_text_product_name"
         style="@style/TextView.Micro.BlackSecondary"
         android:lines="1"
         tools:text="Rp 1.000.000" />

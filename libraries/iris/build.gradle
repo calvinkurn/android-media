@@ -32,7 +32,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     api rootProject.ext.miscDependencies.coroutineCore
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
@@ -41,6 +41,8 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.retrofitKotlinCoroutine
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.workManager
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJava
     implementation project(rootProject.ext.libraries.irisSession)

@@ -118,7 +118,7 @@ public class AutoCompleteActivity extends BaseActivity
         searchBarView.showSearch(searchParameter);
 
         if (suggestionFragment != null) {
-            suggestionFragment.setSearchParameter(searchParameter);
+            suggestionFragment.setSearchParameter(searchParameter.getSearchParameterHashMap());
             suggestionFragment.setSuggestionViewUpdateListener(this);
         }
         if (initialStateFragment != null) {

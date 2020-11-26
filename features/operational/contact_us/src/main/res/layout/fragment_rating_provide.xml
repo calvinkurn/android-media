@@ -9,7 +9,7 @@
         android:id="@+id/toolbar_textview"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:drawableLeft="@drawable/ic_arrow_back_24dp"
+        android:drawableLeft="@drawable/ic_arrow_back_24dp_contact_us"
         android:drawableTint="@color/grey_730"
         android:elevation="@dimen/dp_4"
         android:paddingStart="@dimen/dp_15"

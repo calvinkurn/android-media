@@ -1,36 +1,47 @@
 package com.tokopedia.home.account.data.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class VccUserBalance {
     @SerializedName("vcc_id")
+    @Expose
     private int vccId = 0;
 
     @SerializedName("vcc_number")
+    @Expose
     private int vccNumber = 0;
 
     @SerializedName("available_balance")
+    @Expose
     private int availableBalance = 0;
 
     @SerializedName("credit_limit")
+    @Expose
     private int creditLimit = 0;
 
     @SerializedName("outstanding_balance")
+    @Expose
     private int outstandingBalance = 0;
 
     @SerializedName("available_balance_text")
+    @Expose
     private String availableBalanceText = "";
 
     @SerializedName("credit_limit_text")
+    @Expose
     private String creditLimitText = "";
 
     @SerializedName("currency")
+    @Expose
     private String currency = "";
 
     @SerializedName("lender_name")
+    @Expose
     private String lenderName = "";
 
     @SerializedName("vcc_expire_at")
+    @Expose
     private String vccExpireAt = "";
 
     public int getVccId() {

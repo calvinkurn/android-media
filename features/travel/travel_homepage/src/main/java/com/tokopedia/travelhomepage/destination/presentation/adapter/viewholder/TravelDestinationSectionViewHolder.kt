@@ -34,6 +34,8 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
                     shimmering.hide()
 
                     section_title.text = element.title
+                    travel_homepage_destination_subtitle?.hide()
+
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
                         section_see_all.setOnClickListener {
@@ -77,11 +79,6 @@ class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolde
         } else {
             itemView.shimmering.show()
             itemView.section_layout.hide()
-            when (element.type) {
-                CITY_EVENT_ORDER -> onViewHolderBindListener.onCityEventVHBind()
-                CITY_DEALS_ORDER -> onViewHolderBindListener.onCityDealsVHBind()
-                ORDER_LIST_ORDER -> onViewHolderBindListener.onOrderListVHBind()
-            }
         }
     }
 

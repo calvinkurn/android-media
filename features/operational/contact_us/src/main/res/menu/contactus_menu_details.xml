@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/action_search"
-        android:icon="@drawable/ic_search_icon"
+        android:icon="@drawable/contactus_ic_search"
         android:orderInCategory="100"
         android:title="@string/mail_us"
         app:showAsAction="always"

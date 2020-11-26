@@ -28,8 +28,8 @@ public abstract class TopAdsFilterStatusFragment extends TopAdsFilterRadioButton
     }
 
     @Override
-    protected void setupArguments(Bundle bundle) {
-        super.setupArguments(bundle);
+    public void setArguments(Bundle bundle) {
+        super.setArguments(bundle);
         selectedStatus = bundle.getInt(TopAdsExtraConstant.EXTRA_FILTER_SELECTED_STATUS, selectedStatus);
     }
 

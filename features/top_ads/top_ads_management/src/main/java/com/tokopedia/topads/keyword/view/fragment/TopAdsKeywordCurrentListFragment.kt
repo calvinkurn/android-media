@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.topads.R
+import com.tokopedia.topads.TopAdsComponentInstance
 import com.tokopedia.topads.dashboard.constant.SortTopAdsOption
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse
-import com.tokopedia.topads.dashboard.di.component.TopAdsComponent
 import com.tokopedia.topads.keyword.constant.KeywordStatusTypeDef
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword
 import com.tokopedia.topads.keyword.di.component.DaggerTopAdsKeywordComponent
@@ -69,10 +69,12 @@ class TopAdsKeywordCurrentListFragment: BaseListFragment<KeywordAd, TopAdsKeywor
     override fun getScreenName(): String?  = null
 
     override fun initInjector() {
-        DaggerTopAdsKeywordComponent.builder()
-                .topAdsComponent(getComponent(TopAdsComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.application?.let {
+            DaggerTopAdsKeywordComponent.builder()
+                    .topAdsComponent(TopAdsComponentInstance.getComponent(it))
+                    .build()
+                    .inject(this)
+        }
 
         presenter.attachView(this)
     }

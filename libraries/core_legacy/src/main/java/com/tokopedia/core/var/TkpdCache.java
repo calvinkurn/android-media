@@ -3,17 +3,14 @@ package com.tokopedia.core.var;
 public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
 
     public static final String ADD = "ADD";
-    public static final String ETALASE_ADD_PROD = "ETALASE_ADD_PROD";
     public static final String G_CODE = "G_CODE";
     public static final String GCM_NOTIFICATION = "GCM_NOTIFICATION";
     public static final String CACHE_RECHARGE_WIDGET_TAB_SELECTION = "CACHE_RECHARGE_WIDGET_TAB_SELECTION";
     public static final String DIGITAL_LAST_INPUT_CLIENT_NUMBER = "DIGITAL_LAST_INPUT_CLIENT_NUMBER";
     public static final String DIGITAL_INSTANT_CHECKOUT_HISTORY = "DIGITAL_INSTANT_CHECKOUT_HISTORY";
     public static final String DIGITAL_WIDGET_LAST_ORDER = "DIGITAL_WIDGET_LAST_ORDER";
-    public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String REFERRAL = "REFERRAL";
     public static final String ADVERTISINGID = "ADVERTISINGID";
-    public static final String ANDROID_ID = "ANDROID_ID";
     public static final String MAINTENANCE = "MAINTENANCE";
     public static final String PRODUCT_DETAIL = "PRODUCT_DETAIL_PAGE";
 
@@ -29,10 +26,8 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String STATUS2 = "STATUS";
         public static final String DELAY = "delay";
 
-        public static final String RECENT_PRODUCT_ALL = "RECENT_PRODUCT_ALL";
         public static final String WISHLIST = "WISHLIST";
         public static final String FAVORITE_SHOP = "FAVORITE_SHOP";
-        public static final String TOP_ADS_SHOP = "TOP_ADS_SHOP";
 
         public static final String PROMO = "PROMO";
 
@@ -47,6 +42,5 @@ public class TkpdCache  extends com.tokopedia.abstraction.constant.TkpdCache {
         public static final String KEY_TOKOPOINT_DRAWER_DATA = "KEY_TOKOPOINT_DRAWER_DATA";
         public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
         public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
-        public static final String KEY_ANDROID_ID = "KEY_ANDROID_ID";
     }
 }

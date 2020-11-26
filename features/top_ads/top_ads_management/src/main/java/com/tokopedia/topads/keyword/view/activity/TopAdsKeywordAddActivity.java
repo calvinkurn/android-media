@@ -5,14 +5,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AlertDialog;
 
-import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.view.activity.TopAdsBaseActivity;
 import com.tokopedia.topads.keyword.constant.KeywordTypeDef;
 import com.tokopedia.topads.keyword.helper.KeywordTypeMapper;
 import com.tokopedia.topads.keyword.view.fragment.TopAdsKeywordAddFragment;
@@ -23,8 +25,8 @@ import java.util.ArrayList;
  * Created by nathan on 5/15/17.
  */
 @Deprecated
-public class TopAdsKeywordAddActivity extends BaseSimpleActivity
-        implements HasComponent<AppComponent>,
+public class TopAdsKeywordAddActivity extends TopAdsBaseActivity
+        implements HasComponent<BaseAppComponent>,
         TopAdsKeywordAddFragment.OnSuccessSaveKeywordListener {
 
     public static final String EXTRA_GROUP_ID = "grp_id";
@@ -131,12 +133,7 @@ public class TopAdsKeywordAddActivity extends BaseSimpleActivity
     }
 
     @Override
-    public AppComponent getComponent() {
-        return getApplicationComponent();
-    }
-
-    @Override
-    protected boolean isToolbarWhite() {
-        return true;
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 }

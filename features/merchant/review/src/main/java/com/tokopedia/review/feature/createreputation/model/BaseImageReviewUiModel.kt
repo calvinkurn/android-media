@@ -1,0 +1,3 @@
+package com.tokopedia.review.feature.createreputation.model
+
+interface BaseImageReviewUiModel

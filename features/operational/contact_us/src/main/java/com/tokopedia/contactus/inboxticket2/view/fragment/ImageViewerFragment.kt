@@ -61,7 +61,7 @@ class ImageViewerFragment : Fragment() {
             actionBar?.hide()
         }
         vpImageViewer?.currentItem = scrollPos
-        ContactUsTracking.sendGTMInboxTicket("",
+        ContactUsTracking.sendGTMInboxTicket(context, "",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickOpenImage,
                 "")

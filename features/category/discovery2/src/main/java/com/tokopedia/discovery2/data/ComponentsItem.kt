@@ -1,8 +1,13 @@
 package com.tokopedia.discovery2.data
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery2.datamapper.discoveryPageData
-import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import java.util.HashMap
+import kotlin.collections.ArrayList
 
 data class ComponentsItem(
 
@@ -24,8 +29,18 @@ data class ComponentsItem(
         @SerializedName("title")
         val title: String? = "",
 
+        @SerializedName("lihat_semua")
+        val lihatSemua: LihatSemua? = null,
+
         @SerializedName("properties")
         var properties: Properties? = null,
+
+        @SerializedName("creative_name")
+        var creativeName: String? = "",
+
+        var isApplicable: Boolean = true,
+
+        var topAdsTrackingStatus: Boolean = false,
 
         var shimmerHeight: Int = 0,
 
@@ -37,10 +52,22 @@ data class ComponentsItem(
         var noOfPagesLoaded: Int = 0,
         var componentsPerPage: Int = 20,
         var pageEndPoint: String = "",
+        var pagePath: String = "",
         var parentComponentId: String = "",
-        var cpmData: DiscoveryDataMapper.CpmTopAdsData? = null,
+        var cpmData: CpmModel? = null,
         var chipSelectionData: DataItem? = null,
-        var chipSelectionChange: Boolean = false) {
+        var selectedFilters: HashMap<String, String>? = null,
+        var selectedSort: HashMap<String, String>? = null,
+        var chipSelectionChange: Boolean = false,
+        var couponDetailClicked: Boolean = false,
+        var couponAppliedClicked: Boolean = false,
+        var position: Int = 0,
+        var couponViewImpression: Boolean = false,
+        var design: String = "",
+        val filterController: FilterController = FilterController(),
+        var searchParameter: SearchParameter = SearchParameter(),
+        var filters: ArrayList<Filter> = ArrayList(),
+        var rpc_PinnedProduct: String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 

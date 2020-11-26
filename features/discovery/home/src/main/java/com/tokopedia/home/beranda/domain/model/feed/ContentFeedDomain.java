@@ -1,10 +1,11 @@
 package com.tokopedia.home.beranda.domain.model.feed;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.topads.sdk.domain.model.Data;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
 
 public class ContentFeedDomain {
 

@@ -20,17 +20,25 @@ open class BaseChatViewModel
  *
  * @see AttachmentType for attachment types.
  */
-(val messageId: String,
- var fromUid: String?,
- val from: String,
- var fromRole: String,
- val attachmentId: String,
- val attachmentType: String,
- var replyTime: String?,
- var message: String) {
+constructor(
+        val messageId: String,
+        var fromUid: String?,
+        val from: String,
+        var fromRole: String,
+        val attachmentId: String,
+        val attachmentType: String,
+        var replyTime: String?,
+        var message: String,
+        var source: String,
+        val replyId: String = ""
+) {
 
     companion object {
         const val SENDING_TEXT = "Sedang mengirim ..."
+        const val SOURCE_AUTO_REPLY = "auto_reply"
+        const val SOURCE_WELCOME_MESSAGE = "welcome_message"
+        const val SOURCE_TOPBOT = "topbot"
+        const val SOURCE_BLAST_SELLER = "blast_seller"
     }
 
 

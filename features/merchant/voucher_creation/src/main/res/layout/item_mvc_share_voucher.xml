@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/icMvcSocmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/mvc_dimen_14dp"
+        android:layout_marginBottom="@dimen/mvc_dimen_14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_mvc_instagram" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvMvcSocmed"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/icMvcSocmed"
+        app:layout_constraintTop_toTopOf="@+id/icMvcSocmed"
+        app:typographyType="heading_4"
+        tools:text="Instagram" />
+
+    <View
+        android:id="@+id/vMvcHorLine"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/mvc_dimen_1dp"
+        android:background="@color/Neutral_N75"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/tvMvcSocmed" />
+</androidx.constraintlayout.widget.ConstraintLayout>

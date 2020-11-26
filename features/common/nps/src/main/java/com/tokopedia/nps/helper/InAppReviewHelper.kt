@@ -1,12 +1,14 @@
 package com.tokopedia.nps.helper
 
 import android.app.Activity
+import android.util.Log
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import timber.log.Timber
 
 object InAppReviewHelper {
     const val CACHE_IN_APP_REVIEW = "CACHE_IN_APP_REVIEW"
@@ -25,10 +27,14 @@ object InAppReviewHelper {
                 val inAppReviewManager: ReviewManager = ReviewManagerFactory.create(activity)
                 inAppReviewManager.requestReviewFlow().addOnCompleteListener { request ->
                     if (request.isSuccessful()) {
+                        Timber.w("P1#IN_APP_REVIEW_STAT#request;activity='${activity.javaClass.name}'")
                         inAppReviewManager.launchReviewFlow(activity, request.getResult()).addOnCompleteListener {
+                            Timber.w("P1#IN_APP_REVIEW_STAT#shown;activity='${activity.javaClass.name}'")
                             setInAppReviewHasShownBefore(activity)
                             callback?.onCompleted()
                         }
+                    } else {
+                        callback?.onCompleted()
                     }
                 }
                 return true
@@ -36,6 +42,7 @@ object InAppReviewHelper {
                 return false
             }
         } catch (e: Exception) {
+            Timber.w("P1#IN_APP_REVIEW_STAT#error;activity='${activity.javaClass.name}';err='${Log.getStackTraceString(e)}'")
             return false
         }
     }

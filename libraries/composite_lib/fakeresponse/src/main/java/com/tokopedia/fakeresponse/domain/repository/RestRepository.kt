@@ -18,11 +18,15 @@ class RestRepository(val dao: RestDao) : BaseRepository {
         return dao.deleteAll()
     }
 
+    fun delete(id:Int) {
+        return dao.delete(id)
+    }
+
     fun toggleRestRecord(restRecord: Int, enable: Boolean) {
         return dao.toggle(restRecord, enable)
     }
 
-    fun getResponse(url: String, method: String, enable: Boolean): RestRecord {
+    fun getResponse(url: String, method: String, enable: Boolean): RestRecord? {
         return dao.getRestResponse(url, method, enable)
     }
 

@@ -39,7 +39,10 @@ import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationReview
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
+import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewEstimationNotesAdapter;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -55,6 +58,8 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
     private static final int REQUEST_CANCELLATION_TNC = 1;
 
+    private FlightCancellationReviewEstimationNotesAdapter estimationNotesAdapter;
+
     private LinearLayout containerAdditionalData;
     private LinearLayout containerAdditionalReason;
     private LinearLayout containerAdditionalDocuments;
@@ -68,7 +73,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private AppCompatTextView tvDescription;
     private AppCompatTextView tvRefundDetail;
     private LinearLayout containerEstimateRefund;
-    private LinearLayout containerEstimateNotes;
+    private RecyclerView rvEstimationNotes;
 
     @Inject
     FlightCancellationReviewPresenter presenter;
@@ -102,7 +107,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
         tvDescription = view.findViewById(com.tokopedia.flight.R.id.tv_description_refund);
         tvRefundDetail = view.findViewById(com.tokopedia.flight.R.id.tv_refund_detail);
         containerEstimateRefund = view.findViewById(com.tokopedia.flight.R.id.container_estimate_refund);
-        containerEstimateNotes = view.findViewById(com.tokopedia.flight.R.id.container_estimate_notes);
+        rvEstimationNotes = view.findViewById(com.tokopedia.flight.R.id.rvEstimationNotes);
 
         tvDescription.setText(setDescriptionText());
         tvDescription.setMovementMethod(LinkMovementMethod.getInstance());
@@ -194,15 +199,24 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     @Override
-    public void showEstimateValue() {
+    public void showEstimateValue(List<String> estimationNotes) {
         containerEstimateRefund.setVisibility(View.VISIBLE);
-        containerEstimateNotes.setVisibility(View.VISIBLE);
+
+        if (estimationNotesAdapter == null) {
+            estimationNotesAdapter = new FlightCancellationReviewEstimationNotesAdapter();
+        }
+        estimationNotesAdapter.setData(estimationNotes);
+
+        rvEstimationNotes.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
+        rvEstimationNotes.setHasFixedSize(true);
+        rvEstimationNotes.setAdapter(estimationNotesAdapter);
+        rvEstimationNotes.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideEstimateValue() {
         containerEstimateRefund.setVisibility(View.GONE);
-        containerEstimateNotes.setVisibility(View.GONE);
+        rvEstimationNotes.setVisibility(View.GONE);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -53,7 +54,7 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
 
     private fun fetchProductCarouselData() {
         launchCatchError(block = {
-            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)) {
+            if (productCardsUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, components.rpc_PinnedProduct)) {
                 productCarouselList.value = components.getComponentsItem() as ArrayList<ComponentsItem>?
                 syncData.value = true
             }
@@ -62,5 +63,8 @@ class ProductCardSprintSaleCarouselViewModel(val application: Application, var c
         })
     }
 
+    fun isUserLoggedIn(): Boolean {
+        return UserSession(application).isLoggedIn
+    }
 
 }

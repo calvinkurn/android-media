@@ -1,11 +1,8 @@
 package com.tokopedia.analytic.processor
 
+import com.squareup.kotlinpoet.asTypeName
 import com.tokopedia.annotation.BundleThis
 import com.tokopedia.annotation.defaultvalues.DefaultValueProvider
-import com.squareup.kotlinpoet.asTypeName
-import com.tokopedia.analytic.processor.AnnotationProcessor
-import com.tokopedia.analytic.processor.DefaultValueProviderFunction
-import com.tokopedia.analytic.processor.ModelClassField
 import javax.annotation.processing.ProcessingEnvironment
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement

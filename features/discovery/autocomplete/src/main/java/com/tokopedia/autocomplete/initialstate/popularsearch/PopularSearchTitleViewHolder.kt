@@ -6,20 +6,23 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.initialstate.InitialStateItemClickListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
+import kotlinx.android.synthetic.main.layout_title_popular_search.view.*
 
 class PopularSearchTitleViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : AbstractViewHolder<PopularSearchTitleViewModel>(itemView) {
 
     override fun bind(element: PopularSearchTitleViewModel) {
-        itemView.titleTextView?.text = element.title
-        itemView.actionRefreshButton?.visibility = if (element.isVisible) View.VISIBLE else View.GONE
+        bindTitle(element)
         bindActionRefreshButton(element)
-        itemView.actionRefreshButton?.setOnClickListener { clickListener.onRefreshPopularSearch() }
+    }
+
+    private fun bindTitle(item: PopularSearchTitleViewModel) {
+        itemView.titleTextView?.text = item.title
     }
 
     private fun bindActionRefreshButton(item: PopularSearchTitleViewModel) {
         itemView.actionRefreshButton?.shouldShowWithAction(item.labelAction.isNotEmpty()) {
             itemView.actionRefreshButton?.text = item.labelAction
+            itemView.actionRefreshButton?.setOnClickListener { clickListener.onRefreshPopularSearch(item.featureId) }
         }
     }
 

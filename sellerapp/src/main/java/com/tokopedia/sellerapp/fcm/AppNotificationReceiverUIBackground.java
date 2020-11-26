@@ -11,7 +11,6 @@ import com.tokopedia.core.gcm.NotificationReceivedListener;
 import com.tokopedia.core.gcm.Visitable;
 import com.tokopedia.core.gcm.base.BaseAppNotificationReceiverUIBackground;
 import com.tokopedia.core.gcm.notification.applink.ApplinkPushNotificationBuildAndShow;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -60,6 +59,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
 
     @Override
     public void notifyReceiverBackgroundMessage(Bundle data) {
+        Timber.w("P2#PUSH_NOTIF_UNUSED#AppNotificationReceiverUIBackground_Seller");
         if (isSupportedApplinkNotification(data)) {
             handleApplinkNotification(data);
         } else if (isDedicatedNotification(data)) {
@@ -73,7 +73,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
         if (data.getString(Constants.ARG_NOTIFICATION_APPLINK_LOGIN_REQUIRED, "false").equals("true")) {
             UserSessionInterface userSession = new UserSession(mContext);
             if (userSession.isLoggedIn()
-                    && SessionHandler.getLoginID(mContext).equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
+                    && userSession.getUserId().equals(data.getString(Constants.ARG_NOTIFICATION_TARGET_USER_ID))) {
 
                 resetNotificationStatus(data);
                 prepareAndExecuteApplinkNotification(data);
@@ -131,7 +131,7 @@ public class AppNotificationReceiverUIBackground extends BaseAppNotificationRece
     public void handleDedicatedNotification(Bundle data) {
         UserSessionInterface userSession = new UserSession(mContext);
         if (userSession.isLoggedIn()
-                && SessionHandler.getLoginID(mContext).equals(data.getString("to_user_id"))) {
+                && userSession.getUserId().equals(data.getString("to_user_id"))) {
 
             resetNotificationStatus(data);
             Timber.d("resetNotificationStatus");

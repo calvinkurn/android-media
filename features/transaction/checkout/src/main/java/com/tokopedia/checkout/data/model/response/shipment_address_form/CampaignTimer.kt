@@ -15,7 +15,7 @@ data class CampaignTimer(
 )
 
 data class ExpiredTimerMessage(
-        @SerializedName("button")
+        @SerializedName("Button")
         var button: String = "",
         @SerializedName("description")
         var description: String = "",

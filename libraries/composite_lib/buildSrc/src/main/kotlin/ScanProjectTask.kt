@@ -55,7 +55,11 @@ open class ScanProjectTask : DefaultTask() {
                 val groupId = projectItem.properties["groupId"].toString()
                 val artifactName = projectItem.properties["artifactName"].toString()
                 val versionName = projectItem.properties["versionName"].toString()
-                projectToArtifactInfoList[projectName] = ArtifactInfo(projectName, groupId, artifactId, artifactName, versionName)
+                var isAndroid = false
+                if (projectItem.plugins.hasPlugin("com.android.library")) {
+                    isAndroid = true
+                }
+                projectToArtifactInfoList[projectName] = ArtifactInfo(projectName, groupId, artifactId, artifactName, versionName, isAndroid)
                 artifactIdToProjectNameList[artifactId] = projectName
             }
         }
@@ -100,13 +104,13 @@ open class ScanProjectTask : DefaultTask() {
         try {
             projectToArtifactInfoList.forEach { artifactItem ->
                 artifactItem.value.maxCurrentVersionName = moduleLatestVersionMap[artifactItem.value.artifactId]?.versionName
-                    ?: "0.0.0"
+                        ?: "0.0.0"
                 val currentMaxVersion = artifactItem.value.maxCurrentVersionName.versionToInt(versionConfigMap).first
                 val versionSuffixString = (if (versionSuffix.isNotEmpty()) {
                     "-$versionSuffix"
                 } else "")
                 val increasedVersionString = (currentMaxVersion + (versionConfigMap["Step"]
-                    ?: 1)).toVersion(versionConfigMap) + versionSuffixString
+                        ?: 1)).toVersion(versionConfigMap) + versionSuffixString
                 artifactItem.value.increaseVersionString = increasedVersionString
                 println(artifactItem.value.projectName + currentMaxVersion + " - " + increasedVersionString)
             }

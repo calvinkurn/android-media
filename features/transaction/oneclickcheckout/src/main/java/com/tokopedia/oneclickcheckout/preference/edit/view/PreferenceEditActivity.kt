@@ -1,8 +1,12 @@
 package com.tokopedia.oneclickcheckout.preference.edit.view
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -14,6 +18,7 @@ import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.oneclickcheckout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.oneclickcheckout.preference.edit.di.PreferenceEditModule
 import com.tokopedia.oneclickcheckout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
@@ -21,7 +26,7 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSum
 import kotlinx.android.synthetic.main.activity_preference_edit.*
 import javax.inject.Inject
 
-class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
+open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent>, PreferenceEditParent {
 
     @Inject
     lateinit var preferenceListAnalytics: PreferenceListAnalytics
@@ -32,6 +37,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     private var _shippingId = 0
     private var _gatewayCode = ""
     private var _paymentQuery = ""
+    private var _paymentProfile = ""
     private var _shippingParam: ShippingParam? = null
     private var _listShopShipment: ArrayList<ShopShipment>? = null
     private var _isExtraProfile: Boolean = true
@@ -40,6 +46,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .preferenceEditModule(PreferenceEditModule(this))
                 .build()
     }
 
@@ -50,28 +57,40 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         component.inject(this)
     }
 
+    override fun onBackPressed() {
+        val fragments = supportFragmentManager.fragments
+        val lastFragments = fragments[fragments.lastIndex]
+        val checkLastFragment = checkLastFragment(lastFragments)
+        if (!checkLastFragment && fragments.size > 1) {
+            checkLastFragment(fragments[fragments.lastIndex - 1])
+        }
+        super.onBackPressed()
+    }
+
     private fun initViews() {
         btn_back.setOnClickListener {
-            val fragments = supportFragmentManager.fragments
-            val lastFragments = fragments[fragments.lastIndex]
-            val checkLastFragment = checkLastFragment(lastFragments)
-            if (!checkLastFragment && fragments.size > 1) {
-                checkLastFragment(fragments[fragments.lastIndex - 1])
-            }
             onBackPressed()
         }
 
         _preferenceIndex = intent.getStringExtra(EXTRA_PREFERENCE_INDEX) ?: ""
         _profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
+        _paymentProfile = intent.getStringExtra(EXTRA_PAYMENT_PROFILE) ?: ""
         _shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         _listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
         _isExtraProfile = intent.getBooleanExtra(EXTRA_IS_EXTRA_PROFILE, true)
         _fromFlow = intent.getIntExtra(EXTRA_FROM_FLOW, FROM_FLOW_PREF)
 
+        val ft = supportFragmentManager.beginTransaction()
+        val fragments = supportFragmentManager.fragments
+        if (fragments.size > 0) {
+            for (fragment in fragments) {
+                ft.remove(fragment)
+            }
+        }
         if (_profileId == 0) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
+            ft.replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
-            supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
+            ft.replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
         }
     }
 
@@ -93,9 +112,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
                 preferenceListAnalytics.eventClickBackArrowInPilihPembayaran()
                 return true
             }
-            else -> {
-                return false
-            }
+            else -> return false
         }
     }
 
@@ -172,22 +189,40 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     }
 
     override fun addFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit()
+        if (supportFragmentManager.isStateSaved) {
+            lifecycle.addObserver(object : LifecycleObserver {
+                @OnLifecycleEvent(Lifecycle.Event.ON_START)
+                fun onStart(owner: LifecycleOwner) {
+                    if (owner is FragmentActivity) {
+                        owner.supportFragmentManager.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit()
+                    }
+                    owner.lifecycle.removeObserver(this)
+                }
+            })
+        } else {
+            supportFragmentManager.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit()
+        }
     }
 
     override fun goBack() {
-        supportFragmentManager.popBackStack()
+        if (supportFragmentManager.isStateSaved) {
+            lifecycle.addObserver(object : LifecycleObserver {
+                @OnLifecycleEvent(Lifecycle.Event.ON_START)
+                fun onStart(owner: LifecycleOwner) {
+                    if (owner is FragmentActivity) {
+                        owner.supportFragmentManager.popBackStack()
+                    }
+                    owner.lifecycle.removeObserver(this)
+                }
+            })
+        } else {
+            supportFragmentManager.popBackStack()
+        }
     }
 
-    override fun setStepperValue(value: Int, isSmooth: Boolean) {
-        if (isSmooth && stepper != null) {
-            try {
-                ObjectAnimator.ofInt(stepper, "progress", value).setDuration(500).start()
-            } catch (e: Exception) {
-                stepper.progress = value
-            }
-        } else {
-            stepper.progress = value
+    override fun setStepperValue(value: Int) {
+        if (stepper != null) {
+            stepper.setValue(value, true)
         }
     }
 
@@ -235,6 +270,10 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         return _fromFlow
     }
 
+    override fun getPaymentProfile(): String {
+        return _paymentProfile
+    }
+
     companion object {
 
         const val EXTRA_PREFERENCE_INDEX = "preference_index"
@@ -242,6 +281,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"
+        const val EXTRA_PAYMENT_PROFILE = "payment_profile"
         const val EXTRA_IS_EXTRA_PROFILE = "is_extra_profile"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"

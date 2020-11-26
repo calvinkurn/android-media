@@ -6,6 +6,9 @@ import com.tokopedia.talk.feature.reading.data.model.discussiondata.DiscussionDa
 import com.tokopedia.talk.feature.reading.data.model.SortOption
 import com.tokopedia.talk.feature.reading.data.model.TalkGoToWrite
 import com.tokopedia.talk.feature.reading.data.model.TalkReadingCategory
+import com.tokopedia.talk.util.verifyErrorEquals
+import com.tokopedia.talk.util.verifySuccessEquals
+import com.tokopedia.talk.util.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -134,7 +137,7 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
 
     @Test
     fun `when updateSortOptions should update value in _sortOptions`() {
-        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByLike(), SortOption.SortByTime())
+        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByTime())
 
         viewModel.updateSortOptions(sortOptions)
 
@@ -143,12 +146,12 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
 
     @Test
     fun `when updateSelectedSort should update element in _sortOptions`() {
-        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByLike(), SortOption.SortByTime())
+        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByTime())
 
         viewModel.updateSortOptions(sortOptions)
         viewModel.updateSelectedSort(sortOptions.last())
 
-        val expectedSortOptions = listOf(SortOption.SortByInformativeness(isSelected = false), SortOption.SortByLike(), SortOption.SortByTime(isSelected = true))
+        val expectedSortOptions = listOf(SortOption.SortByInformativeness(isSelected = false), SortOption.SortByTime(isSelected = true))
         verifySortOptionsEquals(expectedSortOptions)
     }
 
@@ -165,7 +168,7 @@ class TalkReadingViewModelTest : TalkReadingViewModelTestFixture() {
 
     @Test
     fun `when resetSortOptions should set sortOptions to default value`() {
-        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByLike(), SortOption.SortByTime())
+        val sortOptions = listOf(SortOption.SortByInformativeness(), SortOption.SortByTime())
 
         viewModel.updateSortOptions(sortOptions)
         viewModel.updateSelectedSort(sortOptions.last())

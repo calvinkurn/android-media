@@ -36,6 +36,7 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.design.utils.DateLabelUtils;

@@ -1,0 +1,8 @@
+query topAdsGetFreeDeposit($shopID: String!) {
+  topAdsGetFreeDeposit(shopID: $shopID) {
+    nominal
+    depositID
+    status
+    expiryDate
+  }
+}

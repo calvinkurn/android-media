@@ -1,5 +1,8 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
+import android.content.res.Resources;
+
+import com.tokopedia.topads.dashboard.data.model.response.TopAdsDepositResponse;
 import com.tokopedia.topads.dashboard.view.listener.TopAdsDetailEditView;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailProductViewModel;
 import com.tokopedia.topads.dashboard.view.model.TopAdsProductViewModel;
@@ -11,5 +14,7 @@ import java.util.ArrayList;
  */
 public interface TopAdsDetailNewProductPresenter extends TopAdsDetailEditProductPresenter<TopAdsDetailEditView> {
 
-    void saveAd(TopAdsDetailProductViewModel detailAd, ArrayList<TopAdsProductViewModel> topAdsProductList, String source);
+    void getBalance(Resources resources);
+
+    void saveAd(TopAdsDetailProductViewModel detailAd, ArrayList<TopAdsProductViewModel> topAdsProductList, String source, TopAdsDepositResponse.Data topAdsDepositResponse);
 }

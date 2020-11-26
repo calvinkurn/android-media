@@ -10,9 +10,13 @@ import com.tokopedia.product.detail.view.fragment.ProductSpecificationFragment
 
 class ProductViewPagerAdapter(fragmentManager: FragmentManager,
                               private val titleList: List<String>,
-                              private val descriptionData: DescriptionData,
-                              private val listOfSpecification: ArrayList<Specification>) : FragmentPagerAdapter(fragmentManager) {
+                              private val descriptionData: DescriptionData) : FragmentPagerAdapter(fragmentManager) {
 
+    private var listOfSpecification: ArrayList<Specification> = arrayListOf()
+
+    fun setSpecificationData(listOfData: ArrayList<Specification>) {
+        this.listOfSpecification = listOfData
+    }
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
