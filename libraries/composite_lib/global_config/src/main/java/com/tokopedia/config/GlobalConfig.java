@@ -58,8 +58,4 @@ public class GlobalConfig {
     public static Boolean isAllowDebuggingTools() {
         return DEBUG || ENABLE_DISTRIBUTION;
     }
-
-    public static Boolean isCustomerAppPro() {
-        return APPLICATION_TYPE == CONSUMER_PRO_APPLICATION
-    }
 }
