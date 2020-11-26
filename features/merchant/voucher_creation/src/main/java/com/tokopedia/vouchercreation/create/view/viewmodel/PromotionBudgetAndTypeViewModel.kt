@@ -9,8 +9,8 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchercreation.common.coroutines.CoroutineDispatchers
+import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
-import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

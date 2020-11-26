@@ -51,7 +51,7 @@ import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewMode
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail

@@ -14,11 +14,9 @@ import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQu
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalkResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.domain.usecase.*
-import com.tokopedia.talk_old.reporttalk.domain.ReportTalkUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
