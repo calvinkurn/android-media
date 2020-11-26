@@ -125,6 +125,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else if (result.throwable == null) {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
                 sendViewOspEe()
+                configureForceShowOnboarding()
             }
         }
     }
@@ -183,6 +184,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 calculateTotal(forceButtonState = OccButtonState.DISABLE)
             }
             updateCart()
+            configureForceShowOnboarding()
         }
     }
 
@@ -658,7 +660,28 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         val onboarding = _orderPreference.onboarding
         if (onboarding.isForceShowCoachMark) {
             _orderPreference = _orderPreference.copy(onboarding = onboarding.copy(isForceShowCoachMark = false))
-            orderPreference.value = OccState.Success(_orderPreference)
+        }
+    }
+
+    private fun configureForceShowOnboarding() {
+        val onboarding = _orderPreference.onboarding
+        if (onboarding.isForceShowCoachMark) {
+            val preference = _orderPreference.preference
+            if (preference.shipment.serviceId > 0) {
+                if (_orderShipment.isValid()) {
+                    val currentGlobalEvent = globalEvent.value
+                    val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
+                    if (!hasBlockingGlobalEvent) {
+                        globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
+                    }
+                }
+            } else {
+                val currentGlobalEvent = globalEvent.value
+                val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
+                if (!hasBlockingGlobalEvent) {
+                    globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
+                }
+            }
         }
     }
 

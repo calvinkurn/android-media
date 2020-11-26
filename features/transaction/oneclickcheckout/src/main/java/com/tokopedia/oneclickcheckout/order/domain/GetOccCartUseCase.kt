@@ -72,6 +72,7 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
       occ_main_onboarding {
         force_show_coachmark
         show_onboarding_ticker
+        coachmark_type
         onboarding_ticker {
             title
             message

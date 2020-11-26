@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface.BOLD
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,16 +18,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.*
 import com.tokopedia.coachmark.*
+import com.tokopedia.coachmark.util.ViewHelper
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.dialog.DialogUnify
@@ -271,7 +274,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViewModel(savedInstanceState: Bundle?) {
-        viewModel.orderPreference.observe(viewLifecycleOwner, Observer {
+        viewModel.orderPreference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.FirstLoad -> {
                     orderPreference = it.data
@@ -331,15 +334,16 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
 
-        viewModel.orderShipment.observe(viewLifecycleOwner, Observer {
+        viewModel.orderShipment.observe(viewLifecycleOwner, {
             orderPreferenceCard.setShipment(it)
             newOrderPreferenceCard.setShipment(it)
             orderInsuranceCard.setupInsurance(it?.insuranceData, viewModel.orderProduct.productId.toString())
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
-            } else if (orderPreference != null && viewModel.globalEvent.value !is OccGlobalEvent.Prompt) {
-                forceShowOnboarding(orderPreference?.onboarding)
             }
+//            else if (orderPreference != null && viewModel.globalEvent.value !is OccGlobalEvent.Prompt) {
+//                forceShowOnboarding(orderPreference?.onboarding)
+//            }
         })
 
         viewModel.orderPayment.observe(viewLifecycleOwner, {
@@ -494,6 +498,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     showPrompt(it.prompt)
                 }
+                is OccGlobalEvent.ForceOnboarding -> {
+                    forceShowOnboarding(it.onboarding)
+                }
             }
         })
 
@@ -525,8 +532,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tvHeader3?.gone()
         } else {
             tvHeader2?.text = if (viewModel.isNewFlow) getString(R.string.lbl_osp_secondary_header) else getString(R.string.lbl_osp_secondary_header_intro)
-            val spannableString = SpannableString("${preference.onboardingHeaderMessage} Info")
-            spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            val message = MethodChecker.fromHtml(preference.onboardingHeaderMessage)
+            val infoButton = "Info"
+            val spannableString = SpannableString("$message $infoButton")
+            spannableString.setSpan(ForegroundColorSpan(Color.parseColor(COLOR_INFO)), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            spannableString.setSpan(StyleSpan(BOLD), spannableString.length - infoButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             tvHeader3?.text = spannableString
             tvHeader3?.setOnClickListener {
                 orderSummaryAnalytics.eventClickInfoOnOSPNewBuyer()
@@ -619,8 +629,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message))
                 }
                 val coachMark = CoachMark2(it.context)
-                coachMark.showCoachMark(coachMarkItems, scrollview)
-                orderSummaryAnalytics.eventViewOnboardingTicker()
+                // manual scroll first item
+                val firstView = coachMarkItems.first().anchorView
+                firstView.post {
+                    val relativeLocation = IntArray(2)
+                    ViewHelper.getRelativePositionRec(firstView, scrollview, relativeLocation)
+                    scrollview.scrollTo(0, relativeLocation.last())
+                    coachMark.showCoachMark(coachMarkItems, scrollview)
+                    orderSummaryAnalytics.eventViewOnboardingTicker()
+                }
             }
         }
     }
