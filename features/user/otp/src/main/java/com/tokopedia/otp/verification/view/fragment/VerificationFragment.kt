@@ -90,7 +90,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
 
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
-    private val delayAnimateText: Long = 250
+    private val delayAnimateText: Long = 350
 
     private val handler: Handler = Handler()
 
