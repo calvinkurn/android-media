@@ -9,6 +9,7 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
@@ -70,6 +71,7 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     @Inject
     lateinit var viewModel: MainNavViewModel
     lateinit var recyclerView: RecyclerView
+    lateinit var scrollView: ScrollView
     lateinit var layoutManager: NpaLayoutManager
     lateinit var adapter: MainNavListAdapter
 
@@ -114,8 +116,9 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         recyclerView = view.findViewById(R.id.recycler_view)
-        scrollView.viewTreeObserver.addOnScrollChangedListener {
-            scrollView?.run {
+        scrollView = view.findViewById(R.id.scrollView)
+        scrollView.viewTreeObserver?.addOnScrollChangedListener {
+            scrollView.run {
                 if (scrollY > 100) {
                     navToolbar?.showShadow(lineShadow = true)
                 } else {
