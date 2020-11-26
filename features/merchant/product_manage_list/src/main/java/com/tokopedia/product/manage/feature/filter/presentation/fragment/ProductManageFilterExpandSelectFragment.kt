@@ -13,6 +13,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
@@ -28,7 +29,6 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandSelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_select.*
 import javax.inject.Inject
 
@@ -154,7 +154,7 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun observeFilterViewModel() {
-        productManageFilterExpandSelectViewModel.selectData.observe(this, Observer {
+        productManageFilterExpandSelectViewModel.selectData.observe(viewLifecycleOwner, Observer {
             adapter?.updateSelectData(it)
         })
     }
