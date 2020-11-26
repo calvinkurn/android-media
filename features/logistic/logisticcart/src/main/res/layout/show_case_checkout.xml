@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@color/grey_600"/>
+        android:background="@color/Unify_N400"/>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"

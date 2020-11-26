@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@color/grey_300" />
+        android:background="@color/Unify_N100" />
 
     <TextView
         android:id="@+id/text_view_total_label"
@@ -29,7 +29,7 @@
         android:layout_below="@+id/separator"
         android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/deep_orange_500"
+        android:textColor="@color/Unify_Y500"
         android:textStyle="bold"
         tools:text="Rp560.000" />
 
