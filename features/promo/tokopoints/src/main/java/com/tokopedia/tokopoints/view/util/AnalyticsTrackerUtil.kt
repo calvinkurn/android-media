@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.util
 import android.app.Activity
 import android.content.Context
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil.ScreenKeys.Companion.HOME_PAGE_SCREEN_NAME
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.Analytics
@@ -23,6 +24,20 @@ object AnalyticsTrackerUtil {
     fun sendEvent(context: Context?, event: String?, category: String?,
                   action: String?, label: String?) {
         getTracker().sendGeneralEvent(TrackAppUtils.gtmData(event, category, action, label))
+    }
+
+    @JvmStatic
+    fun sendEvent(event: String, category: String,
+                  action: String, label: String, businessUnit: String, currentSite: String) {
+        val map = mutableMapOf<String, String>()
+        map[EventKeys.EVENT] = event
+        map[EventKeys.EVENT_CATEGORY] = category
+        map[EventKeys.EVENT_ACTION] = action
+        map[EventKeys.EVENT_LABEL] = label
+        map[EventKeys.EVENT_BUSINESSUNIT] = businessUnit
+        map[EventKeys.EVENT_CURRENTSITE] = currentSite
+
+        getTracker().sendScreenAuthenticated(HOME_PAGE_SCREEN_NAME, map)
     }
 
     fun sendECommerceEvent(context: Context?, event: String, category: String,
@@ -81,6 +96,8 @@ object AnalyticsTrackerUtil {
             const val TOKOPOINTS_LUCKY_EGG_CLOSE_LABEL = "close cara mendapatkan lucky egg"
             const val BACK_ARROW_LABEL = "back arrow detail kupon"
             const val KEY_EVENT_PROFILE_VALUE = "clickProfile"
+            const val EVENT_BUSINESSUNIT = "businessUnit"
+            const val EVENT_CURRENTSITE = "currentSite"
         }
     }
 
@@ -176,6 +193,7 @@ object AnalyticsTrackerUtil {
             const val KEY_EVENT_ACTION_PROFILE_VALUE = "click on button verifikasi"
             const val KEY_EVENT_ACTION_PROFILE_VALUE_BATAL = "click on button batal"
             const val KEY_EVENT_CLICK_DYNAMICITEM = "click reward section"
+            const val CLICK_USERSAVING_ENTRYPOINT = "click user saving page"
         }
     }
 
@@ -185,6 +203,9 @@ object AnalyticsTrackerUtil {
             const val NAME = "name"
             const val CREATIVE = "creative"
             const val PROMOTIONS = "promotions"
+            const val BUSINESSUNIT = " buyer growth platform"
+            const val CURRENTSITE = " tokopediamarketplace"
+
         }
     }
 

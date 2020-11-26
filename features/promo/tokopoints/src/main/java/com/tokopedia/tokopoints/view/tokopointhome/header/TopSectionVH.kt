@@ -1,12 +1,13 @@
 package com.tokopedia.tokopoints.view.tokopointhome.header
 
 import android.graphics.Color
-import android.graphics.PorterDuff
+import android.graphics.Typeface
 import android.os.Build
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -24,8 +25,6 @@ import com.tokopedia.tokopoints.view.customview.DynamicItemActionView
 import com.tokopedia.tokopoints.view.model.rewardtopsection.DynamicActionListItem
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
 import com.tokopedia.tokopoints.view.model.usersaving.UserSaving
-import com.tokopedia.tokopoints.view.model.usersaving.UserSavingResponse
-import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 import com.tokopedia.tokopoints.view.tokopointhome.TopSectionResponse
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
@@ -190,23 +189,54 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         if (!userSavingInfo.descriptions.isNullOrEmpty()) {
             val savingPercent = userSavingInfo.descriptions[0]?.text
             val savingPercentStyle = userSavingInfo.descriptions[0]?.fontStyle
-            var savingDescription=""
-            var savingDescriptionStyle=""
-            if (userSavingInfo.descriptions.size>1) {
+            var savingPercentColor = ""
+            if (!savingPercentStyle.isNullOrEmpty()) {
+                savingPercentColor = savingPercentStyle?.replace(CommonConstant.USERSAVING_COLORSTR, "")
+            }
+            var savingDescription = ""
+            var savingDescriptionStyle = ""
+            var savingDescriptionColor = ""
+            if (userSavingInfo.descriptions.size > 1) {
                 savingDescription = userSavingInfo.descriptions[1]?.text.toString()
-                savingDescriptionStyle=userSavingInfo.descriptions[1]?.fontStyle.toString()
+                savingDescriptionStyle = userSavingInfo.descriptions[1]?.fontStyle.toString()
+                if (!savingDescriptionStyle.isNullOrEmpty()) {
+                    savingDescriptionColor = savingDescriptionStyle?.replace(CommonConstant.USERSAVING_COLORSTR, "")
+                }
             }
             val spannable = SpannableString("$savingPercent $savingDescription")
-            savingPercent?.length?.let {
-                spannable.setSpan(
-                        ForegroundColorSpan(Color.GREEN),
-                        0, it,
-                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            if (!savingPercent.isNullOrEmpty() && !savingPercentColor.isNullOrEmpty()) {
+                savingPercent.length.let {
+                    spannable.setSpan(
+                            ForegroundColorSpan(Color.parseColor(savingPercentColor)),
+                            0, it,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    if (userSavingInfo.descriptions.size>1) {
+                        spannable.setSpan(StyleSpan(Typeface.BOLD),0,it,0)
+                    }
+                }
+            }
+            if (!savingDescription.isNullOrEmpty() && !savingDescriptionColor.isNullOrEmpty()) {
+                savingDescription.length.let {
+                    spannable.setSpan(
+                            ForegroundColorSpan(Color.parseColor(savingDescriptionColor)),
+                            0, it,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
             }
             (savingDesc as TextView).text = spannable
         }
         if (!userSavingInfo.backgroundImageURL.isNullOrEmpty()) {
             ImageHandler.loadBackgroundImage(cardContainer, userSavingInfo.backgroundImageURL)
+        }
+        cardContainer?.setOnClickListener {
+            RouteManager.route(itemView.context, CommonConstant.WebLink.USERSAVING)
+            AnalyticsTrackerUtil.sendEvent(
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_USERSAVING_ENTRYPOINT, "",
+                    AnalyticsTrackerUtil.EcommerceKeys.BUSINESSUNIT,
+                    AnalyticsTrackerUtil.EcommerceKeys.CURRENTSITE
+            )
         }
     }
 

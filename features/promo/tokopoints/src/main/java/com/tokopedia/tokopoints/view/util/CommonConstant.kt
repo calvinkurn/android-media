@@ -64,6 +64,7 @@ interface CommonConstant {
             const val MEMBERSHIP = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/membership"
             const val INFO = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/intro"
             const val DETAIL = BaseUrl.WEB_DOMAIN_MOBILE + "rewards/kupon/detail"
+            const val USERSAVING = "tokopedia://webview?=https://www.tokopedia.com/rewards/saving"
         }
     }
 
@@ -165,5 +166,6 @@ interface CommonConstant {
         const val APIVERSION = "2.0.0"
         const val IMPRESSION_LIST = "/tokopoints - p{x} - promo list"
         const val TIMER_RED_BACKGROUND_HEX = "#EF144A"
+        const val USERSAVING_COLORSTR= "color:"
     }
 }
