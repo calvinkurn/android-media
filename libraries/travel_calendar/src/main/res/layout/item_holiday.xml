@@ -12,7 +12,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/date_holiday"
-        android:layout_width="80dp"
+        android:layout_width="@dimen/item_holiday_date_holiday_width"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_R600"
         android:textStyle="bold"

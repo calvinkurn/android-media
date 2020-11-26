@@ -6,8 +6,8 @@
     android:gravity="center"
     android:paddingRight="@dimen/spacing_lvl4"
     android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:paddingTop="@dimen/item_month_quick_filter_padding"
+    android:paddingBottom="@dimen/item_month_quick_filter_padding"
     android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView
