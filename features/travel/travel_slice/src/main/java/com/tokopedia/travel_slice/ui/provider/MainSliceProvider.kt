@@ -13,6 +13,7 @@ import com.tokopedia.travel_slice.data.HotelOrderListModel
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
 import com.tokopedia.travel_slice.ui.provider.HotelSliceProviderUtil.allowReads
 import com.tokopedia.travel_slice.utils.TravelDateUtils.validateCheckInDate
+import com.tokopedia.travel_slice.utils.TravelSliceStatus
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
@@ -35,12 +36,12 @@ class MainSliceProvider : SliceProvider() {
 
     private var hotelList = listOf<HotelData>()
     private var orderList = listOf<HotelOrderListModel>()
-    private var status: Status = Status.INIT
+    private var status: TravelSliceStatus = TravelSliceStatus.INIT
     private var checkIn: String = ""
     private var city: String = ""
 
     override fun onCreateSliceProvider(): Boolean {
-        status = Status.INIT
+        status = TravelSliceStatus.INIT
         return true
     }
 
@@ -65,18 +66,18 @@ class MainSliceProvider : SliceProvider() {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createGetBookHotelSlice(sliceUri: Uri): Slice? {
-        if (status == Status.INIT) {
-            status = Status.LOADING
+        if (status == TravelSliceStatus.INIT) {
+            status = TravelSliceStatus.LOADING
 
             getHotelData(sliceUri)
         }
         return when (status) {
-            Status.INIT, Status.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
-            Status.SUCCESS -> {
+            TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
+            TravelSliceStatus.SUCCESS -> {
                 if (hotelList.isEmpty()) HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
                 else HotelSliceProviderUtil.getHotelRecommendationSlices(contextNonNull, sliceUri, city, checkIn, hotelList)
             }
-            Status.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            TravelSliceStatus.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             else -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
         }
     }
@@ -90,31 +91,31 @@ class MainSliceProvider : SliceProvider() {
 
             //get hotel data from API
             hotelList = hotelSliceRepository.getHotelData(city, checkIn, checkInOutDate.second)
-            status = Status.SUCCESS
+            status = TravelSliceStatus.SUCCESS
 
             //notify data changed
             contextNonNull.contentResolver.notifyChange(sliceUri, null)
         }) {
-            status = Status.FAILURE
+            status = TravelSliceStatus.FAILURE
             contextNonNull.contentResolver.notifyChange(sliceUri, null)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     private fun createGetHotelOrderSlice(sliceUri: Uri): Slice? {
-        if (status == Status.INIT) {
-            status = Status.LOADING
+        if (status == TravelSliceStatus.INIT) {
+            status = TravelSliceStatus.LOADING
 
             getHotelOrderData(sliceUri)
         }
         return when (status) {
-            Status.INIT, Status.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
-            Status.SUCCESS -> {
+            TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
+            TravelSliceStatus.SUCCESS -> {
                 if (orderList.isNotEmpty()) HotelSliceProviderUtil.getMyHotelOrderSlices(contextNonNull, sliceUri, orderList)
                 else HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
-            Status.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
-            Status.USER_NOT_LOG_IN -> HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
+            TravelSliceStatus.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            TravelSliceStatus.USER_NOT_LOG_IN -> HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
         }
     }
 
@@ -123,21 +124,18 @@ class MainSliceProvider : SliceProvider() {
             val isLoggedIn = UserSession(contextNonNull).isLoggedIn
             orderList = hotelSliceRepository.getHotelOrderData(isLoggedIn)
 
-            status = Status.SUCCESS
+            status = TravelSliceStatus.SUCCESS
             contextNonNull.contentResolver.notifyChange(sliceUri, null)
         }) {
             if (it.message == "unauthorized user") {
-                status = Status.USER_NOT_LOG_IN
+                status = TravelSliceStatus.USER_NOT_LOG_IN
                 contextNonNull.contentResolver.notifyChange(sliceUri, null)
             } else {
-                status = Status.FAILURE
+                status = TravelSliceStatus.FAILURE
                 contextNonNull.contentResolver.notifyChange(sliceUri, null)
             }
         }
     }
-
-
-    enum class Status { SUCCESS, FAILURE, LOADING, INIT, USER_NOT_LOG_IN }
 
     companion object {
         const val ARG_CITY = "city"
