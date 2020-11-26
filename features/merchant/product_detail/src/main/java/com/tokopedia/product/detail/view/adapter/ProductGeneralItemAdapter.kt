@@ -21,9 +21,9 @@ class ProductGeneralItemAdapter(private var listOfData: List<Content>, val name:
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-        if (name != PRODUCT_PROTECTION)
-            return ProductGeneralItemViewHolder(view)
-        else return PurchaseProtectionItemViewHolder(view)
+        return if (name != PRODUCT_PROTECTION)
+            ProductGeneralItemViewHolder(view)
+        else PurchaseProtectionItemViewHolder(view)
 
     }
 

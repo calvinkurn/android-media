@@ -614,7 +614,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         when(componentTrackDataModel.componentName) {
             ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
-                            viewModel.getDynamicProductInfoP1, viewModel.getPPTitleName(), viewModel.getPurchaseProtectionUrl())
+                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl())
             else ->  DynamicProductDetailTracking.Impression
                     .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
                             viewModel.getDynamicProductInfoP1, "", "")
@@ -722,10 +722,25 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
             ProductDetailConstant.PRODUCT_PROTECTION -> {
-                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, viewModel.getInsurancePartnerUrl(), componentTrackDataModel)
-                openFtInsuranceBottomSheet(viewModel.getPurchaseProtectionUrl())
+                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
+                openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
             }
         }
+    }
+
+    private fun getPurchaseProtectionUrl(): String {
+        pdpUiUpdater?.productProtectionMap?.let {
+            return it.data[1].applink
+        }
+        return ""
+    }
+
+    private fun getPPTitleName(): String {
+        pdpUiUpdater?.productProtectionMap?.let {
+            if (it.title.isNotEmpty()) return it.title
+            else return ""
+        }
+        return ""
     }
 
     /**

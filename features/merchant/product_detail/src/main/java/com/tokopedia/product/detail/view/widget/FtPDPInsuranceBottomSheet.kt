@@ -35,8 +35,8 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
     }
 
     private val childLayoutRes = R.layout.widget_bottomsheet_protection_info
-    private lateinit var webView: TkpdWebView
-    private lateinit var progressBar: LoaderUnify
+    private var webView: TkpdWebView? = null
+    private var progressBar: LoaderUnify? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,20 +57,20 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
     }
 
     private fun initViews(childView: View) {
-        webView = childView.findViewById<TkpdWebView>(R.id.ppInsuranceWebview)
-        progressBar = childView.findViewById<LoaderUnify>(R.id.progressBar)
+        webView = childView.findViewById(R.id.ppInsuranceWebview)
+        progressBar = childView.findViewById(R.id.progressBar)
     }
 
     private fun configWebView(url: String) {
-        webView.run {
+        webView?.run {
             webChromeClient = MyChromeClient()
             webViewClient = MyWebViewClient()
+            settings.apply {
+                domStorageEnabled = true
+                javaScriptEnabled = true
+            }
+            loadUrl(url)
         }
-        webView.settings.apply {
-            domStorageEnabled = true
-            javaScriptEnabled = true
-        }
-        webView.loadUrl(url)
     }
 
 
@@ -90,16 +90,16 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progressBar.gone()
-            webView.visible()
+            progressBar?.gone()
+            webView?.visible()
         }
     }
 
     private inner class MyChromeClient : WebChromeClient() {
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
             if (newProgress == 100) {
-                progressBar.gone()
-                webView.visible()
+                progressBar?.gone()
+                webView?.visible()
             }
             super.onProgressChanged(view, newProgress)
         }

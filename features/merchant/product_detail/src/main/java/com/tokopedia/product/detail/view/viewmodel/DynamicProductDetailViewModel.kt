@@ -250,26 +250,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID ?: "")
     }
 
-    fun getPurchaseProtectionUrl(): String {
-        return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL?: ""
-    }
-
-    fun getInsurancePartnerUrl(): String {
-        return p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.linkURL?: ""
-    }
-
-    fun getPPTitleName(): String {
-        var pdpTitle = ""
-        p2Data.value?.productPurchaseProtectionInfo?.ppItemDetailPage?.run {
-            if(title?.isNotEmpty() == true) {
-                pdpTitle = title ?: ""
-            } else if (titlePDP?.isNotEmpty() == true) {
-                pdpTitle = titlePDP ?: ""
-            }
-        }
-        return pdpTitle
-    }
-
     fun updateLastAction(talkLastAction: DynamicProductDetailTalkLastAction) {
         this.talkLastAction = talkLastAction
     }
