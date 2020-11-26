@@ -7,6 +7,8 @@ data class OccMainOnboarding(
         val isForceShowCoachMark: Boolean = false,
         @SerializedName("show_onboarding_ticker")
         val isShowOnboardingTicker: Boolean = false,
+        @SerializedName("coachmark_type")
+        val coachmarkType: Int = 0,
         @SerializedName("onboarding_ticker")
         val onboardingTicker: OccOnboardingTicker = OccOnboardingTicker(),
         @SerializedName("onboarding_coachmark")
@@ -29,8 +31,6 @@ data class OccOnboardingTicker(
 data class OccOnboardingCoachMark(
         @SerializedName("skip_button_text")
         val skipButtonText: String = "",
-        @SerializedName("coachmark_type")
-        val coachmarkType: Int = 0,
         @SerializedName("detail")
         val details: List<OccOnboardingCoachMarkDetail> = emptyList()
 )

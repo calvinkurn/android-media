@@ -609,7 +609,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val scrollview = it.findViewById<ScrollView>(R.id.nested_scroll_view)
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
-                    val newView: View = when (onboarding.onboardingCoachMark.coachmarkType) {
+                    val newView: View = when (onboarding.coachmarkType) {
                         1 -> generateNewCoachMarkAnchorType1(it, detailIndexed.index)
                         2 -> generateNewCoachMarkAnchorType2(it, detailIndexed.index)
                         3 -> generateNewCoachMarkAnchorType3(it, detailIndexed.index)
