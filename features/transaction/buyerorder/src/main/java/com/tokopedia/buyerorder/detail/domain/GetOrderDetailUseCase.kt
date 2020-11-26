@@ -15,10 +15,10 @@ import javax.inject.Inject
  */
 class GetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlUseCase<DetailsData>) {
 
-    suspend fun execute(query: String, requestCancelParam: BuyerRequestCancelParam): Result<DetailsData> {
+    /*suspend fun execute(query: String, requestCancelParam: BuyerRequestCancelParam): Result<DetailsData> {
         useCase.setGraphqlQuery(query)
-        useCase.setTypeClass(DetailsData::class.java)
-        useCase.setRequestParams(generateParam(requestCancelParam))
+        // useCase.setTypeClass(DetailsData::class.java)
+        // useCase.setRequestParams(generateParam(requestCancelParam))
 
         return try {
             val cancellationReason = useCase.executeOnBackground()
@@ -34,5 +34,5 @@ class GetOrderDetailUseCase @Inject constructor(private val useCase: GraphqlUseC
         variables[com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase.PARAM_CURSOR] = com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase.FIRST_CURSOR
         variables[com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase.PARAM_LIMIT] = com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase.DEFAULT_LIMIT
         return variables
-    }
+    }*/
 }

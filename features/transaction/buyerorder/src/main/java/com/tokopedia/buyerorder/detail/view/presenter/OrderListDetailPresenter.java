@@ -41,7 +41,6 @@ import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.data.recommendationMPPojo.RecommendationResponse;
 import com.tokopedia.buyerorder.detail.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.buyerorder.detail.domain.FinishOrderGqlUseCase;
-import com.tokopedia.buyerorder.detail.domain.GetOrderDetailUseCase;
 import com.tokopedia.buyerorder.detail.domain.PostCancelReasonUseCase;
 import com.tokopedia.buyerorder.detail.domain.SendEventNotificationUseCase;
 import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
@@ -56,7 +55,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.DownloadHelper;
-import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -113,16 +111,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     SendEventNotificationUseCase sendEventNotificationUseCase;
     @Inject
     AddToCartMultiLegacyUseCase addToCartMultiLegacyUseCase;
-    @Inject
-    GetOrderDetailUseCase getOrderDetailUseCase;
+    /*@Inject
+    GetOrderDetailUseCase getOrderDetailUseCase;*/
     @Inject
     UserSessionInterface userSessionInterface;
     @Inject
     FinishOrderGqlUseCase finishOrderGqlUseCase;
 
-    private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
-    private boolean isdownloadable = false;
     private OrderDetails details;
     ArrayList<Integer> categoryList;
     String category;
@@ -503,59 +499,6 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         addToCartMultiLegacyUseCase.unsubscribe();
         super.detachView();
-    }
-
-    public void onClick(String uri) {
-        pdfUri = uri;
-        if (isdownloadable(uri)) {
-            getView().askPermission();
-        } else {
-            if (getView() != null && getView().getActivity() != null && getView().getActivity().getApplicationContext() != null && getView().getActivity() != null) {
-                RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
-            }
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    public void permissionGrantedContinueDownload() {
-        DownloadHelper downloadHelper = new DownloadHelper(getView().getActivity(), pdfUri, Insurance_File_Name, () -> {
-            // download success call back
-
-        });
-        downloadHelper.downloadFile(this::isdownloadable);
-    }
-
-    private Boolean isdownloadable(String uri) {
-        Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
-        Matcher matcher = pattern.matcher(uri);
-        return (matcher.find() || this.isdownloadable);
-    }
-
-    public void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType) {
-        if ("true".equalsIgnoreCase(this.fromPayment)) {
-            String paymentStatus = "", paymentMethod = "";
-            if (details != null && details.status() != null && !TextUtils.isEmpty(details.status().statusText())) {
-                paymentStatus = details.status().statusText();
-            }
-            if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
-                paymentMethod = details.getPayMethods().get(0).getValue();
-            }
-            if (categoryType == 3) {
-                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getProductName(), metaDataInfo.getTotalPrice(), metaDataInfo.getQuantity(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
-            } else {
-                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
-            }
-        }
-    }
-
-    public void setDownloadableFlag(boolean isdownloadable) {
-        this.isdownloadable = isdownloadable;
-    }
-
-    public void setDownloadableFileName(String fileName) {
-        if (!TextUtils.isEmpty(fileName)) {
-            Insurance_File_Name = fileName;
-        }
     }
 
     public String getCancelTime() {

@@ -68,7 +68,6 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.buyerorder.common.util.BuyerConsts.INVOICE;
 import static com.tokopedia.buyerorder.common.util.Utils.formatTitleHtml;
 
 /**
@@ -470,11 +469,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void clearDynamicViews() {
-        // no-op
-    }
-
-    @Override
-    public void askPermission() {
         // no-op
     }
 

@@ -116,8 +116,6 @@ public interface OrderListDetailContract {
 
         void clearDynamicViews();
 
-        void askPermission();
-
         void setRecommendation(Object object);
 
         JsonArray generateInputQueryBuyAgain(List<Items> items);

@@ -1,6 +1,7 @@
 package com.tokopedia.buyerorder.detail.view.fragment;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -68,6 +69,7 @@ import com.tokopedia.buyerorder.detail.data.Status;
 import com.tokopedia.buyerorder.detail.data.TickerInfo;
 import com.tokopedia.buyerorder.detail.data.Title;
 import com.tokopedia.buyerorder.detail.di.OrderDetailsComponent;
+import com.tokopedia.buyerorder.detail.view.OrderListAnalytics;
 import com.tokopedia.buyerorder.detail.view.activity.OrderListwebViewActivity;
 import com.tokopedia.buyerorder.detail.view.adapter.ItemsAdapter;
 import com.tokopedia.buyerorder.detail.view.customview.BookingCodeView;
@@ -81,6 +83,7 @@ import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.imagepicker.picker.instagram.data.model.User;
+import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.unifycomponents.BottomSheetUnify;
@@ -95,6 +98,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -131,6 +136,9 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Inject
     OrderListDetailPresenter presenter;
 
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+
     OrderDetailsComponent orderListComponent;
     private LinearLayout mainView;
     private TextView statusLabel;
@@ -164,6 +172,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     private Typography bannerMainTitle;
     private Typography bannerSubTitle;
     private NestedScrollView parentScroll;
+    private Boolean _isDownloadable;
 
     private LocalCacheHandler localCacheHandler;
 
@@ -685,7 +694,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void askPermission() {
+    public void askPermission(String uri, Boolean isDownloadable, String downloadFileName) {
         permissionCheckerHelper = new PermissionCheckerHelper();
         permissionCheckerHelper.checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, new PermissionCheckerHelper.PermissionCheckListener() {
             @Override
@@ -700,9 +709,43 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
             @Override
             public void onPermissionGranted() {
-                presenter.permissionGrantedContinueDownload();
+                permissionGrantedContinueDownload(uri, downloadFileName, isDownloadable);
             }
         }, "");
+    }
+
+    @Override
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType, OrderDetails orderDetails) {
+        if ("true".equalsIgnoreCase((String) getArguments().getString(KEY_FROM_PAYMENT))) {
+            String paymentStatus = "", paymentMethod = "";
+            if (orderDetails != null && orderDetails.status() != null && !TextUtils.isEmpty(orderDetails.status().statusText())) {
+                paymentStatus = orderDetails.status().statusText();
+            }
+            if (orderDetails != null && orderDetails.getPayMethods() != null && orderDetails.getPayMethods().size() > 0 && !TextUtils.isEmpty(orderDetails.getPayMethods().get(0).getValue())) {
+                paymentMethod = orderDetails.getPayMethods().get(0).getValue();
+            }
+            if (categoryType == 3) {
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getProductName(), metaDataInfo.getTotalPrice(), metaDataInfo.getQuantity(), metaDataInfo.getEntityBrandName(), (String) getArguments().get(KEY_ORDER_ID), categoryType, paymentMethod, paymentStatus);
+            } else {
+                orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), (String) getArguments().get(KEY_ORDER_ID), categoryType, paymentMethod, paymentStatus);
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void permissionGrantedContinueDownload(String uri, String fileName, Boolean isDownloadable) {
+        _isDownloadable = isDownloadable;
+        DownloadHelper downloadHelper = new DownloadHelper(getContext(), uri, fileName, () -> {
+            // download success call back
+
+        });
+        downloadHelper.downloadFile(this::isUridownloadable);
+    }
+
+    private Boolean isUridownloadable(String uri) {
+        Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
+        Matcher matcher = pattern.matcher(uri);
+        return matcher.find() || _isDownloadable;
     }
 
     @Override
