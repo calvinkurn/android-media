@@ -11,5 +11,6 @@
     <string name="hotel_dashboard_applink">tokopedia://hotel/dashboard</string>
 
     <string name="slice_flight_title">Tiket Pesawat</string>
+    <string name="slice_flight_see_more">Lihat Pesanan Lainnya</string>
 
 </resources>

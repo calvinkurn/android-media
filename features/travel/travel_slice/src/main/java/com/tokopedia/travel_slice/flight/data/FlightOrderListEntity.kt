@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class FlightOrderListEntity(
         @SerializedName("metaData")
         @Expose
-        val metaData: MetaData = MetaData(),
+        val metaData: List<LabelValue> = arrayListOf(),
         @SerializedName("title")
         @Expose
         val title: String = "",
@@ -21,18 +21,30 @@ data class FlightOrderListEntity(
         val statusStr: String = "",
         @SerializedName("id")
         @Expose
-        val id: String = ""
+        val id: String = "",
+        @SerializedName("items")
+        @Expose
+        val items: List<Item> = arrayListOf(),
+        @SerializedName("paymentData")
+        @Expose
+        val paymentData: LabelValue = LabelValue()
 ) {
     class Response(@SerializedName("orders")
                    @Expose
                    val orders: List<FlightOrderListEntity> = arrayListOf())
 }
 
-data class MetaData(
+data class LabelValue(
         @SerializedName("label")
         @Expose
         val label: String = "",
         @SerializedName("value")
         @Expose
         val value: String = ""
+)
+
+data class Item(
+        @SerializedName("imageUrl")
+        @Expose
+        val imageUrl: String = ""
 )

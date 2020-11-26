@@ -64,12 +64,44 @@ object FlightSliceProviderUtil {
                     row {
                         title = it.title
                         subtitle = it.statusStr
-                        setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_flight_icon), SMALL_IMAGE)
+                        if (it.items.isNotEmpty()) {
+                            setTitleItem(IconCompat.createWithBitmap(it.items[0].imageUrl.getBitmap(context)), SMALL_IMAGE)
+                        } else {
+                            setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_flight_icon), SMALL_IMAGE)
+                        }
 
                         primaryAction = SliceAction.create(buildIntentFromApplink(context, String.format("%s/%s", ApplinkConst.FLIGHT_ORDER, it.id)),
                                 IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
                                 ListBuilder.ICON_IMAGE, "")
                     }
+                    gridRow {
+                        it.metaData.forEach { meta ->
+                            cell {
+                                addTitleText(meta.label)
+                                addText(meta.value)
+                            }
+                        }
+
+                        if (it.metaData.size == 1) {
+                            cell {
+                                addTitleText(it.paymentData.label.split(" ")
+                                        .joinToString(separator = " ") { it.capitalize() })
+                                addText(it.paymentData.value)
+                            }
+                        }
+
+                        primaryAction = SliceAction.create(buildIntentFromApplink(context, String.format("%s/%s", ApplinkConst.FLIGHT_ORDER, it.id)),
+                                IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                                ListBuilder.ICON_IMAGE, "")
+                    }
+                }
+
+                row {
+                    title = context.getString(R.string.slice_flight_see_more)
+
+                    primaryAction = SliceAction.create(buildIntentFromApplink(context, ApplinkConst.FLIGHT_ORDER),
+                            IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
+                            ListBuilder.ICON_IMAGE, "")
                 }
             }
 

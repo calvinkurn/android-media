@@ -15,6 +15,13 @@ object FlightSlicesQueries {
             categoryName
             statusStr
             id
+            items {
+              imageUrl
+            }
+            paymentData {
+              label
+              value
+            }
           }
         }
     """.trimIndent()

@@ -43,7 +43,7 @@ class FlightOrderListUseCase @Inject constructor(private val repository: Graphql
         private const val PARAM_ORDER_CATEGORY = "orderCategory"
 
         private const val DEFAULT_PAGE = 1
-        private const val DEFAULT_PER_PAGE = 1
+        private const val DEFAULT_PER_PAGE = 3
         private const val DEFAULT_ORDER_CATEGORY = "FLIGHTS"
     }
 }
