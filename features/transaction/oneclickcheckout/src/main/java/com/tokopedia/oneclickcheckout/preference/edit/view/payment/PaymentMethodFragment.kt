@@ -84,6 +84,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     lateinit var paymentListingUrl: String
 
     private var paymentAmount = 0.0
+    private var shouldFormatMetadata = false
 
     private val viewModel: PaymentMethodViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[PaymentMethodViewModel::class.java]
@@ -128,6 +129,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 parent.setStepperValue(75)
             }
             paymentAmount = parent.getPaymentAmount()
+            shouldFormatMetadata = parent.isDirectPaymentStep()
         }
     }
 
@@ -308,24 +310,28 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             val map: HashMap<String, Any> = HashMap()
             for (key in uri.queryParameterNames) {
                 val value = uri.getQueryParameter(key) ?: ""
-                when (key) {
-                    QUERY_PARAM_EXPRESS_CHECKOUT_PARAM -> {
-                        try {
-                            map[key] = JsonParser().parse(value)
-                        } catch (e: Exception) {
-                            //failed parse json string
+                if (shouldFormatMetadata) {
+                    when (key) {
+                        QUERY_PARAM_EXPRESS_CHECKOUT_PARAM -> {
+                            try {
+                                map[key] = JsonParser().parse(value)
+                            } catch (e: Exception) {
+                                //failed parse json string
+                                map[key] = value
+                            }
+                        }
+                        QUERY_PARAM_USER_ID -> {
+                            map[key] = value.toLongOrZero()
+                        }
+                        QUERY_PARAM_SUCCESS -> {
+                            map[key] = value.toBoolean()
+                        }
+                        else -> {
                             map[key] = value
                         }
                     }
-                    QUERY_PARAM_USER_ID -> {
-                        map[key] = value.toLongOrZero()
-                    }
-                    QUERY_PARAM_SUCCESS -> {
-                        map[key] = value.toBoolean()
-                    }
-                    else -> {
-                        map[key] = value
-                    }
+                } else {
+                    map[key] = value
                 }
             }
             return Gson().toJson(map)
