@@ -6,8 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.confirmshipping.data.model.SomCourierList
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import kotlinx.android.synthetic.main.bottomsheet_reject_item.view.*
 import kotlinx.android.synthetic.main.bottomsheet_text_item.view.*
 
 /**

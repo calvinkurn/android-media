@@ -4,12 +4,16 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.flight.cancellationV2.domain.FlightCancellationGetPassengerUseCase
 import com.tokopedia.flight.cancellationV2.presentation.model.FlightCancellationPassengerModel
+import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.dummy.DUMMY_CANCELLATION_JOURNEY
 import com.tokopedia.flight.dummy.DUMMY_CANCELLED_PASSENGER
 import com.tokopedia.flight.dummy.DUMMY_EMPTY_PASSENGER_SELECTED_CANCELLATION
 import com.tokopedia.flight.dummy.DUMMY_WITH_PASSENGER_PASSENGER_SELECTED_CANCELLATION
 import com.tokopedia.flight.shouldBe
+import com.tokopedia.user.session.UserSessionInterface
+import io.mockk.MockKAnnotations
 import io.mockk.coEvery
+import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
@@ -22,15 +26,21 @@ class FlightCancellationPassengerViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    @RelaxedMockK
+    private lateinit var flightAnalytics: FlightAnalytics
+
     private val testDispatcherProvider = TravelTestDispatcherProvider()
 
+    private val userSession: UserSessionInterface = mockk()
     private val cancellationPassengerUseCase: FlightCancellationGetPassengerUseCase = mockk()
 
     private lateinit var viewModel: FlightCancellationPassengerViewModel
 
     @Before
     fun setUp() {
-        viewModel = FlightCancellationPassengerViewModel(cancellationPassengerUseCase, testDispatcherProvider)
+        MockKAnnotations.init(this)
+        viewModel = FlightCancellationPassengerViewModel(cancellationPassengerUseCase, flightAnalytics, userSession, testDispatcherProvider)
     }
 
     @Test
