@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
@@ -110,8 +109,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
-    private var bottomSheetSellerMigration: BottomSheetBehavior<LinearLayout>? = null
-
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
 
@@ -206,14 +203,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (isSellerMigrationEnabled(context)) {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+                        if (isSellerMigrationEnabled(context) && userSession.hasShop()) {
+                            showBottomSheetSellerMigration()
                         } else {
-                            (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                            hideBottomSheetSellerMigration()
                             FeedScrollListener.onFeedScrolled(recyclerView, adapter.list)
                         }
                     } else {
-                        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+                        hideBottomSheetSellerMigration()
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
@@ -336,8 +333,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            if (isSellerMigrationEnabled(context)) {
-                bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
+            if (isSellerMigrationEnabled(context) && userSession.hasShop()) {
+                hideBottomSheetSellerMigration()
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
                 dataList.add(getEmptyResultViewModel())
@@ -764,6 +761,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 trackingPostModel.activityName,
                 trackingPostModel.mediaType
         )
+    }
+
+    private fun showBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hideBottomSheetSellerMigration(){
+        (activity as? ShopPageActivity)?.bottomSheetSellerMigration?.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
     fun hideFAB() {
