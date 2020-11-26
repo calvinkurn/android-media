@@ -19,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.loginregister.R;
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils;
@@ -43,7 +44,7 @@ public class PartialRegisterInputView extends BaseCustomView {
     AutoCompleteTextView etInputEmailPhone;
     TextView tvMessage;
     TextView tvError;
-    UnifyButton btnAction;
+    ButtonCompat btnAction;
     EmailExtension emailExtension;
 
     TextFieldUnify wrapperPassword;
@@ -272,11 +273,11 @@ public class PartialRegisterInputView extends BaseCustomView {
 
     private void onValidValue(){
         hideError();
-        btnAction.setEnabled(true);
+        btnAction.setButtonCompatType(ButtonCompat.PRIMARY);
     }
 
     private void onInvalidValue(){
-        btnAction.setEnabled(false);
+        btnAction.setButtonCompatType(ButtonCompat.PRIMARY_DISABLED);
     }
 
     public String getTextValue() {
@@ -357,8 +358,7 @@ public class PartialRegisterInputView extends BaseCustomView {
 
         tvMessage.setText("");
         wrapperEmailPhone.setLabel(wrapperEmailPhone.getContext().getString(R.string.title_email));
-        btnAction.setText(btnAction.getContext().getString(R.string.login));
-        btnAction.setContentDescription(btnAction.getContext().getString(R.string.content_desc_register_btn));
+        TextAndContentDescriptionUtil.setTextAndContentDescription(btnAction, btnAction.getContext().getString(R.string.login), btnAction.getContext().getString(R.string.content_desc_register_btn));
         etInputEmailPhone.setText(email);
         etInputEmailPhone.setEnabled(false);
     }
