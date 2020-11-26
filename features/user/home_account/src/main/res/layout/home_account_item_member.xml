@@ -9,7 +9,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
-        tools:src="@drawable/ic_account_cc"
         android:id="@+id/home_account_item_member_icon"
         android:layout_width="@dimen/home_account_dp_28"
         android:layout_height="@dimen/home_account_dp_28"/>
