@@ -141,7 +141,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
             // loading?
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
-                tvShippingDuration?.text = "Pengiriman ${shipping.serviceName}"
+                tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                     listener.chooseDuration(false)
@@ -182,20 +182,21 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         listener.chooseDuration(false)
                     }
                 } else {
-                    tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice ?: 0, false).removeDecimalSuffix()
+                    tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                            ?: 0, false).removeDecimalSuffix()
                     tvShippingPrice?.visible()
                     setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, btnChangeCourier) {
                         listener.chooseCourier()
                     }
                 }
             } else if (shipping.serviceErrorMessage.isNotBlank() && shipping.shippingRecommendationData != null) {
-                tvShippingDuration?.text = "Pengiriman ${shipping.serviceName}"
+                tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
                     /* no-op */
                 }
                 btnChangeDuration?.gone()
-                val button = "Ubah"
+                val button = view.context.getString(R.string.lbl_change_template)
                 val span = SpannableString("${shipping.serviceErrorMessage} $button")
                 span.setSpan(StyleSpan(BOLD), shipping.serviceErrorMessage.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
                 view.context?.let {
@@ -213,7 +214,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 tvShippingPrice?.gone()
                 tickerShippingPromo?.gone()
             } else {
-                tvShippingDuration?.text = "Pengiriman"
+                tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping)
                 tvShippingDuration?.visible()
                 btnChangeDuration?.gone()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
@@ -281,7 +282,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 setupPaymentInstallment(payment.creditCard)
             } else {
                 if (payment.errorData != null) {
-                    // general error
+                    // general & cc error
                     val message = payment.errorData.message
                     val button = payment.errorData.buttonText
 
@@ -293,8 +294,8 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         }
                         tvPaymentErrorMessage?.setOnClickListener {
                             when (payment.errorData.action) {
-                                OrderPaymentErrorData.ACTION_CHOOSE_PAYMENT -> listener.choosePayment(preference)
-                                OrderPaymentErrorData.ACTION_CHOOSE_CC -> listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
+                                OrderPaymentErrorData.ACTION_CHANGE_PAYMENT -> listener.choosePayment(preference)
+                                OrderPaymentErrorData.ACTION_CHANGE_CC -> listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
                             }
                         }
                     }
@@ -302,31 +303,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     tvPaymentErrorMessage?.visible()
                     btnChangePayment?.invisible()
                     tvPaymentOvoErrorAction?.gone()
-                    setPaymentErrorAlpha(false)
-                } else if (payment.errorMessage.message.isNotEmpty()) {
-                    // cc error
-                    val message = payment.errorMessage.message
-                    val button = payment.errorMessage.button.text
-
-                    val span = SpannableString("$message $button")
-                    if (button.isNotBlank()) {
-                        span.setSpan(StyleSpan(BOLD), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        view.context?.let {
-                            span.setSpan(ForegroundColorSpan(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)), message.length + 1, span.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        }
-                        tvPaymentErrorMessage?.setOnClickListener {
-                            if (payment.hasCreditCardOption()) {
-                                listener.onChangeCreditCardClicked(payment.creditCard.additionalData)
-                            } else {
-                                listener.onPreferenceEditClicked(preference)
-                            }
-                        }
-                    }
-                    tvPaymentErrorMessage?.text = span
-                    tvPaymentErrorMessage?.visible()
-                    btnChangePayment?.invisible()
-                    tvPaymentOvoErrorAction?.gone()
-                    setPaymentErrorAlpha(payment.isCalculationError)
+                    setPaymentErrorAlpha()
                 } else if (payment.ovoErrorData != null) {
                     // ovo error
                     val message = payment.ovoErrorData.message
@@ -375,7 +352,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     }
                     btnChangePayment?.visible()
                     if (payment.ovoErrorData.isBlockingError) {
-                        setPaymentErrorAlpha(true)
+                        setPaymentErrorAlpha()
                     } else {
                         setPaymentActiveAlpha()
                     }
@@ -383,7 +360,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                     // fallback
                     tvPaymentErrorMessage?.gone()
                     tvPaymentOvoErrorAction?.gone()
-                    setPaymentErrorAlpha(payment.isCalculationError)
+                    setPaymentErrorAlpha()
                 }
                 tvInstallmentType?.gone()
                 tvInstallmentDetail?.gone()
@@ -457,22 +434,16 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         }
     }
 
-    private fun setPaymentErrorAlpha(isDetailRed: Boolean) {
+    private fun setPaymentErrorAlpha() {
         ivPayment?.alpha = 0.5f
         tvPaymentName?.alpha = 0.5f
         tvPaymentDetail?.alpha = 0.5f
-        if (isDetailRed) {
-            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Red_R600))
-        } else {
-            tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
-        }
     }
 
     private fun setPaymentActiveAlpha() {
         ivPayment?.alpha = 1f
         tvPaymentName?.alpha = 1f
         tvPaymentDetail?.alpha = 1f
-        tvPaymentDetail?.setTextColor(MethodChecker.getColor(view.context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
     }
 
     private fun showPaymentCC(payment: OrderPayment) {

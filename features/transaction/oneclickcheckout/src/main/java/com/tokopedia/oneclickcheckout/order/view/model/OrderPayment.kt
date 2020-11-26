@@ -67,8 +67,8 @@ data class OrderPaymentErrorData(
         val action: String = ""
 ) {
     companion object {
-        internal const val ACTION_CHOOSE_CC = "CHOOSE_CC"
-        internal const val ACTION_CHOOSE_PAYMENT = "CHOOSE_PAYMENT"
+        internal const val ACTION_CHANGE_CC = "change_cc"
+        internal const val ACTION_CHANGE_PAYMENT = "change_payment"
     }
 }
 
