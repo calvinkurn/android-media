@@ -90,7 +90,7 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
 
     private var tempOtp: CharSequence? = null
     private var indexTempOtp = 0
-    private val delayAnimateText: Long = 150
+    private val delayAnimateText: Long = 250
 
     private val handler: Handler = Handler()
 
@@ -245,7 +245,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                             }
                         }
                     }
-                    hideLoading()
                     setPrefixMiscall(otpRequestData.prefixMisscall)
                     startCountDown()
                     viewBound.containerView?.let {
@@ -268,7 +267,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     private fun onFailedSendOtp(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
-            hideLoading()
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -302,7 +300,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
                             analytics.trackSuccessClickVerificationRegisterEmailButton()
                         }
                     }
-                    hideLoading()
                     resetCountDown()
 
                     activity?.let { activity ->
@@ -341,7 +338,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
     private fun onFailedOtpValidate(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
-            hideLoading()
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -363,7 +359,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         return object : ReceiveSMSListener {
             override fun onReceiveOTP(otpCode: String) {
                 animateText(otpCode)
-                validate(otpCode)
             }
         }
     }
@@ -444,7 +439,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
 
         viewBound.pin?.onPinChangedListener = object : PinUnify.OnPinChangedListener {
             override fun onFinish(value: CharSequence?) {
-                showLoading()
                 validate(value.toString())
             }
 
@@ -642,11 +636,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         autoFillPhoneNumber(phoneNumber)
     }
 
-    private fun showLoading() {
-        viewBound.loader?.show()
-        viewBound.containerView?.hide()
-    }
-
     private fun autoFillPhoneNumber(number: String) {
         val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
         var phoneNumber = replaceRegionPhoneCode(number)
@@ -654,7 +643,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         if (phoneNumber.contains(phoneHint)) {
             phoneNumber = phoneNumber.substring(phoneNumber.length - 4, phoneNumber.length)
             viewBound.pin?.value = phoneNumber
-            showLoading()
             validate(phoneNumber)
         }
     }
@@ -669,11 +657,6 @@ class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadca
         }
 
         return result.replace(symbolRegex, "")
-    }
-
-    private fun hideLoading() {
-        viewBound.loader?.hide()
-        viewBound.containerView?.show()
     }
 
     companion object {
