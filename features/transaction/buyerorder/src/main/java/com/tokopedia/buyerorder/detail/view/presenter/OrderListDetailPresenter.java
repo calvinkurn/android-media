@@ -131,97 +131,95 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment, String upstream, String paymentId, String cartString) {
-        if (getView() != null) {
-            if (getView().getActivity() != null) {
-                this.orderCategory = orderCategory;
-                this.fromPayment = fromPayment;
-                this.orderId = orderId;
-                getView().showProgressBar();
-                GraphqlRequest graphqlRequest;
-                Map<String, Object> variables = new HashMap<>();
-                if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-                    if (orderId != null && !orderId.isEmpty()) {
-                        variables.put("orderCategory", orderCategory);
-                        variables.put(ORDER_ID, orderId);
-                        graphqlRequest = new
-                                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                                R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
-
-                    } else {
-                        variables.put("orderCategory", orderCategory);
-                        variables.put(PAYMENT_ID, paymentId);
-                        variables.put(CART_STRING, cartString);
-                        graphqlRequest = new
-                                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                                R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
-                    }
-
-                } else {
-                    variables.put(ORDER_CATEGORY, orderCategory);
+        if (getView() != null && getView().getActivity() != null) {
+            this.orderCategory = orderCategory;
+            this.fromPayment = fromPayment;
+            this.orderId = orderId;
+            getView().showProgressBar();
+            GraphqlRequest graphqlRequest;
+            Map<String, Object> variables = new HashMap<>();
+            if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                if (orderId != null && !orderId.isEmpty()) {
+                    variables.put("orderCategory", orderCategory);
                     variables.put(ORDER_ID, orderId);
-                    variables.put(DETAIL, 1);
-                    variables.put(ACTION, 1);
-                    variables.put(UPSTREAM, upstream != null ? upstream : "");
                     graphqlRequest = new
                             GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                            R.raw.orderdetails), DetailsData.class, variables, false);
+                            R.raw.orderdetail_marketplace), DetailsData.class, variables, false);
+
+                } else {
+                    variables.put("orderCategory", orderCategory);
+                    variables.put(PAYMENT_ID, paymentId);
+                    variables.put(CART_STRING, cartString);
+                    graphqlRequest = new
+                            GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                            R.raw.orderdetail_marketplace_waiting_invoice), DetailsData.class, variables, false);
                 }
 
+            } else {
+                variables.put(ORDER_CATEGORY, orderCategory);
+                variables.put(ORDER_ID, orderId);
+                variables.put(DETAIL, 1);
+                variables.put(ACTION, 1);
+                variables.put(UPSTREAM, upstream != null ? upstream : "");
+                graphqlRequest = new
+                        GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                        R.raw.orderdetails), DetailsData.class, variables, false);
+            }
 
-                orderDetailsUseCase.addRequest(graphqlRequest);
 
-                GraphqlRequest requestRecomm = makegraphqlRequestForRecommendation();
-                if (requestRecomm != null) {
-                    orderDetailsUseCase.addRequest(requestRecomm);
-                    orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-                        @Override
-                        public void onCompleted() {
+            orderDetailsUseCase.addRequest(graphqlRequest);
 
+            GraphqlRequest requestRecomm = makegraphqlRequestForRecommendation();
+            if (requestRecomm != null) {
+                orderDetailsUseCase.addRequest(requestRecomm);
+                orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (getView() != null && getView().getActivity() != null) {
+                            Timber.d("error occured" + e);
+                            getView().hideProgressBar();
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            if (getView() != null && getView().getActivity() != null) {
-                                Timber.d("error occured" + e);
-                                getView().hideProgressBar();
+                    @Override
+                    public void onNext(GraphqlResponse response) {
+                        if (response != null) {
+                            DetailsData data = response.getData(DetailsData.class);
+                            if (data != null) {
+                                setDetailsData(data.orderDetails());
+                                orderDetails = data.orderDetails();
                             }
-                        }
 
-                        @Override
-                        public void onNext(GraphqlResponse response) {
-                            if (response != null) {
-                                DetailsData data = response.getData(DetailsData.class);
-                                if (data != null) {
-                                    setDetailsData(data.orderDetails());
-                                    orderDetails = data.orderDetails();
+                            if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                                List<Items> list = orderDetails.getItems();
+                                categoryList = new ArrayList<>();
+                                for (Items item : list) {
+                                    categoryList.add(item.getCategoryID());
+                                    categoryList.add(item.getCategoryL1());
+                                    categoryList.add(item.getCategoryL2());
+                                    categoryList.add(item.getCategoryL3());
                                 }
 
-                                if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-                                    List<Items> list = orderDetails.getItems();
-                                    categoryList = new ArrayList<>();
-                                    for (Items item : list) {
-                                        categoryList.add(item.getCategoryID());
-                                        categoryList.add(item.getCategoryL1());
-                                        categoryList.add(item.getCategoryL2());
-                                        categoryList.add(item.getCategoryL3());
-                                    }
-
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                                        category = String.join(",", category);
-                                    } else {
-                                        category = category.substring(1, category.length() - 1);
-                                    }
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                    category = String.join(",", category);
                                 } else {
-                                    RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
-                                    if (getView() != null) {
-                                        getView().setRecommendation(rechargeWidgetResponse);
-                                    }
+                                    category = category.substring(1, category.length() - 1);
+                                }
+                            } else {
+                                RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                                if (getView() != null) {
+                                    getView().setRecommendation(rechargeWidgetResponse);
                                 }
                             }
-                            getRecommendation();
                         }
-                    });
-                }
+                        getRecommendation();
+                    }
+                });
             }
         }
     }
