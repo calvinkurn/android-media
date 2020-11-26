@@ -4,8 +4,8 @@ import com.tokopedia.product.manage.common.draft.data.db.repository.AddEditProdu
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class DeleteAllProductsDraftUseCase @Inject constructor(private val draftRepository: AddEditProductDraftRepository): UseCase<Boolean>() {
-
+class DeleteAllProductDraftUseCase @Inject constructor(
+        private val draftRepository: AddEditProductDraftRepository
+): UseCase<Boolean>() {
     override suspend fun executeOnBackground(): Boolean = draftRepository.deleteAllDrafts()
-
 }

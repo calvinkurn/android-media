@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
@@ -143,7 +144,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
             tvDraftProduct.text = MethodChecker.fromHtml(getString(R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProduct.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
-                RouteManager.route(activity, ApplinkConst.PRODUCT_DRAFT)
+                RouteManager.route(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
             }
             tvDraftProduct.visibility = View.VISIBLE
         }

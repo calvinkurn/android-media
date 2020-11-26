@@ -5,11 +5,13 @@ import com.tokopedia.abstraction.common.utils.network.CacheUtil
 import com.tokopedia.product.addedit.description.presentation.model.*
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
+import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import com.tokopedia.product.manage.common.draft.data.model.description.VideoLinkListModel
 import com.tokopedia.product.manage.common.draft.data.model.detail.ShowCaseInputModel
+import com.tokopedia.product.manage.common.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.product.manage.common.draft.data.model.detail.WholeSaleInputModel as DraftWholeSaleInputModel
 
@@ -155,6 +157,15 @@ object AddEditProductMapper {
 
     private fun mapJsonToProductInputModel(jsonData : String): VariantInputModel {
         return CacheUtil.convertStringToModel(jsonData, VariantInputModel::class.java)
+    }
+
+    fun mapProductDraftToProductDraftUiModel(draft: ProductDraft): ProductDraftUiModel {
+        return ProductDraftUiModel(
+                draft.draftId,
+                draft.detailInputModel.imageUrlOrPathList.first(),
+                draft.detailInputModel.productName,
+                AddEditProductDraftMapper.getCompletionPercent(draft),
+        )
     }
 }
 

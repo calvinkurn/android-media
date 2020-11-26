@@ -2006,7 +2006,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
         if (imageUrls != null && imageUrls.size > 0) {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.PRODUCT_DRAFT)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
             intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
             intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
             startActivity(intent)

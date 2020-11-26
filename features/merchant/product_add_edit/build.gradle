@@ -71,6 +71,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation rootProject.ext.testDependencies.couroutinesTest
 
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
