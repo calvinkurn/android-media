@@ -69,6 +69,9 @@ internal fun createInspirationCarouselListener(): InspirationCarouselListener {
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onImpressedInspirationCarouselInfoProduct(product: InspirationCarouselViewModel.Option.Product) {}
         override fun onImpressedInspirationCarouselListProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onImpressedInspirationCarouselGridProduct(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridProductClicked(product: InspirationCarouselViewModel.Option.Product) {}
+        override fun onInspirationCarouselGridBannerClicked(product: InspirationCarouselViewModel.Option) {}
     }
 }
 
