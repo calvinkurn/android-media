@@ -92,7 +92,11 @@ query GetOrderHistory($input:UOHOrdersRequest!){
       updateBy
     }
     filters
-    filters_v2
+    filtersV2 {
+      label
+      value
+      isPrimary
+    }
     categories {
       value
       label

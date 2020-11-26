@@ -18,7 +18,7 @@ data class UohListOrder(
             @SerializedName("filters")
             val filters: List<String> = listOf(),
 
-            @SerializedName("filters_v2")
+            @SerializedName("filtersV2")
             val v2Filters: List<FilterV2> = listOf(),
 
             @SerializedName("categories")
@@ -254,7 +254,7 @@ data class UohListOrder(
             }
 
             data class FilterV2(
-                    @SerializedName("is_primary")
+                    @SerializedName("isPrimary")
                     val isPrimary: Boolean = false,
 
                     @SerializedName("label")

@@ -27,7 +27,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
     var labelType = -1
 
     interface ActionListener {
-        fun onOptionItemClick(option: String, label: String, filterType: Int)
+        fun onOptionItemClick(label: String, value: String, filterType: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -1172,17 +1172,17 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     @SuppressLint("SimpleDateFormat")
-    override fun onOptionItemClick(option: String, label: String, filterType: Int) {
+    override fun onOptionItemClick(label: String, value: String, filterType: Int) {
         isFilterClicked = true
         tempFilterType = filterType
 
         when (filterType) {
             UohConsts.TYPE_FILTER_DATE -> {
-                tempFilterDateKey = option
-                tempFilterDateLabel = label
-                if (option.isNotEmpty()) {
+                tempFilterDateKey = label
+                tempFilterDateLabel = value
+                if (label.isNotEmpty()) {
                     when {
-                        option.toInt() == 0 -> {
+                        label.toInt() == 0 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1190,7 +1190,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             paramUohOrder.createTimeEnd = ""
 
                         }
-                        option.toInt() == 1 -> {
+                        label.toInt() == 1 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1200,7 +1200,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             paramUohOrder.createTimeEnd = endDate
 
                         }
-                        option.toInt() == 2 -> {
+                        label.toInt() == 2 -> {
                             bottomSheetOption?.apply {
                                 cl_choose_date?.gone()
                             }
@@ -1209,7 +1209,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             paramUohOrder.createTimeEnd = endDate
 
                         }
-                        option.toInt() == 3 -> {
+                        label.toInt() == 3 -> {
                             val inputFormat = SimpleDateFormat("yyyy-MM-dd")
                             val outputFormat = SimpleDateFormat("d MMM yyyy")
                             val startDateStrInput = inputFormat.parse(orderList.dateLimit)
@@ -1242,18 +1242,18 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 userSession?.userId?.let { UohAnalytics.clickDateFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_STATUS -> {
-                tempFilterStatusKey = option
-                tempFilterStatusLabel = label
-                paramUohOrder.status = option
+                tempFilterStatusKey = label
+                tempFilterStatusLabel = value
+                paramUohOrder.status = label
                 userSession?.userId?.let { UohAnalytics.clickStatusFilterChips(it) }
             }
             UohConsts.TYPE_FILTER_CATEGORY -> {
-                tempFilterCategoryKey = option
-                tempFilterCategoryLabel = label
+                tempFilterCategoryKey = label
+                tempFilterCategoryLabel = value
                 if (tempFilterCategoryKey == ALL_CATEGORIES) {
                     paramUohOrder.verticalCategory = ""
                 } else {
-                    paramUohOrder.verticalCategory = option
+                    paramUohOrder.verticalCategory = label
                 }
                 userSession?.userId?.let { UohAnalytics.clickCategoryFilterChips(it) }
             }
