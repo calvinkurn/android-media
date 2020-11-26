@@ -19,8 +19,6 @@ import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.TkpdApplinkDelegate;
-import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
-import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -43,8 +41,6 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModuleLoader;
-import com.tokopedia.officialstore.applink.OfficialStoreApplinkModule;
-import com.tokopedia.officialstore.applink.OfficialStoreApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
 import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
@@ -60,8 +56,6 @@ import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.utils.uri.DeeplinkUtils;
 import com.tokopedia.weaver.WeaveInterface;
@@ -86,15 +80,12 @@ import timber.log.Timber;
         SellerApplinkModule.class,
         ProductDetailApplinkModule.class,
         FeedDeeplinkModule.class,
-        DigitalBrowseApplinkModule.class,
         OvoUpgradeDeeplinkModule.class,
         LoyaltyAppLinkModule.class,
         ExploreApplinkModule.class,
         LoginRegisterApplinkModule.class,
-        ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         HomeCreditAppLinkModule.class,
-        OfficialStoreApplinkModule.class,
         WebViewApplinkModule.class,
 })
 
@@ -113,14 +104,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new SellerApplinkModuleLoader(),
                     new ProductDetailApplinkModuleLoader(),
                     new FeedDeeplinkModuleLoader(),
-                    new DigitalBrowseApplinkModuleLoader(),
                     new LoyaltyAppLinkModuleLoader(),
                     new ExploreApplinkModuleLoader(),
                     new LoginRegisterApplinkModuleLoader(),
-                    new ChangeInactivePhoneApplinkModuleLoader(),
                     new PhoneVerificationApplinkModuleLoader(),
                     new HomeCreditAppLinkModuleLoader(),
-                    new OfficialStoreApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader()
             );
         }

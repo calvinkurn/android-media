@@ -1,19 +1,18 @@
 package com.tokopedia.digital.newcart.presentation.presenter
 
-import com.tokopedia.common_digital.cart.constant.DigitalCartCrossSellingType
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.FintechProductCheckout
-import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase
-import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase
-import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
-import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
 import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
+import com.tokopedia.digital.newcart.constant.DigitalCartCrossSellingType
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.FintechProductCheckout
+import com.tokopedia.digital.newcart.data.entity.requestbody.checkout.RequestBodyCheckout
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
-import com.tokopedia.user.session.UserSession
+import com.tokopedia.digital.newcart.presentation.model.cart.CartDigitalInfoData
+import com.tokopedia.digital.newcart.presentation.model.checkout.CheckoutDataParameter
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalAddToCartUseCase
+import com.tokopedia.digital.newcart.presentation.usecase.DigitalGetCartUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: DigitalAddToCartUseCase?,
@@ -21,17 +20,15 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                                                       digitalAnalytics: DigitalAnalytics?,
                                                       rechargeAnalytics: RechargeAnalytics?,
                                                       cartDigitalInteractor: ICartDigitalInteractor?,
-                                                      val userSession: UserSession?,
-                                                      digitalCheckoutUseCase: DigitalCheckoutUseCase?,
-                                                      digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?) :
+                                                      val userSession: UserSessionInterface?,
+                                                      digitalCheckoutUseCase: DigitalCheckoutUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalGetCartUseCase,
                 digitalAnalytics,
                 rechargeAnalytics,
                 cartDigitalInteractor,
                 userSession,
-                digitalCheckoutUseCase,
-                digitalInstantCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
+                digitalCheckoutUseCase), DigitalCartMyBillsContract.Presenter {
 
     override fun onSubcriptionCheckedListener(checked: Boolean) {
         view.cartInfoData.crossSellingConfig?.run {
@@ -70,20 +67,20 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
     override fun getRequestBodyCheckout(parameter: CheckoutDataParameter): RequestBodyCheckout {
         val bodyCheckout = super.getRequestBodyCheckout(parameter)
         if (view.cartInfoData.crossSellingType == DigitalCartCrossSellingType.MYBILLS) {
-            bodyCheckout.attributes!!.subscribe = view.isSubscriptionChecked()
-            if (view.isEgoldChecked()) {
-                view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
-                    bodyCheckout.attributes?.apply {
-                        var title = info?.let { it.title ?: "" }
-                        fintechProduct = listOf(FintechProductCheckout(
-                                transactionType = transactionType,
-                                tierId = tierId,
-                                userId = identifier?.userId?.toLongOrNull(),
-                                fintechAmount = fintechAmount,
-                                fintechPartnerAmount = fintechPartnerAmount,
-                                productName = title
-                        ))
-                    }
+            bodyCheckout.attributes?.let { it.subscribe = view.isSubscriptionChecked() }
+        }
+        if (view.isEgoldChecked()) {
+            view.cartInfoData.attributes?.fintechProduct?.getOrNull(0)?.run {
+                bodyCheckout.attributes?.apply {
+                    var title = info?.let { it.title ?: "" }
+                    fintechProduct = listOf(FintechProductCheckout(
+                            transactionType = transactionType,
+                            tierId = tierId,
+                            userId = identifier?.userId?.toLongOrNull(),
+                            fintechAmount = fintechAmount,
+                            fintechPartnerAmount = fintechPartnerAmount,
+                            productName = title
+                    ))
                 }
             }
         }

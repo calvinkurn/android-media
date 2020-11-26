@@ -257,6 +257,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
 
+    // AttachProductActivity
+    @JvmField
+    val ATTACH_PRODUCT = "$INTERNAL_MARKETPLACE/user-attach-product"
+
     @JvmField
     val SHOP_PAGE_SETTING = "$SHOP_PAGE_BASE-setting"
 
@@ -289,10 +293,6 @@ object ApplinkConstInternalMarketplace {
     // ProductDraftListActivity
     @JvmField
     val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
-
-    // GMStatisticDashboardActivity
-    @JvmField
-    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
 
     //MitraToppersDashboardActivity
     @JvmField

@@ -9,7 +9,8 @@ import com.tokopedia.kotlin.model.ImpressHolder
 data class CarouselDataUiModel (
         override val dataKey: String = "",
         val items: List<CarouselItemUiModel> = emptyList(),
-        override var error: String = ""
+        override var error: String = "",
+        override var isFromCache: Boolean = false
 ): BaseDataUiModel
 
 class CarouselItemUiModel (

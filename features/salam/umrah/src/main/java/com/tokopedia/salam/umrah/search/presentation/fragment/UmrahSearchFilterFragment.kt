@@ -11,14 +11,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.design.intdef.CurrencyEnum
-import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.design.text.watcher.CurrencyTextWatcher
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.PriceRangeLimit
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.util.CurrencyFormatter.getRupiahFormatSliderFilter
+import com.tokopedia.salam.umrah.common.util.UmrahQuery
+import com.tokopedia.salam.umrah.common.util.UmrahSpaceItemDecoration
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
 import com.tokopedia.salam.umrah.search.di.UmrahSearchComponent
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity.Companion.EXTRA_DEPARTURE_CITY_ID
@@ -31,14 +30,12 @@ import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchFilterAd
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchSortAdapter
 import com.tokopedia.salam.umrah.search.presentation.viewmodel.UmrahSearchFilterSortViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.RangeSliderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_search_sort.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_search_filter.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -53,8 +50,6 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     private val departureCityAdapter: UmrahSearchFilterAdapter by lazy { UmrahSearchFilterAdapter() }
     private val bottomSheetdeparturePeriodAdapter: UmrahSearchSortAdapter by lazy { UmrahSearchSortAdapter() }
     private val bottomSheetdepartureCityAdapter: UmrahSearchSortAdapter by lazy { UmrahSearchSortAdapter() }
-    private lateinit var maxCurrencyTextWatcher: CurrencyTextWatcher
-    private lateinit var minCurrencyTextWatcher: CurrencyTextWatcher
     private var scrollPositionDepartureCity = 0
     private var scrollPositionDeparturePeriod = 0
 
@@ -66,13 +61,13 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     }
 
     private fun loadData() {
-        val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_home_page_search_parameter)
+        val searchQuery = UmrahQuery.UMRAH_HOMEPAGE_SEARCH_PARAM_QUERY
         umrahSearchFilterSortViewModel.getUmrahSearchParameter(searchQuery)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        umrahSearchFilterSortViewModel.umrahSearchParameter.observe(this, Observer {
+        umrahSearchFilterSortViewModel.umrahSearchParameter.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetResult(it.data)
                 is Fail -> Fail(it.throwable)
@@ -143,7 +138,7 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     private fun setupFilterDeparturePeriod(departurePeriodOptions: List<UmrahOption>) {
         rv_umrah_search_filter_departure_period.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
                     RecyclerView.HORIZONTAL))
             adapter = departurePeriodAdapter
         }
@@ -168,7 +163,7 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     private fun setupFilterDepartureCity(departureCityOptions: List<UmrahOption>) {
         rv_umrah_search_filter_departure_city.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            addItemDecoration(SpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+            addItemDecoration(UmrahSpaceItemDecoration(resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3),
                     RecyclerView.HORIZONTAL))
             adapter = departureCityAdapter
         }
@@ -202,35 +197,37 @@ class UmrahSearchFilterFragment : BaseDaggerFragment() {
     }
 
     private fun setupFilterPriceRange(priceRangeLimit: PriceRangeLimit) {
-        val minPriceEditText = riv_umrah_search_filter_package_price.minValueEditText
-        if (::minCurrencyTextWatcher.isInitialized) {
-            minPriceEditText.removeTextChangedListener(minCurrencyTextWatcher)
-        }
-        minCurrencyTextWatcher = CurrencyTextWatcher(minPriceEditText, CurrencyEnum.RP)
-        minPriceEditText.addTextChangedListener(minCurrencyTextWatcher)
-
-        val maxPriceEditText = riv_umrah_search_filter_package_price.maxValueEditText
-        if (::maxCurrencyTextWatcher.isInitialized) {
-            maxPriceEditText.removeTextChangedListener(maxCurrencyTextWatcher)
-        }
-        maxCurrencyTextWatcher = CurrencyTextWatcher(maxPriceEditText, CurrencyEnum.RP)
-        maxPriceEditText.addTextChangedListener(maxCurrencyTextWatcher)
-        if (selectedFilter.priceMaximum == 0 || selectedFilter.priceMaximum == priceRangeLimit.maximum) maxCurrencyTextWatcher.format = getString(R.string.umrah_search_filter_max_string_format_with_plus)
-        riv_umrah_search_filter_package_price.setPower(1.0)
-
         val filteredMinPrice = if (selectedFilter.priceMinimum < priceRangeLimit.minimum) priceRangeLimit.minimum else selectedFilter.priceMinimum
         val filteredMaxPrice = if (selectedFilter.priceMaximum == 0 || selectedFilter.priceMaximum > priceRangeLimit.maximum) priceRangeLimit.maximum else selectedFilter.priceMaximum
 
+        CoroutineScope(Dispatchers.Main).launch{
+            delay(50)
+            range_umrah_price.updateValue(filteredMinPrice,filteredMaxPrice)
+        }
+
+        range_umrah_price.activeRailColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G500)
+        range_umrah_price.backgroundRailColor = resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N100)
+
         selectedFilter.priceMinimum = filteredMinPrice
         selectedFilter.priceMaximum = filteredMaxPrice
-        riv_umrah_search_filter_package_price.setData(priceRangeLimit.minimum, priceRangeLimit.maximum, filteredMinPrice, filteredMaxPrice)
-        riv_umrah_search_filter_package_price.setOnValueChangedListener { minValue, maxValue, _, maxBound ->
-            selectedFilter.priceMinimum = minValue
-            var optMaxValue = maxValue
-            if (maxValue == minValue && maxValue < maxBound) optMaxValue++
-            selectedFilter.priceMaximum = optMaxValue
-            if (selectedFilter.priceMaximum >= maxBound) maxCurrencyTextWatcher.format = getString(R.string.umrah_search_filter_max_string_format_with_plus)
-            else maxCurrencyTextWatcher.format = getString(R.string.umrah_search_filter_max_string_format)
+
+
+        tf_umrah_search_filter_min_price.textFieldInput.setText(getRupiahFormatSliderFilter(filteredMinPrice, priceRangeLimit.maximum))
+        tf_umrah_search_filter_max_price.textFieldInput.setText(getRupiahFormatSliderFilter(filteredMaxPrice,priceRangeLimit.maximum))
+
+        tf_umrah_search_filter_min_price.textFieldInput.isEnabled = false
+        tf_umrah_search_filter_max_price.textFieldInput.isEnabled = false
+
+
+        range_umrah_price.onSliderMoveListener = object: RangeSliderUnify.OnSliderMoveListener {
+            override fun onSliderMove(p0: Pair<Int, Int>) {
+                val(start, end) = p0
+
+                selectedFilter.priceMinimum = start
+                tf_umrah_search_filter_min_price.textFieldInput.setText(getRupiahFormatSliderFilter(start,priceRangeLimit.maximum))
+                selectedFilter.priceMaximum = end
+                tf_umrah_search_filter_max_price.textFieldInput.setText(getRupiahFormatSliderFilter(end,priceRangeLimit.maximum))
+            }
         }
     }
 

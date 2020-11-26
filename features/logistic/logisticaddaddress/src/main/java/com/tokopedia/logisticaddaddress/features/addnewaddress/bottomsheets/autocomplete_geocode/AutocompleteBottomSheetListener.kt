@@ -2,7 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.aut
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticdata.data.autocomplete.Place
+import com.tokopedia.logisticCommon.domain.model.Place
 
 /**
  * Created by fwidjaja on 2019-05-14.

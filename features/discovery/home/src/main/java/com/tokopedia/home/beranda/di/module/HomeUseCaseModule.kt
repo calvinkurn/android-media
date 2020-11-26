@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.data.mapper.HomeDynamicChannelDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeRecommendationMapper
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerListHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.di.HomeScope
@@ -26,24 +27,31 @@ import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.DisplayHeadlineAdsEntity
-import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
-import com.tokopedia.play_common.domain.model.PlayToggleChannelEntity
-import com.tokopedia.play_common.domain.usecases.GetPlayWidgetUseCase
-import com.tokopedia.play_common.domain.usecases.PlayToggleChannelReminderUseCase
+import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
+import com.tokopedia.play.widget.domain.PlayWidgetUseCase
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
+import com.tokopedia.play.widget.ui.type.PlayWidgetSize
+import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.repository.TopAdsRepository
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.Lazy
 import dagger.Module
 import dagger.Provides
 
-@Module
+@Module(includes = [PlayWidgetModule::class])
 class HomeUseCaseModule {
 
     private val businessWidgetQuery : String = "query HomeWidget() {\n" +
@@ -140,6 +148,29 @@ class HomeUseCaseModule {
             "                text\n" +
             "                backgroundColor\n" +
             "            }\n" +
+            "        }\n" +
+            "    }\n" +
+            "}"
+
+    val tokopointsListQuery: String = "query{\n" +
+            "    tokopointsDrawerList{\n" +
+            "        offFlag\n" +
+            "        drawerList{" +
+            "           iconImageURL\n" +
+            "           redirectURL\n" +
+            "           redirectAppLink\n" +
+            "           sectionContent{\n" +
+            "               type\n" +
+            "               textAttributes{\n" +
+            "                    text\n" +
+            "                 color\n" +
+            "                 isBold\n" +
+            "               }\n" +
+            "               tagAttributes{\n" +
+            "                   text\n" +
+            "                   backgroundColor\n" +
+            "               }\n" +
+            "           }\n" +
             "        }\n" +
             "    }\n" +
             "}"
@@ -330,6 +361,7 @@ class HomeUseCaseModule {
             "              imageUrl\n" +
             "              applinks\n" +
             "              bu_identifier\n" +
+            "              campaignCode\n" +
             "            }\n" +
             "          }\n" +
             "          homeFlag{\n" +
@@ -447,6 +479,14 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
+    fun provideHomeTokopointsListDataUseCase(graphqlRepository: GraphqlRepository): GetHomeTokopointsListDataUseCase {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<TokopointsDrawerListHomeData>(graphqlRepository)
+        useCase.setGraphqlQuery(tokopointsListQuery)
+        return GetHomeTokopointsListDataUseCase(useCase)
+    }
+
+    @Provides
+    @HomeScope
     fun provideGetPlayLiveDynamicDataUseCase(graphqlRepository: GraphqlRepository): GetPlayLiveDynamicUseCase {
         return GetPlayLiveDynamicUseCase(com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository))
     }
@@ -535,19 +575,6 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetPlayBannerV2UseCase(graphqlRepository: GraphqlRepository): GetPlayWidgetUseCase{
-        return GetPlayWidgetUseCase(graphqlRepository)
-    }
-
-    @Provides
-    @HomeScope
-    fun providePlayToggleChannelReminderUseCase(graphqlRepository: GraphqlRepository): PlayToggleChannelReminderUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<PlayToggleChannelEntity>(graphqlRepository)
-        return PlayToggleChannelReminderUseCase(useCase)
-    }
-
-    @Provides
-    @HomeScope
     fun provideInjectCouponTimeBasedUseCase(graphqlUseCase: com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<SetInjectCouponTimeBased>): InjectCouponTimeBasedUseCase {
         return InjectCouponTimeBasedUseCase(graphqlUseCase)
     }
@@ -562,5 +589,30 @@ class HomeUseCaseModule {
     @Provides
     fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface): TopAdsImageViewUseCase {
         return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository())
+    }
+
+    @HomeScope
+    @Provides
+    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
+                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+                          mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
+        return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
+
+    @HomeScope
+    @Provides
+    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository) : GetRecommendationFilterChips {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
+        return GetRecommendationFilterChips(useCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository) : GetRecommendationUseCase {
+        return GetRecommendationUseCase(graphqlRepository)
     }
 }

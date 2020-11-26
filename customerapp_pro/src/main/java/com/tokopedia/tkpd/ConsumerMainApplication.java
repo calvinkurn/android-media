@@ -6,9 +6,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-
-import com.tokopedia.applink.ApplinkConst;
-
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -17,7 +14,6 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-
 import kotlin.Pair;
 
 import androidx.annotation.Nullable;
@@ -37,8 +33,10 @@ import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -53,11 +51,8 @@ import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
-import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
-import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
 import com.tokopedia.device.info.DeviceInfo;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.intl.BuildConfig;
 import com.tokopedia.intl.R;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
@@ -67,6 +62,7 @@ import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubsc
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
+import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.screenshot_observer.Screenshot;
 import com.tokopedia.shakedetect.ShakeDetectManager;
@@ -96,6 +92,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.Pair;
 import timber.log.Timber;
 
 import static com.tokopedia.unifyprinciples.GetTypefaceKt.getTypeface;
@@ -117,6 +114,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
+    private static final String ENABLE_SEQ_AB_TESTING_ASYNC = "android_exec_seq_ab_testing_async";
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -124,17 +122,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         System.loadLibrary("native-lib");
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
     @Override
     public void onCreate() {
-        if (!isMainProcess()) {
-            return;
-        }
         initConfigValues();
         initializeSdk();
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
+        initCacheManager();
 
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -144,10 +141,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         createAndCallPreSeq();
         super.onCreate();
         createAndCallPostSeq();
+        createAndCallPostSeqAbTesting();
         createAndCallFontLoad();
 
         registerActivityLifecycleCallbacks();
 
+    }
+
+    private void initCacheManager(){
+        PersistentCacheManager.init(this);
+        cacheManager = PersistentCacheManager.instance;
     }
 
     private void registerActivityLifecycleCallbacks() {
@@ -158,13 +161,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         }));
 
-        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.Listener() {
+        registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
             @Override
-            public void onScreenShotTaken(Uri uri) {
-                openFeedbackForm(uri);
+            public void onFeedbackClicked(Uri uri, String className, boolean isFromScreenshot) {
+                openFeedbackForm(uri, className, isFromScreenshot);
             }
-        }));
 
+        }));
 
         registerActivityLifecycleCallbacks(new BetaSignActivityLifecycleCallbacks());
         registerActivityLifecycleCallbacks(new LoggerActivityLifecycleCallbacks());
@@ -180,7 +183,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
 
     private void createAndCallPreSeq() {
-        PersistentCacheManager.init(ConsumerMainApplication.this);
         //don't convert to lambda does not work in kit kat
         WeaveInterface preWeave = new WeaveInterface() {
             @NotNull
@@ -203,6 +205,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, RemoteConfigKey.ENABLE_SEQ2_ASYNC, context);
     }
+
+    private void createAndCallPostSeqAbTesting() {
+        //don't convert to lambda does not work in kit kat
+        WeaveInterface postWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Boolean execute() {
+                return executePostCreateSequenceAbTesting();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(postWeave, ENABLE_SEQ_AB_TESTING_ASYNC, context);
+    }
+
 
     private void createAndCallFontLoad() {
         //don't convert to lambda does not work in kit kat
@@ -272,6 +287,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (com.tokopedia.config.GlobalConfig.DEBUG) {
             com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceInfo.getAndroidId(this);
         }
+        if (BuildConfig.DEBUG_TRACE_NAME != null) {
+            com.tokopedia.config.GlobalConfig.DEBUG_TRACE_NAME = BuildConfig.DEBUG_TRACE_NAME.split(",");
+        }
         generateConsumerAppNetworkKeys();
     }
 
@@ -293,10 +311,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
         devMonitoring.initBlockCanary();
 
-        initializeAbTestVariant();
         gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
         registerActivityLifecycleCallbacks(gratificationSubscriber);
         getAmplificationPushData();
+        return true;
+    }
+
+    @NotNull
+    private Boolean executePostCreateSequenceAbTesting() {
+        initializeAbTestVariant();
         return true;
     }
 
@@ -326,25 +349,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         getApplicationContext().startActivity(intent);
     }
 
-
-    private void openFeedbackForm(Uri uri) {
+    private void openFeedbackForm(Uri uri, String className, boolean isFromScreenshot) {
         Intent intent = RouteManager.getIntent(getApplicationContext(), ApplinkConst.FEEDBACK_FORM);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra("EXTRA_URI_IMAGE", uri);
+        intent.putExtra("EXTRA_IS_CLASS_NAME", className);
+        intent.putExtra("EXTRA_IS_FROM_SCREENSHOT", isFromScreenshot);
         getApplicationContext().startActivity(intent);
-    }
-
-    private boolean isMainProcess() {
-        ActivityManager manager = ContextCompat.getSystemService(this, ActivityManager.class);
-
-        if (manager == null || manager.getRunningAppProcesses() == null) return false;
-
-        for (ActivityManager.RunningAppProcessInfo processInfo : manager.getRunningAppProcesses()) {
-            if (processInfo.pid == android.os.Process.myPid()) {
-                return BuildConfig.APPLICATION_ID.equals(processInfo.processName);
-            }
-        }
-        return false;
     }
 
     @Override

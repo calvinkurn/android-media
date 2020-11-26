@@ -8,6 +8,7 @@ public interface SearchConstant {
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
+    String SEARCH_RESULT_PAGE = "search result page";
     String SEARCH_RESULT_TRACE = "search_result_trace";
     String SEARCH_RESULT_PLT_PREPARE_METRICS = "search_result_plt_prepare_metrics";
     String SEARCH_RESULT_PLT_NETWORK_METRICS = "search_result_plt_network_metrics";
@@ -31,6 +32,9 @@ public interface SearchConstant {
     interface DefaultViewType {
         int SMALL_GRID = 1;
         int LIST = 2;
+        String VIEW_TYPE_NAME_SMALL_GRID = "grid 2";
+        String VIEW_TYPE_NAME_BIG_GRID = "grid 1";
+        String VIEW_TYPE_NAME_LIST = "list";
     }
 
     interface Wishlist {
@@ -77,6 +81,7 @@ public interface SearchConstant {
         String SEARCH_PRODUCT_FIRST_PAGE_USE_CASE = "search_product_first_page_use_case";
         String SEARCH_PRODUCT_LOAD_MORE_USE_CASE = "search_product_load_more_use_case";
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
+        String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String HEADLINE = "headline";
         String HEADLINE_TEMPLATE_VALUE = "3,4";
         String HEADLINE_ITEM_VALUE = "1";
@@ -142,6 +147,11 @@ public interface SearchConstant {
         String AB_TEST_SHOP_RATING_VARIANT_A = "Hierarchical Rating";
         String AB_TEST_SHOP_RATING_VARIANT_B = "Terjual ft Rating";
         String AB_TEST_SHOP_RATING_VARIANT_C = "Rating Only";
+        String AB_TEST_KEY_THREE_DOTS_SEARCH = "3 Dots Search";
+        String AB_TEST_THREE_DOTS_SEARCH_FULL_OPTIONS = "Full Options";
+        String AB_TEST_NAVIGATION_REVAMP = "Navigation Revamp";
+        String AB_TEST_OLD_NAV = "existing navigation";
+        String AB_TEST_NAV_REVAMP = "Navigation Revamp";
     }
 
     interface ProductCardLabel {
@@ -152,6 +162,7 @@ public interface SearchConstant {
     interface OnBoarding {
         String LOCAL_CACHE_NAME = "SEARCH_PRODUCT_ON_BOARDING";
         String FILTER_ONBOARDING_SHOWN = "FILTER_ONBOARDING_SHOWN";
+        String THREE_DOTS_ONBOARDING_SHOWN = "THREE_DOTS_ONBOARDING_SHOWN";
     }
 
     interface InspirationCarousel {

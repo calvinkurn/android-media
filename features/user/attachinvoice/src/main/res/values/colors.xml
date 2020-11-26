@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="attachinvoice_shadow_attachment">#0C31353b</color>
+    <color name="attachinvoice_transparent">#00000000</color>
+    <color name="attachinvoice_red_800">#ff5722</color>
 </resources>
