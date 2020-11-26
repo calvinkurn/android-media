@@ -2088,7 +2088,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun openFtInstallmentBottomSheet(installmentData: FtInstallmentCalculationDataResponse) {
-        val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
+        RouteManager.route(context, ApplinkConst.PAYLATER)
+
+        /*val pdpInstallmentBottomSheet = FtPDPInstallmentBottomSheet()
 
         val productInfo = viewModel.getDynamicProductInfoP1
 
@@ -2105,7 +2107,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
-        }
+        }*/
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {

@@ -1,20 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Neutral_N0"
     android:layout_marginTop="@dimen/spacing_lvl4"
+    android:background="@color/Neutral_N0"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ContentSwitcherUnify
-        android:layout_width="wrap_content"
+        android:id="@+id/modeSwitcher"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:textOff="PayLater"
         android:textOn="Kartu Credit"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/paylaterDaftarWidget"
+        layout="@layout/paylater_daftar_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/modeSwitcher" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/payLaterBorder"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/paylaterDaftarWidget"
         />
+
+    <com.tokopedia.unifycomponents.TabsUnify
+        android:id="@+id/paylaterTabLayout"
+        style="?tabTheme"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:tabIndicatorColor="@color/tkpd_main_green"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="@color/tkpd_main_green"
+        app:tabTextColor="@color/font_black_disabled_38"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/payLaterBorder"
+        />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/payLaterViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/paylaterTabLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

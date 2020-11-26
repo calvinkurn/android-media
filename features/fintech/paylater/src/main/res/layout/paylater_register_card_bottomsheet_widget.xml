@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/Neutral_N0">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/tickerPaylaterRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:descriptionText="Yuk, langsung gunakan untuk belanja!"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tickerType="announcement"
+        app:titleText="Kredivo-mu sudah aktif" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPayLaterRegisterSteps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:layout_constraintTop_toBottomOf="@id/tickerPaylaterRegister"
+        tools:listitem="@layout/paylater_register_card_bottomsheet_item" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Daftar Sekarang"
+        app:layout_constraintEnd_toEndOf="@id/tickerPaylaterRegister"
+        app:layout_constraintStart_toStartOf="@id/tickerPaylaterRegister"
+        app:layout_constraintTop_toBottomOf="@+id/rvPayLaterRegisterSteps"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="main"
+        app:unifyButtonVariant="filled" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnFindMore"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Cari Tahu Lebih Lanjut"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/tickerPaylaterRegister"
+        app:layout_constraintStart_toStartOf="@id/tickerPaylaterRegister"
+        app:layout_constraintTop_toBottomOf="@+id/btnRegister"
+        app:unifyButtonSize="small"
+        app:unifyButtonType="alternate"
+        app:unifyButtonVariant="ghost" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

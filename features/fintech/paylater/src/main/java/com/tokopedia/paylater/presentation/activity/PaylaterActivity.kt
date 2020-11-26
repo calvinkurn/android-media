@@ -1,11 +1,10 @@
 package com.tokopedia.paylater.presentation.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.paylater.R
-import com.tokopedia.paylater.presentation.fragments.PaylaterFragment
+import com.tokopedia.paylater.presentation.fragment.PayLaterFragment
 
 class PaylaterActivity : BaseSimpleActivity() {
 
@@ -15,7 +14,7 @@ class PaylaterActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle("")
+        updateTitle(SCREEN_NAME)
 
     }
 
@@ -26,10 +25,10 @@ class PaylaterActivity : BaseSimpleActivity() {
     override fun getParentViewResourceID(): Int = R.id.paylater_parent_view
 
     override fun getNewFragment(): Fragment? {
-       return PaylaterFragment.newInstance()
+       return PayLaterFragment.newInstance()
     }
 
     companion object {
-        const val SCREEN_NAME = "Paylater"
+        const val SCREEN_NAME = "PayLater & Cicilan"
     }
 }

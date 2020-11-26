@@ -6,6 +6,17 @@
             android:name="com.tokopedia.paylater.presentation.activity.PaylaterActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="@string/host_fintech"
+                    android:path="@string/path_paylater"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
         </activity>
     </application>
 </manifest>

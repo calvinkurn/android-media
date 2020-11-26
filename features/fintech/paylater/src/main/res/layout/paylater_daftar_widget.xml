@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:id="@+id/borderDaftar"
+            android:layout_width="@dimen/spacing_lvl3"
+            android:layout_height="0dp"
+            android:background="@color/paylater_daftar_widget_border_blue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/imageUnify"
+            android:layout_width="@dimen/spacing_lvl5"
+            android:layout_height="@dimen/spacing_lvl5"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            app:srcCompat="@drawable/ic_paylater_dafter_wallet"
+            app:layout_constraintStart_toStartOf="@id/borderDaftar"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@+id/imageUnify"
+            app:layout_constraintTop_toTopOf="@+id/imageUnify"
+            app:typographyType="heading_4"
+            app:typographyWeight="bold"
+            android:textSize="@dimen/unify_font_16"
+            android:text="@string/paylater_register"
+            />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageUnify"
+            app:layout_constraintTop_toBottomOf="@+id/typography"
+            app:typographyType="body_3"
+            android:lineSpacingExtra="4sp"
+            android:textColor="@color/clr_f531353b"
+            android:textSize="@dimen/unify_font_12"
+            android:text="@string/sp_more_choices"
+            />
+
+        <ImageView
+            android:id="@+id/proceedPaylater"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_paylater_daftar_right_arrow"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>
