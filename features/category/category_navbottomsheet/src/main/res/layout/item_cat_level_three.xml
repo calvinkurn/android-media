@@ -8,8 +8,10 @@
         android:id="@+id/expandedListItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_12"
-        android:padding="@dimen/unify_space_16"
+        android:paddingLeft="@dimen/level3_spacing_12dp"
+        android:paddingRight="@dimen/unify_space_16"
+        android:paddingTop="@dimen/unify_space_16"
+        android:paddingBottom="@dimen/unify_space_16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/selected_icon"
         app:layout_constraintTop_toTopOf="parent" />

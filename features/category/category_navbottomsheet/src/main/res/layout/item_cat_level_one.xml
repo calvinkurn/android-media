@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_layout"
-    android:layout_width="@dimen/dp_80"
-    android:layout_height="@dimen/dp_72"
-    android:paddingTop="@dimen/dp_12">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/unify_space_12">
 
     <ImageView
         android:id="@+id/category_imageview"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
         android:contentDescription="@string/content_desc_category_imageview"
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/category_name"
@@ -25,10 +25,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:lines="2"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4"
+        android:paddingLeft="@dimen/unify_space_4"
+        android:paddingRight="@dimen/unify_space_4"
         android:paddingBottom="@dimen/dp_10"
-        android:textColor="@color/clr_ae31353b"
         app:layout_constraintBottom_toTopOf="@+id/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -13,8 +13,10 @@ import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.setTextAndContentDescription
 import kotlinx.android.synthetic.main.item_cat_level_one.view.*
+import kotlinx.android.synthetic.main.item_shimmer_cat_level_one.view.*
 
-class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem>,
+
+class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<CategoriesItem?>,
                               private val listener: CategorySelectListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -27,7 +29,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
                 CategoryViewHolder(view)
             }
             else -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_shimmer_level_one, parent, false)
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_shimmer_cat_level_one, parent, false)
                 ShimmerViewHolder(view)
             }
         }
@@ -48,9 +50,9 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
 
     private fun initShimmerViewHolder(shimmerViewHolder: ShimmerViewHolder, position: Int) {
         if (position == 0) {
-//            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.white))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.white))
         } else {
-//            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.category_unselected_background))
+            shimmerViewHolder.shimmerParent.setBackgroundColor(MethodChecker.getColor(shimmerViewHolder.itemView.context, R.color.category_unselected_background))
         }
     }
 
@@ -58,20 +60,22 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
         val item = categoryList[position]
 
         holder.parentLayout.setOnClickListener {
-            listener.onItemClicked(item.id
-                    ?: "", position, item.name
+            listener.onItemClicked(item?.id
+                    ?: "", position, item?.name
                     ?: "")
 
         }
-        if (item.isSelected) {
+        if (item?.isSelected == true) {
             holder.categoryImage.loadImage(item.iconImageUrl ?:"", R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
+            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, R.color.category_L1_selected_title))
         } else {
-            holder.categoryImage.loadImage(item.iconImageUrlGray ?:"", R.drawable.square_shimmer)
+            holder.categoryImage.loadImage(item?.iconImageUrlGray ?:"", R.drawable.square_shimmer)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
+            holder.categoryName.setTextColor(MethodChecker.getColor(holder.itemView.context, R.color.category_L1_unselected_title))
         }
 
-        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item.name ?: ""), R.string.content_desc_category_name)}
+        with(holder.categoryName) {setTextAndContentDescription(getEllipsizedMessage(item?.name ?: ""), R.string.content_desc_category_name)}
     }
 
 
@@ -80,7 +84,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
     }
 
     override fun getItemViewType(position: Int): Int {
-        return categoryList[position].type
+        return categoryList[position]?.type?:0
     }
 
     class CategoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -90,7 +94,7 @@ class  CategoryNavLevelOneAdapter(private val categoryList: MutableList<Categori
     }
 
     class ShimmerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-//        val shimmerParent: LinearLayout = view.shimmer_parent
+        val shimmerParent: ConstraintLayout = view.shimmer_parent
     }
 
     private fun getEllipsizedMessage(message: String): String? {

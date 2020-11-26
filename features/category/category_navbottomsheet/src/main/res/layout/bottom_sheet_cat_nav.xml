@@ -14,6 +14,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:foregroundGravity="top"
+            android:layout_marginLeft="@dimen/unify_space_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/separator_guideline"
             app:layout_constraintStart_toStartOf="@+id/separator_guideline"
