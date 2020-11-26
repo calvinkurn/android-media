@@ -41,6 +41,7 @@ internal open class BannerView(activity: Activity) {
 
     fun dialog(data: CMInApp) {
         alertDialog.setView(createView(data))
+        alertDialog.setOnDismissListener { dismissInteractionTracking(data) }
 
         // set transparent background only for interstitial_img
         if (data.type == TYPE_INTERSTITIAL_IMAGE_ONLY) {
