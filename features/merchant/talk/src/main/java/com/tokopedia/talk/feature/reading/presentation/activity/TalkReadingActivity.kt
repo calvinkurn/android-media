@@ -46,13 +46,6 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
         getDataFromIntent()
-        if (FirebaseRemoteConfigImpl(applicationContext).getBoolean(TalkConstants.APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY, false)) {
-            val intent = Intent(applicationContext, TalkProductActivity::class.java)
-            intent.putExtra(TalkProductActivity.PRODUCT_ID, productId)
-            intent.putExtra(TalkProductActivity.SHOP_ID, shopId)
-            startActivity(intent)
-            finish()
-        }
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         setUpToolBar()

@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_REPLY_PLT_NETWORK_METRICS
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_REPLY_PLT_PREPARE_METRICS
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_REPLY_PLT_RENDER_METRICS
@@ -47,11 +46,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
         getDataFromIntent()
-        if(FirebaseRemoteConfigImpl(applicationContext).getBoolean(TalkConstants.APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY, false)) {
-            val intent = TalkDetailsActivity.getCallingIntent(questionId, shopId, applicationContext, "")
-            startActivity(intent)
-            finish()
-        }
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         setUpToolBar()
