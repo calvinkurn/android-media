@@ -9,6 +9,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -151,7 +152,7 @@ open class AddToCartDoneBottomSheet :
                 val bottomSheetBehavior = BottomSheetBehavior.from<View>(it)
                 bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
                     override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if(newState == BottomSheetBehavior.STATE_DRAGGING){
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
                             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
                         }
                     }
@@ -201,6 +202,12 @@ open class AddToCartDoneBottomSheet :
         super.onDetach()
     }
 
+    override fun show(manager: FragmentManager, tag: String?) {
+        val fragmentTransaction = manager.beginTransaction()
+        fragmentTransaction.add(this, tag)
+        fragmentTransaction.commitAllowingStateLoss()
+    }
+
     private fun getRecommendationProduct() {
         addedProductDataModel?.productId?.let {
             viewShimmeringLoading.show()
@@ -219,11 +226,11 @@ open class AddToCartDoneBottomSheet :
     private fun observeAtcStatus(){
         addToCartDoneViewModel.addToCartLiveData.observe(this, Observer { result ->
             addToCartButton.isLoading = false
-            if(result is Success){
+            if (result is Success) {
                 stateAtcView.visible()
                 addToCartButton.hide()
-            } else if(result is Fail){
-                dialog?.run{
+            } else if (result is Fail) {
+                dialog?.run {
                     Toaster.toasterCustomBottomHeight = resources.getDimensionPixelOffset(R.dimen.dp_80)
                     Toaster.make(findViewById(android.R.id.content),
                             ProductDetailErrorHandler.getErrorMessage(context, result.throwable),
@@ -243,8 +250,9 @@ open class AddToCartDoneBottomSheet :
                     viewShimmeringLoading.hide()
                     atcDoneAdapter.clearAllElements()
                     val abValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey)
-                    if(abValue.isNotEmpty() && abValue != oldVariantPDP){
-                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId ?: -1))
+                    if (abValue.isNotEmpty() && abValue != oldVariantPDP) {
+                        atcDoneAdapter.addElement(AddToCartDoneRecommendationCarouselDataModel(mapRecommendationWidgetToAddToCartRecommendationDataModel(it.data.first()), addedProductDataModel?.shopId
+                                ?: -1))
                     } else {
                         for (res in it.data) {
                             atcDoneAdapter.addElement(AddToCartDoneRecommendationDataModel(res))
@@ -436,7 +444,7 @@ open class AddToCartDoneBottomSheet :
                             item.pageName,
                             item.header,
                             it
-                        )
+                    )
                 }
             }
         }
