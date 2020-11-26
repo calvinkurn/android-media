@@ -26,8 +26,6 @@ import com.tokopedia.flight.airportv2.presentation.adapter.FlightAirportAdapterT
 import com.tokopedia.flight.common.di.component.FlightComponent
 import com.tokopedia.flight.common.view.model.EmptyResultModel
 import com.tokopedia.unifycomponents.SearchBarUnify
-import kotlinx.coroutines.Job
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
