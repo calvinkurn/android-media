@@ -333,7 +333,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             dataList.addAll(element)
             renderList(dataList, lastCursor.isNotEmpty())
         } else {
-            if (isSellerMigrationEnabled(context) && userSession.hasShop()) {
+            if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
                 hideBottomSheetSellerMigration()
                 dataList.add(EmptyFeedShopSellerMigrationUiModel())
             } else {
