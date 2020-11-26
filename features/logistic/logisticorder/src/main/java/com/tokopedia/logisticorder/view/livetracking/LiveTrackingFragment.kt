@@ -30,6 +30,7 @@ class LiveTrackingFragment : BaseWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         if (url.isNotEmpty() && url.contains("tel:")) {
+            webview?.loadUrl(trackingUrl)
             val callIntent = Intent(ACTION_DIAL)
             callIntent.data = Uri.parse(url)
             startActivity(callIntent)
