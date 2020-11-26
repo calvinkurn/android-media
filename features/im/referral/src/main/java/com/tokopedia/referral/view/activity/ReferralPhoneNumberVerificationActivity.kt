@@ -27,10 +27,6 @@ class ReferralPhoneNumberVerificationActivity : BaseSimpleActivity() {
         return null
     }
 
-    override fun inflateFragment() {
-        initView()
-    }
-
     private fun initView() {
         addFragment(R.id.container, ReferralPhoneNumberVerificationFragment.newInstance())
     }
@@ -39,11 +35,5 @@ class ReferralPhoneNumberVerificationActivity : BaseSimpleActivity() {
         val fragmentTransaction = this.supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(containerViewId, fragment)
         fragmentTransaction.commit()
-    }
-
-    companion object {
-        fun getCallingIntent(activity: Activity?): Intent {
-            return Intent(activity, ReferralPhoneNumberVerificationActivity::class.java)
-        }
     }
 }
