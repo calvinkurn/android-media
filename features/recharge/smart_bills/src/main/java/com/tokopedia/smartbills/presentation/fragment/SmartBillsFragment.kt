@@ -267,15 +267,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     }
                 })
 
-                // Reset toggle all items checkbox
-                cb_smart_bills_select_all.isChecked = false
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
-                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+                    toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
                 view_smart_bills_select_all_checkbox_container.setOnClickListener {
                     cb_smart_bills_select_all.toggle()
-                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+                    toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
 
                 rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -304,6 +302,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         super.onDestroyView()
     }
 
+    override fun onSwipeRefresh() {
+        toggleAllItems(false)
+        super.onSwipeRefresh()
+    }
+
     override fun getScreenName(): String {
         return getString(R.string.app_name)
     }
@@ -313,11 +316,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun loadData(page: Int) {
-        // Reset view states
+        // Reset to initial state
         tv_smart_bills_title.show()
         view_smart_bills_select_all_checkbox_container.hide()
         view_smart_bills_shimmering.show()
         smart_bills_checkout_view.setVisibilityLayout(true)
+        toggleAllItems(false)
 
         viewModel.getStatementMonths(
                 viewModel.createStatementMonthsParams(1),
@@ -379,8 +383,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
-    private fun toggleAllItems(value: Boolean) {
-        smartBillsAnalytics.clickAllBills(value)
+    private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
+        if (triggerTracking) smartBillsAnalytics.clickAllBills(value)
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0
