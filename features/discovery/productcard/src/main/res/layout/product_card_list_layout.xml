@@ -230,6 +230,7 @@
             app:typographyType="small"
             app:typographyWeight="bold"
             tools:text="989jt orang"/>
+
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonDeleteProduct"
             android:layout_width="@dimen/dp_0"
@@ -256,26 +257,28 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonNotify"
-            android:layout_width="match_parent"
+            android:contentDescription="@string/content_desc_notifyMe"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_button_add_to_cart_height"
-            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
+            android:text="@string/product_card_text_notify_me_grid"
+            android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
-            android:gravity="center"
             android:textColor="@color/light_G500"
-            android:textStyle="bold"
-            android:visibility="gone"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
+            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:unifyButtonSize="small"
+            app:layout_constraintVertical_bias="1.0"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
-            tools:text="Ingatkan Saya"
+            app:unifyButtonSize="small"
+            tools:text="@string/product_card_text_notify_me_grid"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

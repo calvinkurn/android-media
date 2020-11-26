@@ -220,13 +220,15 @@
             android:textColor="@color/light_G500"
             android:textStyle="bold"
             android:visibility="gone"
+            android:contentDescription="@string/content_desc_notifyMe"
+            android:text="@string/product_card_text_notify_me_grid"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/buttonAddToCart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
-            tools:text="Ingatkan Saya"
+            tools:text="@string/product_card_text_notify_me_grid"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
