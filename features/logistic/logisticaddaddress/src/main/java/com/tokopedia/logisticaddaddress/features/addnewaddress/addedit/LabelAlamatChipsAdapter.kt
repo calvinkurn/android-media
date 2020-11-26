@@ -28,9 +28,9 @@ class LabelAlamatChipsAdapter(private var actionListener: ActionListener)
         val ctx = holder.itemView.context
         holder.itemView.tv_chips_item.run {
             text = labelAlamatList[position]
-            setTextColor(ContextCompat.getColor(ctx, com.tokopedia.design.R.color.font_black_secondary_54))
+            setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             setOnClickListener {
-                setTextColor(ContextCompat.getColor(ctx, R.color.tkpd_green))
+                setTextColor(ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_G300))
                 labelAlamatList.getOrNull(position)?.let {
                     actionListener.onLabelAlamatChipClicked(it)
                 }

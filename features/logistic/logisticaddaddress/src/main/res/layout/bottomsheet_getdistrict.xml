@@ -5,7 +5,7 @@
     android:id="@+id/bottomsheet_getdistrict"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:clickable="true"
     app:behavior_hideable="false"
     app:behavior_peekHeight="600dp"
@@ -36,7 +36,7 @@
         android:id="@+id/getdistrict_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
@@ -64,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/title_search_location_color"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 tools:text="Jalan Taman Siswa" />
@@ -91,7 +91,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             tools:text="Wirogunan Mergangsan Kota Yogyakarta Daerah Istimewa Yogyakarta" />
 
@@ -117,7 +117,7 @@
                 android:overScrollMode="always"
                 android:scrollbarStyle="insideInset"
                 android:scrollbars="vertical"
-                android:textColor="#ae31353b"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_15" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -138,7 +138,7 @@
                 android:paddingEnd="2dp"
                 android:paddingRight="2dp"
                 android:text="@string/tv_detail_address_placeholder"
-                android:textColor="@color/label_grey"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_12" />
 
             <TextView
@@ -151,7 +151,7 @@
                 android:paddingLeft="2dp"
                 android:paddingEnd="2dp"
                 android:paddingRight="2dp"
-                android:textColor="@color/label_grey"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/sp_12" />
 
         </RelativeLayout>
@@ -196,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:textColor="@color/title_search_location_color"
+                android:textColor="@color/Unify_N700_96"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
                 tools:text="@string/invalid_title" />
@@ -223,7 +223,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
-            android:textColor="@color/label_grey"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12"
             tools:text="Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail..." />
 
