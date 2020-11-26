@@ -614,7 +614,7 @@ open class HomeFragment : BaseDaggerFragment(),
             coachMark.dismissCoachMark()
         }
         bottomSheet.dismiss()
-        coachMark.showCoachMark(step = coachMarkItem, index = 0)
+        if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, index = 0)
     }
 
     private val afterInflationCallable: Callable<Any?>
