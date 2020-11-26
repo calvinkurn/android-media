@@ -164,8 +164,8 @@ class SomDetailFragment : BaseDaggerFragment(),
     private var somToaster: Snackbar? = null
 
     private var orderId = ""
-    private var detailResponse = SomDetailOrder.Data.GetSomDetail()
-    private var dynamicPriceResponse = SomDynamicPriceResponse.GetSomDynamicPrice()
+    private var detailResponse: SomDetailOrder.Data.GetSomDetail? = SomDetailOrder.Data.GetSomDetail()
+    private var dynamicPriceResponse: SomDynamicPriceResponse.GetSomDynamicPrice? = SomDynamicPriceResponse.GetSomDynamicPrice()
     private var acceptOrderResponse = SomAcceptOrderResponse.Data.AcceptOrder()
     private var rejectOrderResponse = SomRejectOrderResponse.Data.RejectOrder()
     private var successEditAwbResponse = SomEditRefNumResponse.Data()
@@ -347,8 +347,8 @@ class SomDetailFragment : BaseDaggerFragment(),
         somDetailViewModel.orderDetailResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
-                    detailResponse = it.data.getSomDetail as SomDetailOrder.Data.GetSomDetail
-                    dynamicPriceResponse = it.data.somDynamicPriceResponse as SomDynamicPriceResponse.GetSomDynamicPrice
+                    detailResponse = it.data.getSomDetail
+                    dynamicPriceResponse = it.data.somDynamicPriceResponse
                     renderDetail()
                 }
                 is Fail -> {

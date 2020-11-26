@@ -48,12 +48,14 @@ class SomGetOrderDetailUseCase @Inject constructor(
                 getSomDetailResponse.getSomDetail = gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail
             } else {
                 getSomDetailResponse.getSomDetail = null
+                return Fail(Throwable())
             }
 
             if (gqlResponse.getError(SomDynamicPriceResponse::class.java)?.isNotEmpty() != true) {
                 getSomDetailResponse.somDynamicPriceResponse = gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice
             } else {
                 getSomDetailResponse.somDynamicPriceResponse = null
+                return Fail(Throwable())
             }
             return Success(getSomDetailResponse)
         } catch (e: Throwable) {
