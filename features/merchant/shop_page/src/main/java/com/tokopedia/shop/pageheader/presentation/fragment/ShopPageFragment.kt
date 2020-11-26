@@ -97,14 +97,15 @@ import com.tokopedia.shop.product.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.review.shop.view.ReviewShopFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.common.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginAction
 import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -129,7 +130,6 @@ class ShopPageFragment :
         const val TAB_POSITION_HOME = 0
         const val TAB_POSITION_FEED = 1
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
-        const val SHOP_STICKY_LOGIN = "SHOP_STICKY_LOGIN"
         const val SAVED_INITIAL_FILTER = "saved_initial_filter"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
@@ -171,7 +171,6 @@ class ShopPageFragment :
     var createPostUrl: String = ""
     private var tabPosition = TAB_POSITION_HOME
     lateinit var stickyLoginView: StickyLoginView
-    private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private lateinit var shopPageFragmentHeaderViewHolder: ShopPageFragmentHeaderViewHolder
     private lateinit var viewPagerAdapter: ShopPageFragmentPagerAdapter
     private lateinit var errorTextView: TextView
@@ -296,7 +295,7 @@ class ShopPageFragment :
         })
         swipeToRefresh.setOnRefreshListener {
             refreshData()
-            updateStickyContent()
+            stickyLoginView.loadContent()
         }
         mainLayout.requestFocus()
         initStickyLogin(view)
@@ -552,28 +551,24 @@ class ShopPageFragment :
 
     private fun initStickyLogin(view: View) {
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
-        stickyLoginView.addOnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-        }
-        stickyLoginView.setOnClickListener {
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView.trackerLoginReminder.clickOnLogin(StickyLoginConstant.Page.SHOP)
-            } else {
-                stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.SHOP)
+        stickyLoginView.page = StickyLoginConstant.Page.SHOP
+        stickyLoginView.lifecycleOwner = viewLifecycleOwner
+        stickyLoginView.setStickyAction(object : StickyLoginAction {
+            override fun onClick() {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
             }
-            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
-        }
-        stickyLoginView.setOnDismissListener(View.OnClickListener {
-            if (stickyLoginView.isLoginReminder()) {
-                stickyLoginView.trackerLoginReminder.clickOnDismiss(StickyLoginConstant.Page.SHOP)
-            } else {
-                stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.SHOP)
+
+            override fun onDismiss() {
+
             }
-            stickyLoginView.dismiss(StickyLoginConstant.Page.SHOP)
-            updateStickyContent()
+
+            override fun onViewChange(isShowing: Boolean) {
+                updateViewPagerPadding()
+                updateFloatingChatButtonMargin()
+            }
         })
-        updateStickyContent()
+
+        stickyLoginView.loadContent()
     }
 
     private fun getInitialData() {
@@ -649,7 +644,7 @@ class ShopPageFragment :
     override fun onResume() {
         super.onResume()
         removeTemporaryShopImage(shopImageFilePath)
-        updateStickyState()
+        stickyLoginView.loadContent()
         setShopName()
     }
 
@@ -1062,14 +1057,6 @@ class ShopPageFragment :
         }
     }
 
-    private fun updateStickyResult() {
-        activity?.run {
-            setResult(Activity.RESULT_OK, intentData.apply {
-                putExtra(SHOP_STICKY_LOGIN, true)
-            })
-        }
-    }
-
     private fun onErrorToggleFavourite(e: Throwable) {
         shopPageFragmentHeaderViewHolder.updateFavoriteButton()
         context?.let {
@@ -1090,6 +1077,7 @@ class ShopPageFragment :
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
+                stickyLoginView.loadContent()
             }
         } else if (requestCode == REQUEST_CODE_FOLLOW) {
             if (resultCode == Activity.RESULT_OK) {
@@ -1273,19 +1261,6 @@ class ShopPageFragment :
         }
     }
 
-    private fun updateStickyContent() {
-        shopViewModel.getStickyLoginContent(
-                onSuccess = {
-                    this.tickerDetail = it
-                    updateStickyState()
-                    updateStickyResult()
-                },
-                onError = {
-                    stickyLoginView.hide()
-                }
-        )
-    }
-
     private fun updateFloatingChatButtonMargin() {
         val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() }
                 ?: 0
@@ -1299,51 +1274,11 @@ class ShopPageFragment :
         button_chat.layoutParams = buttonChatLayoutParams
     }
 
-    private fun updateStickyState() {
-        if (this.tickerDetail == null) {
-            stickyLoginView.hide()
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-            return
-        }
-
-        val userSession = UserSession(context)
-        if (userSession.isLoggedIn) {
-            stickyLoginView.hide()
-            updateViewPagerPadding()
-            updateFloatingChatButtonMargin()
-            return
-        }
-
-        var isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_REMINDER_SHOP, true)
-        if (stickyLoginView.isLoginReminder() && isCanShowing) {
-            stickyLoginView.showLoginReminder(StickyLoginConstant.Page.SHOP)
-            if (stickyLoginView.isShowing()) {
-                stickyLoginView.trackerLoginReminder.viewOnPage(StickyLoginConstant.Page.SHOP)
-            }
-        } else {
-            isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.KEY_STICKY_LOGIN_WIDGET_SHOP, true)
-            if (!isCanShowing) {
-                stickyLoginView.hide()
-                updateViewPagerPadding()
-                updateFloatingChatButtonMargin()
-                return
-            }
-
-            this.tickerDetail?.let { stickyLoginView.setContent(it) }
-            stickyLoginView.show(StickyLoginConstant.Page.SHOP)
-            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.SHOP)
-        }
-        updateViewPagerPadding()
-        updateFloatingChatButtonMargin()
-
-    }
-
     private fun updateViewPagerPadding() {
         if (stickyLoginView.isShowing()) {
             viewPager.setPadding(0, 0, 0, stickyLoginView.height)
         } else {
-            viewPager.setPadding(0, 0, 0, 0)
+            viewPager.setPadding(0, 0, 0, 16.toDp())
         }
     }
 

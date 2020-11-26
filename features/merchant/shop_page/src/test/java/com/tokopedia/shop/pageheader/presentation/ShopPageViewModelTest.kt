@@ -21,9 +21,6 @@ import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.GetBroadcasterShopConfigUseCase
 import com.tokopedia.shop.pageheader.domain.interactor.GetShopPageP1DataUseCase
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -58,8 +55,6 @@ class ShopPageViewModelTest {
     @RelaxedMockK
     lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
     @RelaxedMockK
-    lateinit var stickyLoginUseCase: Lazy<StickyLoginUseCase>
-    @RelaxedMockK
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
     @RelaxedMockK
     lateinit var getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>
@@ -85,7 +80,6 @@ class ShopPageViewModelTest {
                 gqlGetShopInfobUseCaseCoreAndAssets,
                 getShopReputationUseCase,
                 toggleFavouriteShopUseCase,
-                stickyLoginUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
                 getShopPageP1DataUseCase,
                 testCoroutineDispatcherProvider
@@ -193,45 +187,6 @@ class ShopPageViewModelTest {
     }
 
     @Test
-    fun `check whether getStickyLoginContent call onSuccess`() {
-        val tickerDetail = StickyLoginTickerPojo.TickerDetail(
-                "Mock message",
-                StickyLoginConstant.LAYOUT_FLOATING
-        )
-        val stickyLoginMockModel = StickyLoginTickerPojo.TickerResponse(
-                StickyLoginTickerPojo(
-                        listOf(tickerDetail)
-                )
-        )
-        val onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit = mockk(relaxed = true)
-        every { stickyLoginUseCase.get().execute(any(), any()) } answers {
-            (firstArg() as (StickyLoginTickerPojo.TickerResponse) -> Unit).invoke(stickyLoginMockModel)
-        }
-        shopPageViewModel.getStickyLoginContent(onSuccess, {})
-        verify { onSuccess.invoke(any()) }
-    }
-
-    @Test
-    fun `check whether getStickyLoginContent call onError when empty model given`() {
-        val onError: (Throwable) -> Unit = spyk({ throwable -> })
-        every { stickyLoginUseCase.get().execute(any(), any()) } answers {
-            (firstArg() as (StickyLoginTickerPojo.TickerResponse) -> Unit).invoke(StickyLoginTickerPojo.TickerResponse())
-        }
-        shopPageViewModel.getStickyLoginContent({}, onError)
-        verify { onError.invoke(any()) }
-    }
-
-    @Test
-    fun `check whether getStickyLoginContent call onError when error get data`() {
-        val onError: (Throwable) -> Unit = spyk({ throwable -> })
-        every { stickyLoginUseCase.get().execute(any(), any()) } answers {
-            (secondArg() as (Throwable) -> Unit).invoke(Throwable())
-        }
-        shopPageViewModel.getStickyLoginContent({}, onError)
-        verify { onError.invoke(any()) }
-    }
-
-    @Test
     fun `check whether getShopIdFromDomain post shopIdFromDomainData success value`() {
         coEvery { gqlGetShopInfobUseCaseCoreAndAssets.get().executeOnBackground() } returns ShopInfo()
         shopPageViewModel.getShopIdFromDomain("Mock domain")
@@ -271,12 +226,10 @@ class ShopPageViewModelTest {
     @Test
     fun `check whether required function is called when flush`() {
         every { toggleFavouriteShopUseCase.get().unsubscribe() } returns mockk(relaxed = true)
-        every { stickyLoginUseCase.get().cancelJobs() } returns mockk(relaxed = true)
 
         shopPageViewModel.flush()
         verify {
             toggleFavouriteShopUseCase.get().unsubscribe()
-            stickyLoginUseCase.get().cancelJobs()
         }
     }
 

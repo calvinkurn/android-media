@@ -7,10 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -44,16 +42,11 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.ShopPageP1HeaderData
 import com.tokopedia.shop.pageheader.util.ShopPageHeaderMapper
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.view.datamodel.GetShopProductUiModel
-import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
-import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
-import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -68,7 +61,6 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
         private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-        private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
         private val dispatcherProvider: CoroutineDispatcherProvider)
@@ -236,32 +228,9 @@ class ShopPageViewModel @Inject constructor(
                 })
     }
 
-    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        stickyLoginUseCase.get().setParams(StickyLoginConstant.Page.SHOP)
-        stickyLoginUseCase.get().execute(
-                onSuccess = {
-                    if (it.response.tickers.isNotEmpty()) {
-                        for (tickerDetail in it.response.tickers) {
-                            if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
-                                onSuccess.invoke(tickerDetail)
-                                return@execute
-                            }
-                        }
-                        onError?.invoke(Throwable(""))
-                    } else {
-                        onError?.invoke(Throwable(DATA_NOT_FOUND))
-                    }
-                },
-                onError = {
-                    onError?.invoke(it)
-                }
-        )
-    }
-
     override fun flush() {
         super.flush()
         toggleFavouriteShopUseCase.get().unsubscribe()
-        stickyLoginUseCase.get().cancelJobs()
     }
 
     fun getShopPageHeaderContentData(shopId: String, shopDomain: String, isRefresh: Boolean) {
