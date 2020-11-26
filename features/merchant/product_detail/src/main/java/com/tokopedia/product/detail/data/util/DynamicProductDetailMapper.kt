@@ -83,6 +83,9 @@ object DynamicProductDetailMapper {
                 ProductDetailConstant.TOP_ADS -> {
                     listOfComponent.add(TopAdsImageDataModel(type = component.type, name = component.componentName))
                 }
+                ProductDetailConstant.REPORT -> {
+                    listOfComponent.add(ProductReportDataModel(type = component.type, name = component.componentName))
+                }
             }
         }
         return listOfComponent
@@ -182,6 +185,12 @@ object DynamicProductDetailMapper {
             }
             it == ProductDetailConstant.KEY_OCC_BUTTON -> {
                 ProductDetailConstant.OCC_BUTTON
+            }
+            it == ProductDetailConstant.KEY_REMIND_ME -> {
+                ProductDetailConstant.REMIND_ME_BUTTON
+            }
+            it == ProductDetailConstant.KEY_CHECK_WISHLIST -> {
+                ProductDetailConstant.CHECK_WISHLIST_BUTTON
             }
             else -> ProductDetailConstant.BUY_BUTTON
         }

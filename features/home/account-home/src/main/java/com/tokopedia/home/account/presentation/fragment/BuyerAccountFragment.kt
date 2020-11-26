@@ -99,7 +99,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
-        swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
+        swipe_refresh_layout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()

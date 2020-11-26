@@ -2,9 +2,10 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.home.DigitalHomePageTestDispatchersProvider
-import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
-import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.domain.DigitalHomePageUseCase
+import com.tokopedia.digital.home.old.model.DigitalHomePageBannerModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse

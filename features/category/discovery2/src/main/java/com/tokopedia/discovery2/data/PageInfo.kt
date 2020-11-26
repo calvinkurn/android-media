@@ -28,5 +28,8 @@ data class PageInfo(
         @SerializedName("campaign_code")
         val campaignCode: String? = null,
 
+        @SerializedName("search_title")
+        val searchTitle: String = "Cari di Tokopedia",
+
         var additionalInfo: AdditionalInfo? = null
 )

@@ -20,6 +20,14 @@ object Constant {
         const val POWER_MERCHANT_URL = "https://ecs7.tokopedia.net/img/power_merchant_badge.png"
     }
 
+    object TOP_NAV_BUTTON {
+        const val BACK_BUTTON = "Back Button"
+        const val SEARCH_BAR = "Search Bar"
+        const val SHARE = "Share"
+        const val CART = "Cart"
+        const val GLOBAL_MENU = "Global Menu"
+    }
+
     object ProductTemplate {
         const val GRID =  "grid"
         const val LIST = "list"

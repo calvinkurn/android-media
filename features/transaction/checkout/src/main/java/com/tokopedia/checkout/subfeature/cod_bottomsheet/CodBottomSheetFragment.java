@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.tokopedia.checkout.R;
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics;
 
 import org.xml.sax.XMLReader;
 
