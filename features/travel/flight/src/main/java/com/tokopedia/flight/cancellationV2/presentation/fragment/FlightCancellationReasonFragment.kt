@@ -117,6 +117,7 @@ class FlightCancellationReasonFragment : BaseDaggerFragment(),
         cancellationReasonViewModel.canNavigateToNextStep.observe(viewLifecycleOwner, Observer {
             hideProgressBar()
             if (it) {
+                cancellationReasonViewModel.trackOnNext()
                 navigateToReviewPage()
             }
         })

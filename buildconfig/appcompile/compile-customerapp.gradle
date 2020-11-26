@@ -237,3 +237,4 @@ include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'
 include 'customerapp'
+include 'customer_mid_app'

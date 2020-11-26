@@ -16,15 +16,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.TaskStackBuilder;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -46,6 +45,8 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.sortfilter.SortFilter;
 import com.tokopedia.sortfilter.SortFilterItem;
+import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.flight.orderlist.view.FlightOrderListActivity.EXTRA_IS_AFTER_CANCELLATION;
@@ -70,7 +72,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_ORDER_DETAIL = 3;
-    private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
     public static final boolean DEFAULT_CHECK_PRELOAD = true;
 
@@ -155,9 +156,17 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void navigateToInputEmailForm(String invoiceId, String userId, String userEmail) {
-        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId, userEmail);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
+        FlightOrderResendEmailBottomSheet bottomSheet = FlightOrderResendEmailBottomSheet.Companion
+                .getInstance(userEmail, invoiceId);
+        bottomSheet.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
+        bottomSheet.setShowListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                bottomSheet.getBottomSheet().setState(BottomSheetBehavior.STATE_EXPANDED);
+                return null;
+            }
+        });
+        bottomSheet.show(getFragmentManager(), FlightOrderResendEmailBottomSheet.TAG);
     }
 
     @Override
@@ -228,7 +237,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         switch (requestCode) {
             case REQUEST_CODE_RESEND_ETICKET_DIALOG:
                 if (resultCode == RESULT_OK) {
-                    showGreenSnackbar(R.string.resend_eticket_success);
+                    showSnackbarSuccess(R.string.resend_eticket_success);
                 }
                 break;
             case REQUEST_CODE_CANCELLATION:
@@ -248,8 +257,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         }
     }
 
-    private void showGreenSnackbar(int resId) {
-        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(), getString(resId));
+    private void showSnackbarSuccess(int resId) {
+        Toaster.make(requireView(), getString(resId), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL);
     }
 
     @NonNull

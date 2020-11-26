@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.text.style.RelativeSizeSpan;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.data.TravelCrossSellingGQLQuery;
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling;
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase;
 import com.tokopedia.flight.R;
@@ -86,8 +87,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         flightGetOrderUseCase.execute(flightGetOrderUseCase.createRequestParams(orderId), getSubscriberGetDetailOrder(flightOrderDetailPassData));
     }
 
-    public void getCrossSellingItems(String orderId, String crossSellingQuery) {
-        crossSellingUseCase.executeRx(crossSellingQuery, crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
+    public void getCrossSellingItems(String orderId) {
+        crossSellingUseCase.executeRx(TravelCrossSellingGQLQuery.INSTANCE.getQUERY_CROSS_SELLING(), crossSellingUseCase.createRequestParams(orderId, TravelCrossSellingUseCase.PARAM_FLIGHT_PRODUCT), getTravelCrossSelling());
     }
 
     @Override

@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,9 +16,9 @@
             android:id="@+id/title_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:text="Lengkapi Perjalananmu"
             app:typographyType="body_2"
             app:typographyWeight="bold"
+            tools:text="Lengkapi Perjalananmu"
             android:textColor="@color/Unify_N700_96"
             android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginRight="@dimen/spacing_lvl4"
@@ -36,7 +35,6 @@
             android:clipToPadding="false"
             />
     </LinearLayout>
-
 
 
 </androidx.cardview.widget.CardView>

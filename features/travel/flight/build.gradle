@@ -139,6 +139,8 @@ dependencies {
     androidTestAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
+
+    androidTestImplementation project(rootProject.ext.libraries.utils)
 }
 
 project.ext {
@@ -151,5 +153,3 @@ project.ext {
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
 apply from: '../../../sonar_config.gradle'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
