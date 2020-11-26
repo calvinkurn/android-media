@@ -314,7 +314,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return listOf()
     }
 
-    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "") {
+    fun getProductP1(productParams: ProductParams, refreshPage: Boolean = false, isAffiliate: Boolean = false, layoutId: String = "", isUseOldNav: Boolean = false) {
         launchCatchError(dispatcher.io(), block = {
             shopDomain = productParams.shopDomain
             forceRefresh = refreshPage
@@ -333,7 +333,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 assignTradeinParams()
 
                 //Remove any unused component based on P1 / PdpLayout
-                removeDynamicComponent(it.listOfLayout, isAffiliate)
+                removeDynamicComponent(it.listOfLayout, isAffiliate, isUseOldNav)
 
                 //Render initial data
                 _productLayout.postValue(it.listOfLayout.asSuccess())
@@ -417,9 +417,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             val p2DataDeffered: Deferred<ProductInfoP2UiData> = getProductInfoP2DataAsync(it.basic.productID, it.pdpSession)
             val p2OtherDeffered: Deferred<ProductInfoP2Other> = getProductInfoP2OtherAsync(it.basic.getProductId(), it.basic.getShopId())
 
-            _p2Data.postValue(p2DataDeffered.await())
-            updateTradeinParams(_p2Data.value?.validateTradeIn ?: ValidateTradeIn())
-
+            p2DataDeffered.await()?.let {
+                _p2Data.postValue(it)
+                updateTradeinParams(it.validateTradeIn)
+            }
             p2LoginDeferred?.let {
                 _p2Login.postValue(it.await())
             }
@@ -459,7 +460,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 ?: 30000 else shippingPriceValue
     }
 
-    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean) {
+    private fun removeDynamicComponent(initialLayoutData: MutableList<DynamicPdpDataModel>, isAffiliate: Boolean, isUseOldNav: Boolean) {
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
@@ -482,6 +483,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (GlobalConfig.isSellerApp() && it.type() == ProductDetailConstant.PRODUCT_LIST) {
                 it
             } else if (it.name() == ProductDetailConstant.BY_ME && isAffiliate && !GlobalConfig.isSellerApp()) {
+                it
+            } else if (it.name() == ProductDetailConstant.REPORT && (isUseOldNav || isShopOwner())) {
                 it
             } else {
                 null
@@ -742,6 +745,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
+    fun shouldHideFloatingButton(): Boolean {
+        return p2Data.value?.cartRedirection?.get(getDynamicProductInfoP1?.basic?.productID)?.hideFloatingButton ?: false
+    }
+
     private fun assignTradeinParams() {
         getDynamicProductInfoP1?.let {
             tradeInParams.categoryId = it.basic.category.id.toIntOrZero()
@@ -753,6 +760,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             tradeInParams.productName = it.getProductName
             tradeInParams.isPreorder = it.data.preOrder.isPreOrderActive()
             tradeInParams.isOnCampaign = it.data.campaign.isActive
+            tradeInParams.weight = it.basic.weight
+            if(it.data.getImagePath().isNotEmpty()) {
+                tradeInParams.productImage = it.data.getImagePath()[0]
+            } else {
+                tradeInParams.productImage = it.data.getFirstProductImage()
+            }
         }
     }
 

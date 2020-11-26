@@ -239,7 +239,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun refreshViewWithPosition(position: Int) {
-        adapter.notifyItemChanged(position)
+        adapter.refreshPopularSection(position)
     }
 
     override fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel) {

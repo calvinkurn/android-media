@@ -19,4 +19,6 @@
     <dimen name="margin_top_flight_dashboard">60dp</dimen>
 
     <dimen name="flight_horizontal_height">3dp</dimen>
+
+    <dimen name="flight_dp_12">12dp</dimen>
 </resources>

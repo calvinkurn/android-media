@@ -1,7 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.Color
@@ -256,7 +255,7 @@ class AddEditProductPreviewFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // activity toolbar
         toolbar = activity?.findViewById(R.id.toolbar)
@@ -340,6 +339,7 @@ class AddEditProductPreviewFragment:
         productStatusSwitch?.setOnClickListener {
             val isChecked = productStatusSwitch?.isChecked ?: false
             viewModel.updateProductStatus(isChecked)
+            viewModel.setIsDataChanged(true)
             // track switch status on click
             if (isChecked && isEditing()) {
                 ProductEditStepperTracking.trackChangeProductStatus(shopId)
@@ -501,6 +501,9 @@ class AddEditProductPreviewFragment:
                             moveToDetailFragment(newProductInputModel, true)
                         }
                     }
+                    if (isEditted.any { true }) {
+                        viewModel.setIsDataChanged(true)
+                    }
                 }
                 REQUEST_CODE_VARIANT_DIALOG_EDIT -> {
                     val cacheManagerId = data.getStringExtra(EXTRA_CACHE_MANAGER_ID) ?: ""
@@ -509,6 +512,7 @@ class AddEditProductPreviewFragment:
                         viewModel.productInputModel.value?.let {
                             updateProductStatusSwitch(it)
                         }
+                        viewModel.setIsDataChanged(true)
                     }
                 }
                 SET_CASHBACK_REQUEST_CODE -> {
@@ -545,6 +549,7 @@ class AddEditProductPreviewFragment:
     }
 
     override fun onRemovePhoto(viewHolder: RecyclerView.ViewHolder) {
+        viewModel.setIsDataChanged(true)
         if (isAdding()) {
             ProductAddStepperTracking.trackRemoveProductImage(shopId)
         } else {
@@ -625,35 +630,43 @@ class AddEditProductPreviewFragment:
     private fun setupBackPressed() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.label_title_on_dialog))
-                    setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
-                    setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
-                    if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
-                        setDescription(getString(R.string.label_description_on_dialog_edit))
-                        setSecondaryCTAClickListener {
-                            activity?.finish()
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                        }
-                    } else {
-                        setDescription(getString(R.string.label_description_on_dialog))
-                        setSecondaryCTAClickListener {
-                            saveProductToDraft()
-                            moveToManageProduct()
-                            ProductAddStepperTracking.trackDraftYes(shopId)
-                        }
-                        setPrimaryCTAClickListener {
-                            this.dismiss()
-                            ProductAddStepperTracking.trackDraftCancel(shopId)
-                        }
-                    }
-                }.show()
+                // send tracker
                 if (isEditing()) {
                     ProductEditStepperTracking.trackBack(shopId)
                 } else {
                     ProductAddStepperTracking.trackBack(shopId)
+                }
+
+                if (!viewModel.getIsDataChanged()) {
+                    // finish activity if there is no data changes
+                    activity?.finish()
+                } else {
+                    // show dialog
+                    DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                        setTitle(getString(R.string.label_title_on_dialog))
+                        setPrimaryCTAText(getString(R.string.label_cta_primary_button_on_dialog))
+                        setSecondaryCTAText(getString(R.string.label_cta_secondary_button_on_dialog))
+                        if((isEditing()  || dataBackPressedLoss()) && !isDrafting()) {
+                            setDescription(getString(R.string.label_description_on_dialog_edit))
+                            setSecondaryCTAClickListener {
+                                activity?.finish()
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                            }
+                        } else {
+                            setDescription(getString(R.string.label_description_on_dialog))
+                            setSecondaryCTAClickListener {
+                                saveProductToDraft()
+                                moveToManageProduct()
+                                ProductAddStepperTracking.trackDraftYes(shopId)
+                            }
+                            setPrimaryCTAClickListener {
+                                this.dismiss()
+                                ProductAddStepperTracking.trackDraftCancel(shopId)
+                            }
+                        }
+                    }.show()
                 }
             }
         })
@@ -780,7 +793,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableDetailEdit() {
         context?.let {
-            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDetailTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDetailButton?.text = getString(R.string.action_change)
             addEditProductDetailButton?.show()
             dividerDetail?.hide()
@@ -789,7 +802,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableDescriptionEdit() {
         context?.let {
-            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductDescriptionTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductDescriptionButton?.text = getString(R.string.action_change)
             addEditProductDescriptionButton?.show()
         }
@@ -802,7 +815,7 @@ class AddEditProductPreviewFragment:
 
     private fun enableShipmentEdit() {
         context?.let {
-            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, android.R.color.black))
+            addEditProductShipmentTitle?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             addEditProductShipmentButton?.text = getString(R.string.action_change)
             addEditProductShipmentButton?.show()
         }

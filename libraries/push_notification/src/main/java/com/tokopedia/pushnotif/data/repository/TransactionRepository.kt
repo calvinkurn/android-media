@@ -25,9 +25,13 @@ object TransactionRepository {
     fun isRenderable(context: Context, transactionId: String): Boolean {
         if (transactionId.isBlank()) return true
 
-        return PushNotificationDB.getInstance(context)
-                .transactionNotificationDao()
-                .isRenderable(transactionId.trim()) == 0
+        return try {
+            PushNotificationDB.getInstance(context)
+                    .transactionNotificationDao()
+                    .isRenderable(transactionId.trim()) == 0
+        } catch (e: Exception) {
+            true
+        }
     }
 
 }

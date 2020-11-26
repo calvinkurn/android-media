@@ -1,7 +1,7 @@
-package com.tokopedia.digital.home.presentation.util
+package com.tokopedia.digital.home.old.presentation.util
 
-import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageCategoryModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageItemModel
 
 class DigitalHomePageCategoryDataMapper {
 

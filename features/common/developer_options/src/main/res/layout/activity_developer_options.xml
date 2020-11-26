@@ -1,4 +1,5 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,10 +10,10 @@
         android:descendantFocusability="beforeDescendants"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin">
+        android:paddingTop="@dimen/activity_vertical_margin">
 
         <TextView
             android:id="@+id/review_notification"
@@ -272,15 +273,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_small"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal" >
             <TextView
                 android:id="@+id/goto_iris_save_log"
                 android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin_small"
-                android:layout_weight="1"
                 android:background="@drawable/btn_share"
                 android:gravity="center"
                 android:padding="@dimen/margin_small"
@@ -290,10 +290,10 @@
             <TextView
                 android:id="@+id/goto_iris_send_log"
                 android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/margin_small"
-                android:layout_weight="1"
                 android:background="@drawable/btn_share"
                 android:gravity="center"
                 android:padding="@dimen/margin_small"
@@ -306,11 +306,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:gravity="center_vertical"
-            android:hint="Minimum Block Delay to Captured in ms (default = 500)"
-            android:inputType="text"
-            android:lines="1"
             android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="Minimum Block Delay to Captured in ms (default = 500)"
             app:backgroundTint="@color/Green_G500" />
 
         <CheckBox
@@ -327,11 +327,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:gravity="center_vertical"
-            android:hint="@string/remote_config_prefix_placeholder"
-            android:inputType="text"
-            android:lines="1"
             android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="@string/remote_config_prefix_placeholder"
             app:backgroundTint="@color/Green_G500" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -352,11 +352,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:gravity="center_vertical"
-            android:hint="String to be put in RouteManager.route(...)"
-            android:inputType="text"
-            android:lines="1"
             android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="String to be put in RouteManager.route(...)"
             app:backgroundTint="@color/Green_G500" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -380,53 +380,50 @@
             android:hint="IP Groupchat" />
 
         <TableLayout
+            android:stretchColumns="1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stretchColumns="1">
-
+            android:layout_height="wrap_content">
             <TableRow>
 
                 <ToggleButton
                     android:id="@+id/groupchat_log"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:background="@drawable/btn_share"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
                 <TextView
                     android:id="@+id/ip_groupchat_save"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/btn_share"
                     android:gravity="center"
-                    android:text="Save IP"
-                    android:textColor="@color/white" />
+                    android:text="Save IP"/>
 
             </TableRow>
         </TableLayout>
 
         <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:stretchColumns="1"
             android:layout_marginTop="10dp"
-            android:stretchColumns="1">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TableRow>
-
                 <TextView
+                    android:text="Enable Timber Logging To Server"
+                    android:paddingRight="25dip"
                     style="@style/TextView.Title.Bold"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="25dip"
-                    android:text="Enable Timber Logging To Server" />
-
+                    android:layout_height="wrap_content" />
                 <ToggleButton
                     android:id="@+id/toggle_timber_dev_options"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
                     android:background="@drawable/btn_share"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:layout_marginRight="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </TableRow>
         </TableLayout>
 
@@ -435,11 +432,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_lvl4"
-            android:gravity="center_vertical"
-            android:hint="Pno#TAG#message (required Server Logging ON)"
-            android:inputType="text"
-            android:lines="1"
             android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="Pno#TAG#message (required Server Logging ON)"
             app:backgroundTint="@color/Green_G500" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -458,17 +455,16 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/spacing_lvl4">
             <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/et_change_version_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:hint="3.99"
-                android:inputType="text"
                 android:textSize="@dimen/fontSize_lvl4"
+                android:inputType="text"
+                android:hint="3.99"
                 app:backgroundTint="@color/Green_G500" />
 
             <androidx.appcompat.widget.AppCompatEditText
@@ -476,10 +472,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:hint="399123456"
+                android:textSize="@dimen/fontSize_lvl4"
                 android:inputType="number"
                 android:maxLength="9"
-                android:textSize="@dimen/fontSize_lvl4"
+                android:hint="399123456"
                 app:backgroundTint="@color/Green_G500" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -508,17 +504,17 @@
             android:weightSum="5">
 
             <TextView
-                style="@style/TextView.Title.Bold"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:text="Choose URL Env" />
+                style="@style/TextView.Title.Bold"
+                android:text="Choose URL Env"/>
 
             <Spinner
                 android:id="@+id/spinner_env_chooser"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2" />
+                android:layout_weight="2"/>
 
         </LinearLayout>
 
@@ -535,13 +531,31 @@
 
         <com.tokopedia.translator.ui.TranslatorSettingView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            />
 
         <Button
-            android:id="@+id/requestFcmToken"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/requestFcmToken"
             android:text="Request New FCM Token" />
 
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/resetOnboardingNavigation"
+            android:text="RESET ONBOARDING NAVIGATION!" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonAlwaysOldNavigation"
+            android:text="ALWAYS_OLD_NAVIGATION" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonAlwaysNewNavigation"
+            android:text="ALWAYS_NEW_NAVIGATION" />
     </LinearLayout>
 </ScrollView>

@@ -25,6 +25,7 @@ import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ScrollHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
+import com.tokopedia.thankyou_native.presentation.views.GyroView
 import com.tokopedia.thankyou_native.presentation.views.OnViewAddedListener
 import com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
 import com.tokopedia.usecase.coroutines.Fail
@@ -51,6 +52,7 @@ class InstantPaymentFragment : ThankYouBaseFragment() {
     override fun getLoadingView(): View? = loadingView
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
+    override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
     override fun onThankYouPageDataReLoaded(data: ThanksPageData) {
         //not reuquired

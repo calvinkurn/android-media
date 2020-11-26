@@ -218,6 +218,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }
