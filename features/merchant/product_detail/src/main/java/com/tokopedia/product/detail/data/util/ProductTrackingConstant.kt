@@ -77,6 +77,8 @@ object ProductTrackingConstant {
         const val BUSINESS_UNIT = "physical goods"
         const val CURRENT_SITE = "tokopediamarketplace"
         const val CURRENT_SITE_FINTECH = "tokopediafintechinsurance"
+        const val KEY_FINTECH = "fintech"
+        const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
 

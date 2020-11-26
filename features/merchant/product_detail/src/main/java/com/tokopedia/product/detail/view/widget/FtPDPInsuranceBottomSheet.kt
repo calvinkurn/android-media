@@ -6,6 +6,7 @@ import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.gone
@@ -106,14 +107,16 @@ class FtPDPInsuranceBottomSheet : BottomSheetUnify() {
 
     companion object {
         const val KEY_SPONSOR_URL = "sponsorUrl"
+        const val TAG = "FT_TAG"
 
-        fun newInstance(sponsorUrl: String): FtPDPInsuranceBottomSheet {
-            return FtPDPInsuranceBottomSheet().apply {
+        fun show(sponsorUrl: String, childFragmentManager: FragmentManager) {
+            val pdpInsuranceBottomSheet =  FtPDPInsuranceBottomSheet().apply {
                 val bundleData = Bundle().apply {
                     putString(KEY_SPONSOR_URL, sponsorUrl)
                 }
                 arguments = bundleData
             }
+            pdpInsuranceBottomSheet.show(childFragmentManager, TAG)
         }
     }
 

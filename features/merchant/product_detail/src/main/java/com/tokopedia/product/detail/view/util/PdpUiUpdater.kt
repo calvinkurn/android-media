@@ -318,7 +318,7 @@ class PdpUiUpdater(private val mapOfData: Map<String, DynamicPdpDataModel>) {
                     applink = ppItemData.linkURL ?: ""
             ))
             data = contentList
-            isApplink = ppItemData.isAppLink
+            isApplink = ppItemData.isAppLink ?: false
         }
 
     }

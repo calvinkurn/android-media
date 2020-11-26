@@ -2179,8 +2179,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * @param url : linkUrl for insurance partner to be rendered in web-view
      */
     private fun openFtInsuranceBottomSheet(url: String) {
-        val pdpInsuranceBottomSheet = FtPDPInsuranceBottomSheet.newInstance(url)
-        pdpInsuranceBottomSheet.show(childFragmentManager, "FT_TAG")
+        FtPDPInsuranceBottomSheet.show(url, childFragmentManager)
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {

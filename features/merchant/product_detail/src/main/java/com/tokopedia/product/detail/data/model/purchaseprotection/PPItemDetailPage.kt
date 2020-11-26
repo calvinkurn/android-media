@@ -31,6 +31,6 @@ data class PPItemDetailPage(
         var linkURL: String? = "",
 
         @SerializedName("isAppLink")
-        var isAppLink: Boolean = false
+        var isAppLink: Boolean? = false
 
 )
