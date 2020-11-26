@@ -17,6 +17,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.snackbar.Snackbar
+import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.applink.ApplinkConst
@@ -150,7 +151,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), RedDotGimmickView, 
     override fun getSettingItems(): List<SettingItemViewModel> {
         val settingItems = ArrayList<SettingItemViewModel>()
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ACCOUNT_ID,
-                getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)))
+                getString(R.string.general_setting_title_account_setting_item), getString(R.string.subtitle_account_setting)))
 
         val walletModel = try { walletPref.retrieveWallet() } catch (throwable: Throwable) { null }
         val walletName = if (walletModel != null) {
