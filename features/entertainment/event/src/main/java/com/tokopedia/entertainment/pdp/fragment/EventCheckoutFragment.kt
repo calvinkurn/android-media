@@ -387,7 +387,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         else -> {
                             progressDialog.show()
                             eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
-                            metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
+                            metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage,
+                            it.getString(R.string.ent_checkout_data_nullable_form))
                             eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
                                     getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
                         }

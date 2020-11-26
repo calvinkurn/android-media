@@ -45,15 +45,15 @@ public class PushNotification {
     public static void notify(Context context, Bundle data) {
         ApplinkNotificationModel applinkNotificationModel = ApplinkNotificationHelper.convertToApplinkModel(data);
 
-        if (allowToShowNotification(context, applinkNotificationModel)) {
+        if (isAllowToRender(context, applinkNotificationModel)) {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
             int notificationId = ApplinkNotificationHelper.generateNotifictionId(applinkNotificationModel.getApplinks());
             logEvent(context, applinkNotificationModel, data,
                     "ApplinkNotificationHelper.allowToShow == true"
-                    + "; id " + notificationId
-                    + "; v " + Build.VERSION.SDK_INT
-                    + "; en " + isNotificationEnabled(context)
-                    + "; bl " + isAllowBell(context));
+                            + "; id " + notificationId
+                            + "; v " + Build.VERSION.SDK_INT
+                            + "; en " + isNotificationEnabled(context)
+                            + "; bl " + isAllowBell(context));
 
             if (notificationId == Constant.NotificationId.TALK) {
                 notifyTalk(context, applinkNotificationModel, notificationId, notificationManagerCompat);
@@ -90,19 +90,16 @@ public class PushNotification {
         }
     }
 
-    private static boolean allowToShowNotification(
-            Context context,
-            ApplinkNotificationModel applinkNotificationModel
-    ) {
+    private static boolean isAllowToRender(Context context, ApplinkNotificationModel applinkNotificationModel) {
         UserSessionInterface userSession = new UserSession(context);
         String loginId = userSession.getUserId();
         Boolean sameUserId = applinkNotificationModel.getToUserId().equals(loginId);
         Boolean allowInLocalNotificationSetting = ApplinkNotificationHelper.checkLocalNotificationAppSettings(context, applinkNotificationModel.getTkpCode());
         Boolean isRenderable = TransactionRepository.isRenderable(context, applinkNotificationModel.getTransactionId());
         Boolean isTargetApp = ApplinkNotificationHelper.isTargetApp(applinkNotificationModel);
+
         return sameUserId && allowInLocalNotificationSetting && isTargetApp && isRenderable;
     }
-
 
     private static void logEvent(Context context, ApplinkNotificationModel model, Bundle data, String message) {
         try {
