@@ -44,17 +44,21 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
             @Override
             public void onError(Throwable e) {
                 Timber.d(e.toString());
-                view.removeProgressBarView();
-                view.showErrorNetwork(e.toString());
+                if (isViewAttached()) {
+                    view.removeProgressBarView();
+                    view.showErrorNetwork(e.toString());
+                }
             }
 
             @Override
             public void onNext(GraphqlResponse response) {
-                view.removeProgressBarView();
-                if (response != null) {
-                    TabData data = response.getData(TabData.class);
-                    if (data != null && !data.getOrderLabelList().isEmpty()) {
-                        view.renderTabs(data.getOrderLabelList(), orderCategory);
+                if (isViewAttached()) {
+                    view.removeProgressBarView();
+                    if (response != null) {
+                        TabData data = response.getData(TabData.class);
+                        if (data != null && !data.getOrderLabelList().isEmpty()) {
+                            view.renderTabs(data.getOrderLabelList(), orderCategory);
+                        }
                     }
                 }
             }
@@ -102,8 +106,9 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
                 // Show ticker
                 if (graphqlResponse != null) {
                     TickerResponse tickerResponse = graphqlResponse.getData(TickerResponse.class);
-                    if(view != null)
+                    if (view != null) {
                         view.updateTicker(tickerResponse);
+                    }
                 }
             }
         });
