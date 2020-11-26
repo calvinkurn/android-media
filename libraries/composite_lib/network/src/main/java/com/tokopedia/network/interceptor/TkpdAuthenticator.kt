@@ -31,13 +31,17 @@ class TkpdAuthenticator(
                     networkRouter.doRelogin(newAccessToken)
                     updateRequestWithNewToken(originalRequest)
                 } catch (ex: Exception) {
+                    logToScalyr("Authenticator ${ex.message}")
                     response.request()
                 }
             else {
                 networkRouter.showForceLogoutTokenDialog("/")
+                logToScalyr("Authenticator: response count > 0")
                 return response.request()
             }
         }
+        logToScalyr("Authenticator: no need refresh, user not logged in")
+
         return response.request()
     }
 
@@ -49,6 +53,7 @@ class TkpdAuthenticator(
             val body: ResponseBody = ResponseBody.create(contentType, jsonObject.toString())
             return response.newBuilder().body(body).build()
         } catch (e: JSONException) {
+            logToScalyr("Authenticator: create force logout body fail: e.message")
             null
         }
     }
