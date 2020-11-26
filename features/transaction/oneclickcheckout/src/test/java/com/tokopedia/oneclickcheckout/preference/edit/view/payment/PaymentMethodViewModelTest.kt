@@ -27,7 +27,7 @@ class PaymentMethodViewModelTest {
 
     @Test
     fun `Get Payment Listing Param Success`() {
-        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""))
+        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""), 0.0)
 
         assertEquals(OccState.Loading, viewModel.paymentListingPayload.value)
 
@@ -43,13 +43,14 @@ class PaymentMethodViewModelTest {
                 "address_id=&" +
                 "callback_url=&" +
                 "version=&" +
-                "signature="
+                "signature=&" +
+                "amount=0.0"
         assertEquals(OccState.Success(result), viewModel.paymentListingPayload.value)
     }
 
     @Test
     fun `Get Payment Listing Param Failed`() {
-        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""))
+        viewModel.getPaymentListingPayload(PaymentListingParamRequest("", "", "", "", ""), 0.0)
 
         assertEquals(OccState.Loading, viewModel.paymentListingPayload.value)
 

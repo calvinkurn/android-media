@@ -637,6 +637,79 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
     }
 
     @Test
+    fun `Update Address Success`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } returns null
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.TriggerRefresh(), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Failed`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        val responseMessage = "message"
+        val response = MessageErrorException(responseMessage)
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } throws response
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(errorMessage = responseMessage), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Error`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        val response = Exception()
+        coEvery { updateCartOccUseCase.executeSuspend(match { it.profile.addressId == addressId }) } throws response
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.Error(response), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address On Invalid Preference State`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = false)
+
+        // When
+        orderSummaryPageViewModel.chooseAddress("")
+
+        // Then
+        coVerify(inverse = true) { updateCartOccUseCase.executeSuspend(any()) }
+        assertEquals(OccGlobalEvent.Error(errorMessage = DEFAULT_LOCAL_ERROR_MESSAGE), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Update Address Got Prompt`() {
+        // Given
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        val addressId = "address1"
+        val occPrompt = OccPrompt()
+        coEvery { updateCartOccUseCase.executeSuspend(any()) } returns occPrompt
+
+        // When
+        orderSummaryPageViewModel.chooseAddress(addressId)
+
+        // Then
+        assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
     fun `Final Update Got Prompt`() {
         // Given
         orderSummaryPageViewModel.orderTotal.value = OrderTotal(buttonState = OccButtonState.NORMAL)

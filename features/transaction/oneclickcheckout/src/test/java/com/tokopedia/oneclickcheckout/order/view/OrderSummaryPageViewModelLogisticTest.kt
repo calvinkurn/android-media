@@ -219,6 +219,44 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
+    fun `Get Rates Courier Error Revamp With Recommendation SpId`() {
+        // Given
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        val errorMessage = "error"
+        shippingDurationViewModels[0].shippingCourierViewModelList[0].productData.error = ErrorProductData().apply {
+            this.errorId = ErrorProductData.ERROR_DISTANCE_LIMIT_EXCEEDED
+            this.errorMessage = errorMessage
+        }
+        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
+                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId)
+        ), isValid = true)
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(
+                OrderShipment(
+                        serviceName = helper.secondDuration.serviceData.serviceName,
+                        serviceDuration = helper.secondDuration.serviceData.serviceName,
+                        serviceId = helper.secondDuration.serviceData.serviceId,
+                        shipperName = helper.firstCourierSecondDuration.productData.shipperName,
+                        shipperId = helper.firstCourierSecondDuration.productData.shipperId,
+                        shipperProductId = helper.firstCourierSecondDuration.productData.shipperProductId,
+                        ratesId = helper.firstCourierSecondDuration.ratesId,
+                        shippingPrice = helper.firstCourierSecondDuration.productData.price.price,
+                        shippingRecommendationData = helper.shippingRecommendationData,
+                        logisticPromoTickerMessage = "Tersedia bbo",
+                        logisticPromoViewModel = helper.logisticPromo,
+                        insuranceData = helper.firstCourierSecondDuration.productData.insurance),
+                orderSummaryPageViewModel.orderShipment.value)
+    }
+
+    @Test
     fun `Get Rates Courier Error Distance Exceed`() {
         // Given
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
@@ -332,6 +370,44 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
                         logisticPromoViewModel = helper.logisticPromo),
                 orderSummaryPageViewModel.orderShipment.value)
         assertEquals(OccButtonState.DISABLE, orderSummaryPageViewModel.orderTotal.value.buttonState)
+    }
+
+    @Test
+    fun `Get Rates Courier Revamp With Second Courier Recommended`() {
+        // Given
+        val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
+        shippingDurationViewModels[0].shippingCourierViewModelList[1].productData.isRecommend = true
+        helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
+        orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference, isValid = true)
+        orderSummaryPageViewModel.revampData = OccRevampData(true)
+        orderSummaryPageViewModel.lastValidateUsePromoRequest = ValidateUsePromoRequest(mutableListOf("promo"))
+
+        every { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        every { validateUsePromoRevampUseCase.get().createObservable(any()) } returns Observable.just(ValidateUsePromoRevampUiModel())
+
+        // When
+        orderSummaryPageViewModel.getRates()
+
+        // Then
+        assertEquals(
+                OrderShipment(
+                        serviceName = helper.firstDuration.serviceData.serviceName,
+                        serviceDuration = helper.firstDuration.serviceData.serviceName,
+                        serviceId = helper.firstDuration.serviceData.serviceId,
+                        shipperName = helper.secondCourierFirstDuration.productData.shipperName,
+                        shipperProductId = helper.secondCourierFirstDuration.productData.shipperProductId,
+                        shipperId = helper.secondCourierFirstDuration.productData.shipperId,
+                        ratesId = helper.secondCourierFirstDuration.ratesId,
+                        ut = helper.secondCourierFirstDuration.productData.unixTime,
+                        checksum = helper.secondCourierFirstDuration.productData.checkSum,
+                        insuranceData = helper.secondCourierFirstDuration.productData.insurance,
+                        shippingPrice = helper.secondCourierFirstDuration.productData.price.price,
+                        shippingRecommendationData = helper.shippingRecommendationData,
+                        logisticPromoTickerMessage = "Tersedia bbo",
+                        logisticPromoViewModel = helper.logisticPromo),
+                orderSummaryPageViewModel.orderShipment.value)
+        verify(exactly = 1) { validateUsePromoRevampUseCase.get().createObservable(any()) }
+        verify(exactly = 1) { orderSummaryAnalytics.eventViewPreselectedCourierOption(helper.secondCourierFirstDuration.productData.shipperProductId.toString(), any()) }
     }
 
     @Test
