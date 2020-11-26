@@ -14,11 +14,16 @@ import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.category.navbottomsheet.model.CategoryDetailData
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryLevelTwoExpandableAdapter
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryNavLevelOneAdapter
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottom_sheet_cat_nav.*
+import java.lang.IllegalArgumentException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
@@ -36,6 +41,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
     private var expandedLevelTwoPosition = -1
 
     init {
+        isFullpage = true
         isDragable = true
         isHideable = true
         clearContentPadding = true
@@ -80,12 +86,33 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                     initiateLevelTwoView(selectedLevelOnePosition, true)
                 }
                 is Fail -> {
-//                    TODO:: Failure Case Handling
-//                    (activity as CategoryChangeListener).onError(it.throwable)
+                    onError(it.throwable)
                 }
             }
 
         })
+    }
+
+    private fun onError(e: Throwable) {
+        slave_list.hide()
+        master_list.hide()
+
+        if (e is UnknownHostException
+                || e is SocketTimeoutException) {
+            global_error.setType(GlobalError.NO_CONNECTION)
+        } else {
+            global_error.setType(GlobalError.SERVER_ERROR)
+        }
+
+        global_error.show()
+
+        global_error.setOnClickListener {
+            if (!shouldHideL1)
+                master_list.show()
+            slave_list.show()
+            global_error.hide()
+            categoryNavBottomViewModel.getCategoriesFromServer(catId)
+        }
     }
 
     private fun setupRestIds(categoryDetailData: CategoryDetailData) {
