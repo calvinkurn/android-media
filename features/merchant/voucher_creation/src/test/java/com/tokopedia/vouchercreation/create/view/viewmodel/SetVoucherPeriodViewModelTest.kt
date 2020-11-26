@@ -13,7 +13,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -83,8 +82,6 @@ class SetVoucherPeriodViewModelTest {
 
             validateVoucherPeriod()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 periodValidationUseCase.executeOnBackground()
             }
@@ -106,8 +103,6 @@ class SetVoucherPeriodViewModelTest {
             setEndDateCalendar(DUMMY_CALENDAR)
 
             validateVoucherPeriod()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 periodValidationUseCase.executeOnBackground()

@@ -13,7 +13,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -58,8 +57,6 @@ class EditQuotaViewModelTest {
 
         mViewModel.changeQuotaValue(anyInt(), anyInt())
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             updateQuotaUseCase.executeOnBackground()
         }
@@ -76,8 +73,6 @@ class EditQuotaViewModelTest {
         } throws dummyThrowable
 
         mViewModel.changeQuotaValue(anyInt(), anyInt())
-
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             updateQuotaUseCase.executeOnBackground()

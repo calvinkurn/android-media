@@ -2,7 +2,7 @@ package com.tokopedia.seller.menu.presentation.viewmodel
 
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.manage.common.list.data.model.filter.Tab
+import com.tokopedia.product.manage.common.feature.list.data.model.filter.Tab
 import com.tokopedia.seller.menu.common.view.uimodel.ShopOrderUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel

@@ -12,7 +12,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -46,8 +45,6 @@ class CreatePromoCodeViewModelTest {
 
         mViewModel.validatePromoCode(anyString())
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             promoCodeValidationUseCase.executeOnBackground()
         }
@@ -64,8 +61,6 @@ class CreatePromoCodeViewModelTest {
         } throws dummyThrowable
 
         mViewModel.validatePromoCode(anyString())
-
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             promoCodeValidationUseCase.executeOnBackground()

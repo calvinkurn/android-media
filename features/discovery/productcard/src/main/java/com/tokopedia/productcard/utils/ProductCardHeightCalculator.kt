@@ -89,6 +89,7 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
     val priceSectionHeight = getPriceSectionHeight(context)
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
+    val salesRatingFloatHeight = getSalesRatingFloatHeight(context)
     val shopRatingSectionHeight = getShopRatingSectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
     val stockBarHeight = getStockBarAndLabelSectionHeight(context)
@@ -100,6 +101,7 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
             priceSectionHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
+            salesRatingFloatHeight +
             shopRatingSectionHeight +
             shippingInfoSectionHeight +
             stockBarHeight
@@ -200,12 +202,6 @@ private fun ProductCardModel.getRatingHeight(context: Context): Int {
         !willShowRatingAndReviewCount() -> {
             0
         }
-        ratingString.isNotEmpty() -> {
-            val textRatingStringMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_rating_string_margin_top)
-            val textRatingStringHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_rating_string_height)
-
-            textRatingStringMarginTop + textRatingStringHeight
-        }
         ratingCount > 0 -> {
             val imageRatingStarMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_image_rating_star_margin_top)
             val imageRatingStarHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_image_rating_star_height)
@@ -232,6 +228,16 @@ private fun ProductCardModel.getLabelIntegrityHeight(context: Context): Int {
     val labelIntegrity = getLabelIntegrity()
 
     return if (labelIntegrity != null && labelIntegrity.title.isNotEmpty() && !willShowRatingAndReviewCount()) {
+        val labelCredibilityMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_margin_top)
+        val labelCredibilityHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_height)
+
+        labelCredibilityMarginTop + labelCredibilityHeight
+    }
+    else 0
+}
+
+private fun ProductCardModel.getSalesRatingFloatHeight(context: Context): Int {
+    return if (willShowRating()) {
         val labelCredibilityMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_margin_top)
         val labelCredibilityHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_view_integrity_height)
 
