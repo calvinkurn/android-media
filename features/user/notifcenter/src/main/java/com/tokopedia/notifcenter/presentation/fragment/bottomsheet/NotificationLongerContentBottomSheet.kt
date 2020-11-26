@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.annotation.StringRes
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
@@ -12,11 +14,13 @@ import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.Ratio
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.widget.BroadcastBannerNotificationImageView
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -27,7 +31,23 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
     protected open var contentDesc: Typography? = null
     protected open var cta: UnifyButton? = null
     protected open var contentContainer: LinearLayout? = null
+    protected open var coordinatorContainer: CoordinatorLayout? = null
     protected open var banner: BroadcastBannerNotificationImageView? = null
+
+    fun showMessage(@StringRes stringRes: Int) {
+        val msg = getString(stringRes)
+        coordinatorContainer?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
+    fun showErrorMessage(throwable: Throwable) {
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        coordinatorContainer?.let {
+            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                    .show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,6 +126,7 @@ open class NotificationLongerContentBottomSheet : BottomSheetUnify() {
         contentDesc = view.findViewById(R.id.tv_content_desc)
         cta = view.findViewById(R.id.btn_longer_content_cta)
         contentContainer = view.findViewById(R.id.content_container)
+        coordinatorContainer = view.findViewById(R.id.coordinator_container)
         banner = view.findViewById(R.id.content_image)
     }
 

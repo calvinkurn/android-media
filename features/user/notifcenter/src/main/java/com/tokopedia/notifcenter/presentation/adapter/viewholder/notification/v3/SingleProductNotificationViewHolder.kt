@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 import com.tokopedia.notifcenter.widget.ProductNotificationCardUnify
 
 class SingleProductNotificationViewHolder constructor(
@@ -19,6 +20,18 @@ class SingleProductNotificationViewHolder constructor(
 
     override fun isLongerContent(element: NotificationUiModel) = false
 
+    override fun bind(element: NotificationUiModel, payloads: MutableList<Any>) {
+        if (payloads.isEmpty()) return
+        when (payloads.first()) {
+            is PayloadBumpReminderState -> bindPayloadReminder(element)
+        }
+    }
+
+    private fun bindPayloadReminder(element: NotificationUiModel) {
+        val product = element.product ?: return
+        productContainer?.bindReminderState(product)
+    }
+
     override fun bind(element: NotificationUiModel) {
         super.bind(element)
         bindProductData(element)
@@ -27,7 +40,7 @@ class SingleProductNotificationViewHolder constructor(
 
     private fun bindProductData(element: NotificationUiModel) {
         val product = element.product
-        productContainer?.bindProductData(product, listener)
+        productContainer?.bindProductData(element, product, listener, adapterPosition)
     }
 
     @SuppressLint("ClickableViewAccessibility")

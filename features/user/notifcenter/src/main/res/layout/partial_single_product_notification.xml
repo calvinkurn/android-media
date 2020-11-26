@@ -102,32 +102,49 @@
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_atc"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/notif_dp_8"
-            android:text="@string/notifcenter_btn_atc"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.49"
-            app:unifyButtonSize="small"
-            app:unifyButtonType="transaction"
-            app:unifyButtonVariant="ghost" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_checkout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/notif_dp_8"
-            android:text="@string/notifcenter_btn_buy"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.49"
-            app:unifyButtonSize="small"
-            app:unifyButtonType="transaction" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/iv_thumbnail">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/tv_reminder"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:text="@string/notifcenter_btn_reminder"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_atc"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:text="@string/notifcenter_btn_atc"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="transaction"
+                app:unifyButtonVariant="ghost" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_checkout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/spacing_lvl2"
+                android:layout_weight="1"
+                android:text="@string/notifcenter_btn_buy"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="transaction" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,15 +9,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory
@@ -102,6 +105,35 @@ class NotificationAdapter constructor(
         }
     }
 
+    fun loadingBumpReminder(viewHolderState: ViewHolderState?) {
+        updateLoadingBumpReminderFor(viewHolderState, true)
+    }
+
+    fun finishBumpReminder(viewHolderState: ViewHolderState?) {
+        updateLoadingBumpReminderFor(viewHolderState, false)
+    }
+
+    private fun updateLoadingBumpReminderFor(
+            viewHolderState: ViewHolderState?,
+            isLoading: Boolean
+    ) {
+        viewHolderState ?: return
+        val notif = viewHolderState.visitable as? NotificationUiModel ?: return
+        val elementData = getUpToDateUiModelPosition(
+                viewHolderState.previouslyKnownPosition,
+                notif
+        )
+        val position = elementData.first
+        val item = elementData.second
+        if (viewHolderState.payload is ProductData) {
+            val payload = PayloadBumpReminderState(
+                    viewHolderState.payload, item
+            )
+            viewHolderState.payload.loadingBumpReminder = isLoading
+            notifyItemChanged(position, payload)
+        }
+    }
+
     private fun adjustDividerPadding(position: Int, response: NotificationDetailResponseModel) {
         if (response.hasNext) return
         val nextPosition = position + 1
@@ -145,4 +177,5 @@ class NotificationAdapter constructor(
         val item = visitables.getOrNull(position + 1) ?: return false
         return item is BigDividerUiModel
     }
+
 }
