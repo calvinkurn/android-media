@@ -22,16 +22,12 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_LABEL
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_SORT
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_STATUS_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
-import com.tokopedia.sellerorder.common.util.SomConsts.PATTERN_DATE_PARAM
 import com.tokopedia.sellerorder.common.util.StatusBarColorUtil
-import com.tokopedia.sellerorder.common.util.Utils
 import com.tokopedia.sellerorder.common.util.Utils.copyInt
 import com.tokopedia.sellerorder.common.util.Utils.copyListParcelable
-import com.tokopedia.sellerorder.common.util.Utils.formatDate
 import com.tokopedia.sellerorder.filter.di.DaggerSomFilterComponent
 import com.tokopedia.sellerorder.filter.di.SomFilterComponent
 import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity
-import com.tokopedia.sellerorder.filter.presentation.activity.SomSubFilterActivity.Companion.KEY_SOM_ORDER_PARAM_CACHE
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapter
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterAdapterTypeFactory
 import com.tokopedia.sellerorder.filter.presentation.adapter.SomFilterListener
@@ -160,10 +156,10 @@ class SomFilterBottomSheet : BottomSheetUnify(),
                 .find { it.nameFilter == idFilter }?.somFilterData ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         cacheManager?.put(KEY_SOM_LIST_GET_ORDER_PARAM, somFilterViewModel.getSomListGetOrderListParam())
+        cacheManager?.put(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper(somFilterChipsList))
         val intentSomSubFilter = SomSubFilterActivity.newInstance(requireContext(),
                 filterDate,
                 idFilter,
-                somFilterChipsList,
                 cacheManager?.id ?: ""
         )
         startActivityForResult(intentSomSubFilter, REQUEST_CODE_FILTER_SEE_ALL)
@@ -175,7 +171,7 @@ class SomFilterBottomSheet : BottomSheetUnify(),
         when (requestCode) {
             REQUEST_CODE_FILTER_SEE_ALL -> {
                 if (resultCode == RESULT_CODE_FILTER_SEE_ALL) {
-                    this.somListOrderParam = cacheManager?.get(KEY_SOM_ORDER_PARAM_CACHE, SomListGetOrderListParam::class.java)
+                    this.somListOrderParam = cacheManager?.get(KEY_SOM_LIST_GET_ORDER_PARAM, SomListGetOrderListParam::class.java)
                     somListOrderParam?.let { somFilterViewModel.setSomListGetOrderListParam(it) }
                     val idFilter = data?.getStringExtra(SomSubFilterActivity.KEY_ID_FILTER) ?: ""
                     val somSubFilterList: SomSubFilterListWrapper? = cacheManager?.get(SomSubFilterActivity.KEY_SOM_LIST_FILTER_CHIPS, SomSubFilterListWrapper::class.java)
