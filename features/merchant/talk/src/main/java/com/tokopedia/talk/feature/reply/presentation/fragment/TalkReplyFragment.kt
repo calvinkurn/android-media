@@ -24,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -50,7 +51,7 @@ import com.tokopedia.talk.feature.reply.presentation.viewmodel.TalkReplyViewMode
 import com.tokopedia.talk.feature.reply.presentation.widget.TalkReplyReportBottomSheet
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.*
 import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.feature.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -356,6 +357,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
 
     private fun showPageError() {
         pageError.visibility = View.VISIBLE
+        pageError.reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         pageError.talkConnectionErrorRetryButton.setOnClickListener {
             showPageLoading()
             hidePageError()

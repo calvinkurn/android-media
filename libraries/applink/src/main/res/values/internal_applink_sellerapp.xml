@@ -17,6 +17,7 @@
     <string name="path_sellerhome_som_in_shipping" translatable="false">/sellerhome-som-inshipping</string>
     <string name="path_sellerhome_som_done" translatable="false">/sellerhome-som-done</string>
     <string name="path_sellerhome_som_cacelled" translatable="false">/sellerhome-som-cancelled</string>
+    <string name="path_sellerhome_som_cacellation_request" translatable="false">/sellerhome-som-cancellation-request</string>
     <string name="path_sellerhome_other_settings" translatable="false">/sellerhome-othersettings</string>
     <string name="path_centralized_promo" translatable="false">/centralized-promo</string>
     <string name="path_centralized_promo_first_voucher" translatable="false">/first-voucher-centralized-promo</string>
