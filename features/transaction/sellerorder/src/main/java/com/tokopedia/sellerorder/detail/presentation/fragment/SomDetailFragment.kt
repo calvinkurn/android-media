@@ -1320,7 +1320,7 @@ class SomDetailFragment : BaseDaggerFragment(),
         activity?.resources?.let {
             somDetailViewModel.rejectOrder(orderRejectRequestParam)
         }
-        SomAnalytics.eventClickTolakPesanan(detailResponse.statusText, orderRejectRequestParam.reason)
+        SomAnalytics.eventClickTolakPesanan(detailResponse?.statusText.orEmpty(), orderRejectRequestParam.reason)
     }
 
     private fun observingRejectOrder() {
