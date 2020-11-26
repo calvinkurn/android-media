@@ -395,6 +395,7 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.agerestriction)
+    implementation project(rootProject.ext.features.productShare)
 
     implementation project(rootProject.ext.features.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
