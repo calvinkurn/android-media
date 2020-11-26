@@ -231,7 +231,7 @@ open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(map)
     }
 
-    override fun trackClickQuickFilter(filterName: String, componentName: String?, value: String) {
+    override fun trackClickQuickFilter(filterName: String, componentName: String?, value: String, isFilterSelected: Boolean) {
         val map = createGeneralEvent(eventAction = QUICK_FILTER_CLICK, eventLabel = "$componentName - $filterName")
         getTracker().sendGeneralEvent(map)
     }

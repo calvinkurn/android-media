@@ -9,13 +9,18 @@ import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRepository
 import com.tokopedia.discovery2.repository.chipfilter.ChipFilterRestRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryDataGQLRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
+import com.tokopedia.discovery2.repository.emptystate.DiscoveryEmptyStateRepository
+import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRestRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterDiscoveryRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_NETWORK_METRICS
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_PREPARE_METRICS
 import com.tokopedia.discovery2.viewcontrollers.activity.DISCOVERY_PLT_RENDER_METRICS
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 class DiscoveryRepoProvider : RepositoryProvider {
     override fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
@@ -40,6 +45,14 @@ class DiscoveryRepoProvider : RepositoryProvider {
 
     override fun provideChildCategoryRepository(): ChildCategoryRepository {
         return DiscoveryChildCategoryRepository()
+    }
+
+    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
+        return DiscoveryTopAdsTrackingUseCase(topAdsUrlHitter)
+    }
+
+    override fun provideEmptyStateRepository(): EmptyStateRepository {
+        return DiscoveryEmptyStateRepository()
     }
 
 }

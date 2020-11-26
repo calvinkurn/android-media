@@ -21,7 +21,7 @@ class NavigationChipsItemViewHolder(itemView: View, private val fragment: Fragme
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         childCategoriesItemViewModel = discoveryBaseViewModel as DefaultComponentViewModel
         childCategoriesItemViewModel.getComponentLiveData().observe(fragment.viewLifecycleOwner, Observer { item ->
-            val itemData = item.data?.get(0)
+            val itemData = item.data?.firstOrNull()
             positionForParentAdapter = itemData?.positionForParentItem ?: -1
             itemData?.let {
                 it.title?.let { title ->
@@ -34,7 +34,7 @@ class NavigationChipsItemViewHolder(itemView: View, private val fragment: Fragme
 
     private fun setClick(componentsItem: ComponentsItem) {
         childCategory.setOnClickListener {
-            componentsItem.data?.get(0)?.let { it1 ->
+            componentsItem.data?.firstOrNull()?.let { it1 ->
                 RouteManager.route(itemView.context, it1.applinks)
                 sendChipClickEvent(it1)
             }

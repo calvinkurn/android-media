@@ -9,6 +9,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.PageInfo
@@ -53,6 +54,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
     private val discoveryResponseList = MutableLiveData<Result<List<ComponentsItem>>>()
     private val discoveryLiveStateData = MutableLiveData<DiscoveryLiveState>()
+    private val wishlistUpdateLiveData = MutableLiveData<ProductCardOptionsModel>()
     var pageIdentifier: String = ""
     var pageType: String = ""
     var pagePath: String = ""
@@ -93,7 +95,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     private fun setDiscoveryLiveState(pageInfo: PageInfo) {
         if(!pageInfo.redirectionUrl.isNullOrEmpty() && discoveryLiveStateData.value != RouteToApplink(pageInfo.redirectionUrl ?: "")){
             discoveryLiveStateData.value = RouteToApplink(pageInfo.redirectionUrl ?: "")
-        } else if(pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)){
+        } else if(pageInfo.redirectionUrl.isNullOrEmpty() && pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)){
             discoveryLiveStateData.value = GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)
         }
     }
@@ -197,4 +199,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, "")
         )
     }
+
+    fun updateWishlist(productCardOptionsModel: ProductCardOptionsModel){
+        wishlistUpdateLiveData.value = productCardOptionsModel
+    }
+
+    fun getWishListLiveData() = wishlistUpdateLiveData
 }

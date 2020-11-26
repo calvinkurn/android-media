@@ -289,10 +289,10 @@ data class DataItem(
         val preorder: String? = "",
 
         @SerializedName("topads_view_url")
-        val topadsViewUrl: String? = "",
+        var topadsViewUrl: String? = "",
 
         @SerializedName("product_id")
-        val productId: String? = "",
+        var productId: String? = "",
 
         @SerializedName("count_review")
         var countReview: String? = "",
@@ -316,7 +316,7 @@ data class DataItem(
         val stockSoldPercentage: String? = "",
 
         @SerializedName("topads_click_url")
-        val topadsClickUrl: String? = "",
+        var topadsClickUrl: String? = "",
 
         @SerializedName("free_ongkir")
         var freeOngkir: FreeOngkir? = null,
@@ -380,7 +380,15 @@ data class DataItem(
 
         var tabName: String? = "",
 
-        var isOldRating: Boolean = false
+        var isOldRating: Boolean = false,
+
+        var departmentID: Int = 0,
+
+        var hasThreeDots: Boolean = false,
+
+        var isWishList: Boolean = false,
+
+        var wishlistUrl: String? = ""
 ) {
     val leftMargin: Int
         get() {

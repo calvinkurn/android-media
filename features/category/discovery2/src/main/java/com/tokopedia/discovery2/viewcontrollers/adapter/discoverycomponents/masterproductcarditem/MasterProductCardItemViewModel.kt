@@ -3,11 +3,12 @@ package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mas
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.di.DaggerDiscoveryComponent
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
-import com.tokopedia.discovery2.usecase.topAdsUseCase.DiscoveryTopAdsTrackingUseCase
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.user.session.UserSession
@@ -24,7 +25,7 @@ class MasterProductCardItemViewModel(val application: Application, val component
     private val componentPosition: MutableLiveData<Int?> = MutableLiveData()
 
     @Inject
-    lateinit var discoveryTopAdsTrackingUseCase: DiscoveryTopAdsTrackingUseCase
+    lateinit var discoveryTopAdsTrackingUseCase: TopAdsTrackingUseCase
 
     init {
         componentPosition.value = position
@@ -77,6 +78,18 @@ class MasterProductCardItemViewModel(val application: Application, val component
         }
     }
 
+    fun getProductCardOptionsModel(): ProductCardOptionsModel {
+        return components.data?.firstOrNull()?.let {
+             ProductCardOptionsModel(
+                    hasWishlist = true,
+                    isWishlisted = it.isWishList,
+                    productId = it.id.toString(),
+                    isTopAds = it.isTopads ?: false,
+                    topAdsWishlistUrl = it.wishlistUrl ?: "",
+                    productPosition = position
+            )
+        } ?: ProductCardOptionsModel()
+    }
 
 
 }

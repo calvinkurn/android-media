@@ -1,5 +1,6 @@
 package com.tokopedia.categorylevels.domain.repository
 
+import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.basemvvm.repository.BaseRepository
 import com.tokopedia.common_category.data.raw.GQL_NAV_CATEGORY_DETAIL_V3
 import com.tokopedia.common_category.model.bannedCategory.BannedCategoryResponse
@@ -26,16 +27,16 @@ class CategoryGqlPageRepository(private val departmentName: String,
         return DiscoveryResponse(
                 components = getCategoryComponents(data),
                 pageInfo = PageInfo(
-                        identifier = departmentId, name = departmentName, type = "", path = "",
+                        identifier = departmentId, name = data.name, type = "", path = "",
                         searchApplink = SEARCH_APPLINK,
                         redirectionUrl = data.appRedirectionURL,
                         isAdult = data.isAdult,
                         origin = AdultManager.ORIGIN_CATEGORY_PAGE,
                         share = Share(
                                 enabled = true,
-                                description = "Beli $departmentName Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk Category Name Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                url = categoryUrl, title = "", image = "")),
-                title = departmentName,
+                                description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk Category Name Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
+                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL, DeeplinkConstant.SCHEME_TOKOPEDIA), title = "", image = "")),
+                title = data.name ?: departmentName,
                 additionalInfo = AdditionalInfo(null))
     }
 

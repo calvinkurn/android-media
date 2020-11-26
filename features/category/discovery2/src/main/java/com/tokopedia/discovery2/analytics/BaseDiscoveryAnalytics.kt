@@ -33,7 +33,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackClickSeeAllBanner() {}
     open fun trackClickCustomTopChat() {}
     open fun trackClickChipsFilter(filterName: String) {}
-    open fun trackClickQuickFilter(filterName: String, componentName: String?, value: String) {}
+    open fun trackClickQuickFilter(filterName: String, componentName: String?, value: String, isFilterSelected: Boolean) {}
     open fun trackClickDetailedFilter(componentName: String?) {}
     open fun trackClickApplyFilter(mapParameters: Map<String, String>) {}
     open fun trackTimerSprintSale() {}
@@ -61,5 +61,9 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackImpressionNavigationChips(componentsItems: ArrayList<ComponentsItem>?) {}
     open fun trackClickNavigationChips(categoryItem: DataItem?, position: Int) {}
     open fun trackClickNavigationDropDown() {}
+    open fun trackClickCloseNavigation() {}
+    open fun trackClickExpandNavigationAccordion(categoryId: String) {}
+    open fun trackClickCollapseNavigationAccordion(categoryId: String) {}
+    open fun trackClickCategoryOption(categoryId: String) {}
 
 }

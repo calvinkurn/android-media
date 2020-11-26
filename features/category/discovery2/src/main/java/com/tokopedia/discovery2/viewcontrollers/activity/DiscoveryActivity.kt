@@ -16,6 +16,9 @@ import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.Utils.Companion.preSelectedTab
 import com.tokopedia.discovery2.analytics.BaseDiscoveryAnalytics
 import com.tokopedia.discovery2.analytics.DiscoveryAnalytics
@@ -35,6 +38,7 @@ const val DISCOVERY_RESULT_TRACE = "discovery_result_trace"
 const val DISCOVERY_PLT_PREPARE_METRICS = "discovery_plt_prepare_metrics"
 const val DISCOVERY_PLT_NETWORK_METRICS = "discovery_plt_network_metrics"
 const val DISCOVERY_PLT_RENDER_METRICS = "discovery_plt_render_metrics"
+private const val LOGIN_REQUEST_CODE = 35769
 
 open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
@@ -88,7 +92,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     }
 
     private fun startPerformanceMonitoring() {
-        pageLoadTimePerformanceInterface?.startMonitoring(DISCOVERY_RESULT_TRACE)
+        pageLoadTimePerformanceInterface?.startMonitoring(getTraceName())
         pageLoadTimePerformanceInterface?.startPreparePagePerformanceMonitoring()
     }
 
@@ -138,8 +142,21 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object : ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
     }
 
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            discoveryViewModel.updateWishlist(productCardOptionsModel)
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST_CODE)
+        }
+    }
     override fun onStop() {
         super.onStop()
         preSelectedTab = -1
@@ -159,9 +176,13 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
         }
     }
 
+    open fun getTraceName() : String = DISCOVERY_RESULT_TRACE
+
     open fun getNewRepoProvider(): RepositoryProvider = DiscoveryRepoProvider()
 
     open fun getPagePath() = discoveryViewModel.pagePath
+
+    open fun getAnalyticsClass() = ::DiscoveryAnalytics
 
     open fun getPageType() = discoveryViewModel.pageType
 
@@ -172,7 +193,7 @@ open class DiscoveryActivity : BaseViewModelActivity<DiscoveryViewModel>() {
     fun getSourceIdentifier() = intent.getStringExtra(SOURCE) ?: ""
 
     open fun getAnalytics(): BaseDiscoveryAnalytics {
-        return DiscoveryAnalytics(getPageType(),
+        return getAnalyticsClass().invoke(getPageType(),
                 getPagePath(),
                 getPageIdentifier(),
                 getCampaignCode(),

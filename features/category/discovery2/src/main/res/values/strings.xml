@@ -52,4 +52,8 @@
     <string name="content_desc_title_tv">text title banner</string>
     <string name="error_message">Ada yang salah. Silakan coba lagi</string>
 
+    <string name="discovery_msg_success_remove_wishlist">Sukses menghapus wishlist</string>
+    <string name="discovery_msg_success_add_wishlist">Sukses menambah wishlist</string>
+    <string name="discovery_msg_error_add_wishlist">Error menambah wishlist</string>
+    <string name="discovery_msg_error_remove_wishlist">Error menghapus wishlist</string>
 </resources>

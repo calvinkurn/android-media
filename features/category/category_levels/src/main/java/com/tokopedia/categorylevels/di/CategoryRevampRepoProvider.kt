@@ -2,21 +2,28 @@ package com.tokopedia.categorylevels.di
 
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.categorylevels.domain.repository.CategoryChildCategoriesRepository
+import com.tokopedia.categorylevels.domain.repository.CategoryEmptyStateRepository
+import com.tokopedia.categorylevels.domain.repository.CategoryNavigationChipsRepository
 import com.tokopedia.categorylevels.domain.repository.CategoryGqlPageRepository
-import com.tokopedia.categorylevels.view.activity.CategoryNavActivity
+import com.tokopedia.categorylevels.domain.usecase.CategoryTopAdsTrackingUseCase
+import com.tokopedia.categorylevels.view.activity.CATEGORY_LEVELS_PLT_NETWORK_METRICS
+import com.tokopedia.categorylevels.view.activity.CATEGORY_LEVELS_PLT_PREPARE_METRICS
+import com.tokopedia.categorylevels.view.activity.CATEGORY_LEVELS_PLT_RENDER_METRICS
 import com.tokopedia.common.RepositoryProvider
 import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
+import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
-class CategoryRepoProvider(val departmentName: String, val departmentId: String, val categoryUrl: String?) : RepositoryProvider {
+class CategoryRevampRepoProvider(val departmentName: String, val departmentId: String, val categoryUrl: String?) : RepositoryProvider {
     override fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface {
         return PageLoadTimePerformanceCallback(
-                CategoryNavActivity.CATEGORY_LEVELS_PLT_PREPARE_METRICS,
-                CategoryNavActivity.CATEGORY_LEVELS_PLT_NETWORK_METRICS,
-                CategoryNavActivity.CATEGORY_LEVELS_PLT_RENDER_METRICS,0,0,0,0,null
+                CATEGORY_LEVELS_PLT_PREPARE_METRICS,
+                CATEGORY_LEVELS_PLT_NETWORK_METRICS,
+                CATEGORY_LEVELS_PLT_RENDER_METRICS,0,0,0,0,null
         )
     }
 
@@ -33,6 +40,14 @@ class CategoryRepoProvider(val departmentName: String, val departmentId: String,
     }
 
     override fun provideChildCategoryRepository(): ChildCategoryRepository {
-        return CategoryChildCategoriesRepository()
+        return CategoryNavigationChipsRepository()
+    }
+
+    override fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase {
+        return CategoryTopAdsTrackingUseCase(topAdsUrlHitter)
+    }
+
+    override fun provideEmptyStateRepository(): EmptyStateRepository {
+        return CategoryEmptyStateRepository()
     }
 }

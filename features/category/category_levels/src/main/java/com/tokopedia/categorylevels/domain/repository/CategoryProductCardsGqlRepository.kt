@@ -61,16 +61,23 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
                 labelsGroupList.add(LabelsGroup(it.position, it.title, it.type))
             }
             dataItem.id = it.productId.toString()
+            dataItem.productId = it.productId.toString()
             dataItem.name = it.name
             dataItem.price = it.price
             dataItem.rating = it.rating.toString()
             dataItem.imageUrlMobile = it.imageUrl
             dataItem.isTopads = it.isTopAds
+            dataItem.topadsClickUrl = it.clickUrl
+            dataItem.topadsViewUrl = it.trackerImageUrl
             dataItem.shopId = it.shopId.toString()
             dataItem.shopName = it.shopName
             dataItem.shopLocation = it.location
             dataItem.discountedPrice = it.slashedPrice
-            dataItem.discountPercentage = it.discountPercentage
+            dataItem.discountPercentage = it.discountPercentageInt.toString()
+            dataItem.departmentID = it.departmentId
+            dataItem.hasThreeDots = true
+            dataItem.isWishList = it.isWishlist
+            dataItem.wishlistUrl = it.wishlistUrl
             dataItem.countReview = it.countReview.toString()
             dataItem.freeOngkir = FreeOngkir(it.freeOngkirImageUrl, it.isFreeOngkirActive)
             dataItem.applinks = it.appUrl

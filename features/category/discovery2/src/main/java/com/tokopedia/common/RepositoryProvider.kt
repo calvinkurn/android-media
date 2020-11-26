@@ -3,8 +3,11 @@ package com.tokopedia.common
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery2.repository.childcategory.ChildCategoryRepository
 import com.tokopedia.discovery2.repository.discoveryPage.DiscoveryPageRepository
+import com.tokopedia.discovery2.repository.emptystate.EmptyStateRepository
 import com.tokopedia.discovery2.repository.productcards.ProductCardsRepository
 import com.tokopedia.discovery2.repository.quickFilter.QuickFilterRepository
+import com.tokopedia.discovery2.usecase.topAdsUseCase.TopAdsTrackingUseCase
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 
 interface RepositoryProvider {
     fun providePageLoadTimePerformanceMonitoring(): PageLoadTimePerformanceInterface
@@ -12,4 +15,6 @@ interface RepositoryProvider {
     fun provideProductCardsRepository(): ProductCardsRepository
     fun provideQuickFilterRepository(): QuickFilterRepository
     fun provideChildCategoryRepository(): ChildCategoryRepository
+    fun provideTopAdsTrackingUseCase(topAdsUrlHitter: TopAdsUrlHitter): TopAdsTrackingUseCase
+    fun provideEmptyStateRepository(): EmptyStateRepository
 }

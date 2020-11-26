@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.load
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.MasterProductCardItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.ProductCardCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcarditem.ProductCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.EmptyStateViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardrevamp.ProductCardRevampViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardsprintsalecarousel.ProductCardSprintSaleCarouselViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.quickcoupon.QuickCouponViewModel
@@ -39,4 +40,5 @@ interface UIWidgetComponent {
     fun inject(quickCouponViewModel: QuickCouponViewModel)
     fun inject(quickFilterViewModel: QuickFilterViewModel)
     fun inject(navigationChipsViewModel: NavigationChipsViewModel)
+    fun inject(emptyStateViewModel: EmptyStateViewModel)
 }
