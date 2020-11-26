@@ -105,7 +105,18 @@ class NotificationAdapter constructor(
         }
     }
 
+    fun loadingBumpReminder(viewHolderState: ViewHolderState?) {
+        updateLoadingBumpReminderFor(viewHolderState, true)
+    }
+
     fun finishBumpReminder(viewHolderState: ViewHolderState?) {
+        updateLoadingBumpReminderFor(viewHolderState, false)
+    }
+
+    private fun updateLoadingBumpReminderFor(
+            viewHolderState: ViewHolderState?,
+            isLoading: Boolean
+    ) {
         viewHolderState ?: return
         val notif = viewHolderState.visitable as? NotificationUiModel ?: return
         val elementData = getUpToDateUiModelPosition(
@@ -118,7 +129,7 @@ class NotificationAdapter constructor(
             val payload = PayloadBumpReminderState(
                     viewHolderState.payload, item
             )
-            viewHolderState.payload.loadingBumpReminder = false
+            viewHolderState.payload.loadingBumpReminder = isLoading
             notifyItemChanged(position, payload)
         }
     }
@@ -166,4 +177,5 @@ class NotificationAdapter constructor(
         val item = visitables.getOrNull(position + 1) ?: return false
         return item is BigDividerUiModel
     }
+
 }

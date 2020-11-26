@@ -47,7 +47,10 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
         }
         val payload = viewHolderState?.payload
         if (payload is ProductData) {
-            val productView = products[payload]
+            val index = notification?.productData?.indexOf(payload) ?: return
+            val product = notification?.productData?.get(index)
+            product?.update(payload)
+            val productView = products[product]
             productView?.bindReminderState(payload)
         }
     }

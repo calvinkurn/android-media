@@ -58,4 +58,8 @@ data class ProductData(
     fun hasEmptyStock(): Boolean {
         return isShow
     }
+
+    fun update(productData: ProductData) {
+        loadingBumpReminder = productData.loadingBumpReminder
+    }
 }

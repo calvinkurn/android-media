@@ -84,7 +84,9 @@ class ProductNotificationCardUnify(
     }
 
     fun bindReminderState(product: ProductData) {
-        btnReminder?.isLoading = product.loadingBumpReminder
+        btnReminder?.post {
+            btnReminder?.isLoading = product.loadingBumpReminder
+        }
     }
 
     private fun bindReminder(

@@ -64,6 +64,8 @@ class CarouselProductNotificationViewHolder constructor(
                 payload.productData
         )
         if (indexToUpdate != null && indexToUpdate != RecyclerView.NO_POSITION) {
+            val product = rvAdapter.notification?.productData?.get(indexToUpdate)
+            product?.update(payload.productData)
             rvAdapter.notifyItemChanged(indexToUpdate, payload)
         }
     }

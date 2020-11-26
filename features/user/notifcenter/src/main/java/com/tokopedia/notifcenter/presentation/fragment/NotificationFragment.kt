@@ -219,6 +219,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             ) as? NotificationProductLongerContentBottomSheet
             val isFromBottomSheet = bottomSheet != null
             when (it.status) {
+                Status.LOADING -> {
+                    rvAdapter?.loadingBumpReminder(viewHolderState)
+                }
                 Status.SUCCESS -> {
                     if (!isFromBottomSheet) {
                         showMessage(R.string.title_success_bump_reminder)
