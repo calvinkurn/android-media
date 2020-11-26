@@ -182,4 +182,12 @@
 
     <!-- DF Shop Score -->
     <string name="title_shopscore">Skor Performa Toko</string>
+
+    <!-- Hotel slice custom query -->
+    <string-array name="HotelSliceCustomQuery">
+        <item>find hotels</item>
+        <item>(find)? (search)? (a)? hotel(s)? in $city1</item>
+        <item>Book (a)? hotel(s)? in $city1</item>
+        <item>Search for cheap hotels in $city1</item>
+    </string-array>
 </resources>
