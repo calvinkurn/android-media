@@ -60,14 +60,14 @@ open class TopChatTypeFactoryImpl constructor(
         productAttachmentListener
 ), TopChatTypeFactory {
 
-    private val ABShowBroadcastBanner = RemoteConfigInstance.getInstance()
+    private val showBroadcastBannerAb = RemoteConfigInstance.getInstance()
             .abTestPlatform.getString(
                     BroadcastViewHolder.AB_TEST_KEY,
                     BroadcastViewHolder.VARIANT_CONTROL
             )
 
     private fun shouldHideBanner(): Boolean {
-        return ABShowBroadcastBanner == BroadcastViewHolder.VARIANT_NO_BANNER
+        return showBroadcastBannerAb == BroadcastViewHolder.VARIANT_NO_BANNER
     }
 
     // Check if chat bubble first, if not return default impl
