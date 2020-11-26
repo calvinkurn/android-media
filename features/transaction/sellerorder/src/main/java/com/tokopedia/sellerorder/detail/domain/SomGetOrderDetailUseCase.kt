@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
@@ -14,6 +15,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import java.lang.NullPointerException
 import javax.inject.Inject
 
 /**
@@ -42,24 +44,13 @@ class SomGetOrderDetailUseCase @Inject constructor(
 
         val multipleRequest = mutableListOf(somDetailRequest, somDynamicPriceRequest)
 
-        try {
+        return try {
             val gqlResponse = graphQlRepository.getReseponse(multipleRequest)
-            if (gqlResponse.getError(SomDetailOrder.Data::class.java)?.isNotEmpty() != true) {
-                getSomDetailResponse.getSomDetail = gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail
-            } else {
-                getSomDetailResponse.getSomDetail = null
-                return Fail(Throwable())
-            }
-
-            if (gqlResponse.getError(SomDynamicPriceResponse::class.java)?.isNotEmpty() != true) {
-                getSomDetailResponse.somDynamicPriceResponse = gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice
-            } else {
-                getSomDetailResponse.somDynamicPriceResponse = null
-                return Fail(Throwable())
-            }
-            return Success(getSomDetailResponse)
+            getSomDetailResponse.getSomDetail = requireNotNull(gqlResponse.getData<SomDetailOrder.Data>(SomDetailOrder.Data::class.java).getSomDetail)
+            getSomDetailResponse.somDynamicPriceResponse = requireNotNull(gqlResponse.getData<SomDynamicPriceResponse>(SomDynamicPriceResponse::class.java).getSomDynamicPrice)
+            Success(getSomDetailResponse)
         } catch (e: Throwable) {
-            return Fail(e)
+            Fail(e)
         }
     }
 
