@@ -233,11 +233,11 @@ open class AddPhoneFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        val EXTRA_PROFILE_SCORE = "profile_score"
-        val EXTRA_PHONE = "phone"
+        const val EXTRA_PROFILE_SCORE = "profile_score"
+        const val EXTRA_PHONE = "phone"
 
-        val REQUEST_COTP_PHONE_VERIFICATION = 101
-        val OTP_TYPE_PHONE_VERIFICATION = 11
+        const val REQUEST_COTP_PHONE_VERIFICATION = 101
+        const val OTP_TYPE_PHONE_VERIFICATION = 11
 
         fun createInstance(bundle: Bundle): AddPhoneFragment {
             val fragment = AddPhoneFragment()

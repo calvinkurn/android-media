@@ -1,5 +1,7 @@
 package com.tokopedia.referral.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +13,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.referral.R
 import com.tokopedia.referral.analytics.ReferralPhoneVerificationAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil.transform
+
 
 /**
  */
@@ -63,16 +65,25 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
                     ReferralPhoneVerificationAnalytics.Action.CLICK_VERIFY_NUMBER,
                     tvPhoneNumber?.text.toString().replace("-", ""))
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ADD_PHONE_WITH, rawPhone)
-            startActivity(intent)
+            startActivityForResult(intent, ACTION_ADD_PHONE)
             activity?.finish()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ACTION_ADD_PHONE && resultCode == Activity.RESULT_OK) {
+            val phoneNumber = data?.getStringExtra(EXTRA_PHONE)
+            tvPhoneNumber?.setText(phoneNumber)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {
         fun newInstance(): ReferralPhoneNumberVerificationFragment {
             return ReferralPhoneNumberVerificationFragment()
         }
-
+        const val EXTRA_PHONE = "phone"
+        const val ACTION_ADD_PHONE = 432
         const val URL_TOKOCASH_SHARE = "https://ecs7.tokopedia.net/img/android/others/ic_referral_tokocash.png"
     }
 }
