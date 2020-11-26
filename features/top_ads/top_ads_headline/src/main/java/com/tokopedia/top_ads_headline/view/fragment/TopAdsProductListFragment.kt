@@ -241,6 +241,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         if (descriptionText.isNotEmpty()) {
             ticker.show()
             ticker.setTextDescription(descriptionText)
+            productsListAdapter.notifyDataSetChanged()
         } else {
             ticker.hide()
         }
@@ -252,6 +253,7 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
         var categoryCount = -1
         selectedTopAdsProductMap.forEach { (category, arrayList) ->
             if (arrayList.size == SINGLE_SELECTION) {
+                arrayList.first().isSingleSelect = true
                 ++categoryCount
                 when {
                     categoryCount == 0 -> {
@@ -425,13 +427,13 @@ class TopAdsProductListFragment : BaseDaggerFragment(), ProductListAdapter.Produ
 
     override fun onProductClick(product: ResponseProductList.Result.TopadsGetListProduct.Data) {
         val category = Category(product.departmentId.toString(), product.departmentName)
-        changeBackGround(category, product)
         isProductSelectedListEdited = true
         if (selectedTabModel?.id == DEFAULT_RECOMMENDATION_TAB_ID) {
             checkIfDeterminate()
         }
         setSelectProductText()
         if (!btnNext.isEnabled) {
+            changeBackGround(category, product)
             setTickerAndBtn()
         }
     }
