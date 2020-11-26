@@ -62,7 +62,7 @@ class RechargeHomepageToolbar @JvmOverloads constructor(context: Context, attrs:
             val pR = this.paddingRight
             val pB = resources.getDimensionPixelSize(TOOLBAR_PADDING)
 
-            this.background = ContextCompat.getDrawable(context, R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
+            this.background = ContextCompat.getDrawable(context, R.drawable.bg_toolbar_shadow_bottom)
             this.setPadding(pL, pT, pR, pB)
         }
     }
