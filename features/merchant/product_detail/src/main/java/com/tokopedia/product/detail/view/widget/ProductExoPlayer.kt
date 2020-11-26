@@ -2,10 +2,7 @@ package com.tokopedia.product.detail.view.widget
 
 import android.content.Context
 import android.net.Uri
-import com.google.android.exoplayer2.C
-import com.google.android.exoplayer2.DefaultLoadControl
-import com.google.android.exoplayer2.LoadControl
-import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
@@ -22,19 +19,7 @@ import com.google.android.exoplayer2.util.Util
  */
 class ProductExoPlayer(val context: Context) {
 
-    companion object {
-        //Minimum Video you want to buffer while Playing
-        private const val MIN_BUFFER_DURATION = 32*1024
-
-        //Max Video you want to buffer during PlayBack
-        private const val MAX_BUFFER_DURATION = 64*1024
-
-        //Min Video you want to buffer before start Playing it
-        private const val MIN_PLAYBACK_START_BUFFER = 1024
-
-        //Min video You want to buffer when user resumes video
-        private const val MIN_PLAYBACK_RESUME_BUFFER = 1024
-    }
+    private var videoStateListener: VideoStateListener? = null
 
     private var loadControl: LoadControl = DefaultLoadControl.Builder()
             .setAllocator(DefaultAllocator(true, 16))
@@ -51,7 +36,30 @@ class ProductExoPlayer(val context: Context) {
             .setLoadControl(loadControl)
             .build()
 
-    fun start(videoUrl: String, lastVideoPosition: Long) {
+    init {
+        exoPlayer.volume = 0F
+        exoPlayer.addListener(object : Player.EventListener {
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                when {
+                    (playWhenReady && playbackState == Player.STATE_READY) || playbackState == Player.STATE_ENDED -> {
+                        videoStateListener?.onVideoPlay()
+                    }
+                    playWhenReady -> {
+                        videoStateListener?.onInitialStateLoading()
+                    }
+                    !playWhenReady -> {
+                    }
+                    else -> videoStateListener?.onVideoBuffering()
+                }
+            }
+        })
+    }
+
+    fun setVideoStateListener(videoStateListener: VideoStateListener?) {
+        this.videoStateListener = videoStateListener
+    }
+
+    fun start(videoUrl: String, lastVideoPosition: Long, isMute: Boolean) {
         if (videoUrl.isBlank()) return
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl))
@@ -59,6 +67,7 @@ class ProductExoPlayer(val context: Context) {
         if (lastVideoPosition != 0L) {
             exoPlayer.seekTo(lastVideoPosition)
         }
+        toggleVideoVolume(isMute)
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource, lastVideoPosition == 0L, false)
     }
@@ -76,7 +85,17 @@ class ProductExoPlayer(val context: Context) {
         exoPlayer.release()
     }
 
+    fun toggleVideoVolume(isMute: Boolean) {
+        if (isMute) {
+            exoPlayer.volume = 0F
+        } else {
+            exoPlayer.volume = 1F
+        }
+    }
+
     fun getExoPlayer(): SimpleExoPlayer = exoPlayer
+
+    fun isMute(): Boolean = exoPlayer.volume == 0F
 
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
         val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Tokopedia Android"))
@@ -89,4 +108,24 @@ class ProductExoPlayer(val context: Context) {
         }
         return mediaSource.createMediaSource(uri)
     }
+
+    companion object {
+        //Minimum Video you want to buffer while Playing
+        private const val MIN_BUFFER_DURATION = 32 * 1024
+
+        //Max Video you want to buffer during PlayBack
+        private const val MAX_BUFFER_DURATION = 64 * 1024
+
+        //Min Video you want to buffer before start Playing it
+        private const val MIN_PLAYBACK_START_BUFFER = 1024
+
+        //Min video You want to buffer when user resumes video
+        private const val MIN_PLAYBACK_RESUME_BUFFER = 1024
+    }
+}
+
+interface VideoStateListener {
+    fun onInitialStateLoading()
+    fun onVideoPlay()
+    fun onVideoBuffering()
 }

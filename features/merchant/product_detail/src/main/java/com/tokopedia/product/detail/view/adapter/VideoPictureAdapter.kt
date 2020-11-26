@@ -4,28 +4,45 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
-import com.tokopedia.product.detail.view.viewholder.VideoPictureViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductPictureViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductVideoViewHolder.Companion.VIDEO_TYPE
 import com.tokopedia.product.detail.view.widget.ProductVideoCoordinator
+import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
 
 /**
  * Created by Yehezkiel on 23/11/20
  */
-class VideoPictureAdapter(val productExoPlayer: ProductVideoCoordinator?) : RecyclerView.Adapter<VideoPictureViewHolder>() {
+class VideoPictureAdapter(private val productExoPlayer: ProductVideoCoordinator?) : RecyclerView.Adapter<AbstractViewHolder<MediaDataModel>>() {
 
-    private var mediaData: List<MediaDataModel> = listOf()
+    var mediaData: List<MediaDataModel> = listOf()
 
-    fun updateData(mediaData: List<MediaDataModel>) {
-        this.mediaData = mediaData
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<MediaDataModel> {
+        return if (viewType == MEDIA_VIDEO_VIEW_TYPE) {
+            ProductVideoViewHolder(LayoutInflater.from(parent.context)
+                    .inflate(ProductVideoViewHolder.LAYOUT, parent, false), productExoPlayer)
+        } else {
+            ProductPictureViewHolder(LayoutInflater.from(parent.context)
+                    .inflate(ProductPictureViewHolder.LAYOUT, parent, false))
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoPictureViewHolder {
-        return VideoPictureViewHolder(LayoutInflater.from(parent.context)
-                .inflate(VideoPictureViewHolder.LAYOUT, parent, false), productExoPlayer)
-    }
-
-    override fun onBindViewHolder(holder: VideoPictureViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AbstractViewHolder<MediaDataModel>, position: Int) {
         holder.bind(mediaData[position])
     }
 
     override fun getItemCount(): Int = mediaData.size
+
+    override fun getItemViewType(position: Int): Int {
+        return if (mediaData[position].type == VIDEO_TYPE) {
+            MEDIA_VIDEO_VIEW_TYPE
+        } else {
+            MEDIA_PICTURE_VIEW_TYPE
+        }
+    }
+
+    companion object {
+        const val MEDIA_PICTURE_VIEW_TYPE = 1
+        const val MEDIA_VIDEO_VIEW_TYPE = 2
+    }
 }

@@ -40,8 +40,17 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     fun updateImage(listOfImage: List<MediaDataModel>?, productVideoCoordinator: ProductVideoCoordinator?) {
-        videoPictureAdapter?.updateData(listOfImage ?: listOf())
-        resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
+        val shouldNotifyItemInserted = videoPictureAdapter?.mediaData?.size != listOfImage?.size
+        videoPictureAdapter?.mediaData = listOfImage ?: listOf()
+
+        if (shouldNotifyItemInserted) {
+            videoPictureAdapter?.notifyItemInserted(0)
+            imageSliderPageControl?.setIndicator(listOfImage?.size ?: 0)
+        } else {
+            videoPictureAdapter?.notifyItemChanged(0)
+        }
+
+        resetViewPagerToFirstPosition()
         productVideoCoordinator?.onScrollChangedListener(pdp_view_pager, 0)
         productVideoCoordinator?.onStop()
     }
@@ -50,7 +59,7 @@ class VideoPictureView @JvmOverloads constructor(
         videoPictureAdapter = VideoPictureAdapter(productVideoCoordinator)
         pdp_view_pager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         pdp_view_pager?.adapter = videoPictureAdapter
-        videoPictureAdapter?.updateData(media)
+        videoPictureAdapter?.mediaData = media
 
         (pdp_view_pager?.getChildAt(0) as RecyclerView).addOneTimeGlobalLayoutListener {
             productVideoCoordinator.onScrollChangedListener(pdp_view_pager, 0)
@@ -86,8 +95,9 @@ class VideoPictureView @JvmOverloads constructor(
         imageSliderPageControl?.inactiveColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N400_68)
     }
 
-    private fun resetViewPagerToFirstPosition(countIndicator: Int) {
-        imageSliderPageControl?.setIndicator(countIndicator)
-        pdp_view_pager?.setCurrentItem(0, false)
+    private fun resetViewPagerToFirstPosition() {
+        pdp_view_pager?.postDelayed({
+            pdp_view_pager?.setCurrentItem(0, false)
+        }, 100)
     }
 }

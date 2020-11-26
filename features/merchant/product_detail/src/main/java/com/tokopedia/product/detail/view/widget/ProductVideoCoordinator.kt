@@ -8,7 +8,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import com.tokopedia.product.detail.view.viewholder.VideoPictureReceiver
+import com.tokopedia.product.detail.view.viewholder.ProductVideoReceiver
 import kotlinx.coroutines.*
 
 /**
@@ -22,7 +22,7 @@ class ProductVideoCoordinator(
     private var productVideoJob: Job? = null
 
     private var videoPlayer: ProductExoPlayer? = null
-    private var lastReceiver: VideoPictureReceiver? = null
+    private var lastReceiverProduct: ProductVideoReceiver? = null
     private var productVideoDataModel: MutableList<ProductVideoDataModel> = mutableListOf()
 
     init {
@@ -32,35 +32,39 @@ class ProductVideoCoordinator(
     fun onScrollChangedListener(viewPager: ViewPager2, position: Int) {
         productVideoJob?.cancel()
         productVideoJob = scope.launch(mainCoroutineDispatcher) {
-            val currentReceiver = (viewPager.getChildAt(0) as? RecyclerView)?.findViewHolderForAdapterPosition(position) as? VideoPictureReceiver
+            val currentReceiver = (viewPager.getChildAt(0) as? RecyclerView)?.findViewHolderForAdapterPosition(position) as? ProductVideoReceiver
 
-            if (lastReceiver?.isVideoType() == true && currentReceiver?.isVideoType() == true) {
-                clearPlayerEntry(lastReceiver)
+            if (currentReceiver != null) {
+                clearPlayerEntry(lastReceiverProduct)
+
+                if (currentReceiver.getPlayer() == null) {
+                    currentReceiver.setPlayer(videoPlayer)
+                    val videoData = getVideoDataById(currentReceiver.getVideoId())
+                    videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition ?: 0L, videoData?.isMute ?: true)
+                }
+
+                lastReceiverProduct = currentReceiver
             } else {
-                pauseSaveLastPosition(lastReceiver)
+                pauseSaveLastPosition(lastReceiverProduct)
             }
-
-            if (currentReceiver?.isVideoType() == true && currentReceiver.getPlayer() == null) {
-                currentReceiver.setPlayer(videoPlayer)
-                val videoData = getVideoDataById(currentReceiver.getVideoId())
-                videoPlayer?.start(videoData?.videoUrl ?: "", videoData?.seekPosition ?: 0L)
-            }
-
-            lastReceiver = currentReceiver
         }
     }
 
 
-    fun configureVideoCoordinator(isVideoType: Boolean, context: Context, videoId: String, videoUrl: String) {
-        if (isVideoType && videoPlayer == null) {
+    fun configureVideoCoordinator(context: Context, videoId: String, videoUrl: String) {
+        if (videoPlayer == null) {
             videoPlayer = ProductExoPlayer(context)
         }
 
         val listVideoId = productVideoDataModel.map { it.videoId }
-
         if (videoId !in listVideoId) {
             productVideoDataModel.add(ProductVideoDataModel(videoId, videoUrl))
         }
+    }
+
+    fun configureVolume(isMute: Boolean, videoId: String) {
+        videoPlayer?.toggleVideoVolume(isMute)
+        getVideoDataById(videoId)?.isMute = isMute
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -89,16 +93,22 @@ class ProductVideoCoordinator(
         }
     }
 
-    private fun clearPlayerEntry(receiver: VideoPictureReceiver?) {
-        videoPlayer?.stop()
-        saveLastVideoPosition(receiver?.getVideoId() ?: "")
-        receiver?.setPlayer(null)
+    private fun clearPlayerEntry(receiverProduct: ProductVideoReceiver?) {
+        receiverProduct?.let {
+            videoPlayer?.stop()
+            saveLastVideoPosition(it.getVideoId() ?: "")
+            it.setPlayer(null)
+            videoPlayer?.setVideoStateListener(null)
+        }
     }
 
-    private fun pauseSaveLastPosition(receiver: VideoPictureReceiver?) {
-        videoPlayer?.pause()
-        saveLastVideoPosition(receiver?.getVideoId() ?: "")
-        receiver?.setPlayer(null)
+    private fun pauseSaveLastPosition(receiverProduct: ProductVideoReceiver?) {
+        receiverProduct?.let {
+            videoPlayer?.pause()
+            saveLastVideoPosition(it.getVideoId())
+            it.setPlayer(null)
+            videoPlayer?.setVideoStateListener(null)
+        }
     }
 
     private fun saveLastVideoPosition(videoId: String) {
@@ -118,5 +128,6 @@ class ProductVideoCoordinator(
 data class ProductVideoDataModel(
         val videoId: String = "",
         val videoUrl: String = "",
-        var seekPosition: Long = 0
+        var seekPosition: Long = 0,
+        var isMute: Boolean = true //Mute
 )
