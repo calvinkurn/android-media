@@ -49,6 +49,8 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
         }
 
         private const val IS_PRIVATE = "is_private"
+
+        const val TAG = "TipsTrickBottomSheet"
     }
 
     @Inject
@@ -265,6 +267,6 @@ class TipsTrickBottomSheet: BottomSheetUnify() {
     }
 
     fun show(fm: FragmentManager) {
-        show(fm, this::class.java.simpleName)
+        show(fm, TAG)
     }
 }
