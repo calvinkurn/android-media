@@ -104,8 +104,8 @@ internal fun ImageView.loadImage(url: String?) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -114,8 +114,8 @@ internal fun ImageView.loadImage(url: String?, state: ((Boolean) -> Unit)) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -135,7 +135,7 @@ internal fun ImageView.loadImageWithOutPlaceholder(url: String?, state: ((Boolea
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .error(R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .listener(object : RequestListener<Drawable>{
                     override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                         state.invoke(false)
@@ -157,8 +157,8 @@ internal fun ImageView.loadImageRounded(url: String?) {
                 .load(url)
                 .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -178,8 +178,8 @@ internal fun ImageView.loadImageTopRightCrop(url: String?) {
                 .load(url)
                 .transform(TopRightCrop())
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                .placeholder(R.drawable.placeholder_grey)
-                .error(R.drawable.placeholder_grey)
+                .placeholder(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
+                .error(com.tokopedia.topads.sdk.R.drawable.placeholder_grey)
                 .into(this)
     }
 }
@@ -259,15 +259,15 @@ private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
 private fun String?.toUnifyTextColor(context: Context): Int {
     return try{
         when(this) {
-            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, R.color.Unify_Y400)
-            TEXT_DARK_RED -> ContextCompat.getColor(context, R.color.Unify_R500)
-            TEXT_DARK_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_68)
-            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, R.color.Unify_N700_44)
+            TEXT_DARK_ORANGE -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+            TEXT_DARK_RED -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
+            TEXT_DARK_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
+            TEXT_LIGHT_GREY -> ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
             else -> Color.parseColor(this)
         }
     } catch (throwable: Throwable){
         throwable.printStackTrace()
-        ContextCompat.getColor(context, R.color.Unify_N700)
+        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
     }
 }
 

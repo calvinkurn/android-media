@@ -128,7 +128,7 @@ open class AddToCartDoneBottomSheet :
             inflatedView?.let{
                 configView(it)
                 dialog.setContentView(it)
-                val bottomSheetView = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val bottomSheetView = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
                 bottomSheetView.setBackgroundResource(android.R.color.transparent)
                 bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
                 if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){

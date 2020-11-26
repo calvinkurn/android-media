@@ -474,14 +474,14 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         showToolbarContent(showCustomContent = true)
     }
 
-    private fun getDarkIconColor() = ContextCompat.getColor(context, R.color.Unify_N700)
+    private fun getDarkIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)
 
-    private fun getLightIconColor() = ContextCompat.getColor(context, R.color.Unify_N0)
+    private fun getLightIconColor() = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
 
     private fun setTitleTextColorBasedOnTheme() {
         toolbarThemeCondition(
-                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96)) },
-                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N0)) }
+                lightCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)) },
+                darkCondition = { toolbar_title.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
         )
     }
 

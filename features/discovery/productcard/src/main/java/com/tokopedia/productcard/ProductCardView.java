@@ -3,8 +3,6 @@ package com.tokopedia.productcard;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Paint;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 import com.tokopedia.unifyprinciples.Typography;
@@ -93,7 +93,7 @@ public class ProductCardView extends BaseCustomView {
         wishlistButton = view.findViewById(R.id.btn_wishlist);
         ratingView = view.findViewById(R.id.rating);
         reviewCountView = view.findViewById(R.id.review_count);
-        ratingContainer = view.findViewById(R.id.rating_review_container);
+        ratingContainer = view.findViewById(com.tokopedia.topads.sdk.R.id.rating_review_container);
         badgesContainerView = view.findViewById(R.id.badge_container);
         textLocation = view.findViewById(R.id.location);
         textAddTocart = view.findViewById(R.id.tv_atc);
@@ -164,7 +164,7 @@ public class ProductCardView extends BaseCustomView {
         badgesContainerView.removeAllViews();
         if (urls.isEmpty()) badgesContainerView.setVisibility(View.GONE);
         for(String url: urls){
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_badge, null);
+            View view = LayoutInflater.from(getContext()).inflate(com.tokopedia.topads.sdk.R.layout.layout_badge, null);
             ImageHandler.loadImageFitCenter(getContext(), view.findViewById(R.id.badge), url);
             badgesContainerView.addView(view);
         }

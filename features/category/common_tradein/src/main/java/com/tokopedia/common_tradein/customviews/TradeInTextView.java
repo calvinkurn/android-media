@@ -1,7 +1,5 @@
 package com.tokopedia.common_tradein.customviews;
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -13,6 +11,8 @@ import android.widget.TextView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.common_tradein.R;
@@ -69,7 +69,7 @@ public class TradeInTextView extends ConstraintLayout implements HasComponent<Co
             viewModel.getResponseData().observe((FragmentActivity) getContext(),
                     new TradeInResponseObserver(this));
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
-                this.setBackgroundResource(R.drawable.bg_rect_white_round);
+                this.setBackgroundResource(com.tokopedia.design.R.drawable.bg_rect_white_round);
                 this.setElevation(TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
                         getResources().getDimension(R.dimen.dp_1),
