@@ -1,4 +1,4 @@
-package com.tokopedia.stickylogin.internal
+package com.tokopedia.stickylogin.common
 
 object StickyLoginConstant {
 

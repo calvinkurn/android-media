@@ -1,6 +1,6 @@
 package com.tokopedia.stickylogin.analytics
 
-import com.tokopedia.stickylogin.internal.StickyLoginConstant.Page
+import com.tokopedia.stickylogin.common.StickyLoginConstant.Page
 import com.tokopedia.track.TrackApp
 
 class StickyLoginTracking {

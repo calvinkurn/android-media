@@ -1,20 +1,20 @@
-package com.tokopedia.stickylogin.data
+package com.tokopedia.stickylogin.domain.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class StickyLoginTickerPojo(
+data class StickyLoginTickerDataModel(
     @SerializedName("tickers")
     @Expose
-    val tickers: List<TickerDetail> = ArrayList()
+    val tickerDataModels: List<TickerDetailDataModel> = ArrayList()
 ) {
     data class TickerResponse(
         @SerializedName("ticker")
         @Expose
-        val response: StickyLoginTickerPojo = StickyLoginTickerPojo()
+        val response: StickyLoginTickerDataModel = StickyLoginTickerDataModel()
     )
 
-    data class TickerDetail(
+    data class TickerDetailDataModel(
         @SerializedName("message")
         @Expose
         val message: String = "",
