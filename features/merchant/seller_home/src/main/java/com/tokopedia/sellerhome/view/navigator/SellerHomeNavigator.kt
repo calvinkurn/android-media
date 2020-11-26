@@ -178,11 +178,12 @@ class SellerHomeNavigator(
         pages.keys.forEach {
             it?.let {
                 val tag = it::class.java.canonicalName
+                val fragmentToBeAdded = fm.findFragmentByTag(tag) ?: it
                 transaction.add(R.id.sahContainer, it, tag)
 
-                if(it != selectedPage) {
+                if(fragmentToBeAdded != selectedPage) {
                     try {
-                        transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                        transaction.setMaxLifecycle(fragmentToBeAdded, Lifecycle.State.CREATED)
                     } catch (e: Exception) {
                         SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
                     }
