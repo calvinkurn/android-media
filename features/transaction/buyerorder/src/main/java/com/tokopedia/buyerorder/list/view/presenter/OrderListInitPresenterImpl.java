@@ -44,7 +44,7 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
             @Override
             public void onError(Throwable e) {
                 Timber.d(e.toString());
-                if (isViewAttached()) {
+                if (view != null) {
                     view.removeProgressBarView();
                     view.showErrorNetwork(e.toString());
                 }
@@ -52,7 +52,7 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
             @Override
             public void onNext(GraphqlResponse response) {
-                if (isViewAttached()) {
+                if (view != null) {
                     view.removeProgressBarView();
                     if (response != null) {
                         TabData data = response.getData(TabData.class);
@@ -94,7 +94,7 @@ public class OrderListInitPresenterImpl extends BaseDaggerPresenter<OrderListIni
 
                 @Override
                 public void onError(Throwable e) {
-                    if (isViewAttached()) {
+                    if (view != null) {
                         e.printStackTrace();
                         view.showErrorNetwork(e.toString());
                     }
