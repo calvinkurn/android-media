@@ -194,6 +194,13 @@ class PlayFragment @Inject constructor(
         return isIntercepted || !videoOrientation.isHorizontal
     }
 
+    override fun onEnterPiPMode() {
+        childFragmentManager.fragments
+                .forEach {
+                    if (it is PlayFragmentContract) it.onEnterPiPMode()
+                }
+    }
+
     /**
      * FragmentVideo View Component Listener
      */

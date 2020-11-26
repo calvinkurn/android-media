@@ -38,6 +38,7 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
@@ -91,7 +92,8 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        EndLiveInfoViewComponent.Listener
+        EndLiveInfoViewComponent.Listener,
+        PiPViewComponent.Listener
 {
     private val job = SupervisorJob()
     private val scope = CoroutineScope(dispatchers.main + job)
@@ -110,6 +112,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info, this) }
+    private val pipView by viewComponent(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -127,6 +130,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
+
+    private val playPiPCoordinator: PlayPiPCoordinator
+        get() = requireActivity() as PlayPiPCoordinator
 
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
@@ -362,6 +368,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 applink = btnUrl,
                 shouldFinish = true
         )
+    }
+
+    /**
+     * PIP View Component Listener
+     */
+    override fun onPiPButtonClicked(view: PiPViewComponent) {
+        goPiP()
     }
     //endregion
 
@@ -1110,6 +1123,10 @@ class PlayUserInteractionFragment @Inject constructor(
         } else endLiveInfoView.hide()
     }
     //endregion
+
+    private fun goPiP() {
+        playPiPCoordinator.shouldEnterPiPMode()
+    }
 
     companion object {
         private const val INTERACTION_TOUCH_CLICK_TOLERANCE = 25

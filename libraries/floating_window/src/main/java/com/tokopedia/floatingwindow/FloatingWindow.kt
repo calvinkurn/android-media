@@ -10,7 +10,7 @@ import com.tokopedia.floatingwindow.util.registerDraggableTouchListener
 /**
  * Created by jegul on 26/11/20
  */
-internal class FloatingWindow private constructor(context: Context) {
+class FloatingWindow private constructor(context: Context) {
 
     companion object {
 
@@ -38,13 +38,17 @@ internal class FloatingWindow private constructor(context: Context) {
 
     private val mWindowManager = appContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    fun onCleared() {
+    fun getViewByKey(key: String): View? {
+        return viewMap[key]?.view
+    }
+
+    internal fun onCleared() {
         removeAllViews()
     }
 
-    fun getWindowManager() = mWindowManager
+    internal fun getWindowManager() = mWindowManager
 
-    fun addView(key: String, view: View, layoutParams: WindowManager.LayoutParams, overwrite: Boolean) {
+    internal fun addView(key: String, view: View, layoutParams: WindowManager.LayoutParams, overwrite: Boolean) {
         if (viewMap.containsKey(key)) {
             if (overwrite) removeByKey(key)
             else return
@@ -58,14 +62,14 @@ internal class FloatingWindow private constructor(context: Context) {
         FloatingWindowHelper.startService(appContext)
     }
 
-    fun removeByKey(key: String) {
+    internal fun removeByKey(key: String) {
         val prop = viewMap[key] ?: return
 
         mWindowManager.removeView(prop.view)
         viewMap.remove(key)
     }
 
-    fun attachView() {
+    internal fun attachView() {
         viewMap.entries.forEach { entry ->
             val value = entry.value
             if (value.status == Status.Queued) {
@@ -101,15 +105,10 @@ internal class FloatingWindow private constructor(context: Context) {
         }
     }
 
-    data class Property(
+    internal data class Property(
             val view: View,
             val layoutParams: WindowManager.LayoutParams,
             val status: Status
-    )
-
-    data class FloawyKey(
-            val id: String,
-            val view: View
     )
 
     enum class Status {

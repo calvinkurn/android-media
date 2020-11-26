@@ -30,7 +30,7 @@ class FloatingWindowAdapter private constructor(
             FloatingWindowPermissionManager(activity)
     )
 
-    private val floawy: FloatingWindow
+    private val floatingWindow: FloatingWindow
         get() = FloatingWindow.getInstance(context)
 
     private val displayMetrics = getCurrentDisplayMetrics()
@@ -48,7 +48,7 @@ class FloatingWindowAdapter private constructor(
     ) {
         permissionManager.doPermissionFlow(
                 onGranted = {
-                    floawy.addView(
+                    floatingWindow.addView(
                             key = key,
                             view = view,
                             layoutParams = getWindowManagerLayoutParams(width, height, x, y, gravity),
@@ -60,7 +60,7 @@ class FloatingWindowAdapter private constructor(
     }
 
     fun removeByKey(key: String) {
-        floawy.removeByKey(key)
+        floatingWindow.removeByKey(key)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -107,7 +107,7 @@ class FloatingWindowAdapter private constructor(
 
     private fun getCurrentDisplayMetrics(): DisplayMetrics {
         val dm = DisplayMetrics()
-        floawy.getWindowManager().defaultDisplay.getMetrics(dm)
+        floatingWindow.getWindowManager().defaultDisplay.getMetrics(dm)
         return dm
     }
 }

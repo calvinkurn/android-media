@@ -7,7 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
@@ -19,6 +23,7 @@ import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.ScreenOrientation
+import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.General
 import com.tokopedia.play.view.uimodel.VideoPlayerUiModel
 import com.tokopedia.play.view.viewcomponent.EmptyViewComponent
@@ -60,6 +65,10 @@ class PlayVideoFragment @Inject constructor(
             onLifecycle = whenLifecycle {
                 onDestroy { it.close() }
             }
+    )
+
+    private val pipAdapter: FloatingWindowAdapter by lifecycleBound(
+            creator = { FloatingWindowAdapter(this@PlayVideoFragment) }
     )
 
     private val cornerRadius = 16f.dpToPx()
@@ -123,6 +132,36 @@ class PlayVideoFragment @Inject constructor(
         super.onConfigurationChanged(newConfig)
         val orientation = ScreenOrientation.getByInt(newConfig.orientation)
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
+    }
+
+    override fun onEnterPiPMode() {
+        val videoMeta = playViewModel.observableVideoMeta.value ?: return
+        val videoPlayer: General = videoMeta.videoPlayer as? General ?: return
+
+        val scaleFactor = 0.4f
+
+        val screenWidth = getScreenWidth()
+        val screenHeight = getScreenHeight()
+        val (width, height) = if (playViewModel.videoOrientation is VideoOrientation.Horizontal) {
+            screenWidth to (9f/16 * screenWidth).toInt()
+        } else {
+            screenWidth to screenHeight
+        }
+
+        val view = LayoutInflater.from(requireContext()).inflate(R.layout.view_floating_video, null).also {
+            val playerView = it.findViewById<PlayerView>(R.id.pv_video)
+            PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), playerView)
+        }
+
+        pipAdapter.addView(
+                "arebeb",
+                view,
+                (scaleFactor * width).toInt(),
+                (scaleFactor * height).toInt(),
+                screenWidth - 16,
+                screenHeight - 16,
+                overwrite = true
+        )
     }
 
     private fun initAnalytic() {

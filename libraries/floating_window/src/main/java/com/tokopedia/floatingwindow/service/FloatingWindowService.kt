@@ -80,8 +80,8 @@ internal class FloatingWindowService : Service() {
                 )
         ) {
             setTicker(null)
-            setContentTitle("Floawy")
-            setContentText("Floawy is displaying in PiP")
+            setContentTitle("Tokopedia")
+            setContentText("Tokopedia is drawing over other apps")
             setAutoCancel(false)
             setOngoing(true)
             setWhen(System.currentTimeMillis())
@@ -105,9 +105,7 @@ internal class FloatingWindowService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-        val command = intent.getStringExtra(INTENT_COMMAND)
-
-        when (command) {
+        when (intent.getStringExtra(INTENT_COMMAND)) {
             INTENT_COMMAND_START -> {
                 FloatingWindow.getInstance(applicationContext).attachView()
             }
@@ -131,12 +129,12 @@ internal class FloatingWindowService : Service() {
     }
 
     companion object {
-        const val INTENT_COMMAND = "dev.jegul.floawy.COMMAND"
+        const val INTENT_COMMAND = "com.tokopedia.floatingwindow.COMMAND"
         const val INTENT_COMMAND_START = "START"
         const val INTENT_COMMAND_EXIT = "EXIT"
         const val INTENT_COMMAND_PIP = "PIP"
 
-        private const val NOTIFICATION_CHANNEL_GENERAL = "floawy_general"
+        private const val NOTIFICATION_CHANNEL_GENERAL = "floating_window_general"
         private const val CODE_FOREGROUND_SERVICE = 1
         private const val CODE_EXIT_INTENT = 2
         private const val CODE_PIP_INTENT = 3

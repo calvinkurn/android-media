@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_pip_control_area"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_play_pip_control"
+    android:padding="@dimen/spacing_lvl2"
+    >
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_pip_control"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
+        app:srcCompat="@drawable/ic_play_pip"
+        />
+
+</FrameLayout>

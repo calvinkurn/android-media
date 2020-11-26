@@ -41,25 +41,25 @@ class FloatingWindowPermissionManager private constructor(
                     Uri.parse("package:" + context.packageName)
             )
 
-            permissionActionMap[FLOAWY_PERMISSION_REQUEST_CODE] = PermissionFlowHandler(onGranted, onNotGranted)
+            permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE] = PermissionFlowHandler(onGranted, onNotGranted)
 
-            startActivityForResultHandler(intent, FLOAWY_PERMISSION_REQUEST_CODE)
+            startActivityForResultHandler(intent, FLOATING_WINDOW_PERMISSION_REQUEST_CODE)
         } else onGranted()
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == FLOAWY_PERMISSION_REQUEST_CODE) {
+        if (requestCode == FLOATING_WINDOW_PERMISSION_REQUEST_CODE) {
             if (isDrawOverOtherAppsEnabled()) {
-                permissionActionMap[FLOAWY_PERMISSION_REQUEST_CODE]?.onGranted?.invoke()
+                permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE]?.onGranted?.invoke()
             } else {
-                permissionActionMap[FLOAWY_PERMISSION_REQUEST_CODE]?.onNotGranted?.invoke()
+                permissionActionMap[FLOATING_WINDOW_PERMISSION_REQUEST_CODE]?.onNotGranted?.invoke()
             }
-            permissionActionMap.remove(FLOAWY_PERMISSION_REQUEST_CODE)
+            permissionActionMap.remove(FLOATING_WINDOW_PERMISSION_REQUEST_CODE)
         }
     }
 
     companion object {
-        private const val FLOAWY_PERMISSION_REQUEST_CODE = 1241
+        private const val FLOATING_WINDOW_PERMISSION_REQUEST_CODE = 1241
     }
 
     data class PermissionFlowHandler(
