@@ -103,18 +103,22 @@ class SellerHomeViewModel @Inject constructor(
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
 
+    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io()) {
+        executeOnBackground()
+    }
+
     private suspend fun <T : Any> getDataFromUseCase(useCase: BaseGqlUseCase<T>, liveData: MutableLiveData<Result<T>>) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                liveData.value = Success(useCase.executeOnBackground())
+                liveData.value = Success(useCase.executeUseCase())
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        liveData.value = Success(useCase.executeOnBackground())
+        liveData.value = Success(useCase.executeUseCase())
     }
 
     fun getTicker() {

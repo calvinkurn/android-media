@@ -209,7 +209,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     //Listener function
-    private lateinit var initToolBarMethod: () -> Unit
+    private var initToolBarMethod: (() -> Unit)? = null
 
     //Data
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
@@ -237,7 +237,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var alreadyHitSwipeTracker: DynamicProductDetailSwipeTrackingState? = null
 
     //View
-    private lateinit var varToolbar: Toolbar
+    private var varToolbar: Toolbar? = null
     private lateinit var actionButtonView: PartialButtonActionView
     private var stickyLoginView: StickyLoginView? = null
     private var shouldShowCartAnimation = false
@@ -433,7 +433,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         inflater.inflate(R.menu.menu_product_detail_dark, menu)
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
-        initToolBarMethod.invoke()
+        initToolBarMethod?.invoke()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -1502,7 +1502,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun showOrHideButton() {
-        if (viewModel.shouldHideFloatingButton()) {
+        if (viewModel.shouldHideFloatingButton() && !viewModel.isShopOwner()) {
             actionButtonView.visibility = !viewModel.shouldHideFloatingButton()
             return
         }
@@ -1795,7 +1795,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         cache.putInt(CartConstant.CACHE_TOTAL_CART, count)
         cache.applyEditor()
         if (isAdded) {
-            initToolBarMethod.invoke()
+            initToolBarMethod?.invoke()
+            setNavToolBarCartCounter()
         }
     }
 
@@ -2226,7 +2227,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         varToolbar = search_pdp_toolbar
         initToolBarMethod = ::initToolbarLight
         activity?.let {
-            varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
+            varToolbar?.setBackgroundColor(ContextCompat.getColor(it, R.color.Unify_N0))
             (it as AppCompatActivity).setSupportActionBar(varToolbar)
             it.supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
             it.supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -2729,8 +2730,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                varToolbar.setTitleTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N400))
-                varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.Unify_N0))
+                varToolbar?.setTitleTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N400))
+                varToolbar?.setBackgroundColor(ContextCompat.getColor(this, R.color.Unify_N0))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
                 menu?.let {
                     if (it.size() > 2) {
@@ -2741,7 +2742,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
                 }
 
-                varToolbar.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
+                varToolbar?.overflowIcon = ContextCompat.getDrawable(activity!!, R.drawable.ic_product_more_dark)
             }
         }
     }

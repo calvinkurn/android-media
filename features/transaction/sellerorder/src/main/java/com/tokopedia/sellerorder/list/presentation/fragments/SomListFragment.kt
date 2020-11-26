@@ -427,21 +427,20 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         this.isFromBottomSheetFilter = false
         setDefaultSortByValue()
         if (viewModel.isMultiSelectEnabled) {
+            somListLayoutManager?.findFirstVisibleItemPosition()?.let {
+                somListLayoutManager?.findViewByPosition(it)?.findViewById<View>(R.id.btnQuickAction)?.addOneTimeGlobalLayoutListener {
+                    refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
+                }
+            }
             viewModel.isMultiSelectEnabled = false
             resetOrderSelectedStatus()
             toggleBulkActionButtonVisibility()
             toggleBulkActionCheckboxVisibility()
             checkBoxBulkAction.isChecked = false
             checkBoxBulkAction.setIndeterminate(false)
-        }
-        this.shouldScrollToTop = shouldScrollToTop
-        if (refreshFilter) {
-            loadFilters(false)
-        }
-        if (shouldReloadOrderListImmediately() || !refreshFilter) {
-            refreshOrderList()
+            checkBoxBulkAction.skipAnimation()
         } else {
-            getSwipeRefreshLayout(view)?.isRefreshing = true
+            refreshOrdersOnTabClicked(shouldScrollToTop, refreshFilter)
         }
     }
 
@@ -1259,8 +1258,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
             if (isLoadingInitialData) {
                 (adapter as SomListOrderAdapter).updateOrders(data)
                 tvSomListOrderCounter.text = getString(R.string.som_list_order_counter, somListSortFilterTab?.getSelectedFilterOrderCount().orZero())
-                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction()
-                        ?: false)
+                multiEditViews.showWithCondition(somListSortFilterTab?.shouldShowBulkAction() ?: false)
                 toggleTvSomListBulkText()
                 toggleBulkActionCheckboxVisibility()
                 toggleBulkActionButtonVisibility()
@@ -1498,6 +1496,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         this.isFromBottomSheetFilter = true
         this.filterOrderType = if (isRequestCancelFilterApplied) FILTER_CANCELLATION_REQUEST else 0
         this.shouldScrollToTop = true
+        isLoadingInitialData = true
         somListSortFilterTab?.updateSomListFilterUi(somFilterUiModelList)
         somListSortFilterTab?.updateCounterSortFilter(filterDate)
         val selectedStatusFilterKey = somFilterUiModelList.find {
@@ -1508,7 +1507,6 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
         tabActive = selectedStatusFilterKey.orEmpty()
         viewModel.updateGetOrderListParams(filterData)
         loadFilters(false)
-        isLoadingInitialData = true
         if (shouldReloadOrderListImmediately()) {
             loadOrderList()
         } else {
@@ -1611,9 +1609,9 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     // 3. and there is any new order (we can tell by check get filter result, and we need to scroll through until new order card is showed)
     // only call this method after rendering order list
     private fun reshowNewOrderCoachMark(newOrders: List<SomListOrderUiModel>) {
-        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 0 &&
+        if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && coachMarkIndexToShow == 0 &&
                 (tabActive.isBlank() || tabActive == SomConsts.STATUS_ALL_ORDER) &&
-                somListSortFilterTab?.isFilterApplied() != true && searchBarSomList.searchText.toString().isBlank()) {
+                somListSortFilterTab?.isFilterApplied() != true && searchBarSomList?.searchText.isNullOrBlank()) {
             // check whether the user has any new order
             val filterResult = viewModel.filterResult.value
             if (filterResult is Success) {
@@ -1626,7 +1624,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                     if (firstNewOrderViewPosition != -1) {
                         firstNewOrderViewPositionInAdapter = adapter.data.indexOf(newOrders[firstNewOrderViewPosition])
                         if (firstNewOrderViewPositionInAdapter != -1) {
-                            rvSomList.stopScroll()
+                            rvSomList?.stopScroll()
                             somListLayoutManager?.scrollToPositionWithOffset(firstNewOrderViewPositionInAdapter, 0)
                             rvSomList?.run {
                                 (layoutManager?.findViewByPosition(firstNewOrderViewPositionInAdapter)?.findViewById<View>(R.id.btnQuickAction))?.let {
@@ -1643,7 +1641,7 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
                             }
                         }
                     } else if (firstNewOrderViewPositionInAdapter == -1) {
-                        rvSomList.stopScroll()
+                        rvSomList?.stopScroll()
                         somListLayoutManager?.scrollToPositionWithOffset(adapter.dataSize - 1, 0)
                     }
                 }
@@ -1652,7 +1650,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun reshowStatusFilterCoachMark() {
-        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 1 && sortFilterSomList.isVisible) {
+        if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark &&
+                coachMarkIndexToShow == 1 && sortFilterSomList?.isVisible == true && rvSomList != null) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1662,7 +1661,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
     private fun reshowWaitingPaymentOrderListCoachMark() {
         val waitingPaymentOrderListCountResult = viewModel.waitingPaymentCounterResult.value
-        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
+        if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && rvSomList != null &&
+                coachMarkIndexToShow == 2 && waitingPaymentOrderListCountResult is Success) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1671,7 +1671,8 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
     }
 
     private fun reshowBulkAcceptOrderCoachMark() {
-        if (!scrollViewErrorState.isVisible && shouldShowCoachMark && coachMarkIndexToShow == 3 && tvSomListBulk.isVisible) {
+        if (scrollViewErrorState?.isVisible == false && shouldShowCoachMark && rvSomList != null &&
+                coachMarkIndexToShow == 3 && tvSomListBulk?.isVisible == true) {
             currentNewOrderWithCoachMark = -1
             coachMark?.isDismissed = false
             coachMark?.showCoachMark(ArrayList(createCoachMarkItems(rvSomList)), index = coachMarkIndexToShow)
@@ -1715,5 +1716,17 @@ class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactory>,
 
             override fun onAnimationStart(animation: Animator?) {}
         })
+    }
+
+    private fun refreshOrdersOnTabClicked(shouldScrollToTop: Boolean, refreshFilter: Boolean) {
+        this.shouldScrollToTop = shouldScrollToTop
+        if (refreshFilter) {
+            loadFilters(false)
+        }
+        if (shouldReloadOrderListImmediately() || !refreshFilter) {
+            refreshOrderList()
+        } else {
+            getSwipeRefreshLayout(view)?.isRefreshing = true
+        }
     }
 }

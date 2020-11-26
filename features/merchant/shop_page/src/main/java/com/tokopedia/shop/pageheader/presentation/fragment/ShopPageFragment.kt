@@ -64,6 +64,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentHelper
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOPPAGE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
@@ -662,7 +663,7 @@ class ShopPageFragment :
             setIcon(iconBuilder)
             if(shopViewModel.isUserSessionActive)
                 setBadgeCounter(IconList.ID_CART, getCartCounter())
-            setToolbarPageName("$SHOPPAGE - $shopId")
+            setToolbarPageName(SHOP_PAGE)
         }
     }
 

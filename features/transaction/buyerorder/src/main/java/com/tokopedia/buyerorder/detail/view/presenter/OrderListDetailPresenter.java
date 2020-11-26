@@ -55,7 +55,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kotlin.util.DownloadHelper;
-import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -171,77 +170,86 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
-        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
-        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
 
-            }
+        GraphqlRequest requestRecomm = makegraphqlRequestForRecommendation();
+        if (requestRecomm != null) {
+            orderDetailsUseCase.addRequest(requestRecomm);
+            orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getActivity() != null) {
-                    Timber.d("error occured" + e);
-                    getView().hideProgressBar();
                 }
-            }
 
-            @Override
-            public void onNext(GraphqlResponse response) {
-                if (response != null) {
-                    DetailsData data = response.getData(DetailsData.class);
-                    if (data != null) {
-                        setDetailsData(data.orderDetails());
-                        orderDetails = data.orderDetails();
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null && getView().getActivity() != null) {
+                        Timber.d("error occured" + e);
+                        getView().hideProgressBar();
                     }
+                }
 
-                    if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
-                        List<Items> list = orderDetails.getItems();
-                        categoryList = new ArrayList<>();
-                        for (Items item : list) {
-                            categoryList.add(item.getCategoryID());
-                            categoryList.add(item.getCategoryL1());
-                            categoryList.add(item.getCategoryL2());
-                            categoryList.add(item.getCategoryL3());
+                @Override
+                public void onNext(GraphqlResponse response) {
+                    if (response != null) {
+                        DetailsData data = response.getData(DetailsData.class);
+                        if (data != null) {
+                            setDetailsData(data.orderDetails());
+                            orderDetails = data.orderDetails();
                         }
 
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            category = String.join(",", category);
+                        if (orderCategory.equalsIgnoreCase(OrderCategory.MARKETPLACE)) {
+                            List<Items> list = orderDetails.getItems();
+                            categoryList = new ArrayList<>();
+                            for (Items item : list) {
+                                categoryList.add(item.getCategoryID());
+                                categoryList.add(item.getCategoryL1());
+                                categoryList.add(item.getCategoryL2());
+                                categoryList.add(item.getCategoryL3());
+                            }
+
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                                category = String.join(",", category);
+                            } else {
+                                category = category.substring(1, category.length() - 1);
+                            }
                         } else {
-                            category = category.substring(1, category.length() - 1);
+                            RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                            if (getView() != null) {
+                                getView().setRecommendation(rechargeWidgetResponse);
+                            }
                         }
-                    } else {
-                        RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
-                        getView().setRecommendation(rechargeWidgetResponse);
                     }
+                    getRecommendation();
                 }
-                getRecommendation();
-            }
-        });
-
+            });
+        }
     }
 
     public void getRecommendation() {
-        orderDetailsUseCase = new GraphqlUseCase();
-        orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.addRequest(makegraphqlRequestForMPRecommendation());
-        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
+        GraphqlRequest graphqlRequest = makegraphqlRequestForMPRecommendation();
+        if (graphqlRequest != null) {
+            orderDetailsUseCase = new GraphqlUseCase();
+            orderDetailsUseCase.clearRequest();
+            orderDetailsUseCase.addRequest(graphqlRequest);
+            orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
-            }
+                @Override
+                public void onError(Throwable e) {
+                }
 
-            @Override
-            public void onNext(GraphqlResponse response) {
-                RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
-                getView().setRecommendation(recommendationResponse);
-
-            }
-        });
+                @Override
+                public void onNext(GraphqlResponse response) {
+                    RecommendationResponse recommendationResponse = response.getData(RecommendationResponse.class);
+                    if (getView() != null) {
+                        getView().setRecommendation(recommendationResponse);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -257,7 +265,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
                 @Override
                 public void onError(Throwable e) {
-                    if (getView() != null && getView().getActivity() != null) {
+                    if (isViewAttached()) {
                         getView().showSuccessMessageWithAction(e.getMessage());
                     }
                 }
@@ -292,58 +300,59 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         orderDetailsUseCase = new GraphqlUseCase();
 
+        if (getView() != null && getView().getActivity() != null) {
+            GraphqlRequest graphqlRequest = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.tapactions), ActionButtonList.class, variables, false);
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                R.raw.tapactions), ActionButtonList.class, variables, false);
+            orderDetailsUseCase.clearRequest();
+            orderDetailsUseCase.setRequest(graphqlRequest);
+            orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<GraphqlResponse>() {
+                        @Override
+                        public void onCompleted() {
 
-        orderDetailsUseCase.clearRequest();
-        orderDetailsUseCase.setRequest(graphqlRequest);
-        orderDetailsUseCase.createObservable(RequestParams.EMPTY).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<GraphqlResponse>() {
-                    @Override
-                    public void onCompleted() {
+                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.d("error occured" + e);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.d("error occured" + e);
-                    }
-
-                    @Override
-                    public void onNext(GraphqlResponse response) {
-                        if (view != null) {
-                            if (response != null) {
-                                ActionButtonList data = response.getData(ActionButtonList.class);
-                                if (data != null) {
-                                    actionButtonList = data.getActionButtonList();
-                                    if (actionButtonList != null)
-                                        if (flag) {
-                                            view.setTapActionButton(position, actionButtonList);
-                                            for (int i = 0; i < actionButtonList.size(); i++) {
-                                                if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
-                                                    actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                        @Override
+                        public void onNext(GraphqlResponse response) {
+                            if (view != null) {
+                                if (response != null) {
+                                    ActionButtonList data = response.getData(ActionButtonList.class);
+                                    if (data != null) {
+                                        actionButtonList = data.getActionButtonList();
+                                        if (actionButtonList != null)
+                                            if (flag) {
+                                                view.setTapActionButton(position, actionButtonList);
+                                                for (int i = 0; i < actionButtonList.size(); i++) {
+                                                    if (actionButtonList.get(i).getControl().equalsIgnoreCase(ItemsAdapter.KEY_REFRESH)) {
+                                                        actionButtonList.get(i).setBody(actionButtons.get(i).getBody());
+                                                    }
                                                 }
+                                            } else {
+                                                view.setActionButton(position, actionButtonList);
                                             }
-                                        } else {
-                                            view.setActionButton(position, actionButtonList);
-                                        }
+                                    }
                                 }
-                            }
-                        } else {
-                            if (response != null) {
-                                ActionButtonList data = response.getData(ActionButtonList.class);
-                                if (data != null) {
-                                    actionButtonList = data.getActionButtonList();
-                                    if (actionButtonList != null && actionButtonList.size() > 0)
-                                        getView().setActionButtons(actionButtonList);
+                            } else {
+                                if (response != null) {
+                                    ActionButtonList data = response.getData(ActionButtonList.class);
+                                    if (data != null) {
+                                        actionButtonList = data.getActionButtonList();
+                                        if (actionButtonList != null && actionButtonList.size() > 0 && getView() != null)
+                                            getView().setActionButtons(actionButtonList);
+                                    }
                                 }
                             }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     public static final String PRODUCT_ID = "product_id";
@@ -402,36 +411,38 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void onBuyAgainItems(List<Items> items, String eventActionLabel, String statusCode) {
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(PARAM, generateInputQueryBuyAgain(items));
-        addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
-        addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
-            @Override
-            public void onCompleted() {
+        if (getView() != null && getView().getActivity() != null) {
+            Map<String, Object> variables = new HashMap<>();
+            variables.put(PARAM, generateInputQueryBuyAgain(items));
+            addToCartMultiLegacyUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), variables, userSessionInterface.getUserId());
+            addToCartMultiLegacyUseCase.execute(new Subscriber<AtcMultiData>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getActivity() != null) {
-                    getView().hideProgressBar();
-                    getView().showErrorMessage(e.getMessage());
                 }
-            }
 
-            @Override
-            public void onNext(AtcMultiData atcMultiData) {
-                if (getView() != null && getView().getActivity() != null) {
-                    getView().hideProgressBar();
-                    if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
-                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
-                    } else {
-                        getView().showErrorMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
+                @Override
+                public void onError(Throwable e) {
+                    if (isViewAttached()) {
+                        getView().hideProgressBar();
+                        getView().showErrorMessage(e.getMessage());
                     }
-                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, true, eventActionLabel, statusCode);
                 }
-            }
-        });
+
+                @Override
+                public void onNext(AtcMultiData atcMultiData) {
+                    if (isViewAttached()) {
+                        getView().hideProgressBar();
+                        if (atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1) {
+                            getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
+                        } else {
+                            getView().showErrorMessage(StringUtils.convertListToStringDelimiter(atcMultiData.getAtcMulti().getBuyAgainData().getMessage(), ","));
+                        }
+                        orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), atcMultiData.getAtcMulti().getBuyAgainData().getListProducts(), atcMultiData.getAtcMulti().getBuyAgainData().getSuccess() == 1, true, eventActionLabel, statusCode);
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -656,38 +667,42 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
         Map<String, Object> variables = new HashMap<>();
         variables.put(BuyerConsts.PARAM_INPUT, uohFinishOrderParam);
-        finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
-        finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
-            @Override
-            public void onCompleted() {
+        if (getView() != null && getView().getActivity() != null) {
+            finishOrderGqlUseCase.setup(GraphqlHelper.loadRawString(getView().getActivity().getResources(), R.raw.uoh_finish_order), variables);
+            finishOrderGqlUseCase.execute(new Subscriber<UohFinishOrder.Data>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (getView() != null && getView().getActivity() != null) {
-                    Timber.d(e);
-                    getView().hideProgressBar();
-                    getView().showErrorMessage(e.getMessage());
-                    getView().finishOrderDetail();
                 }
-            }
 
-            @Override
-            public void onNext(UohFinishOrder.Data data) {
-                if (data.getFinishOrderBuyer().getSuccess() == 1) {
-                    if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
-                        getView().showSuccessMessage(data.getFinishOrderBuyer().getMessage().get(0));
-                    }
-                } else {
-                    if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
-                        getView().showErrorMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null && getView().getActivity() != null) {
+                        Timber.d(e);
+                        getView().hideProgressBar();
+                        getView().showErrorMessage(e.getMessage());
+                        getView().finishOrderDetail();
                     }
                 }
-                getView().hideProgressBar();
-                getView().finishOrderDetail();
-            }
-        });
+
+                @Override
+                public void onNext(UohFinishOrder.Data data) {
+                    if (isViewAttached()) {
+                        if (data.getFinishOrderBuyer().getSuccess() == 1 && isViewAttached()) {
+                            if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                                getView().showSuccessMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                            }
+                        } else {
+                            if (!data.getFinishOrderBuyer().getMessage().isEmpty()) {
+                                getView().showErrorMessage(data.getFinishOrderBuyer().getMessage().get(0));
+                            }
+                        }
+                        getView().hideProgressBar();
+                        getView().finishOrderDetail();
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -705,10 +720,10 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     public void onClick(String uri) {
         pdfUri = uri;
-        if (isdownloadable(uri)) {
+        if (isdownloadable(uri) && getView() != null) {
             getView().askPermission();
         } else {
-            if (getView() != null && getView().getActivity() != null && getView().getActivity().getApplicationContext() != null && getView().getActivity() != null) {
+            if (getView() != null && getView().getActivity() != null) {
                 RouteManager.route(getView().getActivity(), ApplinkConstInternalGlobal.WEBVIEW, uri);
             }
         }
@@ -716,11 +731,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @SuppressLint("MissingPermission")
     public void permissionGrantedContinueDownload() {
-        DownloadHelper downloadHelper = new DownloadHelper(getView().getActivity(), pdfUri, Insurance_File_Name, () -> {
-            // download success call back
+        if (getView().getActivity() != null) {
+            DownloadHelper downloadHelper = new DownloadHelper(getView().getActivity(), pdfUri, Insurance_File_Name, () -> {
+                // download success call back
 
-        });
-        downloadHelper.downloadFile(this::isdownloadable);
+            });
+            downloadHelper.downloadFile(this::isdownloadable);
+        }
     }
 
     private Boolean isdownloadable(String uri) {
@@ -767,25 +784,29 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
     private GraphqlRequest makegraphqlRequestForRecommendation() {
-        GraphqlRequest graphqlRequestForRecommendation;
+        GraphqlRequest graphqlRequestForRecommendation = null;
         Map<String, Object> variablesWidget = new HashMap<>();
         variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
-        graphqlRequestForRecommendation = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        if (getView() != null && getView().getActivity() != null) {
+            graphqlRequestForRecommendation = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        }
         return graphqlRequestForRecommendation;
     }
 
     private GraphqlRequest makegraphqlRequestForMPRecommendation() {
         if (TextUtils.isEmpty(category)) category = "";
-        GraphqlRequest graphqlRequestForMPRecommendation;
+        GraphqlRequest graphqlRequestForMPRecommendation = null;
         Map<String, Object> variable = new HashMap<>();
         variable.put(DEVICE_ID, DEFAULT_DEVICE_ID);
         variable.put(CATEGORY_IDS, category);
         variable.put(MP_CATEGORY_IDS, categoryList);
-        graphqlRequestForMPRecommendation = new
-                GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
-                R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        if (getView() != null && getView().getActivity() != null) {
+            graphqlRequestForMPRecommendation = new
+                    GraphqlRequest(GraphqlHelper.loadRawString(getView().getActivity().getResources(),
+                    R.raw.recommendation_mp), RecommendationResponse.class, variable);
+        }
         return graphqlRequestForMPRecommendation;
     }
 
