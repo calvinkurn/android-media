@@ -265,7 +265,7 @@
             android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:text="@string/product_card_text_notify_me_grid"
+            android:text="@string/product_card_text_notify_me"
             android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
@@ -278,7 +278,7 @@
             app:unifyButtonType="main"
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="small"
-            tools:text="@string/product_card_text_notify_me_grid"
+            tools:text="@string/product_card_text_notify_me"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
