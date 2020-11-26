@@ -68,6 +68,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageAnalytics.MP_PRODUCT_MANAGE
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
@@ -646,7 +647,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
 
     private val addProductReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT &&
+            if (intent.action == BROADCAST_ADD_PRODUCT &&
                 intent.hasExtra(TkpdState.ProductService.STATUS_FLAG) &&
                 intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
                 activity?.run {
@@ -1477,7 +1478,7 @@ open class ProductManageFragment : BaseListFragment<ProductViewModel, ProductMan
         super.onResume()
         context?.let {
             val intentFilter = IntentFilter()
-            intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+            intentFilter.addAction(BROADCAST_ADD_PRODUCT)
             LocalBroadcastManager.getInstance(it).registerReceiver(addProductReceiver, intentFilter)
         }
     }

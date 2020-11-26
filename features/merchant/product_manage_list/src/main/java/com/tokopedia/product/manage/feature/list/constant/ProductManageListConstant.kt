@@ -18,6 +18,7 @@ object ProductManageListConstant {
     const val EXTRA_IS_NEED_TO_RELOAD_DATA_SHOP_PRODUCT_LIST = "EXTRA_IS_NEED_TO_RELOAD_DATA"
     const val GQL_POPUP_NAME = "gql_popup"
     const val URL_TIPS_TRICK = "https://seller.tokopedia.com/edu/cara-cepat-dapat-transaksi/"
+    const val BROADCAST_ADD_PRODUCT = "BROADCAST_ADD_PRODUCT"
 
     const val INSTAGRAM_SELECT_REQUEST_CODE = 3860
     const val ETALASE_PICKER_REQUEST_CODE = 1111

@@ -22,6 +22,7 @@ import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.feature.list.constant.ProductManageDataLayer
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
+import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.BROADCAST_ADD_PRODUCT
 import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductDraftListCountViewModel
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterMapper
@@ -169,7 +170,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
     private fun registerDraftReceiver() {
         draftBroadCastReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
-                if (intent.action == TkpdState.ProductService.BROADCAST_ADD_PRODUCT) {
+                if (intent.action == BROADCAST_ADD_PRODUCT) {
                     productDraftListCountViewModel.getAllDraftCount()
                 }
             }
@@ -177,7 +178,7 @@ class ProductManageSellerFragment : ProductManageFragment() {
 
         activity?.let {
             val intentFilters = IntentFilter().apply {
-                addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
+                addAction(BROADCAST_ADD_PRODUCT)
             }
             LocalBroadcastManager.getInstance(it).registerReceiver(draftBroadCastReceiver, intentFilters)
         }

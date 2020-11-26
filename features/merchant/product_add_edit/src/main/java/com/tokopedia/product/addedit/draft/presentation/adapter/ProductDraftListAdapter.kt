@@ -15,9 +15,10 @@ import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
 import kotlin.properties.Delegates
 
 class ProductDraftListAdapter(
-        private val listener: ProductDraftListListener,
-        private val drafts: MutableList<ProductDraftUiModel>
+        private val listener: ProductDraftListListener
 ) : RecyclerView.Adapter<ProductDraftListViewHolder>() {
+
+    private val drafts =  mutableListOf<ProductDraftUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductDraftListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -32,6 +33,7 @@ class ProductDraftListAdapter(
     override fun getItemCount(): Int = drafts.size
 
     fun setDrafts(newDrafts: List<ProductDraft>?) {
+        drafts.clear()
         newDrafts?.forEach { draft ->
             drafts.add(AddEditProductMapper.mapProductDraftToProductDraftUiModel(draft))
         }
@@ -46,5 +48,9 @@ class ProductDraftListAdapter(
     fun deleteAllDrafts() {
         drafts.clear()
         notifyDataSetChanged()
+    }
+
+    fun isDraftEmpty(): Boolean {
+        return drafts.isEmpty()
     }
 }
