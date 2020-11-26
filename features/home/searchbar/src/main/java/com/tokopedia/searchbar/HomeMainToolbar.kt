@@ -166,7 +166,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                 pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = toolbar.paddingRight
-            val pB = resources.getDimensionPixelSize(R.dimen.dp_8)
+            val pB = resources.getDimensionPixelSize(com.tokopedia.abstraction.R.dimen.dp_8)
 
             toolbar!!.background = ContextCompat.getDrawable(context, R.drawable.searchbar_bg_shadow_bottom)
             toolbar!!.setPadding(pL, pT, pR, pB)

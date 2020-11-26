@@ -171,7 +171,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun addOverlay() {
-        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.Unify_N700_68)
+        outerOverlayPaint.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_68)
     }
 
     interface CircleDrawInterface {

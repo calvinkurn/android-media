@@ -300,7 +300,7 @@ open class AddToCartDoneBottomSheet :
     private fun configBottomSheetHeight() {
         if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) == oldVariantPDP) {
             dialog?.run {
-                val parent = findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val parent = findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
                 val displaymetrics = DisplayMetrics()
                 activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
                 val screenHeight = displaymetrics.heightPixels
