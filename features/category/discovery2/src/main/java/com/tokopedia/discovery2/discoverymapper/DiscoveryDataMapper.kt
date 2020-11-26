@@ -197,6 +197,7 @@ class DiscoveryDataMapper {
                 stockBarPercentage = setStockProgress(dataItem),
                 stockBarLabel = dataItem.stockWording?.title ?: "",
                 isOutOfStock = isOutOfStock,
+                hasNotifyMeButton =  dataItem.hasNotifyMe
         )
     }
 

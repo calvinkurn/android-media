@@ -377,7 +377,8 @@ data class DataItem(
         var positionForParentItem: Int = 0,
 
         var typeProductCard: String? = "",
-        var tabName: String? = ""
+        var tabName: String? = "",
+        var hasNotifyMe: Boolean = false
 ) {
     val leftMargin: Int
         get() {

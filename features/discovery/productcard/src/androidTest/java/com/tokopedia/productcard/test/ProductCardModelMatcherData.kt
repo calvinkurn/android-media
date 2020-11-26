@@ -1,16 +1,17 @@
 package com.tokopedia.productcard.test
 
 import android.view.View
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.productcard.test.utils.*
-import com.tokopedia.productcard.test.utils.isDisplayedWithText
-import com.tokopedia.productcard.test.utils.officialStoreBadgeImageUrl
-import com.tokopedia.productcard.test.utils.productImageUrl
-import com.tokopedia.productcard.test.utils.withDrawable
-import com.tokopedia.productcard.utils.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.ProductCardModel.*
+import com.tokopedia.productcard.test.utils.*
+import com.tokopedia.productcard.test.utils.productImageUrl
+import com.tokopedia.productcard.utils.*
 import org.hamcrest.Matcher
 
 internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutableListOf<ProductCardModelMatcher>().also {
@@ -1599,6 +1600,7 @@ private fun testNotifyMeButton(): ProductCardModelMatcher {
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
             },
+            hasNotifyMeButton = true
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {

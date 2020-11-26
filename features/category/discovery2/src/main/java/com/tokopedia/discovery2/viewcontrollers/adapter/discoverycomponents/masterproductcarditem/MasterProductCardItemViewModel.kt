@@ -53,15 +53,17 @@ class MasterProductCardItemViewModel(val application: Application, val component
         componentPosition.value = position
         components.data?.let {
             if (!it.isNullOrEmpty()) {
-                dataItem.value = it[0]
-                setProductStockWording(it[0])
-                productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(it[0], components.name)
+                val productData = it.first()
+                productData.hasNotifyMe = getNotifyText(productData.notifyMe).isNotEmpty()
+                dataItem.value = productData
+                setProductStockWording(productData)
+                productCardModelLiveData.value = DiscoveryDataMapper().mapDataItemToProductCardModel(productData, components.name)
             }
         }
     }
 
     private fun setProductStockWording(dataItem: DataItem) {
-        if(dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()){
+        if (dataItem.stockWording == null || dataItem.stockWording?.title.isNullOrEmpty()) {
             dataItem.stockWording = getStockWord(dataItem)
         }
     }
@@ -210,5 +212,14 @@ class MasterProductCardItemViewModel(val application: Application, val component
         } catch (exception: Resources.NotFoundException) {
         }
         return stockText
+    }
+
+    fun getNotifyText(notifyStatus: Boolean?): String {
+        notifyStatus?.let {
+            return if (notifyStatus) application.applicationContext
+                    .resources.getString(R.string.product_card_module_label_un_subscribe)
+            else application.applicationContext.resources.getString(R.string.product_card_module_label_subscribe)
+        }
+        return ""
     }
 }

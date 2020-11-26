@@ -51,6 +51,8 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
 
+        buttonNotify?.showWithCondition(productCardModel.hasNotifyMeButton)
+
         constraintLayoutProductCard?.post {
             imageThreeDots?.expandTouchArea(
                 getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),

@@ -44,7 +44,8 @@ data class ProductCardModel (
         val addToCardText: String = "",
         val shopRating: String = "",
         val isShopRatingYellow: Boolean = false,
-        val countSoldRating: String = ""
+        val countSoldRating: String = "",
+        val hasNotifyMeButton: Boolean = false,
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

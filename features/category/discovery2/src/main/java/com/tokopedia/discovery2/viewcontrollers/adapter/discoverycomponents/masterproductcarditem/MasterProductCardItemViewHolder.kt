@@ -6,14 +6,12 @@ import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Toaster
@@ -106,11 +104,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     }
 
     private fun updateNotifyMeState(notifyMeStatus: Boolean?) {
-        val notifyText = getNotifyText(notifyMeStatus)
+        val notifyText = masterProductCardItemViewModel.getNotifyText(notifyMeStatus)
         buttonNotify?.let {
-            it.shouldShowWithAction(notifyText.isNotEmpty()) {
+            if (dataItem?.hasNotifyMe == true) {
                 it.text = notifyText
-                if (notifyMeStatus!!) {
+                if (notifyMeStatus == true) {
                     it.apply {
                         setTextColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                         buttonVariant = UnifyButton.Variant.GHOST
@@ -153,18 +151,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
             } else if (toastData.first && !toastData.second.isNullOrEmpty()) {
                 Toaster.make(itemView.rootView, toastData.second!!, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
-            }else{
+            } else {
                 Toaster.make(itemView.rootView, itemView.context.getString(R.string.product_card_error_msg), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-    }
-
-    private fun getNotifyText(notifyStatus: Boolean?): String {
-        notifyStatus?.let {
-            return if(notifyStatus) itemView.context.getString(R.string.product_card_module_label_un_subscribe) else itemView.context.getString(R.string.product_card_module_label_subscribe)
-        }
-        return ""
     }
 }
