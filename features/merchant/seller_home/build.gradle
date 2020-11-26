@@ -106,6 +106,7 @@ dependencies {
     androidTestImplementation project(rootProject.ext.libraries.analyticsDebugger)
     androidTestImplementation project(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore
     androidTestImplementation rootProject.ext.testDependencies.mockitorAndroid
     androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
 
