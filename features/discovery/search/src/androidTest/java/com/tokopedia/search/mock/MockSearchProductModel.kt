@@ -1,7 +1,5 @@
 package com.tokopedia.search.mock
 
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -182,7 +180,7 @@ object MockSearchProductModel {
     }
 
     fun getBannedProductsEmptySearchViewModel(): BannedProductsEmptySearchViewModel {
-        return BannedProductsEmptySearchViewModel("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.", "")
+        return BannedProductsEmptySearchViewModel("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.")
     }
 
     fun getRecommendationTitleViewModel(): RecommendationTitleViewModel {

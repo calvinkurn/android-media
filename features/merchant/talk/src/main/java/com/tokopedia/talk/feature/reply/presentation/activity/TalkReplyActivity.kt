@@ -17,7 +17,6 @@ import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.presentation.fragment.TalkReplyFragment
-import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 
 class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
 
@@ -30,11 +29,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
-        if(FirebaseRemoteConfigImpl(applicationContext).getBoolean(TalkConstants.APP_DISABLE_NEW_TALK_REMOTE_CONFIG_KEY, false)) {
-            val intent = TalkDetailsActivity.getCallingIntent(questionId, shopId, applicationContext, "")
-            startActivity(intent)
-            finish()
-        }
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         setUpToolBar()
