@@ -1,5 +1,6 @@
 package com.tokopedia.travel_slice.di
 
+import com.tokopedia.travel_slice.flight.ui.FlightSliceProvider
 import com.tokopedia.travel_slice.ui.provider.MainSliceProvider
 import dagger.Component
 
@@ -7,4 +8,5 @@ import dagger.Component
 @Component(modules = [TravelSliceModule::class])
 interface TravelSliceComponent {
     fun inject(mainSliceProvider: MainSliceProvider)
+    fun inject(flightSliceProvider: FlightSliceProvider)
 }

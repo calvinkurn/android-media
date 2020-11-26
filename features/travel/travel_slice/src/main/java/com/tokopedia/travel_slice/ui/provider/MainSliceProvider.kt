@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travel_slice.data.HotelData
@@ -42,6 +43,7 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onCreateSliceProvider(): Boolean {
         status = TravelSliceStatus.INIT
+        LocalCacheHandler(context, APPLINK_DEBUGGER)
         return true
     }
 
@@ -142,6 +144,7 @@ class MainSliceProvider : SliceProvider() {
         const val ARG_CHECKIN = "checkIn"
         const val DEFAULT_CITY_VALUE = "Jakarta"
         const val DATA_PARAM = "data"
+        private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
 
         const val BOOK_HOTEL = "book_hotel"
         const val MY_BOOKING = "my_booking"
