@@ -8,15 +8,12 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProvider
 import com.tokopedia.topads.auto.di.AutoAdsDispatcherProviderImpl
 import com.tokopedia.topads.auto.di.AutoAdsScope
-import com.tokopedia.topads.auto.view.factory.AutoAdsWidgetViewModelFactory
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 
 /**
  * Author errysuprayogi on 16,May,2019
@@ -59,12 +56,5 @@ class AutoAdsModule {
                                           repository: GraphqlRepository,
                                           query: Map<String, String>):
             TopAdsInfoViewModelFactory = TopAdsInfoViewModelFactory(dispatcher, repository, query)
-
-    @AutoAdsScope
-    @Provides
-    fun provideAutoAdsWidgetViewModelFactory(dispatcher: AutoAdsDispatcherProvider,
-                                             repository: GraphqlRepository,
-                                             query: Map<String, String>):
-            AutoAdsWidgetViewModelFactory = AutoAdsWidgetViewModelFactory(dispatcher, repository, query)
 
 }

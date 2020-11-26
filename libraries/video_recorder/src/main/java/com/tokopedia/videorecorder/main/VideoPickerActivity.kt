@@ -6,12 +6,12 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.fragment.app.Fragment
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem
@@ -318,9 +318,12 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      */
 
     override fun onAlbumItemClicked(item: MediaItem?, isChecked: Boolean) {
+        if (item?.contentUri == null) {
+            return
+        }
         //get single image
         isVideoSourcePicker = true
-        videoPath = item?.realPath.toString()
+        videoPath = item.path
         onVideoTaken(videoPath)
     }
 

@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,11 +28,13 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.chuckerteam.chucker.api.Chucker;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -49,6 +52,7 @@ import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenS
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.developer_options.utils.TimberWrapper;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.utils.permission.PermissionCheckerHelper;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -89,6 +93,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private View sendTimberButton;
     private EditText editTextTimberMessage;
 
+    private View sendFirebaseCrash;
+    private EditText editTextFirebaseCrash;
+
     private View routeManagerButton;
     private EditText editTextRouteManager;
     private EditText editTextChangeVersionName;
@@ -107,6 +114,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
+    private CheckBox toggleDarkMode;
     private CheckBox toggleAnalytics;
     private CheckBox toggleApplinkNotif;
     private CheckBox toggleTopAdsNotif;
@@ -206,6 +214,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
+        toggleDarkMode = findViewById(R.id.toggle_dark_mode);
         toggleAnalytics = findViewById(R.id.toggle_analytics);
         toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
         toggleTopAdsNotif = findViewById(R.id.toggle_topads_debugger_notif);
@@ -229,6 +238,9 @@ public class DeveloperOptionActivity extends BaseActivity {
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
 
+        editTextFirebaseCrash = findViewById(R.id.et_firebase_crash);
+        sendFirebaseCrash = findViewById(R.id.btn_send_firebase_crash);
+
         editTextRouteManager = findViewById(R.id.et_route_manager);
         routeManagerButton = findViewById(R.id.btn_route_manager);
 
@@ -251,6 +263,50 @@ public class DeveloperOptionActivity extends BaseActivity {
         spinnerEnvironmentChooser.setAdapter(envSpinnerAdapter);
 
         tvFakeResponse = findViewById(R.id.tv_fake_response);
+
+        Button buttonResetOnboardingNavigation = findViewById(R.id.resetOnboardingNavigation);
+        Button alwaysOldButton = findViewById(R.id.buttonAlwaysOldNavigation);
+        Button alwaysNewNavigation = findViewById(R.id.buttonAlwaysNewNavigation);
+
+        String KEY_FIRST_VIEW_NAVIGATION = "KEY_FIRST_VIEW_NAVIGATION";
+        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING";
+        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1";
+        String KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2 = "KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2";
+        String KEY_P1_DONE_AS_NON_LOGIN = "KEY_P1_DONE_AS_NON_LOGIN";
+
+        buttonResetOnboardingNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences sharedPrefs = getSharedPreferences(
+                        KEY_FIRST_VIEW_NAVIGATION, Context.MODE_PRIVATE);
+                sharedPrefs.edit().putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING, true)
+                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P1, true)
+                        .putBoolean(KEY_FIRST_VIEW_NAVIGATION_ONBOARDING_NAV_P2, true)
+                        .putBoolean(KEY_P1_DONE_AS_NON_LOGIN, false).apply();
+
+                Toast.makeText(DeveloperOptionActivity.this, "Onboarding reset ssuccessfully!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        String EXP_TOP_NAV = "Navigation Revamp";
+        String VARIANT_OLD = "Existing Navigation";
+        String VARIANT_REVAMP = "Navigation Revamp";
+
+        alwaysOldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_OLD);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Old", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        alwaysNewNavigation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RemoteConfigInstance.getInstance().getABTestPlatform().setString(EXP_TOP_NAV, VARIANT_REVAMP);
+                Toast.makeText(DeveloperOptionActivity.this, "Navigation: Revamped", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initListener() {
@@ -304,6 +360,19 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Timber.w(timberMessage);
                     Toast.makeText(DeveloperOptionActivity.this,
                             timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        sendFirebaseCrash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String crashMessage = editTextFirebaseCrash.getText().toString();
+                if (TextUtils.isEmpty(crashMessage)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Crash message should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    FirebaseCrashlytics.getInstance().recordException(new DeveloperOptionException(crashMessage));
                 }
             }
         });
@@ -373,6 +442,9 @@ public class DeveloperOptionActivity extends BaseActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777,notifReview);
                 });
+
+        toggleDarkMode.setChecked((getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES);
+        toggleDarkMode.setOnCheckedChangeListener((view, state) -> AppCompatDelegate.setDefaultNightMode(state ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO));
 
         toggleTopAdsNotif.setChecked(TopAdsLogger.getInstance(this).isNotificationEnabled());
         toggleTopAdsNotif.setOnCheckedChangeListener((compoundButton, state) -> TopAdsLogger.getInstance(this).enableNotification(state));
@@ -558,5 +630,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private void initTranslator() {
         new com.tokopedia.translator.manager.TranslatorManager().init(this.getApplication(), API_KEY_TRANSLATOR);
+    }
+
+    private class DeveloperOptionException extends RuntimeException{
+        public DeveloperOptionException(String message) {
+            super(message);
+        }
     }
 }

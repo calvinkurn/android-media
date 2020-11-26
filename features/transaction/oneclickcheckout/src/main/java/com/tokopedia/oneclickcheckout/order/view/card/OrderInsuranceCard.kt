@@ -7,8 +7,8 @@ import androidx.constraintlayout.widget.Group
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticdata.data.constant.InsuranceConstant
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.constant.InsuranceConstant
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
@@ -36,45 +36,53 @@ class OrderInsuranceCard(private val view: View, private val listener: OrderInsu
             } else {
                 tvInsurancePrice?.gone()
             }
-            imgBtInsuranceInfo?.let { iv ->
-                iv.setOnClickListener {
-                    showBottomSheet(iv.context,
-                            iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
-                            insuranceData.insuranceUsedInfo,
-                            com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
-                }
-            }
-            cbInsurance?.setOnCheckedChangeListener { _, isChecked ->
-                if (!isChecked) {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId, "uncheck", insuranceData.insurancePrice.toString())
-                } else {
-                    orderSummaryAnalytics.eventClickOnInsurance(productId, "check", insuranceData.insurancePrice.toString())
-                }
-                listener.onInsuranceChecked(isChecked)
-            }
-            if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
-                tvInsurance?.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance)
-                cbInsurance?.isEnabled = false
-                forceSetChecked(cbInsurance, true)
-                listener.onInsuranceChecked(true)
-                groupInsurance?.visible()
-            } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
-                listener.onInsuranceChecked(false)
-                groupInsurance?.gone()
-            } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
-                tvInsurance?.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
-                cbInsurance?.isEnabled = true
-                if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
+            setupListeners(insuranceData, productId)
+            when (insuranceData.insuranceType) {
+                InsuranceConstant.INSURANCE_TYPE_MUST -> {
+                    tvInsurance?.setText(com.tokopedia.purchase_platform.common.R.string.label_must_insurance)
+                    cbInsurance?.isEnabled = false
                     forceSetChecked(cbInsurance, true)
                     listener.onInsuranceChecked(true)
-                } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                    forceSetChecked(cbInsurance, false)
-                    listener.onInsuranceChecked(false)
+                    groupInsurance?.visible()
                 }
-                groupInsurance?.visible()
+                InsuranceConstant.INSURANCE_TYPE_NO -> {
+                    listener.onInsuranceChecked(false)
+                    groupInsurance?.gone()
+                }
+                InsuranceConstant.INSURANCE_TYPE_OPTIONAL -> {
+                    tvInsurance?.setText(com.tokopedia.purchase_platform.common.R.string.label_shipment_insurance)
+                    cbInsurance?.isEnabled = true
+                    if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
+                        forceSetChecked(cbInsurance, true)
+                        listener.onInsuranceChecked(true)
+                    } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
+                        forceSetChecked(cbInsurance, false)
+                        listener.onInsuranceChecked(false)
+                    }
+                    groupInsurance?.visible()
+                }
             }
         } else {
             groupInsurance?.gone()
+        }
+    }
+
+    private fun setupListeners(insuranceData: InsuranceData, productId: String) {
+        imgBtInsuranceInfo?.let { iv ->
+            iv.setOnClickListener {
+                showBottomSheet(iv.context,
+                        iv.context.getString(com.tokopedia.purchase_platform.common.R.string.title_bottomsheet_insurance),
+                        insuranceData.insuranceUsedInfo,
+                        com.tokopedia.purchase_platform.common.R.drawable.ic_pp_insurance)
+            }
+        }
+        cbInsurance?.setOnCheckedChangeListener { _, isChecked ->
+            if (!isChecked) {
+                orderSummaryAnalytics.eventClickOnInsurance(productId, "uncheck", insuranceData.insurancePrice.toString())
+            } else {
+                orderSummaryAnalytics.eventClickOnInsurance(productId, "check", insuranceData.insurancePrice.toString())
+            }
+            listener.onInsuranceChecked(isChecked)
         }
     }
 

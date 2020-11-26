@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.seller.common.utils.TkpdProgressDialog;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -279,7 +279,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             draftBroadCastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT))) {
+                    if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
                         resetPageAndSearch();
                     }
                 }

@@ -4,29 +4,23 @@ import com.google.gson.Gson
 import com.tokopedia.checkout.UnitTestFileUtils
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormGqlResponse
-import com.tokopedia.checkout.data.model.response.shipment_address_form.ShipmentAddressFormResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.domain.usecase.saf.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
-import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
-import com.tokopedia.logisticdata.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.data.analytics.CodAnalytics
+import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.editaddress.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.common.feature.insurance.usecase.GetInsuranceCartUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.ValidateUsePromoRevampUseCase
-import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.purchase_platform.common.utils.each
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
@@ -41,16 +35,13 @@ import rx.android.plugins.RxAndroidSchedulersHook
 import rx.plugins.RxJavaHooks
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.lang.reflect.Type
-import java.util.*
 
 object ShipmentPresenterDisableFeatureTest : Spek({
 
     val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase = mockk()
     val compositeSubscription: CompositeSubscription = mockk(relaxed = true)
     val checkoutUseCase: CheckoutGqlUseCase = mockk()
-    val graphqlUseCase: GraphqlUseCase = mockk(relaxUnitFun = true)
-    val getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
+    val getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase = mockk()
     val editAddressUseCase: EditAddressUseCase = mockk()
     val changeShippingAddressGqlUseCase: ChangeShippingAddressGqlUseCase = mockk()
     val saveShipmentStateGqlUseCase: SaveShipmentStateGqlUseCase = mockk()
@@ -68,6 +59,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
     val getInsuranceCartUseCase: GetInsuranceCartUseCase = mockk()
     val shipmentAnalyticsActionListener: ShipmentContract.AnalyticsActionListener = mockk()
     val shipmentDataConverter = ShipmentDataConverter()
+    val shipmentMapper = ShipmentMapper()
     val releaseBookingUseCase: ReleaseBookingUseCase = mockk()
 
     val gson = Gson()
@@ -94,7 +86,7 @@ object ShipmentPresenterDisableFeatureTest : Spek({
                     ratesStatesConverter, shippingCourierConverter, shipmentAnalyticsActionListener, userSessionInterface,
                     analyticsPurchaseProtection, codAnalytics, checkoutAnalytics,
                     getInsuranceCartUseCase, shipmentDataConverter, releaseBookingUseCase,
-                    validateUsePromoRevampUseCase)
+                    validateUsePromoRevampUseCase, gson)
         }
 
         val view by memoized { mockk<ShipmentContract.View>(relaxed = true) }
@@ -107,10 +99,8 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Given("mock response") {
                 val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+                val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
+                every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             When("process initial load checkout page") {
@@ -142,10 +132,8 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Given("mock response") {
                 val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+                val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
+                every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             When("process initial load checkout page") {
@@ -177,10 +165,8 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Given("mock response") {
                 val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_EGOLD), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+                val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
+                every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             When("process initial load checkout page") {
@@ -212,10 +198,8 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Given("mock response") {
                 val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_PPP), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+                val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
+                every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             When("process initial load checkout page") {
@@ -247,10 +231,8 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Given("mock response") {
                 val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DONATION), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+                val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
+                every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             When("process initial load checkout page") {
@@ -282,10 +264,8 @@ object ShipmentPresenterDisableFeatureTest : Spek({
 
             Given("mock response") {
                 val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ALL), ShipmentAddressFormDataResponse::class.java)
-                val result = hashMapOf<Type, Any>(
-                        ShipmentAddressFormGqlResponse::class.java to ShipmentAddressFormGqlResponse(ShipmentAddressFormResponse(status = "OK", data = dataResponse))
-                )
-                every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(result, HashMap<Type, List<GraphqlError>>(), false))
+                val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
+                every { getShipmentAddressFormGqlUseCase.createObservable(any()) } returns Observable.just(data)
             }
 
             When("process initial load checkout page") {

@@ -1,0 +1,121 @@
+{
+  "data": {
+    "type": "cart",
+    "id": "17211378-1-ab9892015e2b57b6b1eb4c487cb462ca",
+    "attributes": {
+      "user_id": 17211378,
+      "client_number": "087855823432",
+      "title": "Detail Pembelian",
+      "category_name": "Pulsa",
+      "operator_name": "XL",
+      "icon": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2020/8/28/47197032/47197032_914c9752-19e1-42b0-8181-91ef0629fd8a.png",
+      "price": "Rp 49.500",
+      "price_plain": 49500,
+      "instant_checkout": false,
+      "need_otp": false,
+      "sms_state": "recharge_first_time",
+      "voucher_autocode": "",
+      "user_input_price": null,
+      "main_info": [
+        {
+          "label": "Jenis Layanan",
+          "value": "XL 50.000"
+        },
+        {
+          "label": "Nomor",
+          "value": "087855812080"
+        },
+        {
+          "label": "Harga",
+          "value": "Rp 49.500"
+        }
+      ],
+      "additional_info": [],
+      "enable_voucher": true,
+      "is_coupon_active": 1,
+      "autoapply": {
+        "success": false,
+        "Message": {
+          "state": "",
+          "color": "",
+          "text": ""
+        },
+        "code": "",
+        "is_coupon": 0,
+        "discount_amount": 0,
+        "discount_price": "Rp 0",
+        "discounted_amount": 49500,
+        "discounted_price": "Rp 49.500",
+        "title_description": "",
+        "promo_code_id": 0,
+        "promo_id": 0,
+        "message_success": ""
+      },
+      "default_promo_dialog_tab": "voucher",
+      "cross_selling_type": 3,
+      "cross_selling_config": {
+        "is_skipable": true,
+        "is_checked": false,
+        "wording": {
+          "header_title": "",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        },
+        "wording_is_subscribed": {
+          "header_title": "Checkout",
+          "body_title": "",
+          "body_content_before": "",
+          "body_content_after": "",
+          "cta_button_text": "Bayar"
+        }
+      },
+      "pop_up": null,
+      "fintech_product": [
+        {
+          "transaction_type": "purchase-protection",
+          "tier_id": 827,
+          "opt_in": false,
+          "check_box_disabled": false,
+          "allow_ovo_points": true,
+          "fintech_amount": 3038,
+          "fintech_partner_amount": 3038,
+          "info": {
+            "title": "Proteksi Layar Retak",
+            "subtitle": "Beli pulsa dapat perlindungan layar retak 30 hari, cukup tambah Rp.3.038/transaksi",
+            "link_text": "Pelajari",
+            "link_url": "https://www.tokopedia.com/asuransi/proteksi/layar-retak/",
+            "tooltip_text": ""
+          },
+          "ServiceID": 1
+        }
+      ],
+      "atc_source": "",
+      "admin_fee": "Rp 0",
+      "admin_fee_plain": 0,
+      "back_url": "",
+      "promo_service_id": "819380128012836"
+    },
+    "relationships": {
+      "category": {
+        "data": {
+          "type": "category",
+          "id": "1"
+        }
+      },
+      "operator": {
+        "data": {
+          "type": "operator",
+          "id": "5"
+        }
+      },
+      "product": {
+        "data": {
+          "type": "product",
+          "id": "31"
+        }
+      }
+    }
+  }
+}

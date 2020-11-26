@@ -32,16 +32,18 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.otp.R
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant
-import com.tokopedia.otp.common.analytics.TrackingValidatorConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
-import com.tokopedia.otp.common.analytics.TrackingValidatorUtil
-import com.tokopedia.otp.common.util.SmsBroadcastReceiver
-import com.tokopedia.otp.common.util.SmsBroadcastReceiver.ReceiveSMSListener
-import com.tokopedia.otp.verification.common.IOnBackPressed
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant
+import com.tokopedia.otp.common.analytics.TrackingOtpConstant.Screen.SCREEN_ACCOUNT_ACTIVATION
+import com.tokopedia.otp.common.analytics.TrackingOtpUtil
+import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver
+import com.tokopedia.otp.verification.common.util.SmsBroadcastReceiver.ReceiveSMSListener
+import com.tokopedia.otp.common.abstraction.BaseOtpFragment
+import com.tokopedia.otp.common.IOnBackPressed
+import com.tokopedia.otp.common.di.OtpComponent
 import com.tokopedia.otp.verification.common.VerificationPref
-import com.tokopedia.otp.verification.common.di.VerificationComponent
+import com.tokopedia.otp.verification.common.util.PhoneCallBroadcastReceiver
 import com.tokopedia.otp.verification.data.OtpData
-import com.tokopedia.otp.verification.domain.data.ModeListData
+import com.tokopedia.otp.verification.domain.pojo.ModeListData
 import com.tokopedia.otp.verification.domain.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
@@ -59,11 +61,10 @@ import javax.inject.Inject
  * Created by Ade Fulki on 02/06/20.
  */
 
-class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
+class VerificationFragment : BaseOtpFragment(), IOnBackPressed, PhoneCallBroadcastReceiver.OnCallStateChange {
 
     @Inject
-    lateinit var analytics: TrackingValidatorUtil
-
+    lateinit var analytics: TrackingOtpUtil
     @Inject
     lateinit var verificationPref: VerificationPref
 
@@ -72,6 +73,9 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     @Inject
     lateinit var smsBroadcastReceiver: SmsBroadcastReceiver
+
+    @Inject
+    lateinit var phoneCallBroadcastReceiver: PhoneCallBroadcastReceiver
 
     @Inject
     lateinit var smsRetrieverClient: SmsRetrieverClient
@@ -91,10 +95,10 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     override fun getScreenName() = when (otpData.otpType) {
         OtpConstant.OtpType.REGISTER_EMAIL -> SCREEN_ACCOUNT_ACTIVATION
-        else -> TrackingValidatorConstant.Screen.SCREEN_COTP + modeListData.modeText
+        else -> TrackingOtpConstant.Screen.SCREEN_COTP + modeListData.modeText
     }
 
-    override fun initInjector() = getComponent(VerificationComponent::class.java).inject(this)
+    override fun initInjector() = getComponent(OtpComponent::class.java).inject(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,8 +110,7 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initObserver()
-        if (!(modeListData.modeText == OtpConstant.OtpMode.PIN ||
-                        modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH)) {
+        if (!(modeListData.modeText == OtpConstant.OtpMode.PIN || modeListData.modeText == OtpConstant.OtpMode.GOOGLE_AUTH)) {
             smsRetrieverClient.startSmsRetriever()
             sendOtp()
         }
@@ -121,14 +124,22 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
     override fun onResume() {
         super.onResume()
         context?.let {
-            smsBroadcastReceiver.register(it, getOtpReceiverListener())
+            if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
+                phoneCallBroadcastReceiver.registerReceiver(it, this)
+            } else {
+                smsBroadcastReceiver.register(it, getOtpReceiverListener())
+            }
         }
         showKeyboard()
     }
 
     override fun onPause() {
         super.onPause()
-        if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
+        if (modeListData.modeText == OtpConstant.OtpMode.MISCALL) {
+            if (::phoneCallBroadcastReceiver.isInitialized) activity?.unregisterReceiver(phoneCallBroadcastReceiver)
+        } else {
+            if (::smsBroadcastReceiver.isInitialized) activity?.unregisterReceiver(smsBroadcastReceiver)
+        }
         hideKeyboard()
     }
 
@@ -206,27 +217,31 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
     private fun onSuccessSendOtp(): (OtpRequestData) -> Unit {
         return { otpRequestData ->
-            if (otpRequestData.success) {
-                if (!isFirstSendOtp) {
-                    when (otpData.otpType) {
-                        OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
-                            analytics.trackSuccessClickResendRegisterPhoneOtpButton()
-                        }
-                        OtpConstant.OtpType.REGISTER_EMAIL -> {
-                            analytics.trackSuccessClickResendRegisterEmailOtpButton()
+            when {
+                otpRequestData.success -> {
+                    if (!isFirstSendOtp) {
+                        when (otpData.otpType) {
+                            OtpConstant.OtpType.REGISTER_PHONE_NUMBER -> {
+                                analytics.trackSuccessClickResendRegisterPhoneOtpButton()
+                            }
+                            OtpConstant.OtpType.REGISTER_EMAIL -> {
+                                analytics.trackSuccessClickResendRegisterEmailOtpButton()
+                            }
                         }
                     }
+                    hideLoading()
+                    setPrefixMiscall(otpRequestData.prefixMisscall)
+                    startCountDown()
+                    viewBound.containerView?.let {
+                        Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
                 }
-                hideLoading()
-                setPrefixMiscall(otpRequestData.prefixMisscall)
-                startCountDown()
-                viewBound.containerView?.let {
-                    Toaster.make(it, otpRequestData.message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                otpRequestData.errorMessage.isNotEmpty() -> {
+                    onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
                 }
-            } else if (otpRequestData.errorMessage.isNotEmpty()) {
-                onFailedSendOtp().invoke(MessageErrorException(otpRequestData.errorMessage))
-            } else {
-                onFailedSendOtp().invoke(Throwable())
+                else -> {
+                    onFailedSendOtp().invoke(Throwable())
+                }
             }
 
             isFirstSendOtp = false
@@ -590,9 +605,44 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
         }
     }
 
+    override fun onIncomingCallStart(phoneNumber: String) {
+        autoFillPhoneNumber(phoneNumber)
+    }
+
+    override fun onMissedCall(phoneNumber: String) {
+        autoFillPhoneNumber(phoneNumber)
+    }
+
+    override fun onIncomingCallEnded(phoneNumber: String) {
+        autoFillPhoneNumber(phoneNumber)
+    }
+
     private fun showLoading() {
         viewBound.loader?.show()
         viewBound.containerView?.hide()
+    }
+
+    private fun autoFillPhoneNumber(number: String) {
+        val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
+        var phoneNumber = replaceRegionPhoneCode(number)
+
+        if (phoneNumber.contains(phoneHint)) {
+            phoneNumber = phoneNumber.substring(phoneNumber.length - 4, phoneNumber.length)
+            viewBound.pin?.value = phoneNumber
+            validate(phoneNumber)
+        }
+    }
+
+    private fun replaceRegionPhoneCode(phoneNumber: String): String {
+        val regionRegex = Regex(REGEX_PHONE_NUMBER_REGION)
+        val symbolRegex = Regex(REGEX_PHONE_NUMBER)
+        var result = phoneNumber
+
+        if (phoneNumber.contains(regionRegex)) {
+            result = phoneNumber.replace(regionRegex, "0")
+        }
+
+        return result.replace(symbolRegex, "")
     }
 
     private fun hideLoading() {
@@ -607,6 +657,9 @@ class VerificationFragment : BaseVerificationFragment(), IOnBackPressed {
 
         private const val INTERVAL = 1000
         private const val COUNTDOWN_LENGTH = 30
+
+        private const val REGEX_PHONE_NUMBER = """[+()\-\s]"""
+        private const val REGEX_PHONE_NUMBER_REGION = "^(\\+\\d{1,2})"
 
         fun createInstance(bundle: Bundle?): Fragment {
             val fragment = VerificationFragment()

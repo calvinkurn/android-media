@@ -1,19 +1,25 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.timerSprintSale
 
 import android.app.Application
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.multibannerresponse.timmerwithbanner.TimerDataModel
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.banners.timerbanners.SaleCountDownTimer
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.util.*
+
 
 class TimerSprintSaleItemViewModel(val application: Application, val components: ComponentsItem, val position: Int) : DiscoveryBaseViewModel() {
     private val componentData: MutableLiveData<ComponentsItem> = MutableLiveData()
     private var timerWithBannerCounter: SaleCountDownTimer? = null
     private val elapsedTime: Long = 1000
+    private val needPageRefresh: MutableLiveData<Boolean> = MutableLiveData()
+    private val mutableTimeDiffModel: MutableLiveData<TimerDataModel> = MutableLiveData()
+    private var isTimerStopped = false
 
     init {
         TimeZone.setDefault(TimeZone.getTimeZone(Utils.TIME_ZONE))
@@ -25,70 +31,134 @@ class TimerSprintSaleItemViewModel(val application: Application, val components:
     }
 
     fun getComponentLiveData() = componentData
+    fun refreshPage(): LiveData<Boolean> = needPageRefresh
+    fun getTimerData(): LiveData<TimerDataModel> = mutableTimeDiffModel
 
-    fun isFutureSale(): Boolean {
-        val startData = components.data?.get(0)?.startDate
-        if (startData.isNullOrEmpty()) return false
-
-        val currentSystemTime = Calendar.getInstance().time
-        val parsedDate = parseData(startData)
-        return if (parsedDate != null) {
-            return currentSystemTime < parsedDate
-        } else {
-            false
+    fun handleSaleEndSates() {
+        when {
+            Utils.isFutureSale(getStartDate()) -> {
+                needPageRefresh.value = true
+            }
+            Utils.isSaleOver(getEndDate()) -> {
+                this@TimerSprintSaleItemViewModel.syncData.value = true
+            }
         }
     }
 
-    fun isSaleOver(): Boolean {
-        val endDate = components.data?.get(0)?.endDate
-        if (endDate.isNullOrEmpty()) return false
+    fun checkUpcomingSaleTimer() {
+        val pageEndPoint = components.pageEndPoint
+        getComponent(components.parentComponentId, pageEndPoint)?.let { tabItem ->
+            getComponent(tabItem.parentComponentId, pageEndPoint)?.let { tabs ->
+                tabs.data?.let { tabItem ->
+                    if (tabItem.size >= 2 && !tabItem[1].targetComponentId.isNullOrEmpty()) {
+                        val targetComponentIdList = tabItem[1].targetComponentId?.split(",")?.map { it.trim() }
+                        if (!targetComponentIdList.isNullOrEmpty()) {
+                            targetComponentIdList.forEach { componentId ->
+                                getComponent(componentId, pageEndPoint)?.let { componentItem ->
+                                    checkForTimerComponent(componentItem)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-        val currentSystemTime = Calendar.getInstance().time
-        val parsedDate = parseData(endDate)
-        return if (parsedDate != null) {
-            return currentSystemTime > parsedDate
-        } else {
-            false
+    private fun checkForTimerComponent(componentItem: ComponentsItem) {
+        if (componentItem.name == ComponentNames.TimerSprintSale.componentName && !componentItem.data.isNullOrEmpty()) {
+            componentItem.data?.firstOrNull()?.startDate?.let { startDate ->
+                when {
+                    Utils.isFutureSale(startDate) -> {
+                        val currentSystemTime = Calendar.getInstance().time
+                        val parsedEndDate = Utils.parseData(startDate)
+                        parsedEndDate?.let {
+                            val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+                            if (saleTimeMillis > 0) {
+                                timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, false) { timerData ->
+                                    if (timerData.timeFinish) {
+                                        stopTimer()
+                                        needPageRefresh.value = true
+                                    }
+                                }
+                                timerWithBannerCounter?.start()
+                            }
+                        }
+                    }
+                    Utils.isFutureSaleOngoing(startDate, componentItem.data!![0].endDate
+                            ?: "") -> {
+                        needPageRefresh.value = true
+                    }
+                    else -> {
+                        needPageRefresh.value = true
+                    }
+                }
+            }
         }
     }
 
     fun startTimer() {
-
-        val timerData: String? = if (isFutureSale()) {
-            components.data?.get(0)?.startDate
-        } else {
-            components.data?.get(0)?.endDate
-        }
+        val futureSaleTab = Utils.isFutureSale(getStartDate())
+        val timerData: String? = if (futureSaleTab) getStartDate() else getEndDate()
         if (!timerData.isNullOrEmpty()) {
             val currentSystemTime = Calendar.getInstance().time
-
-            val parsedEndDate = parseData(timerData)
-            if (parsedEndDate != null) {
-                val saleTimeMillis = parsedEndDate.time - currentSystemTime.time
+            val parsedEndDate = Utils.parseData(timerData)
+            parsedEndDate?.let { parsedDate ->
+                val saleTimeMillis = parsedDate.time - currentSystemTime.time
                 if (saleTimeMillis > 0) {
-                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime)
+                    timerWithBannerCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
+                        if (timerModel.timeFinish) {
+                            stopTimer()
+                            if (futureSaleTab) needPageRefresh.value = true
+                        }
+                        mutableTimeDiffModel.value = timerModel
+                    }
                     timerWithBannerCounter?.start()
                 }
             }
         }
     }
 
-    private fun parseData(date: String?): Date? {
-        return try {
-            SimpleDateFormat(Utils.TIMER_SPRINT_SALE_DATE_FORMAT, Locale.getDefault())
-                    .parse(date)
-        } catch (parseException: ParseException) {
-            null
-        }
+    override fun onDetachToViewHolder() {
+        stopTimer()
     }
 
-    // TODO Cancel countdown timer on viewHolder destroy
     fun stopTimer() {
-        if (timerWithBannerCounter != null) {
-            timerWithBannerCounter?.cancel()
-        }
+        timerWithBannerCounter?.cancel()
+        timerWithBannerCounter = null
     }
 
-    fun getTimerData() = timerWithBannerCounter?.mutableTimeDiffModel ?: MutableLiveData()
+    fun getStartDate(): String {
+        if (!components.data.isNullOrEmpty()) {
+            return components.data?.firstOrNull()?.startDate ?: ""
+        }
+        return ""
+    }
+
+    fun getEndDate(): String {
+        if (!components.data.isNullOrEmpty()) {
+            return components.data?.firstOrNull()?.endDate ?: ""
+        }
+        return ""
+    }
+
+    override fun onStop() {
+        stopTimer()
+        isTimerStopped = true
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        stopTimer()
+        super.onDestroy()
+    }
+
+    override fun onResume() {
+        if (isTimerStopped) {
+            startTimer()
+            isTimerStopped = false
+        }
+        super.onResume()
+    }
 
 }

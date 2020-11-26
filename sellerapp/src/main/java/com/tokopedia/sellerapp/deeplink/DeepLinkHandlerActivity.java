@@ -15,8 +15,6 @@ import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.gm.applink.GMApplinkModule;
-import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModule;
 import com.tokopedia.homecredit.applink.HomeCreditAppLinkModuleLoader;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
@@ -34,8 +32,6 @@ import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModule;
-import com.tokopedia.updateinactivephone.common.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -50,11 +46,9 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
 @DeepLinkHandler({
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
-        GMApplinkModule.class,
         SellerappAplinkModule.class,
         ProductDetailApplinkModule.class,
         LoginRegisterApplinkModule.class,
-        ChangeInactivePhoneApplinkModule.class,
         PhoneVerificationApplinkModule.class,
         WebViewApplinkModule.class,
         HomeCreditAppLinkModule.class
@@ -71,11 +65,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         return new DeepLinkDelegate(
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
-                new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
                 new ProductDetailApplinkModuleLoader(),
                 new LoginRegisterApplinkModuleLoader(),
-                new ChangeInactivePhoneApplinkModuleLoader(),
                 new PhoneVerificationApplinkModuleLoader(),
                 new WebViewApplinkModuleLoader(),
                 new HomeCreditAppLinkModuleLoader()

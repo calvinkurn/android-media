@@ -378,7 +378,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should success when get post widget data`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"), Pair("y", "y"))
         val postList = listOf(PostListDataUiModel(), PostListDataUiModel())
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -402,7 +402,7 @@ class StatisticViewModelTest {
 
     @Test
     fun `should failed when get post widget data`() = runBlocking {
-        val dataKeys = listOf("x", "x")
+        val dataKeys = listOf(Pair("x", "x"))
         val exception = MessageErrorException("error msg")
 
         getPostDataUseCase.params = GetPostDataUseCase.getRequestParams(dataKeys, dynamicParameter)

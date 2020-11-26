@@ -20,6 +20,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerVi
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
@@ -31,8 +32,8 @@ import com.tokopedia.shop.feed.view.adapter.holder.EmptyFeedShopViewHolder
 import com.tokopedia.shop.feed.view.adapter.holder.WhitelistViewHolder
 import com.tokopedia.shop.feed.view.contract.FeedShopContract
 import com.tokopedia.shop.feed.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
-import com.tokopedia.shop.feed.view.model.WhitelistViewModel
+import com.tokopedia.shop.feed.view.model.EmptyFeedShopUiModel
+import com.tokopedia.shop.feed.view.model.WhitelistUiModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -71,11 +72,11 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
         return TopadsShopViewHolder.LAYOUT
     }
 
-    override fun type(whitelistViewModel: WhitelistViewModel): Int {
+    override fun type(whitelistUiModel: WhitelistUiModel): Int {
         return WhitelistViewHolder.LAYOUT
     }
 
-    override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
+    override fun type(emptyFeedShopUiModel: EmptyFeedShopUiModel): Int {
         return EmptyFeedShopViewHolder.LAYOUT
     }
 
@@ -89,6 +90,10 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
 
     override fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int {
         return TopAdsBannerViewHolder.LAYOUT
+    }
+
+    override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return 0
     }
 
     @Suppress("UNCHECKED_CAST")

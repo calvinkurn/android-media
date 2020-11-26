@@ -15,6 +15,7 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.createpost.*
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
@@ -109,13 +110,19 @@ class SubmitPostService : JobIntentService() {
                 this@SubmitPostService) {
 
             override fun getSuccessIntent(): PendingIntent {
-                val applink = if (isTypeAffiliate(authorType)) {
-                    ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
-                } else {
-                    ApplinkConst.FEED
+                val appLink = when {
+                    GlobalConfig.isSellerApp() -> {
+                        ApplinkConst.SHOP_FEED.replace(SHOP_ID_PARAM, userSession.shopId)
+                    }
+                    isTypeAffiliate(authorType) -> {
+                        ApplinkConst.PROFILE_SUCCESS_POST.replace(USER_ID_PARAM, userSession.userId)
+                    }
+                    else -> {
+                        ApplinkConst.FEED
+                    }
                 }
 
-                val intent = RouteManager.getIntent(context, applink)
+                val intent = RouteManager.getIntent(context, appLink)
                 return PendingIntent.getActivity(context, 0, intent, 0)
             }
 

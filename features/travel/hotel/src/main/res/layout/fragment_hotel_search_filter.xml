@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_weight="1"
-        android:background="@color/Neutral_N0">
+        android:background="@color/Unify_N0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/switch_pay_at_hotel"
                     android:text="@string/hotel_search_filter_only_show_pay_at_hotel"
-                    android:textColor="@color/Neutral_N700_96"
+                    android:textColor="@color/Unify_N700_96"
                     app:typographyType="body_2"
                     app:typographyWeight="bold" />
 
@@ -53,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/hotel_filter_rating_title"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_star_title"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -79,14 +79,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_range_price_title"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -102,14 +102,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_rating_title"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -139,21 +139,21 @@
                 android:layout_marginEnd="@dimen/layout_lvl2"
                 android:layout_marginRight="@dimen/layout_lvl2"
                 android:orientation="horizontal"
-                android:paddingLeft="@dimen/dp_7"
-                android:paddingRight="@dimen/dp_7" />
+                android:paddingLeft="@dimen/layout_lvl1"
+                android:paddingRight="@dimen/layout_lvl1" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/hotel_1dp"
                 android:layout_marginTop="@dimen/layout_lvl2"
-                android:background="@color/hotel_divider_color_gray" />
+                android:background="@color/Unify_N75" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl2"
                 android:text="@string/hotel_search_filter_accomodation_type_title"
-                android:textColor="@color/Neutral_N700_96"
+                android:textColor="@color/Unify_N700_96"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
@@ -173,7 +173,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl2"
-        android:background="@color/Neutral_N0"
+        android:background="@color/Unify_N0"
         android:elevation="@dimen/spacing_lvl2"
         android:padding="@dimen/layout_lvl2">
 

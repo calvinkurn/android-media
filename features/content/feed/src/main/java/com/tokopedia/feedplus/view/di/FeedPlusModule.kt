@@ -24,6 +24,8 @@ import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
+import com.tokopedia.play.widget.analytic.impression.ImpressionValidator
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource
@@ -228,5 +230,11 @@ class FeedPlusModule {
     @Provides
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, networkRouter: NetworkRouter, userSession: UserSessionInterface): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
+    }
+
+    @FeedPlusScope
+    @Provides
+    fun providePlayWidgetImpressionValidator(): DefaultImpressionValidator {
+        return DefaultImpressionValidator()
     }
 }

@@ -2,13 +2,17 @@ package com.tokopedia.sellerorder.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
-import com.tokopedia.sellerorder.common.domain.usecase.SomGetUserRoleUseCase
+import com.tokopedia.sellerorder.common.domain.model.*
+import com.tokopedia.sellerorder.common.domain.usecase.*
 import com.tokopedia.sellerorder.common.presenter.model.SomGetUserRoleUiModel
 import com.tokopedia.sellerorder.detail.data.model.*
-import com.tokopedia.sellerorder.detail.domain.*
+import com.tokopedia.sellerorder.detail.domain.SomGetOrderDetailUseCase
+import com.tokopedia.sellerorder.detail.domain.SomReasonRejectUseCase
+import com.tokopedia.sellerorder.detail.domain.SomSetDeliveredUseCase
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -58,10 +62,13 @@ class SomDetailViewModelTest {
     @RelaxedMockK
     lateinit var somRejectCancelOrderUseCase: SomRejectCancelOrderUseCase
 
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
+
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
-        somDetailViewModel = SomDetailViewModel(dispatcher, somGetOrderDetailUseCase,
+        somDetailViewModel = SomDetailViewModel(dispatcher, userSessionInterface, somGetOrderDetailUseCase,
                 somAcceptOrderUseCase, somReasonRejectUseCase, somRejectOrderUseCase,
                 somEditRefNumUseCase, somSetDeliveredUseCase, somGetUserRoleUseCase,
                 somRejectCancelOrderUseCase)
@@ -81,14 +88,14 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(123))
+        } returns Success(GetSomDetailResponse(getSomDetail = SomDetailOrder.Data.GetSomDetail(123)))
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.orderId == 123)
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.orderId == 123)
     }
 
     @Test
@@ -110,14 +117,15 @@ class SomDetailViewModelTest {
         //given
         coEvery {
             somGetOrderDetailUseCase.execute(any())
-        } returns Success(SomDetailOrder.Data.GetSomDetail(listProduct = listProducts))
+        } returns Success(GetSomDetailResponse(
+                getSomDetail = SomDetailOrder.Data.GetSomDetail(listProduct = listProducts)))
 
         //when
         somDetailViewModel.loadDetailOrder("")
 
         //then
         assert(somDetailViewModel.orderDetailResult.value is Success)
-        assert((somDetailViewModel.orderDetailResult.value as Success<SomDetailOrder.Data.GetSomDetail>).data.listProduct.isNotEmpty())
+        assert((somDetailViewModel.orderDetailResult.value as Success<GetSomDetailResponse>).data.getSomDetail?.listProduct?.isNotEmpty() ?: false)
     }
 
     // accept_order
@@ -125,26 +133,26 @@ class SomDetailViewModelTest {
     fun acceptOrder_shouldReturnSuccess() {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
-        } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(success = 1)))
+            somAcceptOrderUseCase.execute()
+        } returns Success(SomAcceptOrderResponse.Data(SomAcceptOrderResponse.Data.AcceptOrder(success = 1)))
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        somDetailViewModel.acceptOrder("")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Success)
-        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrder.Data>).data.acceptOrder.success == 1)
+        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrderResponse.Data>).data.acceptOrder.success == 1)
     }
 
     @Test
     fun acceptOrder_shouldReturnFail() {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
+            somAcceptOrderUseCase.execute()
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        somDetailViewModel.acceptOrder("")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Fail)
@@ -154,15 +162,15 @@ class SomDetailViewModelTest {
     fun acceptOrder_msgShouldNotReturnEmpty() {
         //given
         coEvery {
-            somAcceptOrderUseCase.execute(any(), any(), any())
-        } returns Success(SomAcceptOrder.Data(SomAcceptOrder.Data.AcceptOrder(listMessage = listMsg)))
+            somAcceptOrderUseCase.execute()
+        } returns Success(SomAcceptOrderResponse.Data(SomAcceptOrderResponse.Data.AcceptOrder(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.acceptOrder("", "", "")
+        somDetailViewModel.acceptOrder("")
 
         //then
         assert(somDetailViewModel.acceptOrderResult.value is Success)
-        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrder.Data>).data.acceptOrder.listMessage.isNotEmpty())
+        assert((somDetailViewModel.acceptOrderResult.value as Success<SomAcceptOrderResponse.Data>).data.acceptOrder.listMessage.isNotEmpty())
     }
 
     // reason_reject
@@ -215,26 +223,26 @@ class SomDetailViewModelTest {
     fun rejectOrder_shouldReturnSuccess() {
         //given
         coEvery {
-            somRejectOrderUseCase.execute(any(), any())
-        } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(success = 1)))
+            somRejectOrderUseCase.execute(any())
+        } returns Success(SomRejectOrderResponse.Data(SomRejectOrderResponse.Data.RejectOrder(success = 1)))
 
         //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
+        somDetailViewModel.rejectOrder(SomRejectRequestParam())
 
         //then
         assert(somDetailViewModel.rejectOrderResult.value is Success)
-        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrder.Data>).data.rejectOrder.success == 1)
+        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrderResponse.Data>).data.rejectOrder.success == 1)
     }
 
     @Test
     fun rejectOrder_shouldReturnFail() {
         //given
         coEvery {
-            somRejectOrderUseCase.execute(any(), any())
+            somRejectOrderUseCase.execute(any())
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
+        somDetailViewModel.rejectOrder(SomRejectRequestParam())
 
         //then
         assert(somDetailViewModel.rejectOrderResult.value is Fail)
@@ -244,15 +252,15 @@ class SomDetailViewModelTest {
     fun rejectOrder_msgShouldNotReturnEmpty() {
         //given
         coEvery {
-            somRejectOrderUseCase.execute(any(), any())
-        } returns Success(SomRejectOrder.Data(SomRejectOrder.Data.RejectOrder(message = listMsg)))
+            somRejectOrderUseCase.execute(any())
+        } returns Success(SomRejectOrderResponse.Data(SomRejectOrderResponse.Data.RejectOrder(message = listMsg)))
 
         //when
-        somDetailViewModel.rejectOrder("", SomRejectRequest())
+        somDetailViewModel.rejectOrder(SomRejectRequestParam())
 
         //then
         assert(somDetailViewModel.rejectOrderResult.value is Success)
-        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrder.Data>).data.rejectOrder.message.isNotEmpty())
+        assert((somDetailViewModel.rejectOrderResult.value as Success<SomRejectOrderResponse.Data>).data.rejectOrder.message.isNotEmpty())
     }
 
     // edit_awb
@@ -260,26 +268,26 @@ class SomDetailViewModelTest {
     fun editAwb_shouldReturnSuccess() {
         //given
         coEvery {
-            somEditRefNumUseCase.execute(any())
-        } returns Success(SomEditAwbResponse.Data(SomEditAwbResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
+            somEditRefNumUseCase.execute()
+        } returns Success(SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.editAwb("")
+        somDetailViewModel.editAwb("123", "12345")
 
         //then
         assert(somDetailViewModel.editRefNumResult.value is Success)
-        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditAwbResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
+        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditRefNumResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
     }
 
     @Test
     fun editAwb_shouldReturnFail() {
         //given
         coEvery {
-            somEditRefNumUseCase.execute(any())
+            somEditRefNumUseCase.execute()
         } returns Fail(Throwable())
 
         //when
-        somDetailViewModel.editAwb("")
+        somDetailViewModel.editAwb("123", "12345")
 
         //then
         assert(somDetailViewModel.editRefNumResult.value is Fail)
@@ -289,15 +297,15 @@ class SomDetailViewModelTest {
     fun editAwb_msgShouldNotReturnEmpty() {
         //given
         coEvery {
-            somEditRefNumUseCase.execute(any())
-        } returns Success(SomEditAwbResponse.Data(SomEditAwbResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
+            somEditRefNumUseCase.execute()
+        } returns Success(SomEditRefNumResponse.Data(SomEditRefNumResponse.Data.MpLogisticEditRefNum(listMessage = listMsg)))
 
         //when
-        somDetailViewModel.editAwb("")
+        somDetailViewModel.editAwb("123", "12345")
 
         //then
         assert(somDetailViewModel.editRefNumResult.value is Success)
-        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditAwbResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
+        assert((somDetailViewModel.editRefNumResult.value as Success<SomEditRefNumResponse.Data>).data.mpLogisticEditRefNum.listMessage.first() == "msg1")
     }
 
     // set_delivered

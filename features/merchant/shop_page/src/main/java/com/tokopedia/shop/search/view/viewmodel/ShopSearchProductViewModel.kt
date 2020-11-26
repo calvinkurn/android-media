@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.domain.interactor.GetSearchShopProductUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -19,8 +20,8 @@ import javax.inject.Inject
 class ShopSearchProductViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getSearchShopProductUseCase: GetSearchShopProductUseCase,
-        coroutineDispatcher: CoroutineDispatcher
-) : BaseViewModel(coroutineDispatcher) {
+        private val coroutineDispatcherProvider: CoroutineDispatcherProvider
+) : BaseViewModel(coroutineDispatcherProvider.main()) {
 
     private val _shopSearchProductResult by lazy {
         MutableLiveData<Result<UniverseSearchResponse>>()
@@ -34,7 +35,7 @@ class ShopSearchProductViewModel @Inject constructor(
 
     fun getSearchShopProduct(shopId: String, searchQuery: String) {
         launchCatchError(block = {
-            val result = withContext(Dispatchers.IO) {
+            val result = withContext(coroutineDispatcherProvider.io()) {
                 getSearchShopProductUseCase.requestParams = GetSearchShopProductUseCase
                         .createRequestParam(
                                 shopId.toIntOrZero(),

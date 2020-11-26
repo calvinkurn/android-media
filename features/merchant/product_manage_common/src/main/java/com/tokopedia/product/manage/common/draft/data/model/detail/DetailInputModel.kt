@@ -11,6 +11,7 @@ import java.math.BigInteger
 @Parcelize
 data class DetailInputModel(
         var productName: String = "",
+        var currentProductName: String = "",
         var categoryId: String = "",
         var catalogId: String = "",
         var price: BigInteger = 0.toBigInteger(),
@@ -23,7 +24,8 @@ data class DetailInputModel(
         var preorder: PreorderInputModel = PreorderInputModel(),
         var wholesaleList: List<WholeSaleInputModel> = emptyList(),
         var pictureList: List<PictureInputModel> = emptyList(),
-        var categoryName: String = ""
+        var categoryName: String = "",
+        var productShowCases: List<ShowCaseInputModel> = emptyList()
 ) : Parcelable
 
 @Parcelize

@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/label_video_title"
-        android:textColor="@color/grey_796"
+        android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4" />
@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
         android:text="@string/label_video_subtitle"
-        android:textColor="@color/grey_560"
+        android:textColor="@color/Unify_N700_68"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvVideoHeaderTitle"
         app:typographyType="body_2" />
@@ -37,10 +37,11 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/textViewAddVideo"
+        android:contentDescription="@string/content_desc_textViewAddVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/action_add_video"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recycler_view"
         app:typographyType="body_2" />

@@ -42,6 +42,8 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.utils.ImpresionTask
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
@@ -51,7 +53,6 @@ import kotlinx.android.synthetic.main.fragment_buyer_account.*
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 
 /**
  * @author okasurya on 7/16/18.
@@ -73,8 +74,8 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
             DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     private var shouldRefreshOnResume = true
-    private var UOH_AB_TEST_KEY = "uoh_android"
-    private var UOH_AB_TEST_VALUE = "uoh_android"
+    private var UOH_AB_TEST_KEY = "uoh_android_v2"
+    private var UOH_AB_TEST_VALUE = "uoh_android_v2"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +99,7 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
         recycler_buyer.layoutManager = layoutManager
         recycler_buyer.adapter = adapter
 
-        swipe_refresh_layout.setColorSchemeResources(R.color.tkpd_main_green)
+        swipe_refresh_layout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400)
 
         swipe_refresh_layout.setOnRefreshListener { this.getData() }
         sendBuyerAccountItemImpression()
@@ -490,8 +491,16 @@ class BuyerAccountFragment : BaseAccountFragment(), FragmentListener {
     }
 
     private fun useUoh(): Boolean {
-        val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
-        return remoteConfigValue == UOH_AB_TEST_VALUE
+        return try {
+            val remoteConfigValue = getAbTestingRemoteConfig().getString(UOH_AB_TEST_KEY, "")
+            val rollence = remoteConfigValue.equals(UOH_AB_TEST_VALUE, ignoreCase = true)
+
+            val remoteConfigFirebase: Boolean = getRemoteConfig().getBoolean(RemoteConfigKey.ENABLE_UOH)
+            (rollence && remoteConfigFirebase)
+
+        } catch (e: Exception) {
+            false
+        }
     }
 
     companion object {

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_88"
+    android:layout_height="@dimen/hotel_88dp"
     android:gravity="center_vertical"
     android:padding="@dimen/layout_lvl2">
 
@@ -18,14 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_homepage_check_in"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/hotel_check_in_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="18 Des 2018" />
@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3"
             tools:text="Senin, 14:00"
             tools:visibility="visible"/>
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/hotel_homepage_check_out"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            android:textColor="@color/Neutral_N700_96"
+            android:textColor="@color/Unify_N700_96"
             tools:text="28 Des 2018" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:typographyType="body_3"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Unify_N700_68"
             tools:text="Kamis, 12:00"
             tools:visibility="visible" />
 
@@ -97,7 +97,7 @@
         android:paddingRight="@dimen/hotel_6dp"
         android:paddingBottom="@dimen/spacing_lvl1"
         android:text="@string/hotel_room_night_count"
-        android:textColor="#9e9fa3"
+        android:textColor="@color/Unify_N200"
         app:typographyType="body_3"
         app:typographyWeight="bold"
         tools:text="10 Malam" />

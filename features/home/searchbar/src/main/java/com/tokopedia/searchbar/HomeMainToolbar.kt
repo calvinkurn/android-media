@@ -33,7 +33,6 @@ import java.util.concurrent.Callable
 import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
-
 class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private var KEY_BUNDLE_TOOLBAR_TYPE: String = "key_bundle_toolbar_type"
@@ -64,7 +63,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
 
     private lateinit var searchMagnifierIcon: Drawable
 
-    private lateinit var afterInflationCallable: Callable<Any?>
+    private var afterInflationCallable: Callable<Any?>? = null
 
     private lateinit var animationJob: Job
 
@@ -153,7 +152,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             }
             val pR = toolbar.paddingRight
             val pB = 0
-            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.white))
+            toolbar!!.background = ColorDrawable(ContextCompat.getColor(context, R.color.Unify_N0))
             toolbar!!.setPadding(pL, pT, pR, pB)
         }
     }
@@ -181,7 +180,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             viewHomeMainToolBar = view
             actionAfterInflation(context, view)
             setViewAttributesAfterInflation()
-            afterInflationCallable.call()
+            afterInflationCallable?.call()
             this@HomeMainToolbar.addView(view)
         }
         if (inflateFinishCallBack != null) {
@@ -197,23 +196,6 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         val drawable = toolbar!!.background
         drawable.alpha = alpha.toInt()
         toolbar!!.background = drawable
-    }
-
-    override fun onSaveInstanceState(): Parcelable? {
-        super.onSaveInstanceState()
-        val bundle = Bundle()
-        bundle.putInt(KEY_BUNDLE_TOOLBAR_TYPE, toolbarType)
-        return bundle
-    }
-
-    override fun onRestoreInstanceState(state: Parcelable?) {
-        super.onRestoreInstanceState(state)
-        if (state is Bundle) // implicit null check
-        {
-            val bundle = state
-            this.toolbarType = bundle.getInt(KEY_BUNDLE_TOOLBAR_TYPE) // ... load stuff
-        }
-        super.onRestoreInstanceState(state)
     }
 
     fun switchToDarkToolbar() {

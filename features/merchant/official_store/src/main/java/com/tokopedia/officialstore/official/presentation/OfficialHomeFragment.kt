@@ -16,8 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -52,9 +50,7 @@ import com.tokopedia.officialstore.official.di.DaggerOfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
-import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
+import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
@@ -100,6 +96,9 @@ class OfficialHomeFragment :
 
     @Inject
     lateinit var viewModel: OfficialStoreHomeViewModel
+    @Inject
+    lateinit var officialHomeMapper: OfficialHomeMapper
+
     private var tracking: OfficialStoreTracking? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
@@ -131,9 +130,8 @@ class OfficialHomeFragment :
                     productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMoreProducts(categoriesWithoutClosingSquare, page)
 
-                    if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
-                        adapter?.showLoading()
-                    }
+                    officialHomeMapper.showLoadingMore(adapter)
+
                 }
             }
         }
@@ -166,13 +164,12 @@ class OfficialHomeFragment :
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory(
                 this,
                 this,
-                this,
                 OfficialStoreHomeComponentCallback(),
                 OfficialStoreLegoBannerComponentCallback(this),
                 OSMixLeftComponentCallback(this))
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
-
+        officialHomeMapper.resetState(adapter)
         return view
     }
 
@@ -204,8 +201,6 @@ class OfficialHomeFragment :
     }
 
     private fun resetData() {
-        adapter?.clearAllElements()
-        adapter?.resetState(this)
         endlessScrollListener.resetState()
     }
 
@@ -227,13 +222,12 @@ class OfficialHomeFragment :
     }
 
     private fun observeBannerData() {
-        viewModel.officialStoreBannersResult.observe(this, Observer {
+        viewModel.officialStoreBannersResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
-                    setLoadMoreListener()
+                    officialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -245,12 +239,11 @@ class OfficialHomeFragment :
     }
 
     private fun observeBenefit() {
-        viewModel.officialStoreBenefitsResult.observe(this, Observer {
+        viewModel.officialStoreBenefitsResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingBenefit(it.data, adapter)
-                    setLoadMoreListener()
+                    officialHomeMapper.mappingBenefit(it.data, adapter)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -262,12 +255,11 @@ class OfficialHomeFragment :
     }
 
     private fun observeFeaturedShop() {
-        viewModel.officialStoreFeaturedShopResult.observe(this, Observer {
+        viewModel.officialStoreFeaturedShopResult.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
-                    setLoadMoreListener()
+                    officialHomeMapper.mappingFeaturedShop(it.data, adapter, category?.title, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -280,11 +272,11 @@ class OfficialHomeFragment :
     }
 
     private fun observeDynamicChannel() {
-        viewModel.officialStoreDynamicChannelResult.observe(this, Observer { result ->
+        viewModel.officialStoreDynamicChannelResult.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> {
                     swipeRefreshLayout?.isRefreshing = false
-                    OfficialHomeMapper.mappingDynamicChannel(
+                    officialHomeMapper.mappingDynamicChannel(
                             result.data,
                             adapter,
                             remoteConfig
@@ -300,17 +292,16 @@ class OfficialHomeFragment :
     }
 
     private fun observeProductRecommendation() {
-        viewModel.productRecommendation.observe(this, Observer {
+        viewModel.productRecommendation.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     PRODUCT_RECOMMENDATION_TITLE_SECTION = it.data.title
-                    adapter?.hideLoading()
                     endlessScrollListener.updateStateAfterGetData()
                     swipeRefreshLayout?.isRefreshing = false
                     if (counterTitleShouldBeRendered == 1) {
-                        OfficialHomeMapper.mappingProductrecommendationTitle(it.data.title, adapter)
+                        officialHomeMapper.mappingProductRecommendationTitle(it.data.title, adapter)
                     }
-                    OfficialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
+                    officialHomeMapper.mappingProductRecommendation(it.data, adapter, this)
                 }
                 is Fail -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -343,18 +334,9 @@ class OfficialHomeFragment :
 
     private fun setListener() {
         setLoadMoreListener()
-
         swipeRefreshLayout?.setOnRefreshListener {
-            adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel
-                        || it is ProductRecommendationViewModel
-                        || it is ProductRecommendationTitleViewModel
-                        || it is LoadingMoreModel
-                        || it is DynamicLegoBannerDataModel
-            }
             counterTitleShouldBeRendered = 0
-            adapter?.notifyDataSetChanged()
-            recyclerView?.removeOnScrollListener(endlessScrollListener)
+            officialHomeMapper.removeRecommendation(adapter)
             loadData(true)
         }
 
@@ -527,9 +509,7 @@ class OfficialHomeFragment :
 
     private fun updateWishlist(isWishlist: Boolean, position: Int) {
         if (position > -1 && adapter != null) {
-            (adapter?.list?.getOrNull(position) as?
-                    ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
-            adapter?.notifyItemChanged(position, isWishlist)
+            officialHomeMapper.updateWishlist(isWishlist, position, adapter)
         }
     }
 
@@ -587,12 +567,7 @@ class OfficialHomeFragment :
     }
 
     override fun onCountDownFinished() {
-        recyclerView?.post {
-            adapter?.getVisitables()?.removeAll {
-                it is DynamicChannelViewModel || it is ProductRecommendationViewModel
-            }
-            adapter?.notifyDataSetChanged()
-        }
+        officialHomeMapper.removeFlashSale(adapter)
         loadData(true)
     }
 
@@ -602,12 +577,12 @@ class OfficialHomeFragment :
 
     override fun onClickLegoImage(channelModel: ChannelModel, position: Int) {
         val gridData = channelModel.channelGrids[position]
-        val applink = gridData.applink ?: ""
+        val applink = gridData.applink
 
         gridData.let {
             tracking?.dynamicChannelHomeComponentClick(
                     viewModel.currentSlug,
-                    channelModel.channelHeader.name ?: "",
+                    channelModel.channelHeader.name,
                     (position + 1).toString(10),
                     it,
                     channelModel
@@ -865,12 +840,6 @@ class OfficialHomeFragment :
             osPltCallback.startRenderPerformanceMonitoring()
         }
         setPerformanceListenerForRecyclerView()
-        recyclerView?.post {
-            adapter?.getVisitables()?.removeAll {
-                it is LoadingModel
-            }
-            adapter?.notifyDataSetChanged()
-        }
     }
 
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
