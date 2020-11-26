@@ -106,6 +106,8 @@ query {
    uohOrderCount {
            onProcess
            onProcessText
+           sedangBerlangsung
+           sedangBerlangsungText
            activeTickets
            activeTicketsText
    }

@@ -10,6 +10,10 @@ data class UohCounterDataModel (
             val onProcess: String = "",
             @SerializedName("onProcessText")
             val onProcessText: String = "",
+            @SerializedName("sedangBerlangsung")
+            val sedangBerlangsung: String = "",
+            @SerializedName("sedangBerlangsungText")
+            val sedangBerlangsungText: String = "",
             @SerializedName("activeTickets")
             val activeTickets: String = "",
             @SerializedName("activeTicketsText")
