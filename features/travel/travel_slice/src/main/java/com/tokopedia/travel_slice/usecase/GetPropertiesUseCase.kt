@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.travel_slice.data.HotelList
 import com.tokopedia.travel_slice.data.HotelParam
 import com.tokopedia.travel_slice.data.SuggestionCity
-import com.tokopedia.travel_slice.ui.provider.TravelSliceQuery
+import com.tokopedia.travel_slice.utils.TravelSliceQueries
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class GetPropertiesUseCase @Inject constructor(private val repository: GraphqlRe
     private var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): HotelList {
-        val graphqlRequest = GraphqlRequest(TravelSliceQuery.GET_HOTEL_PROPERTY_QUERY, HotelList.Response::class.java, params)
+        val graphqlRequest = GraphqlRequest(TravelSliceQueries.GET_HOTEL_PROPERTY_QUERY, HotelList.Response::class.java, params)
         val response = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<HotelList.Response>()
         return response.propertySearch
     }

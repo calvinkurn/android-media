@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.travel_slice.data.SearchSuggestionParam
 import com.tokopedia.travel_slice.data.SuggestionCity
 import com.tokopedia.travel_slice.ui.provider.MainSliceProvider
-import com.tokopedia.travel_slice.ui.provider.TravelSliceQuery
+import com.tokopedia.travel_slice.utils.TravelSliceQueries
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -20,7 +20,7 @@ class GetSuggestionCityUseCase @Inject constructor(private val repository: Graph
 
     override suspend fun executeOnBackground(): List<SuggestionCity> {
         val getSuggestionParams = mapOf(MainSliceProvider.DATA_PARAM to SearchSuggestionParam(cityParam))
-        val suggestionGraphqlRequest = GraphqlRequest(TravelSliceQuery.SEARCH_SUGGESTION, SuggestionCity.Response::class.java, getSuggestionParams)
+        val suggestionGraphqlRequest = GraphqlRequest(TravelSliceQueries.SEARCH_SUGGESTION, SuggestionCity.Response::class.java, getSuggestionParams)
         val response = repository.getReseponse(listOf(suggestionGraphqlRequest)).getSuccessData<SuggestionCity.Response>()
         return response.response.data
     }
