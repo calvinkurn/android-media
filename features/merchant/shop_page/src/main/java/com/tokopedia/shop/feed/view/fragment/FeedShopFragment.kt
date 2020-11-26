@@ -203,7 +203,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 try {
                     if (hasFeed()
                             && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (isSellerMigrationEnabled(context) && userSession.hasShop()) {
+                        if (isSellerMigrationEnabled(context) && shopId == userSession.shopId) {
                             showBottomSheetSellerMigration()
                         } else {
                             hideBottomSheetSellerMigration()
