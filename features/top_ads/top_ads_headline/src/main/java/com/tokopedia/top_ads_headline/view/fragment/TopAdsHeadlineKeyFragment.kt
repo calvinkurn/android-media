@@ -64,6 +64,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
         stepperModel?.manualSelectedKeywords = getManualAddedKeywords()
         stepperModel?.selectedKeywords = getSelectedKeywords()
         stepperModel?.keywordOperations = getKeyWordOperations()
+        stepperModel?.stateRestoreKeyword = true
         stepperListener?.goToNextPage(stepperModel)
     }
 
@@ -250,7 +251,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
         minSuggestedBid = list.firstOrNull()?.minBid ?: 0
         keywordListAdapter.setList(list, list.firstOrNull()?.minBid
-                ?: 0, stepperModel?.selectedKeywords)
+                ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
     }
 

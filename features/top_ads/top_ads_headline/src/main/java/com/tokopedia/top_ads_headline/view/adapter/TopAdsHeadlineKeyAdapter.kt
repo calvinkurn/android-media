@@ -22,6 +22,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
     var items: MutableList<KeywordDataItem> = mutableListOf()
     private var minimumBid: Int = 0
     private var maxBid: Int = 0
+    private var stateRestore: Boolean = false
 
     class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
@@ -38,7 +39,7 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
         holder.view.keywordName.text = items[holder.adapterPosition].keyword
         holder.view.keywordDesc.text = String.format(holder.view.context.getString(R.string.topads_headline_keyword_desc), convertToCurrency(items[holder.adapterPosition].totalSearch.toLong()))
         holder.view.keywordBid.textFieldInput.setText(convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
-        if (selectedKeywords?.isEmpty() == true) {
+        if (selectedKeywords?.isEmpty() == true && !stateRestore) {
             holder.view.checkBox.isChecked = true
             items[holder.adapterPosition].onChecked = true
             holder.view.keywordBid.textFieldInput.setText(convertToCurrency(items[holder.adapterPosition].bidSuggest.toLong()))
@@ -94,12 +95,13 @@ class TopAdsHeadlineKeyAdapter(private var onCheck: (pos: Int) -> Unit,
         })
     }
 
-    fun setList(list: List<KeywordData>, minBid: Int, selectedKeywords: MutableList<KeywordDataItem>?) {
+    fun setList(list: List<KeywordData>, minBid: Int, selectedKeywords: MutableList<KeywordDataItem>?, stateRestore: Boolean?) {
         items.clear()
+        this.stateRestore = stateRestore ?: false
         minimumBid = minBid
         list.forEach {
             it.keywordData.forEach { data ->
-                if (selectedKeywords?.isEmpty() == true || selectedKeywords?.find { it -> it.keyword == data.keyword } != null)
+                if ((stateRestore != true) || selectedKeywords?.find { it -> it.keyword == data.keyword } != null)
                     data.onChecked = true
                 items.add(data)
             }

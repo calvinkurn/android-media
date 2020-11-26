@@ -13,6 +13,7 @@ open class CreateHeadlineAdsStepperModel(
         var selectedProductIds: MutableList<Int> = mutableListOf(),
         var selectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
         var manualSelectedKeywords: MutableList<KeywordDataItem> = mutableListOf(),
+        var stateRestoreKeyword: Boolean = false,
         var slogan: String = "",
         var cpmModel: CpmModel = CpmModel(),
         var minBid: Int = 0,
