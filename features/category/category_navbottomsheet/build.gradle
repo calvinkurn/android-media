@@ -32,12 +32,14 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation rootProject.ext.unifyDependencies.global_error
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.miscDependencies.viewModelKtx
+    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
 

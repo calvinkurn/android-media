@@ -1,5 +1,6 @@
 package com.tokopedia.category.navbottomsheet.view
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -14,21 +15,30 @@ import com.tokopedia.category.navbottomsheet.model.CategoriesItem
 import com.tokopedia.category.navbottomsheet.model.CategoryDetailData
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryLevelTwoExpandableAdapter
 import com.tokopedia.category.navbottomsheet.view.adapter.CategoryNavLevelOneAdapter
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.bottom_sheet_cat_nav.*
+import java.lang.IllegalArgumentException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 
 
-class CategoryNavBottomSheet(private val listener: CategorySelected, private val catId: String, private val shouldHideL1: Boolean = false) : BottomSheetUnify(), CategoryNavLevelOneAdapter.CategorySelectListener {
+class CategoryNavBottomSheet : BottomSheetUnify(), CategoryNavLevelOneAdapter.CategorySelectListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var categoryNavBottomViewModel: CategoryNavBottomViewModel
     private val categoryList = LinkedList<CategoriesItem?>()
+    private var listener: CategorySelected? = null
+    private var gtmListener: GtmProviderListener? = null
+    private var catId: String = ""
+    private var shouldHideL1: Boolean = false
     private var selectedLevelOneID = "-1"
     private var selectedLevelTwoID = "-1"
     private var selectedLevelThreeID = "-1"
@@ -36,6 +46,7 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
     private var expandedLevelTwoPosition = -1
 
     init {
+        isFullpage = true
         isDragable = true
         isHideable = true
         clearContentPadding = true
@@ -54,10 +65,23 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        gtmListener?.onBottomSheetOpen()
         val component = DaggerCategoryNavigationBottomSheetComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
         component.inject(this)
+        initData()
         categoryNavBottomViewModel = ViewModelProvider(this, viewModelFactory).get(CategoryNavBottomViewModel::class.java)
         initView()
+        getCategories()
+    }
+
+    private fun initData() {
+        arguments?.let {
+            catId = it.getString(CATEGORY_ID, "")
+            shouldHideL1 = it.getBoolean(SHOULD_HIDE_L1, false)
+        }
+    }
+
+    private fun getCategories(){
         categoryNavBottomViewModel.getCategoriesFromServer(catId)
         categoryNavBottomViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -78,15 +102,36 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                     categoryList[selectedLevelOnePosition]?.isSelected = true
                     master_list.adapter?.notifyDataSetChanged()
                     master_list.layoutManager?.scrollToPosition(selectedLevelOnePosition)
-                    initiateLevelTwoView(selectedLevelOnePosition)
+                    initiateLevelTwoView(selectedLevelOnePosition, true)
                 }
                 is Fail -> {
-//                    TODO:: Failure Case Handling
-//                    (activity as CategoryChangeListener).onError(it.throwable)
+                    onError(it.throwable)
                 }
             }
 
         })
+    }
+
+    private fun onError(e: Throwable) {
+        slave_list.hide()
+        master_list.hide()
+
+        if (e is UnknownHostException
+                || e is SocketTimeoutException) {
+            global_error.setType(GlobalError.NO_CONNECTION)
+        } else {
+            global_error.setType(GlobalError.SERVER_ERROR)
+        }
+
+        global_error.show()
+
+        global_error.setOnClickListener {
+            if (!shouldHideL1)
+                master_list.show()
+            slave_list.show()
+            global_error.hide()
+            categoryNavBottomViewModel.getCategoriesFromServer(catId)
+        }
     }
 
     private fun setupRestIds(categoryDetailData: CategoryDetailData) {
@@ -114,8 +159,8 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
         }
     }
 
-    private fun initiateLevelTwoView(selectedPosition: Int) {
-        if (slave_list.expandableListAdapter == null) {
+    private fun initiateLevelTwoView(selectedPosition: Int, createNewAdapter: Boolean = false) {
+        if (createNewAdapter) {
             val adapter = CategoryLevelTwoExpandableAdapter(categoryList[selectedPosition]?.child)
             slave_list.setAdapter(adapter)
             if (selectedLevelTwoID != "-1")
@@ -130,7 +175,10 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
                             }
                         else
                             0
-                        slave_list.expandGroup(expandedLevelTwoPosition)
+                        slave_list.post(Runnable {
+                            slave_list.expandGroup(expandedLevelTwoPosition)
+                            slave_list.setSelectedGroup(expandedLevelTwoPosition)
+                        })
                     }
                 }
         } else {
@@ -149,21 +197,41 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             setTitle(it.resources.getString(R.string.kategori_title))
             master_list.layoutManager = LinearLayoutManager(it)
         }
-        categoryNavBottomViewModel.addShimmerItems(categoryList)
         if (shouldHideL1) {
             master_list.hide()
             separator_guideline.setGuidelinePercent(0.0f)
         } else {
+            categoryNavBottomViewModel.addShimmerItems(categoryList)
             master_list.adapter = CategoryNavLevelOneAdapter(categoryList, this)
         }
+        val adapter = CategoryLevelTwoExpandableAdapter(categoryNavBottomViewModel.addShimmerItemsToL2())
+        slave_list.setAdapter(adapter)
+        setL2L3Listeners()
+    }
+
+    private fun setL2L3Listeners() {
         slave_list.setOnGroupExpandListener { groupPosition ->
+            (slave_list.expandableListAdapter as CategoryLevelTwoExpandableAdapter).selectedL3Position = if (selectedLevelTwoID == categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id) {
+                if (selectedLevelThreeID != "-1")
+                    categoryNavBottomViewModel.getPositionFromL2L3CategoryId(categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child, selectedLevelThreeID).let {
+                        if (it != -1)
+                            it + 1
+                        else
+                            it
+                    }
+                else
+                    0
+            } else
+                -1
             if (expandedLevelTwoPosition != -1 && groupPosition != expandedLevelTwoPosition) {
                 slave_list.collapseGroup(expandedLevelTwoPosition)
             }
             expandedLevelTwoPosition = groupPosition
-            selectedLevelTwoID = categoryList[selectedLevelOnePosition]?.child?.get(expandedLevelTwoPosition)?.id
-                    ?: "-1"
-            selectedLevelThreeID = "-1"
+            gtmListener?.onL2Expanded(categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id,categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.name)
+        }
+
+        slave_list.setOnGroupCollapseListener { groupPosition ->
+            gtmListener?.onL2Collapsed(categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id,categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.name)
         }
 
         slave_list.setOnChildClickListener { parent, v, groupPosition, childPosition, id ->
@@ -174,14 +242,15 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             Handler().postDelayed(Runnable {
                 if (childPosition == 0)
                     categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.id?.let {
-                        listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink, 2)
+                        listener?.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.appLink, 2)
                     }
                 else
                     categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.id?.let {
-                        listener.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
+                        listener?.onCategorySelected(it, categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.appLink, 3)
+                        gtmListener?.onL3Clicked(it,categoryList[selectedLevelOnePosition]?.child?.get(groupPosition)?.child?.get(childPosition - 1)?.name)
                     }
                 dismiss()
-            },200)
+            }, 200)
 
             return@setOnChildClickListener true
         }
@@ -196,11 +265,46 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
             initiateLevelTwoView(position)
             selectedLevelOneID = id
             selectedLevelOnePosition = position
+            gtmListener?.onL1Clicked(id,categoryName)
         }
     }
 
     interface CategorySelected {
         fun onCategorySelected(catId: String, appLink: String?, depth: Int)
+    }
+
+    /**
+     * Client interface to add gtm
+     */
+    interface GtmProviderListener {
+        fun onBottomSheetOpen(){}
+        fun onBottomSheetClosed(){}
+        fun onL1Clicked(id: String?, name: String?){}
+//        TODO:: After confirmation of Semua for not child in L2
+        fun onL2Clicked(id: String?, name: String?){}
+        fun onL3Clicked(id: String?, name: String?){}
+        fun onL2Expanded(id: String?, name: String?){}
+        fun onL2Collapsed(id: String?, name: String?){}
+    }
+
+    companion object {
+        const val CATEGORY_ID = "catID"
+        const val SHOULD_HIDE_L1 = "shouldHideL1"
+        fun getInstance(selectedCatId: String, categoryListener: CategorySelected? = null, gtmProviderListener: GtmProviderListener? = null, shouldHideL1View: Boolean = false): CategoryNavBottomSheet {
+            return CategoryNavBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(CATEGORY_ID, selectedCatId)
+                    putBoolean(SHOULD_HIDE_L1, shouldHideL1View)
+                }
+                listener = categoryListener
+                gtmListener = gtmProviderListener
+            }
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        gtmListener?.onBottomSheetClosed()
+        super.onDismiss(dialog)
     }
 
 }

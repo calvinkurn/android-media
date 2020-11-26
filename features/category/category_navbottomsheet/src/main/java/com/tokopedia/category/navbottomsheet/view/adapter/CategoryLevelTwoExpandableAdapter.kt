@@ -8,6 +8,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import com.tokopedia.category.navbottomsheet.R
 import com.tokopedia.category.navbottomsheet.model.ChildItem
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
@@ -31,14 +32,13 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?, var
     override fun getChildView(listPosition: Int, expandedListPosition: Int,
                               isLastChild: Boolean, convertView: View?, parent: ViewGroup): View {
         var convertViewTemp = convertView
-        val expandedListText = getChild(listPosition, expandedListPosition) as String
         if (convertViewTemp == null) {
             val layoutInflater = parent.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             convertViewTemp = layoutInflater.inflate(R.layout.item_cat_level_three, null)
         }
         val expandedListTextView = convertViewTemp?.findViewById<Typography>(R.id.expandedListItem)
-        expandedListTextView?.text = expandedListText
+        expandedListTextView?.text = getChild(listPosition, expandedListPosition) as String
         val selectedIcon = convertViewTemp?.findViewById<ImageView>(R.id.selected_icon)
         if (selectedL3Position == expandedListPosition) {
             selectedIcon?.loadImageDrawable(R.drawable.category_bottom_nav_ic_checklist)
@@ -67,17 +67,11 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?, var
 
     override fun getGroupView(listPosition: Int, isExpanded: Boolean,
                               convertView: View?, parent: ViewGroup): View {
-        var convertViewTemp = convertView
-        val listTitle = getGroup(listPosition) as String
-        if (convertView == null) {
-            val layoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            convertViewTemp = layoutInflater.inflate(R.layout.item_cat_level_two, null)
-        }
-        val listTitleTextView = convertViewTemp?.findViewById<Typography>(R.id.listTitle)
-        listTitleTextView?.text = listTitle
-        val expandedIcon = convertViewTemp?.findViewById<ImageView>(R.id.expand_icon)
-        expandedIcon?.loadImageDrawable(if (isExpanded) R.drawable.category_ic_chevron_up else R.drawable.category_ic_chevron_down)
-        return convertViewTemp!!
+
+        return if (levelTwoList?.get(listPosition)?.viewType == 1)
+            inflateL2View(listPosition, isExpanded, convertView, parent)
+        else
+            inflateL2ShimmerView(convertView, parent)
     }
 
     override fun hasStableIds(): Boolean {
@@ -86,6 +80,29 @@ class CategoryLevelTwoExpandableAdapter(var levelTwoList: List<ChildItem?>?, var
 
     override fun isChildSelectable(listPosition: Int, expandedListPosition: Int): Boolean {
         return true
+    }
+
+    private fun inflateL2View(listPosition: Int, isExpanded: Boolean,
+                              convertView: View?, parent: ViewGroup): View {
+        var convertViewTemp = convertView
+        if (convertView == null) {
+            val layoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            convertViewTemp = layoutInflater.inflate(R.layout.item_cat_level_two, null)
+        }
+        val listTitleTextView = convertViewTemp?.findViewById<Typography>(R.id.listTitle)
+        listTitleTextView?.text = getGroup(listPosition) as String
+        val expandedIcon = convertViewTemp?.findViewById<IconUnify>(R.id.expand_icon)
+        expandedIcon?.setImage(if (isExpanded)IconUnify.CHEVRON_UP else IconUnify.CHEVRON_DOWN)
+        return convertViewTemp!!
+    }
+
+    private fun inflateL2ShimmerView(convertView: View?, parent: ViewGroup): View {
+        var convertViewTemp = convertView
+        if (convertView == null) {
+            val layoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            convertViewTemp = layoutInflater.inflate(R.layout.item_shimmer_cat_level_two, null)
+        }
+        return convertViewTemp!!
     }
 
 }

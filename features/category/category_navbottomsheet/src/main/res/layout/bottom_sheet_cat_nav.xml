@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottom_sheet_parent"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -13,8 +13,9 @@
             android:id="@+id/slave_list"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:foregroundGravity="top"
             android:layout_marginLeft="@dimen/unify_space_16"
+            android:foregroundGravity="top"
+            android:groupIndicator="@null"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/separator_guideline"
             app:layout_constraintStart_toStartOf="@+id/separator_guideline"
@@ -34,6 +35,17 @@
             android:layout_height="match_parent"
             app:layout_constrainedHeight="true"
             app:layout_constraintEnd_toStartOf="@+id/separator_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingTop="@dimen/dp_12"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
