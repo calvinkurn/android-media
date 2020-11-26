@@ -39,6 +39,7 @@
             android:ellipsize="end"
             android:textColor="@color/Unify_N0"
             android:visibility="gone"
+            android:gravity="center"
             tools:visibility="visible"
             app:typographyType="small"
             app:typographyWeight="bold"
@@ -63,7 +64,7 @@
             app:unifyButtonSize="small"
             app:unifyButtonType="main"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/optionGridBannerDesc"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"/>
 

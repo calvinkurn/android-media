@@ -61,6 +61,7 @@ class InspirationCarouselViewHolder(
 
     private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
         return InspirationCarouselViewModel.Option(
+                title = option.title,
                 layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
                 bannerImageUrl = option.bannerImageUrl,
                 bannerLinkUrl = option.bannerLinkUrl,

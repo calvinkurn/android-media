@@ -24,6 +24,7 @@ class InspirationCarouselOptionGridBannerViewHolder(
             bindBannerImage(item)
         } else {
             bindProductDesc(item)
+            showGridButton()
         }
         bindOnClickListener(item)
     }
@@ -38,6 +39,10 @@ class InspirationCarouselOptionGridBannerViewHolder(
         itemView.optionGridBannerDesc?.shouldShowWithAction(item.title.isNotEmpty()) {
             itemView.optionGridBannerDesc?.text = MethodChecker.fromHtml(item.title)
         }
+    }
+
+    private fun showGridButton() {
+        itemView.optionGridBannerButton?.visibility = View.VISIBLE
     }
 
     private fun bindOnClickListener(item: InspirationCarouselViewModel.Option) {
