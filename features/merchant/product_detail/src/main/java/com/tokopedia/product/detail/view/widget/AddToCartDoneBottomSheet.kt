@@ -128,24 +128,6 @@ open class AddToCartDoneBottomSheet :
             inflatedView?.let{
                 configView(it)
                 dialog.setContentView(it)
-                val bottomSheetView = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
-                bottomSheetView.setBackgroundResource(android.R.color.transparent)
-                bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView)
-                if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
-                    dialog.setCanceledOnTouchOutside(false)
-                    recyclerView.isNestedScrollingEnabled = false
-                    val bottomSheetBehavior = BottomSheetBehavior.from<View>(bottomSheetView)
-                    bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
-                        override fun onStateChanged(bottomSheet: View, newState: Int) {
-                            if(newState == BottomSheetBehavior.STATE_DRAGGING){
-                                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                            }
-                        }
-
-                        override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-                    })
-                }
-
                 initInjector()
                 initViewModel()
                 getArgumentsData()
@@ -160,7 +142,24 @@ open class AddToCartDoneBottomSheet :
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)?.let {
+            it.setBackgroundResource(android.R.color.transparent)
+            bottomSheetBehavior = BottomSheetBehavior.from(it)
+            if(RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewPdpAfterAtcKey) != oldVariantPDP){
+                dialog.setCanceledOnTouchOutside(false)
+                recyclerView.isNestedScrollingEnabled = false
+                val bottomSheetBehavior = BottomSheetBehavior.from<View>(it)
+                bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if(newState == BottomSheetBehavior.STATE_DRAGGING){
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
+                    }
 
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                })
+            }
+        }
         dialog.setOnShowListener {
             val bottomSheet = (it as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as FrameLayout?
             bottomSheet?.let{
