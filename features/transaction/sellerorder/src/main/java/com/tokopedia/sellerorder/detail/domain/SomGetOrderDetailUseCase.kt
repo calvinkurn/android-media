@@ -2,7 +2,6 @@ package com.tokopedia.sellerorder.detail.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LANG_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.VAR_PARAM_LANG
@@ -15,7 +14,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 /**
