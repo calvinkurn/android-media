@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.draft.view.activity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -229,5 +230,20 @@ public class ProductDraftListActivity extends BaseSimpleActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(HAS_SAVED_INSTA_TO_DRAFT, hasSaveInstagramToDraft);
+    }
+
+    @Override
+    public void onBackPressed() {
+        int activityResult = Activity.RESULT_CANCELED;
+
+        if (getFragment() instanceof ProductDraftListFragment) {
+            ProductDraftListFragment fragment = (ProductDraftListFragment) getFragment();
+            if (fragment.getDraftListChanged()) {
+                activityResult = Activity.RESULT_OK;
+            }
+        }
+
+        setResult(activityResult, new Intent());
+        finish();
     }
 }
