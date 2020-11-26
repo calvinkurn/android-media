@@ -29,7 +29,7 @@ class SingleProductNotificationViewHolder constructor(
 
     private fun bindPayloadReminder(element: NotificationUiModel) {
         val product = element.product ?: return
-        productContainer?.bindBumpReminderState(product)
+        productContainer?.bumpReminderState(product)
     }
 
     override fun bind(element: NotificationUiModel) {
