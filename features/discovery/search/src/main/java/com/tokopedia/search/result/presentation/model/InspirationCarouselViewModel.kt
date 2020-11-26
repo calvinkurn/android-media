@@ -22,6 +22,9 @@ class InspirationCarouselViewModel(
             val title: String = "",
             val url: String = "",
             val applink: String = "",
+            val bannerImageUrl: String = "",
+            val bannerLinkUrl: String = "",
+            val bannerApplinkUrl: String = "",
             val product: List<Product> = listOf(),
             val inspirationCarouselType: String = "",
             val layout: String = ""
@@ -42,6 +45,10 @@ class InspirationCarouselViewModel(
             val url: String = "",
             val applink: String = "",
             val description: List<String> = listOf(),
+            val originalPrice: Int = 0,
+            val discountExpired: String = "",
+            val discountStart: String = "",
+            val discountPercentage: Int = 0,
             val optionPosition: Int = 0,
             val inspirationCarouselType: String = ""
         ): ImpressHolder() {

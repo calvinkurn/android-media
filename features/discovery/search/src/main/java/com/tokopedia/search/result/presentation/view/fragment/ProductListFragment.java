@@ -1403,6 +1403,18 @@ public class ProductListFragment
     }
 
     @Override
+    public void onInspirationCarouselGridProductClicked(@NotNull InspirationCarouselViewModel.Option.Product product) {
+        redirectionStartActivity(product.getApplink(), product.getUrl());
+
+    }
+
+    @Override
+    public void onInspirationCarouselGridBannerClicked(@NotNull InspirationCarouselViewModel.Option product) {
+        redirectionStartActivity(product.getBannerApplinkUrl(), product.getBannerLinkUrl());
+
+    }
+
+    @Override
     public void onImpressedInspirationCarouselInfoProduct(InspirationCarouselViewModel.Option.Product product) {
         if (product == null) return;
 
@@ -1420,6 +1432,11 @@ public class ProductListFragment
         products.add(product.getInspirationCarouselListProductImpressionAsObjectDataLayer());
 
         SearchTracking.trackImpressionInspirationCarouselList(trackingQueue, product.getInspirationCarouselType(), getQueryKey(), products);
+    }
+
+    @Override
+    public void onImpressedInspirationCarouselGridProduct(@NotNull InspirationCarouselViewModel.Option.Product product) {
+
     }
 
     @Override

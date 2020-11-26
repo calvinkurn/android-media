@@ -353,6 +353,9 @@ public class ProductViewModelMapper {
                     opt.getTitle(),
                     opt.getUrl(),
                     opt.getApplink(),
+                    opt.getBannerImageUrl(),
+                    opt.getBannerLinkUrl(),
+                    opt.getBannerApplinkUrl(),
                     convertToInspirationCarouselProductViewModel(opt.getInspirationCarouselProducts(), position, inspirationCarouselType),
                     inspirationCarouselType,
                     layout
@@ -377,6 +380,10 @@ public class ProductViewModelMapper {
                     product.getUrl(),
                     product.getApplink(),
                     product.getDescription(),
+                    product.getOriginalPrice(),
+                    product.getDiscountExpired(),
+                    product.getDiscountStart(),
+                    product.getDiscountPercentage(),
                     position,
                     inspirationCarouselType
             ));

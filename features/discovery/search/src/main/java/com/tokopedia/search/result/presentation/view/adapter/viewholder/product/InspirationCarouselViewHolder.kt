@@ -7,6 +7,8 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
@@ -39,12 +41,31 @@ class InspirationCarouselViewHolder(
     private fun bindContent(element: InspirationCarouselViewModel) {
         itemView.inspirationCarousel?.inspirationCarouselOptionList?.let {
             it.layoutManager = createLayoutManager()
-            it.adapter = createAdapter(element.options)
+            it.adapter = createAdapter(element.options.shouldAddGridBanner())
 
             if (it.itemDecorationCount == 0) {
                 it.addItemDecoration(createItemDecoration())
             }
         }
+    }
+
+    private fun List<InspirationCarouselViewModel.Option>.shouldAddGridBanner(): List<InspirationCarouselViewModel.Option> {
+        val option = getOrNull(0) ?: return this
+        if (option.layout != LAYOUT_INSPIRATION_CAROUSEL_GRID) return this
+
+        val data: MutableList<InspirationCarouselViewModel.Option> = mutableListOf()
+        data.add(createBannerOption(option))
+        data.addAll(this)
+        return data
+    }
+
+    private fun createBannerOption(option: InspirationCarouselViewModel.Option): InspirationCarouselViewModel.Option {
+        return InspirationCarouselViewModel.Option(
+                layout = LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER,
+                bannerImageUrl = option.bannerImageUrl,
+                bannerLinkUrl = option.bannerLinkUrl,
+                bannerApplinkUrl = option.bannerApplinkUrl
+        )
     }
 
     private fun createLayoutManager(): RecyclerView.LayoutManager {
