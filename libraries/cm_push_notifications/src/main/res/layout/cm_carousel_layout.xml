@@ -26,19 +26,34 @@
         android:textColor="#42B549"
         android:textSize="12sp" />
 
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:paddingTop="5dp"
+        android:paddingBottom="2dp"
+        android:text=""
+        android:textColor="@color/Unify_N700_96"
+        android:textSize="14sp" />
+
     <RelativeLayout
         android:id="@+id/rl_MainLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/iv_appIcon"
-        android:layout_marginTop="6dp"
+        android:layout_above="@id/tvTitle"
+        android:layout_below="@id/iv_appIcon"
+        android:layout_marginTop="8dp"
         android:orientation="vertical"
         android:visibility="visible">
 
         <ImageView
             android:id="@+id/iv_banner"
             android:layout_width="match_parent"
-            android:layout_height="192dp"
+            android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@drawable/bg_button_white" />
 
@@ -72,17 +87,5 @@
             android:src="@drawable/cm_ic_arrow" />
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rl_MainLayout"
-        android:ellipsize="end"
-        android:maxLines="2"
-        android:paddingTop="5dp"
-        android:text=""
-        android:textColor="@color/Unify_N700_96"
-        android:textSize="14sp" />
 
 </RelativeLayout>

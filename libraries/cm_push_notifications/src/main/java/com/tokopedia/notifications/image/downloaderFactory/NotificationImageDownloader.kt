@@ -5,6 +5,7 @@ import android.content.ContextWrapper
 import android.graphics.*
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.tokopedia.notifications.common.CMNotificationUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import java.io.File
 import java.io.FileOutputStream
@@ -46,7 +47,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
                     .submit(properties.width, properties.height)
                     .get(properties.seconds, TimeUnit.SECONDS)
             if(properties.is2x1Required){
-                return resizeImageTO2X1Ration(bitmap)
+                return resizeImageTO2X1Ration(context, bitmap)
             }
             return bitmap
         } catch (e: Exception) {
@@ -54,7 +55,7 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
         return null
     }
 
-    private fun resizeImageTO2X1Ration(bitmap: Bitmap?): Bitmap? {
+    private fun resizeImageTO2X1Ration(context: Context, bitmap: Bitmap?): Bitmap? {
         if (bitmap == null)
             return null
         val ratio = bitmap.width.toFloat() / bitmap.height.toFloat()
@@ -65,8 +66,10 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
             val endX = startX + bitmap.width
             val resizedBitmap = Bitmap.createBitmap(expectedWidth, expectedHeight, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resizedBitmap)
-            //todo support dark mode
-            canvas.drawColor(Color.WHITE)
+            if (CMNotificationUtils.isDarkMode(context))
+                canvas.drawColor(Color.BLACK)
+            else
+                canvas.drawColor(Color.WHITE)
             val frameToDraw = Rect(0, 0, bitmap.width, bitmap.height)
             val whereToDraw = RectF(startX, 0F,
                     endX, canvas.height.toFloat())
@@ -80,8 +83,10 @@ abstract class NotificationImageDownloader(val baseNotificationModel: BaseNotifi
             val bottomY = topY + bitmap.height
             val resizedBitmap = Bitmap.createBitmap(expectedWidth.toInt(), expectedHeight.toInt(), Bitmap.Config.ARGB_8888)
             val canvas = Canvas(resizedBitmap)
-            //todo support dark mode
-            canvas.drawColor(Color.WHITE)
+            if (CMNotificationUtils.isDarkMode(context))
+                canvas.drawColor(Color.BLACK)
+            else
+                canvas.drawColor(Color.WHITE)
             val frameToDraw = Rect(0, 0, bitmap.width, bitmap.height)
             val whereToDraw = RectF(0F, topY, canvas.width.toFloat(), bottomY)
             canvas.drawBitmap(bitmap, frameToDraw, whereToDraw, Paint())
