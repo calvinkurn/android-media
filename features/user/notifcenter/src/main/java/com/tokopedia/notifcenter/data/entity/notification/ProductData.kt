@@ -51,15 +51,17 @@ data class ProductData(
         @SerializedName("url")
         val url: String = "",
         @SerializedName("variant")
-        val variant: List<Variant> = listOf()
+        val variant: List<Variant> = listOf(),
+        @SerializedName("has_reminder")
+        val hasReminder: Boolean = false
 ) {
-    var loadingBumpReminder: Boolean = false
+    var loadingReminderState: Boolean = false
 
     fun hasEmptyStock(): Boolean {
         return isShow
     }
 
     fun update(productData: ProductData) {
-        loadingBumpReminder = productData.loadingBumpReminder
+        loadingReminderState = productData.loadingReminderState
     }
 }

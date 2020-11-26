@@ -8,6 +8,7 @@ import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
+import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -46,6 +47,7 @@ class NotificationViewModel @Inject constructor(
         private val notifcenterDetailUseCase: NotifcenterDetailUseCase,
         private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase,
         private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase,
+        private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase,
         private val clearNotifUseCase: ClearNotifCounterUseCase,
         private val markAsReadUseCase: MarkNotificationAsReadUseCase,
         private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
@@ -86,6 +88,10 @@ class NotificationViewModel @Inject constructor(
     private val _bumpReminder = MutableLiveData<Resource<BumpReminderResponse>>()
     val bumpReminder: LiveData<Resource<BumpReminderResponse>>
         get() = _bumpReminder
+
+    private val _deleteReminder = MutableLiveData<Resource<DeleteReminderResponse>>()
+    val deleteReminder: LiveData<Resource<DeleteReminderResponse>>
+        get() = _deleteReminder
 
     fun hasFilter(): Boolean {
         return filter != NotifcenterDetailUseCase.FILTER_NONE
@@ -208,6 +214,26 @@ class NotificationViewModel @Inject constructor(
                         referer = notif
                     }
                     _bumpReminder.postValue(error)
+                }
+        )
+    }
+
+    fun deleteReminder(product: ProductData, notification: NotificationUiModel) {
+        launchCatchError(dispatcher.io(),
+                {
+                    deleteReminderUseCase.deleteReminder(
+                            product.productId.toString(),
+                            notification.notifId
+                    ).collect {
+                        it.referer = notification
+                        _deleteReminder.postValue(it)
+                    }
+                },
+                {
+                    val error = Resource.error(it, null).apply {
+                        referer = notification
+                    }
+                    _deleteReminder.postValue(error)
                 }
         )
     }

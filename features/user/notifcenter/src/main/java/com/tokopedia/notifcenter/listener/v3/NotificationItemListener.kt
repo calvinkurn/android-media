@@ -12,5 +12,11 @@ interface NotificationItemListener {
     fun buyProduct(product: ProductData)
     fun addProductToCart(product: ProductData)
     fun markNotificationAsRead(element: NotificationUiModel)
-    fun bumpReminder(product: ProductData, notif: NotificationUiModel, adapterPosition: Int)
+    fun bumpReminder(
+            product: ProductData, notification: NotificationUiModel, adapterPosition: Int
+    )
+
+    fun deleteReminder(
+            product: ProductData, notification: NotificationUiModel, adapterPosition: Int
+    )
 }

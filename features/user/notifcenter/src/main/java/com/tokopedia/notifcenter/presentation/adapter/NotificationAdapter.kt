@@ -105,7 +105,11 @@ class NotificationAdapter constructor(
         }
     }
 
-    fun loadingBumpReminder(viewHolderState: ViewHolderState?) {
+    fun finishDeleteReminder(viewHolderState: ViewHolderState?) {
+        updateLoadingBumpReminderFor(viewHolderState, false)
+    }
+
+    fun loadingStateReminder(viewHolderState: ViewHolderState?) {
         updateLoadingBumpReminderFor(viewHolderState, true)
     }
 
@@ -129,7 +133,7 @@ class NotificationAdapter constructor(
             val payload = PayloadBumpReminderState(
                     viewHolderState.payload, item
             )
-            viewHolderState.payload.loadingBumpReminder = isLoading
+            viewHolderState.payload.loadingReminderState = isLoading
             notifyItemChanged(position, payload)
         }
     }

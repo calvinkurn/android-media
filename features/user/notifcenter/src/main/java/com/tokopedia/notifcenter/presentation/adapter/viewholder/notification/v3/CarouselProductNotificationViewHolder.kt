@@ -192,7 +192,7 @@ class CarouselProductNotificationViewHolder constructor(
         }
 
         private fun bindPayloadReminder(product: ProductData) {
-            productContainer?.bindReminderState(product)
+            productContainer?.bumpReminderState(product)
         }
 
         private fun bindProductData(product: ProductData, notification: NotificationUiModel?) {

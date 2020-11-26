@@ -34,6 +34,7 @@ class ProductNotificationCardUnify(
     private var btnCheckout: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
     private var btnReminder: UnifyButton? = null
+    private var btnDeleteReminder: UnifyButton? = null
     private var listener: NotificationItemListener? = null
 
     init {
@@ -57,6 +58,7 @@ class ProductNotificationCardUnify(
         campaignTag = view.findViewById(R.id.img_campaign)
         btnAtc = view.findViewById(R.id.btn_atc)
         btnReminder = view.findViewById(R.id.tv_reminder)
+        btnDeleteReminder = view.findViewById(R.id.tv_delete_reminder)
     }
 
     fun bindProductData(
@@ -78,14 +80,49 @@ class ProductNotificationCardUnify(
             bindBuyClick(product)
             bindAtcClick(product)
             bindReminder(product, notification, adapterPosition)
+            bindDeleteReminder(product, notification, adapterPosition)
         } else {
             hide()
         }
     }
 
-    fun bindReminderState(product: ProductData) {
+    private fun bindDeleteReminder(
+            product: ProductData,
+            notification: NotificationUiModel?,
+            adapterPosition: Int
+    ) {
+        if (product.hasEmptyStock() && product.hasReminder && notification != null) {
+            btnDeleteReminder?.show()
+            bindDeleteReminderState(product)
+            btnDeleteReminder?.setOnClickListener {
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindDeleteReminderState(product)
+                    listener?.deleteReminder(product, notification, adapterPosition)
+                }
+            }
+        } else {
+            btnDeleteReminder?.hide()
+        }
+    }
+
+    fun bindDeleteReminderState(product: ProductData) {
+        btnDeleteReminder?.post {
+            btnDeleteReminder?.isLoading = product.loadingReminderState
+        }
+    }
+
+    fun bindBumpReminderState(product: ProductData) {
         btnReminder?.post {
-            btnReminder?.isLoading = product.loadingBumpReminder
+            btnReminder?.isLoading = product.loadingReminderState
+        }
+    }
+
+    fun bumpReminderState(product: ProductData) {
+        if (product.hasEmptyStock() && product.hasReminder) {
+            bindDeleteReminderState(product)
+        } else {
+            bindBumpReminderState(product)
         }
     }
 
@@ -94,13 +131,13 @@ class ProductNotificationCardUnify(
             notification: NotificationUiModel?,
             adapterPosition: Int
     ) {
-        if (product.hasEmptyStock() && notification != null) {
+        if (product.hasEmptyStock() && !product.hasReminder && notification != null) {
             btnReminder?.show()
-            bindReminderState(product)
+            bindBumpReminderState(product)
             btnReminder?.setOnClickListener {
-                if (!product.loadingBumpReminder) {
-                    product.loadingBumpReminder = true
-                    bindReminderState(product)
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindBumpReminderState(product)
                     listener?.bumpReminder(product, notification, adapterPosition)
                 }
             }

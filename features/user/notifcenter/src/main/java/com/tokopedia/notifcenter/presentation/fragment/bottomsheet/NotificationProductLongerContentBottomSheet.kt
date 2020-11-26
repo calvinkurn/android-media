@@ -10,6 +10,7 @@ import androidx.collection.ArrayMap
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
+import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
@@ -51,7 +52,33 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
             val product = notification?.productData?.get(index)
             product?.update(payload)
             val productView = products[product]
-            productView?.bindReminderState(payload)
+            productView?.bindBumpReminderState(payload)
+        }
+    }
+
+    fun handleEventDeleteReminder(
+            data: Resource<DeleteReminderResponse>,
+            viewHolderState: ViewHolderState?
+    ) {
+        when (data.status) {
+            Status.SUCCESS -> {
+                showMessage(R.string.title_success_delete_reminder)
+            }
+            Status.ERROR -> {
+                data.throwable?.let { error ->
+                    showErrorMessage(error)
+                }
+            }
+            else -> {
+            }
+        }
+        val payload = viewHolderState?.payload
+        if (payload is ProductData) {
+            val index = notification?.productData?.indexOf(payload) ?: return
+            val product = notification?.productData?.get(index)
+            product?.update(payload)
+            val productView = products[product]
+            productView?.bumpReminderState(payload)
         }
     }
 
