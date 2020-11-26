@@ -24,6 +24,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.AdapterList
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.CommonViewHolderListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.DeferredViewHolderAttachment
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.common.SearchListener
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.BannedRightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.ChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
@@ -66,7 +67,15 @@ open class TopChatTypeFactoryImpl constructor(
         }
         val chat = visitables[position]
         return if (chat is MessageViewModel) {
-            if (chat.isSender) ChatMessageViewHolder.TYPE_RIGHT else ChatMessageViewHolder.TYPE_LEFT
+            if (chat.isSender) {
+                if (chat.isBanned()) {
+                    ChatMessageViewHolder.TYPE_RIGHT_BANNED
+                } else {
+                    ChatMessageViewHolder.TYPE_RIGHT
+                }
+            } else {
+                ChatMessageViewHolder.TYPE_LEFT
+            }
         } else {
             default
         }
@@ -154,6 +163,7 @@ open class TopChatTypeFactoryImpl constructor(
         val layoutRes = when (type) {
             ChatMessageViewHolder.TYPE_LEFT -> LeftChatMessageViewHolder.LAYOUT
             ChatMessageViewHolder.TYPE_RIGHT -> RightChatMessageViewHolder.LAYOUT
+            ChatMessageViewHolder.TYPE_RIGHT_BANNED -> BannedRightChatMessageViewHolder.LAYOUT
             else -> type
         }
         val view = LayoutInflater.from(parent.context).inflate(layoutRes, parent, false)
@@ -171,6 +181,7 @@ open class TopChatTypeFactoryImpl constructor(
             BroadcastViewHolder.LAYOUT -> BroadcastViewHolder(parent, imageAnnouncementListener, voucherListener, productAttachmentListener, productCarouselListListener, deferredAttachment, searchListener, commonListener, adapterListener, chatLinkHandlerListener)
             LeftChatMessageViewHolder.LAYOUT -> LeftChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             RightChatMessageViewHolder.LAYOUT -> RightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
+            BannedRightChatMessageViewHolder.LAYOUT -> BannedRightChatMessageViewHolder(parent, chatLinkHandlerListener, commonListener, adapterListener)
             TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener, deferredAttachment, searchListener, commonListener, adapterListener)
             else -> createViewHolder(parent, type)
         }
