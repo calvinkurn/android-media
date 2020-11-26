@@ -115,7 +115,7 @@ object BannerAdsTracking: BaseTrackerConst() {
     }
 
     private fun buildTopAdsTdnBannerId(channelId: String, topAdsId: String): String {
-        val bannerAdsIdFormat = "%_%_%_%"
+        val bannerAdsIdFormat = "%s_%s_%s_%s"
         val emptyTargetingType = "()"
         val emptyTargetingValue = "{}"
         return String.format(
