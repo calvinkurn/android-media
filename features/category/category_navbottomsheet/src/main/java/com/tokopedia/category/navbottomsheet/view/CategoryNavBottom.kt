@@ -38,6 +38,8 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
     private var selectedLevelTwoID = "-1"
     private var selectedLevelThreeID = "-1"
     private var selectedLevelOnePosition: Int = 0
+    private var lastExpandedPosition = -1
+    private var gtmProviderListener: GtmProviderListener? = null
     private var expandedLevelTwoPosition = -1
 
     init {
@@ -242,6 +244,23 @@ class CategoryNavBottomSheet(private val listener: CategorySelected, private val
 
     interface CategorySelected {
         fun onCategorySelected(catId: String, appLink: String?, depth: Int)
+    }
+
+    fun setGtmProviderListener(listener: GtmProviderListener) {
+        this.gtmProviderListener = listener;
+    }
+
+    /**
+     * Client interface to add gtm
+     */
+    interface GtmProviderListener {
+        fun onBottomSheetOpen();
+        fun onBottomSheetClosed();
+        fun onL1Clicked(id: Int, name: String);
+        fun onL2Clicked(id: Int, name: String);
+        fun onL3Clicked(id: Int, name: String);
+        fun onL2Expand(id: Int, name: String);
+        fun onL2Collapsed(id: Int, name: String);
     }
 
 }
