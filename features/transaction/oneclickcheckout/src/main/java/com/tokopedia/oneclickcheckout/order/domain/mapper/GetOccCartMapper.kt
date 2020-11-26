@@ -268,6 +268,6 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapOccRevamp(revamp: OccRevampResponse): OccRevampData {
-        return OccRevampData(true, revamp.totalProfile + 2, revamp.changeTemplateText + " asdf")
+        return OccRevampData(revamp.isEnable, revamp.totalProfile, revamp.changeTemplateText)
     }
 }
