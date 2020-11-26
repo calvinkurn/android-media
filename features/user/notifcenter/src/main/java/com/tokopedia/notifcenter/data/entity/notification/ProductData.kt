@@ -65,4 +65,11 @@ data class ProductData(
         loadingReminderState = productData.loadingReminderState
         hasReminder = productData.hasReminder
     }
+
+    fun update(isLoading: Boolean, hasReminder: Boolean?) {
+        this.loadingReminderState = isLoading
+        hasReminder?.let {
+            this.hasReminder = it
+        }
+    }
 }

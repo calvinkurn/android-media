@@ -31,6 +31,7 @@ import com.tokopedia.notifcenter.analytics.NotificationAnalytic
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
+import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
 import com.tokopedia.notifcenter.data.uimodel.EmptyNotificationUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
@@ -213,68 +214,62 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         })
 
         viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
-            val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
-            val bottomSheet = childFragmentManager.findFragmentByTag(
-                    NotificationProductLongerContentBottomSheet::class.java.simpleName
-            ) as? NotificationProductLongerContentBottomSheet
-            val isFromBottomSheet = bottomSheet != null
-            when (it.status) {
-                Status.LOADING -> {
-                    rvAdapter?.loadingStateReminder(viewHolderState)
-                }
-                Status.SUCCESS -> {
-                    if (!isFromBottomSheet) {
-                        showMessage(R.string.title_success_bump_reminder)
-                    }
-                    rvAdapter?.finishBumpReminder(viewHolderState)
-                    viewHolderLoading.remove(it.referer)
-                }
-                Status.ERROR -> {
-                    it.throwable?.let { error ->
-                        showErrorMessage(error)
-                    }
-                    rvAdapter?.finishBumpReminder(viewHolderState)
-                    viewHolderLoading.remove(it.referer)
-                }
-                else -> {
-                }
-            }
-            if (isFromBottomSheet) {
-                bottomSheet?.handleEventBumpReminder(it, viewHolderState)
-            }
+            updateReminderState(
+                    resource = it,
+                    isBumpReminder = true
+            )
         })
 
         viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
-            val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
-            val bottomSheet = childFragmentManager.findFragmentByTag(
-                    NotificationProductLongerContentBottomSheet::class.java.simpleName
-            ) as? NotificationProductLongerContentBottomSheet
-            val isFromBottomSheet = bottomSheet != null
-            when (it.status) {
-                Status.LOADING -> {
-                    rvAdapter?.loadingStateReminder(viewHolderState)
-                }
-                Status.SUCCESS -> {
-                    if (!isFromBottomSheet) {
+            updateReminderState(
+                    resource = it,
+                    isBumpReminder = false
+            )
+        })
+    }
+
+    private fun updateReminderState(
+            resource: Resource<Any>,
+            isBumpReminder: Boolean
+    ) {
+        val viewHolderState: ViewHolderState? = viewHolderLoading[resource.referer]
+        val bottomSheet = getProductBottomSheet()
+        val isFromBottomSheet = bottomSheet != null
+        when (resource.status) {
+            Status.LOADING -> {
+                rvAdapter?.loadingStateReminder(viewHolderState)
+            }
+            Status.SUCCESS -> {
+                if (!isFromBottomSheet) {
+                    if (isBumpReminder) {
+                        showMessage(R.string.title_success_bump_reminder)
+                    } else {
                         showMessage(R.string.title_success_delete_reminder)
                     }
-                    rvAdapter?.finishDeleteReminder(viewHolderState)
-                    viewHolderLoading.remove(it.referer)
                 }
-                Status.ERROR -> {
-                    it.throwable?.let { error ->
-                        showErrorMessage(error)
-                    }
-                    rvAdapter?.finishDeleteReminder(viewHolderState)
-                    viewHolderLoading.remove(it.referer)
-                }
-                else -> {
-                }
+                rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
+                viewHolderLoading.remove(resource.referer)
             }
-            if (isFromBottomSheet) {
-                bottomSheet?.handleEventDeleteReminder(it, viewHolderState)
+            Status.ERROR -> {
+                resource.throwable?.let { error ->
+                    showErrorMessage(error)
+                }
+                rvAdapter?.successUpdateReminderState(viewHolderState, isBumpReminder)
+                viewHolderLoading.remove(resource.referer)
             }
-        })
+            else -> {
+            }
+        }
+        if (isFromBottomSheet) {
+            bottomSheet?.handleEventReminderState(resource, viewHolderState, isBumpReminder)
+        }
+    }
+
+    private fun getProductBottomSheet(): NotificationProductLongerContentBottomSheet? {
+        return childFragmentManager
+                .findFragmentByTag(
+                        NotificationProductLongerContentBottomSheet::class.java.simpleName
+                ) as? NotificationProductLongerContentBottomSheet
     }
 
     private fun renderNotifications(data: NotificationDetailResponseModel) {
@@ -416,8 +411,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             notification: NotificationUiModel,
             adapterPosition: Int
     ) {
-        val loadingState = ViewHolderState(notification, adapterPosition, product)
-        viewHolderLoading[notification] = loadingState
+        createViewHolderState(notification, adapterPosition, product)
         viewModel.bumpReminder(product, notification)
     }
 
@@ -426,9 +420,17 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             notification: NotificationUiModel,
             adapterPosition: Int
     ) {
+        createViewHolderState(notification, adapterPosition, product)
+        viewModel.deleteReminder(product, notification)
+    }
+
+    private fun createViewHolderState(
+            notification: NotificationUiModel,
+            adapterPosition: Int,
+            product: ProductData
+    ) {
         val loadingState = ViewHolderState(notification, adapterPosition, product)
         viewHolderLoading[notification] = loadingState
-        viewModel.deleteReminder(product, notification)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
