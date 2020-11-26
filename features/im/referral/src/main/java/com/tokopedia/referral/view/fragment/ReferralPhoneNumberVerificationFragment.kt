@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.referral.R
 import com.tokopedia.referral.analytics.ReferralPhoneVerificationAnalytics
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.phonenumber.PhoneNumberUtil.transform
