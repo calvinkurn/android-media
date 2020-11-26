@@ -47,6 +47,7 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.N
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
@@ -213,9 +214,15 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
         viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
             val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
+            val bottomSheet = childFragmentManager.findFragmentByTag(
+                    NotificationProductLongerContentBottomSheet::class.java.simpleName
+            ) as? NotificationProductLongerContentBottomSheet
+            val isFromBottomSheet = bottomSheet != null
             when (it.status) {
                 Status.SUCCESS -> {
-                    showMessage(R.string.title_success_bump_reminder)
+                    if (!isFromBottomSheet) {
+                        showMessage(R.string.title_success_bump_reminder)
+                    }
                     rvAdapter?.finishBumpReminder(viewHolderState)
                     viewHolderLoading.remove(it.referer)
                 }
@@ -228,6 +235,9 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 }
                 else -> {
                 }
+            }
+            if (isFromBottomSheet) {
+                bottomSheet?.handleEventBumpReminder(it, viewHolderState)
             }
         })
     }
@@ -450,4 +460,5 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     companion object {
         private const val REQUEST_CHECKOUT = 0
     }
+
 }
