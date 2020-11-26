@@ -972,7 +972,7 @@ class FlightBookingFragment : BaseDaggerFragment() {
 
                 val loadingView = View.inflate(context, R.layout.layout_flight_booking_loading, null)
                 loadingDialog.setChild(loadingView)
-                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle) as Typography
+                loadingText = loadingView.findViewById(R.id.tv_loading_subtitle)
                 loadingText.text = list[0]
 
                 loadingDialog.show()

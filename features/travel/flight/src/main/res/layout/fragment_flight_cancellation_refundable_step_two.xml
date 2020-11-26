@@ -25,28 +25,15 @@
             android:orientation="vertical"
             android:padding="@dimen/padding_16">
 
-            <com.tokopedia.common.travel.widget.TkpdHintTextInputLayout
-                style="@style/HintTextInputLayout"
+            <com.tokopedia.unifycomponents.TextFieldUnify
+                android:id="@+id/til_saved_passenger"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/spacing_lvl4"
                 android:layout_marginTop="@dimen/spacing_lvl2"
-                android:hint="@string/flight_cancellation_reason_label">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_saved_passenger"
-                    style="@style/TextView.Medium"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:focusable="false"
-                    android:singleLine="true"
-                    android:text="@string/flight_cancellation_reason_hint_label"
-                    android:textColor="@color/Unify_N700_68"
-                    app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey" />
-
-            </com.tokopedia.common.travel.widget.TkpdHintTextInputLayout>
-
+                app:text_field_label="@string/flight_cancellation_reason_label"
+                app:text_field_placeholder="@string/flight_cancellation_reason_hint_label"
+                tools:layout_height="@dimen/layout_lvl5"/>
 
             <LinearLayout
                 android:id="@+id/attachment_container"

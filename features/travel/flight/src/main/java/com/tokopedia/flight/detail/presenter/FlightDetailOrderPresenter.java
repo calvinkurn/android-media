@@ -367,7 +367,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         if (TextUtils.isEmpty(text)) {
             return text;
         }
-        text.setSpan(new RelativeSizeSpan(1.00f),
+        text.setSpan(new RelativeSizeSpan(0.8f),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text;
     }
