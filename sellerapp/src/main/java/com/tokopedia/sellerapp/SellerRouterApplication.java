@@ -26,8 +26,8 @@ import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.network.CoreNetworkRouter;
@@ -41,9 +41,9 @@ import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.loginregister.login.router.LoginRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
-import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -60,7 +60,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.sellerorder.common.util.SomConsts;
 import com.tokopedia.sellerorder.list.presentation.fragments.SomListFragment;
-import com.tokopedia.talk_old.inboxtalk.view.activity.InboxTalkActivity;
+import com.tokopedia.talk.feature.inbox.presentation.activity.TalkInboxActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -385,7 +385,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getInboxTalkCallingIntent(@NonNull Context context) {
-        return InboxTalkActivity.Companion.createIntent(context);
+        return TalkInboxActivity.Companion.createIntent(context);
     }
 
     @Override

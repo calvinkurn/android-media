@@ -45,7 +45,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -68,7 +67,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
     private final BannerAdsListener bannerAdsListener;
     private final EmptyStateListener emptyStateListener;
     private final RecommendationListener recommendationListener;
-    private final BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener;
     private final InspirationCarouselListener inspirationCarouselListener;
     private final BroadMatchListener broadMatchListener;
     private final InspirationCardListener inspirationCardListener;
@@ -84,7 +82,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
                                       BannerAdsListener bannerAdsListener,
                                       EmptyStateListener emptyStateListener,
                                       RecommendationListener recommendationListener,
-                                      BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener,
                                       InspirationCarouselListener inspirationCarouselListener,
                                       BroadMatchListener broadMatchListener,
                                       InspirationCardListener inspirationCardListener,
@@ -99,7 +96,6 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         this.bannerAdsListener = bannerAdsListener;
         this.emptyStateListener = emptyStateListener;
         this.recommendationListener = recommendationListener;
-        this.bannedProductsRedirectToBrowserListener = bannedProductsRedirectToBrowserListener;
         this.topAdsConfig = config;
         this.inspirationCarouselListener = inspirationCarouselListener;
         this.broadMatchListener = broadMatchListener;
@@ -252,9 +248,9 @@ public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implement
         } else if(type == RecommendationItemViewHolder.LAYOUT){
             viewHolder = new RecommendationItemViewHolder(view, recommendationListener);
         } else if (type == BannedProductsEmptySearchViewHolder.LAYOUT) {
-            viewHolder = new BannedProductsEmptySearchViewHolder(view, bannedProductsRedirectToBrowserListener);
+            viewHolder = new BannedProductsEmptySearchViewHolder(view);
         } else if (type == BannedProductsTickerViewHolder.LAYOUT) {
-            viewHolder = new BannedProductsTickerViewHolder(view, bannedProductsRedirectToBrowserListener);
+            viewHolder = new BannedProductsTickerViewHolder(view);
         } else if (type == BroadMatchViewHolder.LAYOUT) {
             viewHolder = new BroadMatchViewHolder(view, broadMatchListener);
         } else if (type == SmallGridInspirationCardViewHolder.LAYOUT) {

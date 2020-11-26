@@ -85,6 +85,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     private ProgressDialog progressDialog;
     private MenuItem menuDelete;
     private String shopId;
+    private Boolean draftListChanged = false;
 
     OnProductDraftListFragmentListener onProductDraftListFragmentListener;
 
@@ -99,6 +100,10 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public static ProductDraftListFragment newInstance() {
         return new ProductDraftListFragment();
+    }
+
+    public Boolean getDraftListChanged() {
+        return draftListChanged;
     }
 
     @Override
@@ -284,8 +289,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             draftBroadCastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT))) {
+                    if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
                         resetPageAndSearch();
+                        draftListChanged = true;
                     }
                 }
             };

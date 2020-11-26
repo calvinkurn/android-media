@@ -16,9 +16,7 @@ import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
 import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;
 import com.tokopedia.user.session.UserSession;
-
-import org.parceler.Parcels;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,7 +71,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     @Override
     public void selectSetCategory(List<CategoryViewModel> listCategory) {
         Intent intent = new Intent();
-        intent.putExtra(CATEGORY_RESULT_LEVEL, Parcels.wrap(listCategory));
+        intent.putParcelableArrayListExtra(CATEGORY_RESULT_LEVEL, (ArrayList<CategoryViewModel>) listCategory);
         CategoryViewModel chosenCategory = listCategory.get(listCategory.size() - 1);
         intent.putExtra(CATEGORY_RESULT_ID, chosenCategory.getId());
         intent.putExtra(CATEGORY_RESULT_NAME, chosenCategory.getName());
