@@ -1,8 +1,0 @@
-mutation markReadStatusNotificationUpdateItem($notifId: String!){
-  notifcenter_markReadStatus(notif_id: $notifId) {
-    data {
-        is_success
-    }
-    message_error
-  }
-}
