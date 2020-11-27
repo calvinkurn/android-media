@@ -184,7 +184,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                         onBottomNavSelected(InboxFragmentType.CHAT)
                     }
                     R.id.menu_inbox_discussion -> {
-                        Toast.makeText(context, "discussion", Toast.LENGTH_SHORT).show()
+                        onBottomNavSelected(InboxFragmentType.DISCUSSION)
                     }
                 }
                 return@setOnNavigationItemSelectedListener true

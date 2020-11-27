@@ -9,23 +9,22 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk_old.R
 import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
-class TalkInboxViewHolder(
+class TalkInboxOldViewHolder(
         view: View,
         private val isSellerView: Boolean,
         private val talkInboxViewHolderListener: TalkInboxViewHolderListener
-) : AbstractViewHolder<TalkInboxUiModel>(view) {
+) : AbstractViewHolder<TalkInboxOldUiModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_talk_inbox
+        val LAYOUT = R.layout.item_talk_inbox_old
     }
 
-    override fun bind(element: TalkInboxUiModel) {
+    override fun bind(element: TalkInboxOldUiModel) {
         with(element.inboxDetail) {
             setProductThumbnail(productThumbnail)
             setProductName(productName)
@@ -36,7 +35,7 @@ class TalkInboxViewHolder(
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
             itemView.setOnClickListener {
-                talkInboxViewHolderListener.onInboxItemClicked(element, null)
+                talkInboxViewHolderListener.onInboxItemClicked(null, element)
             }
         }
     }
@@ -44,7 +43,7 @@ class TalkInboxViewHolder(
     private fun setProductThumbnail(productThumbnail: String) {
         with(itemView) {
             if(productThumbnail.isEmpty()) {
-                itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_prouct))
+            itemView.talkInboxProductThumbnail.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_deleted_talk_placeholder))
                 talkInboxProductName.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
                 return
             }
@@ -62,7 +61,7 @@ class TalkInboxViewHolder(
             text = HtmlCompat.fromHtml(question, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().replace("\n", " ")
             if(isMasked) {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
-                setWeight(Typography.BOLD)
+                setWeight(Typography.REGULAR)
             } else {
                 setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                 setWeight(Typography.BOLD)
@@ -80,23 +79,30 @@ class TalkInboxViewHolder(
 
     private fun setCountAndDate(totalAnswer: Int, date: String) {
         with(itemView) {
-            when (totalAnswer) {
-                0 -> {
+            when {
+                totalAnswer == 0 && isSellerView -> {
                     talkInboxAnswerCount.apply {
-                        text = context.getString(R.string.inbox_total_count_empty_seller)
-                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        text = context.getString(R.string.inbox_total_count_empty_seller_old)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
                         setWeight(Typography.BOLD)
+                    }
+                }
+                totalAnswer == 0 && !isSellerView -> {
+                    talkInboxAnswerCount.apply {
+                        text = context.getString(R.string.inbox_total_count_empty_buyer)
+                        setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                        setWeight(Typography.REGULAR)
                     }
                 }
                 else -> {
                     talkInboxAnswerCount.apply {
-                        text = context.getString(R.string.inbox_total_count, totalAnswer.toString())
+                        text = context.getString(R.string.inbox_total_count_old, totalAnswer.toString())
                         setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                         setWeight(Typography.REGULAR)
                     }
                 }
             }
-            talkInboxDate.text = date
+            talkInboxDate.text = context.getString(R.string.inbox_date_old, date)
         }
 
     }
