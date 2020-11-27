@@ -88,7 +88,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
