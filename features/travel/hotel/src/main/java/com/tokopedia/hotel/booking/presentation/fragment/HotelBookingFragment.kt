@@ -33,6 +33,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
+import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.hotel.R
@@ -127,14 +128,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             when (it) {
                 is Success -> {
                     context?.run {
-                        val taskStackBuilder = TaskStackBuilder.create(this)
-
-                        val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
-                        taskStackBuilder.addNextIntent(intentHome)
-
-                        val intentHotelHome = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
-                        taskStackBuilder.addNextIntent(intentHotelHome)
-
                         val checkoutData = PaymentPassData()
                         checkoutData.queryString = it.data.queryString
                         checkoutData.redirectUrl = it.data.redirectUrl
@@ -142,8 +135,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                         val intent = RouteManager.getIntent(context, paymentCheckoutString)
                         intent?.run {
                             putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, checkoutData)
-                            taskStackBuilder.addNextIntent(this)
-                            taskStackBuilder.startActivities()
+                            startActivityForResult(this, REQUEST_CODE_CHECKOUT)
                         }
                     }
 
@@ -207,6 +199,24 @@ class HotelBookingFragment : HotelBaseFragment() {
                     data?.run {
                         hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
+                    }
+                }
+            }
+
+            REQUEST_CODE_CHECKOUT -> {
+                when  (resultCode) {
+                    PaymentConstant.PAYMENT_SUCCESS, PaymentConstant.PAYMENT_FAILED -> {
+                        context?.run {
+                            val taskStackBuilder = TaskStackBuilder.create(this)
+
+                            val intentHome = RouteManager.getIntent(this, ApplinkConst.HOME)
+                            taskStackBuilder.addNextIntent(intentHome)
+                            val intent = RouteManager.getIntent(this, ApplinkConstInternalTravel.DASHBOARD_HOTEL)
+                            intent?.run {
+                                taskStackBuilder.addNextIntent(this)
+                                taskStackBuilder.startActivities()
+                            }
+                        }
                     }
                 }
             }

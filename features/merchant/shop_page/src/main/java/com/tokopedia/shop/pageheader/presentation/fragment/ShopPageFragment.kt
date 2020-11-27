@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -218,6 +219,10 @@ class ShopPageFragment :
         get() = R.drawable.ic_chat_floating_button.takeIf {
             isUsingNewNavigation()
         } ?: R.drawable.ic_chat_floating_button_old
+    private val chatButton: FloatingActionButton
+        get() = button_chat.takeIf {
+            isUsingNewNavigation()
+        }?: button_chat_old
     private val intentData: Intent = Intent()
     private val permissionChecker: PermissionCheckerHelper = PermissionCheckerHelper()
     private var isFirstLoading: Boolean = false
@@ -376,7 +381,7 @@ class ShopPageFragment :
     }
 
     private fun getChatButtonInitialMargin() {
-        val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
+        val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
         initialFloatingChatButtonMarginBottom = buttonChatLayoutParams.bottomMargin
     }
 
@@ -739,7 +744,7 @@ class ShopPageFragment :
                 shopPageErrorState.visibility = View.GONE
                 appBarLayout.visibility = View.INVISIBLE
                 viewPager.visibility = View.INVISIBLE
-                button_chat.hide()
+                chatButton.hide()
             }
             VIEW_ERROR -> {
                 shopPageLoadingState.visibility = View.GONE
@@ -954,13 +959,13 @@ class ShopPageFragment :
             shopPageHeaderDataModel.shopSnippetUrl = shopPageHeaderContentData.shopInfo.shopSnippetUrl
             shopPageHeaderDataModel.shopCoreUrl = shopPageHeaderContentData.shopInfo.shopCore.url
             if (!isMyShop) {
-                button_chat.setImageResource(iconChatFloatingButton)
-                button_chat.show()
-                button_chat.setOnClickListener {
+                chatButton.setImageResource(iconChatFloatingButton)
+                chatButton.show()
+                chatButton.setOnClickListener {
                     goToChatSeller()
                 }
             } else {
-                button_chat.hide()
+                chatButton.hide()
             }
             updateFavouriteResult(shopPageHeaderContentData.favoriteData.alreadyFavorited == 1)
             shopPageFragmentHeaderViewHolder.bind(shopPageHeaderDataModel, isMyShop, remoteConfig)
@@ -1377,14 +1382,14 @@ class ShopPageFragment :
     private fun updateFloatingChatButtonMargin() {
         val stickyLoginViewHeight = stickyLoginView.height.takeIf { stickyLoginView.isShowing() }
                 ?: 0
-        val buttonChatLayoutParams = (button_chat.layoutParams as ViewGroup.MarginLayoutParams)
+        val buttonChatLayoutParams = (chatButton.layoutParams as ViewGroup.MarginLayoutParams)
         buttonChatLayoutParams.setMargins(
                 buttonChatLayoutParams.leftMargin,
                 buttonChatLayoutParams.topMargin,
                 buttonChatLayoutParams.rightMargin,
                 initialFloatingChatButtonMarginBottom + stickyLoginViewHeight
         )
-        button_chat.layoutParams = buttonChatLayoutParams
+        chatButton.layoutParams = buttonChatLayoutParams
     }
 
     private fun updateStickyState() {

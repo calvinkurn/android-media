@@ -9,7 +9,6 @@ import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteComm
 import com.tokopedia.talk.feature.reply.data.model.delete.comment.TalkDeleteCommentResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalk
 import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResponseWrapper
-import com.tokopedia.talk.feature.reply.data.model.delete.talk.TalkDeleteTalkResultData
 import com.tokopedia.talk.feature.reply.data.model.discussion.AttachedProduct
 import com.tokopedia.talk.feature.reply.data.model.discussion.DiscussionDataByQuestionIDResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.follow.TalkFollowUnfollowTalk
@@ -20,9 +19,9 @@ import com.tokopedia.talk.feature.reply.data.model.report.TalkReportTalkResponse
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudResponseWrapper
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkCommentNotFraudSuccess
 import com.tokopedia.talk.feature.reply.data.model.unmask.TalkMarkNotFraudResponseWrapper
-import com.tokopedia.talk.util.verifyErrorEquals
-import com.tokopedia.talk.util.verifySuccessEquals
-import com.tokopedia.talk.util.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
