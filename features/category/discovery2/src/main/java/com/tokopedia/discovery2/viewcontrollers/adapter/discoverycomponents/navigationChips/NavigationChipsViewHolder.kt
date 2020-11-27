@@ -20,7 +20,7 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 
-class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CategoryNavBottomSheet.CategorySelected {
+class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView), CategoryNavBottomSheet.CategorySelected, CategoryNavBottomSheet.GtmProviderListener {
     private val categoriesRecyclerView: RecyclerView = itemView.findViewById(R.id.bannerRecyclerView)
     private val chipsParentView: ConstraintLayout = itemView.findViewById(R.id.chips_parent_view)
     private val dropdownArrow: ImageView = itemView.findViewById(R.id.dropdown_arrow)
@@ -36,7 +36,7 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
         getSubComponent().inject(navigationChipsViewModel)
         dropdownArrow.setOnClickListener {
             (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickNavigationDropDown()
-            CategoryNavBottomSheet(this, navigationChipsViewModel.components.pageEndPoint, true).show(fragment.childFragmentManager, "")
+            CategoryNavBottomSheet.getInstance(navigationChipsViewModel.components.pageEndPoint,this,  this, true).show(fragment.childFragmentManager, "")
         }
     }
 
@@ -60,9 +60,9 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
             adapter = categoriesRecycleAdapter
             val chipsLayoutManager = LinearLayoutManager(fragment.context, LinearLayoutManager.HORIZONTAL, false)
             layoutManager = chipsLayoutManager
-            setMargin(resources.getDimensionPixelSize(R.dimen.dp_12),
+            setMargin(0,
                     resources.getDimensionPixelSize(R.dimen.dp_4),
-                    resources.getDimensionPixelSize(R.dimen.dp_12),
+                    resources.getDimensionPixelSize(R.dimen.dp_40),
                     resources.getDimensionPixelSize(R.dimen.dp_8))
             addItemDecoration(SpaceItemDecoration(context.resources.getDimensionPixelSize(R.dimen.dp_4), LinearLayoutManager.HORIZONTAL))
         }
@@ -70,6 +70,22 @@ class NavigationChipsViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun onCategorySelected(catId: String, appLink: String?, depth: Int) {
         RouteManager.route(itemView.context, appLink)
+    }
+
+    override fun onBottomSheetClosed() {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCloseNavigation()
+    }
+
+    override fun onL2Expanded(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickExpandNavigationAccordion(id)
+    }
+
+    override fun onL2Collapsed(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCollapseNavigationAccordion(id)
+    }
+
+    override fun onL3Clicked(id: String?, name: String?) {
+        (fragment as DiscoveryFragment).getDiscoveryAnalytics().trackClickCategoryOption(id)
     }
 
 }

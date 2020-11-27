@@ -97,16 +97,16 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
         getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CLOSE_NAVIGATION))
     }
 
-    override fun trackClickExpandNavigationAccordion(categoryId: String) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_EXPAND_NAVIGATION_ACCORDION, eventLabel = categoryId))
+    override fun trackClickExpandNavigationAccordion(categoryId: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_EXPAND_NAVIGATION_ACCORDION, eventLabel = categoryId ?: ""))
     }
 
-    override fun trackClickCollapseNavigationAccordion(categoryId: String) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_COLLAPSE_NAVIGATION_ACCORDION, eventLabel = categoryId))
+    override fun trackClickCollapseNavigationAccordion(categoryId: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_COLLAPSE_NAVIGATION_ACCORDION, eventLabel = categoryId ?: ""))
     }
 
-    override fun trackClickCategoryOption(categoryId: String) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CATEGORY_OPTION, eventLabel = categoryId))
+    override fun trackClickCategoryOption(categoryId: String?) {
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CATEGORY_OPTION, eventLabel = categoryId ?: ""))
     }
 
     override fun trackClickQuickFilter(filterName: String, componentName: String?, value: String, isFilterSelected: Boolean) {

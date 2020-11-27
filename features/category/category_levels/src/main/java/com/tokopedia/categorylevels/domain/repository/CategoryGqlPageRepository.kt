@@ -19,6 +19,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val IDENTIFIER = "identifier"
         const val SAFESEARCH = "safeSearch"
         const val SEARCH_APPLINK= "tokopedia://search-autocomplete"
+        const val DOMAIN_URL_LIVE = "https://www.tokopedia.com"
         const val BANNED= 1
     }
 
@@ -35,7 +36,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         share = Share(
                                 enabled = true,
                                 description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk Category Name Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL, DeeplinkConstant.SCHEME_TOKOPEDIA), title = "", image = "")),
+                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL, DOMAIN_URL_LIVE), title = "", image = "")),
                 title = data.name ?: departmentName,
                 additionalInfo = AdditionalInfo(null))
     }

@@ -9,7 +9,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery2.ComponentNames
@@ -22,7 +21,6 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.discovery2.viewmodel.DiscoveryViewModel
 import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
-import javax.inject.Inject
 
 class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
@@ -33,16 +31,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
     private var dataItem: DataItem? = null
     private var componentPosition: Int? = null
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     private lateinit var discoveryViewModel: DiscoveryViewModel
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         productCardItemViewModel = discoveryBaseViewModel as MasterProductCardItemViewModel
         getSubComponent().inject(productCardItemViewModel)
-        val viewModelProvider = ViewModelProviders.of(itemView.context as FragmentActivity, viewModelFactory)
-        discoveryViewModel = viewModelProvider.get(DiscoveryViewModel::class.java)
+        discoveryViewModel = ViewModelProvider(itemView.context as FragmentActivity).get(DiscoveryViewModel::class.java)
         initView()
     }
 
@@ -66,7 +60,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 componentPosition = position
             })
 
-            discoveryViewModel.getWishListLiveData().observe(it, Observer { productCardOptionsModel ->
+            discoveryViewModel.getWishListLiveData().observe(itemView.context as LifecycleOwner, Observer { productCardOptionsModel ->
                 if (productCardOptionsModel.wishlistResult.isAddWishlist) {
                     if (productCardOptionsModel.wishlistResult.isSuccess) {
                         NetworkErrorHelper.showSnackbar(itemView.context as Activity, itemView.context.getString(R.string.discovery_msg_success_add_wishlist))

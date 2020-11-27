@@ -11,6 +11,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.unifyprinciples.Typography
 
 class NavigationChipsItemViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView) {
@@ -29,6 +30,8 @@ class NavigationChipsItemViewHolder(itemView: View, private val fragment: Fragme
                     setClick(item)
                 }
             }
+            if(adapterPosition == 0)
+                itemView.setMargin(itemView.context.resources.getDimensionPixelSize(R.dimen.dp_12),0,0,0)
         })
     }
 
