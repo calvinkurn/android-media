@@ -21,7 +21,6 @@ class FloatingWindowTouchListener(
     private var initialX = 0
     private var initialY = 0
     private var moving = false
-    private var longClickPerformed = false
 
     init {
         view.setOnTouchListener(this)
@@ -39,17 +38,14 @@ class FloatingWindowTouchListener(
                     initialY = y
                 }
                 moving = false
-                longClickPerformed = false
             }
 
             MotionEvent.ACTION_MOVE -> {
-                if (!longClickPerformed) {
-                    val deltaX = motionEvent.rawX - pointerStartX
-                    val deltaY = motionEvent.rawY - pointerStartY
-                    if (moving || hypot(deltaX, deltaY) > touchSlop) {
-                        positionListener(initialX + deltaX.toInt(), initialY + deltaY.toInt())
-                        moving = true
-                    }
+                val deltaX = motionEvent.rawX - pointerStartX
+                val deltaY = motionEvent.rawY - pointerStartY
+                if (moving || hypot(deltaX, deltaY) > touchSlop) {
+                    positionListener(initialX + deltaX.toInt(), initialY + deltaY.toInt())
+                    moving = true
                 }
             }
         }

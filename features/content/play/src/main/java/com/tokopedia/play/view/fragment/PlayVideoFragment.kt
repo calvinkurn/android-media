@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
+import com.tokopedia.floatingwindow.view.FloatingWindowView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
@@ -153,13 +154,18 @@ class PlayVideoFragment @Inject constructor(
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), playerView)
         }
 
+        val scaledWidth = (scaleFactor * width).toInt()
+        val scaledHeight = (scaleFactor * height).toInt()
+
         pipAdapter.addView(
-                key = FLOATING_WINDOW_KEY,
-                view = view,
-                width = (scaleFactor * width).toInt(),
-                height = (scaleFactor * height).toInt(),
-                x = screenWidth - 16,
-                y = screenHeight - 16,
+                floatingView = FloatingWindowView.Builder(
+                        key = FLOATING_WINDOW_KEY,
+                        view = view,
+                        width = scaledWidth,
+                        height = scaledHeight,
+                ).setX(screenWidth - scaledWidth - 16)
+                        .setY(screenHeight - scaledHeight - 16)
+                        .build(),
                 overwrite = true
         )
     }

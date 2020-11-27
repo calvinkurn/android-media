@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
 import androidx.fragment.app.Fragment
 import com.tokopedia.floatingwindow.util.isDrawOverOtherAppsEnabled
@@ -26,6 +27,11 @@ class FloatingWindowPermissionManager private constructor(
             { intent, requestCode -> activity.startActivityForResult(intent, requestCode) }
     )
 
+    constructor(context: Context): this(
+            context,
+            { intent, _ -> context.startActivity(intent) }
+    )
+
     private val permissionActionMap = mutableMapOf<Int, PermissionFlowHandler>()
 
     private fun isDrawOverOtherAppsEnabled() = context.isDrawOverOtherAppsEnabled()
@@ -34,7 +40,8 @@ class FloatingWindowPermissionManager private constructor(
             onGranted: () -> Unit,
             onNotGranted: () -> Unit
     ) {
-        if (!isDrawOverOtherAppsEnabled()) {
+        if (!isDrawOverOtherAppsEnabled() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             // ask for setting
             val intent = Intent(
                     Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
