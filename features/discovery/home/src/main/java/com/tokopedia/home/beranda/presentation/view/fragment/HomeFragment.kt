@@ -615,8 +615,12 @@ open class HomeFragment : BaseDaggerFragment(),
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
             coachMark.dismissCoachMark()
         }
-        bottomSheet.dismiss()
-        if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, index = 0)
+        try {
+            bottomSheet.dismiss()
+            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, index = 0)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     private val afterInflationCallable: Callable<Any?>
