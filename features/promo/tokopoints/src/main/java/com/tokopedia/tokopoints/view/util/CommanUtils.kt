@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.DisplayMetrics
 import android.view.View
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 private val LIST_TAG_START = "<li>"
 private val LIST_TAG_END = "</li>"
@@ -36,8 +37,21 @@ fun convertLongToHourMinuteSec(l: Long): Triple<Int, Int, Int> {
     return Triple(hours, minutes, seconds)
 }
 
+fun convertSecondsToHrMmSs(timerValue: Long): Calendar {
+    val seconds = timerValue.rem(60)
+    val minutes = (timerValue.rem((60 * 60))).div(60)
+    val hours = timerValue.div((60 * 60))
+    val cal = Calendar.getInstance()
+    cal.add(Calendar.HOUR, hours.toInt())
+    cal.add(Calendar.MINUTE, minutes.toInt())
+    cal.add(Calendar.SECOND, seconds.toInt())
+
+    return cal
+}
+
 fun convertDpToPixel(dp: Int, context: Context): Int {
     val resources = context.resources
     val metrics = resources.displayMetrics
     return dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
 }
+

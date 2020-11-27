@@ -22,6 +22,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant.Companion.TIMER_RED_BACKGROUND_HEX
 import com.tokopedia.tokopoints.view.util.convertDpToPixel
 import com.tokopedia.tokopoints.view.util.convertLongToHourMinuteSec
+import com.tokopedia.tokopoints.view.util.convertSecondsToHrMmSs
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
@@ -130,12 +131,8 @@ class SectionHorizontalCatalogVH(val view: View, val mPresenter: TokoPointsHomeV
 
     private fun setTimer(timerValue: Long, timerStr: String, timerType: Int) {
         if (timerType == 1) {
-            val timeToExpire = convertLongToHourMinuteSec(timerValue)
-            val cal = Calendar.getInstance()
-            cal.add(Calendar.HOUR, timeToExpire.first)
-            cal.add(Calendar.MINUTE, timeToExpire.second)
-            cal.add(Calendar.SECOND, timeToExpire.third)
-            countDownView.targetDate = cal
+            val timeToExpire = convertSecondsToHrMmSs(timerValue)
+            countDownView.targetDate = timeToExpire
         } else {
             countDownView.timerFormat = TimerUnifySingle.FORMAT_DAY
             val cal = Calendar.getInstance()

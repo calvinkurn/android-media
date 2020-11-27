@@ -8,7 +8,10 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
-import android.widget.*
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat.invalidateOptionsMenu
@@ -51,6 +54,7 @@ import rx.Subscriber
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -287,7 +291,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
 
     override fun redeemCoupon(cta: String?, code: String?, title: String?, description: String?, redeemMessage: String?) {
         RouteManager.route(context, cta)
-        if (redeemMessage != null) {
+        if (!redeemMessage.isNullOrEmpty()) {
             CustomToast.show(appContext, redeemMessage)
         }
     }
@@ -648,7 +652,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (progressBar?.timer != null) {
             progressBar?.timer!!.cancel()
         }
-        var timerValue = item.activePeriod?.toLong()
+        val timerValue = item.activePeriod?.toLong()
         val flipTimer = view?.findViewById<ViewFlipper>(R.id.flip_timer)
         val couponExpire = view?.findViewById<Typography>(R.id.text_timer_value)
 
@@ -659,23 +663,16 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
             timerTextWidth = TimerUnifySingle.TEXT_WRAP
         }
         if (timerValue != null) {
-            if (timerValue <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S * 1000) {
+            if (timerValue <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                 flipTimer?.displayedChild = 0
-                val timeToExpire = convertLongToHourMinuteSec(timerValue)
-                val cal = Calendar.getInstance()
-                cal.add(Calendar.HOUR, timeToExpire.first)
-                cal.add(Calendar.MINUTE, timeToExpire.second)
-                cal.add(Calendar.SECOND, timeToExpire.third)
-                progressBar?.targetDate = cal
+                val timeToExpire = convertSecondsToHrMmSs(timerValue)
+                progressBar?.targetDate = timeToExpire
             } else {
                 flipTimer?.displayedChild = 1
-                val cal = Calendar.getInstance(Locale.ENGLISH)
-                if (item.activePeriod != null) {
-                    cal.timeInMillis = item.activePeriod?.toLong()?.times(1000L)!!
-                }
-                val dateMonthYear = "${cal.get(Calendar.DAY_OF_MONTH)} " + cal.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale("in", "ID")) +
-                        " ${cal.get(Calendar.YEAR)}"
-                couponExpire?.text = dateMonthYear
+                val currentTime = System.currentTimeMillis()
+                val formatter = SimpleDateFormat("dd MMM yyyy", Locale("in","ID"))
+                val dateString: String = formatter.format(Date(timerValue * 1000L + currentTime))
+                couponExpire?.text = dateString
             }
         }
     }
