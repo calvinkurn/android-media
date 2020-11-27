@@ -167,7 +167,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         reviewSellerDetailAdapter.clearAllElements()
         rvRatingDetail?.show()
         globalError_reviewDetail?.hide()
-        showLoading()
+        showPageLoading()
         viewModelProductReviewDetail?.getProductRatingDetail(
                 productID,
                 viewModelProductReviewDetail?.sortBy.orEmpty())
@@ -307,6 +307,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
     private fun observeLiveData() {
         viewModelProductReviewDetail?.reviewInitialData?.observe(viewLifecycleOwner, Observer {
             hideLoading()
+            hidePageLoading()
             when (it) {
                 is Success -> {
                     swipeToRefresh?.isRefreshing = false
@@ -329,7 +330,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         })
 
         viewModelProductReviewDetail?.productFeedbackDetail?.observe(viewLifecycleOwner, Observer {
-            reviewSellerDetailAdapter.hideLoading()
+            hidePageLoading()
             when (it) {
                 is Success -> {
                     onSuccessGetFeedbackReviewListData(it.data)
@@ -591,7 +592,7 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
             viewModelProductReviewDetail?.setFilterRatingDataText(getRatingFilterFromAdapter.ratingBarList)
             endlessRecyclerViewScrollListener?.resetState()
             reviewSellerDetailAdapter.removeReviewNotFound()
-            reviewSellerDetailAdapter.showLoading()
+            showPageLoading()
         }
     }
 
@@ -613,7 +614,15 @@ class SellerReviewDetailFragment : BaseListFragment<Visitable<*>, SellerReviewDe
         viewModelProductReviewDetail?.updateSortAndFilterTopicData(topic to sortValue)
         endlessRecyclerViewScrollListener?.resetState()
         reviewSellerDetailAdapter.removeReviewNotFound()
-        reviewSellerDetailAdapter.showLoading()
+        showPageLoading()
+    }
+
+    private fun hidePageLoading() {
+        loading_reviewDetail.hide()
+    }
+
+    private fun showPageLoading() {
+        loading_reviewDetail.show()
     }
 
 }

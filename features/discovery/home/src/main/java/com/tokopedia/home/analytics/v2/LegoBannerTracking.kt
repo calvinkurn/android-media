@@ -124,7 +124,10 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
-                .appendCampaignCode(channelModel.trackingAttributionModel.campaignCode)
+                .appendCampaignCode(
+                        if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
+                        else channelModel.trackingAttributionModel.campaignCode)
+
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution)
                 .build()
     }
@@ -141,7 +144,9 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
-                .appendCampaignCode(channelModel.trackingAttributionModel.campaignCode)
+                .appendCampaignCode(
+                        if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
+                        else channelModel.trackingAttributionModel.campaignCode)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution).build()
     }
 
@@ -157,7 +162,9 @@ object LegoBannerTracking : BaseTrackerConst() {
                 .appendAffinity(channelModel.trackingAttributionModel.persona)
                 .appendCategoryId(channelModel.trackingAttributionModel.categoryPersona)
                 .appendShopId(channelModel.trackingAttributionModel.brandId)
-                .appendCampaignCode(channelModel.trackingAttributionModel.campaignCode)
+                .appendCampaignCode(
+                        if (channelGrid.campaignCode.isNotEmpty()) channelGrid.campaignCode
+                        else channelModel.trackingAttributionModel.campaignCode)
                 .appendAttribution(channelModel.trackingAttributionModel.galaxyAttribution).build()
     }
 

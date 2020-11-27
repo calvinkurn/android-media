@@ -312,7 +312,7 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback, Sho
 
     private fun setToolbarTitle(title: String) {
         val toolbar = (activity as? AppCompatActivity)?.supportActionBar
-        toolbar?.title = title
+        toolbar?.title = MethodChecker.fromHtml(title)
     }
 
     private fun getShopId(): String? {
