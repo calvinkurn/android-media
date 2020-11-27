@@ -23,4 +23,14 @@
             urlTemplate="content://com.tokopedia.tkpd.travel_slice/my_booking">
         </fulfillment>
     </action>
+
+    <action intentName="actions.intent.GET_RESERVATION">
+        <fulfillment
+            fulfillmentMode="actions.fulfillment.SLICE"
+            urlTemplate="content://com.tokopedia.tkpd.travel_slice/my_booking{?type}">
+            <parameter-mapping
+                intentParameter="type"
+                urlParameter="reservation.reservationFor.@type" />
+        </fulfillment>
+    </action>
 </actions>

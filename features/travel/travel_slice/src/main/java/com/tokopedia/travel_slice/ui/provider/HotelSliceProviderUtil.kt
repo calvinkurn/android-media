@@ -13,9 +13,9 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.data.HotelData
 import com.tokopedia.travel_slice.data.HotelOrderListModel
-import com.tokopedia.travel_slice.R
 import kotlin.math.max
 
 /**

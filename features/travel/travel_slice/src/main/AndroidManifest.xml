@@ -1,7 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.travel_slice">
-    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx"/>
+
+    <uses-sdk tools:overrideLibrary="androidx.slice.builders.ktx" />
 
     <application>
         <provider
