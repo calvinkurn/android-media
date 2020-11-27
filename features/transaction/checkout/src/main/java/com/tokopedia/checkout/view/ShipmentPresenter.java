@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -116,6 +115,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers;
+import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -914,7 +914,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void updateTickerAnnouncementData(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
-        if (!TextUtils.isEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
+        if (!UtilsKt.isNullOrEmpty(validateUsePromoRevampUiModel.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
             if (tickerAnnouncementHolderData == null) {
                 setTickerAnnouncementHolderData(
                         new TickerAnnouncementHolderData(
@@ -1539,7 +1539,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {
-                                            if (TextUtils.isEmpty(messageError)) {
+                                            if (UtilsKt.isNullOrEmpty(messageError)) {
                                                 messageError = getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
                                             }
                                             getView().navigateToSetPinpoint(messageError, locationPass);
@@ -1623,7 +1623,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     @Override
                     public void onNext(ClearPromoUiModel responseData) {
                         if (getView() != null) {
-                            if (!TextUtils.isEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
+                            if (!UtilsKt.isNullOrEmpty(responseData.getSuccessDataModel().getTickerMessage())) {
                                 tickerAnnouncementHolderData.setMessage(responseData.getSuccessDataModel().getTickerMessage());
                                 getView().updateTickerAnnouncementMessage();
                             }
@@ -1987,7 +1987,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 } else if (response.getValidateCheckoutCod().getData() != null &&
                         response.getValidateCheckoutCod().getData().getData() != null) {
                     Data data = response.getValidateCheckoutCod().getData().getData();
-                    if (TextUtils.isEmpty(data.getErrorMessage())
+                    if (UtilsKt.isNullOrEmpty(data.getErrorMessage())
                             && data.getPriceSummary() != null && data.getPriceSummary().size() > 0) {
                         // validation succeeded, go to cod confirmation page
                         mTrackerCod.eventClickBayarDiTempatShipmentSuccessEligible();

@@ -28,6 +28,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.Before
 import org.junit.Test
@@ -143,9 +144,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         presenter.doValidateuseLogisticPromo(0, "", ValidateUsePromoRequest())
 
         // Then
-        verifySequence {
-            view.updateTickerAnnouncementMessage()
-            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout("-1")
+        verify {
             view.updateButtonPromoCheckout(promoUiModel)
         }
     }
@@ -178,8 +177,6 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
 
         // Then
         verifySequence {
-            view.updateTickerAnnouncementMessage()
-            shipmentAnalyticsActionListener.sendAnalyticsViewInformationAndWarningTickerInCheckout("-1")
             view.showToastError(errorMessage)
             view.resetCourier(shipmentCartItemModel)
             view.updateButtonPromoCheckout(promoUiModel)
