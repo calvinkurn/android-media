@@ -154,7 +154,7 @@ object AddEditProductMapper {
     fun mapProductDraftToProductDraftUiModel(draft: ProductDraft): ProductDraftUiModel {
         return ProductDraftUiModel(
                 draft.draftId,
-                draft.detailInputModel.imageUrlOrPathList.first(),
+                draft.detailInputModel.imageUrlOrPathList.firstOrNull() ?: "",
                 draft.detailInputModel.productName,
                 AddEditProductDraftMapper.getCompletionPercent(draft),
         )
