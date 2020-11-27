@@ -81,7 +81,7 @@ class NavSearchbarController(val view: View,
             while (true) {
                 var hint = context.getString(R.string.search_tokopedia)
                 var keyword = ""
-                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.slide_up_in)
+                val slideUpIn = AnimationUtils.loadAnimation(context, R.anim.search_bar_slide_up_in)
                 slideUpIn.interpolator = EasingInterpolator(Ease.QUART_OUT)
                 val slideOutUp = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
                 slideOutUp.interpolator = EasingInterpolator(Ease.QUART_IN)
