@@ -9,6 +9,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableListDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifyprinciples.Typography
@@ -62,8 +63,8 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
         super.bind(element, payloads)
         if (payloads.isNotEmpty()) {
             val bundle = payloads[0] as Bundle
-            if (bundle.containsKey("toggle")) {
-                val toggle = bundle.getBoolean("toggle")
+            if (bundle.containsKey(DIFFUTIL_PAYLOAD_TOGGLE)) {
+                val toggle = bundle.getBoolean(DIFFUTIL_PAYLOAD_TOGGLE)
                 if (toggle) {
                     ExpandableAnimation.expand(view.expandable_container)
                 } else {

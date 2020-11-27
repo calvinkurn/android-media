@@ -14,6 +14,7 @@ import com.tokopedia.product.detail.data.util.ProductCustomMovementMethod
 import com.tokopedia.product.detail.data.util.thumbnailUrl
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoExpandableDataModel
 import com.tokopedia.product.info.view.ProductDetailInfoListener
+import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil.Companion.DIFFUTIL_PAYLOAD_TOGGLE
 import com.tokopedia.product.info.widget.ExpandableAnimation
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -83,8 +84,8 @@ class ProductDetailInfoExpandableViewHolder(private val view: View, private val 
         super.bind(element, payloads)
         if (payloads.isNotEmpty()) {
             val bundle = payloads[0] as Bundle
-            if (bundle.containsKey("toggle")) {
-                val toggle = bundle.getBoolean("toggle")
+            if (bundle.containsKey(DIFFUTIL_PAYLOAD_TOGGLE)) {
+                val toggle = bundle.getBoolean(DIFFUTIL_PAYLOAD_TOGGLE)
                 if (toggle) {
                     view.product_detail_value?.setTextIsSelectable(true)
                     ExpandableAnimation.expand(view.product_detail_value, customParentWidth = view.width) {

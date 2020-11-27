@@ -173,7 +173,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         ProductAccessRequestDialogFragment.Listener,
         PartialButtonActionListener,
         ProductDetailBottomSheetListener,
-        PartialButtonShopFollowersListener{
+        PartialButtonShopFollowersListener {
 
     companion object {
         fun newInstance(productId: String? = null,

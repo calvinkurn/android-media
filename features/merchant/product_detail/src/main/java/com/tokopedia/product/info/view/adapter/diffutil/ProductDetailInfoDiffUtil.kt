@@ -25,10 +25,14 @@ class ProductDetailInfoDiffUtil : DiffUtil.ItemCallback<ProductDetailInfoVisitab
                 (oldItem is ProductDetailInfoExpandableImageDataModel && newItem is ProductDetailInfoExpandableImageDataModel) ||
                 (oldItem is ProductDetailInfoExpandableListDataModel && newItem is ProductDetailInfoExpandableListDataModel)) {
             if (oldItem.isExpand() != newItem.isExpand()) {
-                bundle.putBoolean("toggle", newItem.isExpand())
+                bundle.putBoolean(DIFFUTIL_PAYLOAD_TOGGLE, newItem.isExpand())
             }
         }
 
         return bundle
+    }
+
+    companion object {
+        const val DIFFUTIL_PAYLOAD_TOGGLE = "toggle"
     }
 }
