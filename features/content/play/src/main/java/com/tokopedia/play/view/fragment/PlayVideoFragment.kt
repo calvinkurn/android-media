@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.exoplayer2.ui.PlayerView
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.floatingwindow.view.FloatingWindowView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
@@ -189,6 +191,10 @@ class PlayVideoFragment @Inject constructor(
             }
 
             layouter.updatePosition(newPoint.x, newPoint.y)
+        }
+
+        floatingView.doOnClick {
+            RouteManager.route(floatingView.view.context, ApplinkConst.PLAY_DETAIL, channelId)
         }
 
         pipAdapter.addView(
