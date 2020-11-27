@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.model.productinfo.ProductInfoParcelData
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
@@ -20,10 +20,10 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 13/10/20
  */
-class BsProductDetailInfoViewModel @Inject constructor(dispatchers: DynamicProductDetailDispatcherProvider,
+class BsProductDetailInfoViewModel @Inject constructor(dispatchers: CoroutineDispatchers,
                                                        private val getProductDetailBottomSheetUseCase: GetProductDetailBottomSheetUseCase,
                                                        val userSession: UserSessionInterface)
-    : BaseViewModel(dispatchers.io()) {
+    : BaseViewModel(dispatchers.io) {
 
     private val parcelData = MutableLiveData<ProductInfoParcelData>()
 

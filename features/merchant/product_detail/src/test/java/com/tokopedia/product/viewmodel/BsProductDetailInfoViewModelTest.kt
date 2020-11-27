@@ -11,7 +11,6 @@ import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
 import com.tokopedia.product.info.model.productdetail.uidata.*
 import com.tokopedia.product.info.usecase.GetProductDetailBottomSheetUseCase
 import com.tokopedia.product.info.view.BsProductDetailInfoViewModel
-import com.tokopedia.product.util.TestDispatcherProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -19,6 +18,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import org.junit.*
 
 /**
@@ -47,7 +47,7 @@ class BsProductDetailInfoViewModelTest {
     }
 
     private val viewModel by lazy {
-        BsProductDetailInfoViewModel(TestDispatcherProvider(), getProductDetailBottomSheetUseCase, userSessionInterface)
+        BsProductDetailInfoViewModel(CoroutineTestDispatchersProvider, getProductDetailBottomSheetUseCase, userSessionInterface)
     }
 
     private val bottomSheetOrderItem by lazy {
