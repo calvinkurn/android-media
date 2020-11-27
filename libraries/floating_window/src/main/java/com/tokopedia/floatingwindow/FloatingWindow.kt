@@ -2,10 +2,10 @@ package com.tokopedia.floatingwindow
 
 import android.content.Context
 import android.graphics.Point
-import android.view.View
 import android.view.WindowManager
 import com.tokopedia.floatingwindow.util.FloatingWindowHelper
 import com.tokopedia.floatingwindow.util.registerDraggableTouchListener
+import com.tokopedia.floatingwindow.view.FloatingWindowView
 
 /**
  * Created by jegul on 26/11/20
@@ -38,8 +38,8 @@ internal class FloatingWindow private constructor(context: Context) {
 
     private val mWindowManager = appContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-    fun getViewByKey(key: String): View? {
-        return viewMap[key]?.view
+    fun getViewByKey(key: String): FloatingWindowView? {
+        return viewMap[key]?.floatingView
     }
 
     fun onCleared() {
@@ -48,24 +48,29 @@ internal class FloatingWindow private constructor(context: Context) {
 
     fun getWindowManager() = mWindowManager
 
-    fun addView(key: String, view: View, layoutParams: WindowManager.LayoutParams, overwrite: Boolean) {
+    fun addView(key: String, floatingView: FloatingWindowView, overwrite: Boolean) {
         if (viewMap.containsKey(key)) {
             if (overwrite) removeByKey(key)
             else return
         }
 
-        view.registerDraggableTouchListener(
-                initialPosition = { Point(layoutParams.x, layoutParams.y) },
-                positionListener = { x, y -> setPosition(key, x, y) }
+        floatingView.view.registerDraggableTouchListener(
+                onClicked = {
+                    floatingView.onClick()
+                },
+                initialPosition = { Point(floatingView.layoutParams.x, floatingView.layoutParams.y) },
+                onDragged = { x, y ->
+                    floatingView.onDragged(Point(x, y))
+                }
         )
-        viewMap[key] = Property(view, layoutParams, Status.Queued)
+        viewMap[key] = Property(floatingView, Status.Queued)
         FloatingWindowHelper.startService(appContext)
     }
 
     fun removeByKey(key: String) {
         val prop = viewMap[key] ?: return
 
-        mWindowManager.removeView(prop.view)
+        mWindowManager.removeView(prop.floatingView.view)
         viewMap.remove(key)
     }
 
@@ -73,7 +78,7 @@ internal class FloatingWindow private constructor(context: Context) {
         viewMap.entries.forEach { entry ->
             val value = entry.value
             if (value.status == Status.Queued) {
-                mWindowManager.addView(value.view, value.layoutParams)
+                mWindowManager.addView(value.floatingView.view, value.floatingView.layoutParams)
                 entry.setValue(value.copy(status = Status.Attached))
             }
         }
@@ -81,12 +86,12 @@ internal class FloatingWindow private constructor(context: Context) {
 
     private fun removeAllViews() {
         viewMap
-                .onEach { mWindowManager.removeView(it.value.view) }
+                .onEach { mWindowManager.removeView(it.value.floatingView.view) }
                 .clear()
     }
 
     private fun setPosition(key: String, x: Int, y: Int) {
-        val currentLayoutParams = viewMap[key]?.layoutParams ?: return
+        val currentLayoutParams = viewMap[key]?.floatingView?.layoutParams ?: return
         updateViewLayout(key, currentLayoutParams.apply {
             this.x = x
             this.y = y
@@ -96,18 +101,14 @@ internal class FloatingWindow private constructor(context: Context) {
     private fun updateViewLayout(key: String, layoutParams: WindowManager.LayoutParams) {
         try {
             val prop = viewMap[key] ?: return
-            mWindowManager.updateViewLayout(prop.view, layoutParams)
-            viewMap[key] = prop.copy(
-                    layoutParams = layoutParams
-            )
+            mWindowManager.updateViewLayout(prop.floatingView.view, layoutParams)
         } catch (e: Exception) {
-
+            //ignored
         }
     }
 
     data class Property(
-            val view: View,
-            val layoutParams: WindowManager.LayoutParams,
+            val floatingView: FloatingWindowView,
             val status: Status
     )
 

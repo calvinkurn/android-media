@@ -157,15 +157,17 @@ class PlayVideoFragment @Inject constructor(
         val scaledWidth = (scaleFactor * width).toInt()
         val scaledHeight = (scaleFactor * height).toInt()
 
+        val floatingView = FloatingWindowView.Builder(
+                key = FLOATING_WINDOW_KEY,
+                view = view,
+                width = scaledWidth,
+                height = scaledHeight,
+        ).setX(screenWidth - scaledWidth - 16)
+                .setY(screenHeight - scaledHeight - 16)
+                .build()
+
         pipAdapter.addView(
-                floatingView = FloatingWindowView.Builder(
-                        key = FLOATING_WINDOW_KEY,
-                        view = view,
-                        width = scaledWidth,
-                        height = scaledHeight,
-                ).setX(screenWidth - scaledWidth - 16)
-                        .setY(screenHeight - scaledHeight - 16)
-                        .build(),
+                floatingView = floatingView,
                 overwrite = true
         )
     }

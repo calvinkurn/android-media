@@ -48,8 +48,7 @@ class FloatingWindowAdapter private constructor(
                 onGranted = {
                     floatingWindow.addView(
                             key = floatingView.key,
-                            view = floatingView.view,
-                            layoutParams = floatingView.getWindowManagerLayoutParams(),
+                            floatingView = floatingView,
                             overwrite = overwrite
                     )
                 },
