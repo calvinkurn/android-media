@@ -22,17 +22,17 @@ class HeadLineAdItemsEmptyViewHolder(val view: View) : HeadLineAdItemsViewHolder
 
     override fun bind(item: HeadLineAdItemsEmptyViewModel, selectedMode: Boolean, fromSearch: Boolean, statsData: MutableList<DataItem>, countList: MutableList<CountDataItem>, selectedText: String) {
 
-        if (!fromSearch) {
-            view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_headline))
-            view.text_title.text = String.format(view.context.getString(R.string.topads_dash_headline_empty_title), selectedText)
-            view.text_desc.visibility = View.GONE
-            view.btn_submit.visibility = View.GONE
-        } else {
+        if (fromSearch || selectedText.isEmpty()) {
             view.text_title.text = view.context.getString(R.string.topads_headlin_Search_empty_title)
             view.text_desc.text = view.context.getString(R.string.topads_empty_on_search_desc)
             view.btn_submit.visibility = View.GONE
             view.text_desc.visibility = View.VISIBLE
             view.image_empty.setImageDrawable(view.context.getResDrawable(com.tokopedia.topads.common.R.drawable.ill_no_product))
+        } else {
+            view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_headline))
+            view.text_title.text = String.format(view.context.getString(R.string.topads_dash_headline_empty_title), selectedText)
+            view.text_desc.visibility = View.GONE
+            view.btn_submit.visibility = View.GONE
         }
     }
 }

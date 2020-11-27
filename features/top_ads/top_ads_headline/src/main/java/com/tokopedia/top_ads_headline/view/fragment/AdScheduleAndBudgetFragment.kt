@@ -285,7 +285,7 @@ class AdScheduleAndBudgetFragment : BaseHeadlineStepperFragment<CreateHeadlineAd
             }
             endDate.textFieldInput.setOnClickListener {
                 getSpecifiedDateFromStartDate(selectedStartDate as? GregorianCalendar, month = 1)?.let { it1 ->
-                    openSetStartDateTimePicker(getString(R.string.topads_headline_start_date_header), getString(R.string.topads_headline_end_date_info),
+                    openSetStartDateTimePicker(getString(R.string.topads_headline_end_date_header), getString(R.string.topads_headline_end_date_info),
                             it1, getSpecifiedDateFromToday(years = 50), this@AdScheduleAndBudgetFragment::onEndDateChanged)
                 }
             }

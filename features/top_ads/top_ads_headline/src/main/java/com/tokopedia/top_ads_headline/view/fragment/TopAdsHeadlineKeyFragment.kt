@@ -218,6 +218,8 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 data.firstOrNull()?.minBid, data.firstOrNull()?.suggestionBid)
         keywordListAdapter.setMax(data.firstOrNull()?.maxBid ?: 0)
         stepperModel?.maxBid = data.firstOrNull()?.maxBid ?: 0
+        minSuggestedBid = data.firstOrNull()?.minBid?:0
+
     }
 
     private fun setAdapter() {
@@ -237,7 +239,7 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
                 item.fromSearch = true
                 item.bidSuggest = minSuggestedBid
                 keywordSelectedAdapter.items.add(item)
-                keywordSelectedAdapter.notifyItemInserted(keywordListAdapter.itemCount - 1)
+                keywordSelectedAdapter.notifyItemInserted(keywordSelectedAdapter.itemCount - 1)
                 setCount()
             }
         }
@@ -249,7 +251,6 @@ class TopAdsHeadlineKeyFragment : BaseHeadlineStepperFragment<CreateHeadlineAdsS
     }
 
     private fun onSuccessSuggestionKeywords(list: List<KeywordData>) {
-        minSuggestedBid = list.firstOrNull()?.minBid ?: 0
         keywordListAdapter.setList(list, list.firstOrNull()?.minBid
                 ?: 0, stepperModel?.selectedKeywords, stepperModel?.stateRestoreKeyword)
         setCount()
