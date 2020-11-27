@@ -10,6 +10,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
@@ -24,7 +25,6 @@ import com.tokopedia.oneclickcheckout.preference.edit.view.payment.PaymentMethod
 import com.tokopedia.oneclickcheckout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.oneclickcheckout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.unifycomponents.ProgressBarUnify
-import com.tokopedia.unifycomponents.UnifyImageButton
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -47,9 +47,9 @@ open class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditC
 
     private var tvTitle: Typography? = null
     private var tvSubtitle: Typography? = null
-    private var btnBack: UnifyImageButton? = null
-    private var btnAdd: UnifyImageButton? = null
-    private var btnDelete: UnifyImageButton? = null
+    private var btnBack: IconUnify? = null
+    private var btnAdd: IconUnify? = null
+    private var btnDelete: IconUnify? = null
     private var stepper: ProgressBarUnify? = null
 
     override fun getComponent(): PreferenceEditComponent {
