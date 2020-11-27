@@ -38,7 +38,6 @@ import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
-import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatListHeightManager
@@ -508,6 +507,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 chatListViewOnStateChanged(channelType = it.channelType)
                 videoSettingsViewOnStateChanged(videoOrientation = it.orientation)
                 gradientBackgroundViewOnStateChanged(videoOrientation = it.orientation)
+                pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
             }
 
             changeLayoutBasedOnVideoType(meta.videoPlayer, playViewModel.channelType)
@@ -661,6 +661,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
                 toolbarViewOnStateChanged(isFreezeOrBanned = true)
                 statsInfoViewOnStateChanged(isFreezeOrBanned = true)
+                pipViewOnStateChanged(isFreezeOrBanned = true)
 
                 /**
                  * Non view component
@@ -1118,6 +1119,20 @@ class PlayUserInteractionFragment @Inject constructor(
             )
             endLiveInfoView.show()
         } else endLiveInfoView.hide()
+    }
+
+    private fun pipViewOnStateChanged(
+            videoPlayer: VideoPlayerUiModel = playViewModel.videoPlayer,
+            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ) {
+        if (!videoPlayer.isGeneral || isFreezeOrBanned) {
+            pipView.hide()
+            return
+        }
+
+        if (!bottomInsets.isAnyShown) pipView.show()
+        else pipView.hide()
     }
     //endregion
 
