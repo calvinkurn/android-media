@@ -3,7 +3,7 @@ package com.tokopedia.seller.search.initialsearch
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import com.tokopedia.seller.search.common.domain.GetSellerSearchUseCase
-import com.tokopedia.seller.search.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.seller.search.feature.initialsearch.domain.usecase.DeleteSuggestionHistoryUseCase
 import com.tokopedia.seller.search.feature.initialsearch.view.viewmodel.InitialSearchViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -29,7 +29,7 @@ abstract class InitialSearchViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = InitialSearchViewModel(TestCoroutineDispatchers, getSellerSearchUseCase, deleteSuggestionHistoryUseCase)
+        viewModel = InitialSearchViewModel(CoroutineTestDispatchersProvider, getSellerSearchUseCase, deleteSuggestionHistoryUseCase)
     }
 
     protected fun LiveData<*>.verifyValueEquals(expected: Any) {

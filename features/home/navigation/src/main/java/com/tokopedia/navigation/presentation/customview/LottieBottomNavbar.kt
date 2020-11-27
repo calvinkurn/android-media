@@ -34,12 +34,12 @@ class LottieBottomNavbar : LinearLayout {
     private var titleList: MutableList<TextView> = ArrayList()
     private var containerList: MutableList<LinearLayout> = ArrayList()
     private var itemCount: Int = 1
-    private var buttonContainerBackgroundColor: Int = Color.WHITE
+    private var buttonContainerBackgroundColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
     private var buttonsHeight: Float = DEFAULT_HEIGHT
     private var selectedItem: Int? = null
     private var containerWidth: Int = 0
     private var navbarContainer: LinearLayout? = null
-    private var buttonColor: Int = Color.GRAY
+    private var buttonColor: Int = androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N300)
     private var activeButtonColor: Int = Color.TRANSPARENT
     private var isThreeItemBottomNav: Boolean = false
 
@@ -144,10 +144,10 @@ class LottieBottomNavbar : LinearLayout {
         val a = context.obtainStyledAttributes(attrs, R.styleable.LottieBottomNavbar)
         val defaultButtonHeight = DEFAULT_HEIGHT * context.resources.displayMetrics.density
 
-        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, Color.WHITE)
+        buttonContainerBackgroundColor = a.getColor(R.styleable.LottieBottomNavbar_buttonContainerBackgroundColor, androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
         buttonsHeight = a.getDimension(R.styleable.LottieBottomNavbar_buttonsHeight, defaultButtonHeight)
 
-        buttonColor = a.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, R.color.grey_500))
+        buttonColor = a.getColor(R.styleable.LottieBottomNavbar_buttonColor, ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
         activeButtonColor = a.getColor(R.styleable.LottieBottomNavbar_activeButtonColor, ContextCompat.getColor(context, R.color.transparent))
         a.recycle()
 

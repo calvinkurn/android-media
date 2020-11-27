@@ -1,8 +1,8 @@
 package com.tokopedia.product.manage.data
 
-import com.tokopedia.product.manage.feature.list.view.model.PriceUiModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.TopAdsInfo
+import com.tokopedia.product.manage.common.feature.list.data.model.PriceUiModel
+import com.tokopedia.product.manage.common.feature.list.data.model.ProductViewModel
+import com.tokopedia.product.manage.common.feature.list.data.model.TopAdsInfo
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Picture
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Price
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
