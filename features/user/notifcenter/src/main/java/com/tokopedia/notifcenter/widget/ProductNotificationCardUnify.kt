@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
+import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.listener.v3.NotificationItemListener
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,7 +33,12 @@ class ProductNotificationCardUnify(
     private var campaignTag: ImageView? = null
     private var btnCheckout: UnifyButton? = null
     private var btnAtc: UnifyButton? = null
+    private var btnReminder: UnifyButton? = null
+    private var btnDeleteReminder: UnifyButton? = null
+
     private var listener: NotificationItemListener? = null
+    private var notification: NotificationUiModel? = null
+    private var adapterPosition: Int? = null
 
     init {
         initView()
@@ -54,12 +60,19 @@ class ProductNotificationCardUnify(
         btnCheckout = view.findViewById(R.id.btn_checkout)
         campaignTag = view.findViewById(R.id.img_campaign)
         btnAtc = view.findViewById(R.id.btn_atc)
+        btnReminder = view.findViewById(R.id.tv_reminder)
+        btnDeleteReminder = view.findViewById(R.id.tv_delete_reminder)
     }
 
-    fun bindProductData(product: ProductData?, listener: NotificationItemListener?) {
+    fun bindProductData(
+            notification: NotificationUiModel?,
+            product: ProductData?,
+            listener: NotificationItemListener?,
+            adapterPosition: Int
+    ) {
         if (product != null) {
             show()
-            initField(listener)
+            initField(listener, notification, adapterPosition)
             bindProductImage(product)
             bindProductCampaign(product)
             bindProductVariant(product)
@@ -69,8 +82,66 @@ class ProductNotificationCardUnify(
             bindProductClick(product)
             bindBuyClick(product)
             bindAtcClick(product)
+            bindReminder(product)
+            bindDeleteReminder(product)
         } else {
             hide()
+        }
+    }
+
+    fun bindDeleteReminderState(product: ProductData) {
+        btnDeleteReminder?.post {
+            btnDeleteReminder?.isLoading = product.loadingReminderState
+        }
+    }
+
+    fun bindBumpReminderState(product: ProductData) {
+        btnReminder?.post {
+            btnReminder?.isLoading = product.loadingReminderState
+        }
+    }
+
+    fun bumpReminderState(product: ProductData?) {
+        product ?: return
+        bindReminder(product)
+        bindDeleteReminder(product)
+    }
+
+    private fun bindReminder(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.hasEmptyStock() && !product.hasReminder &&
+                notification != null && adapterPosition != null) {
+            btnReminder?.show()
+            bindBumpReminderState(product)
+            btnReminder?.setOnClickListener {
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindBumpReminderState(product)
+                    listener?.bumpReminder(product, notification, adapterPosition)
+                }
+            }
+        } else {
+            btnReminder?.hide()
+        }
+    }
+
+    private fun bindDeleteReminder(product: ProductData) {
+        val notification = notification
+        val adapterPosition = adapterPosition
+        if (product.hasEmptyStock() && product.hasReminder &&
+                notification != null && adapterPosition != null) {
+            btnDeleteReminder?.show()
+            bindDeleteReminderState(product)
+            btnDeleteReminder?.setOnClickListener {
+                if (!product.loadingReminderState) {
+                    product.loadingReminderState = true
+                    bindDeleteReminderState(product)
+                    listener?.deleteReminder(product, notification, adapterPosition)
+                }
+            }
+        } else {
+            btnDeleteReminder?.hide()
         }
     }
 
@@ -83,8 +154,14 @@ class ProductNotificationCardUnify(
         )
     }
 
-    private fun initField(listener: NotificationItemListener?) {
+    private fun initField(
+            listener: NotificationItemListener?,
+            notification: NotificationUiModel?,
+            adapterPosition: Int
+    ) {
         this.listener = listener
+        this.notification = notification
+        this.adapterPosition = adapterPosition
     }
 
     private fun bindProductImage(product: ProductData) {
@@ -125,14 +202,24 @@ class ProductNotificationCardUnify(
     }
 
     private fun bindBuyClick(product: ProductData) {
-        btnCheckout?.setOnClickListener {
-            listener?.buyProduct(product)
+        if (product.hasEmptyStock()) {
+            btnCheckout?.hide()
+        } else {
+            btnCheckout?.show()
+            btnCheckout?.setOnClickListener {
+                listener?.buyProduct(product)
+            }
         }
     }
 
     private fun bindAtcClick(product: ProductData) {
-        btnAtc?.setOnClickListener {
-            listener?.addProductToCart(product)
+        if (product.hasEmptyStock()) {
+            btnAtc?.hide()
+        } else {
+            btnAtc?.show()
+            btnAtc?.setOnClickListener {
+                listener?.addProductToCart(product)
+            }
         }
     }
 }

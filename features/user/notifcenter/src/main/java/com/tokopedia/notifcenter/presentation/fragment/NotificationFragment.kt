@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
+import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
@@ -42,8 +44,10 @@ import com.tokopedia.notifcenter.presentation.adapter.decoration.RecommendationI
 import com.tokopedia.notifcenter.presentation.adapter.listener.NotificationEndlessRecyclerViewScrollListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactoryImpl
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.BottomSheetFactory
+import com.tokopedia.notifcenter.presentation.fragment.bottomsheet.NotificationProductLongerContentBottomSheet
 import com.tokopedia.notifcenter.presentation.lifecycleaware.RecommendationLifeCycleAware
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel
 import com.tokopedia.notifcenter.widget.NotificationFilterView
@@ -74,6 +78,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private var containerListener: InboxFragmentContainer? = null
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
+    private val viewHolderLoading = ArrayMap<Visitable<*>, ViewHolderState>()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -139,6 +144,17 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupLifecycleObserver()
+    }
+
+    private fun setupLifecycleObserver() {
+        recommendationLifeCycleAware?.let {
+            viewLifecycleOwner.lifecycle.addObserver(it)
+        }
+    }
+
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, NotificationTypeFactory> {
         rvAdapter = NotificationAdapter(adapterTypeFactory)
         return rvAdapter as NotificationAdapter
@@ -193,6 +209,70 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
                 Status.SUCCESS -> containerListener?.clearNotificationCounter()
                 else -> {
                 }
+            }
+        })
+
+        viewModel.bumpReminder.observe(viewLifecycleOwner, Observer {
+            val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
+            val bottomSheet = childFragmentManager.findFragmentByTag(
+                    NotificationProductLongerContentBottomSheet::class.java.simpleName
+            ) as? NotificationProductLongerContentBottomSheet
+            val isFromBottomSheet = bottomSheet != null
+            when (it.status) {
+                Status.LOADING -> {
+                    rvAdapter?.loadingStateReminder(viewHolderState)
+                }
+                Status.SUCCESS -> {
+                    if (!isFromBottomSheet) {
+                        showMessage(R.string.title_success_bump_reminder)
+                    }
+                    rvAdapter?.finishBumpReminder(viewHolderState)
+                    viewHolderLoading.remove(it.referer)
+                }
+                Status.ERROR -> {
+                    it.throwable?.let { error ->
+                        showErrorMessage(error)
+                    }
+                    rvAdapter?.finishBumpReminder(viewHolderState)
+                    viewHolderLoading.remove(it.referer)
+                }
+                else -> {
+                }
+            }
+            if (isFromBottomSheet) {
+                bottomSheet?.handleEventBumpReminder(it, viewHolderState)
+            }
+        })
+
+        viewModel.deleteReminder.observe(viewLifecycleOwner, Observer {
+            val viewHolderState: ViewHolderState? = viewHolderLoading[it.referer]
+            val bottomSheet = childFragmentManager.findFragmentByTag(
+                    NotificationProductLongerContentBottomSheet::class.java.simpleName
+            ) as? NotificationProductLongerContentBottomSheet
+            val isFromBottomSheet = bottomSheet != null
+            when (it.status) {
+                Status.LOADING -> {
+                    rvAdapter?.loadingStateReminder(viewHolderState)
+                }
+                Status.SUCCESS -> {
+                    if (!isFromBottomSheet) {
+                        showMessage(R.string.title_success_delete_reminder)
+                    }
+                    rvAdapter?.finishDeleteReminder(viewHolderState)
+                    viewHolderLoading.remove(it.referer)
+                }
+                Status.ERROR -> {
+                    it.throwable?.let { error ->
+                        showErrorMessage(error)
+                    }
+                    rvAdapter?.finishDeleteReminder(viewHolderState)
+                    viewHolderLoading.remove(it.referer)
+                }
+                else -> {
+                }
+            }
+            if (isFromBottomSheet) {
+                bottomSheet?.handleEventDeleteReminder(it, viewHolderState)
             }
         })
     }
@@ -282,6 +362,13 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         }
     }
 
+    private fun showMessage(@StringRes stringRes: Int) {
+        val msg = getString(stringRes)
+        view?.let {
+            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+        }
+    }
+
     override fun onRoleChanged(role: Int) {
         viewModel.cancelAllUseCase()
         viewModel.reset()
@@ -322,6 +409,26 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
 
     override fun markNotificationAsRead(element: NotificationUiModel) {
         viewModel.markNotificationAsRead(containerListener?.role, element)
+    }
+
+    override fun bumpReminder(
+            product: ProductData,
+            notification: NotificationUiModel,
+            adapterPosition: Int
+    ) {
+        val loadingState = ViewHolderState(notification, adapterPosition, product)
+        viewHolderLoading[notification] = loadingState
+        viewModel.bumpReminder(product, notification)
+    }
+
+    override fun deleteReminder(
+            product: ProductData,
+            notification: NotificationUiModel,
+            adapterPosition: Int
+    ) {
+        val loadingState = ViewHolderState(notification, adapterPosition, product)
+        viewHolderLoading[notification] = loadingState
+        viewModel.deleteReminder(product, notification)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -398,4 +505,5 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     companion object {
         private const val REQUEST_CHECKOUT = 0
     }
+
 }
