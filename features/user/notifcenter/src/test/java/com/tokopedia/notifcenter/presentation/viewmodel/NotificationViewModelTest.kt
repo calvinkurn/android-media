@@ -4,19 +4,19 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.inboxcommon.util.FileUtil
+import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
+import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.mapper.NotifcenterDetailMapper
 import com.tokopedia.notifcenter.data.model.RecommendationDataModel
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
-import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
-import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
-import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
+import com.tokopedia.notifcenter.domain.*
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
 import com.tokopedia.notifcenter.util.coroutines.TestDispatcherProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
@@ -50,6 +50,8 @@ class NotificationViewModelTest {
     private val notifcenterDetailUseCase: NotifcenterDetailUseCase = mockk(relaxed = true)
     private val notifcenterFilterUseCase: NotifcenterFilterV2UseCase = mockk(relaxed = true)
     private val clearNotifUseCase: ClearNotifCounterUseCase = mockk(relaxed = true)
+    private val bumpReminderUseCase: NotifcenterSetReminderBumpUseCase = mockk(relaxed = true)
+    private val deleteReminderUseCase: NotifcenterDeleteReminderBumpUseCase = mockk(relaxed = true)
     private val markAsReadUseCase: MarkNotificationAsReadUseCase = mockk(relaxed = true)
     private val topAdsImageViewUseCase: TopAdsImageViewUseCase = mockk(relaxed = true)
     private val getRecommendationUseCase: GetRecommendationUseCase = mockk(relaxed = true)
@@ -61,6 +63,8 @@ class NotificationViewModelTest {
     private val dispatcher = TestDispatcherProvider()
 
     private val notificationItemsObserver: Observer<Result<NotificationDetailResponseModel>> = mockk(relaxed = true)
+    private val bumpReminderObserver: Observer<Resource<BumpReminderResponse>> = mockk(relaxed = true)
+    private val deleteReminderObserver: Observer<Resource<DeleteReminderResponse>> = mockk(relaxed = true)
     private val recommendationsObserver: Observer<RecommendationDataModel> = mockk(relaxed = true)
     private val topAdsBannerObserver: Observer<NotificationTopAdsBannerUiModel> = mockk(relaxed = true)
     private val filterListObserver: Observer<Resource<NotifcenterFilterResponse>> = mockk(relaxed = true)
@@ -69,6 +73,8 @@ class NotificationViewModelTest {
     private val viewModel = NotificationViewModel(
             notifcenterDetailUseCase,
             notifcenterFilterUseCase,
+            bumpReminderUseCase,
+            deleteReminderUseCase,
             clearNotifUseCase,
             markAsReadUseCase,
             topAdsImageViewUseCase,
@@ -83,6 +89,8 @@ class NotificationViewModelTest {
     @Before fun setUp() {
         viewModel.notificationItems.observeForever(notificationItemsObserver)
         viewModel.recommendations.observeForever(recommendationsObserver)
+        viewModel.deleteReminder.observeForever(deleteReminderObserver)
+        viewModel.bumpReminder.observeForever(bumpReminderObserver)
         viewModel.topAdsBanner.observeForever(topAdsBannerObserver)
         viewModel.filterList.observeForever(filterListObserver)
         viewModel.clearNotif.observeForever(clearNotifObserver)
@@ -282,6 +290,70 @@ class NotificationViewModelTest {
         verify(exactly = 1) { notificationItemsObserver.onChanged(Fail(expectedValue)) }
     }
 
+    @Test fun `bumpReminder should return correctly`() {
+        runBlocking {
+            // given
+            val expectedValue = Resource.success(bumpReminderResponse)
+            val flow = flow { emit(expectedValue) }
+
+            every { bumpReminderUseCase.bumpReminder(any(), any()) } returns flow
+
+            // when
+            viewModel.bumpReminder(ProductData(), NotificationUiModel())
+
+            // then
+            verify(exactly = 1) { bumpReminderObserver.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `bumpReminder should throw the Fail state`() {
+        runBlocking {
+            // given
+            val expectedValue = Resource.error(Throwable(), null)
+            val flow = flow { emit(expectedValue) }
+
+            every { bumpReminderUseCase.bumpReminder(any(), any()) } returns flow
+
+            // when
+            viewModel.bumpReminder(ProductData(), NotificationUiModel())
+
+            // then
+            verify(exactly = 1) { bumpReminderObserver.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `deleteReminder should return correctly`() {
+        runBlocking {
+            // given
+            val expectedValue = Resource.success(deleteReminderResponse)
+            val flow = flow { emit(expectedValue) }
+
+            every { deleteReminderUseCase.deleteReminder(any(), any()) } returns flow
+
+            // when
+            viewModel.deleteReminder(ProductData(), NotificationUiModel())
+
+            // then
+            verify(exactly = 1) { deleteReminderObserver.onChanged(expectedValue) }
+        }
+    }
+
+    @Test fun `deleteReminder should throw the Fail state`() {
+        runBlocking {
+            // given
+            val expectedValue = Resource.error(Throwable(), null)
+            val flow = flow { emit(expectedValue) }
+
+            every { deleteReminderUseCase.deleteReminder(any(), any()) } returns flow
+
+            // when
+            viewModel.deleteReminder(ProductData(), NotificationUiModel())
+
+            // then
+            verify(exactly = 1) { deleteReminderObserver.onChanged(expectedValue) }
+        }
+    }
+
     @Test fun `loadMoreNew with lambda should called getMoreNewNotifications() in usecase`() {
         // given
         val role = RoleType.BUYER
@@ -387,6 +459,16 @@ class NotificationViewModelTest {
         private val productRecommResponse: RecommendationEntity = FileUtil.parse(
                 "/success_notifcenter_recomm_inbox.json",
                 RecommendationEntity::class.java
+        )
+
+        private val bumpReminderResponse: BumpReminderResponse = FileUtil.parse(
+                "/success_notifcenter_bump_reminder.json",
+                BumpReminderResponse::class.java
+        )
+
+        private val deleteReminderResponse: DeleteReminderResponse = FileUtil.parse(
+                "/success_notifcenter_delete_reminder.json",
+                DeleteReminderResponse::class.java
         )
     }
 
