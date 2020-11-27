@@ -141,7 +141,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
-    private val registerInitialViewModel by lazy {
+    val registerInitialViewModel by lazy {
         viewModelProvider.get(RegisterInitialViewModel::class.java)
     }
 
@@ -764,7 +764,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
     }
 
-    private fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
+    override fun goToRegisterEmailPageWithEmail(email: String, token: String, source: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
 
         activity?.let {
@@ -1166,7 +1166,7 @@ open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputV
         )
     }
 
-    private fun onSuccessRegister() {
+    override fun onSuccessRegister() {
         activityShouldEnd = true
 
         registerPushNotif()

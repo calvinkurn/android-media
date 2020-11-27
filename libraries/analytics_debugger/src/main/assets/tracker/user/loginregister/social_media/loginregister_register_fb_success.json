@@ -16,27 +16,6 @@
     {
       "event": "clickRegister",
       "eventCategory": "register page",
-      "eventAction": "click on button daftar - email",
-      "eventLabel": "click",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickRegister",
-      "eventCategory": "register page",
-      "eventAction": "click on button daftar - phone number",
-      "eventLabel": "click",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickRegister",
-      "eventCategory": "register page",
-      "eventAction": "click on button google",
-      "eventLabel": "click",
-      "sessionIris": "{{.*}}"
-    },
-    {
-      "event": "clickRegister",
-      "eventCategory": "register page",
       "eventAction": "click on button facebook",
       "eventLabel": "click",
       "sessionIris": "{{.*}}"
@@ -44,9 +23,9 @@
     {
       "event": "clickRegister",
       "eventCategory": "register page",
-      "eventAction": "click masuk top",
-      "sessionIris": "{{.*}}",
-      "eventLabel": ""
+      "eventAction": "click on button facebook",
+      "eventLabel": "register success",
+      "sessionIris": "{{.*}}"
     }
   ]
 }

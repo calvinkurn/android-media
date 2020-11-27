@@ -5,17 +5,20 @@ import com.tokopedia.loginregister.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 
-class RegisterMockResponse(private val mockResponse: Int): MockModelConfig() {
-    companion object{
-        const val KEY_REGISTER_CHECK = "register_check"
-    }
+class RegisterMockResponse(private val mockResponses: HashMap<String, Int>): MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
-        addMockResponse(
-                KEY_REGISTER_CHECK,
-                InstrumentationMockHelper.getRawString(context, mockResponse),
-                FIND_BY_CONTAINS)
-
+        for(response in mockResponses) {
+            addMockResponse(response.key,
+                    InstrumentationMockHelper.getRawString(context, response.value),
+                    FIND_BY_CONTAINS)
+        }
         return this
+    }
+
+    companion object{
+        const val KEY_REGISTER_CHECK = "register_check"
+        const val KEY_LOGIN_TOKEN_CHECK = "login_token"
+        const val KEY_PROFILE_CHECK = "profile"
     }
 }

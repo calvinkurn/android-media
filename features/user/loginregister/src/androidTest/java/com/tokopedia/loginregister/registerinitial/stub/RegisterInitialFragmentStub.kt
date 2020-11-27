@@ -1,56 +1,35 @@
 package com.tokopedia.loginregister.registerinitial.stub
 
-import android.os.Bundle
-import android.util.Log
 import com.tokopedia.loginregister.registerinitial.view.fragment.RegisterInitialFragment
+import com.tokopedia.user.session.UserSessionInterface
 
 class RegisterInitialFragmentStub : RegisterInitialFragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun initInjector() {
-        super.initInjector()
-    }
-
     override fun goToRegisterEmailPage() {
-        Log.d("NOTHING", "DO NOTHING")
         //stub, do nothing
     }
 
     override fun goToRegisterGoogle() {
-        Log.d("NOTHING", "DO NOTHING")
-        //stub, do nothing
+        registerInitialViewModel.registerGoogle("dummyAccessToken", "dummyEmail")
     }
 
     override fun goToRegisterFacebook() {
-        Log.d("NOTHING", "DO NOTHING")
-        //stub, do nothing
+        registerInitialViewModel.registerFacebook("dummyAccessToken", "dummyEmail")
     }
 
     override fun goToLoginPage() {
-        Log.d("NOTHING", "DO NOTHING")
         //stub, do nothing
     }
 
     override fun goToLoginRegisteredPhoneNumber(phone: String) {
-        Log.d("NOTHING", "DO NOTHING")
         //stub, do nothing
     }
 
-    override fun goToRegisterWithPhoneNumber(phone: String){
-        Log.d("NOTHING", "DO NOTHING")
+    override fun goToOTPActivateEmail(email: String){
         //stub, do nothing
     }
 
-    override fun goToOTPActivateEmail(phone: String){
-        Log.d("NOTHING", "DO NOTHING")
-        //stub, do nothing
-    }
-
-    override fun goToOTPRegisterEmail(phone: String){
-        Log.d("NOTHING", "DO NOTHING")
-        //stub, do nothing
+    override fun onSuccessRegister(){
+        //sub, do nothing
     }
 }
