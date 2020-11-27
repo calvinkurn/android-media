@@ -140,6 +140,10 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         finish()
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.product_detail_parent_view
+    }
+
     override fun getScreenName(): String {
         return "" // need only on success load data? (it needs custom dimension)
     }
