@@ -12,6 +12,7 @@ import com.tokopedia.unifyprinciples.Typography
  * Created by Yehezkiel on 21/10/20
  */
 object ProductDetailBottomSheetBuilder {
+    private const val PDP_TIME_PUKUL = "pukul"
 
     fun getShopNotesBottomSheet(context: Context, dateValue: String, descValue: String, titleValue: String): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
@@ -23,8 +24,7 @@ object ProductDetailBottomSheetBuilder {
             val date = view.findViewById<Typography>(R.id.product_shop_notes_date)
             val desc = view.findViewById<Typography>(R.id.product_shop_notes_desc)
 
-            val pukulString = getString(R.string.pdp_ime_pukul)
-            date.text = dateValue toDateId ("dd MMM yyyy, '${pukulString}' HH:mm")
+            date.text = dateValue toDateId ("dd MMM yyyy, '${PDP_TIME_PUKUL}' HH:mm")
             desc.text = HtmlLinkHelper(context, descValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
         }
 
