@@ -82,12 +82,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor, PlayNavigation, P
                 .commit()
     }
 
-    override fun shouldEnterPiPMode() {
-        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
-        if (fragment != null && fragment is PlayFragmentContract) {
-            fragment.onEnterPiPMode()
-        }
-
+    override fun onEnterPiPMode() {
         lifecycle.removeObserver(playLifecycleObserver)
         onBackPressed(isSystemBack = false)
     }

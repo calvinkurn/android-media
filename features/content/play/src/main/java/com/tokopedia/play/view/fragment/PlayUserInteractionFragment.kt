@@ -131,9 +131,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private val playPiPCoordinator: PlayPiPCoordinator
-        get() = requireActivity() as PlayPiPCoordinator
-
     private val orientationListener: PlayOrientationListener
         get() = requireParentFragment() as PlayOrientationListener
 
@@ -1125,7 +1122,7 @@ class PlayUserInteractionFragment @Inject constructor(
     //endregion
 
     private fun goPiP() {
-        playPiPCoordinator.shouldEnterPiPMode()
+        playViewModel.goPiP()
     }
 
     companion object {

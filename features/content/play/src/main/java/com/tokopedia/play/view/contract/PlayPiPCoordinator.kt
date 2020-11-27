@@ -5,5 +5,5 @@ package com.tokopedia.play.view.contract
  */
 interface PlayPiPCoordinator {
 
-    fun shouldEnterPiPMode()
+    fun onEnterPiPMode()
 }

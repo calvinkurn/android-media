@@ -98,6 +98,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
+    val observableEventPiP: LiveData<Event<Unit>>
+        get() = _observableEventPiP
 
     val videoOrientation: VideoOrientation
         get() {
@@ -139,6 +141,9 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    val isInPiPMode: Boolean
+        get() = _observableEventPiP.value != null
+
     val userId: String
         get() = userSession.userId
 
@@ -169,6 +174,7 @@ class PlayViewModel @Inject constructor(
     }
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
+    private val _observableEventPiP = MutableLiveData<Event<Unit>>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observablePartnerInfo) {
             val currentMessageValue = _observablePinnedMessage.value
@@ -276,8 +282,7 @@ class PlayViewModel @Inject constructor(
         super.onCleared()
         stateHandler.removeObserver(stateHandlerObserver)
         destroy()
-        //TODO("Temporary stopping")
-//        stopPlayer()
+        if (!isInPiPMode) stopPlayer()
         playVideoManager.removeListener(videoManagerListener)
         videoStateProcessor.removeStateListener(videoStateListener)
         channelStateProcessor.removeStateListener(channelStateListener)
@@ -397,6 +402,10 @@ class PlayViewModel @Inject constructor(
 
     fun getVideoDuration(): Long {
         return playVideoManager.getVideoDuration()
+    }
+
+    fun goPiP() {
+        _observableEventPiP.value = Event(Unit)
     }
 
     private fun initiateVideo(video: Video) {

@@ -37,6 +37,7 @@ import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayOrientationListener
+import com.tokopedia.play.view.contract.PlayPiPCoordinator
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.BoundsKey
 import com.tokopedia.play.view.measurement.bounds.manager.videobounds.PlayVideoBoundsManager
@@ -106,6 +107,9 @@ class PlayFragment @Inject constructor(
         set(value) {
             requireActivity().requestedOrientation = value
         }
+
+    private val playPiPCoordinator: PlayPiPCoordinator
+        get() = requireActivity() as PlayPiPCoordinator
 
     private val orientation: ScreenOrientation
         get() = ScreenOrientation.getByInt(resources.configuration.orientation)
@@ -199,6 +203,8 @@ class PlayFragment @Inject constructor(
                 .forEach {
                     if (it is PlayFragmentContract) it.onEnterPiPMode()
                 }
+
+        playPiPCoordinator.onEnterPiPMode()
     }
 
     /**
@@ -356,6 +362,7 @@ class PlayFragment @Inject constructor(
         observeEventUserInfo()
         observeVideoMeta()
         observeBottomInsetsState()
+        observePiPEvent()
     }
 
     //region observe
@@ -435,6 +442,12 @@ class PlayFragment @Inject constructor(
     private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver {
             buttonCloseViewOnStateChanged(bottomInsets = it)
+        })
+    }
+
+    private fun observePiPEvent() {
+        playViewModel.observableEventPiP.observe(viewLifecycleOwner, EventObserver {
+            onEnterPiPMode()
         })
     }
 
