@@ -1,10 +1,10 @@
-package com.tokopedia.travel_slice.ui.provider
+package com.tokopedia.travel_slice.hotel.data
 
 /**
- * @author by jessica on 14/10/20
+ * @author by jessica on 25/11/20
  */
 
-object TravelSliceQuery {
+object HotelSliceQueries {
     const val SEARCH_SUGGESTION = """
         query suggestion(${'$'}data: PropertySuggestionSearchParam!) {
           propertySearchSuggestion(input: ${'$'}data) {
@@ -35,4 +35,14 @@ object TravelSliceQuery {
         }
     """
 
+    val HOTEL_ORDER_LIST_QUERY = """
+        query OrderListQuery(${'$'}orderCategory: OrderCategory, ${'$'}Page: Int!, ${'$'}PerPage: Int!) {
+          orders(orderCategory:${'$'}orderCategory, Page:${'$'}Page, PerPage:${'$'}PerPage) {
+            title
+            id
+            statusStr
+            appLink
+          }
+        }
+    """.trimIndent()
 }

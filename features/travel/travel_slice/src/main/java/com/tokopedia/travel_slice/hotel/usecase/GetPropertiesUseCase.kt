@@ -1,12 +1,12 @@
-package com.tokopedia.travel_slice.usecase
+package com.tokopedia.travel_slice.hotel.usecase
 
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.travel_slice.data.HotelList
-import com.tokopedia.travel_slice.data.HotelParam
-import com.tokopedia.travel_slice.data.SuggestionCity
-import com.tokopedia.travel_slice.ui.provider.TravelSliceQuery
+import com.tokopedia.travel_slice.hotel.data.HotelList
+import com.tokopedia.travel_slice.hotel.data.HotelParam
+import com.tokopedia.travel_slice.hotel.data.SuggestionCity
+import com.tokopedia.travel_slice.hotel.data.HotelSliceQueries
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -19,7 +19,7 @@ class GetPropertiesUseCase @Inject constructor(private val repository: GraphqlRe
     private var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): HotelList {
-        val graphqlRequest = GraphqlRequest(TravelSliceQuery.GET_HOTEL_PROPERTY_QUERY, HotelList.Response::class.java, params)
+        val graphqlRequest = GraphqlRequest(HotelSliceQueries.GET_HOTEL_PROPERTY_QUERY, HotelList.Response::class.java, params)
         val response = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<HotelList.Response>()
         return response.propertySearch
     }

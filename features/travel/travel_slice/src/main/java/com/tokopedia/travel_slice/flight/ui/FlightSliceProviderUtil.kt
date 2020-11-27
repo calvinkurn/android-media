@@ -15,7 +15,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
-import com.tokopedia.travel_slice.ui.provider.HotelSliceProviderUtil.allowReads
 
 /**
  * @author by jessica on 25/11/20
@@ -107,10 +106,9 @@ object FlightSliceProviderUtil {
 
     private fun String.getBitmap(context: Context): Bitmap? = Glide.with(context).asBitmap().load(this).submit().get()
 
-    private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent = allowReads {
+    private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                allowReads { RouteManager.getIntent(context, applink) },
+                 RouteManager.getIntent(context, applink),
                 0)
-    }
 
 }

@@ -1,15 +1,11 @@
-package com.tokopedia.travel_slice.ui.provider
+package com.tokopedia.travel_slice.hotel.data
 
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.travel_slice.data.HotelData
-import com.tokopedia.travel_slice.data.HotelOrderListModel
-import com.tokopedia.travel_slice.data.HotelOrderListParams
-import com.tokopedia.travel_slice.data.SuggestionCity
-import com.tokopedia.travel_slice.usecase.GetPropertiesUseCase
-import com.tokopedia.travel_slice.usecase.GetSuggestionCityUseCase
-import com.tokopedia.travel_slice.utils.TravelSlicesQueries.HOTEL_ORDER_LIST_QUERY
+import com.tokopedia.travel_slice.hotel.usecase.GetPropertiesUseCase
+import com.tokopedia.travel_slice.hotel.usecase.GetSuggestionCityUseCase
+import com.tokopedia.travel_slice.hotel.data.HotelSliceQueries.HOTEL_ORDER_LIST_QUERY
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject

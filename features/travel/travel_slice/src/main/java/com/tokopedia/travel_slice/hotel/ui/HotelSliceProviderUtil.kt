@@ -1,11 +1,10 @@
-package com.tokopedia.travel_slice.ui.provider
+package com.tokopedia.travel_slice.hotel.ui
 
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.os.StrictMode
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
@@ -14,8 +13,8 @@ import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel_slice.R
-import com.tokopedia.travel_slice.data.HotelData
-import com.tokopedia.travel_slice.data.HotelOrderListModel
+import com.tokopedia.travel_slice.hotel.data.HotelData
+import com.tokopedia.travel_slice.hotel.data.HotelOrderListModel
 import kotlin.math.max
 
 /**
@@ -84,21 +83,19 @@ object HotelSliceProviderUtil {
 
     private fun buildIntentFromHotelDetail(context: Context, hotelId: Long, checkIn: String): PendingIntent {
         return PendingIntent.getActivity(context, 0,
-                allowReads { RouteManager.getIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)) },
+               RouteManager.getIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)),
                 0)
     }
 
-    private fun buildIntentFromHotelDashboard(context: Context): PendingIntent = allowReads {
+    private fun buildIntentFromHotelDashboard(context: Context): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                allowReads { RouteManager.getIntent(context, context.getString(R.string.hotel_dashboard_applink)) },
+                RouteManager.getIntent(context, context.getString(R.string.hotel_dashboard_applink)),
                 0)
-    }
 
-    private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent = allowReads {
+    private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                allowReads { RouteManager.getIntent(context, applink) },
+                 RouteManager.getIntent(context, applink) ,
                 0)
-    }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     fun getMyHotelOrderSlices(context: Context, sliceUri: Uri, orderList: List<HotelOrderListModel>): Slice? {
@@ -120,14 +117,4 @@ object HotelSliceProviderUtil {
             }
         }
     }
-
-    fun <T> allowReads(block: () -> T): T {
-        val oldPolicy = StrictMode.allowThreadDiskReads()
-        try {
-            return block()
-        } finally {
-            StrictMode.setThreadPolicy(oldPolicy)
-        }
-    }
-
 }
