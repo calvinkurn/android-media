@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.charts.common.ChartTooltip
 import com.tokopedia.charts.config.LineChartConfig
@@ -111,7 +112,9 @@ abstract class TopAdsDashStatisticFragment : TkpdBaseV4Fragment() {
             xAxis {
                 val xAxisLabels = lineChartData.chartEntry.map { it.xLabel }
                 gridEnabled { false }
-                textColor { resources.getColor(R.color.Neutral_N700_96) }
+                context?.let {
+                    textColor { ContextCompat.getColor(it, (com.tokopedia.unifyprinciples.R.color.Neutral_N700_96)) }
+                }
                 labelFormatter {
                     ChartXAxisLabelFormatter(xAxisLabels)
                 }
