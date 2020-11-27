@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.draft.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDao;
 import com.tokopedia.product.manage.common.feature.draft.data.db.AddEditProductDraftDb;
 import com.tokopedia.product.manage.common.feature.draft.data.db.repository.AddEditProductDraftRepository;
@@ -25,6 +25,17 @@ import dagger.Provides;
 @ProductAddScope
 @Module
 public class ProductDraftSaveBulkModule extends ProductAddModule {
+
+    public ProductDraftSaveBulkModule(Context context) {
+        super(context);
+    }
+
+    @ProductAddScope
+    @ApplicationContext
+    @Provides
+    Context provideApplicationContext() {
+        return context;
+    }
 
     @ProductAddScope
     @Provides

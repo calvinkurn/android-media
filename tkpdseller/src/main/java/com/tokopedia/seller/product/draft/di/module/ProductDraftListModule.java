@@ -28,10 +28,8 @@ import dagger.Provides;
 @Module
 public class ProductDraftListModule extends ProductAddModule {
 
-    private final Context context;
-
     public ProductDraftListModule(Context context) {
-        this.context = context;
+        super(context);
     }
 
     @ProductAddScope

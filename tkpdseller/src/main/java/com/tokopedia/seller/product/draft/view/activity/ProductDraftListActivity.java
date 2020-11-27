@@ -1,6 +1,7 @@
 package com.tokopedia.seller.product.draft.view.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,15 +19,14 @@ import androidx.fragment.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.utils.TkpdProgressDialog;
 import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftSaveBulkComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftSaveBulkModule;
@@ -56,7 +56,7 @@ public class ProductDraftListActivity extends BaseSimpleActivity
     private static final String HAS_SAVED_INSTA_TO_DRAFT = "saved_insta_to_draft";
     @Inject
     ProductDraftSaveBulkPresenter productDraftSaveBulkPresenter;
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private boolean hasSaveInstagramToDraft;
 
     public static void startInstagramSaveBulkFromLocal(Context context, ArrayList<String> instagramLocalPaths, ArrayList<String> instagramDescList) {
@@ -138,7 +138,7 @@ public class ProductDraftListActivity extends BaseSimpleActivity
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
         DaggerProductDraftSaveBulkComponent
                 .builder()
-                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule())
+                .productDraftSaveBulkModule(new ProductDraftSaveBulkModule(this))
                 .productComponent(ProductEditItemComponentInstance.getComponent(getApplication()))
                 .build()
                 .inject(ProductDraftListActivity.this);
@@ -158,16 +158,16 @@ public class ProductDraftListActivity extends BaseSimpleActivity
 
     private void showProgressDialog() {
         if (progressDialog == null) {
-            progressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new ProgressDialog(this);
             progressDialog.setCancelable(false);
         }
-        if (!progressDialog.isProgress()) {
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
         }
     }
 
     private void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isProgress()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
