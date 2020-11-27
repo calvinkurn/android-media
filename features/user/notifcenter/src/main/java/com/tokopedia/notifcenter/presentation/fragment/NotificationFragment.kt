@@ -79,7 +79,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
     private var containerListener: InboxFragmentContainer? = null
     private var recommendationLifeCycleAware: RecommendationLifeCycleAware? = null
     private var trackingQueue: TrackingQueue? = null
-    private val viewHolderLoading = ArrayMap<Visitable<*>, ViewHolderState>()
+    private val viewHolderLoading = ArrayMap<Any, ViewHolderState>()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(NotificationViewModel::class.java)
@@ -430,7 +430,7 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
             product: ProductData
     ) {
         val loadingState = ViewHolderState(notification, adapterPosition, product)
-        viewHolderLoading[notification] = loadingState
+        viewHolderLoading[product.productId] = loadingState
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

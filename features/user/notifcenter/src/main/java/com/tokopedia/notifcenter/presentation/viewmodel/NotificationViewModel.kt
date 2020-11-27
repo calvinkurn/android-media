@@ -205,13 +205,13 @@ class NotificationViewModel @Inject constructor(
                             product.productId.toString(),
                             notif.notifId
                     ).collect {
-                        it.referer = notif
+                        it.referer = product.productId
                         _bumpReminder.postValue(it)
                     }
                 },
                 {
                     val error = Resource.error(it, null).apply {
-                        referer = notif
+                        referer = product.productId
                     }
                     _bumpReminder.postValue(error)
                 }
@@ -225,13 +225,13 @@ class NotificationViewModel @Inject constructor(
                             product.productId.toString(),
                             notification.notifId
                     ).collect {
-                        it.referer = notification
+                        it.referer = product.productId
                         _deleteReminder.postValue(it)
                     }
                 },
                 {
                     val error = Resource.error(it, null).apply {
-                        referer = notification
+                        referer = product.productId
                     }
                     _deleteReminder.postValue(error)
                 }
