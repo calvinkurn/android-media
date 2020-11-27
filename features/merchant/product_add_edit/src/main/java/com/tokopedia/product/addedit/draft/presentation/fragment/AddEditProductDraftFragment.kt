@@ -114,7 +114,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
                 }
             }
             R.id.item_delete_all_draft -> {
-                val alertDialogBuilder = AlertDialog.Builder(requireContext())
+                val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.AppCompatAlertDialogStyle)
                         .setMessage(getString(R.string.label_draft_menu_delete_all_draft_dialog_message))
                         .setNegativeButton(getString(R.string.label_cancel_button_on_dialog)) { _, _ -> }
                         .setPositiveButton(getString(R.string.label_delete_button_on_dialog)) { _, _ ->
@@ -146,7 +146,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
         } else {
             getString(R.string.label_draft_delete_draft_dialog_has_product_name_message, productName)
         }
-        val alertDialogBuilder = AlertDialog.Builder(requireContext())
+        val alertDialogBuilder = AlertDialog.Builder(requireContext(), R.style.AppCompatAlertDialogStyle)
                 .setMessage(MethodChecker.fromHtml(message))
                 .setNegativeButton(getString(R.string.label_cancel)) { _, _ -> }
                 .setPositiveButton(getString(R.string.label_delete_button_on_dialog)) { _, _ ->
