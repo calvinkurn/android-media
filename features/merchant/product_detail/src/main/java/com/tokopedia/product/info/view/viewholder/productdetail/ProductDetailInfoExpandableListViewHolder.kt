@@ -25,7 +25,7 @@ class ProductDetailInfoExpandableListViewHolder(private val view: View, private 
     }
 
     override fun bind(element: ProductDetailInfoExpandableListDataModel) {
-        view.expandable_title_chevron?.titleText = "Catatan Toko"
+        view.expandable_title_chevron?.titleText = view.context.getString(R.string.merchant_product_detail_shop_notes_title)
         setupExpandableItem(element)
     }
 

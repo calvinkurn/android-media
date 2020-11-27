@@ -9,7 +9,11 @@ import android.view.ViewGroup
  * Created by Yehezkiel on 16/10/20
  */
 object ExpandableAnimation {
-    fun expand(view: View, customHeight: Int = 0, customParentWidth:Int = 0 ,onAnimationEndListener: (() -> Unit)? = null) {
+    private const val EXPANDABLE_FAST_DURATION = 300L
+    private const val EXPANDABLE_SLOW_DURATION = 500L
+    private const val MAX_DEFAULT_HEIGHT = 2000
+
+    fun expand(view: View, customHeight: Int = 0, customParentWidth: Int = 0, onAnimationEndListener: (() -> Unit)? = null) {
         view.visibility = View.VISIBLE
 
         if (view is ViewGroup) {
@@ -34,8 +38,8 @@ object ExpandableAnimation {
         }
         val alphaAnim = ObjectAnimator.ofFloat(view, "alpha", 0F, 1F)
 
-        alphaAnim.duration = if (actualheight > 2000) 500 else 300
-        anim.duration = if (actualheight > 2000) 500 else 300
+        alphaAnim.duration = if (actualheight > MAX_DEFAULT_HEIGHT) EXPANDABLE_SLOW_DURATION else EXPANDABLE_FAST_DURATION
+        anim.duration = if (actualheight > MAX_DEFAULT_HEIGHT) EXPANDABLE_SLOW_DURATION else EXPANDABLE_FAST_DURATION
 
         val set = AnimatorSet()
         set.addListener(object : AnimatorListenerAdapter() {
@@ -61,8 +65,8 @@ object ExpandableAnimation {
 
         val alphaAnim = ObjectAnimator.ofFloat(view, "alpha", 1F, 0F)
 
-        alphaAnim.duration = if (actualHeight > 2000) 500 else 300
-        anim.duration = if (actualHeight > 2000) 500 else 300
+        alphaAnim.duration = if (actualHeight > MAX_DEFAULT_HEIGHT) EXPANDABLE_SLOW_DURATION else EXPANDABLE_FAST_DURATION
+        anim.duration = if (actualHeight > MAX_DEFAULT_HEIGHT) EXPANDABLE_SLOW_DURATION else EXPANDABLE_FAST_DURATION
 
         val set = AnimatorSet()
         set.addListener(object : AnimatorListenerAdapter() {

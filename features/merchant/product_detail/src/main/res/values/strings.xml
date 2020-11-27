@@ -262,6 +262,7 @@
 
     <string name="double_string_builder">%1s %2s</string>
     <string name="merchant_product_detail_shop_notes_label">Baca info penting terkait pembelian dari toko ini.</string>
+    <string name="merchant_product_detail_shop_notes_title">Catatan Toko</string>
 
     //report
     <string name="merchant_product_detail_report_text">Produk bermasalah? Laporkan</string>
@@ -281,4 +282,5 @@
     <string name="toaster_success_add_wishlist_from_button">Kamu akan dapat notifikasi ketika barang kembali tersedia. Bisa cek produknya di wishlist ya..</string>
     <string name="toaster_success_remove_wishlist">Sukses menghapus barang dari wishlist</string>
 
+    <string name="pdp_ime_pukul">pukul</string>
 </resources>

@@ -12,6 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.info.util.ProductDetailInfoConstant
 import com.tokopedia.product.share.ekstensions.layoutInflater
 import kotlinx.android.synthetic.main.item_dynamic_product_detail_info.view.*
 import kotlinx.android.synthetic.main.item_info_product_detail.view.*
@@ -54,7 +55,7 @@ class ProductDetailInfoViewHolder(private val view: View, private val listener: 
 
     private fun renderDescription(element: ProductDetailInfoDataModel) = with(view) {
         val subtitleDescription = element.dataContent.firstOrNull {
-            it.title == "Deskripsi"
+            it.title.toLowerCase() == ProductDetailInfoConstant.DESCRIPTION_DETAIL_KEY
         }?.subtitle ?: ""
 
         val descFormatted = MethodChecker.fromHtmlPreserveLineBreak(subtitleDescription)

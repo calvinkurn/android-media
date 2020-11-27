@@ -42,7 +42,9 @@ import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactoryIm
 import com.tokopedia.product.info.view.adapter.diffutil.ProductDetailInfoDiffUtil
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_detail_info.*
+import timber.log.Timber
 import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -61,6 +63,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     companion object {
         const val PRODUCT_DETAIL_INFO_PARCEL_KEY = "parcelId"
+        const val PRODUCT_DETAIL_BOTTOM_SHEET_KEY = "product detail info bs"
     }
 
     private val productDetailInfoAdapter by lazy {
@@ -77,7 +80,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         this.productDetailComponent = daggerProductDetailComponent
         this.listener = listener
 
-        show(childFragmentManager, "product detail info bs")
+        show(childFragmentManager, PRODUCT_DETAIL_BOTTOM_SHEET_KEY)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -209,6 +212,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                     startActivity(Intent(Intent.ACTION_VIEW,
                             Uri.parse("https://www.youtube.com/watch?v=" + url[index])));
                 } catch (e: Throwable) {
+                    Timber.d(e)
                 }
             }
         }

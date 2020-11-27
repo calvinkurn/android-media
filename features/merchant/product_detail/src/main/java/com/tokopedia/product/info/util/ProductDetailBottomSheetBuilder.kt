@@ -23,7 +23,8 @@ object ProductDetailBottomSheetBuilder {
             val date = view.findViewById<Typography>(R.id.product_shop_notes_date)
             val desc = view.findViewById<Typography>(R.id.product_shop_notes_desc)
 
-            date.text = dateValue toDateId ("dd MMM yyyy, 'pukul' HH:mm")
+            val pukulString = getString(R.string.pdp_ime_pukul)
+            date.text = dateValue toDateId ("dd MMM yyyy, '${pukulString}' HH:mm")
             desc.text = HtmlLinkHelper(context, descValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
         }
 
