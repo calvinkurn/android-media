@@ -40,8 +40,8 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
@@ -230,8 +230,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromCreditCardPicker(resultCode: Int, data: Intent?) {
         val metadata = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_METADATA)
-        if (metadata != null) {
-            viewModel.updateCreditCard(metadata)
+        val gatewayCode = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_GATEWAY_CODE)
+        if (gatewayCode != null && metadata != null) {
+            viewModel.updateCreditCard(gatewayCode, metadata)
         }
     }
 

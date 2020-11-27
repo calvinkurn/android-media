@@ -84,6 +84,7 @@ import com.tokopedia.buyerorder.detail.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.buyerorder.list.common.OrderListContants;
 import com.tokopedia.buyerorder.list.data.ConditionalInfo;
 import com.tokopedia.buyerorder.list.data.PaymentData;
+import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFinishOrderParam;
 import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -103,6 +104,7 @@ import kotlin.Unit;
 import static android.content.Context.CLIPBOARD_SERVICE;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_ORDER_ID;
 import static com.tokopedia.applink.internal.ApplinkConstInternalOrder.EXTRA_USER_MODE;
+import static com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.CANCEL_BUYER_REQUEST_TWO_LAYER;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_CODE_INSTANT_CANCEL;
 import static com.tokopedia.buyerorder.common.util.BuyerConsts.RESULT_MSG_INSTANT_CANCEL;
@@ -815,7 +817,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                             btnOk.setOnClickListener(view1 -> {
                                 if (!TextUtils.isEmpty(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri())) {
                                     if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Selesai") && getArguments() != null) {
-                                        presenter.finishOrder(getArguments().getString(KEY_ORDER_ID), actionButton.getUri());
+                                        String actionStatus = "";
+                                        if (!status.status().isEmpty() && Integer.parseInt(status.status()) < 600) {
+                                            actionStatus = ACTION_FINISH_ORDER;
+                                        }
+
+                                        presenter.finishOrderGql(getArguments().getString(KEY_ORDER_ID), actionStatus);
                                         dialogUnify.dismiss();
                                     } else if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getLabel().equalsIgnoreCase("Komplain") && getArguments()!=null) {
                                         Intent newIntent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.WEBVIEW, String.format(TokopediaUrl.Companion.getInstance().getMOBILEWEB() + ApplinkConst.ResCenter.RESO_CREATE, getArguments().getString(KEY_ORDER_ID)));

@@ -6,6 +6,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
+import com.tokopedia.applink.order.DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
+import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancellationRequest
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerCancelled
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerFinished
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationMainAppSellerInShipping
@@ -20,6 +22,7 @@ import com.tokopedia.config.GlobalConfig
 object AppLinkMapperSellerHome {
 
     const val QUERY_PARAM_SEARCH = "search"
+    const val FILTER_ORDER_TYPE = "filter_order_type"
 
     fun getSomNewOrderAppLink(deepLink: String): String {
         val uri = Uri.parse(deepLink)
@@ -93,6 +96,22 @@ object AppLinkMapperSellerHome {
             }
         } else {
             getRegisteredNavigationMainAppSellerCancelled()
+        }
+    }
+
+    fun getSomCancellationRequestAppLink(deepLink: String): String {
+        val uri = Uri.parse(deepLink)
+        val searchKeyword = uri.getQueryParameter(QUERY_PARAM_SEARCH).orEmpty()
+        return if (GlobalConfig.isSellerApp() || shouldRedirectToSellerApp(deepLink)) {
+            val param = mutableMapOf<String, Any>(FILTER_ORDER_TYPE to FILTER_CANCELLATION_REQUEST)
+            if(searchKeyword.isNotBlank()) {
+                param[QUERY_PARAM_SEARCH] = searchKeyword
+                UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST, param)
+            } else {
+                UriUtil.buildUriAppendParams(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST, param)
+            }
+        } else {
+            getRegisteredNavigationMainAppSellerCancellationRequest()
         }
     }
 

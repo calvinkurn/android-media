@@ -42,8 +42,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
+import com.tokopedia.buyerorder.common.util.BuyerConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
@@ -98,6 +98,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CA
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WEB_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.WRONG_FORMAT_EMAIL
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohIdlingResource
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohUtils
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.UohAnalytics
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceAdd
@@ -192,7 +193,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultStartDateStr = ""
     private var defaultEndDate = ""
     private var defaultEndDateStr = ""
-    private var arrayFilterDate = arrayOf<String>()
+    private var arrayFilterDate: Array<String>? = arrayOf()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
@@ -320,7 +321,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as Array<String>
+        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as? Array<String>
     }
 
     private fun observingData() {
@@ -454,9 +455,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             loadRecommendationList()
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -471,6 +474,10 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     if (recommendationList.isNotEmpty()) {
                         renderEmptyList()
                     }
+                    UohIdlingResource.decrement()
+                }
+                is Fail -> {
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -493,9 +500,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseFinishOrder.message.first(), Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -511,9 +520,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -536,9 +547,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     showToaster(responseLsPrintFinishOrder.data.message, Toaster.TYPE_ERROR)
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -559,10 +572,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -583,10 +598,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                             showToaster(getString(R.string.toaster_succeed_send_email), Toaster.TYPE_NORMAL)
                         }
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     bottomSheetResendEmail?.tf_email?.setError(true)
                     bottomSheetResendEmail?.tf_email?.setMessage(getString(R.string.toaster_failed_send_email))
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -602,9 +619,11 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     } else {
                         showToaster(it.data.rechargeSetOrderToFail.attributes.errorMessage, Toaster.TYPE_ERROR)
                     }
+                    UohIdlingResource.decrement()
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                    UohIdlingResource.decrement()
                 }
             }
         })
@@ -740,12 +759,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
         val arrayListMapDate = arrayListOf<HashMap<String, String>>()
         var i = 0
-        if (arrayFilterDate.isNotEmpty()) {
-            arrayFilterDate.forEach { optionDate ->
-                val mapKey = HashMap<String, String>()
-                mapKey["$i"] = optionDate
-                arrayListMapDate.add(mapKey)
-                i++
+        arrayFilterDate?.let { arrayDate ->
+            if (arrayDate.isNotEmpty()) {
+                arrayDate.forEach { optionDate ->
+                    val mapKey = HashMap<String, String>()
+                    mapKey["$i"] = optionDate
+                    arrayListMapDate.add(mapKey)
+                    i++
+                }
             }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE

@@ -22,6 +22,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.talk.DiscussionMostHelpfulResponseWrapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteDiscussion
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -35,11 +36,13 @@ import com.tokopedia.purchase_platform.common.feature.helpticket.domain.usecase.
 import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -154,10 +157,46 @@ class DynamicProductDetailViewModelTest {
     //==============================================================================================//
 
     @Test
+    fun `on success clear cache`() {
+        viewModel.clearCacheP2Data()
+
+        verify {
+            getProductInfoP2DataUseCase.clearCache()
+        }
+    }
+
+    @Test
+    fun `get shop info from P2`() {
+        val shopInfo = viewModel.getShopInfo()
+
+        Assert.assertNotNull(shopInfo)
+    }
+
+    @Test
+    fun `get cart type by product id`() {
+        val cartRedirection = viewModel.getCartTypeByProductId()
+
+        Assert.assertNull(cartRedirection)
+    }
+
+    @Test
+    fun `get multi origin but p1 data is null`(){
+        spykViewModel.getDynamicProductInfoP1 = null
+        val data = viewModel.getMultiOriginByProductId()
+        Assert.assertEquals(data.id, "")
+    }
+
+    @Test
     fun `on success update variable p1`() {
         viewModel.updateDynamicProductInfoData(DynamicProductInfoP1())
 
         Assert.assertNotNull(viewModel.getDynamicProductInfoP1)
+    }
+
+    @Test
+    fun `update variable p1 with null`() {
+        viewModel.updateDynamicProductInfoData(null)
+        Assert.assertNull(viewModel.getDynamicProductInfoP1)
     }
 
     @Test
@@ -491,8 +530,61 @@ class DynamicProductDetailViewModelTest {
         coVerify {
             getRecommendationUseCase.createObservable(any())
         }
-        print(viewModel.loadTopAdsProduct.value)
         Assert.assertTrue(viewModel.loadTopAdsProduct.value is Fail)
+    }
+
+    @Test
+    fun `success get recommendation with exist list`() {
+        val recomWidget = RecommendationWidget(tid = "1", recommendationItemList = listOf(RecommendationItem()))
+        val listOfRecom = arrayListOf(recomWidget)
+        val recomDataModel = ProductRecommendationDataModel(filterData = listOf(AnnotationChip(
+                RecommendationFilterChipsEntity.RecommendationFilterChip(isActivated = true)
+        )))
+
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns listOfRecom
+
+        viewModel.getRecommendation(recomDataModel, AnnotationChip(), 1, 1)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        }
+
+        Assert.assertTrue(viewModel.filterTopAdsProduct.value?.isRecomenDataEmpty == false)
+        Assert.assertTrue((viewModel.statusFilterTopAdsProduct.value as Success).data)
+    }
+
+    @Test
+    fun `success get recommendation with empty list`() {
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } returns emptyList()
+
+        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        }
+
+        Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
+        Assert.assertFalse((viewModel.statusFilterTopAdsProduct.value as Success).data)
+    }
+
+    @Test
+    fun `error get recommendation`() {
+        coEvery {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        } throws Throwable()
+
+        viewModel.getRecommendation(ProductRecommendationDataModel(), AnnotationChip(), 1, 1)
+
+        coVerify {
+            getRecommendationUseCase.createObservable(any()).toBlocking().first()
+        }
+
+        Assert.assertNull(viewModel.filterTopAdsProduct.value?.recomWidgetData)
+        Assert.assertTrue(viewModel.statusFilterTopAdsProduct.value is Fail)
     }
     //==================================END OF TOP ADS SECTION======================================//
     //==============================================================================================//
@@ -578,7 +670,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNotNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
-
+        Assert.assertTrue(viewModel.topAdsImageView.value is Success)
         Assert.assertFalse(viewModel.enableCaching)
 
         val p1Result = (viewModel.productLayout.value as Success).data
@@ -632,6 +724,10 @@ class DynamicProductDetailViewModelTest {
         coEvery {
             getProductInfoP2OtherUseCase.executeOnBackground(any(), any())
         } returns ProductInfoP2Other()
+
+        coEvery {
+            topAdsImageViewUseCase.getImageData(any())
+        } returns arrayListOf(TopAdsImageViewModel())
     }
 
     @Test
@@ -717,6 +813,7 @@ class DynamicProductDetailViewModelTest {
         Assert.assertNotNull(viewModel.p2Other.value)
         Assert.assertNull(viewModel.p2Login.value)
         Assert.assertNotNull(viewModel.productInfoP3.value)
+        Assert.assertNotNull(viewModel.shouldHideFloatingButton())
     }
 
     @Test
