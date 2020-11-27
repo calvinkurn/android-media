@@ -45,9 +45,6 @@ class ShipmentPresenterHelpTicketTest {
     @MockK
     private lateinit var checkoutUseCase: CheckoutGqlUseCase
 
-//    @MockK(relaxUnitFun = true)
-//    private lateinit var graphqlUseCase: GraphqlUseCase
-
     @MockK
     private lateinit var editAddressUseCase: EditAddressUseCase
 
@@ -108,15 +105,12 @@ class ShipmentPresenterHelpTicketTest {
     private var shipmentDataConverter = ShipmentDataConverter()
 
     private val gson = Gson()
-//    private val unitTestFileUtils = UnitTestFileUtils()
-//    private lateinit var getShipmentAddressFormGqlUseCase: GetShipmentAddressFormGqlUseCase
 
     private lateinit var presenter: ShipmentPresenter
 
     @Before
     fun before() {
         MockKAnnotations.init(this)
-//        getShipmentAddressFormGqlUseCase = GetShipmentAddressFormGqlUseCase("", graphqlUseCase, ShipmentMapper(), TestSchedulers)
         presenter = ShipmentPresenter(compositeSubscription,
                 checkoutUseCase, getShipmentAddressFormGqlUseCase,
                 editAddressUseCase, changeShippingAddressGqlUseCase,
