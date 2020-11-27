@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">promo_checkout</string>
-    <string name="activity_promo_list_title">Gunakan Promo/Kupon</string>
-    <string name="activity_promo_detail_title">Detail Kupon</string>
+    <string name="title_promo_checkout_list">Gunakan Promo/Kupon</string>
+    <string name="title_promo_checkout_detail">Detail Kupon</string>
     <string name="promo_label_hint_promo_code">Kode Promo</string>
     <string name="promo_label_input_promo_code">Ketik kode promo</string>
     <string name="promo_label_button_use">Gunakan</string>

@@ -100,6 +100,14 @@ class GetChannelDetailUseCase @Inject constructor(private val gqlUseCase: Graphq
                   }
                   app_link
                   web_link
+                  share {
+                    text
+                    redirect_url
+                    use_short_url
+                    meta_title
+                    meta_description
+                    is_show_button
+                  }
                 }
               }
             }

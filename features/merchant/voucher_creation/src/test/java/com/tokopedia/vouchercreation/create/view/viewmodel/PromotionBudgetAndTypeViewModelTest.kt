@@ -5,15 +5,14 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
-import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -52,8 +51,6 @@ class PromotionBudgetAndTypeViewModelTest {
 
         mViewModel.getBasicShopInfo()
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             basicShopInfoUseCase.executeOnBackground()
         }
@@ -73,8 +70,6 @@ class PromotionBudgetAndTypeViewModelTest {
         } returns "1"
 
         mViewModel.getBasicShopInfo()
-
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()

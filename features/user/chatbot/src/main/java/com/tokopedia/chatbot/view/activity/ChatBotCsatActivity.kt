@@ -47,6 +47,9 @@ class ChatBotCsatActivity : BaseProvideRatingActivity() {
                 captionList.add(it.caption ?: "")
             }
 
+            questionList.reverse()
+            captionList.reverse()
+
             intent.putExtra(CSAT_TITLE, model?.csat?.title)
             intent.putStringArrayListExtra(CAPTION_LIST, captionList)
             intent.putStringArrayListExtra(QUESTION_LIST, questionList)
