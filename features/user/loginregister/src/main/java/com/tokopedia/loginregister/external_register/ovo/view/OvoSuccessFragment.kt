@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo
+package com.tokopedia.loginregister.external_register.ovo.view
 
 import android.os.Bundle
 import android.view.View
@@ -14,7 +14,7 @@ import com.tokopedia.loginregister.external_register.base.listener.BaseFinalList
 class OvoSuccessFragment: ExternalAccountFinalFragment(), BaseFinalListener {
 
     companion object {
-        fun createInstance(): OvoSuccessFragment{
+        fun createInstance(): OvoSuccessFragment {
             return OvoSuccessFragment()
         }
     }

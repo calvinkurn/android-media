@@ -1,10 +1,8 @@
-package com.tokopedia.loginregister.external_register.ovo
+package com.tokopedia.loginregister.external_register.ovo.view
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.external_register.base.BaseDialogConnectAccount
 import com.tokopedia.loginregister.external_register.base.fragment.BaseAddPhoneEmailFragment
 import com.tokopedia.loginregister.external_register.base.listener.BaseAddPhoneListener
 import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
@@ -21,18 +19,18 @@ class OvoAddPhoneFragment : BaseAddPhoneEmailFragment(), BaseAddPhoneListener, B
         baseAddPhoneListener = this
     }
 
-    fun onHasOvoAccount() {
-        activity?.run {
-            val dialog = BaseDialogConnectAccount.showDialog(
-                    title = context?.getString(R.string.ovo_connect_account_title) ?: "",
-                    description = context?.getString(R.string.ovo_connect_account_description)
-                            ?: "",
-                    imgDrawable = R.drawable.img_ovo_collaboration,
-                    listener = this@OvoAddPhoneFragment
-            )
-            dialog.show(supportFragmentManager, "")
-        }
-    }
+//    fun onHasOvoAccount() {
+//        activity?.run {
+//            val dialog = BaseDialogConnectAccount(
+//                    title = context?.getString(R.string.ovo_connect_account_title) ?: "",
+//                    description = context?.getString(R.string.ovo_connect_account_description)
+//                            ?: "",
+//                    imgDrawable = R.drawable.img_ovo_collaboration,
+//                    listener = this@OvoAddPhoneFragment
+//            )
+//            dialog.show(supportFragmentManager, "")
+//        }
+//    }
 
     override fun onDialogPositiveBtnClicked() {
         startActivity(Intent(context!!, OvoFinalPageActivity::class.java))
@@ -43,7 +41,7 @@ class OvoAddPhoneFragment : BaseAddPhoneEmailFragment(), BaseAddPhoneListener, B
     }
 
     override fun onAddPhoneNextButtonClicked() {
-        onHasOvoAccount()
+//        onHasOvoAccount()
     }
 
     override fun onAddPhoneOtherMethodButtonClicked() {

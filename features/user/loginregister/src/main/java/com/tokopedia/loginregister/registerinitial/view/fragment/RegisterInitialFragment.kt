@@ -18,7 +18,6 @@ import android.text.style.ClickableSpan
 import android.util.Patterns
 import android.view.*
 import android.widget.*
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
@@ -54,9 +53,11 @@ import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
+import com.tokopedia.loginregister.external_register.base.listener.BaseDialogConnectAccListener
+import com.tokopedia.loginregister.external_register.ovo.data.CheckOvoResponse
+import com.tokopedia.loginregister.external_register.ovo.view.dialog.OvoAccountDialog
 import com.tokopedia.loginregister.login.service.RegisterPushNotifService
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
-import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
@@ -69,7 +70,6 @@ import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.interceptor.akamai.AkamaiErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.getGoogleClientId
@@ -88,6 +88,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.permission.PermissionCheckerHelper
 import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -95,7 +96,7 @@ import javax.inject.Named
 /**
  * @author by nisie on 10/24/18.
  */
-class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener {
+open class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener {
 
     private lateinit var optionTitle: TextView
     private lateinit var separator: View
@@ -233,10 +234,10 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         setViewListener()
         if (isSmartLogin) {
             if (isPending) {
-                val intent =  goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
+                val intent = goToVerification(email = email, otpType = OTP_TYPE_ACTIVATE)
                 startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
             } else {
-                val intent =  goToVerification(email = email, otpType = OTP_TYPE_REGISTER)
+                val intent = goToVerification(email = email, otpType = OTP_TYPE_REGISTER)
                 startActivityForResult(intent, REQUEST_OTP_VALIDATE)
             }
         }
@@ -418,6 +419,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 }
             }
         })
+
+        registerInitialViewModel.checkOvoResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessCheckOvoAcc(it.data)
+                is Fail -> onErrorCheckovoAcc(it.throwable)
+            }
+        })
+
         combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
                 .combineWith(registerInitialViewModel.validateToken) { loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
                     if (loginToken is Fail) {
@@ -462,7 +471,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
         registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
             if (it != null) {
-                val intent =  goToVerification(email = it, otpType = OTP_SECURITY_QUESTION)
+                val intent = goToVerification(email = it, otpType = OTP_SECURITY_QUESTION)
                 startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
             }
         })
@@ -474,7 +483,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         })
 
         registerInitialViewModel.dynamicBannerResponse.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> setDynamicBannerView(it.data)
                 is Fail -> {
                     bannerRegister.hide()
@@ -482,6 +491,90 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 }
             }
         })
+    }
+
+    private fun onSuccessCheckOvoAcc(checkOvoResponse: CheckOvoResponse) {
+        checkOvoResponse?.data?.run {
+            if (isAllow) {
+                if (isRegistered) {
+                    showConnectOvoDialog()
+                } else {
+                    showRegisterOvoDialog()
+                }
+            } else {
+                phoneNumber?.run {
+                    showProceedWithPhoneDialog(this)
+                }
+            }
+        }
+    }
+
+    fun doRegisterCheck(){
+        phoneNumber?.run {
+            registerInitialViewModel.registerCheck(removeSymbolPhone(this))
+        }
+    }
+
+    fun showRegisterOvoDialog() {
+        activity?.let {
+            phoneNumber?.run {
+                OvoAccountDialog.showRegisterDialogUnify(this, it, object: BaseDialogConnectAccListener {
+                    override fun onDialogPositiveBtnClicked() {
+                        goToOvoAddName(this@run)
+                    }
+
+                    override fun onDialogNegativeBtnClicked() {
+                        showProceedWithPhoneDialog(phoneNumber ?: "")
+                    }
+                })
+            }
+
+//            OvoAccountDialog.showRegisterOvoDialog(this, object: BaseDialogConnectAccListener {
+//                override fun onDialogPositiveBtnClicked() {
+//                    goToOvoAddName()
+//                }
+//
+//                override fun onDialogNegativeBtnClicked() {
+//                    doRegisterCheck()
+//                }
+//            })
+        }
+    }
+
+    fun showConnectOvoDialog() {
+        activity?.run {
+            OvoAccountDialog.showConnectDialogUnify(this, object: BaseDialogConnectAccListener {
+                override fun onDialogPositiveBtnClicked() {
+                    goToOvoAddName(phoneNumber ?: "")
+                }
+
+                override fun onDialogNegativeBtnClicked() {
+                    showProceedWithPhoneDialog(phoneNumber ?: "")
+                }
+            })
+//            OvoAccountDialog.showConnectOvoDialog(this, object: BaseDialogConnectAccListener {
+//                override fun onDialogPositiveBtnClicked() {
+//
+//                }
+//
+//                override fun onDialogNegativeBtnClicked() {
+//
+//                }
+//            })
+        }
+    }
+
+    fun goToOvoAddName(phone: String) {
+        activity?.run {
+            val formattedPhone = removeSymbolPhone(phone)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.OVO_ADD_NAME)
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, formattedPhone)
+            startActivity(intent)
+        }
+    }
+
+    private fun onErrorCheckovoAcc(throwable: Throwable) {
+        doRegisterCheck()
     }
 
     private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>) {
@@ -517,7 +610,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        if (errorMessage == forbiddenMessage){
+        if (errorMessage == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity,
@@ -675,7 +768,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 if (registerCheckData.isExist) {
                     showRegisteredPhoneDialog(registerCheckData.view)
                 } else {
-                    showProceedWithPhoneDialog(registerCheckData.view)
+                    registerInitialViewModel.checkHasOvoAccount(registerCheckData.view)
                 }
             }
             EMAIL_TYPE -> {
@@ -684,11 +777,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     if (!registerCheckData.isPending) {
                         showRegisteredEmailDialog(registerCheckData.view)
                     } else {
-                        val intent =  goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_ACTIVATE)
+                        val intent = goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_ACTIVATE)
                         startActivityForResult(intent, REQUEST_PENDING_OTP_VALIDATE)
                     }
                 } else {
-                    val intent =  goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_REGISTER)
+                    val intent = goToVerification(email = registerCheckData.view, otpType = OTP_TYPE_REGISTER)
                     startActivityForResult(intent, REQUEST_OTP_VALIDATE)
                 }
             }
@@ -817,8 +910,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 processAfterAddNameRegisterPhone(data?.extras)
             } else if (requestCode == REQUEST_ADD_PIN) {
                 registerInitialViewModel.getUserInfoAfterAddPin()
-            }
-            else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
+            } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
                     && data.extras != null) {
@@ -831,7 +923,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                 if (data != null) {
                     data.extras?.let { bundle ->
                         if (bundle.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_SQ_CHECK, false)) {
-                            val intent =  goToVerification(otpType = OTP_SECURITY_QUESTION)
+                            val intent = goToVerification(otpType = OTP_SECURITY_QUESTION)
                             startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
                         } else {
                             it.finish()
@@ -899,10 +991,11 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun processAfterAddNameRegisterPhone(data: Bundle?){
+    private fun processAfterAddNameRegisterPhone(data: Bundle?) {
         val enable2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA) ?: false
-        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA) ?: false
-        if(enable2FA){
+        val enableSkip2FA = data?.getBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA)
+                ?: false
+        if (enable2FA) {
             activityShouldEnd = false
             sendTrackingSuccessRegister()
             goToAddPin2FA(enableSkip2FA)
@@ -911,7 +1004,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         }
     }
 
-    private fun goToAddPin2FA(enableSkip2FA: Boolean){
+    private fun goToAddPin2FA(enableSkip2FA: Boolean) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
@@ -933,7 +1026,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     override fun onActionPartialClick(id: String) {
         registerAnalytics.trackClickSignUpButton()
-        if(Patterns.PHONE.matcher(id).matches()) {
+        if (Patterns.PHONE.matcher(id).matches()) {
+            setTempPhoneNumber(id)
             registerInitialViewModel.registerCheck(removeSymbolPhone(id))
         } else {
             registerInitialViewModel.registerCheck(id)
@@ -1047,7 +1141,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             dialog.dismiss()
             phoneNumber = phone
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
+            val intent = goToVerification(phone = phone, otpType = OTP_LOGIN_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_TOKOCASH)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
@@ -1106,7 +1200,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             registerAnalytics.trackClickYesButtonPhoneDialog()
             dialog.dismiss()
             userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-            val intent =  goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
+            val intent = goToVerification(phone = phone, otpType = OTP_REGISTER_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_VERIFY_PHONE_REGISTER_PHONE)
         }
         dialog.setBtnCancel(getString(R.string.already_registered_no))
@@ -1211,7 +1305,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     @SuppressLint("MissingPermission", "HardwareIds", "PrivateResource")
     fun getPhoneNumber() {
         activity?.let {
-            if(permissionCheckerHelper.hasPermission(it, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE))) {
+            if (permissionCheckerHelper.hasPermission(it, arrayOf(PermissionCheckerHelper.Companion.PERMISSION_READ_PHONE_STATE))) {
                 val phoneNumbers = arrayListOf<String>()
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1238,7 +1332,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
                     partialRegisterInputView.setAdapterInputEmailPhone(
                             ArrayAdapter(it, R.layout.select_dialog_item_material, phoneNumbers)
                     ) { v, hasFocus ->
-                        if(v.windowVisibility == View.VISIBLE) {
+                        if (v.windowVisibility == View.VISIBLE) {
                             activity?.isFinishing?.let { isFinishing ->
                                 if (!isFinishing) {
                                     if (hasFocus && this::emailPhoneEditText.isInitialized && emailPhoneEditText.hasFocus()) {
@@ -1344,7 +1438,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun registerPushNotif() {
-        if(isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (isHitRegisterPushNotif && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             activity?.let {
                 RegisterPushNotifService.startService(it.applicationContext)
             }
@@ -1442,9 +1536,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
-      
+
         private const val TOKOPEDIA_CARE_PATH = "help"
-      
+
         private const val REGEX_REMOVE_SYMBOL_PHONE = "[+| |-]"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {

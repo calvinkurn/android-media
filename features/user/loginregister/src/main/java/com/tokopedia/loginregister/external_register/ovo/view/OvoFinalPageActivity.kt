@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.external_register.ovo
+package com.tokopedia.loginregister.external_register.ovo.view
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
