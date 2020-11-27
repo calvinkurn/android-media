@@ -13,4 +13,6 @@
     app:lv_image_height="@dimen/dp_48"
     app:lv_title_text_style="normal"
     app:lv_title_text_size="@dimen/sp_14"
+    app:lv_title_color="@color/Unify_N700"
+    app:lv_content_color="@color/Unify_G400"
     app:lv_image_margin_right="@dimen/dp_8"/>

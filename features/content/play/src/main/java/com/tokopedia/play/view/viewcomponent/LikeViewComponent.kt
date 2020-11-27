@@ -19,6 +19,9 @@ class LikeViewComponent(
         private val listener: Listener
 ) : ViewComponent(container, idRes) {
 
+    val clickAreaView: View
+        get() = vLikeClickArea
+
     private val animationLike = findViewById<LottieAnimationView>(R.id.animation_like)
     private val vLikeClickArea = findViewById<View>(R.id.v_like_click_area)
     private val tvTotalLikes = findViewById<Typography>(R.id.tv_total_likes)

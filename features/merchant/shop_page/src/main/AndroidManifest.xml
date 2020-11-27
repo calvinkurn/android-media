@@ -86,8 +86,8 @@
             android:name=".favourite.view.activity.ShopFavouriteListActivity"
             android:exported="true"
             android:label="@string/favorited_shop_title"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

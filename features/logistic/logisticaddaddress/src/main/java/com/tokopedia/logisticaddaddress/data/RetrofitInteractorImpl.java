@@ -35,8 +35,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);
         compositeSubscription.add(mapsRepository.getLatLng(paramaters)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CoordinateViewModel>() {
                     @Override
@@ -63,8 +62,7 @@ public class RetrofitInteractorImpl implements RetrofitInteractor {
         TKPDMapParam<String, Object> paramaters = new TKPDMapParam<>();
         paramaters.putAll(param);
         compositeSubscription.add(mapsRepository.getLatLngFromGeocode(paramaters)
-                .unsubscribeOn(Schedulers.newThread())
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CoordinateViewModel>() {
                     @Override

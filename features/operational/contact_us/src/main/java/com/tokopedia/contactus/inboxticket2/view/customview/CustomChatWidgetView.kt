@@ -30,7 +30,7 @@ class CustomChatWidgetView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setUpCHatWidgetButton() {
-        chatWidgetButton.setImageDrawable(context.getResDrawable(R.drawable.ic_custom_top_chat_widget))
+        chatWidgetButton.setImageDrawable(context.getResDrawable(R.drawable.tanya))
         chatWidgetButton.setOnClickListener {
             if (!toolTip.isShowing) {
                 toolTip.showAtTop(this)

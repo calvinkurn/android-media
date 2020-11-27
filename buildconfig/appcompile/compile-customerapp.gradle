@@ -81,6 +81,7 @@ include "features:discovery:home"
 include "features:discovery:home_component"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
+include "features:discovery:home_nav"
 include "features:discovery:topadssdk"
 include "features:discovery:recentview"
 include "features:discovery:wishlist_common"
@@ -224,6 +225,7 @@ include "features:user:orderhistory"
 include "features:user:updateinactivephone"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
+include "features:user:home_account"
 include "features:user:seamless_login_common"
 
 include "features:user:vote"
@@ -237,3 +239,4 @@ include "tkpdabstraction"
 
 include 'testapp-features:user:logintestapp'
 include 'customerapp'
+include 'customer_mid_app'
