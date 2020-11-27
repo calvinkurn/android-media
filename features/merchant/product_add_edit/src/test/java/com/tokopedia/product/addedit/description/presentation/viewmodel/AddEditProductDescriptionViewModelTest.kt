@@ -5,9 +5,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.coroutine.TestCoroutineDispatchers
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
@@ -25,7 +25,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
 import java.lang.reflect.Type
 
@@ -94,7 +93,7 @@ class AddEditProductDescriptionViewModelTest {
     }
 
     private val viewModel: AddEditProductDescriptionViewModel by lazy {
-        AddEditProductDescriptionViewModel(TestCoroutineDispatchers, resourceProvider, getYoutubeVideoUseCase, validateProductDescriptionUseCase)
+        AddEditProductDescriptionViewModel(CoroutineTestDispatchersProvider, resourceProvider, getYoutubeVideoUseCase, validateProductDescriptionUseCase)
     }
 
     private val youtubeAppHost = "youtu.be"
@@ -226,7 +225,6 @@ class AddEditProductDescriptionViewModelTest {
 
         viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
 
-        Thread.sleep(100)
         val result = viewModel.videoYoutube.value
         assert(result != null && result.second is Fail)
     }

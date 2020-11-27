@@ -1,10 +1,10 @@
 package com.tokopedia.seller.menu.common.domain.usecase
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
-import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
@@ -45,6 +45,9 @@ class GetAllShopInfoUseCaseTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -59,7 +62,7 @@ class GetAllShopInfoUseCaseTest {
                 shopStatusTypeUseCase,
                 topAdsAutoTypeUseCase,
                 topAdsDashboardDepositUseCase,
-                SellerHomeCoroutineTestDispatcher
+                coroutineTestRule.dispatchers
         )
     }
 
