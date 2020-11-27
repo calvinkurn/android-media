@@ -6,7 +6,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.*
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter
 import com.tokopedia.shop.settings.etalase.view.viewmodel.ShopSettingsEtalaseAddEditViewModel
 import com.tokopedia.shop.settings.etalase.view.viewmodel.ShopSettingsEtalaseListViewModel
-import com.tokopedia.shop_settings.common.coroutine.TestCoroutineDispatcher
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -50,7 +50,7 @@ abstract class ShopSettingsEtalaseTestFixture {
         shopSettingsEtalaseListViewModel = ShopSettingsEtalaseListViewModel(
                 getShopEtalaseUseCase,
                 deleteShopEtalaseUseCase,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
 
         shopSettingsEtalaseListReorderPresenter = ShopSettingEtalaseListReorderPresenter(
@@ -62,7 +62,7 @@ abstract class ShopSettingsEtalaseTestFixture {
                 updateShopEtalaseUseCase,
                 getShopEtalaseUseCase,
                 userSession,
-                TestCoroutineDispatcher
+                CoroutineTestDispatchersProvider
         )
     }
 

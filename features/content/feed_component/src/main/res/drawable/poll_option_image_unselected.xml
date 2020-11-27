@@ -3,10 +3,10 @@
         <shape>
             <gradient
                 android:angle="90"
-                android:centerColor="@color/poll_black"
+                android:centerColor="@color/Unify_N700_44"
                 android:centerY="0.75"
-                android:endColor="@color/poll_black"
-                android:startColor="@color/poll_black" />
+                android:endColor="@color/Unify_N700_44"
+                android:startColor="@color/Unify_N700_44" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -16,8 +16,8 @@
                     android:bottomRightRadius="3dp"
                     android:topRightRadius="3dp"/>
                 <gradient
-                    android:endColor="@color/poll_second_white_image"
-                    android:startColor="@color/poll_first_white_image" />
+                    android:endColor="@color/Unify_N50"
+                    android:startColor="@color/Unify_N150" />
             </shape>
         </scale>
     </item>

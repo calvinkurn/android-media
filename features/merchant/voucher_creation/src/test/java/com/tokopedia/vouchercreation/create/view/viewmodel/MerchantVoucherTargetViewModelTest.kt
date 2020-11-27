@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.data.source.VoucherTargetStaticDataSource
 import com.tokopedia.vouchercreation.create.domain.model.validation.VoucherTargetType
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.VoucherTargetValidationUseCase
@@ -42,7 +42,7 @@ class MerchantVoucherTargetViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = MerchantVoucherTargetViewModel(TestCoroutineDispatchers, voucherTargetValidationUseCase)
+        mViewModel = MerchantVoucherTargetViewModel(CoroutineTestDispatchersProvider, voucherTargetValidationUseCase)
     }
 
     @Test
