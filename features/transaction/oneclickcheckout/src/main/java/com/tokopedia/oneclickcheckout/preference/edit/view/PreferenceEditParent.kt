@@ -55,4 +55,6 @@ interface PreferenceEditParent {
     fun getPaymentAmount(): Double
 
     fun isDirectPaymentStep(): Boolean
+
+    fun isNewFlow(): Boolean
 }

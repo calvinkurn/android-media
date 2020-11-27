@@ -83,6 +83,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     private var globalError: GlobalError? = null
 
+    private var isNewFlow = false
+
     companion object {
 
         private const val ARG_IS_EDIT = "is_edit"
@@ -213,7 +215,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             val parent = activity
             if (parent is PreferenceEditParent) {
                 val preferenceIndex = parent.getPreferenceIndex()
-                if (preferenceIndex.isNotEmpty()) {
+                if (!isNewFlow && preferenceIndex.isNotEmpty()) {
                     tvPreferenceName?.text = preferenceIndex
                     tvPreferenceName?.visible()
                 }
@@ -279,6 +281,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             cbMainPreference?.setOnCheckedChangeListener { _, isChecked ->
                 buttonSavePreference?.isEnabled = viewModel.isDataChanged() || isChecked
             }
+            tvMainPreference?.text = if (isNewFlow) getString(R.string.lbl_new_make_default_preference) else getString(R.string.lbl_default_preference_profile)
         }
     }
 
@@ -392,6 +395,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun initHeader() {
         val parent = activity
         if (parent is PreferenceEditParent) {
+            isNewFlow = parent.isNewFlow()
             parent.hideAddButton()
             val profileId = parent.getProfileId()
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && profileId > -1) {
@@ -402,8 +406,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         context?.let {
                             if (viewModel.preference.value is OccState.Success) {
                                 DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                                    setTitle(getString(R.string.lbl_delete_preference_title))
-                                    setDescription(getString(R.string.lbl_delete_preference_desc))
+                                    setTitle(if (isNewFlow) getString(R.string.lbl_new_delete_preference_title) else getString(R.string.lbl_delete_preference_title))
+                                    setDescription(if (isNewFlow) getString(R.string.lbl_new_delete_preference_desc) else getString(R.string.lbl_delete_preference_desc))
                                     setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
                                     setSecondaryCTAText(getString(com.tokopedia.purchase_platform.common.R.string.text_button_negative))
                                     setPrimaryCTAClickListener {
@@ -421,8 +425,11 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 } else {
                     parent.hideDeleteButton()
                 }
-
-                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.getPreferenceIndex())
+                if (isNewFlow) {
+                    parent.setHeaderTitle(getString(R.string.lbl_new_summary_preference))
+                } else {
+                    parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title) + " " + parent.getPreferenceIndex())
+                }
                 parent.hideStepper()
             } else {
                 parent.hideDeleteButton()

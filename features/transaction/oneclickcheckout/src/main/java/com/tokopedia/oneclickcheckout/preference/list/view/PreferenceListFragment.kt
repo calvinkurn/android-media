@@ -11,7 +11,6 @@ import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -105,7 +104,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     private fun initViewModel() {
-        viewModel.preferenceList.observe(viewLifecycleOwner, Observer {
+        viewModel.preferenceList.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -146,7 +145,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 else -> swipeRefreshLayout?.isRefreshing = true
             }
         })
-        viewModel.setDefaultPreference.observe(viewLifecycleOwner, Observer {
+        viewModel.setDefaultPreference.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()

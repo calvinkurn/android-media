@@ -9,6 +9,7 @@
     <string name="lbl_summary_preference_title">Pengaturan Beli Langsung</string>
     <string name="lbl_summary_preference_option">Pilihan</string>
     <string name="lbl_summary_preference_with_number_title">Atur</string>
+    <string name="lbl_new_summary_preference">Atur Template</string>
     <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
 
     <string name="lbl_choose_payment_method">Pilih Metode Pembayaran</string>
@@ -16,7 +17,9 @@
     <string name="lbl_save">Simpan</string>
 
     <string name="lbl_delete_preference_title">Hapus pilihan ini?</string>
+    <string name="lbl_new_delete_preference_title">Hapus template ini?</string>
     <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
+    <string name="lbl_new_delete_preference_desc">Template Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
     <string name="lbl_delete_preference_ok">Ya, Hapus</string>
     <string name="atur_pilihan">Atur Pilihan</string>
     <string name="label_pilih">Pilih</string>
@@ -41,8 +44,10 @@
     <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>
     <string name="preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu untuk langsung dipakai setiap belanja.</string>
     <string name="add_first_preference">Atur</string>
+    <string name="new_add_first_preference">Buat Template</string>
     <string name="add_preference">Tambah Pilihan</string>
     <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
+    <string name="lbl_new_make_default_preference">Jadikan template utama</string>
     <string name="lbl_default_preference">Utama</string>
     <string name="lbl_default_preference_profile">Pilihan Utama</string>
 
