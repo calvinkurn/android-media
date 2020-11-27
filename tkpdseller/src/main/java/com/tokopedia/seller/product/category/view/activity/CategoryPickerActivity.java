@@ -14,7 +14,7 @@ import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.seller.manageitem.common.listener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.manageitem.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
-import com.tokopedia.seller.product.draft.tracking.ProductAddEditDraftListPageTracking;
+import com.tokopedia.seller.product.category.view.tracking.ProductAddEditCategoryTracking;
 import com.tokopedia.user.session.UserSession;
 import java.util.ArrayList;
 import java.util.List;
@@ -106,8 +106,8 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (getIntent().getBooleanExtra(ProductAddEditDraftListPageTracking.EXTRA_IS_EDIT_MODE, false)) {
-            ProductAddEditDraftListPageTracking.INSTANCE.clickBackOtherCategory(new UserSession(this).getShopId());
+        if (getIntent().getBooleanExtra(ProductAddEditCategoryTracking.EXTRA_IS_EDIT_MODE, false)) {
+            ProductAddEditCategoryTracking.INSTANCE.clickBackOtherCategory(new UserSession(this).getShopId());
         }
     }
 }

@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.draft.tracking
+package com.tokopedia.seller.product.category.view.tracking
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
 
-object ProductAddEditDraftListPageTracking {
+object ProductAddEditCategoryTracking {
     var gtmTracker: ContextAnalytics? = null
 
     const val EXTRA_IS_EDIT_MODE = "EXTRA_IS_EDIT_MODE"
