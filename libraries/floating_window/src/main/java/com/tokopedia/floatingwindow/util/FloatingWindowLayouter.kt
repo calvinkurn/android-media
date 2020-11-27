@@ -15,6 +15,20 @@ class FloatingWindowLayouter internal constructor(
     private val floatingWindow: FloatingWindow
         get() = FloatingWindow.getInstance(view.context)
 
+    private val screenLayoutHelper = ScreenLayoutHelper()
+
+    val screenWidth: Int
+        get() = screenLayoutHelper.widthPixels
+
+    val screenHeight: Int
+        get() = screenLayoutHelper.heightPixels
+
+    val viewWidth: Int
+        get() = layoutParams.width
+
+    val viewHeight: Int
+        get() = layoutParams.height
+
     fun updatePosition(x: Int, y: Int) {
         floatingWindow.updateViewLayout(
                 view,

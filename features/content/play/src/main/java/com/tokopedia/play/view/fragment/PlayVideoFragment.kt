@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.fragment
 
 import android.content.res.Configuration
+import android.graphics.Point
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -168,8 +169,26 @@ class PlayVideoFragment @Inject constructor(
                 .setY(screenHeight - scaledHeight - 16)
                 .build()
 
-        floatingView.doOnClick {
-            it.updateSize(100, 500)
+        floatingView.doOnDragged { layouter, point ->
+            val newPoint = Point()
+            val startLimit = 16
+            val endLimit = layouter.screenWidth - layouter.viewWidth - 16
+            val topLimit = 16
+            val bottomLimit = layouter.screenHeight - layouter.viewHeight - 16
+
+            newPoint.x = when {
+                point.x > endLimit -> endLimit
+                point.x < startLimit -> startLimit
+                else -> point.x
+            }
+
+            newPoint.y = when {
+                point.y > bottomLimit -> bottomLimit
+                point.y < topLimit -> topLimit
+                else -> point.y
+            }
+
+            layouter.updatePosition(newPoint.x, newPoint.y)
         }
 
         pipAdapter.addView(

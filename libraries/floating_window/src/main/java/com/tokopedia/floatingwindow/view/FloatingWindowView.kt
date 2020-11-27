@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import com.tokopedia.floatingwindow.util.FloatingWindowLayouter
+import com.tokopedia.floatingwindow.util.ScreenLayoutHelper
 
 /**
  * Created by jegul on 27/11/20
@@ -47,10 +48,10 @@ class FloatingWindowView private constructor(
             val height: Int
     ) {
 
-        private val displayMetrics = getCurrentDisplayMetrics()
+        private val screenLayoutHelper = ScreenLayoutHelper()
 
-        private var x = (displayMetrics.widthPixels - width) / 2
-        private var y = (displayMetrics.heightPixels - height) / 2
+        private var x = (screenLayoutHelper.widthPixels - width) / 2
+        private var y = (screenLayoutHelper.heightPixels - height) / 2
         private var mGravity: Int = getWindowManagerDefaultGravity()
 
         fun setX(x: Int): Builder {
@@ -106,10 +107,6 @@ class FloatingWindowView private constructor(
 
         private fun getWindowManagerDefaultGravity(): Int {
             return Gravity.TOP or Gravity.START
-        }
-
-        private fun getCurrentDisplayMetrics(): DisplayMetrics {
-            return Resources.getSystem().displayMetrics
         }
     }
 
