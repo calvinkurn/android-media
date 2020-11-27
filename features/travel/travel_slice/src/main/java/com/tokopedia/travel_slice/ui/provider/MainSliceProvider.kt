@@ -11,7 +11,6 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.travel_slice.data.HotelData
 import com.tokopedia.travel_slice.data.HotelOrderListModel
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
-import com.tokopedia.travel_slice.ui.provider.HotelSliceProviderUtil.allowReads
 import com.tokopedia.travel_slice.utils.TravelDateUtils.validateCheckInDate
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSession
@@ -57,9 +56,7 @@ class MainSliceProvider : SliceProvider() {
     }
 
     private fun init() {
-        allowReads {
-            GraphqlClient.init(contextNonNull)
-        }
+        GraphqlClient.init(contextNonNull)
         DaggerTravelSliceComponent.builder().build().inject(this)
     }
 
