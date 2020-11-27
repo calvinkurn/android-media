@@ -86,7 +86,7 @@
             app:backgroundTint="@color/white"
             app:fabCustomSize="@dimen/dp_56"
             app:layout_behavior="com.tokopedia.shop.ShopPageFABBehaviour"
-            app:maxImageSize="@dimen/dp_26"
+            app:maxImageSize="@dimen/dp_28"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_chat_floating_button" />
 
