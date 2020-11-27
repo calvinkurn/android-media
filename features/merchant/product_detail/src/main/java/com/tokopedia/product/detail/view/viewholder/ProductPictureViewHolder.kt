@@ -1,7 +1,9 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder
@@ -18,6 +20,11 @@ class ProductPictureViewHolder(private val view: View) : AbstractViewHolder<Medi
     }
 
     override fun bind(data: MediaDataModel) {
-        view.pdp_main_img.loadImageWithoutPlaceholder(data.urlOriginal)
+        view.pdp_main_img.scaleType = ImageView.ScaleType.CENTER_CROP
+        Glide.with(view.context)
+                .load(data.urlOriginal)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .centerCrop()
+                .into(view.pdp_main_img)
     }
 }
