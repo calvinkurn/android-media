@@ -2,7 +2,7 @@ package com.tokopedia.checkout.domain.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesGqlResponse
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.checkout.data.model.response.ReleaseBookingResponse
 import rx.Observable

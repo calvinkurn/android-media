@@ -4,14 +4,14 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -19,11 +19,11 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.AttachProduct.*
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.attachproduct.resultmodel.ResultProduct
-import com.tokopedia.attachproduct.view.activity.AttachProductActivity
+import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.network.exception.MessageErrorException
@@ -97,7 +97,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         const val TALK_DETAILS_TRACE = "mp_talk_detail"
         const val GO_TO_REPORT_TALK_REQ_CODE = 101
         const val GO_TO_ATTACH_PRODUCT_REQ_CODE = 102
-
+        const val TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK = 324
+        const val SOURCE_TALK = "talk"
     }
 
     override fun getScreenName(): String {
@@ -327,8 +328,12 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     private fun goToAttachProductScreen() {
-        val intent = AttachProductActivity.createInstance(context, shopId, "",
-                userSession.shopId == shopId, AttachProductActivity.SOURCE_TALK)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, userSession.shopId == shopId)
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TALK)
+
         startActivityForResult(intent, GO_TO_ATTACH_PRODUCT_REQ_CODE)
     }
 
@@ -682,9 +687,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == GO_TO_ATTACH_PRODUCT_REQ_CODE &&
-                resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
-            val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity
-                    .TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)!!
+                resultCode == TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
+            val products = data?.getParcelableArrayListExtra<ResultProduct>(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)!!
             setAttachedProduct(convertAttachProduct(products))
         } else if (requestCode == GO_TO_REPORT_TALK_REQ_CODE
                 && resultCode == Activity.RESULT_OK) {

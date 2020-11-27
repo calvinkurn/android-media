@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:dither="true"
     android:shape="rectangle" >
-    <solid android:color="@color/white" />
+    <solid android:color="@color/Unify_N0" />
 
     <corners android:radius="3dp" />
 

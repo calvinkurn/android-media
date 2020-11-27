@@ -1,9 +1,9 @@
-package com.tokopedia.digital.home.presentation.adapter.viewholder
+package com.tokopedia.digital.home.old.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageTransactionModel
+import com.tokopedia.digital.home.old.model.DigitalHomePageTransactionModel
 import kotlinx.android.synthetic.main.layout_digital_home_transaction.view.*
 
 class DigitalHomePageTransactionViewHolder(itemView : View?, val listener : TransactionListener?) : AbstractViewHolder<DigitalHomePageTransactionModel>(itemView){

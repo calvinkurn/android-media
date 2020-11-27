@@ -14,14 +14,14 @@ class ChipSelectionUseCase @Inject constructor() {
                 parentComponent.setComponentsItem(it.map { childComponent ->
                     if (childComponent.id != componentId) {
                         childComponent.apply {
-                            setComponentsItem(null)
+                            setComponentsItem(null, component.tabName)
                             noOfPagesLoaded = 0
                         }
                     } else {
                         childComponent
                     }
 
-                })
+                }, component.tabName)
                 parentComponent.chipSelectionData = getComponent(chipSelectionId, pageIdentifier)?.data?.get(0)
             }
             return true
@@ -38,13 +38,13 @@ class ChipSelectionUseCase @Inject constructor() {
                 parentComponent.setComponentsItem(it.map { childComponent ->
                     if (childComponent.id != componentId) {
                         childComponent.apply {
-                            setComponentsItem(null)
+                            setComponentsItem(null, component.tabName)
                             noOfPagesLoaded = 0
                         }
                     } else {
                         childComponent
                     }
-                })
+                }, component.tabName)
                 parentComponent.chipSelectionData = null
             }
             return true

@@ -21,7 +21,7 @@
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         app:typographyType="body_3"
         app:typographyWeight="reguler" />
 
@@ -32,7 +32,7 @@
         android:layout_marginLeft="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_24"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:typographyType="body_3"
         app:typographyWeight="bold" />
 

@@ -228,6 +228,8 @@ public class RemoteConfigKey {
 
     public static final String NOTIFICATION_TRAY_CLEAR = "app_notif_tray_clear";
 
+    public static final String CUSTOMER_APP_UPDATE = "android_customer_app_update";
+
     public static final String ENABLE_OLD_SHOP_SETTINGS = "app_enable_old_shop_settings";
 
     public static final String KYC_USING_SELFIE = "android_main_app_enabled_kyc_selfie";
@@ -238,4 +240,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_UOH = "android_enable_uoh";
 
     public static final String SELLER_HOME_DASHBOARD_ENABLE_CACHE = "seller_home_dashboard_enable_cache";
+
+    public static final String ENABLE_SLICE_ACTION_SELLER = "android_sellerapp_enable_slice_action";
 }
