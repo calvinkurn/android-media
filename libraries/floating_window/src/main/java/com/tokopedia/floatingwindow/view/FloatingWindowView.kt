@@ -19,28 +19,25 @@ class FloatingWindowView private constructor(
         val layoutParams: WindowManager.LayoutParams
 ) {
 
-    val DRAG_MOVE: (FloatingWindowLayouter, Point) -> Unit = { layouter, point -> layouter.updatePosition(point.x, point.y) }
-    val DRAG_STAY: (FloatingWindowLayouter, Point) -> Unit = { _, _ ->  }
-
     private val layouter = FloatingWindowLayouter(view, layoutParams)
 
-    private var mOnClick: (FloatingWindowLayouter) -> Unit = {}
-    private var mOnDragged: (FloatingWindowLayouter, Point) -> Unit = DRAG_MOVE
+    private var mOnClickedListener: OnClickedListener = OnClickedListener {}
+    private var mOnDraggedListener: OnDraggedListener = OnDraggedListener.DEFAULT_MOVE
 
-    fun doOnClick(onClick: (layouter: FloatingWindowLayouter) -> Unit) {
-        mOnClick = onClick
+    fun doOnClick(onClick: OnClickedListener) {
+        mOnClickedListener = onClick
     }
 
-    fun doOnDragged(onDragged: (layouter: FloatingWindowLayouter, point: Point) -> Unit) {
-        mOnDragged = onDragged
+    fun doOnDragged(onDragged: OnDraggedListener) {
+        mOnDraggedListener = onDragged
     }
 
     internal fun onClick() {
-        mOnClick(layouter)
+        mOnClickedListener.onClicked(layouter)
     }
 
     internal fun onDragged(point: Point) {
-        mOnDragged(layouter, point)
+        mOnDraggedListener.onDragged(layouter, point)
     }
 
     class Builder(
@@ -114,5 +111,23 @@ class FloatingWindowView private constructor(
         private fun getCurrentDisplayMetrics(): DisplayMetrics {
             return Resources.getSystem().displayMetrics
         }
+    }
+
+    fun interface OnDraggedListener {
+
+        companion object {
+            val DEFAULT_MOVE: OnDraggedListener
+                get() = OnDraggedListener { layouter, point -> layouter.updatePosition(point.x, point.y) }
+
+            val DEFAULT_STAY: OnDraggedListener
+                get() = OnDraggedListener { _, _ -> }
+        }
+
+        fun onDragged(layouter: FloatingWindowLayouter, point: Point)
+    }
+
+    fun interface OnClickedListener {
+
+        fun onClicked(layouter: FloatingWindowLayouter)
     }
 }
