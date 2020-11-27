@@ -1,8 +1,8 @@
 package com.tokopedia.product.addedit.draft.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.*
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
@@ -26,19 +26,18 @@ abstract class AddEditProductDraftViewModelTestFixture {
     @RelaxedMockK
     lateinit var getAllProductDraftUseCase: GetAllProductDraftUseCase
 
-    protected val viewModel: AddEditProductDraftViewModel by lazy {
-        AddEditProductDraftViewModel(
-                CoroutineDispatchersProvider,
-                deleteProductDraftUseCase,
-                deleteAllProductDraftUseCase,
-                getAllProductDraftUseCase
-        )
-    }
+    protected lateinit var viewModel: AddEditProductDraftViewModel
 
     @Before
     @Throws(Exception::class)
     fun setup() {
         MockKAnnotations.init(this)
+        viewModel = AddEditProductDraftViewModel(
+                CoroutineTestDispatchersProvider,
+                deleteProductDraftUseCase,
+                deleteAllProductDraftUseCase,
+                getAllProductDraftUseCase
+        )
     }
 
     @AfterEach
