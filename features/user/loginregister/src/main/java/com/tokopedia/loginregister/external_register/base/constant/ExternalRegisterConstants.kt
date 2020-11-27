@@ -15,4 +15,18 @@ object ExternalRegisterConstants {
     const val PATH_TERM_CONDITION = "terms.pl?isBack=true"
     const val PATH_PRIVACY_POLICY = "privacy.pl?isBack=true"
 
+
+    object PARAM {
+        val PHONE_NO = "phone_number"
+        val CLIENT_ID = "client_id"
+        val NAME = "name"
+        val DATE = "date"
+
+        val URL = "external_url"
+    }
+
+    object KEY {
+        val CLIENT_ID = "AxbZkaBowrkB"
+        val SECRET = "F0qWZoLyFOARjesfudHv"
+    }
 }
