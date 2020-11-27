@@ -15,7 +15,7 @@
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="-8dp"
-        app:srcCompat="@drawable/ic_arrow_back_black"
+        app:srcCompat="@drawable/ic_cart_arrow_back_black"
         app:unifyImageButtonVariant="image" />
 
     <com.tokopedia.unifyprinciples.Typography
