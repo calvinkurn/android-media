@@ -2,6 +2,7 @@ package com.tokopedia.floatingwindow
 
 import android.content.Context
 import android.graphics.Point
+import android.view.View
 import android.view.WindowManager
 import com.tokopedia.floatingwindow.util.FloatingWindowHelper
 import com.tokopedia.floatingwindow.util.registerDraggableTouchListener
@@ -90,18 +91,18 @@ internal class FloatingWindow private constructor(context: Context) {
                 .clear()
     }
 
-    private fun setPosition(key: String, x: Int, y: Int) {
-        val currentLayoutParams = viewMap[key]?.floatingView?.layoutParams ?: return
-        updateViewLayout(key, currentLayoutParams.apply {
-            this.x = x
-            this.y = y
-        })
-    }
-
-    private fun updateViewLayout(key: String, layoutParams: WindowManager.LayoutParams) {
+    fun updateViewLayout(key: String, layoutParams: WindowManager.LayoutParams) {
         try {
             val prop = viewMap[key] ?: return
             mWindowManager.updateViewLayout(prop.floatingView.view, layoutParams)
+        } catch (e: Exception) {
+            //ignored
+        }
+    }
+
+    fun updateViewLayout(view: View, layoutParams: WindowManager.LayoutParams) {
+        try {
+            mWindowManager.updateViewLayout(view, layoutParams)
         } catch (e: Exception) {
             //ignored
         }

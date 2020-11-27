@@ -16,7 +16,7 @@ class FloatingWindowLayouter internal constructor(
         get() = FloatingWindow.getInstance(view.context)
 
     fun updatePosition(x: Int, y: Int) {
-        floatingWindow.getWindowManager().updateViewLayout(
+        floatingWindow.updateViewLayout(
                 view,
                 layoutParams.apply {
                     this.x = x
@@ -26,7 +26,7 @@ class FloatingWindowLayouter internal constructor(
     }
 
     fun updateSize(width: Int, height: Int) {
-        floatingWindow.getWindowManager().updateViewLayout(
+        floatingWindow.updateViewLayout(
                 view,
                 layoutParams.apply {
                     this.width = width

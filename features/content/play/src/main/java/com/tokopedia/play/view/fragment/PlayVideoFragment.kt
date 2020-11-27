@@ -140,7 +140,9 @@ class PlayVideoFragment @Inject constructor(
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         val videoPlayer: General = videoMeta.videoPlayer as? General ?: return
 
-        val scaleFactor = 0.4f
+        val scaleFactor =
+                if (playViewModel.videoOrientation is VideoOrientation.Horizontal) 0.6f
+                else 0.3f
 
         val screenWidth = getScreenWidth()
         val screenHeight = getScreenHeight()
@@ -165,6 +167,10 @@ class PlayVideoFragment @Inject constructor(
         ).setX(screenWidth - scaledWidth - 16)
                 .setY(screenHeight - scaledHeight - 16)
                 .build()
+
+        floatingView.doOnClick {
+            it.updateSize(100, 500)
+        }
 
         pipAdapter.addView(
                 floatingView = floatingView,
