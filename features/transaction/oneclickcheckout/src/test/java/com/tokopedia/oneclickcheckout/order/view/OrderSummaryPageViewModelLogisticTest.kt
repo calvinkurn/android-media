@@ -219,7 +219,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
     }
 
     @Test
-    fun `Get Rates Courier Error Revamp With Recommendation SpId`() {
+    fun `Get Rates Courier Error Revamp With Recommendation`() {
         // Given
         val shippingDurationViewModels = helper.shippingRecommendationData.shippingDurationViewModels.toMutableList()
         val errorMessage = "error"
@@ -229,7 +229,7 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         }
         helper.shippingRecommendationData.shippingDurationViewModels = shippingDurationViewModels
         orderSummaryPageViewModel._orderPreference = OrderPreference(preference = helper.preference.copy(
-                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId)
+                shipment = helper.shipment.copy(recommendationSpId = helper.firstCourierSecondDuration.productData.shipperProductId, recommendationServiceId = helper.secondDuration.serviceData.serviceId)
         ), isValid = true)
         orderSummaryPageViewModel.revampData = OccRevampData(true)
 

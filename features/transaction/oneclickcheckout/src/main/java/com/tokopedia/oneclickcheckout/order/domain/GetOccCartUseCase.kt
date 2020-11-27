@@ -364,6 +364,8 @@ class GetOccCartUseCase @Inject constructor(private val graphqlRepository: Graph
           service_duration
           service_name
           sp_id
+          recommendation_service_id
+          recommendation_sp_id
           is_free_shipping_selected
         }
       }

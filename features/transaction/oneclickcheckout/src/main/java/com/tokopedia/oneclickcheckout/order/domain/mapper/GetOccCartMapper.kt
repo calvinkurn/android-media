@@ -170,7 +170,7 @@ class GetOccCartMapper @Inject constructor() {
     }
 
     private fun mapShipment(shipment: Shipment): OrderProfileShipment {
-        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.recommendationSpId, shipment.isFreeShippingSelected)
+        return OrderProfileShipment(shipment.serviceName, shipment.serviceId, shipment.serviceDuration, shipment.spId, shipment.recommendationServiceId, shipment.recommendationSpId, shipment.isFreeShippingSelected)
     }
 
     private fun mapPayment(payment: Payment): OrderProfilePayment {

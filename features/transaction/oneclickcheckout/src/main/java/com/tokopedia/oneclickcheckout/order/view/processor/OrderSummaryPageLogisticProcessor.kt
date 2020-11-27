@@ -311,10 +311,10 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         shippingDurationUiModels.forEach {
             it.isSelected = it.serviceData.serviceId == profileShipment.serviceId
         }
-        val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected } ?: return onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+        val selectedShippingDurationUiModel: ShippingDurationUiModel = shippingDurationUiModels.firstOrNull { it.isSelected } ?: return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
-            return onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+            return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         }
         val selectedShippingCourierUiModel = getSelectedCourierFromProfileSpId(profileShipment.spId, selectedShippingDurationUiModel.shippingCourierViewModelList)
         val flagNeedToSetPinpoint = false
@@ -323,7 +323,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
         var preselectedSpId: String? = null
         val courierError: ErrorProductData? = selectedShippingCourierUiModel.productData.error
         if (courierError?.errorMessage?.isNotBlank() == true && courierError.errorId != null) {
-            return onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels, profileShipment, shippingRecommendationData)
+            return onRevampNewShippingFromRecommendation(shippingDurationUiModels, profileShipment, shippingRecommendationData)
         } else if (profileShipment.spId <= 0) {
             preselectedSpId = selectedShippingCourierUiModel.productData.shipperProductId.toString()
         }
@@ -349,19 +349,20 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(private val ratesUse
                 preselectedSpId)
     }
     
-    private fun onRevampNewShippingFromRecommendationSpId(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
+    private fun onRevampNewShippingFromRecommendation(shippingDurationUiModels: List<ShippingDurationUiModel>, profileShipment: OrderProfileShipment, shippingRecommendationData: ShippingRecommendationData): Triple<OrderShipment, String?, String?> {
         var selectedShippingDurationUiModel: ShippingDurationUiModel? = null
         var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
         for (shippingDurationUiModel in shippingDurationUiModels) {
             val shippingCourierViewModelList = shippingDurationUiModel.shippingCourierViewModelList
-            shippingDurationUiModel.isSelected = false
-            for (shippingCourierUiModel in shippingCourierViewModelList) {
-                shippingCourierUiModel.isSelected = false
-                if (shippingCourierUiModel.productData.shipperProductId == profileShipment.recommendationSpId) {
-                    shippingCourierUiModel.isSelected = true
-                    shippingDurationUiModel.isSelected = true
-                    selectedShippingCourierUiModel = shippingCourierUiModel
-                    selectedShippingDurationUiModel = shippingDurationUiModel
+            shippingDurationUiModel.isSelected = shippingDurationUiModel.serviceData.serviceId == profileShipment.recommendationServiceId
+            if (shippingDurationUiModel.isSelected) {
+                for (shippingCourierUiModel in shippingCourierViewModelList) {
+                    shippingCourierUiModel.isSelected = false
+                    if (shippingCourierUiModel.productData.shipperProductId == profileShipment.recommendationSpId) {
+                        shippingCourierUiModel.isSelected = true
+                        selectedShippingCourierUiModel = shippingCourierUiModel
+                        selectedShippingDurationUiModel = shippingDurationUiModel
+                    }
                 }
             }
         }
