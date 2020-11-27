@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/dp_4">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/ivBenifitsHeader"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"

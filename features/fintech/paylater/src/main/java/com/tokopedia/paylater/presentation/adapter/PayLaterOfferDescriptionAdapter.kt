@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.paylater.domain.model.OfferDescriptionItem
 import com.tokopedia.paylater.presentation.viewholder.PayLaterOfferDescriptionViewHolder
 
-class PayLaterOfferDescriptionAdapter(val offerItemList: List<OfferDescriptionItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class PayLaterOfferDescriptionAdapter(private val offerItemList: List<OfferDescriptionItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return PayLaterOfferDescriptionViewHolder.getViewHolder(inflater, parent)

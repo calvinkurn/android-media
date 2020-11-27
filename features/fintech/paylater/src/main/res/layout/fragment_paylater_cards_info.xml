@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/spacing_lvl4"
+    android:layout_marginEnd="@dimen/spacing_lvl4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
         android:background="@color/Neutral_N0"
         android:orientation="vertical">
 
@@ -42,13 +43,13 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="2dp"
-            android:textSize="@dimen/unify_font_10"
             android:text="Aktif"
-            app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaylaterPartner"
-            app:layout_constraintEnd_toEndOf="@+id/rvPaylaterCards"
-            app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
+            android:textSize="@dimen/unify_font_10"
             app:labelType="general_dark_blue"
-            tools:text="Aktif"/>
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitlePaylaterPartner"
+            app:layout_constraintEnd_toEndOf="@+id/rvPaymentDesciption"
+            app:layout_constraintTop_toTopOf="@+id/tvTitlePaylaterPartner"
+            tools:text="Aktif" />
 
         <com.tokopedia.unifycomponents.DividerUnify
             android:id="@+id/borderGrey"
@@ -59,44 +60,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivPaylaterPartner" />
 
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvPaylaterCards"
+            android:id="@+id/rvPaymentDesciption"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="2dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
             app:layout_constraintTop_toBottomOf="@+id/borderGrey"
-            app:layout_constrainedHeight="true"
             tools:listitem="@layout/paylater_cards_content_info_item" />
+
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnHowToUse"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            app:unifyButtonType="main"
             android:text="@string/sp_how_to_use"
-            app:unifyButtonSize="small"
             android:textSize="@dimen/unify_font_12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/btnSeeMore" />
+            app:layout_constraintBottom_toTopOf="@+id/btnSeeMore"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="main" />
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSeeMore"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="@dimen/spacing_lvl4"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonType="alternate"
             android:text="@string/sp_see_more"
-            app:unifyButtonSize="small"
             android:textSize="@dimen/unify_font_12"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:unifyButtonSize="small"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
