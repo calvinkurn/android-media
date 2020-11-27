@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.draft.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchersProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.*
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
