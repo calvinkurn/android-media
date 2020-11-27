@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.review.common.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import retrofit2.Retrofit
@@ -28,5 +28,5 @@ interface ReviewComponent {
 
     fun userSession(): UserSessionInterface
 
-    fun coroutineDispatcher(): CoroutineDispatcherProvider
+    fun coroutineDispatcher(): CoroutineDispatchers
 }

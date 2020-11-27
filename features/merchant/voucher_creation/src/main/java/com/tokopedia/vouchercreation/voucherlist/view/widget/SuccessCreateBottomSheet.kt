@@ -29,7 +29,7 @@ class SuccessCreateBottomSheet: BottomSheetUnify() {
             }
         }
 
-        val TAG: String = SuccessCreateBottomSheet::class.java.simpleName
+        const val TAG: String = "SuccessCreateBottomSheet"
 
         private const val DATE_FORMAT = "dd MMM yyyy"
         private const val HOUR_FORMAT = "HH:mm"

@@ -5,8 +5,10 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.util.ResourceProvider
+import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
 import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.description.presentation.model.VideoLinkModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
@@ -23,7 +25,6 @@ import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.*
 import java.lang.reflect.Type
 
@@ -40,6 +41,9 @@ class AddEditProductDescriptionViewModelTest {
 
     @RelaxedMockK
     lateinit var videoYoutubeObserver: Observer<in Pair<Int, Result<YoutubeVideoDetailModel>>>
+
+    @RelaxedMockK
+    lateinit var validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -88,10 +92,8 @@ class AddEditProductDescriptionViewModelTest {
         viewModel.videoYoutube.removeObserver(videoYoutubeObserver)
     }
 
-    private val testCoroutineDispatcher = TestCoroutineDispatcher()
-
     private val viewModel: AddEditProductDescriptionViewModel by lazy {
-        AddEditProductDescriptionViewModel(testCoroutineDispatcher, resourceProvider, getYoutubeVideoUseCase)
+        AddEditProductDescriptionViewModel(CoroutineTestDispatchersProvider, resourceProvider, getYoutubeVideoUseCase, validateProductDescriptionUseCase)
     }
 
     private val youtubeAppHost = "youtu.be"
@@ -223,7 +225,6 @@ class AddEditProductDescriptionViewModelTest {
 
         viewModel.getVideoYoutube(usedYoutubeVideoUrl, 0)
 
-        Thread.sleep(100)
         val result = viewModel.videoYoutube.value
         assert(result != null && result.second is Fail)
     }
