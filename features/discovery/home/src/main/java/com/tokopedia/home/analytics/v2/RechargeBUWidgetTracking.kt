@@ -7,8 +7,13 @@ import java.util.*
 
 object RechargeBUWidgetTracking : BaseTracking() {
 
-    fun enhanceEcommerceTracker(trackingQueue: TrackingQueue, trackingDataString: String) {
+    fun sendEvent(trackingQueue: TrackingQueue, trackingDataString: String, data: Map<String, Any>? = null) {
         val trackingData = Gson().fromJson<HashMap<String, Any>>(trackingDataString, object : TypeToken<HashMap<String, Any>>() {}.type)
+        data?.run {
+            for ((key, value) in data) {
+                trackingData[key] = value
+            }
+        }
         trackingQueue.putEETracking(trackingData)
     }
 }

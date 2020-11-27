@@ -40,6 +40,8 @@ class GetRechargeBUWidgetUseCase @Inject constructor(
                   media_url
                   app_link
                   web_link
+                  banner_app_link
+                  banner_web_link
                   text_link
                   option_1
                   option_2

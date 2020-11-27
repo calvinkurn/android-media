@@ -12,14 +12,18 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_recharge_bu_widget_product_card.view.*
 
 class RechargeBUWidgetProductCardViewHolder(
-        itemView: View
+        itemView: View,
+        private val channels: ChannelModel
 ): AbstractViewHolder<RechargeBUWidgetProductCardModel>(itemView) {
 
     companion object {
@@ -28,99 +32,97 @@ class RechargeBUWidgetProductCardViewHolder(
     }
 
     override fun bind(element: RechargeBUWidgetProductCardModel) {
-        applyCarousel()
+        with (itemView) {
+            addOnImpressionListener(element) {
+                element.listener.onProductCardImpressed(channels, ChannelGrid(), adapterPosition)
+            }
+            setOnClickListener {
+                element.listener.onProductCardClicked(channels, ChannelGrid(), adapterPosition, element.applink)
+            }
+            applyCarousel()
 
-        val imageProduct: ImageView = itemView.findViewById(R.id.imageProduct)
-        val imageProductBackground: FrameLayout = itemView.findViewById(R.id.imageProductBackground)
-        val imageProductIcon: ImageView = itemView.findViewById(R.id.imageProductIcon)
-        val imageProductIconContainer: CardView = itemView.findViewById(R.id.imageProductIconContainer)
-        val textViewGimmick: Typography = itemView.findViewById(R.id.textViewGimmick)
-        val textViewProductName: Typography = itemView.findViewById(R.id.textViewProductName)
-        val labelDiscount: Label = itemView.findViewById(R.id.labelDiscount)
-        val textViewSlashedPrice: Typography = itemView.findViewById(R.id.textViewSlashedPrice)
-        val textViewPrice: Typography = itemView.findViewById(R.id.textViewPrice)
-
-        // Product Image
-        if (element.imageType == "full") {
-            imageProduct.loadImage(element.imageUrl)
-            imageProduct.show()
-            imageProductIconContainer.hide()
-            imageProductBackground.hide()
-        } else {
-            imageProductIcon.loadImage(element.imageUrl)
-            imageProductIconContainer.show()
-            imageProduct.invisible()
+            // Product Image
+            if (element.imageType == "full") {
+                imageProduct.loadImage(element.imageUrl)
+                imageProduct.show()
+                imageProductIconContainer.hide()
+                imageProductBackground.hide()
+            } else {
+                imageProductIcon.loadImage(element.imageUrl)
+                imageProductIconContainer.show()
+                imageProduct.invisible()
 //            imageProductBackground.setColorFilter(Color.parseColor(element.backgroundTintColor))
 //            imageProductBackground.setColorFilter(Color.parseColor(element.categoryNameColor))
-            (imageProductBackground.background as? GradientDrawable)?.setColor(Color.parseColor(element.categoryNameColor))
-            imageProductBackground.show()
-        }
+                (imageProductBackground.background as? GradientDrawable)?.setColor(Color.parseColor(element.categoryNameColor))
+                imageProductBackground.show()
+            }
 
-        // Category
-        with (textViewGimmick) {
-            val productName = MethodChecker.fromHtml(element.categoryName)
-            if (productName.isNotEmpty()) {
-                text = productName
+            // Category
+            with(textViewGimmick) {
+                val productName = MethodChecker.fromHtml(element.categoryName)
+                if (productName.isNotEmpty()) {
+                    text = productName
 
-                val textColor = try {
-                    Color.parseColor(element.categoryNameColor)
-                } catch (throwable: Throwable) {
-                    throwable.printStackTrace()
-                    ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    val textColor = try {
+                        Color.parseColor(element.categoryNameColor)
+                    } catch (throwable: Throwable) {
+                        throwable.printStackTrace()
+                        ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+                    }
+                    setTextColor(textColor)
+
+                    show()
+                } else {
+                    hide()
                 }
-                setTextColor(textColor)
-
-                show()
-            } else {
-                hide()
             }
-        }
 
-        // Product Name
-        with (textViewProductName) {
-            val productName = MethodChecker.fromHtml(element.productName)
-            if (productName.isNotEmpty()) {
-                text = productName
-                show()
-            } else {
-                hide()
-            }
-        }
-
-        // Discount
-        with (labelDiscount) {
-            val discountPercentage = MethodChecker.fromHtml(element.discountPercentage)
-            if (discountPercentage.isNotEmpty()) {
-                text = discountPercentage
-                show()
-            } else {
-                hide()
-            }
-        }
-
-        // Slashed Price
-        with (textViewSlashedPrice) {
-            val slashedPrice = MethodChecker.fromHtml(element.slashedPrice)
-            if (slashedPrice.isNotEmpty()) {
-                text = slashedPrice
-                // If discount exists, value is slashed price
-                if (element.discountPercentage.isNotEmpty()) {
-                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            // Product Name
+            with(textViewProductName) {
+                val productName = MethodChecker.fromHtml(element.productName)
+                if (productName.isNotEmpty()) {
+                    text = productName
+                    show()
+                } else {
+                    hide()
                 }
-                show()
-            } else {
-                hide()
             }
-        }
 
-        // Price
-        with (textViewPrice) {
-            val formattedPrice = MethodChecker.fromHtml(element.price)
-            if (formattedPrice.isNotEmpty()) {
-                text = formattedPrice
-                show()
-            } else {
-                hide()
+            // Discount
+            with(labelDiscount) {
+                val discountPercentage = MethodChecker.fromHtml(element.discountPercentage)
+                if (discountPercentage.isNotEmpty()) {
+                    text = discountPercentage
+                    show()
+                } else {
+                    hide()
+                }
+            }
+
+            // Slashed Price
+            with(textViewSlashedPrice) {
+                val slashedPrice = MethodChecker.fromHtml(element.slashedPrice)
+                if (slashedPrice.isNotEmpty()) {
+                    text = slashedPrice
+                    // If discount exists, value is slashed price
+                    if (element.discountPercentage.isNotEmpty()) {
+                        paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    }
+                    show()
+                } else {
+                    hide()
+                }
+            }
+
+            // Price
+            with(textViewPrice) {
+                val formattedPrice = MethodChecker.fromHtml(element.price)
+                if (formattedPrice.isNotEmpty()) {
+                    text = formattedPrice
+                    show()
+                } else {
+                    hide()
+                }
             }
         }
     }

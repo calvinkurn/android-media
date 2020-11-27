@@ -80,7 +80,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             val position = index+1
             setDynamicChannelPromoName(position, channel)
             if (position == 1) {
-                createRechargeBUWidget(WidgetSource.TOPUP_BILLS, position, isCache)
+                createRechargeBUWidget(channel, position, isCache)
             } else {
                 when (channel.layout) {
                     DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
@@ -148,7 +148,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
                         createReminderWidget(ReminderEnum.SALAM)
                     }
                     DynamicHomeChannel.Channels.LAYOUT_RECHARGE_BU_WIDGET -> {
-                        createRechargeBUWidget(WidgetSource.TOPUP_BILLS, position, isCache)
+                        createRechargeBUWidget(channel, position, isCache)
                     }
                     DynamicHomeChannel.Channels.LAYOUT_CATEGORY_WIDGET -> {
                         createDynamicChannel(
@@ -435,8 +435,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (!isCache) visitableList.add(ReminderWidgetModel(source=source))
     }
 
-    private fun createRechargeBUWidget(widgetSource: WidgetSource, verticalPosition: Int, isCache: Boolean) {
-        visitableList.add(RechargeBUWidgetDataModel(source = widgetSource, isDataCache = isCache))
+    private fun createRechargeBUWidget(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(RechargeBUWidgetDataModel(
+                channel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isDataCache = isCache
+        ))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

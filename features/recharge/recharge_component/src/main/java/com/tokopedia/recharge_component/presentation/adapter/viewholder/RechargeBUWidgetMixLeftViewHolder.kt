@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_component.presentation.viewholder
+package com.tokopedia.recharge_component.presentation.adapter.viewholder
 
 import android.annotation.SuppressLint
 import android.view.Gravity
@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.model.ChannelHeader
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselEmptyCardDataModel
 import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
@@ -27,18 +26,17 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
-import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.recharge_component.R
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
 import com.tokopedia.recharge_component.model.RechargeBUWidgetProductCardModel
 import com.tokopedia.recharge_component.model.RechargePerso
+import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_left.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlin.math.abs
 
 @SuppressLint("SyntheticAccessor")
@@ -81,15 +79,16 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
             setupBackground(data.mediaUrl, data.option2)
             setupList(data)
             setSnapEffect()
-            setHeaderComponent(element.visitableId(), data.title, data.applink)
+            setHeaderComponent(element)
 
             if (!isCacheData) {
                 itemView.addOnImpressionListener(element) {
-                    listener.onRechargeBUWidgetImpression(data)
+                    listener.onRechargeBUWidgetImpression(data, element.channel)
                 }
             }
         } else {
-            listener.getRechargeBUWidget(element.source)
+            itemView.recharge_bu_content_shimmering.show()
+            listener.getRechargeBUWidget(WidgetSource.findSourceByString(element.channel.widgetParam))
         }
     }
 
@@ -98,19 +97,19 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     }
 
     override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-        if (!isCacheData) listener.onRechargeBUWidgetImpression(data)
+        if (!isCacheData) listener.onRechargeBUWidgetImpression(data, channelModel)
     }
 
     override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        listener.onRechargeBUWidgetItemClick(data.items[position])
+        listener.onRechargeBUWidgetItemClick(data, position, channelModel)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-
+        listener.onRechargeBUWidgetClickSeeAllCard(data, channel)
     }
 
     override fun onEmptyCardClicked(channel: ChannelModel, applink: String, parentPos: Int) {
-
+        listener.onRechargeBUWidgetClickBanner(data, channel)
     }
 
     private fun initVar() {
@@ -216,7 +215,9 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                     "",
                     element.label1,
                     element.label2,
-                    element.label3
+                    element.label3,
+                    element.applink,
+                    listener = this
             ))
         }
         return list
@@ -242,12 +243,11 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
     }
 
-    private fun setHeaderComponent(id: String, headerTitle: String, applink: String) {
-        val channelModel = ChannelModel(id, id, channelHeader = ChannelHeader(id, name = headerTitle, applink = applink))
-        val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_header_view)
-        headerView.setChannel(channelModel, object : HeaderListener {
+    private fun setHeaderComponent(element: RechargeBUWidgetDataModel) {
+        val headerView = itemView.findViewById<DynamicChannelHeaderView>(R.id.recharge_bu_widget_header_view)
+        headerView.setChannel(element.channel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                listener.onRechargeBUWidgetClickMore(data)
+                listener.onRechargeBUWidgetClickSeeAllButton(element.data, element.channel)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {

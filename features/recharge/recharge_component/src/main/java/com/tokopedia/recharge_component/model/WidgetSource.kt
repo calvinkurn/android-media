@@ -5,11 +5,9 @@ enum class WidgetSource(val source: String) {
     FINANCE("keuangan"),
     TRAVEL_ENTERTAINMENT("travel_dan_entertainment");
 
-//        companion object {
-//            val values = values()
-//
-//            fun findSourceByString(sourceString: String): WidgetSource? {
-//                return values.firstOrNull { it.source == sourceString }
-//            }
-//        }
+        companion object {
+            fun findSourceByString(sourceString: String): WidgetSource {
+                return values().firstOrNull { it.source == sourceString } ?: TOPUP_BILLS
+            }
+        }
 }

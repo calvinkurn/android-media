@@ -32,8 +32,8 @@ import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
-import com.tokopedia.recharge_component.presentation.viewholder.RechargeBUWidgetMixLeftViewHolder
-import com.tokopedia.recharge_component.presentation.viewholder.RechargeBUWidgetMixTopViewHolder
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixLeftViewHolder
+import com.tokopedia.recharge_component.presentation.adapter.viewholder.RechargeBUWidgetMixTopViewHolder
 import java.util.*
 
 /**

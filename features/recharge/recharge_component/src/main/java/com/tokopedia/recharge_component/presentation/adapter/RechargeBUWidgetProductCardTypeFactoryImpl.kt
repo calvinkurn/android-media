@@ -57,7 +57,7 @@ class RechargeBUWidgetProductCardTypeFactoryImpl(private val channels: ChannelMo
                 CarouselFeaturedShopViewHolder(parent, channels)
             }
             RechargeBUWidgetProductCardViewHolder.LAYOUT -> {
-                RechargeBUWidgetProductCardViewHolder(parent)
+                RechargeBUWidgetProductCardViewHolder(parent, channels)
             }
             else -> {
                 super.createViewHolder(parent, type)

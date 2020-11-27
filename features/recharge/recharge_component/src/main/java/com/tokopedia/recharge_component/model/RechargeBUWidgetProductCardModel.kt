@@ -1,6 +1,8 @@
 package com.tokopedia.recharge_component.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.home_component.productcardgridcarousel.listener.CommonProductCardCarouselListener
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactory
 
 class RechargeBUWidgetProductCardModel(
@@ -13,8 +15,11 @@ class RechargeBUWidgetProductCardModel(
         val priceLabel: String,
         val discountPercentage: String,
         val slashedPrice: String,
-        val price: String
-): Visitable<RechargeBUWidgetProductCardTypeFactory> {
+        val price: String,
+        val applink: String,
+        val impressHolder: ImpressHolder = ImpressHolder(),
+        val listener: CommonProductCardCarouselListener
+): ImpressHolder(), Visitable<RechargeBUWidgetProductCardTypeFactory> {
     override fun type(typeFactory: RechargeBUWidgetProductCardTypeFactory): Int {
         return typeFactory.type(this)
     }
