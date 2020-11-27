@@ -104,6 +104,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/GOOGLE_API_KEY_SA" />
+        <meta-data
+            android:name="com.google.android.actions"
+            android:resource="@xml/actions" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -255,6 +258,18 @@
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.tokopedia.sellerapp.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
     </application>
 </manifest>

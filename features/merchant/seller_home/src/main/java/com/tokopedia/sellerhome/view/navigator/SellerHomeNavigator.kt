@@ -11,6 +11,7 @@ import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
+import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
@@ -22,6 +23,10 @@ class SellerHomeNavigator(
     private val sellerHomeRouter: SellerHomeRouter?,
     private val userSession: UserSessionInterface
 ) {
+
+    companion object {
+        private const val ERROR_NAVIGATOR = "Error when using navigator."
+    }
 
     private var homeFragment: Fragment? = null
     private var productManageFragment: Fragment? = null
@@ -159,7 +164,7 @@ class SellerHomeNavigator(
         homeFragment = SellerHomeFragment.newInstance()
         productManageFragment = sellerHomeRouter?.getProductManageFragment(arrayListOf(), "")
         chatFragment = sellerHomeRouter?.getChatListFragment()
-        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_NEW_ORDER)
+        somListFragment = sellerHomeRouter?.getSomListFragment(SomTabConst.STATUS_ALL_ORDER, 0)
         otherSettingsFragment = OtherMenuFragment.createInstance()
 
         addPage(homeFragment, context.getString(R.string.sah_home))
@@ -173,10 +178,15 @@ class SellerHomeNavigator(
         pages.keys.forEach {
             it?.let {
                 val tag = it::class.java.canonicalName
+                val fragmentToBeAdded = fm.findFragmentByTag(tag) ?: it
                 transaction.add(R.id.sahContainer, it, tag)
 
-                if(it != selectedPage) {
-                    transaction.setMaxLifecycle(it, Lifecycle.State.CREATED)
+                if(fragmentToBeAdded != selectedPage) {
+                    try {
+                        transaction.setMaxLifecycle(fragmentToBeAdded, Lifecycle.State.CREATED)
+                    } catch (e: Exception) {
+                        SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
+                    }
                 }
             }
         }
@@ -193,7 +203,7 @@ class SellerHomeNavigator(
             try {
                 transaction.setMaxLifecycle(selectedFragment, Lifecycle.State.RESUMED)
             } catch (e: Exception) {
-                e.printStackTrace()
+                SellerHomeErrorHandler.logExceptionToCrashlytics(e, ERROR_NAVIGATOR)
             }
         }
 
@@ -248,7 +258,7 @@ class SellerHomeNavigator(
     }
 
     private fun setupSellerOrderPage(page: PageFragment): Fragment? {
-        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+        somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage, page.orderType)
         return somListFragment
     }
 

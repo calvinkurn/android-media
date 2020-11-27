@@ -5,6 +5,9 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.sellerorder.common.SomDispatcherProvider
 import com.tokopedia.sellerorder.common.SomProductionDispatcherProvider
+import com.tokopedia.sellerorder.common.domain.model.SomAcceptOrderResponse
+import com.tokopedia.sellerorder.common.domain.model.SomEditRefNumResponse
+import com.tokopedia.sellerorder.common.domain.model.SomRejectOrderResponse
 import com.tokopedia.sellerorder.detail.data.model.*
 import dagger.Module
 import dagger.Provides
@@ -37,7 +40,7 @@ class SomDetailModule {
 
     @SomDetailScope
     @Provides
-    fun provideSomAcceptOrderUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomAcceptOrder.Data> = GraphqlUseCase(graphqlRepository)
+    fun provideSomAcceptOrderUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomAcceptOrderResponse.Data> = GraphqlUseCase(graphqlRepository)
 
     @SomDetailScope
     @Provides
@@ -45,11 +48,11 @@ class SomDetailModule {
 
     @SomDetailScope
     @Provides
-    fun provideSomRejectOrderUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomRejectOrder.Data> = GraphqlUseCase(graphqlRepository)
+    fun provideSomRejectOrderUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomRejectOrderResponse.Data> = GraphqlUseCase(graphqlRepository)
 
     @SomDetailScope
     @Provides
-    fun provideSomEditRefNumUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomEditAwbResponse.Data> = GraphqlUseCase(graphqlRepository)
+    fun provideSomEditRefNumUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<SomEditRefNumResponse.Data> = GraphqlUseCase(graphqlRepository)
 
     @SomDetailScope
     @Provides

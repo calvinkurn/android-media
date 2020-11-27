@@ -30,7 +30,6 @@ import com.tokopedia.navigation.domain.model.Recommendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
-import com.tokopedia.navigation.presentation.adapter.viewholder.InboxTopAdsBannerViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -45,6 +44,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
@@ -81,6 +81,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final int REQUEST_FROM_PDP = 138;
     private static final String className = "com.tokopedia.navigation.presentation.fragment.InboxFragment";
+    private static final String AB_TEST_INBOX_KEY = "Inbox Talk Release";
 
     private static final String COMPONENT_NAME_TOP_ADS = "Inbox Recommendation Top Ads";
 
@@ -100,6 +101,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
     private List<Visitable> visitables;
+    private RemoteConfigInstance remoteConfigInstance;
+    private String talkUnreadCount = "";
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -228,7 +231,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
-        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
+        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -352,11 +355,14 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             case DISCUSSION_MENU:
                 if (getActivity() != null
                         && getActivity().getApplicationContext() != null) {
-                    TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
-                            "inbox - talk",
-                            "click on diskusi product",
-                            ""));
-
+                    if(useNewPage()) {
+                        InboxGtmTracker.getInstance().sendNewPageInboxTalkTracking(getContext(), presenter.getUserId(), talkUnreadCount);
+                    } else {
+                        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData("clickInboxChat",
+                                "inbox - talk",
+                                "click on diskusi product",
+                                ""));
+                    }
                     RouteManager.route(getActivity(), ApplinkConstInternalGlobal.INBOX_TALK);
                 }
                 break;
@@ -412,6 +418,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onRenderNotifInbox(NotificationsModel entity) {
         emptyLayout.setVisibility(View.GONE);
         swipeRefreshLayout.setVisibility(View.VISIBLE);
+        talkUnreadCount = entity.getInbox().getTalk();
         adapter.updateValue(entity);
     }
 
@@ -492,5 +499,25 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onTopAdsImageViewClicked(@org.jetbrains.annotations.Nullable String applink) {
         if (applink == null) return;
         RouteManager.route(getContext(), applink);
+    }
+
+    @Nullable
+    private AbTestPlatform getAbTestPlatform() {
+        if (remoteConfigInstance == null) {
+            remoteConfigInstance = new RemoteConfigInstance(getActivity().getApplication());
+        }
+        try {
+            return remoteConfigInstance.getABTestPlatform();
+        } catch (IllegalStateException exception) {
+            return null;
+        }
+    }
+
+    private Boolean useNewPage() {
+        if(getAbTestPlatform() == null) {
+            return false;
+        }
+        String remoteConfigValue = getAbTestPlatform().getString(AB_TEST_INBOX_KEY);
+        return !remoteConfigValue.isEmpty();
     }
 }

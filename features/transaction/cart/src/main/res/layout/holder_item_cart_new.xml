@@ -298,7 +298,7 @@ barangnya gan! coy coy coy" />
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_8"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -313,6 +313,10 @@ barangnya gan! coy coy coy" />
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:ellipsize="end"
+                                android:paddingTop="@dimen/dp_8"
+                                android:paddingBottom="@dimen/dp_8"
+                                android:paddingEnd="@dimen/dp_16"
+                                android:paddingStart="0dp"
                                 android:maxLines="1"
                                 android:text="@string/label_move_to_wishlist"
                                 android:textColor="@color/Neutral_N700_68"

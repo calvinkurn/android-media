@@ -33,6 +33,14 @@ public class TradeInInfo {
     @Expose
     public boolean dropOffEnable;
 
+    @SerializedName("device_model")
+    @Expose
+    public String deviceModel;
+
+    @SerializedName("diagnostic_id")
+    @Expose
+    public String diagnosticId;
+
     public boolean isValidTradeIn() {
         return isValidTradeIn;
     }
@@ -55,5 +63,13 @@ public class TradeInInfo {
 
     public boolean isDropOffEnable() {
         return dropOffEnable;
+    }
+
+    public String getDeviceModel() {
+        return deviceModel;
+    }
+
+    public String getDiagnosticId() {
+        return diagnosticId;
     }
 }

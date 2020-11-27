@@ -521,15 +521,6 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickGoToBrowserBannedProductsWithResult(String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_RELATED,
-                keyword
-        );
-    }
-
     public static void trackMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category) {
         Map<String, Object> value = DataLayer.mapOf(
                 SearchEventTracking.MOENGAGE.KEYWORD, query,
@@ -547,9 +538,12 @@ public class SearchTracking {
     public static void trackGTMEventSearchAttempt(GeneralSearchTrackingModel generalSearchTrackingModel) {
         Map<String, Object> value = DataLayer.mapOf(
                 EVENT, SearchEventTracking.Event.CLICK_SEARCH,
-                EVENT_CATEGORY, SearchEventTracking.Category.EVENT_TOP_NAV,
+                EVENT_CATEGORY, generalSearchTrackingModel.getEventCategory(),
                 EVENT_ACTION, SearchEventTracking.Action.GENERAL_SEARCH,
                 EVENT_LABEL, generalSearchTrackingModel.getEventLabel(),
+                CURRENT_SITE, TOKOPEDIA_MARKETPLACE,
+                USER_ID, generalSearchTrackingModel.getUserId(),
+                BUSINESS_UNIT, SEARCH,
                 IS_RESULT_FOUND, generalSearchTrackingModel.isResultFound(),
                 CATEGORY_ID_MAPPING, generalSearchTrackingModel.getCategoryIdMapping(),
                 CATEGORY_NAME_MAPPING, generalSearchTrackingModel.getCategoryNameMapping(),

@@ -14,7 +14,7 @@
         android:layout_marginBottom="@dimen/layout_lvl1"
         android:lineSpacingExtra="@dimen/sp_6"
         app:typographyType="heading_4"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         tools:text="Sarapan" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         tools:text="Tidak tersedia paket makanan untuk harga ini di kamar ini." />
 
@@ -33,7 +33,7 @@
         android:layout_marginTop="@dimen/spacing_lvl2"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/hotel_read_more_title"
-        android:textColor="@color/Green_G500"
+        android:textColor="@color/Unify_G500"
         app:typographyType="body_3"
         android:visibility="gone"
         tools:visibility="visible"/>

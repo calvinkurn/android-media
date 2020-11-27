@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackPercentageValidationUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.CashbackRupiahValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.CashbackType
@@ -19,7 +19,6 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -59,7 +58,7 @@ class CashbackVoucherCreateViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = CashbackVoucherCreateViewModel(TestCoroutineDispatchers, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase)
+        mViewModel = CashbackVoucherCreateViewModel(CoroutineTestDispatchersProvider, cashbackRupiahValidationUseCase, cashbackPercentageValidationUseCase)
 
         mViewModel.expenseEstimationLiveData.observeForever(expenseEstimationObserver)
         mViewModel.cashbackPercentageInfoUiModelLiveData.observeForever(cashbackPercentageInfoUiModelObserver)
@@ -207,8 +206,6 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackRupiahValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cashbackRupiahValidationUseCase.executeOnBackground()
             }
@@ -231,8 +228,6 @@ class CashbackVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.Cashback.Rupiah.VoucherQuota)
 
             validateCashbackRupiahValues()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             coVerify {
                 cashbackRupiahValidationUseCase.executeOnBackground()
@@ -258,8 +253,6 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackPercentageValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cashbackPercentageValidationUseCase.executeOnBackground()
             }
@@ -284,8 +277,6 @@ class CashbackVoucherCreateViewModelTest {
 
             validateCashbackPercentageValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             coVerify {
                 cashbackPercentageValidationUseCase.executeOnBackground()
             }
@@ -301,8 +292,6 @@ class CashbackVoucherCreateViewModelTest {
             refreshValue()
             refreshValue()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             assert((voucherImageValueLiveData.value as? VoucherImageType.Rupiah)?.value == DUMMY_MAX_VALUE)
         }
     }
@@ -315,8 +304,6 @@ class CashbackVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_MAX_VALUE, PromotionType.Cashback.Percentage.MaximumDiscount)
             refreshValue()
             refreshValue()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             val isSuccess = (voucherImageValueLiveData.value as? VoucherImageType.Percentage)?.run {
                 value == DUMMY_MAX_VALUE && percentage == DUMMY_PERCENTAGE

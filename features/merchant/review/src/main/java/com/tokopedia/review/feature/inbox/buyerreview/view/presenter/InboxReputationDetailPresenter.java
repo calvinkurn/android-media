@@ -1,16 +1,13 @@
 package com.tokopedia.review.feature.inbox.buyerreview.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inbox.GetProductIncentiveOvoUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.DeleteReviewResponseUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.GetInboxReputationDetailUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendReplyReviewUseCase;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.interactor.inboxdetail.SendSmileyReputationUseCase;
-
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.DeleteReviewResponseSubscriber;
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.GetInboxReputationDetailSubscriber;
-import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.GetProductIncentiveOvoDetailSubscriber;
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.RefreshInboxReputationDetailSubscriber;
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.ReplyReviewSubscriber;
 import com.tokopedia.review.feature.inbox.buyerreview.view.subscriber.SendSmileySubscriber;
@@ -27,7 +24,6 @@ public class InboxReputationDetailPresenter
         implements InboxReputationDetail.Presenter {
 
     private final GetInboxReputationDetailUseCase getInboxReputationDetailUseCase;
-    private final GetProductIncentiveOvoUseCase getProductIncentiveOvoUseCase;
     private final UserSessionInterface userSession;
     private final SendSmileyReputationUseCase sendSmileyReputationUseCase;
     private final DeleteReviewResponseUseCase deleteReviewResponseUseCase;
@@ -37,13 +33,11 @@ public class InboxReputationDetailPresenter
     @Inject
     InboxReputationDetailPresenter(
             GetInboxReputationDetailUseCase getInboxReputationDetailUseCase,
-            GetProductIncentiveOvoUseCase getProductIncentiveOvoUseCase,
             SendSmileyReputationUseCase sendSmileyReputationUseCase,
             DeleteReviewResponseUseCase deleteReviewResponseUseCase,
             SendReplyReviewUseCase sendReplyReviewUseCase,
             UserSessionInterface userSession) {
         this.getInboxReputationDetailUseCase = getInboxReputationDetailUseCase;
-        this.getProductIncentiveOvoUseCase = getProductIncentiveOvoUseCase;
         this.sendSmileyReputationUseCase = sendSmileyReputationUseCase;
         this.deleteReviewResponseUseCase = deleteReviewResponseUseCase;
         this.sendReplyReviewUseCase = sendReplyReviewUseCase;
@@ -60,7 +54,6 @@ public class InboxReputationDetailPresenter
     public void detachView() {
         super.detachView();
         getInboxReputationDetailUseCase.unsubscribe();
-        getProductIncentiveOvoUseCase.unsubscribe();
         sendSmileyReputationUseCase.unsubscribe();
         deleteReviewResponseUseCase.unsubscribe();
         sendReplyReviewUseCase.unsubscribe();
@@ -117,10 +110,6 @@ public class InboxReputationDetailPresenter
                         userSession.getUserId(),
                         tab),
                 new RefreshInboxReputationDetailSubscriber(viewListener));
-    }
-
-    public void getProductIncentiveOvo() {
-        getProductIncentiveOvoUseCase.execute(new GetProductIncentiveOvoDetailSubscriber(viewListener));
     }
 }
 

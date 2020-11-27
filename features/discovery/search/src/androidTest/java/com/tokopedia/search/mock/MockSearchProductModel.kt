@@ -1,7 +1,5 @@
 package com.tokopedia.search.mock
 
-import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.common.data.Option
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.*
 import com.tokopedia.topads.sdk.domain.model.CpmModel
@@ -176,17 +174,13 @@ object MockSearchProductModel {
 
     fun getEmptySearchProductViewModel(): EmptySearchProductViewModel {
         val emptySearchProductViewModel = EmptySearchProductViewModel()
-        emptySearchProductViewModel.buttonText = "Ganti Kata Kunci"
-        emptySearchProductViewModel.content = "Coba kata kunci lain atau cek produk rekomendasi di bawah."
-        emptySearchProductViewModel.imageRes = com.tokopedia.resources.common.R.drawable.ic_product_search_not_found
-        emptySearchProductViewModel.title = "Oops, Produk Nggak Ditemukan"
         emptySearchProductViewModel.isBannerAdsAllowed = true
 
         return emptySearchProductViewModel
     }
 
     fun getBannedProductsEmptySearchViewModel(): BannedProductsEmptySearchViewModel {
-        return BannedProductsEmptySearchViewModel("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.", "")
+        return BannedProductsEmptySearchViewModel("Produk yang kamu cari tidak tersedia di Android. Silakan cari di desktop atau mobile web HP-mu.")
     }
 
     fun getRecommendationTitleViewModel(): RecommendationTitleViewModel {

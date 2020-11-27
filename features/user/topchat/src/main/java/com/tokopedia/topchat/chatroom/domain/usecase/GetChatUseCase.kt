@@ -16,7 +16,7 @@ import kotlin.coroutines.CoroutineContext
  * @author : Steven 30/11/18
  */
 
-class GetChatUseCase @Inject constructor(
+open class GetChatUseCase @Inject constructor(
         private val gqlUseCase: GraphqlUseCase<GetExistingChatPojo>,
         private val mapper: TopChatRoomGetExistingChatMapper,
         private var dispatchers: TopchatCoroutineContextProvider
@@ -218,6 +218,7 @@ class GetChatUseCase @Inject constructor(
                   senderName
                   role
                   msg
+                  fraudStatus
                   replyTime
                   status
                   attachmentID

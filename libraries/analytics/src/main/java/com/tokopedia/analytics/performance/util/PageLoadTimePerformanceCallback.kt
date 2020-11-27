@@ -22,6 +22,9 @@ open class PageLoadTimePerformanceCallback(
     var isNetworkDone = false
     var isRenderDone = false
     var traceName = ""
+    var attributionValue: HashMap<String, String> = hashMapOf()
+    var customMetric: HashMap<String, Long> = hashMapOf()
+    var isCustomMetricDone: HashMap<String, Boolean> = hashMapOf()
 
     override fun getPltPerformanceData(): PltPerformanceData {
         return PltPerformanceData(
@@ -29,11 +32,14 @@ open class PageLoadTimePerformanceCallback(
                 networkRequestDuration = requestNetworkDuration,
                 renderPageDuration = renderDuration,
                 overallDuration = overallDuration,
-                isSuccess = (isNetworkDone && isRenderDone)
+                isSuccess = (isNetworkDone && isRenderDone),
+                attribution = attributionValue,
+                customMetric = customMetric
         )
     }
 
     override fun addAttribution(attribution: String, value: String) {
+        attributionValue[attribution] = value
         performanceMonitoring?.putCustomAttribute(attribution, value)
     }
 
@@ -118,6 +124,23 @@ open class PageLoadTimePerformanceCallback(
             performanceMonitoring?.putMetric(tagRenderDuration, renderDuration)
             isRenderDone = true
             endAsyncSystraceSection("PageLoadTime.AsyncRenderPage$traceName",33)
+        }
+    }
+
+    override fun startCustomMetric(tag: String) {
+        if (customMetric[tag] == null || customMetric[tag] == 0L) {
+            customMetric[tag] = System.currentTimeMillis()
+            isCustomMetricDone[tag] = false
+        }
+    }
+
+    override fun stopCustomMetric(tag: String) {
+        if (customMetric.containsKey(tag) && customMetric[tag] != 0L && isCustomMetricDone[tag] == false) {
+            val lastTime = customMetric[tag] ?: 0L
+            val duration = System.currentTimeMillis() - lastTime
+            customMetric[tag] = duration
+            isCustomMetricDone[tag] = true
+            performanceMonitoring?.putMetric(tag, duration)
         }
     }
 

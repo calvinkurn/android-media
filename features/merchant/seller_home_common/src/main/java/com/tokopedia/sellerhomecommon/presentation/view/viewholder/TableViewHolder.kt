@@ -5,12 +5,14 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
+import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import kotlinx.android.synthetic.main.shc_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.shc_partial_widget_table_loading.view.*
 import kotlinx.android.synthetic.main.shc_widget_table.view.*
@@ -63,9 +65,16 @@ class TableViewHolder(
                     shcTableView.addOnSlideImpressionListener { position, isEmpty ->
                         listener.sendTableImpressionEvent(element, position, isEmpty)
                     }
+                    shcTableView?.addOnHtmlClickListener { url, isEmpty ->
+                        listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
+                    }
                 }
             } else {
-                setOnTableEmpty(element)
+                if (element.isShowEmpty) {
+                    setOnTableEmpty(element)
+                } else {
+                    listener.removeWidget(adapterPosition, element)
+                }
             }
         }
 
@@ -95,7 +104,7 @@ class TableViewHolder(
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
-        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && !element.data?.dataSet.isNullOrEmpty()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         with(itemView) {
             btnTableCta.visibility = ctaVisibility
@@ -121,20 +130,19 @@ class TableViewHolder(
         val tooltip = element.tooltip
         val shouldShowTooltip = (tooltip?.shouldShow == true) && (tooltip.content.isNotBlank() || tooltip.list.isNotEmpty())
         if (shouldShowTooltip) {
-            btnTableInformation.visible()
+            tvTableWidgetTitle.setUnifyDrawableEnd(IconUnify.INFORMATION)
             tvTableWidgetTitle.setOnClickListener {
                 listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
             }
-            btnTableInformation.setOnClickListener {
-                listener.onTooltipClicked(tooltip ?: return@setOnClickListener)
-            }
         } else {
-            btnTableInformation.gone()
+            tvTableWidgetTitle.clearUnifyDrawableEnd()
         }
     }
 
     interface Listener : BaseViewHolderListener {
 
         fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
+        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
+
     }
 }

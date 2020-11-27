@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/layout_lvl2"
+    android:id="@+id/layout_incentive_ovo"
+    android:fillViewport="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgIncentiveOvoTitle"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:paddingEnd="@dimen/layout_lvl3"
+            android:paddingStart="@dimen/layout_lvl3"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Mau dapat OVO Points?"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgIncentiveOvoSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/dp_12"
+            android:gravity="center"
+            android:paddingEnd="@dimen/layout_lvl3"
+            android:paddingStart="@dimen/layout_lvl3"
+            app:typographyType="body_1"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoTitle"
+            app:layout_constraintStart_toStartOf="@id/tgIncentiveOvoTitle"
+            app:layout_constraintEnd_toEndOf="@id/tgIncentiveOvoTitle"
+            tools:text="Bantu penjual dengan kasih ulasan lengkap dan dapatkan OVO Points!" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/incentive_ovo_add_rating"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/layout_lvl7"
+            android:scaleType="center"
+            app:layout_constraintEnd_toStartOf="@id/incentive_ovo_add_image"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/incentive_ovo_add_rating_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="@string/review_create_rating_condition"
+            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_rating"
+            app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_rating"
+            app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_rating"
+            app:typographyType="small"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/incentive_ovo_add_image"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:scaleType="center"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/incentive_ovo_add_image_text"
+            android:layout_width="@dimen/layout_lvl8"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:text="@string/review_create_photo_condition"
+            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_image"
+            app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_image"
+            app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_image"
+            app:typographyType="small"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/incentive_ovo_add_review"
+            android:layout_width="@dimen/layout_lvl6"
+            android:layout_height="@dimen/layout_lvl6"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            android:layout_marginStart="@dimen/layout_lvl7"
+            android:scaleType="center"
+            app:layout_constraintStart_toEndOf="@id/incentive_ovo_add_image"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoSubtitle"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/incentive_ovo_add_review_text"
+            android:layout_width="@dimen/layout_lvl8"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:gravity="center"
+            android:text="@string/review_create_review_condition"
+            app:layout_constraintStart_toStartOf="@id/incentive_ovo_add_review"
+            app:layout_constraintEnd_toEndOf="@id/incentive_ovo_add_review"
+            app:layout_constraintTop_toBottomOf="@id/incentive_ovo_add_review"
+            app:typographyType="small"/>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/review_tnc_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="incentive_ovo_add_rating_text, incentive_ovo_add_image_text, incentive_ovo_add_review_text"/>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/incentiveOvoDivider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/layout_lvl1"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            app:layout_constraintTop_toBottomOf="@id/review_tnc_barrier"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgIncentiveOvoDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl3"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingStart="@dimen/layout_lvl2"
+            tools:text="Baca Syarat"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/incentiveOvoDivider"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvIncentiveOvoExplain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingEnd="@dimen/layout_lvl2"
+            android:paddingStart="@dimen/layout_lvl2"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/tgIncentiveOvoDescription"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/incentiveOvoBtnContinueReview"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/rvIncentiveOvoExplain"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

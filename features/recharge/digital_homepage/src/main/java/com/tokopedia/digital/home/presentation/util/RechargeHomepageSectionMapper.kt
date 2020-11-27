@@ -89,6 +89,7 @@ object RechargeHomepageSectionMapper {
                     }
                     SECTION_PRODUCT_CARD_ROW -> RechargeHomepageProductCardsModel(it)
                     SECTION_COUNTDOWN_PRODUCT_BANNER -> RechargeHomepageProductBannerModel(it)
+                    SECTION_PRODUCT_CARD_CUSTOM_BANNER -> RechargeProductCardCustomBannerModel(it)
                     else -> null
                 }
             }

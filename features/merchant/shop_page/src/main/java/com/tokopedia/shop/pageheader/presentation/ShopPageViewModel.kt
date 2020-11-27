@@ -7,10 +7,8 @@ import androidx.lifecycle.MutableLiveData
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.network.exception.UserNotLoginException
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -36,6 +34,7 @@ import com.tokopedia.shop.common.graphql.data.shopoperationalhourstatus.ShopOper
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isHasNextPage
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderContentData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderP1
 import com.tokopedia.shop.pageheader.domain.interactor.*
@@ -51,8 +50,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
@@ -67,12 +64,11 @@ class ShopPageViewModel @Inject constructor(
         private val gqlGetShopInfobUseCaseCoreAndAssets: Lazy<GQLGetShopInfoUseCase>,
         private val getShopReputationUseCase: Lazy<GetShopReputationUseCase>,
         private val toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>,
-        private val getModerateShopUseCase: Lazy<GetModerateShopUseCase>,
-        private val requestModerateShopUseCase: Lazy<RequestModerateShopUseCase>,
         private val stickyLoginUseCase: Lazy<StickyLoginUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
         private val getShopPageP1DataUseCase: Lazy<GetShopPageP1DataUseCase>,
-        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        private val dispatcherProvider: CoroutineDispatchers)
+    : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
         private const val DATA_NOT_FOUND = "Data not found"
@@ -85,6 +81,9 @@ class ShopPageViewModel @Inject constructor(
 
     val ownerShopName: String
         get() = userSessionInterface.shopName
+
+    val userShopId: String
+        get() = userSessionInterface.shopId
 
     val shopPageP1Data = MutableLiveData<Result<ShopPageP1HeaderData>>()
     val shopIdFromDomainData = MutableLiveData<Result<String>>()
@@ -105,7 +104,7 @@ class ShopPageViewModel @Inject constructor(
         if (shopId == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
             val shopP1DataAsync = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = {
                         getShopP1Data(
                                 shopId,
@@ -169,7 +168,7 @@ class ShopPageViewModel @Inject constructor(
     }
 
     fun saveShopImageToPhoneStorage(context: Context?, shopSnippetUrl: String) {
-        launchCatchError(Dispatchers.IO, {
+        launchCatchError(dispatcherProvider.io, {
             ImageHandler.loadImageWithTarget(context, shopSnippetUrl, object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     val savedFile = ImageUtils.writeImageToTkpdPath(
@@ -178,7 +177,7 @@ class ShopPageViewModel @Inject constructor(
                             true
                     )
                     if(savedFile != null) {
-                        shopImagePath.value = savedFile.absolutePath
+                        shopImagePath.postValue(savedFile.absolutePath)
                     }
                 }
                 override fun onLoadCleared(placeholder: Drawable?) {
@@ -188,15 +187,6 @@ class ShopPageViewModel @Inject constructor(
         }, onError = {
             it.printStackTrace()
         })
-    }
-
-    private inline fun <reified T> getResponseData(response: GraphqlResponse): T {
-        val error = response.getError(T::class.java)
-        if (error == null || error.isEmpty()) {
-            return response.getData<T>(T::class.java)
-        } else {
-            throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
-        }
     }
 
     private suspend fun getShopOperationalHourStatus(shopId: Int): ShopOperationalHourStatus {
@@ -270,8 +260,6 @@ class ShopPageViewModel @Inject constructor(
     override fun flush() {
         super.flush()
         toggleFavouriteShopUseCase.get().unsubscribe()
-        getModerateShopUseCase.get().unsubscribe()
-        requestModerateShopUseCase.get().unsubscribe()
         stickyLoginUseCase.get().cancelJobs()
     }
 
@@ -280,7 +268,7 @@ class ShopPageViewModel @Inject constructor(
         if (id == 0 && shopDomain.isEmpty()) return
         launchCatchError(block = {
             val shopInfoForHeaderResponse = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = {
                         getShopInfoHeader(id, shopDomain, isRefresh)
                     },
@@ -291,7 +279,7 @@ class ShopPageViewModel @Inject constructor(
             )
 
             val shopBadgeDataResponse = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = {
                         getShopBadgeData(id, isRefresh)
                     },
@@ -302,7 +290,7 @@ class ShopPageViewModel @Inject constructor(
             )
 
             val shopOperationalHourStatus = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = { getShopOperationalHourStatus(id) },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -311,7 +299,7 @@ class ShopPageViewModel @Inject constructor(
             )
 
             val shopFavourite = asyncCatchError(
-                    Dispatchers.IO,
+                    dispatcherProvider.io,
                     block = { getShopFavoriteStatus(shopId, shopDomain) },
                     onError = {
                         shopPageHeaderContentData.postValue(Fail(it))
@@ -321,7 +309,7 @@ class ShopPageViewModel @Inject constructor(
             var broadcasterConfig: Broadcaster.Config = Broadcaster.Config()
             if(isMyShop(shopId = shopId)) {
                 broadcasterConfig = asyncCatchError(
-                        Dispatchers.IO,
+                        dispatcherProvider.io,
                         block = { getShopBroadcasterConfig(shopId) },
                         onError = { null }
                 ).await() ?: Broadcaster.Config()
@@ -376,7 +364,7 @@ class ShopPageViewModel @Inject constructor(
 
     fun getShopIdFromDomain(shopDomain: String) {
         launchCatchError(block = {
-            val shopInfoCoreData = withContext(Dispatchers.IO){
+            val shopInfoCoreData = withContext(dispatcherProvider.io){
                 getShopInfoCoreFromDomain(shopDomain)
             }
             shopIdFromDomainData.postValue(Success(shopInfoCoreData.shopCore.shopID))

@@ -13,6 +13,8 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class FlightJourneyModel(val term: String,
                               val id: String,
+                              val hasFreeRapidTest: Boolean,
+                              val isSeatDistancing: Boolean,
                               val departureAirport: String,
                               val departureAirportName: String,
                               val departureAirportCity: String,

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <dimen name="cm_notif_width">210dp</dimen>
     <dimen name="cm_notif_height">100dp</dimen>
+
+    <dimen name="cm_sp_13">13sp</dimen>
+
     <dimen name="cm_dp_28">28dp</dimen>
     <dimen name="cm_dp_45">45dp</dimen>
     <dimen name="cm_dp_38">38dp</dimen>

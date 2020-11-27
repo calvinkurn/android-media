@@ -8,10 +8,10 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateData
 import com.tokopedia.product.addedit.detail.domain.model.ProductValidateV3
-import com.tokopedia.product.addedit.detail.domain.model.ValidateProductNameExistResponse
+import com.tokopedia.product.addedit.detail.domain.model.ValidateProductResponse
 import com.tokopedia.product.addedit.detail.domain.usecase.GetCategoryRecommendationUseCase
 import com.tokopedia.product.addedit.detail.domain.usecase.GetNameRecommendationUseCase
-import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductNameExistUseCase
+import com.tokopedia.product.addedit.detail.domain.usecase.ValidateProductUseCase
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
@@ -20,11 +20,15 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.util.getOrAwaitValue
 import com.tokopedia.product.addedit.variant.presentation.model.SelectionInputModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
@@ -46,7 +50,10 @@ class AddEditProductDetailViewModelTest {
     lateinit var getNameRecommendationUseCase: GetNameRecommendationUseCase
 
     @RelaxedMockK
-    lateinit var validateProductNameExistUseCase: ValidateProductNameExistUseCase
+    lateinit var validateProductUseCase: ValidateProductUseCase
+
+    @RelaxedMockK
+    lateinit var getShopEtalaseUseCase: GetShopEtalaseUseCase
 
     @RelaxedMockK
     lateinit var mIsInputValidObserver: Observer<Boolean>
@@ -99,7 +106,7 @@ class AddEditProductDetailViewModelTest {
     }
 
     private val viewModel: AddEditProductDetailViewModel by lazy {
-        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductNameExistUseCase)
+        AddEditProductDetailViewModel(provider, coroutineDispatcher, getNameRecommendationUseCase, getCategoryRecommendationUseCase, validateProductUseCase, getShopEtalaseUseCase)
     }
 
     @Test
@@ -298,8 +305,8 @@ class AddEditProductDetailViewModelTest {
         val resultMessage = listOf("error 1", "error 2")
 
         coEvery {
-            validateProductNameExistUseCase.executeOnBackground()
-        } returns ValidateProductNameExistResponse(
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
                 ProductValidateV3(
                         isSuccess = false,
                         data = ProductValidateData(resultMessage)
@@ -311,7 +318,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            validateProductNameExistUseCase.executeOnBackground()
+            validateProductUseCase.executeOnBackground()
         }
 
         val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
@@ -323,8 +330,8 @@ class AddEditProductDetailViewModelTest {
         val resultMessage = listOf<String>()
 
         coEvery {
-            validateProductNameExistUseCase.executeOnBackground()
-        } returns ValidateProductNameExistResponse(
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
                 ProductValidateV3(
                         isSuccess = true,
                         data = ProductValidateData(resultMessage)
@@ -336,7 +343,7 @@ class AddEditProductDetailViewModelTest {
         viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
-            validateProductNameExistUseCase.executeOnBackground()
+            validateProductUseCase.executeOnBackground()
         }
 
         val resultViewmodel = viewModel.isProductNameInputError.getOrAwaitValue()
@@ -720,6 +727,54 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `validateProductSkuInput should valid when productSkuInput is not contains space char`() = runBlocking {
+        val resultMessage = listOf<String>()
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage, resultMessage)
+                )
+        )
+
+        viewModel.validateProductSkuInput("ESKU")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(!isError && viewModel.productSkuMessage.isBlank())
+    }
+
+    @Test
+    fun `validateProductSkuInput should invalid when productSkuInput is contains space char`() = runBlocking {
+        val resultMessage = listOf("error 1", "error 2")
+
+        coEvery {
+            validateProductUseCase.executeOnBackground()
+        } returns ValidateProductResponse(
+                ProductValidateV3(
+                        isSuccess = false,
+                        data = ProductValidateData(resultMessage, resultMessage)
+                )
+        )
+
+        viewModel.validateProductSkuInput("ES KU")
+        viewModel.coroutineContext[Job]?.children?.forEach { it.join() }
+
+        coVerify {
+            validateProductUseCase.executeOnBackground()
+        }
+
+        val isError = viewModel.isProductSkuInputError.getOrAwaitValue()
+        Assert.assertTrue(isError && viewModel.productSkuMessage.isNotBlank() && viewModel.productSkuMessage == resultMessage.joinToString("\n"))
+    }
+
+    @Test
     fun `updateProductPhotos should not change any image url's`() {
         val sampleProductPhotos = getSampleProductPhotos()
         viewModel.productInputModel.detailInputModel.pictureList = sampleProductPhotos
@@ -829,6 +884,25 @@ class AddEditProductDetailViewModelTest {
         // negative case
         viewModel.productInputModel.itemSold = 0
         Assert.assertFalse(viewModel.hasTransaction)
+    }
+
+    @Test
+    fun `get showcase list should get the list`() {
+        runBlocking {
+            coEvery {
+                getShopEtalaseUseCase.executeOnBackground().shopShowcases.result
+            } returns listOf()
+
+            viewModel.getShopShowCasesUseCase()
+
+            coVerify {
+                getShopEtalaseUseCase.executeOnBackground()
+            }
+
+            val expectedResponse = Success(listOf<ShopEtalaseModel>())
+            val actualResponse = viewModel.shopShowCases.getOrAwaitValue()
+            assertEquals(expectedResponse, actualResponse)
+        }
     }
 
     private fun getSampleProductPhotos(): List<PictureInputModel> {

@@ -63,6 +63,7 @@ import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCardOptionViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -71,7 +72,6 @@ import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -81,6 +81,8 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener;
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation;
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchInTokopediaListener;
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
@@ -134,11 +136,12 @@ public class ProductListFragment
         EmptyStateListener,
         RecommendationListener,
         InspirationCarouselListener,
-        BannedProductsRedirectToBrowserListener,
         BroadMatchListener,
         InspirationCardListener,
         QuickFilterElevation,
-        SortFilterBottomSheet.Callback {
+        SortFilterBottomSheet.Callback,
+        SearchInTokopediaListener,
+        SearchNavigationClickListener {
 
     private static final String SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab";
     private static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 123;
@@ -311,8 +314,9 @@ public class ProductListFragment
         ProductListTypeFactory productListTypeFactory = new ProductListTypeFactoryImpl(
                 this, this,
                 this, this, this,
-                this, this, this,
-                this, this, this, topAdsConfig);
+                this, this,
+                this, this, this, this, this,
+                topAdsConfig);
 
         adapter = new ProductListAdapter(this, productListTypeFactory);
     }
@@ -539,6 +543,7 @@ public class ProductListFragment
     public void sendProductImpressionTrackingEvent(ProductItemViewModel item) {
         String userId = getUserId();
         String searchRef = getSearchRef();
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         List<Object> dataLayerList = new ArrayList<>();
         List<ProductItemViewModel> productItemViewModels = new ArrayList<>();
 
@@ -548,15 +553,19 @@ public class ProductListFragment
         productItemViewModels.add(item);
 
         if(irisSession != null){
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(),
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel,
                     irisSession.getSessionId());
         }else {
-            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, getQueryKey(), "");
+            SearchTracking.eventImpressionSearchResultProduct(trackingQueue, dataLayerList, eventLabel, "");
         }
     }
 
     private String getSearchRef() {
         return searchParameter.get(SearchApiConst.SEARCH_REF);
+    }
+
+    private String getSearchProductTrackingEventLabel(ProductItemViewModel item) {
+        return TextUtils.isEmpty(item.getPageTitle()) ? getQueryKey() : item.getPageTitle();
     }
 
     @Override
@@ -758,6 +767,7 @@ public class ProductListFragment
 
     @Override
     public void sendGTMTrackingProductClick(ProductItemViewModel item, String userId) {
+        String eventLabel = getSearchProductTrackingEventLabel(item);
         String filterSortParams = searchParameter == null ? "" :
                 SearchFilterUtilsKt.getSortFilterParamsString(searchParameter.getSearchParameterMap());
 
@@ -765,7 +775,7 @@ public class ProductListFragment
         SearchTracking.trackEventClickSearchResultProduct(
                 item.getProductAsObjectDataLayer(userId, filterSortParams, searchRef),
                 item.isOrganicAds(),
-                getQueryKey(),
+                eventLabel,
                 filterSortParams
         );
     }
@@ -1017,6 +1027,13 @@ public class ProductListFragment
         return getOptionListFromFilterController();
     }
 
+    @Override
+    public void onEmptySearchToGlobalSearchClicked(String applink) {
+        if (redirectionListener == null) return;
+
+        redirectionListener.startActivityWithApplink(applink);
+    }
+
     private List<Option> getOptionListFromFilterController() {
         if (filterController == null) return new ArrayList<>();
 
@@ -1049,16 +1066,8 @@ public class ProductListFragment
     }
 
     @Override
-    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel) {
-        adapter.setGlobalNavViewModel(globalNavViewModel);
-        presenter.clearData();
-        adapter.showEmptyState(getActivity(), isFilterActive());
-    }
-
-    private boolean isFilterActive() {
-        if (filterController == null) return false;
-
-        return filterController.isFilterActive();
+    public void setEmptyProduct(GlobalNavViewModel globalNavViewModel, EmptySearchProductViewModel emptySearchProductViewModel) {
+        adapter.showEmptyState(globalNavViewModel, emptySearchProductViewModel);
     }
 
     private void setSortFilterIndicatorCounter() {
@@ -1207,7 +1216,9 @@ public class ProductListFragment
 
     @Override
     public boolean isAnyFilterActive() {
-        return isFilterActive();
+        if (filterController == null) return false;
+
+        return filterController.isFilterActive();
     }
 
     @Override
@@ -1307,31 +1318,6 @@ public class ProductListFragment
     private void onFreeOngkirOnBoardingShown() {
         if (presenter != null) {
             presenter.onFreeOngkirOnBoardingShown();
-        }
-    }
-
-    @Override
-    public void onGoToBrowserClicked(boolean isEmptySearch, @NotNull String liteUrl) {
-        trackEventClickGoToBrowserBannedProducts(isEmptySearch);
-
-        if (presenter != null) {
-            presenter.onBannedProductsGoToBrowserClick(liteUrl);
-        }
-    }
-
-    @Override
-    public void redirectToBrowser(String url) {
-        if (TextUtils.isEmpty(url)) return;
-
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(intent);
-    }
-
-    private void trackEventClickGoToBrowserBannedProducts(boolean isEmptySearch) {
-        if (isEmptySearch) {
-            SearchTracking.trackEventClickGoToBrowserBannedProductsEmptySearch(getQueryKey());
-        } else {
-            SearchTracking.trackEventClickGoToBrowserBannedProductsWithResult(getQueryKey());
         }
     }
 
@@ -1765,5 +1751,53 @@ public class ProductListFragment
     public void configure(boolean shouldRemove) {
         if (shouldRemove) SearchFilterUtilsKt.removeQuickFilterElevation(searchSortFilter);
         else SearchFilterUtilsKt.applyQuickFilterElevation(getContext(), searchSortFilter);
+    }
+
+    @Override
+    public void onSearchInTokopediaClick(@NotNull String applink) {
+        if (getActivity() == null) return;
+
+        RouteManager.route(getActivity(), applink);
+    }
+
+    @Override
+    public void addLocalSearchRecommendation(List<Visitable> visitableList) {
+        adapter.appendItems(visitableList);
+    }
+
+    @Override
+    public void onChangeViewClicked(int position) {
+        if (presenter == null) return;
+
+        presenter.handleChangeView(position, adapter.getCurrentLayoutType());
+    }
+
+    @Override
+    public void trackEventSearchResultChangeView(String viewType) {
+        SearchTracking.eventSearchResultChangeGrid(getActivity(), viewType, getScreenName());
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToListView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationListView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToBigGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(1);
+        adapter.changeSearchNavigationSingleGridView(position);
+    }
+
+    @Override
+    public void switchSearchNavigationLayoutTypeToSmallGridView(int position) {
+        if (!getUserVisibleHint() || adapter == null) return;
+
+        staggeredGridLayoutManager.setSpanCount(2);
+        adapter.changeSearchNavigationDoubleGridView(position);
     }
 }

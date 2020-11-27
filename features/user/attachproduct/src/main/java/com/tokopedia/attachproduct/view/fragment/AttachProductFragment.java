@@ -34,7 +34,7 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
 import com.tokopedia.attachproduct.view.presenter.AttachProductPresenter;
 import com.tokopedia.attachproduct.view.viewholder.CheckableInteractionListenerWithPreCheckedAction;
-import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.uimodel.AttachProductItemUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.unifycomponents.SearchBarUnify;
 
@@ -52,7 +52,7 @@ import static com.tokopedia.attachproduct.view.activity.AttachProductActivity.MA
  * Created by Hendri on 13/02/18.
  */
 
-public class AttachProductFragment extends BaseListFragment<AttachProductItemViewModel, AttachProductListAdapterTypeFactory>
+public class AttachProductFragment extends BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>
         implements CheckableInteractionListenerWithPreCheckedAction,
         AttachProductContract.View {
     private static final String IS_SELLER = "isSeller";
@@ -104,6 +104,11 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
         ).build().inject(this);
         presenter.attachView(this);
         presenter.attachActivityContract(activityContract);
+    }
+
+    @Override
+    public int getRecyclerViewResourceId() {
+        return R.id.recycler_view;
     }
 
     @Override
@@ -204,7 +209,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
     }
 
     @Override
-    public void onItemClicked(AttachProductItemViewModel attachProductItemViewModel) {
+    public void onItemClicked(AttachProductItemUiModel attachProductItemUiModel) {
 
     }
 
@@ -234,13 +239,13 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
 
     @NonNull
     @Override
-    protected BaseListAdapter<AttachProductItemViewModel, AttachProductListAdapterTypeFactory> createAdapterInstance() {
+    protected BaseListAdapter<AttachProductItemUiModel, AttachProductListAdapterTypeFactory> createAdapterInstance() {
         adapter = new AttachProductListAdapter(getAdapterTypeFactory());
         return adapter;
     }
 
     @Override
-    public BaseListAdapter<AttachProductItemViewModel, AttachProductListAdapterTypeFactory> getAdapter() {
+    public BaseListAdapter<AttachProductItemUiModel, AttachProductListAdapterTypeFactory> getAdapter() {
         return adapter;
     }
 
@@ -276,7 +281,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
     }
 
     @Override
-    public void addProductToList(List<AttachProductItemViewModel> products, boolean hasNextPage) {
+    public void addProductToList(List<AttachProductItemUiModel> products, boolean hasNextPage) {
         if (products.size() > 0) {
             sendButton.setVisibility(View.VISIBLE);
         } else {
@@ -326,7 +331,7 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
             emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
         } else {
             emptyResultViewModel.setContent(getString(R.string.string_attach_product_search_not_found));
-            emptyResultViewModel.setIconRes(R.drawable.ic_empty_search);
+            emptyResultViewModel.setIconRes(R.drawable.ic_attach_product_empty_search);
         }
         if (activityContract.isSeller()) {
             emptyResultViewModel.setButtonTitleRes(R.string.string_attach_product_add_product_now);
@@ -349,14 +354,14 @@ public class AttachProductFragment extends BaseListFragment<AttachProductItemVie
         activityContract.goToAddProduct(activityContract.getShopId());
     }
 
-    private void removeHiddenProducts(List<AttachProductItemViewModel> products) {
+    private void removeHiddenProducts(List<AttachProductItemUiModel> products) {
         if (hiddenProducts == null) {
             return;
         }
 
-        Iterator<AttachProductItemViewModel> iterator = products.iterator();
+        Iterator<AttachProductItemUiModel> iterator = products.iterator();
         while (iterator.hasNext()) {
-            AttachProductItemViewModel product = iterator.next();
+            AttachProductItemUiModel product = iterator.next();
             boolean shouldHide = false;
             for (String hiddenProduct : hiddenProducts) {
                 if (TextUtils.equals(String.valueOf(product.getProductId()), hiddenProduct)) {
