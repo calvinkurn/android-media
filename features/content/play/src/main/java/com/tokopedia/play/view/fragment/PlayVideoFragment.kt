@@ -23,6 +23,7 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.view.contract.PlayFragmentContract
+import com.tokopedia.play.view.pip.PlayViewerPiPView
 import com.tokopedia.play.view.type.ScreenOrientation
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.General
@@ -149,9 +150,8 @@ class PlayVideoFragment @Inject constructor(
             screenWidth to screenHeight
         }
 
-        val view = LayoutInflater.from(requireContext()).inflate(R.layout.view_floating_video, null).also {
-            val playerView = it.findViewById<PlayerView>(R.id.pv_video)
-            PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), playerView)
+        val view = PlayViewerPiPView(requireContext()).also {
+            PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), it.getPlayerView())
         }
 
         val scaledWidth = (scaleFactor * width).toInt()
