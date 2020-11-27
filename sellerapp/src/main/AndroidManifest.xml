@@ -107,6 +107,14 @@
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/actions" />
+        <meta-data
+            android:name="HANSEL_APP_ID"
+            android:value="GJPFWEGF6PLIR6Y7EIBONHPG4"
+            tools:replace="android:value" />
+        <meta-data
+            android:name="HANSEL_APP_KEY"
+            android:value="0II3AMNFRMI3N0G0EO8D1RJZKR40KCEYTW8Y31BBGZTBCHQDI0"
+            tools:replace="android:value" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

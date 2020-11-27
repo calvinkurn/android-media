@@ -249,3 +249,9 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn com.tokopedia.empty_state.**
+
+-dontwarn io.hansel.**
+-keep class io.hansel.**{*;}
+-keep class **.HanselDialog.*{*;}
+-keep class * implements io.hansel.**.* {*;}
+-keep class * extends io.hansel.**.* {*;}

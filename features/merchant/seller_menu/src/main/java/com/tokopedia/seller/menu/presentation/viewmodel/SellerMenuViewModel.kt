@@ -12,7 +12,7 @@ import com.tokopedia.seller.menu.common.view.uimodel.ShopProductUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
-import com.tokopedia.seller.menu.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.seller.menu.presentation.uimodel.NotificationUiModel
 import com.tokopedia.seller.menu.presentation.util.SellerUiModelMapper.mapToNotificationUiModel

@@ -64,6 +64,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }

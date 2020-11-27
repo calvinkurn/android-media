@@ -5,7 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.UpdateVoucherUseCase
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.model.CreateVoucherParam
 import com.tokopedia.vouchercreation.create.domain.usecase.CreateVoucherUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.SaveBannerVoucherUseCase
@@ -62,7 +62,7 @@ class ReviewVoucherViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = ReviewVoucherViewModel(TestCoroutineDispatchers, Schedulers.immediate(), Schedulers.immediate(), createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
+        mViewModel = ReviewVoucherViewModel(CoroutineTestDispatchersProvider, Schedulers.immediate(), Schedulers.immediate(), createVoucherUseCase, updateVoucherUseCase, uploadVoucherUseCase, saveBannerVoucherUseCase, saveSquareVoucherUseCase)
     }
 
     @Test

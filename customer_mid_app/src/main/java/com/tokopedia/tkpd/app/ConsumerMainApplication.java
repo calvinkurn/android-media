@@ -136,7 +136,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         cacheManager = PersistentCacheManager.instance;
     }
 
-    private void registerActivityLifecycleCallbacks() {
+    public void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
             @Override
             public void onShakeDetected(boolean isLongShake) {

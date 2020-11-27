@@ -105,14 +105,14 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb_green)
                     itemView.likeText.text = like.fmt
                     itemView.likeText.setTextColor(
-                            MethodChecker.getColor(itemView.likeText.context, R.color.tkpd_main_green)
+                            MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_G400)
                     )
                 }
                 like.value > 0 -> {
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
                     itemView.likeText.text = like.fmt
                     itemView.likeText.setTextColor(
-                            MethodChecker.getColor(itemView.likeText.context, R.color.black_54)
+                            MethodChecker.getColor(itemView.likeText.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
                     )
                 }
                 else -> {
@@ -120,7 +120,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                     val likeText = if (like.fmt.isNotEmpty()) like.fmt else ""
                     itemView.likeText.text = likeText
                     itemView.likeText.setTextColor(
-                            MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
+                            MethodChecker.getColor(itemView.likeIcon.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)
                     )
                 }
             }
