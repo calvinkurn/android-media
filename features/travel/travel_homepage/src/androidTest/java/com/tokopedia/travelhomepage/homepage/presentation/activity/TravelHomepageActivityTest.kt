@@ -19,13 +19,11 @@ import com.tokopedia.test.application.environment.interceptor.mock.MockModelConf
 import com.tokopedia.test.application.espresso_component.CommonActions
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import com.tokopedia.travelhomepage.homepage.presentation.activity.TravelHomepageMockResponseConstant.KEY_TRAVEL_SUBHOME_GET_LAYOUT
+import com.tokopedia.travelhomepage.R
 import org.junit.After
+import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
-import com.tokopedia.travelhomepage.homepage.presentation.activity.TravelHomepageMockResponseConstant.KEY_TRAVEL_SUBHOME_GET_ITEM
-import org.junit.Assert
-import com.tokopedia.travelhomepage.R
 
 /**
  * @author by jessica on 26/11/20
@@ -173,6 +171,9 @@ class TravelHomepageActivityTest {
 
     companion object {
         const val ANALYTIC_VALIDATOR_QUERY_TRAVEL_HOMEPAGE = "tracker/travel/homepage/travel_homepage.json"
+
+        const val KEY_TRAVEL_SUBHOME_GET_LAYOUT = "travelLayoutSubhomepage"
+        const val KEY_TRAVEL_SUBHOME_GET_ITEM = "TravelGetDynamicSubhomepage"
 
         const val BANNER_POSITION = 0
         const val CATEGORY_POSITION = 1
