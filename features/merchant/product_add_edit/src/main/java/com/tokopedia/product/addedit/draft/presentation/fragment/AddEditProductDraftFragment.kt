@@ -210,6 +210,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
                         setType(GlobalError.SERVER_ERROR)
                         setActionClickListener {
                             viewModel.getAllProductDraft()
+                            displayLoader()
                         }
                     }.show()
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -237,7 +238,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
                     Toaster.build(
                             frameLayout,
                             getString(R.string.label_draft_success_delete_draft_message),
-                            Toaster.LENGTH_SHORT,
+                            Toaster.LENGTH_LONG,
                             Toaster.TYPE_NORMAL
                     ).show()
                     draftListAdapter?.deleteAllDrafts()
@@ -247,7 +248,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
                     Toaster.build(
                             frameLayout,
                             getString(R.string.label_draft_error_delete_draft_message),
-                            Toaster.LENGTH_SHORT,
+                            Toaster.LENGTH_LONG,
                             Toaster.TYPE_ERROR
                     ).show()
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
@@ -259,6 +260,7 @@ class AddEditProductDraftFragment : BaseDaggerFragment(), ProductDraftListListen
     private fun displayLoader() {
         loaderUnify.show()
         rvDraft.hide()
+        geDraft.hide()
     }
 
     private fun dismissLoader() {
