@@ -570,7 +570,7 @@ open class HomeFragment : BaseDaggerFragment(),
 
     private fun showNavigationOnboarding() {
         activity?.let {
-            var bottomSheet = BottomSheetUnify()
+            val bottomSheet = BottomSheetUnify()
             val onboardingView = View.inflate(context, R.layout.view_onboarding_navigation, null)
             onboardingView.onboarding_button.setOnClickListener {
                 showCoachMark(bottomSheet)
@@ -587,7 +587,9 @@ open class HomeFragment : BaseDaggerFragment(),
             bottomSheet.setCloseClickListener {
                 bottomSheet.dismiss()
             }
-            childFragmentManager.run { bottomSheet.show(this,"onboarding navigation") }
+            childFragmentManager.run {
+                this.beginTransaction().add(bottomSheet, "onboarding navigation").commitAllowingStateLoss();
+            }
             saveFirstViewNavigation(false)
         }
     }
@@ -1528,8 +1530,12 @@ open class HomeFragment : BaseDaggerFragment(),
     private fun onPageLoadTimeEnd() {
         stickyContent
         navAbTestCondition(ifNavRevamp = {
-            if (isFirstViewNavigation()) showNavigationOnboarding()
+            if (isFirstViewNavigation() && remoteConfigIsShowOnboarding()) showNavigationOnboarding()
         })
+    }
+
+    private fun remoteConfigIsShowOnboarding(): Boolean {
+        return remoteConfig.getBoolean(ConstantKey.RemoteConfigKey.HOME_SHOW_ONBOARDING_NAVIGATION, true)
     }
 
     private fun needToShowGeolocationComponent() {
