@@ -308,7 +308,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.consumeForceShowOnboarding()
 
         // Then
-        assertEquals(OccState.Success(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false))), orderSummaryPageViewModel.orderPreference.value)
+        assertEquals(OrderPreference(onboarding = OccMainOnboarding(isForceShowCoachMark = false)), orderSummaryPageViewModel._orderPreference)
     }
 
     @Test
@@ -727,5 +727,97 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         // Then
         assertEquals(OccGlobalEvent.Prompt(occPrompt), orderSummaryPageViewModel.globalEvent.value)
         assertEquals(false, isSuccess)
+    }
+
+    @Test
+    fun `Force Show Onboarding With No Profile`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val response = OrderData(onboarding = onboarding)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Force Show Onboarding With Profile`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding)
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Force Show Onboarding Revamp With Profile And Failed Get Rates`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding, revampData = OccRevampData(true))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        every { ratesUseCase.execute(any()) } throws Throwable()
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.Normal, orderSummaryPageViewModel.globalEvent.value)
+    }
+
+    @Test
+    fun `Force Show Onboarding Revamp With Profile`() {
+        // Given
+        val onboarding = OccMainOnboarding(isForceShowCoachMark = true)
+        val shipment = OrderProfileShipment(serviceId = 1)
+        val profile = OrderProfile(shipment = shipment)
+        val response = OrderData(cart = OrderCart(product = OrderProduct(productId = 1)), preference = profile, onboarding = onboarding, revampData = OccRevampData(true))
+        every { getOccCartUseCase.createRequestParams(any()) } returns RequestParams.EMPTY
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+
+        val shippingRecommendationData = ShippingRecommendationData().apply {
+            shippingDurationViewModels = listOf(
+                    ShippingDurationUiModel().apply {
+                        serviceData = ServiceData().apply {
+                            serviceId = 1
+                            serviceName = "kirimaja (2 hari)"
+                        }
+                        shippingCourierViewModelList = listOf(
+                                ShippingCourierUiModel().apply {
+                                    productData = ProductData().apply {
+                                        shipperName = "kirimin"
+                                        shipperProductId = 1
+                                        shipperId = 1
+                                        insurance = InsuranceData()
+                                        price = PriceData()
+                                    }
+                                    ratesId = "0"
+                                }
+                        )
+                    }
+            )
+        }
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+
+        // When
+        orderSummaryPageViewModel.getOccCart(true, "")
+
+        // Then
+        assertEquals(OccGlobalEvent.ForceOnboarding(onboarding), orderSummaryPageViewModel.globalEvent.value)
     }
 }

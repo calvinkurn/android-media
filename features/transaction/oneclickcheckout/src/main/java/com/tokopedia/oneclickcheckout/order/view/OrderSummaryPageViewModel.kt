@@ -19,6 +19,7 @@ import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryPageEnhanceECommerce
+import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccProfileRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -668,20 +669,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         if (onboarding.isForceShowCoachMark) {
             val preference = _orderPreference.preference
             if (preference.shipment.serviceId > 0) {
-                if (_orderShipment.isValid()) {
-                    val currentGlobalEvent = globalEvent.value
-                    val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
-                    if (!hasBlockingGlobalEvent) {
-                        globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
-                    }
+                if (isNewFlow && _orderShipment.isValid()) {
+                    forceShowOnboarding(onboarding)
+                } else if (!isNewFlow) {
+                    forceShowOnboarding(onboarding)
                 }
             } else {
-                val currentGlobalEvent = globalEvent.value
-                val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
-                if (!hasBlockingGlobalEvent) {
-                    globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
-                }
+                forceShowOnboarding(onboarding)
             }
+        }
+    }
+
+    private fun forceShowOnboarding(onboarding: OccMainOnboarding) {
+        val currentGlobalEvent = globalEvent.value
+        val hasBlockingGlobalEvent = currentGlobalEvent is OccGlobalEvent.Loading || currentGlobalEvent is OccGlobalEvent.Prompt
+        if (!hasBlockingGlobalEvent) {
+            globalEvent.value = OccGlobalEvent.ForceOnboarding(onboarding)
         }
     }
 
