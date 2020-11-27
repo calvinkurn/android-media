@@ -341,9 +341,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             if (it?.needPinpoint == true && orderPreference?.preference?.address != null) {
                 goToPinpoint(orderPreference?.preference?.address)
             }
-//            else if (orderPreference != null && viewModel.globalEvent.value !is OccGlobalEvent.Prompt) {
-//                forceShowOnboarding(orderPreference?.onboarding)
-//            }
         })
 
         viewModel.orderPayment.observe(viewLifecycleOwner, {
