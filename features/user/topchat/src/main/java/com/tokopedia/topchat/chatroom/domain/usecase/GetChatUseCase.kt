@@ -218,6 +218,7 @@ open class GetChatUseCase @Inject constructor(
                   senderName
                   role
                   msg
+                  fraudStatus
                   replyTime
                   status
                   attachmentID

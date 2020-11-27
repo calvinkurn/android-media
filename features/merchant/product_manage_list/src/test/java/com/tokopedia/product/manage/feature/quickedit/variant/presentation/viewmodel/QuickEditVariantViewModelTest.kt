@@ -5,9 +5,9 @@ import com.tokopedia.product.manage.data.createOptionResponse
 import com.tokopedia.product.manage.data.createProductVariant
 import com.tokopedia.product.manage.data.createProductVariantResponse
 import com.tokopedia.product.manage.data.createSelectionResponse
-import com.tokopedia.product.manage.feature.quickedit.variant.data.model.response.GetProductVariantResponse
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.EditVariantResult
-import com.tokopedia.product.manage.feature.quickedit.variant.presentation.data.GetVariantResult
+import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.verification.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import io.mockk.coEvery
