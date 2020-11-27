@@ -28,7 +28,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
-import org.mockito.internal.util.reflection.Whitebox
+import java.lang.reflect.Field
 
 @ExperimentalCoroutinesApi
 class OtherMenuViewModelTest {
@@ -50,6 +50,8 @@ class OtherMenuViewModelTest {
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
+
+    protected lateinit var isToasterAlreadyShownField: Field
 
     private lateinit var mViewModel: OtherMenuViewModel
 
@@ -149,7 +151,11 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `will not change live data value if toaster is already shown`() {
-        Whitebox.setInternalState(mViewModel, "_isToasterAlreadyShown", NonNullLiveData(true))
+        isToasterAlreadyShownField = mViewModel::class.java.getDeclaredField("_isToasterAlreadyShown").apply {
+            isAccessible = true
+        }
+        isToasterAlreadyShownField.set(mViewModel, NonNullLiveData(true))
+
         mViewModel.getAllSettingShopInfo(true)
         mViewModel.isToasterAlreadyShown.value?.let {
             assert(it)
