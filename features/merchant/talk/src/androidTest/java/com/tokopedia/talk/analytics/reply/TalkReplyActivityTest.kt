@@ -10,7 +10,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.QUESTION_ID
@@ -25,7 +24,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -54,15 +52,15 @@ class TalkReplyActivityTest {
         }
     }
 
-    val talkReplyLoadTimeMonitoringListener = object : TalkReplyLoadTimeMonitoringListener {
-        override fun onStartPltListener() {
-            TalkIdlingResource.increment()
-        }
-
-        override fun onStopPltListener() {
-            TalkIdlingResource.decrement()
-        }
-    }
+//    val talkReplyLoadTimeMonitoringListener = object : TalkReplyLoadTimeMonitoringListener {
+//        override fun onStartPltListener() {
+//            TalkIdlingResource.increment()
+//        }
+//
+//        override fun onStopPltListener() {
+//            TalkIdlingResource.decrement()
+//        }
+//    }
 
     @Before
     fun setup() {
@@ -97,12 +95,12 @@ class TalkReplyActivityTest {
         onView(withId(R.id.replyEditText)).check(matches(withText(SENT_TO_REPLY_TEXT)))
     }
 
-    private fun markAsIdleIfPltIsSucceed() {
-        val performanceData = activityRule.activity.pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
-        if (performanceData?.isSuccess == true) {
-            talkReplyLoadTimeMonitoringListener.onStopPltListener()
-        }
-    }
+//    private fun markAsIdleIfPltIsSucceed() {
+//        val performanceData = activityRule.activity.pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
+//        if (performanceData?.isSuccess == true) {
+//            talkReplyLoadTimeMonitoringListener.onStopPltListener()
+//        }
+//    }
 
     private fun finishTest() {
         gtmLogDBSource.deleteAll().subscribe()
