@@ -6,12 +6,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.KEY_YOUTUBE_VIDEO_ID
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTP
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.WEB_PREFIX_HTTPS
-import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchers
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
 import com.tokopedia.product.addedit.description.domain.usecase.ValidateProductDescriptionUseCase
@@ -29,10 +29,10 @@ import java.lang.reflect.Type
 import javax.inject.Inject
 
 class AddEditProductDescriptionViewModel @Inject constructor(
-        private val coroutineDispatcher: CoroutineDispatchers,
-        private val resource: ResourceProvider,
-        private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
-        private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
+    private val coroutineDispatcher: CoroutineDispatchers,
+    private val resource: ResourceProvider,
+    private val getYoutubeVideoUseCase: GetYoutubeVideoDetailUseCase,
+    private val validateProductDescriptionUseCase: ValidateProductDescriptionUseCase
 ) : BaseViewModel(coroutineDispatcher.main) {
 
     private var _productInputModel = MutableLiveData(ProductInputModel())

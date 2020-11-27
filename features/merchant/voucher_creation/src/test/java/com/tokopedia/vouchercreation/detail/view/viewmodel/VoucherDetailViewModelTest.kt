@@ -7,7 +7,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchercreation.common.domain.usecase.CancelVoucherUseCase
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.detail.domain.usecase.VoucherDetailUseCase
 import com.tokopedia.vouchercreation.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.voucherlist.domain.usecase.ShopBasicDataUseCase
@@ -55,7 +55,7 @@ class VoucherDetailViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
 
-        mViewModel = VoucherDetailViewModel(TestCoroutineDispatchers, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
+        mViewModel = VoucherDetailViewModel(CoroutineTestDispatchersProvider, voucherDetailUseCase, cancelVoucherUseCase, shopBasicDataUseCase)
 
         with(mViewModel) {
             cancelVoucherResultLiveData.observeForever(cancelVoucherResultObserver)

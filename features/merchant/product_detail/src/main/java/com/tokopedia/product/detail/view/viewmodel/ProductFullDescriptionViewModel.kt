@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.product.detail.data.model.spesification.ProductSpecificationResponse
 import com.tokopedia.product.detail.usecase.GetProductSpecificationUseCase
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.product.detail.view.util.asFail
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.usecase.coroutines.Result
@@ -17,9 +17,9 @@ import javax.inject.Inject
 /**
  * Created by Yehezkiel on 22/07/20
  */
-class ProductFullDescriptionViewModel @Inject constructor(private val dispatcher: DynamicProductDetailDispatcherProvider,
+class ProductFullDescriptionViewModel @Inject constructor(private val dispatcher: CoroutineDispatchers,
                                                           private val getProductSpecificationUseCase: GetProductSpecificationUseCase)
-    : BaseViewModel(dispatcher.ui()) {
+    : BaseViewModel(dispatcher.main) {
 
     private val catalogId = MutableLiveData<String>()
     private val _specificationResponseData = MediatorLiveData<Result<ProductSpecificationResponse>>()
@@ -29,7 +29,7 @@ class ProductFullDescriptionViewModel @Inject constructor(private val dispatcher
     init {
         _specificationResponseData.addSource(catalogId) {
             launchCatchError(block = {
-                withContext(dispatcher.io()) {
+                withContext(dispatcher.io) {
                     val data = getProductSpecificationUseCase.executeOnBackground(GetProductSpecificationUseCase.createParams(it))
                     _specificationResponseData.postValue(data.asSuccess())
                 }

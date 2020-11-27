@@ -1,6 +1,7 @@
 package com.tokopedia.seller.menu.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult
 import com.tokopedia.gm.common.domain.interactor.GetShopScoreUseCase
 import com.tokopedia.product.manage.common.feature.list.data.model.filter.ProductListMetaData
@@ -16,19 +17,13 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.Partia
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType.PartialTopAdsSettingSuccessInfo
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.SettingShopInfoUiModel
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopInfoUiModel
-import com.tokopedia.seller.menu.coroutine.TestCoroutineDispatchers
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse
 import com.tokopedia.seller.menu.data.model.SellerMenuNotificationResponse.*
 import com.tokopedia.seller.menu.domain.usecase.GetSellerNotificationUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 
@@ -36,7 +31,10 @@ import org.junit.Rule
 open class SellerMenuViewModelTestFixture {
 
     @get:Rule
-    val rule = InstantTaskExecutorRule()
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    @get:Rule
+    val coroutineTestRule = CoroutineTestRule()
 
     private lateinit var getAllShopInfoUseCase: GetAllShopInfoUseCase
     private lateinit var getProductListMetaUseCase: GetProductListMetaUseCase
@@ -44,19 +42,15 @@ open class SellerMenuViewModelTestFixture {
     private lateinit var getShopScoreUseCase: GetShopScoreUseCase
     private lateinit var userSession: UserSessionInterface
 
-    protected lateinit var testDispatcher: TestCoroutineDispatcher
     protected lateinit var viewModel: SellerMenuViewModel
 
     @Before
     fun setUp() {
-        val dispatchers = TestCoroutineDispatchers
-
         getAllShopInfoUseCase = mockk(relaxed = true)
         getProductListMetaUseCase = mockk(relaxed = true)
         getSellerMenuNotifications = mockk(relaxed = true)
         getShopScoreUseCase = mockk(relaxed = true)
         userSession = mockk(relaxed = true)
-        testDispatcher = dispatchers.testDispatcher
 
         viewModel = SellerMenuViewModel(
             getAllShopInfoUseCase,
@@ -64,16 +58,8 @@ open class SellerMenuViewModelTestFixture {
             getSellerMenuNotifications,
             getShopScoreUseCase,
             userSession,
-            dispatchers
+            coroutineTestRule.dispatchers
         )
-
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
     }
 
     protected fun onGetAllShopInfoUseCase_thenReturn(response: Pair<PartialSettingResponse, PartialSettingResponse>) {
