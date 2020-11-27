@@ -1,8 +1,8 @@
 package com.tokopedia.shop.score.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.shop.score.coroutine.TestCoroutineDispatchers
 import com.tokopedia.shop.score.domain.model.ShopScoreResponse
 import com.tokopedia.shop.score.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.view.mapper.ShopScoreDetailMapper
@@ -41,7 +41,7 @@ class ShopScoreDetailViewModelTest {
             getShopScoreUseCase,
             userSession,
             mapper,
-            TestCoroutineDispatchers
+            CoroutineTestDispatchersProvider
         )
     }
 
