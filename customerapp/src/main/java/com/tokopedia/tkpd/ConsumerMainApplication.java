@@ -4,20 +4,16 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.service.voice.VoiceInteractionService;
-import androidx.slice.SliceManager;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -90,7 +86,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import kotlin.Pair;
@@ -147,37 +142,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         registerActivityLifecycleCallbacks();
 
-        grantSlicePermissions();
     }
-
-    private void grantSlicePermissions() {
-        Context context = getApplicationContext();
-
-        Uri sliceProviderUri =
-                new Uri.Builder()
-                        .scheme(ContentResolver.SCHEME_CONTENT)
-                        .authority("com.tokopedia.tkpd.travel_slice")
-                        .build();
-
-        String assistantPackage = getAssistantPackage(context);
-        if (assistantPackage == null) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri);
-        }
-    }
-
-    private String getAssistantPackage(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> resolveInfoList = packageManager.queryIntentServices(
-                new Intent(VoiceInteractionService.SERVICE_INTERFACE), 0);
-        if (resolveInfoList.isEmpty()) {
-            return null;
-        }
-        return resolveInfoList.get(0).serviceInfo.packageName;
-    }
-
 
     private void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new ShakeSubscriber(getApplicationContext(), new ShakeDetectManager.Callback() {
