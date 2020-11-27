@@ -74,6 +74,7 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     override fun bind(element: RechargeBUWidgetDataModel) {
         data = element.data
         if (data.items.isNotEmpty()) {
+            itemView.recharge_bu_content_shimmering.hide()
             isCacheData = element.isDataCache
             initVar()
             setupBackground(data.mediaUrl, data.option2)
@@ -115,14 +116,12 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
     private fun initVar() {
         recyclerView = itemView.findViewById(R.id.rv_recharge_bu_product)
         image = itemView.findViewById(R.id.recharge_bu_parallax_image)
-        loadingBackground = itemView.findViewById(R.id.recharge_bu_background_loader)
         parallaxBackground = itemView.findViewById(R.id.recharge_bu_parallax_background)
         parallaxView = itemView.findViewById(R.id.recharge_bu_parallax_view)
     }
 
     private fun setupBackground(imageUrl: String, gradientColor: String) {
         if (imageUrl.isNotEmpty()) {
-            loadingBackground.show()
 //            image.addOnImpressionListener(channel) {
 //                if (!isCacheData)
 //                    mixLeftComponentListener?.onImageBannerImpressed(channel, adapterPosition)
@@ -132,18 +131,15 @@ class RechargeBUWidgetMixLeftViewHolder(itemView: View,
                     if (gradientColor.isNotEmpty()) {
                         parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
                     }
-                    loadingBackground.hide()
                 }
 
                 override fun failedLoad() {
                     if (gradientColor.isNotEmpty()) {
                         parallaxBackground.setGradientBackground(arrayListOf(gradientColor))
                     }
-                    loadingBackground.hide()
                 }
             })
         } else {
-            loadingBackground.hide()
         }
     }
 

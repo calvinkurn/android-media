@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginTop="@dimen/spacing_lvl3"
-        android:background="@color/Unify_Y200"
         app:layout_constraintDimensionRatio="H,2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,7 +71,7 @@
         android:id="@+id/recharge_bu_widget_banner_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/spacing_lvl6"
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:layout_marginEnd="@dimen/spacing_lvl4"
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:layout_marginBottom="@dimen/spacing_lvl3"
@@ -101,5 +100,9 @@
         app:layout_constraintTop_toBottomOf="@+id/recharge_bu_widget_banner_description"
         app:layout_goneMarginTop="@dimen/spacing_lvl2" />
 
+    <include
+        android:id="@+id/recharge_bu_content_shimmering"
+        android:visibility="gone"
+        layout="@layout/home_recharge_bu_widget_mix_top_shimmering"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

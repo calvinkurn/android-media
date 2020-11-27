@@ -18,6 +18,8 @@ import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.recharge_component.R
@@ -29,6 +31,7 @@ import com.tokopedia.recharge_component.model.WidgetSource
 import com.tokopedia.recharge_component.presentation.adapter.RechargeBUWidgetProductCardTypeFactoryImpl
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.home_recharge_bu_widget_mix_top.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -71,6 +74,7 @@ class RechargeBUWidgetMixTopViewHolder(
     override fun bind(element: RechargeBUWidgetDataModel) {
         data = element.data
         if (data.items.isNotEmpty()) {
+            itemView.recharge_bu_content_shimmering.hide()
             isCacheData = element.isDataCache
             mappingView(element)
             setHeaderComponent(element)
