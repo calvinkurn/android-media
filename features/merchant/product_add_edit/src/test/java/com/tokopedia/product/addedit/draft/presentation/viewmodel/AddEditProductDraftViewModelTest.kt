@@ -1,7 +1,7 @@
 package com.tokopedia.product.addedit.draft.presentation.viewmodel
 
 import com.tokopedia.product.addedit.util.getOrAwaitValue
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -31,7 +31,7 @@ class AddEditProductDraftViewModelTest: AddEditProductDraftViewModelTestFixture(
             }
 
             viewModel.drafts.value?.let {
-                verifySuccessResult(it, mockData)
+                verifySuccessResult(mockData, it)
             }
         }
     }
@@ -54,7 +54,7 @@ class AddEditProductDraftViewModelTest: AddEditProductDraftViewModelTestFixture(
             }
 
             viewModel.deleteDraft.value?.let {
-                verifySuccessResult(it, mockData)
+                verifySuccessResult(mockData, it)
             }
         }
     }
@@ -77,13 +77,13 @@ class AddEditProductDraftViewModelTest: AddEditProductDraftViewModelTestFixture(
             }
 
             viewModel.deleteAllDraft.value?.let {
-                verifySuccessResult(it, mockData)
+                verifySuccessResult(mockData, it)
             }
         }
     }
 
     private fun verifySuccessResult(prevData: Any, currentData: Any) {
-        Assert.assertEquals(prevData, Success(currentData))
+        Assert.assertEquals(Success(prevData), currentData)
     }
 
 }

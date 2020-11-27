@@ -15,6 +15,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
+import kotlin.jvm.Throws
 
 @ExperimentalCoroutinesApi
 abstract class AddEditProductPreviewViewModelTestFixture {
