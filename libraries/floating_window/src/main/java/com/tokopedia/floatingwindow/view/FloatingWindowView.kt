@@ -1,10 +1,8 @@
 package com.tokopedia.floatingwindow.view
 
-import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
-import android.util.DisplayMetrics
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager

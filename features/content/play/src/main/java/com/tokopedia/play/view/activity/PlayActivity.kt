@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.analytics.performance.util.PltPerformanceData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.play.*
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
+import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
-import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.contract.PlayPiPCoordinator
