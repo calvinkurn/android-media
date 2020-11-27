@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.devicefingerprint.usecase.SubmitDeviceInfoUseCase
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
@@ -29,11 +28,11 @@ import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
+import com.tokopedia.sessioncommon.domain.usecase.GetLocationAdminUseCase
 import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
@@ -52,6 +51,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val getLocationAdminUseCase: GetLocationAdminUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
@@ -244,7 +244,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
             idlingResourceProvider?.increment()
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfo(),
-                    view.onErrorGetUserInfo()
+                    view.onErrorGetUserInfo(),
+                    getLocationAdminUseCase,
+                    view.showLocationAdminPopUp(),
+                    view.showLocationAdminError()
                     , onFinished = {
                 idlingResourceProvider?.decrement()
             }))

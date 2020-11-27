@@ -119,6 +119,10 @@ interface LoginEmailPhoneContract {
         fun goToFingerprintRegisterPage()
 
         fun getFingerprintConfig(): Boolean
+
+        fun showLocationAdminPopUp(): () -> Unit
+
+        fun showLocationAdminError(): (Throwable) -> Unit
     }
 
     interface Presenter : CustomerPresenter<View> {
