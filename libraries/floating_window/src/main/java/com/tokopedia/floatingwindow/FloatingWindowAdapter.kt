@@ -59,6 +59,10 @@ class FloatingWindowAdapter private constructor(
         )
     }
 
+    fun contains(key: String): Boolean {
+        return floatingWindow.getViewByKey(key) != null
+    }
+
     fun removeByKey(key: String) {
         floatingWindow.removeByKey(key)
     }

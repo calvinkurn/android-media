@@ -154,12 +154,12 @@ class PlayVideoFragment @Inject constructor(
         }
 
         pipAdapter.addView(
-                "arebeb",
-                view,
-                (scaleFactor * width).toInt(),
-                (scaleFactor * height).toInt(),
-                screenWidth - 16,
-                screenHeight - 16,
+                key = FLOATING_WINDOW_KEY,
+                view = view,
+                width = (scaleFactor * width).toInt(),
+                height = (scaleFactor * height).toInt(),
+                x = screenWidth - 16,
+                y = screenHeight - 16,
                 overwrite = true
         )
     }
@@ -175,6 +175,7 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
+        pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
@@ -289,5 +290,7 @@ class PlayVideoFragment @Inject constructor(
 
     companion object {
         private const val BLUR_RADIUS = 25f
+
+        private const val FLOATING_WINDOW_KEY = "PLAY_VIEWER_PIP"
     }
 }

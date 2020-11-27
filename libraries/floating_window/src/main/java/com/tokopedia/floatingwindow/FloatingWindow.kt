@@ -10,7 +10,7 @@ import com.tokopedia.floatingwindow.util.registerDraggableTouchListener
 /**
  * Created by jegul on 26/11/20
  */
-class FloatingWindow private constructor(context: Context) {
+internal class FloatingWindow private constructor(context: Context) {
 
     companion object {
 
@@ -42,13 +42,13 @@ class FloatingWindow private constructor(context: Context) {
         return viewMap[key]?.view
     }
 
-    internal fun onCleared() {
+    fun onCleared() {
         removeAllViews()
     }
 
-    internal fun getWindowManager() = mWindowManager
+    fun getWindowManager() = mWindowManager
 
-    internal fun addView(key: String, view: View, layoutParams: WindowManager.LayoutParams, overwrite: Boolean) {
+    fun addView(key: String, view: View, layoutParams: WindowManager.LayoutParams, overwrite: Boolean) {
         if (viewMap.containsKey(key)) {
             if (overwrite) removeByKey(key)
             else return
@@ -62,14 +62,14 @@ class FloatingWindow private constructor(context: Context) {
         FloatingWindowHelper.startService(appContext)
     }
 
-    internal fun removeByKey(key: String) {
+    fun removeByKey(key: String) {
         val prop = viewMap[key] ?: return
 
         mWindowManager.removeView(prop.view)
         viewMap.remove(key)
     }
 
-    internal fun attachView() {
+    fun attachView() {
         viewMap.entries.forEach { entry ->
             val value = entry.value
             if (value.status == Status.Queued) {
@@ -105,7 +105,7 @@ class FloatingWindow private constructor(context: Context) {
         }
     }
 
-    internal data class Property(
+    data class Property(
             val view: View,
             val layoutParams: WindowManager.LayoutParams,
             val status: Status
