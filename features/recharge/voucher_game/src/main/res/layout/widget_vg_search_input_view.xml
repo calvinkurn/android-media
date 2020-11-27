@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:paddingBottom="@dimen/dp_10"
-    android:paddingLeft="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_10"
-    android:paddingTop="@dimen/dp_10">
+    android:paddingBottom="@dimen/voucher_game_dp_10"
+    android:paddingLeft="@dimen/voucher_game_dp_10"
+    android:paddingRight="@dimen/voucher_game_dp_10"
+    android:paddingTop="@dimen/voucher_game_dp_10">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,15 +16,15 @@
         android:background="@drawable/bg_voucher_game_search_input_text_area"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_10">
+        android:paddingBottom="@dimen/voucher_game_dp_10"
+        android:paddingLeft="@dimen/voucher_game_dp_10"
+        android:paddingRight="@dimen/voucher_game_dp_10"
+        android:paddingTop="@dimen/voucher_game_dp_10">
 
         <ImageView
             android:id="@+id/image_view_search"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
+            android:layout_width="@dimen/voucher_game_dp_30"
+            android:layout_height="@dimen/voucher_game_dp_30"
             android:background="@color/transparent"
             app:srcCompat="@drawable/ic_product_navigation_search_grayscale_24" />
 
@@ -33,8 +33,8 @@
             style="@style/EditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/unify_space_8"
+            android:layout_marginRight="@dimen/voucher_game_dp_15"
             android:layout_weight="1"
             android:background="@null"
             android:ellipsize="end"
@@ -42,12 +42,12 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/unify_font_16" />
 
         <ImageButton
             android:id="@+id/image_button_close"
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
+            android:layout_width="@dimen/unify_space_16"
+            android:layout_height="@dimen/unify_space_16"
             android:background="@null"
             app:srcCompat="@drawable/ic_ticker_action_close_12dp"
             android:visibility="gone" />

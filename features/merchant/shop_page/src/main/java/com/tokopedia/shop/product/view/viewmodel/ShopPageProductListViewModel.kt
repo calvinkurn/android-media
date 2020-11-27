@@ -18,7 +18,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembers
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
-import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.product.view.datamodel.*
 import com.tokopedia.shop.product.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
@@ -40,24 +40,24 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class ShopPageProductListViewModel @Inject constructor(
-        private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
-        private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
-        private val getMembershipUseCase: GetMembershipUseCaseNew,
-        private val userSession: UserSessionInterface,
-        private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
-        private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
-        private val getShopProductUseCase: GqlGetShopProductUseCase,
-        @ShopProductGetHighlightProductQualifier
+    private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
+    private val getMerchantVoucherListUseCase: GetMerchantVoucherListUseCase,
+    private val getMembershipUseCase: GetMembershipUseCaseNew,
+    private val userSession: UserSessionInterface,
+    private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
+    private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
+    private val addWishListUseCase: AddWishListUseCase,
+    private val getShopProductUseCase: GqlGetShopProductUseCase,
+    @ShopProductGetHighlightProductQualifier
         private val getShopHighlightProductUseCase: Provider<GqlGetShopProductUseCase>,
-        private val removeWishlistUseCase: RemoveWishListUseCase,
-        private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
-        private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
-        private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
-        private val shopProductSortMapper: ShopProductSortMapper
-) : BaseViewModel(dispatcherProvider.main()) {
+    private val removeWishlistUseCase: RemoveWishListUseCase,
+    private val deleteShopInfoUseCase: DeleteShopInfoCacheUseCase,
+    private val dispatcherProvider: CoroutineDispatchers,
+    private val getShopFilterBottomSheetDataUseCase: GetShopFilterBottomSheetDataUseCase,
+    private val getShopFilterProductCountUseCase: GetShopFilterProductCountUseCase,
+    private val gqlGetShopSortUseCase: GqlGetShopSortUseCase,
+    private val shopProductSortMapper: ShopProductSortMapper
+) : BaseViewModel(dispatcherProvider.main) {
 
     companion object {
         private const val SOLD_ETALASE = "sold"
@@ -99,22 +99,22 @@ class ShopPageProductListViewModel @Inject constructor(
     ) {
         launchCatchError(coroutineContext, {
             coroutineScope {
-                val membershipStampProgressDataAsync = async(dispatcherProvider.io()) {
+                val membershipStampProgressDataAsync = async(dispatcherProvider.io) {
                     try {
                         getMembershipData(shopId)
                     } catch (error: Exception) {
                         null
                     }
                 }
-                val shopMerchantVoucherDataAsync = async(dispatcherProvider.io()) {
+                val shopMerchantVoucherDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
                     else getMerchantVoucherListData(shopId, NUM_VOUCHER_DISPLAY)
                 }
-                val shopProductFeaturedDataAsync = async(dispatcherProvider.io()) {
+                val shopProductFeaturedDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
                     else getFeaturedProductData(shopId, userId)
                 }
-                val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io()) {
+                val shopProductEtalaseHighlightDataAsync = async(dispatcherProvider.io) {
                     if (isShowNewShopHomeTab) null
                     else getShopProductEtalaseHighlightData(shopId, etalaseList)
                 }
@@ -182,7 +182,7 @@ class ShopPageProductListViewModel @Inject constructor(
             val listEtalaseHighlight = etalaseList
                     .filter { it.highlighted }
             val listProductEtalaseHighlightResponse = listEtalaseHighlight.map {
-                async(dispatcherProvider.io()) {
+                async(dispatcherProvider.io) {
                     val getShopHighlightProductUseCase = getShopHighlightProductUseCase.get()
                     listGetShopHighlightProductUseCase.add(getShopHighlightProductUseCase)
                     getProductList(
@@ -313,7 +313,7 @@ class ShopPageProductListViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
-            val listShopProduct = withContext(dispatcherProvider.io()) {
+            val listShopProduct = withContext(dispatcherProvider.io) {
                 getProductList(
                         getShopProductUseCase,
                         shopId,
@@ -341,7 +341,7 @@ class ShopPageProductListViewModel @Inject constructor(
             shopProductFilterParameter: ShopProductFilterParameter
     ) {
         launchCatchError(block = {
-            val listShopProduct = withContext(dispatcherProvider.io()) {
+            val listShopProduct = withContext(dispatcherProvider.io) {
                 getProductList(
                         getShopProductUseCase,
                         shopId,
@@ -372,7 +372,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun getNewMembershipData(shopId: String) {
         launchCatchError(block = {
-            val membershipStampProgressData = withContext(dispatcherProvider.io()) { getMembershipData(shopId) }
+            val membershipStampProgressData = withContext(dispatcherProvider.io) { getMembershipData(shopId) }
             newMembershipData.postValue(Success(membershipStampProgressData))
         }) {
             newMembershipData.postValue(Fail(it))
@@ -381,7 +381,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun getNewMerchantVoucher(shopId: String) {
         launchCatchError(block = {
-            val merchantVoucherData = withContext(dispatcherProvider.io()) {
+            val merchantVoucherData = withContext(dispatcherProvider.io) {
                 getMerchantVoucherListData(shopId, NUM_VOUCHER_DISPLAY)
             }
             merchantVoucherData?.let {
@@ -411,7 +411,7 @@ class ShopPageProductListViewModel @Inject constructor(
     fun getShopFilterData(shopId: String) {
         launchCatchError(block = {
             val etalaseResponse = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getShopEtalaseData(shopId)
                     },
@@ -421,7 +421,7 @@ class ShopPageProductListViewModel @Inject constructor(
                     }
             )
             val sortResponse  = asyncCatchError(
-                    dispatcherProvider.io(),
+                    dispatcherProvider.io,
                     block = {
                         getSortListData()
                     },
@@ -450,7 +450,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun getBottomSheetFilterData() {
         launchCatchError(coroutineContext, block = {
-            val filterBottomSheetData = withContext(dispatcherProvider.io()) {
+            val filterBottomSheetData = withContext(dispatcherProvider.io) {
                 getShopFilterBottomSheetDataUseCase.params = GetShopFilterBottomSheetDataUseCase.createParams()
                 getShopFilterBottomSheetDataUseCase.executeOnBackground()
             }
@@ -467,7 +467,7 @@ class ShopPageProductListViewModel @Inject constructor(
 
     fun getFilterResultCount(shopId: String, tempShopProductFilterParameter: ShopProductFilterParameter) {
         launchCatchError(block = {
-            val filterResultProductCount = withContext(dispatcherProvider.io()) {
+            val filterResultProductCount = withContext(dispatcherProvider.io) {
                 getFilterResultCountData(shopId, tempShopProductFilterParameter)
             }
             shopProductFilterCountLiveData.postValue(Success(filterResultProductCount))

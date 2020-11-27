@@ -205,6 +205,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/tp_text_size_xsmall"
             android:textStyle="normal"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHeight_default="wrap"

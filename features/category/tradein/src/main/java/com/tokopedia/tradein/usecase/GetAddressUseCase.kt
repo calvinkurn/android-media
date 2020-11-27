@@ -1,7 +1,7 @@
 package com.tokopedia.tradein.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.logisticdata.data.entity.address.Token
+import com.tokopedia.logisticCommon.data.entity.address.Token
 import com.tokopedia.tradein.model.AddressResult
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData
 import com.tokopedia.tradein.raw.GQL_KERO_GET_ADDRESS
