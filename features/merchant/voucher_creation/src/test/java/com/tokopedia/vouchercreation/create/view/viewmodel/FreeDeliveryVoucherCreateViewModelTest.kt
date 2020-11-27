@@ -14,7 +14,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -147,8 +146,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
 
             validateFreeDeliveryValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             assert(freeDeliveryValidationLiveData.value == Success(dummySuccessFreeDeliveryValidation))
         }
     }
@@ -167,8 +164,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.FreeDelivery.VoucherQuota)
 
             validateFreeDeliveryValues()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             assert(freeDeliveryValidationLiveData.value is Fail)
         }
