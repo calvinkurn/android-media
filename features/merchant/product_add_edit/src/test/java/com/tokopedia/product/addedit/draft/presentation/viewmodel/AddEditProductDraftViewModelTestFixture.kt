@@ -1,12 +1,12 @@
 package com.tokopedia.product.addedit.draft.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.product.addedit.common.coroutine.CoroutineDispatchersProvider
 import com.tokopedia.product.addedit.draft.domain.usecase.*
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Before
 import org.junit.Rule
 import org.junit.jupiter.api.AfterEach
@@ -28,7 +28,7 @@ abstract class AddEditProductDraftViewModelTestFixture {
 
     protected val viewModel: AddEditProductDraftViewModel by lazy {
         AddEditProductDraftViewModel(
-                TestCoroutineDispatcher(),
+                CoroutineDispatchersProvider,
                 deleteProductDraftUseCase,
                 deleteAllProductDraftUseCase,
                 getAllProductDraftUseCase
