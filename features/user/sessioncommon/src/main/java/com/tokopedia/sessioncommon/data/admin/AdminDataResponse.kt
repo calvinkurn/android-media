@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class AdminDataResponse(
     @Expose
     @SerializedName("admin_data")
-    val data: AdminData
+    val data: List<AdminData>
 )

@@ -24,9 +24,10 @@ class GetLocationAdminSubscriber(
 
     private fun onGetLocationAdminSuccess(response: GraphqlResponse) {
         response.getData<AdminInfoResponse>(AdminInfoResponse::class.java).let { adminInfo ->
-            val isLocationAdmin = adminInfo.response.data.detail.roleType.isLocationAdmin
+            val data = adminInfo.response.data.firstOrNull()
+            val isLocationAdmin = data?.detail?.roleType?.isLocationAdmin
 
-            if (isLocationAdmin) {
+            if (isLocationAdmin == true) {
                 showLocationAdminPopUp?.invoke()
             } else {
                 onSuccessGetUserProfile.invoke()
