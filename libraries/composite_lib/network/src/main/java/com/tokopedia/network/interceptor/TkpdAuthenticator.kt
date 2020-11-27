@@ -53,7 +53,7 @@ class TkpdAuthenticator(
             val body: ResponseBody = ResponseBody.create(contentType, jsonObject.toString())
             return response.newBuilder().body(body).build()
         } catch (e: JSONException) {
-            logToScalyr("Authenticator: create force logout body fail: e.message")
+            logToScalyr("Authenticator: create force logout body fail: ${e.message}")
             null
         }
     }
@@ -81,7 +81,7 @@ class TkpdAuthenticator(
         return newRequest.build()
     }
 
-    private fun logToScalyr(message: String, isLoggedIn: Boolean){
+    private fun logToScalyr(message: String){
         Timber.w(message)
     }
 
