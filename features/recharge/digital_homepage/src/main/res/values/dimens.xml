@@ -10,10 +10,12 @@
     <dimen name="section_header_margin">12dp</dimen>
     <dimen name="banner_min_height">182dp</dimen>
     <dimen name="banner_width">200dp</dimen>
+    <dimen name="banner_see_all_line_spacing">3sp</dimen>
     <dimen name="video_highlight_title_margin_bottom">3dp</dimen>
     <dimen name="video_highlight_desc_margin_bottom">12dp</dimen>
     <dimen name="video_highlight_play_icon_size">34dp</dimen>
     <dimen name="video_highlight_live_badge_height">20dp</dimen>
+    <dimen name="video_highlight_title_line_spacing">6sp</dimen>
     <dimen name="single_banner_margin">12dp</dimen>
     <dimen name="dual_banners_shimmering_height">320dp</dimen>
     <dimen name="product_card_title_min_height">54dp</dimen>
