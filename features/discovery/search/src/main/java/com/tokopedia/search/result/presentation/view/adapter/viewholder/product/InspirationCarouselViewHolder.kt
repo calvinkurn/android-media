@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
+import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
@@ -104,10 +105,10 @@ class InspirationCarouselViewHolder(
         private var cardViewVerticalOffset = 0
 
         override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
-            if (view is CardView) {
-                setCardViewOffsets(view)
-                setOutRectOffSetForCardView(outRect, view, parent)
-            }
+            if (view is CardView) setCardViewOffsets(view)
+            else if (view is ProductCardGridView) setProductCardViewOffsets(view)
+
+            setOutRectOffSetForCardView(outRect, view, parent)
         }
 
         private fun setCardViewOffsets(cardView: CardView) {
@@ -115,32 +116,39 @@ class InspirationCarouselViewHolder(
             cardViewVerticalOffset = cardView.getVerticalShadowOffset()
         }
 
-        private fun setOutRectOffSetForCardView(outRect: Rect, cardView: CardView, parent: RecyclerView) {
-            outRect.left = getLeftOffset(cardView, parent)
+        private fun setProductCardViewOffsets(view: ProductCardGridView) {
+            cardViewHorizontalOffset = view.getHorizontalShadowOffset()
+            cardViewVerticalOffset = view.getVerticalShadowOffset()
+        }
+
+        private fun setOutRectOffSetForCardView(outRect: Rect, view: View, parent: RecyclerView) {
+            outRect.left = getLeftOffset(view, parent)
             outRect.top = getTopOffset()
-            outRect.right = getRightOffset(cardView, parent)
+            outRect.right = getRightOffset(view, parent)
             outRect.bottom = getBottomOffset()
         }
 
-        private fun getLeftOffset(cardView: CardView, parent: RecyclerView): Int {
-            return if (parent.getChildAdapterPosition(cardView) == 0) {
-                left - (cardViewHorizontalOffset / 2)
-            } else {
-                (left / 4) - (cardViewHorizontalOffset / 2)
-            }
+        private fun getLeftOffset(view: View, parent: RecyclerView): Int {
+            return if (parent.getChildAdapterPosition(view) == 0) getLeftOffsetFirstItem()
+            else getLeftOffsetNotFirstItem()
         }
+
+        private fun getLeftOffsetFirstItem(): Int { return left - (cardViewHorizontalOffset / 2) }
+
+        private fun getLeftOffsetNotFirstItem(): Int { return (left / 4) - (cardViewHorizontalOffset / 2) }
 
         private fun getTopOffset(): Int {
             return top - cardViewVerticalOffset
         }
 
-        private fun getRightOffset(cardView: CardView, parent: RecyclerView): Int {
-            return if (parent.getChildAdapterPosition(cardView) == (parent.adapter?.itemCount ?: 0) - 1) {
-                right - (cardViewHorizontalOffset / 2)
-            } else {
-                (right / 4) - (cardViewHorizontalOffset / 2)
-            }
+        private fun getRightOffset(view: View, parent: RecyclerView): Int {
+            return if (parent.getChildAdapterPosition(view) == (parent.adapter?.itemCount ?: 0) - 1) getRightOffsetLastItem()
+            else getRightOffsetNotLastItem()
         }
+
+        private fun getRightOffsetLastItem(): Int { return right - (cardViewHorizontalOffset / 2) }
+
+        private fun getRightOffsetNotLastItem(): Int { return (right / 4) - (cardViewHorizontalOffset / 2) }
 
         private fun getBottomOffset(): Int {
             return bottom - (cardViewVerticalOffset / 2)
