@@ -245,6 +245,7 @@ class HomeUseCaseModule {
             "            textColor\n" +
             "          }\n" +
             "           grids {\n" +
+            "             campaignCode\n" +
             "             id\n" +
             "             back_color\n" +
             "             name\n" +
