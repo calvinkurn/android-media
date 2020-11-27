@@ -8,17 +8,6 @@
     android:visibility="gone"
     tools:visibility="visible">
 
-    <RelativeLayout
-        android:id="@+id/orderSawSmallEmptyState"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-            layout="@layout/saw_app_widget_order_small_common"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
-
     <LinearLayout
         android:id="@+id/orderSawNormalEmptyState"
         android:layout_width="match_parent"

@@ -1,14 +1,14 @@
 package com.tokopedia.sellerappwidget.view.state.order
 
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
+import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
-import com.tokopedia.sellerappwidget.common.Utils
+import com.tokopedia.sellerappwidget.common.WidgetSize
+import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 
 /**
  * Created By @ilhamsuaib on 18/11/20
@@ -20,16 +20,54 @@ object OrderWidgetNoLoginState {
         val remoteView = AppWidgetHelper.getOrderWidgetRemoteView(context)
         with(remoteView) {
             ids.forEach {
-                OrderWidgetStateHelper.updateViewNoLogin(this)
-                Utils.loadImageIntoAppWidget(context, this, R.id.imgSawOrderNoLogin, Const.Images.ORDER_ON_EMPTY, it)
+                val option = awm.getAppWidgetOptions(it)
+                val widgetSize = AppWidgetHelper.getAppWidgetSize(option)
+                OrderWidgetStateHelper.updateViewCommonState(remoteView, widgetSize)
 
-                //setup on login click event
-                val loginIntent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
-                val loginPendingIntent = PendingIntent.getActivity(context, 0, loginIntent, 0)
-                setOnClickPendingIntent(R.id.tvSawOrderLoginNow, loginPendingIntent)
+                when (widgetSize) {
+                    WidgetSize.SMALL -> setupViewSmallWidget(context, remoteView, it)
+                    WidgetSize.NORMAL -> setupViewNormalWidget(context, remoteView, it)
+                    else -> setupViewLargeWidget(context, remoteView, it)
+                }
 
                 awm.updateAppWidget(it, this)
             }
         }
+    }
+
+    private fun setupViewSmallWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
+        val data = CommonStateUiModel(
+                widgetId = widgetId,
+                title = context.getString(R.string.saw_login_tokopedia_seller_new_line),
+                description = context.getString(R.string.saw_no_login_check_order_small),
+                imgUrl = Const.Images.ORDER_ON_EMPTY,
+                ctaText = context.getString(R.string.saw_login_now),
+                appLink = ApplinkConst.LOGIN
+        )
+        OrderWidgetStateHelper.setupSmallCommonWidget(context, remoteView, data)
+    }
+
+    private fun setupViewNormalWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
+        val data = CommonStateUiModel(
+                widgetId = widgetId,
+                title = context.getString(R.string.saw_login_tokopedia_seller_new_line),
+                description = context.getString(R.string.saw_no_login_check_order_normal),
+                imgUrl = Const.Images.ORDER_ON_EMPTY,
+                ctaText = context.getString(R.string.saw_login_now),
+                appLink = ApplinkConst.LOGIN
+        )
+        OrderWidgetStateHelper.setupNormalCommonWidget(context, remoteView, data)
+    }
+
+    private fun setupViewLargeWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
+        val data = CommonStateUiModel(
+                widgetId = widgetId,
+                title = context.getString(R.string.saw_login_tokopedia_seller_large),
+                description = context.getString(R.string.saw_no_login_check_order_normal),
+                imgUrl = Const.Images.ORDER_ON_EMPTY,
+                ctaText = context.getString(R.string.saw_login_now),
+                appLink = ApplinkConst.LOGIN
+        )
+        OrderWidgetStateHelper.setupLargeCommonWidget(context, remoteView, data)
     }
 }

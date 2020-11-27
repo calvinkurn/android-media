@@ -94,11 +94,17 @@ class GetOrderService : JobIntentService(), OrderAppWidgetView {
     override fun onSuccessGetOrderList(result: Success<List<OrderUiModel>>) {
         val orderList = result.data
         sharedPref.putLong(Const.SharedPrefKey.ORDER_LAST_UPDATED, System.currentTimeMillis())
-        OrderAppWidget.showSuccessState(applicationContext, orderList, orderStatusId)
+        OrderAppWidget.setOnSuccess(applicationContext, orderList, orderStatusId)
         GetOrderWorker.runWorkerPeriodically(applicationContext)
     }
 
     override fun onFailedGetOrderList(fail: Fail) {
+        val code = fail.throwable.message
+        when (code) {
+            "1" -> OrderAppWidget.setOnError(applicationContext)
+            else -> OrderAppWidget.setOnNoLogin(applicationContext)
+        }
         GetOrderWorker.runWorkerPeriodically(applicationContext)
+        Timber.e(fail.throwable)
     }
 }

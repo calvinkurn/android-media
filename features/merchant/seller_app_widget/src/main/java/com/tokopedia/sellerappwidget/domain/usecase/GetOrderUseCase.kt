@@ -9,6 +9,7 @@ import com.tokopedia.sellerappwidget.di.AppWidgetScope
 import com.tokopedia.sellerappwidget.domain.mapper.OrderMapper
 import com.tokopedia.sellerappwidget.view.model.OrderUiModel
 import com.tokopedia.usecase.RequestParams
+import java.lang.RuntimeException
 import javax.inject.Inject
 
 /**
@@ -23,10 +24,11 @@ class GetOrderUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): List<OrderUiModel> {
         val rand = (Math.random() * 100).toInt()
-        return if (rand % 2 == 0) {
-            emptyList()
-        } else {
-            dummy()
+        return when {
+            rand % 5 == 0 -> throw RuntimeException("1")
+            rand % 3 == 0 -> throw RuntimeException("2")
+            rand % 2 == 0 -> dummy()
+            else -> emptyList()
         }
         /*val gqlRequest = GraphqlRequest(QUERY, GetOrderResponse::class.java, params.parameters)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))

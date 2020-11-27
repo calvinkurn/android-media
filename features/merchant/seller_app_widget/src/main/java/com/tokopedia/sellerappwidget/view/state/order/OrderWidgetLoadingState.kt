@@ -16,9 +16,7 @@ object OrderWidgetLoadingState {
 
     fun setupLoadingState(awm: AppWidgetManager, remoteView: RemoteViews, widgetId: Int) {
         val option = awm.getAppWidgetOptions(widgetId)
-        val minHeight = option.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
-        @WidgetSize val widgetSize = AppWidgetHelper.getAppWidgetSize(minHeight)
-        println("AppWidget : widgetSize -> $widgetSize")
+        val widgetSize = AppWidgetHelper.getAppWidgetSize(option)
         when (widgetSize) {
             WidgetSize.SMALL -> showSmallWidgetLoadingState(remoteView)
             WidgetSize.NORMAL -> showNormalWidgetLoadingState(remoteView)

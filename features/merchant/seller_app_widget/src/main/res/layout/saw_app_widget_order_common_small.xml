@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerSawSmallCommonState"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/saw_shape_rectangle_white_radius_16dp"
     android:paddingStart="@dimen/layout_lvl2"
     android:paddingTop="@dimen/layout_lvl2"
     android:paddingEnd="@dimen/layout_lvl0"
@@ -18,6 +20,15 @@
         android:textSize="@dimen/unify_font_16"
         android:textStyle="bold"
         tools:text="Masuk ke Tokopedia" />
+
+    <ImageButton
+        android:id="@+id/btnSawSmallOrderRefreshCommon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:background="@android:color/transparent" />
 
     <TextView
         android:id="@+id/tvSawSmallOrderCommonDescription"
@@ -52,9 +63,9 @@
     <ImageView
         android:id="@+id/imgSawSmallOrderCommon"
         android:layout_width="@dimen/saw_dimen_124dp"
-        android:layout_height="@dimen/saw_dimen_98dp"
+        android:layout_height="@dimen/saw_dimen_92dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/saw_dimen_18dp"
+        android:layout_marginTop="@dimen/layout_lvl3"
         tools:src="@tools:sample/avatars" />
 </RelativeLayout>

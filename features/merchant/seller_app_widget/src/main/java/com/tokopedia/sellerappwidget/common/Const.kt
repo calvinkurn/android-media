@@ -16,7 +16,6 @@ object Const {
         const val ORDER_ITEM = "item"
         const val ORDER_ITEMS = "items"
         const val ORDER_STATUS_ID = "order_status_id"
-        const val APP_LINK = "app_link"
     }
 
     object Action {

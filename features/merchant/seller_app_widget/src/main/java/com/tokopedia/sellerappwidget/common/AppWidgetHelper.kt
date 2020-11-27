@@ -4,6 +4,7 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
+import android.os.Bundle
 import android.widget.RemoteViews
 import androidx.annotation.LayoutRes
 import com.tokopedia.sellerappwidget.R
@@ -12,6 +13,7 @@ import com.tokopedia.sellerappwidget.data.local.SellerAppWidgetPreferencesImpl
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
 
 /**
  * Created By @ilhamsuaib on 18/11/20
@@ -52,12 +54,14 @@ object AppWidgetHelper {
     }
 
     @WidgetSize
-    fun getAppWidgetSize(widgetHeight: Int): String {
+    fun getAppWidgetSize(option: Bundle): String {
+        val minHeight = option.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT)
+
         var n = 2
-        while (70 * n - 2 < widgetHeight) {
+        while (70 * n - 2 < minHeight) {
             ++n
         }
-        val size = n - 1
+        val size = (ceil(minHeight + 30.0) / 70.0).toInt()
         return when {
             size <= 3 -> WidgetSize.SMALL
             size > 5 -> WidgetSize.LARGE

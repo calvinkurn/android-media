@@ -64,7 +64,7 @@
             android:layout_alignTop="@+id/orderSawSmallHeader"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="@dimen/unify_space_12"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             tools:src="@drawable/ic_saw_refresh" />
 
         <RelativeLayout
@@ -75,6 +75,7 @@
             android:paddingBottom="@dimen/layout_lvl2">
 
             <LinearLayout
+                android:id="@+id/containerSawSmallOrderNewOrder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignEnd="@+id/lineSawOrderDivider"
@@ -112,6 +113,7 @@
                 android:background="@color/Neutral_N75" />
 
             <LinearLayout
+                android:id="@+id/containerSawSmallOrderReadyToShip"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"

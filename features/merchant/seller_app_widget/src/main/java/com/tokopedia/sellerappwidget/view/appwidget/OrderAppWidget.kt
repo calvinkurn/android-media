@@ -25,10 +25,7 @@ class OrderAppWidget : AppWidgetProvider() {
     private var userSession: UserSessionInterface? = null
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
-        if (userSession == null) {
-            userSession = UserSession(context)
-        }
-
+        initUserSession(context)
         userSession?.let {
             if (it.isLoggedIn) {
                 GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
@@ -57,7 +54,20 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
+        println("AppWidget : on resize -> onAppWidgetOptionsChanged")
+        initUserSession(context)
+        userSession?.let {
+            if (!it.isLoggedIn) {
+                val awm = AppWidgetManager.getInstance(context)
+                val ids = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
+                OrderWidgetNoLoginState.setupNoLoginState(context, awm, ids)
+                super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
+                return
+            }
+        }
+
         GetOrderService.startService(context, DEFAULT_ORDER_STATUS_ID)
+
         super.onAppWidgetOptionsChanged(context, appWidgetManager, appWidgetId, newOptions)
     }
 
@@ -69,8 +79,14 @@ class OrderAppWidget : AppWidgetProvider() {
         super.onDisabled(context)
     }
 
+    private fun initUserSession(context: Context) {
+        if (userSession == null) {
+            userSession = UserSession(context)
+        }
+    }
+
     private fun openAppLink(context: Context, intent: Intent) {
-        val appLink = intent.getStringExtra(Const.Extra.APP_LINK).orEmpty()
+        val appLink = intent.data?.toString().orEmpty()
         val appLinkIntent = RouteManager.getIntent(context, appLink).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
@@ -80,13 +96,20 @@ class OrderAppWidget : AppWidgetProvider() {
     private fun switchOrder(context: Context, intent: Intent) {
         val orderStatusId = intent.getIntExtra(Const.Extra.ORDER_STATUS_ID, DEFAULT_ORDER_STATUS_ID)
         val widgetItems: List<OrderUiModel> = intent.getParcelableArrayListExtra<OrderUiModel>(Const.Extra.ORDER_ITEMS).orEmpty()
-        showSuccessState(context, ArrayList(widgetItems), orderStatusId)
+        setOnSuccess(context, ArrayList(widgetItems), orderStatusId)
     }
 
     private fun refreshWidget(context: Context, intent: Intent) {
         val awm = AppWidgetManager.getInstance(context)
         val appWidgetIds = awm.getAppWidgetIds(ComponentName(context, OrderAppWidget::class.java))
         val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
+        initUserSession(context)
+        userSession?.let {
+            if (!it.isLoggedIn) {
+                OrderWidgetNoLoginState.setupNoLoginState(context, awm, appWidgetIds)
+                return
+            }
+        }
         appWidgetIds.forEach {
             OrderWidgetStateHelper.updateViewOnLoading(remoteViews)
             OrderWidgetLoadingState.setupLoadingState(awm, remoteViews, it)
@@ -110,20 +133,19 @@ class OrderAppWidget : AppWidgetProvider() {
         @JvmField
         val DEFAULT_ORDER_STATUS_ID = Const.OrderStatusId.NEW_ORDER
 
-        fun showSuccessState(context: Context, widgetItems: List<OrderUiModel>, orderStatusId: Int) {
+        fun setOnSuccess(context: Context, widgetItems: List<OrderUiModel>, orderStatusId: Int) {
             val appWidgetManager = AppWidgetManager.getInstance(context)
             val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, appWidgetManager)
 
             val userSession: UserSessionInterface = UserSession(context)
 
-            if (!userSession.isLoggedIn) {
-                OrderWidgetNoLoginState.setupNoLoginState(context, appWidgetManager, widgetIds)
+            if (!getIsUserLoggedIn(context, appWidgetManager, userSession, widgetIds)) {
                 return
             }
 
-            widgetIds.forEach { widgetId ->
-                val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
+            val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
 
+            widgetIds.forEach { widgetId ->
                 when {
                     widgetItems.isEmpty() -> OrderWidgetEmptyState.setupEmptyState(context, remoteViews, widgetId)
                     else -> {
@@ -134,6 +156,37 @@ class OrderAppWidget : AppWidgetProvider() {
                 OrderWidgetStateHelper.setLastUpdated(context, remoteViews)
                 appWidgetManager.updateAppWidget(widgetId, remoteViews)
             }
+        }
+
+        fun setOnError(context: Context) {
+            val awm = AppWidgetManager.getInstance(context)
+            val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
+
+            val userSession: UserSessionInterface = UserSession(context)
+
+            if (!getIsUserLoggedIn(context, awm, userSession, widgetIds)) {
+                return
+            }
+
+            val remoteViews = AppWidgetHelper.getOrderWidgetRemoteView(context)
+
+            widgetIds.forEach {
+                OrderWidgetErrorState.setupErrorState(context, awm, remoteViews, it)
+                awm.updateAppWidget(it, remoteViews)
+            }
+        }
+
+        fun setOnNoLogin(context: Context) {
+            val awm = AppWidgetManager.getInstance(context)
+            val widgetIds = AppWidgetHelper.getAppWidgetIds<OrderAppWidget>(context, awm)
+            OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
+        }
+
+        private fun getIsUserLoggedIn(context: Context, awm: AppWidgetManager, userSession: UserSessionInterface, widgetIds: IntArray): Boolean {
+            if (!userSession.isLoggedIn) {
+                OrderWidgetNoLoginState.setupNoLoginState(context, awm, widgetIds)
+            }
+            return userSession.isLoggedIn
         }
     }
 }
