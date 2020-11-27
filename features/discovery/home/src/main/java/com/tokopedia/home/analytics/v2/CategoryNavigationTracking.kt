@@ -26,7 +26,7 @@ object CategoryNavigationTracking : BaseTracking(){
                 eventLabel = grid.name,
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
-                                id = "${channel.id}-${grid.id}",
+                                id = "${channel.id}_${grid.id}",
                                 name = "/ - $CATEGORY_ICON",
                                 creative = "",
                                 position = (position + 1).toString())
@@ -51,7 +51,7 @@ object CategoryNavigationTracking : BaseTracking(){
                 eventLabel = Label.NONE,
                 promotions = listOf(
                         BaseTrackerConst.Promotion(
-                                id = "${channel.id}-${grid.id}",
+                                id = "${channel.id}_${grid.id}",
                                 name = "/ - $CATEGORY_ICON",
                                 creative = "",
                                 position = (position + 1).toString())
