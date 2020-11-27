@@ -5,10 +5,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.logisticdata.domain.mapper.AddressCornerMapper
-import com.tokopedia.logisticdata.domain.model.AddressListModel
-import com.tokopedia.logisticdata.domain.request.AddressRequest
-import com.tokopedia.logisticdata.domain.response.GetPeopleAddressResponse
+import com.tokopedia.logisticCommon.domain.mapper.AddressCornerMapper
+import com.tokopedia.logisticCommon.domain.model.AddressListModel
+import com.tokopedia.logisticCommon.domain.request.AddressRequest
+import com.tokopedia.logisticCommon.domain.response.GetPeopleAddressResponse
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers

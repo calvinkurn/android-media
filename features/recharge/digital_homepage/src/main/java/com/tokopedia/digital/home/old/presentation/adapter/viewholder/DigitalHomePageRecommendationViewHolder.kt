@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.adapter.viewholder
+package com.tokopedia.digital.home.old.presentation.adapter.viewholder
 
 import android.graphics.Rect
 import android.view.View
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.digital.home.R
-import com.tokopedia.digital.home.model.DigitalHomePageRecommendationModel
-import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemRecommendationAdapter
-import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.old.model.DigitalHomePageRecommendationModel
+import com.tokopedia.digital.home.old.presentation.adapter.adapter.DigitalItemRecommendationAdapter
+import com.tokopedia.digital.home.old.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_digital_home_recommendation.view.*

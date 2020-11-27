@@ -23,6 +23,7 @@ import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.presentation.model.TravelVideoBannerModel
+import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.common.travel.widget.TravelVideoBannerWidget
 import com.tokopedia.hotel.R
@@ -56,6 +57,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.travelcalendar.selectionrangecalendar.SelectionRangeCalendarWidget
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -148,10 +151,15 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hidePromoContainer()
         loadPromoData()
         loadPopularCitiesData()
+        loadTickerData()
 
         if (hotelHomepageModel.locName.isEmpty()) {
             homepageViewModel.getDefaultHomepageParameter(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_default_homepage_parameter))
         }
+    }
+
+    private fun loadTickerData() {
+        homepageViewModel.fetchTickerData()
     }
 
     override fun onResume() {
@@ -220,7 +228,46 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         })
 
+        homepageViewModel.tickerData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    if (it.data.message.isNotEmpty()) {
+                        renderTickerView(it.data)
+                    } else {
+                        hideTickerView()
+                    }
+                }
+                is Fail -> {
+                    hideTickerView()
+                }
+            }
+        })
+    }
 
+    private fun hideTickerView() {
+        hotelHomepageTicker.hide()
+    }
+
+    private fun renderTickerView(travelTickerModel: TravelTickerModel) {
+        hotelHomepageTicker.setHtmlDescription(travelTickerModel.message)
+        hotelHomepageTicker.tickerType = Ticker.TYPE_WARNING
+        hotelHomepageTicker.setDescriptionClickEvent(object : TickerCallback {
+            override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                if (linkUrl.isNotEmpty()) {
+                    RouteManager.route(context, linkUrl.toString())
+                }
+            }
+
+            override fun onDismiss() {}
+
+        })
+        if (travelTickerModel.url.isNotEmpty()) {
+            hotelHomepageTicker.setOnClickListener {
+                RouteManager.route(requireContext(), travelTickerModel.url)
+            }
+        }
+
+        hotelHomepageTicker.show()
     }
 
     private fun renderHotelParam(hotelPropertyDefaultHome: HotelPropertyDefaultHome) {

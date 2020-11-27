@@ -38,6 +38,11 @@ android {
         abortOnError false
     }
 
+    packagingOptions {
+        exclude 'META-INF/**'
+        exclude "**/module-info.class"
+    }
+
 }
 
 dependencies {
@@ -47,6 +52,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.robust
+    implementation rootProject.ext.miscDependencies.autopatchbase
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.gson

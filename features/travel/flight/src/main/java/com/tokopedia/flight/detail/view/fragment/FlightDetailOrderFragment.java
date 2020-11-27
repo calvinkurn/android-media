@@ -26,15 +26,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
@@ -64,9 +63,9 @@ import com.tokopedia.flight.detail.view.model.SimpleModel;
 import com.tokopedia.flight.orderlist.domain.model.FlightInsurance;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
-import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
+import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -76,6 +75,9 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity.EXTRA_INVOICE_ID;
@@ -90,7 +92,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final int REQUEST_CODE_CANCELLATION = 2;
-    private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
     private static final float JOURNEY_TITLE_FONT_SIZE = 18;
 
@@ -240,7 +241,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         flightDetailOrderPresenter.attachView(this);
         flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
         if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
-            flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_cross_selling));
+            flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId());
         flightDetailOrderPresenter.onGetProfileData();
     }
 
@@ -343,7 +344,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             public void onRetryClicked() {
                 flightDetailOrderPresenter.getDetail(flightOrderDetailPassData.getOrderId(), flightOrderDetailPassData);
                 if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_CUSTOMER_TRAVEL_ENABLE_CROSS_SELL))
-                    flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId(), GraphqlHelper.loadRawString(getResources(), com.tokopedia.common.travel.R.raw.query_travel_cross_selling));
+                    flightDetailOrderPresenter.getCrossSellingItems(flightOrderDetailPassData.getOrderId());
 
             }
         }).showRetrySnackbar();
@@ -640,11 +641,17 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToInputEmailForm(String userId, String userEmail) {
-        DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(
-                flightOrderDetailPassData.getOrderId(),
-                userId, userEmail);
-        dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
-        dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
+        FlightOrderResendEmailBottomSheet bottomSheet = FlightOrderResendEmailBottomSheet.Companion
+                .getInstance(userEmail, flightOrderDetailPassData.getOrderId());
+        bottomSheet.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
+        bottomSheet.setShowListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                bottomSheet.getBottomSheet().setState(BottomSheetBehavior.STATE_EXPANDED);
+                return null;
+            }
+        });
+        bottomSheet.show(getFragmentManager(), FlightOrderResendEmailBottomSheet.TAG);
     }
 
     @Override

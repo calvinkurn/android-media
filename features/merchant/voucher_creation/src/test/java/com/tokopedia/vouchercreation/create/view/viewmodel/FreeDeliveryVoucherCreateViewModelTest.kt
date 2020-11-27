@@ -5,7 +5,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.FreeDeliveryValidationUseCase
 import com.tokopedia.vouchercreation.create.view.enums.PromotionType
 import com.tokopedia.vouchercreation.create.view.enums.VoucherImageType
@@ -14,7 +14,6 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
@@ -47,7 +46,7 @@ class FreeDeliveryVoucherCreateViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = FreeDeliveryVoucherCreateViewModel(TestCoroutineDispatchers, freeDeliveryValidationUseCase)
+        mViewModel = FreeDeliveryVoucherCreateViewModel(CoroutineTestDispatchersProvider, freeDeliveryValidationUseCase)
         mViewModel.expensesExtimationLiveData.observeForever(expenseEstimationObserver)
     }
 
@@ -147,8 +146,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
 
             validateFreeDeliveryValues()
 
-            coroutineContext[Job]?.children?.forEach { it.join() }
-
             assert(freeDeliveryValidationLiveData.value == Success(dummySuccessFreeDeliveryValidation))
         }
     }
@@ -167,8 +164,6 @@ class FreeDeliveryVoucherCreateViewModelTest {
             addTextFieldValueToCalculation(DUMMY_QUOTA, PromotionType.FreeDelivery.VoucherQuota)
 
             validateFreeDeliveryValues()
-
-            coroutineContext[Job]?.children?.forEach { it.join() }
 
             assert(freeDeliveryValidationLiveData.value is Fail)
         }

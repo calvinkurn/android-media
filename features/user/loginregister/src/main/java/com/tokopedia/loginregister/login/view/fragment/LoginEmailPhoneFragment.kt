@@ -851,8 +851,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-
         analytics.trackLoginPhoneNumber()
         activity?.let {
             val intent =  goToVerification(phone = phoneNumber, otpType = OTP_LOGIN_PHONE_NUMBER)
@@ -862,8 +860,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
     }
 
     override fun goToRegisterPhoneVerifyPage(phoneNumber: String) {
-        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-
         activity?.let {
             val intent =  goToVerification(phone = phoneNumber, otpType = OTP_REGISTER_PHONE_NUMBER)
             startActivityForResult(intent, REQUEST_REGISTER_PHONE)
@@ -1448,6 +1444,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             trackSuccessValidate()
 
             if (TextUtils.equals(it.registerType, PHONE_TYPE)) {
+                userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
+                userSession.tempPhoneNumber = partialRegisterInputView.textValue
                 if (it.isExist) {
                     goToLoginPhoneVerifyPage(it.view.replace("-", ""))
                 } else {
@@ -1459,6 +1457,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterf
             if (TextUtils.equals(it.registerType, EMAIL_TYPE)) {
                 if (it.isExist) {
                     if (!it.isPending) {
+                        userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_EMAIL
+                        userSession.setTempLoginEmail(partialRegisterInputView.textValue)
+                        userSession.userId = it.userID
                         onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)
