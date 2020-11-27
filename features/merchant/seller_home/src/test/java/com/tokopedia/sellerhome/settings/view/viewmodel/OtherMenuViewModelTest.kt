@@ -4,12 +4,12 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
-import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.domain.entity.OthersBalance
+import com.tokopedia.seller.menu.common.domain.usecase.GetAllShopInfoUseCase
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.base.partialresponse.PartialSettingSuccessInfoType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopBadgeUiModel
+import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
 import com.tokopedia.sellerhome.utils.SellerHomeCoroutineTestDispatcher
 import com.tokopedia.sellerhome.utils.observeOnce
 import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingInfoUseCase
@@ -30,7 +30,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.*
-import org.mockito.internal.util.reflection.Whitebox
+import java.lang.reflect.Field
 
 @ExperimentalCoroutinesApi
 class OtherMenuViewModelTest {
@@ -49,6 +49,8 @@ class OtherMenuViewModelTest {
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
+
+    protected lateinit var isToasterAlreadyShownField: Field
 
     private lateinit var mViewModel: OtherMenuViewModel
     private lateinit var testCoroutineDispatcher: SellerHomeCoroutineDispatcher
@@ -149,7 +151,11 @@ class OtherMenuViewModelTest {
 
     @Test
     fun `will not change live data value if toaster is already shown`() {
-        Whitebox.setInternalState(mViewModel, "_isToasterAlreadyShown", NonNullLiveData(true))
+        isToasterAlreadyShownField = mViewModel::class.java.getDeclaredField("_isToasterAlreadyShown").apply {
+            isAccessible = true
+        }
+        isToasterAlreadyShownField.set(mViewModel, NonNullLiveData(true))
+
         mViewModel.getAllSettingShopInfo(true)
         mViewModel.isToasterAlreadyShown.value?.let {
             assert(it)
