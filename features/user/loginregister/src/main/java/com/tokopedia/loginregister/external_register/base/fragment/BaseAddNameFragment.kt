@@ -10,37 +10,58 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.external_register.base.constant.ExternalRegisterConstants
 import com.tokopedia.loginregister.external_register.base.listener.BaseAddNameListener
 import kotlinx.android.synthetic.main.fragment_base_add_name.*
+import kotlinx.android.synthetic.main.fragment_base_add_name.view.*
 
 
 /**
  * Created by Yoris Prayogo on 16/11/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
-
-open class BaseAddNameFragment: BaseDaggerFragment() {
+abstract class BaseAddNameFragment: BaseDaggerFragment() {
 
     var baseAddNameListener: BaseAddNameListener? = null
 
+    abstract fun initObserver()
+
     override fun getScreenName(): String = ExternalRegisterConstants.ADD_NAME_SCREEN
 
-    override fun initInjector() {}
+    override fun initInjector() {
+//        getComponent(ExternalRegisterComponent::class.java).inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_base_add_name, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+//        super.onViewCreated(view, savedInstanceState)
         setTitle(context?.getString(R.string.title_external_register_add_name) ?: "")
         setBottomText()
         base_add_name_button_next?.setOnClickListener {
-            baseAddNameListener?.onNextButtonClicked()
+            if(view.base_add_name_textfield?.textFieldInput?.text?.toString()?.isNotEmpty() == true)
+                baseAddNameListener?.onNextButtonClicked()
+            else {
+                view.base_add_name_textfield?.setMessage(getString(R.string.base_add_name_error_empty))
+                view.base_add_name_textfield?.setError(true)
+            }
         }
+
+        view.base_add_name_textfield?.textFieldInput?.afterTextChanged {
+            if(it.length == 1) {
+                view.base_add_name_textfield?.setMessage("")
+                view.base_add_name_textfield?.setError(false)
+            }
+        }
+
+        initObserver()
     }
+
+    fun getInputText(): String = view?.base_add_name_textfield?.textFieldInput?.text?.toString() ?: ""
 
     fun setTitle(title: String){
         base_add_name_title?.text = title

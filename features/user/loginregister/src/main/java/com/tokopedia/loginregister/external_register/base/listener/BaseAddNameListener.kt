@@ -6,5 +6,4 @@ package com.tokopedia.loginregister.external_register.base.listener
  */
 interface BaseAddNameListener {
     fun onNextButtonClicked()
-    fun onOtherMethodButtonClicked()
 }
