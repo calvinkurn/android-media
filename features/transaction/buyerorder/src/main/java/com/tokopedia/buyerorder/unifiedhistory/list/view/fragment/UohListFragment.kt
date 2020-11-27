@@ -44,8 +44,7 @@ import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINISH_ORDER
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES_TRANSACTION
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
@@ -84,6 +83,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORD
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
@@ -107,7 +107,6 @@ import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommer
 import com.tokopedia.buyerorder.unifiedhistory.list.analytics.data.model.ECommerceImpressions
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.*
 import com.tokopedia.buyerorder.unifiedhistory.list.di.DaggerUohListComponent
-import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListComponentInstance
 import com.tokopedia.buyerorder.unifiedhistory.list.di.UohListModule
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetKebabMenuAdapter
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.UohBottomSheetOptionAdapter
@@ -145,7 +144,6 @@ import java.net.URLDecoder
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.HashMap
 
 
 /**
@@ -232,69 +230,84 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
             if (filterStatus.isNotEmpty()) {
                 var status = ""
+                var statusLabel = ""
                 when (filterStatus) {
                     PARAM_DALAM_PROSES -> {
                         status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
                         paramUohOrder.createTimeStart = ""
                         paramUohOrder.createTimeEnd = ""
                     }
                     PARAM_E_TIKET -> {
                         status = E_TIKET
+                        statusLabel = status
                         paramUohOrder.createTimeStart = ""
                         paramUohOrder.createTimeEnd = ""
                     }
                     PARAM_SEMUA_TRANSAKSI -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                     }
                     PARAM_MARKETPLACE -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
                         status = DALAM_PROSES
+                        statusLabel = TRANSAKSI_BERLANGSUNG
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_DIGITAL -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DIGITAL
                     }
                     PARAM_EVENTS -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
                     }
                     PARAM_DEALS -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
                     }
                     PARAM_PESAWAT -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
                     }
                     PARAM_GIFTCARDS -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
                     }
                     PARAM_INSURANCE -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
                     }
                     PARAM_MODALTOKO -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
                     }
                     PARAM_HOTEL -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
                     }
                     PARAM_TRAVEL_ENTERTAINMENT -> {
                         status = SEMUA_TRANSAKSI
+                        statusLabel = status
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
                     }
                 }
                 paramUohOrder.status = status
                 currFilterType = UohConsts.TYPE_FILTER_STATUS
                 currFilterStatusKey = status
-                currFilterStatusLabel = status
+                currFilterStatusLabel = statusLabel
             }
         }
         setInitialValue()
@@ -639,48 +652,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         val chips = arrayListOf<SortFilterItem>()
 
         // status
-        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
-                filterStatus.equals(PARAM_DIGITAL, true) ||
-                filterStatus.equals(PARAM_EVENTS, true) ||
-                filterStatus.equals(PARAM_DEALS, true) ||
-                filterStatus.equals(PARAM_PESAWAT, true) ||
-                filterStatus.equals(PARAM_GIFTCARDS, true) ||
-                filterStatus.equals(PARAM_INSURANCE, true) ||
-                filterStatus.equals(PARAM_MODALTOKO, true) ||
-                filterStatus.equals(PARAM_HOTEL, true) ||
-                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
-        }
-
-        filter3 = SortFilterItem(ALL_CATEGORIES, typeCategory, ChipsUnify.SIZE_SMALL)
-        filter3?.listener = {
-            onClickFilterCategory()
-        }
-        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
-            filter3?.title = ALL_CATEGORIES
-
-        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
-            filter3?.title = orderList.categories.first().label
-
-        } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
-            filter3?.title = orderList.categories[1].label
-
-        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
-                        || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
-                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
-            filter3?.title = orderList.categories[2].label
-
-        } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
-                        filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
-            filter3?.title = orderList.categories[3].label
-        }
-        filter3?.let { chips.add(it) }
-
-        // product
         val typeStatus = if (filterStatus.isEmpty() || filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true)
                 || filterStatus.equals(PARAM_MARKETPLACE, true)
                 || filterStatus.equals(PARAM_DIGITAL, true)
@@ -708,6 +679,48 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             }
         }
         filter2?.let { chips.add(it) }
+
+        // category
+        val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
+                filterStatus.equals(PARAM_DIGITAL, true) ||
+                filterStatus.equals(PARAM_EVENTS, true) ||
+                filterStatus.equals(PARAM_DEALS, true) ||
+                filterStatus.equals(PARAM_PESAWAT, true) ||
+                filterStatus.equals(PARAM_GIFTCARDS, true) ||
+                filterStatus.equals(PARAM_INSURANCE, true) ||
+                filterStatus.equals(PARAM_MODALTOKO, true) ||
+                filterStatus.equals(PARAM_HOTEL, true) ||
+                filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
+        }
+
+        filter3 = SortFilterItem(ALL_PRODUCTS, typeCategory, ChipsUnify.SIZE_SMALL)
+        filter3?.listener = {
+            onClickFilterCategory()
+        }
+        if (filterStatus.equals(PARAM_SEMUA_TRANSAKSI, true) && !isReset) {
+            filter3?.title = ALL_PRODUCTS
+
+        } else if ((filterStatus.equals(PARAM_MARKETPLACE, true) ||
+                        filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true)) && !isReset) {
+            filter3?.title = orderList.categories.first().label
+
+        } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
+            filter3?.title = orderList.categories[1].label
+
+        } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
+                        || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
+                        || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
+            filter3?.title = orderList.categories[2].label
+
+        } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
+                        filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
+            filter3?.title = orderList.categories[3].label
+        }
+        filter3?.let { chips.add(it) }
 
         // date
         val typeDate = if (isReset || isFirstLoad) {
@@ -787,14 +800,15 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohBottomSheetOptionAdapter = UohBottomSheetOptionAdapter(this)
         showBottomSheetFilterOptions(UohConsts.CHOOSE_CATEGORIES)
         val arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
+        arrayListStatusFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
         orderList.categories.forEach { category ->
             arrayListStatusFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
         }
         uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
-        if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_CATEGORIES_TRANSACTION
-        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_CATEGORIES
+        if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
+        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_PRODUCTS
 
         if ((filterStatus.equals(PARAM_MARKETPLACE, true)
                         || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
@@ -847,7 +861,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uoh_sort_filter?.resetAllFilters()
         filter1?.title = ALL_DATE
         filter2?.title = ALL_STATUS
-        filter3?.title = ALL_CATEGORIES
+        filter3?.title = ALL_PRODUCTS
         paramUohOrder = UohListParam()
         setInitialValue()
     }
@@ -1010,14 +1024,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
-                        if (tempFilterCategoryKey != ALL_CATEGORIES) {
+                        if (tempFilterCategoryKey != ALL_PRODUCTS) {
                             filter3?.type = ChipsUnify.TYPE_SELECTED
                             filter3?.title = currFilterCategoryLabel
                             labelTrackingCategory = currFilterCategoryLabel
                         } else {
                             filter3?.type = ChipsUnify.TYPE_NORMAL
-                            filter3?.title = ALL_CATEGORIES
-                            labelTrackingCategory = ALL_CATEGORIES
+                            filter3?.title = ALL_PRODUCTS
+                            labelTrackingCategory = ALL_PRODUCTS
                         }
                         userSession?.userId?.let { it1 -> UohAnalytics.clickTerapkanOnCategoryFilterChips(labelTrackingCategory, it1) }
                     }
@@ -1250,7 +1264,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             UohConsts.TYPE_FILTER_CATEGORY -> {
                 tempFilterCategoryKey = label
                 tempFilterCategoryLabel = value
-                if (tempFilterCategoryKey == ALL_CATEGORIES) {
+                if (tempFilterCategoryKey == ALL_PRODUCTS) {
                     paramUohOrder.verticalCategory = ""
                 } else {
                     paramUohOrder.verticalCategory = label

@@ -6,9 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.buyerorder.R
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_CATEGORIES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS_TRANSACTION
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFilterBundle
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -48,8 +50,10 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
             holder.itemView.divider_sublabel.gone()
             holder.itemView.label_option.visible()
             holder.itemView.divider_label.visible()
-            if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].value.equals(SEMUA_TRANSAKSI, true)) {
+            if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].value.isEmpty()) {
                 holder.itemView.label_option.text = ALL_STATUS_TRANSACTION
+            } else if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].value.equals(DALAM_PROSES, true)) {
+                holder.itemView.label_option.text = SEMUA_TRANSAKSI_BERLANGSUNG
             } else {
                 holder.itemView.label_option.text = filterBundleList[position].value
             }
@@ -75,7 +79,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
                     holder.itemView.rb_option.isChecked = true
                 } else if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].key.equals(SEMUA_TRANSAKSI, true)) {
                     holder.itemView.rb_option.isChecked = true
-                } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY && filterBundleList[position].key.equals(ALL_CATEGORIES, true)) {
+                } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY && filterBundleList[position].key.equals(ALL_PRODUCTS, true)) {
                     holder.itemView.rb_option.isChecked = true
                 }
             } else {
@@ -96,7 +100,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
                         holder.itemView.rb_option.isChecked = true
                     }
                 } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY) {
-                    if (filterBundleList[position].value == UohConsts.ALL_CATEGORIES_TRANSACTION) {
+                    if (filterBundleList[position].value == ALL_PRODUCTS) {
                         holder.itemView.rb_option.isChecked = true
                     }
                 }
