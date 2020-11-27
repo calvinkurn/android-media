@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.view.viewholder
 
 import android.animation.Animator
 import android.view.View
-import com.tokopedia.iconunify.IconUnify
+import android.widget.ImageView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
@@ -24,7 +24,7 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
     private var mPlayer: ProductExoPlayer? = null
     private var mVideoId: String = ""
     private var thumbnail: String = ""
-    private var video_volume: IconUnify? = null
+    private var video_volume: ImageView? = null
 
     companion object {
         const val VIDEO_TYPE = "video"
@@ -40,8 +40,10 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
         thumbnail = data.urlOriginal
         setThumbnail()
         productVideoCoordinator?.configureVideoCoordinator(view.context, data.id, data.videoUrl)
+
+        setupVolume()
         video_volume?.setOnClickListener {
-            video_volume?.setImage(if (mPlayer?.isMute() == true) IconUnify.VOLUME_UP else IconUnify.VOLUME_MUTE)
+            setupVolume()
             productVideoCoordinator?.configureVolume(mPlayer?.isMute() != true, data.id)
         }
     }
@@ -77,6 +79,10 @@ class ProductVideoViewHolder(val view: View, private val productVideoCoordinator
 
     private fun hideBufferLoading() = with(view) {
         pdp_video_loading?.hide()
+    }
+
+    private fun setupVolume() {
+        video_volume?.setImageResource(if (mPlayer?.isMute() == true) R.drawable.ic_pdp_volume_up else R.drawable.ic_pdp_volume_mute)
     }
 
     override fun setPlayer(player: ProductExoPlayer?) = with(view) {

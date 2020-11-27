@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="@dimen/dp_16"
+    android:orientation="horizontal">
 
     <FrameLayout
         android:id="@+id/control"
@@ -19,60 +19,80 @@
 
         <ImageView
             android:id="@id/exo_play"
-            style="@style/ExoMediaButton.Play"
-            android:layout_width="@dimen/dp_44"
-            android:layout_height="@dimen/dp_44" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_pdp_video_play" />
 
         <ImageView
             android:id="@id/exo_pause"
-            style="@style/ExoMediaButton.Pause"
-            android:layout_width="@dimen/dp_44"
-            android:layout_height="@dimen/dp_44" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_pdp_video_pause" />
 
     </FrameLayout>
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/pdp_volume_control"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
-        app:icon_name="VOLUME_MUTE"
+    <LinearLayout
+        android:id="@+id/exo_duration_wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_pdp_rounded_black"
+        android:padding="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:orientation="horizontal">
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@id/exo_position"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@id/exo_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N0"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="00:00" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/exo_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:textColor="@color/Unify_N0"
+            android:text="/"
+            app:layout_constraintBottom_toBottomOf="@+id/exo_position"
+            app:layout_constraintStart_toEndOf="@+id/exo_position"
+            app:layout_constraintTop_toTopOf="@+id/exo_position"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@id/exo_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:textColor="@color/Unify_N0"
+            app:layout_constraintBottom_toBottomOf="@+id/exo_divider"
+            app:layout_constraintStart_toEndOf="@+id/exo_divider"
+            app:layout_constraintTop_toTopOf="@+id/exo_divider"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="00:00" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/pdp_volume_control"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        app:layout_constraintBottom_toBottomOf="@+id/pdp_volume_control"
-        app:layout_constraintStart_toEndOf="@+id/pdp_volume_control"
-        app:layout_constraintTop_toTopOf="@+id/pdp_volume_control"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="00:00" />
+        android:layout_marginEnd="@dimen/dp_8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/pdp_maximize_control"
+        app:srcCompat="@drawable/ic_pdp_volume_mute" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/exo_divider"
+    <ImageView
+        android:id="@+id/pdp_maximize_control"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:text="/"
-        app:layout_constraintBottom_toBottomOf="@+id/exo_position"
-        app:layout_constraintStart_toEndOf="@+id/exo_position"
-        app:layout_constraintTop_toTopOf="@+id/exo_position"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@id/exo_duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        app:layout_constraintBottom_toBottomOf="@+id/exo_divider"
-        app:layout_constraintStart_toEndOf="@+id/exo_divider"
-        app:layout_constraintTop_toTopOf="@+id/exo_divider"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        tools:text="00:00" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_pdp_video_maximize" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
