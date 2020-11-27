@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
+import android.telecom.GatewayInfo
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
@@ -34,6 +35,7 @@ import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.common.util.EventQuery.eventContentById
 import com.tokopedia.entertainment.common.util.EventQuery.eventPDPV3
+import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_GATEWAY_CODE
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_META_DATA
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_PACKAGE_ID
 import com.tokopedia.entertainment.pdp.activity.EventCheckoutActivity.Companion.EXTRA_URL_PDP
@@ -52,6 +54,7 @@ import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.init
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.isEmptyForms
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventFormMapper.mapFormToString
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParam
+import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getCheckoutParamInstant
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventMetaDataMapper.getPassengerMetaData
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getAdditionalList
 import com.tokopedia.entertainment.pdp.data.checkout.mapper.EventPackageMapper.getAdditionalPackage
@@ -88,6 +91,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
     private var metadata = MetaDataResponse()
     private var amount: Int = 0
     private var packageID: String = ""
+    private var gatewayCode: String = ""
 
     private var name: String = ""
     private var email: String = ""
@@ -129,6 +133,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
             urlPDP = it.getString(EXTRA_URL_PDP, "")
             metadata = it.getParcelable(EXTRA_META_DATA) ?: MetaDataResponse()
             packageID = it.getString(EXTRA_PACKAGE_ID, "")
+            gatewayCode = it.getString(EXTRA_GATEWAY_CODE, "")
         }
     }
 
@@ -213,6 +218,23 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                             }
                         }
                     }
+                }
+            }
+        })
+
+
+        eventCheckoutViewModel.eventCheckoutInstantResponse.observe(viewLifecycleOwner, Observer {
+            val data = it
+            context?.let {
+                progressDialog.dismiss()
+                val context = it
+                if (data.checkout.data.success == 0) {
+                    view?.let {
+                        Toaster.make(it, data.checkout.header.messages.first(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                context.getString(R.string.ent_checkout_error))
+                    }
+                } else {
+                    RouteManager.route(context, data.checkout.data.data.redirectUrl)
                 }
             }
         })
@@ -388,8 +410,13 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                             progressDialog.show()
                             eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
                             metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
-                            eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
-                                    getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                            if(gatewayCode.isNullOrEmpty()) {
+                                eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
+                                        getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                            } else {
+                                eventCheckoutViewModel.checkoutEventInstant(EventQuery.mutationEventCheckoutInstant(),
+                                        getCheckoutParamInstant(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                            }
                         }
                     }
                 }
@@ -545,11 +572,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
         const val ORDER_LIST_EVENT = "/order-list"
 
-        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String) = EventCheckoutFragment().also {
+        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String, gatewayCode: String) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, urlPDP)
                 putParcelable(EXTRA_META_DATA, metadata)
                 putString(EXTRA_PACKAGE_ID, packageID)
+                putString(EXTRA_GATEWAY_CODE, gatewayCode)
             }
         }
     }
