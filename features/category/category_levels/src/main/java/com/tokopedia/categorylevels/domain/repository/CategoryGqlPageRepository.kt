@@ -19,7 +19,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         const val IDENTIFIER = "identifier"
         const val SAFESEARCH = "safeSearch"
         const val SEARCH_APPLINK= "tokopedia://search-autocomplete"
-        const val DOMAIN_URL_LIVE = "https://www.tokopedia.com"
+        const val DOMAIN_URL_LIVE = "https://www.tokopedia.com/"
         const val BANNED= 1
     }
 
@@ -28,7 +28,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         return DiscoveryResponse(
                 components = getCategoryComponents(data),
                 pageInfo = PageInfo(
-                        identifier = departmentId, name = data.name, type = "", path = "",
+                        identifier = departmentId, name = data.name, type = "", path = data.url,
                         searchApplink = SEARCH_APPLINK,
                         redirectionUrl = data.appRedirectionURL,
                         isAdult = data.isAdult,
@@ -36,7 +36,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                         share = Share(
                                 enabled = true,
                                 description = "Beli ${data.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk Category Name Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL, DOMAIN_URL_LIVE), title = "", image = "")),
+                                url = categoryUrl?.replace(DeeplinkConstant.SCHEME_INTERNAL + "://", DOMAIN_URL_LIVE), title = "", image = "")),
                 title = data.name ?: departmentName,
                 additionalInfo = AdditionalInfo(null))
     }
@@ -53,7 +53,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
         }
         components.add(ComponentsItem(name = ComponentNames.NavigationChips.componentName, id = "1", renderByDefault = true))
         components.add(ComponentsItem(name = ComponentNames.QuickFilter.componentName, id = "2", renderByDefault = true, showFilter = false, properties = Properties(targetId = "3")))
-        components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "3", renderByDefault = true))
+        components.add(ComponentsItem(name = ComponentNames.ProductCardRevamp.componentName, id = "3", renderByDefault = true, pagePath = bannedData.url ?: ""))
         return components
     }
 

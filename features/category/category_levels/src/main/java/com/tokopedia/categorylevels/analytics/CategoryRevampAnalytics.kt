@@ -3,6 +3,7 @@ package com.tokopedia.categorylevels.analytics
 import com.tokopedia.discovery2.analytics.*
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.data.DataItem
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -16,8 +17,9 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                               private val userSession: UserSessionInterface)
     : BaseDiscoveryAnalytics(pageType, pagePath, pageIdentifier, campaignCode, sourceIdentifier, trackingQueue) {
 
-    private var viewedProductsSet: MutableSet<String> = HashSet()
-
+    private var viewedProductsSet: ArrayList<String> = arrayListOf()
+    private var viewedTopadsProductsSet: ArrayList<String> = arrayListOf()
+    private var dimension40 = ""
     private fun createGeneralEvent(eventName: String = EVENT_CLICK_CATEGORY,
                                    eventCategory: String = "$VALUE_CATEGORY_PAGE - $pageIdentifier",
                                    eventAction: String,
@@ -98,44 +100,59 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
     }
 
     override fun trackClickExpandNavigationAccordion(categoryId: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_EXPAND_NAVIGATION_ACCORDION, eventLabel = categoryId ?: ""))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_EXPAND_NAVIGATION_ACCORDION, eventLabel = categoryId
+                ?: ""))
     }
 
     override fun trackClickCollapseNavigationAccordion(categoryId: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_COLLAPSE_NAVIGATION_ACCORDION, eventLabel = categoryId ?: ""))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_COLLAPSE_NAVIGATION_ACCORDION, eventLabel = categoryId
+                ?: ""))
     }
 
     override fun trackClickCategoryOption(categoryId: String?) {
-        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CATEGORY_OPTION, eventLabel = categoryId ?: ""))
+        getTracker().sendGeneralEvent(createGeneralEvent(eventAction = CLICK_CATEGORY_OPTION, eventLabel = categoryId
+                ?: ""))
     }
 
     override fun trackClickQuickFilter(filterName: String, componentName: String?, value: String, isFilterSelected: Boolean) {
-        val selected = if(isFilterSelected) "true" else "false"
+        val selected = if (isFilterSelected) "true" else "false"
         val map = createGeneralEvent(eventAction = CLICK_FILTER_CHIPS, eventLabel = "$filterName - $value - $selected")
         getTracker().sendGeneralEvent(map)
     }
 
     override fun viewProductsList(componentsItems: ComponentsItem, isLogin: Boolean) {
         if (!componentsItems.data.isNullOrEmpty()) {
-            val productID = componentsItems.data?.firstOrNull()?.productId
-            if (!productID.isNullOrEmpty()) {
-                if (viewedProductsSet.add(productID)) {
-                    trackEventImpressionProductCard(componentsItems, isLogin)
+            componentsItems.data?.firstOrNull()?.let {
+                it.productId?.let { productId ->
+                    if(it.isTopads == true){
+                        if (!viewedTopadsProductsSet.contains(productId)) {
+                            viewedTopadsProductsSet.add(productId)
+                            trackEventImpressionProductCard(componentsItems)
+                        }
+                    } else {
+                        if (!viewedProductsSet.contains(productId)) {
+                            viewedProductsSet.add(productId)
+                            trackEventImpressionProductCard(componentsItems)
+                        }
+                    }
                 }
             }
         }
     }
 
-    private fun trackEventImpressionProductCard(componentsItems: ComponentsItem, isLogin: Boolean) {
+    private fun trackEventImpressionProductCard(componentsItems: ComponentsItem) {
         val list = ArrayList<Map<String, Any>>()
         val productMap = HashMap<String, Any>()
-        componentsItems.data?.get(0)?.let {
+        val pagePath = getComponent(componentsItems.parentComponentId, componentsItems.pageEndPoint)?.pagePath
+        if(!pagePath.isNullOrEmpty())
+            dimension40 = pagePath
+        componentsItems.data?.firstOrNull()?.let {
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_CATEGORY] = it.departmentID
             productMap[KEY_ID] = it.productId.toString()
-            productMap[LIST] = if(it.isTopads == false) "${it.applinks?.replace("tokopedia://", "/p/")}" else "${it.applinks?.replace("tokopedia://", "/p/")} - topads"
+            productMap[LIST] = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
             productMap[KEY_NAME] = it.name.toString()
-            productMap[KEY_POSITION] = componentsItems.position + 1
+            productMap[KEY_POSITION] = if (it.isTopads == false) viewedProductsSet.indexOf(it.productId) + 1 else viewedTopadsProductsSet.indexOf(it.productId) + 1
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
             productMap[KEY_VARIANT] = NONE_OTHER
         }
@@ -145,7 +162,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                 CURRENCY_CODE to IDR,
                 KEY_IMPRESSIONS to list)
         val map = createGeneralEvent(eventName = EVENT_PRODUCT_VIEW,
-                eventAction = CATEGORY_PRODUCT_LIST_IMPRESSION)
+                eventAction = if (componentsItems.data?.firstOrNull()?.isTopads == false) CATEGORY_PRODUCT_LIST_IMPRESSION else CATEGORY_PRODUCT_LIST_IMPRESSION_TOPADS)
         map[KEY_E_COMMERCE] = eCommerce
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
@@ -159,8 +176,11 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
             var productCardItemList = ""
             val list = ArrayList<Map<String, Any>>()
             val productMap = HashMap<String, Any>()
-            componentsItems.data?.get(0)?.let {
-                productCardItemList = if(it.isTopads == false) "${it.applinks?.replace("tokopedia://", "/p/")}" else "${it.applinks?.replace("tokopedia://", "/p/")} - topads"
+            val pagePath = getComponent(componentsItems.parentComponentId, componentsItems.pageEndPoint)?.pagePath
+            if(!pagePath.isNullOrEmpty())
+                dimension40 = pagePath
+            componentsItems.data?.firstOrNull()?.let {
+                productCardItemList = if (it.isTopads == false) dimension40 else "$dimension40 - topads"
                 productMap[KEY_ATTRIBUTION] = NONE_OTHER
                 productMap[KEY_BRAND] = NONE_OTHER
                 productMap[KEY_CATEGORY] = it.departmentID
@@ -181,7 +201,7 @@ class CategoryRevampAnalytics(pageType: String = EMPTY_STRING,
                             PRODUCTS to list
                     )
             )
-            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CATEGORY_CLICK_PRODUCT_LIST)
+            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = if (componentsItems.data?.firstOrNull()?.isTopads == false) CATEGORY_CLICK_PRODUCT_LIST else CATEGORY_CLICK_PRODUCT_LIST_TOPADS)
             map[KEY_CAMPAIGN_CODE] = campaignCode
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
