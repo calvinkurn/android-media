@@ -254,7 +254,6 @@ class NotificationViewModelTest {
         // then
         verify(exactly = 1) {
             val successState = Success(expectedValue)
-
             notificationItemsObserver.onChanged(successState)
             assertEquals(expectedValue, successState.data)
         }
@@ -293,9 +292,7 @@ class NotificationViewModelTest {
         viewModel.loadMoreNew(role, onSuccess, onError)
 
         // then
-        verify(exactly = 1) {
-            notifcenterDetailUseCase.getMoreNewNotifications(any(), any(), any(), any())
-        }
+        verify(exactly = 1) { notifcenterDetailUseCase.getMoreNewNotifications(any(), any(), any(), any()) }
     }
 
     @Test fun `loadMoreEarlier with lambda should called getMoreEarlierNotifications() in usecase`() {
@@ -308,9 +305,7 @@ class NotificationViewModelTest {
         viewModel.loadMoreEarlier(role, onSuccess, onError)
 
         // then
-        verify(exactly = 1) {
-            notifcenterDetailUseCase.getMoreEarlierNotifications(any(), any(), any(), any())
-        }
+        verify(exactly = 1) { notifcenterDetailUseCase.getMoreEarlierNotifications(any(), any(), any(), any()) }
     }
 
     @Test fun `loadRecommendations should return data properly`() {
@@ -347,7 +342,19 @@ class NotificationViewModelTest {
         testAddWishList(false, "addWishListNormal")
     }
 
-    @Test fun `removeWishList should remove a wish list item properly`() {}
+    @Test fun `removeWishList should remove a wish list item properly`() {
+        // given
+        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
+        val recommItem = RecommendationItem()
+
+        every { removeWishListUseCase.createObservable(any(), any(), any()) } returns Unit
+
+        // when
+        viewModel.removeWishList(recommItem, callback)
+
+        // then
+        verify(exactly = 1) { removeWishListUseCase.createObservable(any(), any(), any()) }
+    }
 
     @After fun tearDown() {
         viewModel.cancelAllUseCase()
@@ -356,14 +363,14 @@ class NotificationViewModelTest {
     private fun testAddWishList(isTopAds: Boolean, methodName: String) {
         // given
         val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
-        val model = RecommendationItem(isTopAds = isTopAds)
+        val recommItem = RecommendationItem(isTopAds = isTopAds)
         val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
 
         // when
-        viewModelSpyk.addWishlist(model, callback)
+        viewModelSpyk.addWishlist(recommItem, callback)
 
         // then
-        verify(exactly = 1) { viewModelSpyk[methodName](model, callback) }
+        verify(exactly = 1) { viewModelSpyk[methodName](recommItem, callback) }
     }
 
     companion object {
