@@ -43,8 +43,8 @@ class MockLoginmodule {
     }
 
     @Provides
-    fun provideFingerprintSetting(@ApplicationContext context: Context?): FingerprintSetting {
-        return FingerprintPreferenceHelper(context!!)
+    fun provideFingerprintSetting(@ApplicationContext context: Context): FingerprintSetting {
+        return FingerprintPreferenceHelper(context)
     }
 
 }
