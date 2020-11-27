@@ -57,11 +57,11 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         return 0
     }
 
-    fun getPositionFromL2L3CategoryId(categoryList: List<ChildItem?>?, selectedLevelOneID: String): Int {
+    fun getPositionFromL2L3CategoryId(categoryList: List<ChildItem?>?, selectedID: String): Int {
         categoryList?.let {
             for (i in categoryList.indices) {
                 categoryList[i]?.id?.let {
-                    if (it == selectedLevelOneID) {
+                    if (it == selectedID) {
                         return i
                     }
                 }
@@ -70,10 +70,47 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         return -1
     }
 
+    fun getSelectedL3PositionWithSemua(levelThreeCategoryList: List<ChildItem?>?, selectedLevelThreeID: String): Int {
+        return if (selectedLevelThreeID != "-1")
+            getPositionFromL2L3CategoryId(levelThreeCategoryList, selectedLevelThreeID).let {
+                if (it != -1)
+                    it + 1
+                else
+                    it
+            }
+        else
+            0
+    }
+
     fun moveSelectedCatToFirst(categoryList: LinkedList<CategoriesItem?>, positionToMove: Int) {
         if (positionToMove != 0 && positionToMove < categoryList.size) {
             val item = categoryList.removeAt(positionToMove)
             categoryList.addFirst(item)
+        }
+    }
+
+    fun setupStateModel(categoryDetailData: CategoryDetailData,model: CategoryNavStateModel) {
+        if (0 != categoryDetailData.id) {
+            if (0 != categoryDetailData.parent) {
+                if (categoryDetailData.parent == categoryDetailData.rootId) {
+//                    Given id is L2.
+                    model.selectedLevelOneID = categoryDetailData.parent.toString()
+                    model.selectedLevelTwoID = categoryDetailData.id.toString()
+                    model.selectedLevelThreeID = "-1"
+                } else {
+//                    Given Id is L3
+                    model.selectedLevelOneID = categoryDetailData.rootId.toString()
+                    model.selectedLevelTwoID = categoryDetailData.parent.toString()
+                    model.selectedLevelThreeID = categoryDetailData.id.toString()
+                }
+            } else {
+                if (categoryDetailData.id == categoryDetailData.rootId) {
+//                    Given id is L1
+                    model.selectedLevelOneID = categoryDetailData.id.toString()
+                    model.selectedLevelTwoID = "-1"
+                    model.selectedLevelThreeID = "-1"
+                }
+            }
         }
     }
 
@@ -86,7 +123,7 @@ class CategoryNavBottomViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun addShimmerItemsToL2() : List<ChildItem> {
+    fun addShimmerItemsToL2(): List<ChildItem> {
         // adding shimmer elements in recyclerview
         val list = ArrayList<ChildItem>()
         val item = ChildItem()
