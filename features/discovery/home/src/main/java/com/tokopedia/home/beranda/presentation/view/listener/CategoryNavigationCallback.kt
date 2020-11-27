@@ -16,11 +16,11 @@ class CategoryNavigationCallback (
         val homeCategoryListener: HomeCategoryListener
 ): CategoryNavigationListener{
     override fun onCategoryNavigationImpress(channelModel: ChannelModel, grid: ChannelGrid, position: Int) {
-        CategoryNavigationTracking.sendCategoryNavigationImpress(channelModel, grid, homeCategoryListener.userId, position)
+        homeCategoryListener.getTrackingQueueObj()?.let { CategoryNavigationTracking.sendCategoryNavigationImpress(it, channelModel, grid, homeCategoryListener.userId, position) }
     }
 
     override fun onCategoryNavigationClick(channelModel: ChannelModel, grid: ChannelGrid, position: Int) {
-        homeCategoryListener.getTrackingQueueObj()?.let { CategoryNavigationTracking.sendCategoryNavigationClick(it, channelModel, grid, homeCategoryListener.userId, position) }
+        CategoryNavigationTracking.sendCategoryNavigationClick(channelModel, grid, homeCategoryListener.userId, position)
         RouteManager.route(context, grid.applink)
     }
 }

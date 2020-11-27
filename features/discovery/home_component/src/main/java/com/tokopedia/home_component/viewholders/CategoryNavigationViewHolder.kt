@@ -47,7 +47,7 @@ class CategoryNavigationViewHolder (view: View, private val listener: CategoryNa
                 itemView.category_icon.loadImage(imageUrl, R.drawable.placeholder_grey)
                 itemView.category_title.text = name
                 categoryNavigationDataModel?.channelModel?.let { channelModel ->
-                    itemView.addOnImpressionListener(channelModel){
+                    itemView.addOnImpressionListener(grid){
                         listener.onCategoryNavigationImpress(channelModel, this, adapterPosition)
                     }
                     itemView.setOnClickListener {

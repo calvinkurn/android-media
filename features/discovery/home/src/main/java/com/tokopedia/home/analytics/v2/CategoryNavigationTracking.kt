@@ -17,27 +17,8 @@ import java.util.HashMap
  */
 object CategoryNavigationTracking : BaseTracking(){
     private const val CATEGORY_ICON = "category icon"
-    fun sendCategoryNavigationClick(trackingQueue: TrackingQueue, channel: ChannelModel, grid: ChannelGrid, userId: String, position: Int){
-        val tracking = BaseTrackerBuilder().constructBasicPromotionView(
-                event = PROMO_VIEW,
-                eventCategory = HOMEPAGE,
-                eventAction = IMPRESSION_ON.format(CATEGORY_ICON),
-                eventLabel = Label.NONE,
-                promotions = listOf(
-                        BaseTrackerConst.Promotion(
-                                id = "${channel.id}-${grid.id}",
-                                name = "/ - $CATEGORY_ICON",
-                                creative = "",
-                                position = (position + 1).toString())
-                ))
-                .appendChannelId(channel.id)
-                .appendUserId(userId)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .appendBusinessUnit(BusinessUnit.DEFAULT).build()
-        trackingQueue.putEETracking(tracking as HashMap<String, Any>)
-    }
+    fun sendCategoryNavigationClick(channel: ChannelModel, grid: ChannelGrid, userId: String, position: Int){
 
-    fun sendCategoryNavigationImpress(channel: ChannelModel, grid: ChannelGrid, userId: String, position: Int){
         val tracker = BaseTrackerBuilder().constructBasicPromotionClick(
                 event = PROMO_CLICK,
                 eventCategory = HOMEPAGE,
@@ -59,6 +40,26 @@ object CategoryNavigationTracking : BaseTracking(){
                 .appendAttribution(channel.trackingAttributionModel.galaxyAttribution)
                 .appendCurrentSite(CurrentSite.DEFAULT)
                 .appendBusinessUnit(BusinessUnit.DEFAULT).build()
-        getTracker().sendGeneralEvent(tracker)
+        getTracker().sendEnhanceEcommerceEvent(tracker)
+    }
+
+    fun sendCategoryNavigationImpress(trackingQueue: TrackingQueue, channel: ChannelModel, grid: ChannelGrid, userId: String, position: Int){
+        val tracking = BaseTrackerBuilder().constructBasicPromotionView(
+                event = PROMO_VIEW,
+                eventCategory = HOMEPAGE,
+                eventAction = IMPRESSION_ON.format(CATEGORY_ICON),
+                eventLabel = Label.NONE,
+                promotions = listOf(
+                        BaseTrackerConst.Promotion(
+                                id = "${channel.id}-${grid.id}",
+                                name = "/ - $CATEGORY_ICON",
+                                creative = "",
+                                position = (position + 1).toString())
+                ))
+                .appendChannelId(channel.id)
+                .appendUserId(userId)
+                .appendCurrentSite(CurrentSite.DEFAULT)
+                .appendBusinessUnit(BusinessUnit.DEFAULT).build()
+        trackingQueue.putEETracking(tracking as HashMap<String, Any>)
     }
 }

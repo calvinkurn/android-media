@@ -1,5 +1,8 @@
 package com.tokopedia.home_component.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
+
+
 data class ChannelGrid(
         val id: String = "",
         val warehouseId: String = "",
@@ -34,4 +37,4 @@ data class ChannelGrid(
         val benefit: ChannelBenefit = ChannelBenefit(),
         val recommendationType: String = "",
         val shop: ChannelShop = ChannelShop()
-)
+): ImpressHolder()
