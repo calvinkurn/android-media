@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,15 +7,15 @@ import android.os.Parcelable;
  * @author by nisie on 8/30/17.
  */
 
-public class RevieweeBadgeCustomerViewModel implements Parcelable{
+public class RevieweeBadgeCustomerUiModel implements Parcelable{
     private int positive;
     private int neutral;
     private int negative;
     private String positivePercentage;
     private int noReputation;
 
-    public RevieweeBadgeCustomerViewModel(int positive, int neutral, int negative,
-                                          String positivePercentage, int noReputation) {
+    public RevieweeBadgeCustomerUiModel(int positive, int neutral, int negative,
+                                        String positivePercentage, int noReputation) {
         this.positive = positive;
         this.neutral = neutral;
         this.negative = negative;
@@ -23,7 +23,7 @@ public class RevieweeBadgeCustomerViewModel implements Parcelable{
         this.noReputation = noReputation;
     }
 
-    protected RevieweeBadgeCustomerViewModel(Parcel in) {
+    protected RevieweeBadgeCustomerUiModel(Parcel in) {
         positive = in.readInt();
         neutral = in.readInt();
         negative = in.readInt();
@@ -31,15 +31,15 @@ public class RevieweeBadgeCustomerViewModel implements Parcelable{
         noReputation = in.readInt();
     }
 
-    public static final Creator<RevieweeBadgeCustomerViewModel> CREATOR = new Creator<RevieweeBadgeCustomerViewModel>() {
+    public static final Creator<RevieweeBadgeCustomerUiModel> CREATOR = new Creator<RevieweeBadgeCustomerUiModel>() {
         @Override
-        public RevieweeBadgeCustomerViewModel createFromParcel(Parcel in) {
-            return new RevieweeBadgeCustomerViewModel(in);
+        public RevieweeBadgeCustomerUiModel createFromParcel(Parcel in) {
+            return new RevieweeBadgeCustomerUiModel(in);
         }
 
         @Override
-        public RevieweeBadgeCustomerViewModel[] newArray(int size) {
-            return new RevieweeBadgeCustomerViewModel[size];
+        public RevieweeBadgeCustomerUiModel[] newArray(int size) {
+            return new RevieweeBadgeCustomerUiModel[size];
         }
     };
 

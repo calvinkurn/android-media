@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,19 +7,19 @@ import android.os.Parcelable;
  * @author by nisie on 8/30/17.
  */
 
-public class RevieweeBadgeSellerViewModel implements Parcelable {
+public class RevieweeBadgeSellerUiModel implements Parcelable {
 
     private String tooltip;
     private String reputationScore;
     private int score;
     private int minBadgeScore;
     private String reputationBadgeUrl;
-    private ReputationBadgeViewModel reputationBadge;
+    private ReputationBadgeUiModel reputationBadge;
     private int isFavorited = -1;
 
-    public RevieweeBadgeSellerViewModel(String tooltip, String reputationScore, int score,
-                                        int minBadgeScore, String reputationBadgeUrl,
-                                        ReputationBadgeViewModel reputationBadge, int isFavorited) {
+    public RevieweeBadgeSellerUiModel(String tooltip, String reputationScore, int score,
+                                      int minBadgeScore, String reputationBadgeUrl,
+                                      ReputationBadgeUiModel reputationBadge, int isFavorited) {
         this.tooltip = tooltip;
         this.reputationScore = reputationScore;
         this.score = score;
@@ -29,13 +29,13 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
         this.isFavorited = isFavorited;
     }
 
-    protected RevieweeBadgeSellerViewModel(Parcel in) {
+    protected RevieweeBadgeSellerUiModel(Parcel in) {
         tooltip = in.readString();
         reputationScore = in.readString();
         score = in.readInt();
         minBadgeScore = in.readInt();
         reputationBadgeUrl = in.readString();
-        reputationBadge = in.readParcelable(ReputationBadgeViewModel.class.getClassLoader());
+        reputationBadge = in.readParcelable(ReputationBadgeUiModel.class.getClassLoader());
         isFavorited = in.readInt();
     }
 
@@ -55,15 +55,15 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
         return 0;
     }
 
-    public static final Creator<RevieweeBadgeSellerViewModel> CREATOR = new Creator<RevieweeBadgeSellerViewModel>() {
+    public static final Creator<RevieweeBadgeSellerUiModel> CREATOR = new Creator<RevieweeBadgeSellerUiModel>() {
         @Override
-        public RevieweeBadgeSellerViewModel createFromParcel(Parcel in) {
-            return new RevieweeBadgeSellerViewModel(in);
+        public RevieweeBadgeSellerUiModel createFromParcel(Parcel in) {
+            return new RevieweeBadgeSellerUiModel(in);
         }
 
         @Override
-        public RevieweeBadgeSellerViewModel[] newArray(int size) {
-            return new RevieweeBadgeSellerViewModel[size];
+        public RevieweeBadgeSellerUiModel[] newArray(int size) {
+            return new RevieweeBadgeSellerUiModel[size];
         }
     };
 
@@ -87,7 +87,7 @@ public class RevieweeBadgeSellerViewModel implements Parcelable {
         return reputationBadgeUrl;
     }
 
-    public ReputationBadgeViewModel getReputationBadge() {
+    public ReputationBadgeUiModel getReputationBadge() {
         return reputationBadge;
     }
 

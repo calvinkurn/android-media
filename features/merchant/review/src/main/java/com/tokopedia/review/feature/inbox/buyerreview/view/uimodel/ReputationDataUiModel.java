@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author by nisie on 8/28/17.
  */
 
-public class ReputationDataViewModel implements Parcelable{
+public class ReputationDataUiModel implements Parcelable{
 
     private int revieweeScore;
     private int revieweeScoreStatus;
@@ -24,13 +24,13 @@ public class ReputationDataViewModel implements Parcelable{
     private boolean showBookmark;
     private String actionMessage;
 
-    public ReputationDataViewModel(int revieweeScore, int revieweeScoreStatus,
-                                   boolean showRevieweeScore, int reviewerScore,
-                                   int reviewerScoreStatus, boolean isEditable,
-                                   boolean isInserted, boolean isLocked, boolean isAutoScored,
-                                   boolean isCompleted, boolean showLockingDeadline,
-                                   int lockingDeadlineDays, boolean showBookmark,
-                                   String actionMessage) {
+    public ReputationDataUiModel(int revieweeScore, int revieweeScoreStatus,
+                                 boolean showRevieweeScore, int reviewerScore,
+                                 int reviewerScoreStatus, boolean isEditable,
+                                 boolean isInserted, boolean isLocked, boolean isAutoScored,
+                                 boolean isCompleted, boolean showLockingDeadline,
+                                 int lockingDeadlineDays, boolean showBookmark,
+                                 String actionMessage) {
         this.revieweeScore = revieweeScore;
         this.revieweeScoreStatus = revieweeScoreStatus;
         this.showRevieweeScore = showRevieweeScore;
@@ -47,7 +47,7 @@ public class ReputationDataViewModel implements Parcelable{
         this.actionMessage = actionMessage;
     }
 
-    protected ReputationDataViewModel(Parcel in) {
+    protected ReputationDataUiModel(Parcel in) {
         revieweeScore = in.readInt();
         revieweeScoreStatus = in.readInt();
         showRevieweeScore = in.readByte() != 0;
@@ -64,15 +64,15 @@ public class ReputationDataViewModel implements Parcelable{
         actionMessage = in.readString();
     }
 
-    public static final Creator<ReputationDataViewModel> CREATOR = new Creator<ReputationDataViewModel>() {
+    public static final Creator<ReputationDataUiModel> CREATOR = new Creator<ReputationDataUiModel>() {
         @Override
-        public ReputationDataViewModel createFromParcel(Parcel in) {
-            return new ReputationDataViewModel(in);
+        public ReputationDataUiModel createFromParcel(Parcel in) {
+            return new ReputationDataUiModel(in);
         }
 
         @Override
-        public ReputationDataViewModel[] newArray(int size) {
-            return new ReputationDataViewModel[size];
+        public ReputationDataUiModel[] newArray(int size) {
+            return new ReputationDataUiModel[size];
         }
     };
 

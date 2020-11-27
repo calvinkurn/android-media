@@ -24,10 +24,10 @@ import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.TimeConverter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ImageUploadAdapter;
 import com.tokopedia.review.feature.inbox.buyerreview.view.listener.InboxReputationDetail;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageAttachmentViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ReviewResponseViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageAttachmentUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.InboxReputationDetailItemUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ReviewResponseUiModel;
 import com.tokopedia.review.feature.inbox.common.ReviewInboxConstants;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import java.util.List;
  */
 
 public class InboxReputationDetailItemViewHolder extends
-        AbstractViewHolder<InboxReputationDetailItemViewModel> {
+        AbstractViewHolder<InboxReputationDetailItemUiModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.inbox_reputation_detail_item;
@@ -170,7 +170,7 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
     @Override
-    public void bind(final InboxReputationDetailItemViewModel element) {
+    public void bind(final InboxReputationDetailItemUiModel element) {
         if (element.isProductDeleted()) {
             productName.setText(
                     context.getString(R.string.product_is_deleted));
@@ -254,8 +254,8 @@ public class InboxReputationDetailItemViewHolder extends
                 reviewOverflow.setVisibility(View.GONE);
             }
 
-            if (element.getReviewResponseViewModel() != null
-                    && !TextUtils.isEmpty(element.getReviewResponseViewModel().getResponseMessage())) {
+            if (element.getReviewResponseUiModel() != null
+                    && !TextUtils.isEmpty(element.getReviewResponseUiModel().getResponseMessage())) {
                 setSellerReply(element);
             } else {
                 seeReplyText.setVisibility(View.GONE);
@@ -283,7 +283,7 @@ public class InboxReputationDetailItemViewHolder extends
         });
     }
 
-    private void showOrHideGiveReviewLayout(InboxReputationDetailItemViewModel element) {
+    private void showOrHideGiveReviewLayout(InboxReputationDetailItemUiModel element) {
         if (element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW
                 || element.isReviewSkipped()
                 || isOwnProduct(element)
@@ -294,7 +294,7 @@ public class InboxReputationDetailItemViewHolder extends
         }
     }
 
-    private void setSellerReply(final InboxReputationDetailItemViewModel element) {
+    private void setSellerReply(final InboxReputationDetailItemUiModel element) {
         sellerAddReplyLayout.setVisibility(View.GONE);
         sellerReplyLayout.setVisibility(View.VISIBLE);
         seeReplyLayout.setVisibility(View.VISIBLE);
@@ -315,8 +315,8 @@ public class InboxReputationDetailItemViewHolder extends
             }
         });
 
-        ReviewResponseViewModel reviewResponseViewModel = element.getReviewResponseViewModel();
-        sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(reviewResponseViewModel
+        ReviewResponseUiModel reviewResponseUiModel = element.getReviewResponseUiModel();
+        sellerName.setText(MethodChecker.fromHtml(getFormattedReplyName(reviewResponseUiModel
                 .getResponseBy())));
         sellerName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -324,8 +324,8 @@ public class InboxReputationDetailItemViewHolder extends
                 viewListener.onGoToShopInfo(element.getShopId());
             }
         });
-        sellerReplyTime.setText(getFormattedTime(reviewResponseViewModel.getResponseCreateTime()));
-        sellerReply.setText(MethodChecker.fromHtml(reviewResponseViewModel.getResponseMessage()));
+        sellerReplyTime.setText(getFormattedTime(reviewResponseUiModel.getResponseCreateTime()));
+        sellerReply.setText(MethodChecker.fromHtml(reviewResponseUiModel.getResponseMessage()));
         sellerAddReplyEditText.setText("");
         if (element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW) {
             seeReplyLayout.setVisibility(View.VISIBLE);
@@ -392,9 +392,9 @@ public class InboxReputationDetailItemViewHolder extends
         }
     }
 
-    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentViewModel> reviewAttachment) {
+    private ArrayList<ImageUpload> convertToAdapterViewModel(List<ImageAttachmentUiModel> reviewAttachment) {
         ArrayList<ImageUpload> list = new ArrayList<>();
-        for (ImageAttachmentViewModel vm : reviewAttachment) {
+        for (ImageAttachmentUiModel vm : reviewAttachment) {
             list.add(new ImageUpload(
                     vm.getUriThumbnail(),
                     vm.getUriLarge(),
@@ -404,7 +404,7 @@ public class InboxReputationDetailItemViewHolder extends
         return list;
     }
 
-    private String getReviewerNameText(InboxReputationDetailItemViewModel element) {
+    private String getReviewerNameText(InboxReputationDetailItemUiModel element) {
         if (element.isReviewIsAnonymous()
                 && element.getTab() != ReviewInboxConstants.TAB_BUYER_REVIEW) {
             return getAnonymousName(element.getReviewerName());
@@ -420,19 +420,19 @@ public class InboxReputationDetailItemViewHolder extends
     }
 
 
-    private boolean canShowOverflow(InboxReputationDetailItemViewModel element) {
+    private boolean canShowOverflow(InboxReputationDetailItemUiModel element) {
         return element.isReviewIsEditable()
                 || element.getTab() == ReviewInboxConstants.TAB_BUYER_REVIEW
                 || !TextUtils.isEmpty(element.getProductName());
     }
 
-    private boolean isOwnProduct(InboxReputationDetailItemViewModel element) {
+    private boolean isOwnProduct(InboxReputationDetailItemUiModel element) {
         return viewListener.getUserSession()
                 .getShopId()
                 .equals(String.valueOf(element.getShopId()));
     }
 
-    private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemViewModel element) {
+    private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemUiModel element) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {

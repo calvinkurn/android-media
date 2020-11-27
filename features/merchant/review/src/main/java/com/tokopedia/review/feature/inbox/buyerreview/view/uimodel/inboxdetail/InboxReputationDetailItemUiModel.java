@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 import androidx.annotation.Nullable;
 
@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author by nisie on 8/19/17.
  */
 
-public class InboxReputationDetailItemViewModel implements
+public class InboxReputationDetailItemUiModel implements
         Visitable<InboxReputationDetailTypeFactory> {
 
     public static final int IS_LIKED = 1;
@@ -20,7 +20,7 @@ public class InboxReputationDetailItemViewModel implements
     private final boolean reviewIsEditable;
     private final boolean reviewIsSkippable;
     private final int shopId;
-    private final ReviewResponseViewModel reviewResponseViewModel;
+    private final ReviewResponseUiModel reviewResponseUiModel;
     private final int reputationId;
     private final boolean reviewIsEdited;
     private final int reviewerId;
@@ -32,7 +32,7 @@ public class InboxReputationDetailItemViewModel implements
     String revieweeName;
     String reviewTime;
     String orderId;
-    ArrayList<ImageAttachmentViewModel> reviewAttachment;
+    ArrayList<ImageAttachmentUiModel> reviewAttachment;
     String review;
     int reviewStar;
     boolean reviewIsSkipped;
@@ -42,29 +42,29 @@ public class InboxReputationDetailItemViewModel implements
     private boolean isProductDeleted;
     private int productStatus;
 
-    public InboxReputationDetailItemViewModel(int reputationId, String productId, String productName,
-                                              String productAvatar,
-                                              String productUrl,
-                                              String reviewId,
-                                              String reviewerName, String reviewTime,
-                                              ArrayList<ImageAttachmentViewModel> reviewAttachment,
-                                              String review, int reviewStar,
-                                              boolean reviewHasReviewed,
-                                              boolean reviewIsEditable,
-                                              boolean reviewIsSkippable,
-                                              boolean reviewIsSkipped,
-                                              int shopId,
-                                              int tab,
-                                              @Nullable ReviewResponseViewModel
-                                                      reviewResponseViewModel,
-                                              boolean reviewIsAnonymous,
-                                              boolean isProductDeleted,
-                                              boolean reviewIsEdited,
-                                              String revieweeName,
-                                              int reviewerId,
-                                              boolean isProductBanned,
-                                              int productStatus,
-                                              String orderId
+    public InboxReputationDetailItemUiModel(int reputationId, String productId, String productName,
+                                            String productAvatar,
+                                            String productUrl,
+                                            String reviewId,
+                                            String reviewerName, String reviewTime,
+                                            ArrayList<ImageAttachmentUiModel> reviewAttachment,
+                                            String review, int reviewStar,
+                                            boolean reviewHasReviewed,
+                                            boolean reviewIsEditable,
+                                            boolean reviewIsSkippable,
+                                            boolean reviewIsSkipped,
+                                            int shopId,
+                                            int tab,
+                                            @Nullable ReviewResponseUiModel
+                                                    reviewResponseUiModel,
+                                            boolean reviewIsAnonymous,
+                                            boolean isProductDeleted,
+                                            boolean reviewIsEdited,
+                                            String revieweeName,
+                                            int reviewerId,
+                                            boolean isProductBanned,
+                                            int productStatus,
+                                            String orderId
                                               ) {
         this.reputationId = reputationId;
         this.productId = productId;
@@ -83,7 +83,7 @@ public class InboxReputationDetailItemViewModel implements
         this.reviewIsSkippable = reviewIsSkippable;
         this.shopId = shopId;
         this.tab = tab;
-        this.reviewResponseViewModel = reviewResponseViewModel;
+        this.reviewResponseUiModel = reviewResponseUiModel;
         this.reviewIsAnonymous = reviewIsAnonymous;
         this.isProductDeleted = isProductDeleted;
         this.reviewIsEdited = reviewIsEdited;
@@ -120,7 +120,7 @@ public class InboxReputationDetailItemViewModel implements
         return reviewTime;
     }
 
-    public ArrayList<ImageAttachmentViewModel> getReviewAttachment() {
+    public ArrayList<ImageAttachmentUiModel> getReviewAttachment() {
         return reviewAttachment;
     }
 
@@ -156,8 +156,8 @@ public class InboxReputationDetailItemViewModel implements
         return tab;
     }
 
-    public ReviewResponseViewModel getReviewResponseViewModel() {
-        return reviewResponseViewModel;
+    public ReviewResponseUiModel getReviewResponseUiModel() {
+        return reviewResponseUiModel;
     }
 
     public int getReputationId() {

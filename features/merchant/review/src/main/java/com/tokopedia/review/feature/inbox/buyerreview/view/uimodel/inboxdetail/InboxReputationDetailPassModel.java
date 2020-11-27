@@ -1,9 +1,9 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.ReputationDataViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.ReputationDataUiModel;
 
 /**
  * @author by nisie on 8/28/17.
@@ -11,7 +11,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.ReputationD
 
 public class InboxReputationDetailPassModel implements Parcelable{
 
-    ReputationDataViewModel reputationDataViewModel;
+    ReputationDataUiModel reputationDataUiModel;
     String reputationId;
     String revieweeName;
     String revieweeImage;
@@ -23,7 +23,7 @@ public class InboxReputationDetailPassModel implements Parcelable{
     public InboxReputationDetailPassModel(String reputationId, String revieweeName,
                                           String revieweeImage, String deadlineText,
                                           String invoice, String createTime,
-                                          ReputationDataViewModel reputationDataViewModel,
+                                          ReputationDataUiModel reputationDataUiModel,
                                           int role) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
@@ -31,12 +31,12 @@ public class InboxReputationDetailPassModel implements Parcelable{
         this.deadlineText = deadlineText;
         this.invoice = invoice;
         this.createTime = createTime;
-        this.reputationDataViewModel = reputationDataViewModel;
+        this.reputationDataUiModel = reputationDataUiModel;
         this.role = role;
     }
 
     protected InboxReputationDetailPassModel(Parcel in) {
-        reputationDataViewModel = in.readParcelable(ReputationDataViewModel.class.getClassLoader());
+        reputationDataUiModel = in.readParcelable(ReputationDataUiModel.class.getClassLoader());
         reputationId = in.readString();
         revieweeName = in.readString();
         revieweeImage = in.readString();
@@ -82,8 +82,8 @@ public class InboxReputationDetailPassModel implements Parcelable{
         return createTime;
     }
 
-    public ReputationDataViewModel getReputationDataViewModel() {
-        return reputationDataViewModel;
+    public ReputationDataUiModel getReputationDataUiModel() {
+        return reputationDataUiModel;
     }
 
     public int getRole() {
@@ -98,7 +98,7 @@ public class InboxReputationDetailPassModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(reputationDataViewModel, flags);
+        dest.writeParcelable(reputationDataUiModel, flags);
         dest.writeString(reputationId);
         dest.writeString(revieweeName);
         dest.writeString(revieweeImage);
