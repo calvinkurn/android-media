@@ -34,7 +34,9 @@ data class Channel(
         @SerializedName("app_link")
         val appLink: String = "",
         @SerializedName("webLink")
-        val webLink: String = ""
+        val webLink: String = "",
+        @SerializedName("share")
+        val share: Share = Share()
 ) {
 
     data class Data(
@@ -155,5 +157,20 @@ data class Channel(
     data class RoomBackground(
             @SerializedName("image_url")
             val imageUrl: String = ""
+    )
+
+    data class Share(
+            @SerializedName("text")
+            val text: String = "",
+            @SerializedName("redirect_url")
+            val redirectUrl: String = "",
+            @SerializedName("use_short_url")
+            val useShortUrl: Boolean = false,
+            @SerializedName("meta_title")
+            val metaTitle: String = "",
+            @SerializedName("meta_description")
+            val metaDescription: String = "",
+            @SerializedName("is_show_button")
+            val isShowButton: Boolean = false
     )
 }
