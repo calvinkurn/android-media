@@ -273,6 +273,7 @@ class PlayBottomSheetFragment @Inject constructor(
         if (product.applink != null && product.applink.isNotEmpty()) {
             PlayAnalytics.clickProduct(trackingQueue, channelId, product, position, playViewModel.channelType)
             openPageByApplink(product.applink)
+            playViewModel.goPiP()
         }
     }
 
