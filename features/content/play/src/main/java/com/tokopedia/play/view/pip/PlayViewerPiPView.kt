@@ -42,6 +42,7 @@ class PlayViewerPiPView : ConstraintLayout {
     private val pvVideo: PlayerView
     private val flLoading: FrameLayout
     private val ivLoading: LoaderUnify
+    private val flCloseArea: FrameLayout
 
     init {
         val view = View.inflate(context, R.layout.view_play_viewer_pip, this)
@@ -49,6 +50,7 @@ class PlayViewerPiPView : ConstraintLayout {
         pvVideo = view.findViewById(R.id.pv_video)
         flLoading = view.findViewById(R.id.fl_loading)
         ivLoading = view.findViewById(R.id.iv_loading)
+        flCloseArea = view.findViewById(R.id.fl_close_area)
 
         setupView()
     }
@@ -57,6 +59,9 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private fun setupView() {
         playVideoManager.addListener(videoListener)
+        flCloseArea.setOnClickListener {
+            // TODO click close
+        }
     }
 
     private fun onVideoStarted() {

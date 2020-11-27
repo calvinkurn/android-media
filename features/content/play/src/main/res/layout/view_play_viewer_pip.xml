@@ -43,4 +43,23 @@
 
     </FrameLayout>
 
+    <FrameLayout
+        android:id="@+id/fl_close_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl2"
+        android:background="@drawable/bg_play_pip_control"
+        android:padding="@dimen/spacing_lvl1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_close"
+            android:layout_width="@dimen/layout_lvl2"
+            android:layout_height="@dimen/layout_lvl2"
+            app:srcCompat="@drawable/ic_play_close_white"
+            />
+
+    </FrameLayout>
+
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
