@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
 
 /**
@@ -20,7 +21,7 @@ import com.tokopedia.abstraction.common.utils.view.MenuTintUtils;
 
 abstract class BaseToolbarActivity extends BaseActivity {
 
-    private final static int TEXT_COLOR_BACKGROUND_WHITE = com.tokopedia.unifyprinciples.R.color.Unify_N700_96;
+    private final static int TEXT_COLOR_BACKGROUND_WHITE = R.color.black;
     protected Toolbar toolbar;
 
     protected abstract void setupFragment(Bundle savedInstanceState);
@@ -64,7 +65,7 @@ abstract class BaseToolbarActivity extends BaseActivity {
     }
 
     protected int getToolbarResourceID(){
-        return com.tokopedia.abstraction.R.id.toolbar;
+        return R.id.toolbar;
     }
 
     protected void setupLayout(Bundle savedInstanceState) {
