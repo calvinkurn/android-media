@@ -78,11 +78,11 @@ class CartRecentViewItemViewHolder(val view: View, val actionListener: ActionLis
 
     private fun getRatingImageResource(rating: Int): Int {
         when (rating) {
-            1 -> return R.drawable.ic_star_one
-            2 -> return R.drawable.ic_star_two
-            3 -> return R.drawable.ic_star_three
-            4 -> return R.drawable.ic_star_four
-            5 -> return R.drawable.ic_star_five
+            1 -> return R.drawable.product_card_ic_star_one
+            2 -> return R.drawable.product_card_ic_star_two
+            3 -> return R.drawable.product_card_ic_star_three
+            4 -> return R.drawable.product_card_ic_star_four
+            5 -> return R.drawable.product_card_ic_star_five
             else -> return 0
         }
     }

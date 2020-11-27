@@ -113,7 +113,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/tv_review_count"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_shop_location"
-        tools:src="@drawable/ic_star_three" />
+        tools:src="@drawable/product_card_ic_star_three" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_review_count"
