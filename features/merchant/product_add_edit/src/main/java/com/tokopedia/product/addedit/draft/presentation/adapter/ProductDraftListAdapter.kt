@@ -2,17 +2,13 @@ package com.tokopedia.product.addedit.draft.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper
 import com.tokopedia.product.addedit.draft.presentation.listener.ProductDraftListListener
 import com.tokopedia.product.addedit.draft.presentation.model.ProductDraftUiModel
 import com.tokopedia.product.addedit.draft.presentation.viewholder.ProductDraftListViewHolder
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
-import kotlin.properties.Delegates
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
 
 class ProductDraftListAdapter(
         private val listener: ProductDraftListListener
