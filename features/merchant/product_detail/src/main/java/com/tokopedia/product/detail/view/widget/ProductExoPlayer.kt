@@ -45,7 +45,7 @@ class ProductExoPlayer(val context: Context) {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 val isPlaying = playWhenReady && playbackState == Player.STATE_READY
                 val isReadyToPlay = !playWhenReady && playbackState == Player.STATE_READY
-                val isInitialLoad = playWhenReady || (!playWhenReady && playbackState == Player.STATE_BUFFERING)
+                val isInitialLoad = (playWhenReady && playbackState != Player.STATE_READY) || (!playWhenReady && playbackState != Player.STATE_READY)
 
                 when {
                     isPlaying || playbackState == Player.STATE_ENDED -> {

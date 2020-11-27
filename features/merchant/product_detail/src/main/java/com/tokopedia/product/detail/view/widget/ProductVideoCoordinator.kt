@@ -95,19 +95,19 @@ class ProductVideoCoordinator(
 
     private fun clearPlayerEntry(receiverProduct: ProductVideoReceiver?) {
         receiverProduct?.let {
+            videoPlayer?.setVideoStateListener(null)
             videoPlayer?.stop()
             saveLastVideoPosition(it.getVideoId() ?: "")
             it.setPlayer(null)
-            videoPlayer?.setVideoStateListener(null)
         }
     }
 
     private fun pauseSaveLastPosition(receiverProduct: ProductVideoReceiver?) {
         receiverProduct?.let {
+            videoPlayer?.setVideoStateListener(null)
             videoPlayer?.pause()
             saveLastVideoPosition(it.getVideoId())
             it.setPlayer(null)
-            videoPlayer?.setVideoStateListener(null)
         }
     }
 
