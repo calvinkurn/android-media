@@ -1,4 +1,4 @@
-package com.tokopedia.travel_slice.data
+package com.tokopedia.travel_slice.hotel.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

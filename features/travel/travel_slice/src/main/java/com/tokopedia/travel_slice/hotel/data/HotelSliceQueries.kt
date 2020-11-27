@@ -1,10 +1,10 @@
-package com.tokopedia.travel_slice.utils
+package com.tokopedia.travel_slice.hotel.data
 
 /**
  * @author by jessica on 25/11/20
  */
 
-object TravelSliceQueries {
+object HotelSliceQueries {
     const val SEARCH_SUGGESTION = """
         query suggestion(${'$'}data: PropertySuggestionSearchParam!) {
           propertySearchSuggestion(input: ${'$'}data) {

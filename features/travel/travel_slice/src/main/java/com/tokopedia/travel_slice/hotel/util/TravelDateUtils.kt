@@ -1,4 +1,4 @@
-package com.tokopedia.travel_slice.utils
+package com.tokopedia.travel_slice.hotel.util
 
 import java.text.DateFormat
 import java.text.ParseException

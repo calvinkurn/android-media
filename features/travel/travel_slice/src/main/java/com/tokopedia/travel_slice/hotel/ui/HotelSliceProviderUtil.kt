@@ -1,11 +1,10 @@
-package com.tokopedia.travel_slice.ui.provider
+package com.tokopedia.travel_slice.hotel.ui
 
 import android.app.PendingIntent
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.os.StrictMode
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.drawable.IconCompat
 import androidx.slice.Slice
@@ -14,8 +13,8 @@ import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel_slice.R
-import com.tokopedia.travel_slice.data.HotelData
-import com.tokopedia.travel_slice.data.HotelOrderListModel
+import com.tokopedia.travel_slice.hotel.data.HotelData
+import com.tokopedia.travel_slice.hotel.data.HotelOrderListModel
 import kotlin.math.max
 
 /**
