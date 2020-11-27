@@ -9,9 +9,9 @@ import android.view.ViewGroup
  * Created by Yehezkiel on 16/10/20
  */
 object ExpandableAnimation {
-    private const val EXPANDABLE_FAST_DURATION = 300L
-    private const val EXPANDABLE_SLOW_DURATION = 500L
-    private const val MAX_DEFAULT_HEIGHT = 2000
+    private const val EXPANDABLE_FAST_DURATION : Long = 300
+    private const val EXPANDABLE_SLOW_DURATION : Long = 500
+    private const val MAX_DEFAULT_HEIGHT :Int = 2000
 
     fun expand(view: View, customHeight: Int = 0, customParentWidth: Int = 0, onAnimationEndListener: (() -> Unit)? = null) {
         view.visibility = View.VISIBLE
