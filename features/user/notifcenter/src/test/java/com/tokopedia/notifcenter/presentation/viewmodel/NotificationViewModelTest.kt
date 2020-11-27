@@ -16,18 +16,17 @@ import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.domain.ClearNotifCounterUseCase
 import com.tokopedia.notifcenter.domain.MarkNotificationAsReadUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
-import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase.Companion.FILTER_NONE
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationViewModel.Companion.getRecommendationVisitables
 import com.tokopedia.notifcenter.util.coroutines.TestDispatcherProvider
 import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper
+import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper.Companion.mappingToRecommendationModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,7 +34,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import io.mockk.*
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -44,7 +42,6 @@ import org.junit.Rule
 import org.junit.Test
 import rx.Observable
 import kotlin.test.assertEquals
-import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEntityMapper.Companion.mappingToRecommendationModel as mappingToRecommendationModel
 
 class NotificationViewModelTest {
 
@@ -118,7 +115,7 @@ class NotificationViewModelTest {
         viewModel.loadFirstPageNotification(role)
 
         // then
-        verify { notificationItemsObserver.onChanged(Success(expectedValue)) }
+        verify(exactly = 1) { notificationItemsObserver.onChanged(Success(expectedValue)) }
     }
 
     @Test fun `loadFirstPageNotification as buyer should return correct data`() {
@@ -177,7 +174,7 @@ class NotificationViewModelTest {
         viewModel.loadFirstPageNotification(RoleType.BUYER)
 
         // then
-        verify { notificationItemsObserver.onChanged(Fail(expectedValue)) }
+        verify(exactly = 1) { notificationItemsObserver.onChanged(Fail(expectedValue)) }
     }
 
     @Test fun `loadNotificationFilter should return filter list properly`() {
@@ -211,7 +208,7 @@ class NotificationViewModelTest {
             viewModel.loadNotificationFilter(0)
 
             // then
-            verify { filterListObserver.onChanged(expectedValue) }
+            verify(exactly = 1) { filterListObserver.onChanged(expectedValue) }
         }
     }
 
@@ -255,7 +252,7 @@ class NotificationViewModelTest {
         viewModel.loadMoreEarlier(role)
 
         // then
-        verify {
+        verify(exactly = 1) {
             val successState = Success(expectedValue)
 
             notificationItemsObserver.onChanged(successState)
@@ -283,7 +280,7 @@ class NotificationViewModelTest {
         viewModel.loadMoreEarlier(0)
 
         // then
-        verify { notificationItemsObserver.onChanged(Fail(expectedValue)) }
+        verify(exactly = 1) { notificationItemsObserver.onChanged(Fail(expectedValue)) }
     }
 
     @Test fun `loadMoreNew with lambda should called getMoreNewNotifications() in usecase`() {
@@ -335,15 +332,38 @@ class NotificationViewModelTest {
         viewModel.loadRecommendations(0)
 
         // then
-        coVerifyOrder{
+        coVerifyOrder {
             val asVisitable = getRecommendationVisitables(0, expectedValue)
             recommendationsObserver.onChanged(asVisitable)
             assert(viewModel.recommendations.value == asVisitable)
         }
     }
 
+    @Test fun `addWishList test if is topAds and should return called addWishListTopAds`() {
+        testAddWishList(true, "addWishListTopAds")
+    }
+
+    @Test fun `addWishList test if is not topAds and should return called addWishListNormal`() {
+        testAddWishList(false, "addWishListNormal")
+    }
+
+    @Test fun `removeWishList should remove a wish list item properly`() {}
+
     @After fun tearDown() {
         viewModel.cancelAllUseCase()
+    }
+
+    private fun testAddWishList(isTopAds: Boolean, methodName: String) {
+        // given
+        val viewModelSpyk = spyk(viewModel, recordPrivateCalls = true)
+        val model = RecommendationItem(isTopAds = isTopAds)
+        val callback: (Boolean, Throwable?) -> Unit = { _, _ -> }
+
+        // when
+        viewModelSpyk.addWishlist(model, callback)
+
+        // then
+        verify(exactly = 1) { viewModelSpyk[methodName](model, callback) }
     }
 
     companion object {
