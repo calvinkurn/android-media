@@ -84,11 +84,18 @@ class MainSliceProvider : SliceProvider() {
         return when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
+                status = TravelSliceStatus.INIT
                 if (hotelList.isEmpty()) HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
                 else HotelSliceProviderUtil.getHotelRecommendationSlices(contextNonNull, sliceUri, city, checkIn, hotelList)
             }
-            TravelSliceStatus.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
-            else -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            TravelSliceStatus.FAILURE -> {
+                status = TravelSliceStatus.INIT
+                HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            }
+            else -> {
+                status = TravelSliceStatus.INIT
+                HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            }
         }
     }
 
@@ -121,11 +128,18 @@ class MainSliceProvider : SliceProvider() {
         return when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
+                status = TravelSliceStatus.INIT
                 if (orderList.isNotEmpty()) HotelSliceProviderUtil.getMyHotelOrderSlices(contextNonNull, sliceUri, orderList)
                 else HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
-            TravelSliceStatus.FAILURE -> HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
-            TravelSliceStatus.USER_NOT_LOG_IN -> HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
+            TravelSliceStatus.FAILURE -> {
+                status = TravelSliceStatus.INIT
+                HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            }
+            TravelSliceStatus.USER_NOT_LOG_IN -> {
+                status = TravelSliceStatus.INIT
+                HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
+            }
         }
     }
 
@@ -157,11 +171,18 @@ class MainSliceProvider : SliceProvider() {
         return when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> FlightSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
+                status = TravelSliceStatus.INIT
                 if (flightOrderList.isNotEmpty()) FlightSliceProviderUtil.getFlightOrderSlices(contextNonNull, sliceUri, flightOrderList)
                 else FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
-            TravelSliceStatus.FAILURE -> FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
-            TravelSliceStatus.USER_NOT_LOG_IN -> FlightSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
+            TravelSliceStatus.FAILURE -> {
+                status = TravelSliceStatus.INIT
+                FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
+            }
+            TravelSliceStatus.USER_NOT_LOG_IN -> {
+                status = TravelSliceStatus.INIT
+                FlightSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
+            }
         }
     }
 
