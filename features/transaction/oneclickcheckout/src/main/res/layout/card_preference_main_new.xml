@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_new_preference"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -8,8 +9,7 @@
         android:id="@+id/layout_new_preference_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_12"
-        android:background="@drawable/background_card_preference_new_selected">
+        android:paddingBottom="@dimen/dp_12">
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/lbl_new_main_preference"

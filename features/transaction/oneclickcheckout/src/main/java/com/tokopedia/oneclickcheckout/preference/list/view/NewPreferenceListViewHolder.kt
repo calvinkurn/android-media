@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
+import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class NewMainPreferenceListViewHolder(itemView: View, private val listener: PreferenceListAdapter.PreferenceListAdapterListener) : RecyclerView.ViewHolder(itemView) {
@@ -18,6 +19,7 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
         val LAYOUT = R.layout.card_preference_main_new
     }
 
+    private val cardUnify = itemView.findViewById<CardUnify>(R.id.card_new_preference)
     private val layoutCard = itemView.findViewById<ConstraintLayout>(R.id.layout_new_preference_card)
     private val dividerHeader = itemView.findViewById<View>(R.id.divider_new_preference_header)
 
@@ -37,13 +39,13 @@ class NewMainPreferenceListViewHolder(itemView: View, private val listener: Pref
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
 
         if (preference.profileId == currentProfileId) {
-            layoutCard.background = ContextCompat.getDrawable(itemView.context, R.drawable.background_card_preference_new_selected)
+            cardUnify.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             layoutCard.setOnClickListener {
                 /* no-op */
             }
             dividerHeader.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G400))
         } else {
-            layoutCard.background = null
+            cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
                 listener.onPreferenceSelected(preference)
             }
@@ -104,6 +106,7 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
         val LAYOUT = R.layout.card_preference_new
     }
 
+    private val cardUnify = itemView.findViewById<CardUnify>(R.id.card_new_preference)
     private val layoutCard = itemView.findViewById<ConstraintLayout>(R.id.layout_new_preference_card)
 
     private val tvEditPreference = itemView.findViewById<Typography>(R.id.tv_new_edit_preference)
@@ -122,12 +125,12 @@ class NewPreferenceListViewHolder(itemView: View, private val listener: Preferen
     fun bind(preference: ProfilesItemModel, currentProfileId: Int, profileSize: Int) {
 
         if (preference.profileId == currentProfileId) {
-            layoutCard.background = ContextCompat.getDrawable(itemView.context, R.drawable.background_card_preference_new_selected)
+            cardUnify.cardType = CardUnify.TYPE_SHADOW_ACTIVE
             layoutCard.setOnClickListener {
                 /* no-op */
             }
         } else {
-            layoutCard.background = null
+            cardUnify.cardType = CardUnify.TYPE_SHADOW
             layoutCard.setOnClickListener {
                 listener.onPreferenceSelected(preference)
             }
