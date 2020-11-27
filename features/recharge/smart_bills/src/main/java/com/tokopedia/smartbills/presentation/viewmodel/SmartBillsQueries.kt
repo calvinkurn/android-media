@@ -17,10 +17,11 @@ object SmartBillsQueries {
 
     val STATEMENT_BILLS_QUERY by lazy {
         """
-            query rechargeStatementBills(${'$'}month: Int!, ${'$'}year: Int!){
+            query rechargeStatementBills(${'$'}month: Int!, ${'$'}year: Int!, ${'$'}source: Int){
               rechargeStatementBills(
                 Month: ${'$'}month
                 Year: ${'$'}year
+                Source: ${'$'}source
               ){
                 total: Total
                 totalText: TotalText
