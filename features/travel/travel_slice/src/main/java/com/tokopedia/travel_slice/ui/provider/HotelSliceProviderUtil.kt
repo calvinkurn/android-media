@@ -13,9 +13,9 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.data.HotelData
 import com.tokopedia.travel_slice.data.HotelOrderListModel
-import com.tokopedia.travel_slice.R
 import kotlin.math.max
 
 /**
@@ -111,7 +111,7 @@ object HotelSliceProviderUtil {
                 row {
                     title = it.title
                     subtitle = it.statusStr
-                    setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_hotel), SMALL_IMAGE)
+                    setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_travel_slice_hotel), SMALL_IMAGE)
 
                     primaryAction = SliceAction.create(buildIntentFromApplink(context, it.applink),
                             IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),

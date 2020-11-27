@@ -67,7 +67,7 @@ object FlightSliceProviderUtil {
                         if (it.items.isNotEmpty()) {
                             setTitleItem(IconCompat.createWithBitmap(it.items[0].imageUrl.getBitmap(context)), SMALL_IMAGE)
                         } else {
-                            setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_flight_icon), SMALL_IMAGE)
+                            setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_travel_slice_flight_icon), SMALL_IMAGE)
                         }
 
                         primaryAction = SliceAction.create(buildIntentFromApplink(context, String.format("%s/%s", ApplinkConst.FLIGHT_ORDER, it.id)),
