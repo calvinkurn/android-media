@@ -51,7 +51,9 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
         }
         val payload = viewHolderState?.payload
         if (payload is ProductData) {
-            val index = notification?.productData?.indexOf(payload) ?: return
+            val index = notification?.productData?.indexOfFirst {
+                it.productId == payload.productId
+            } ?: return
             val product = notification?.productData?.get(index)
             product?.update(payload)
             val productView = products[product?.productId]
