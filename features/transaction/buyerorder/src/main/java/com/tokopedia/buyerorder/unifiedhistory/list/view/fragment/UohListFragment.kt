@@ -1024,7 +1024,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         val labelTrackingCategory: String
                         currFilterCategoryKey = tempFilterCategoryKey
                         currFilterCategoryLabel = tempFilterCategoryLabel
-                        if (tempFilterCategoryKey != ALL_PRODUCTS) {
+                        if (tempFilterCategoryKey.isNotEmpty() && tempFilterCategoryKey != ALL_PRODUCTS) {
                             filter3?.type = ChipsUnify.TYPE_SELECTED
                             filter3?.title = currFilterCategoryLabel
                             labelTrackingCategory = currFilterCategoryLabel
