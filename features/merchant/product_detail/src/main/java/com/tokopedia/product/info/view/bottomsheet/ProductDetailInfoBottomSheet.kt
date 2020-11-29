@@ -85,21 +85,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel?.let { vm ->
-            viewLifecycleOwner.observe(vm.bottomSheetDetailData) { data ->
-                data.doSuccessOrFail({
-                    currentList = ArrayList(it.data)
-                    rvBsProductDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            rvBsProductDetail?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-                            setupFullScreen(it.data)
-                        }
-                    })
-                    productDetailInfoAdapter.submitList(it.data)
-                }) {
-                }
-            }
-        }
+        observeData()
     }
 
     override fun goToDiscussion(discussionCount: Int) {
@@ -241,6 +227,24 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun closeAllExpand(uniqueIdentifier: Int, toggle: Boolean) {
         productDetailInfoAdapter.closeAllExpanded(uniqueIdentifier, toggle, currentList ?: listOf())
+    }
+
+    private fun observeData() {
+        viewModel?.let { vm ->
+            viewLifecycleOwner.observe(vm.bottomSheetDetailData) { data ->
+                data.doSuccessOrFail({
+                    currentList = ArrayList(it.data)
+                    rvBsProductDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            rvBsProductDetail?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                            setupFullScreen(it.data)
+                        }
+                    })
+                    productDetailInfoAdapter.submitList(it.data)
+                }) {
+                }
+            }
+        }
     }
 
     private fun initView() {
