@@ -103,7 +103,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
         text.setSpan(new RelativeSizeSpan(1.0f),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         text.setSpan(
-                new ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
+                new ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)),
                 0, text.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text;
@@ -129,7 +129,7 @@ public abstract class FlightOrderBaseViewHolder<T extends Visitable> extends Abs
 
     protected void renderDepartureSchedule(List<FlightOrderJourney> orderJourney) {
         FlightOrderSimpleAdapter departureSchedules = new FlightOrderSimpleAdapter();
-        departureSchedules.setDescriptionTextColor(itemView.getContext().getResources().getColor(R.color.font_black_secondary_54));
+        departureSchedules.setDescriptionTextColor(itemView.getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         departureSchedules.setTitleHalfView(false);
         departureSchedules.setContentAllignmentLeft(true);
         LinearLayoutManager flightSimpleAdapterLayoutManager

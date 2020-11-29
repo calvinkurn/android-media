@@ -1,7 +1,6 @@
 package com.tokopedia.product.detail.di
 
 object RawQueryKeyConstant {
-    const val QUERY_PRODUCT_CATALOG = "query_product_catalog"
     const val QUERY_WISHLIST_STATUS = "query_is_wishlisted"
     const val QUERY_GET_RATE_ESTIMATION = "rate_estimation"
     const val QUERY_GET_IMAGE_REVIEW = "image_review"

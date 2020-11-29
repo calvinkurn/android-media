@@ -41,7 +41,7 @@ class MultiEditProductUseCase(
                     }
 
                     product.status?.let { status ->
-                        putObject(STATUS_PARAM, status)
+                        putString(STATUS_PARAM, status.name)
                     }
                 }.parameters
             }
