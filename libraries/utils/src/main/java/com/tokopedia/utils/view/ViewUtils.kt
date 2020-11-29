@@ -1,0 +1,50 @@
+package com.tokopedia.utils.view
+
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.view.View
+import android.widget.Toast
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+
+/**
+ * Created by Yehezkiel on 29/11/20
+ */
+object ViewUtils {
+
+    @JvmStatic
+    fun Activity.screenShootAndSave(view: View, dir: String, fileName: String) {
+        val bitmap = Bitmap.createBitmap(
+                view.width,
+                view.height, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        saveImage(this, dir, fileName, bitmap)
+    }
+
+    private fun saveImage(activity: Activity, dir: String, fileName: String, bitmap: Bitmap?) {
+        val path = activity.getExternalFilesDir(null)
+        val imageDir = File(path, dir)
+
+        try {
+            if (!imageDir.exists()) {
+                imageDir.mkdirs()
+            }
+            val imagePath = File(imageDir, "${fileName}.png")
+
+            val fos = FileOutputStream(imagePath)
+            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.flush()
+            fos.close()
+            Toast.makeText(activity.applicationContext, "Screen shoot success", Toast.LENGTH_LONG).show()
+        } catch (e: FileNotFoundException) {
+            Toast.makeText(activity.applicationContext, "Screen shoot fail : ${e.message}", Toast.LENGTH_LONG).show()
+        } catch (e: IOException) {
+            Toast.makeText(activity.applicationContext, "Screen shoot fail : ${e.message}", Toast.LENGTH_LONG).show()
+        }
+    }
+}
