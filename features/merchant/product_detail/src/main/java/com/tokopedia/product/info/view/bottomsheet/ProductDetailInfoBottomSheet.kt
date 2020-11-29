@@ -230,8 +230,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     }
 
     private fun observeData() {
-        viewModel?.let { vm ->
-            viewLifecycleOwner.observe(vm.bottomSheetDetailData) { data ->
+        if (viewModel != null) {
+            viewLifecycleOwner.observe(viewModel!!.bottomSheetDetailData) { data ->
                 data.doSuccessOrFail({
                     currentList = ArrayList(it.data)
                     rvBsProductDetail?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
