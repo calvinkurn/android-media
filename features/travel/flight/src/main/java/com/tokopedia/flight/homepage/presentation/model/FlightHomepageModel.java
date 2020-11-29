@@ -204,7 +204,7 @@ public class FlightHomepageModel implements Parcelable, Cloneable {
         text.setSpan(new RelativeSizeSpan(1.25f),
                 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         text.setSpan(
-                new ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
+                new ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700)),
                 0, text.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return text;

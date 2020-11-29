@@ -75,7 +75,7 @@ class ProductPostTagViewHolder(val mainView: View,
                 if (text.isEmpty()) text = getString(R.string.empty_product)
                 setTextColor(ContextCompat.getColor(
                         context,
-                        if (isCTADisabled) R.color.Neutral_N200 else R.color.Neutral_N0
+                        if (isCTADisabled) R.color.Unify_N200 else R.color.Unify_N0
                 ))
             }
         } else btnBuy.gone()

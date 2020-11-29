@@ -11,7 +11,7 @@ import com.tokopedia.product.detail.di.RawQueryKeyConstant
 import com.tokopedia.product.detail.view.util.asSuccess
 import com.tokopedia.product.detail.view.viewmodel.ProductInstallmentViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
-import com.tokopedia.product.util.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
@@ -29,7 +29,7 @@ class ProductInstallmentViewModelTest : BaseProductViewModelTest() {
     lateinit var graphqlRepository: GraphqlRepository
 
     private val viewModel by lazy {
-        ProductInstallmentViewModel(graphqlRepository, mapOf(RawQueryKeyConstant.QUERY_INSTALLMENT to ""), TestDispatcherProvider())
+        ProductInstallmentViewModel(graphqlRepository, mapOf(RawQueryKeyConstant.QUERY_INSTALLMENT to ""), CoroutineTestDispatchersProvider)
     }
 
     @Test
