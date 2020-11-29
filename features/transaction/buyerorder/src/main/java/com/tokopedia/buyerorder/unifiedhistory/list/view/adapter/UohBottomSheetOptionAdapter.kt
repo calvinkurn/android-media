@@ -9,8 +9,8 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI_BERLANGSUNG
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohFilterBundle
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -52,7 +52,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
             holder.itemView.divider_label.visible()
             if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].value.isEmpty()) {
                 holder.itemView.label_option.text = ALL_STATUS_TRANSACTION
-            } else if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].value.equals(DALAM_PROSES, true)) {
+            } else if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].value.equals(TRANSAKSI_BERLANGSUNG, true)) {
                 holder.itemView.label_option.text = SEMUA_TRANSAKSI_BERLANGSUNG
             } else {
                 holder.itemView.label_option.text = filterBundleList[position].value
@@ -77,9 +77,9 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
             if (selectedKey.isEmpty() && selectedRadio == -1) {
                 if (filterType == UohConsts.TYPE_FILTER_DATE && filterBundleList[position].key == "0") {
                     holder.itemView.rb_option.isChecked = true
-                } else if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].key.equals(SEMUA_TRANSAKSI, true)) {
+                } else if (filterType == UohConsts.TYPE_FILTER_STATUS && filterBundleList[position].key.isEmpty()) {
                     holder.itemView.rb_option.isChecked = true
-                } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY && filterBundleList[position].key.equals(ALL_PRODUCTS, true)) {
+                } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY && filterBundleList[position].value.equals(ALL_PRODUCTS, true)) {
                     holder.itemView.rb_option.isChecked = true
                 }
             } else {
@@ -96,7 +96,7 @@ class UohBottomSheetOptionAdapter(private var listener: ActionListener): Recycle
                         holder.itemView.rb_option.isChecked = true
                     }
                 } else if (filterType == UohConsts.TYPE_FILTER_STATUS) {
-                    if (filterBundleList[position].value == SEMUA_TRANSAKSI) {
+                    if (filterBundleList[position].value == ALL_STATUS_TRANSACTION) {
                         holder.itemView.rb_option.isChecked = true
                     }
                 } else if (filterType == UohConsts.TYPE_FILTER_CATEGORY) {

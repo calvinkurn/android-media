@@ -47,6 +47,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ACTION_FINI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_PRODUCTS
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.ALL_STATUS_TRANSACTION
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APPLINK_BASE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TYPE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
@@ -80,7 +81,6 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUANTITY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM_INVOICE_URL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
-import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SEMUA_TRANSAKSI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
@@ -245,12 +245,12 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramUohOrder.createTimeEnd = ""
                     }
                     PARAM_SEMUA_TRANSAKSI -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                     }
                     PARAM_MARKETPLACE -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_MARKETPLACE_DALAM_PROSES -> {
@@ -259,48 +259,48 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
                     }
                     PARAM_DIGITAL -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DIGITAL
                     }
                     PARAM_EVENTS -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
                     }
                     PARAM_DEALS -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
                     }
                     PARAM_PESAWAT -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
                     }
                     PARAM_GIFTCARDS -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
                     }
                     PARAM_INSURANCE -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
                     }
                     PARAM_MODALTOKO -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
                     }
                     PARAM_HOTEL -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
                     }
                     PARAM_TRAVEL_ENTERTAINMENT -> {
-                        status = SEMUA_TRANSAKSI
-                        statusLabel = status
+                        status = ""
+                        statusLabel = ALL_STATUS_TRANSACTION
                         paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAVEL_ENTERTAINMENT
                     }
                 }
@@ -786,8 +786,8 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
-        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = SEMUA_TRANSAKSI
-        if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = SEMUA_TRANSAKSI
+        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = UohConsts.ALL_STATUS_TRANSACTION
+        if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = ""
 
         uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_STATUS
@@ -808,7 +808,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         uohBottomSheetOptionAdapter.filterType = UohConsts.TYPE_FILTER_CATEGORY
         tempFilterType = UohConsts.TYPE_FILTER_CATEGORY
         if (tempFilterCategoryLabel.isEmpty()) tempFilterCategoryLabel = ALL_PRODUCTS
-        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ALL_PRODUCTS
+        if (tempFilterCategoryKey.isEmpty()) tempFilterCategoryKey = ""
 
         if ((filterStatus.equals(PARAM_MARKETPLACE, true)
                         || filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true))
@@ -1009,7 +1009,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         val labelTrackingStatus: String
                         currFilterStatusKey = tempFilterStatusKey
                         currFilterStatusLabel = tempFilterStatusLabel
-                        if (tempFilterStatusKey != SEMUA_TRANSAKSI) {
+                        if (tempFilterStatusKey.isNotEmpty() && tempFilterStatusKey != ALL_STATUS_TRANSACTION) {
                             filter2?.type = ChipsUnify.TYPE_SELECTED
                             filter2?.title = currFilterStatusLabel
                             labelTrackingStatus = currFilterStatusLabel
