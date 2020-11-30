@@ -71,7 +71,7 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.CUSTOM_VALUES))
                 cmInApp.setCustomValues(map.get(RulesUtil.Constants.Payload.CUSTOM_VALUES));
 
-            if(!TextUtils.isEmpty(cmInApp.getType()) && cmInApp.getType().equals("gratification")){
+            if(!TextUtils.isEmpty(cmInApp.getType()) && cmInApp.getType().equals(CmInAppConstant.TYPE_GRATIF)){
                 cmInApp.setScreen("");
             }
 
