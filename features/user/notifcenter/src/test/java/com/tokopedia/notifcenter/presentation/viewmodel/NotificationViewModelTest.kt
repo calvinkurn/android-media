@@ -8,7 +8,6 @@ import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
-import com.tokopedia.notifcenter.data.entity.markasread.MarkReadStatusResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -123,7 +122,38 @@ class NotificationViewModelTest {
         }
     }
 
-    @Test fun `loadFirstPageNotification should return data properly`() {
+    @Test fun `loadFirstPageNotification that haven't filter should return only notifItems properly`() {
+        // given
+        val role = RoleType.SELLER
+        val expectedValue = NotifcenterDetailMapper().mapFirstPage(
+                notifCenterDetailResponse,
+                needSectionTitle = false,
+                needLoadMoreButton = false
+        )
+
+        every {
+            notifcenterDetailUseCase.getFirstPageNotification(
+                    any(),
+                    any(),
+                    captureLambda(),
+                    any()
+            )
+        } answers {
+            val onSuccess = lambda<(NotificationDetailResponseModel) -> Unit>()
+            onSuccess.invoke(expectedValue)
+        }
+
+        viewModel.filter = NotifcenterDetailUseCase.FILTER_NONE
+
+        // when
+        viewModel.loadFirstPageNotification(role)
+
+        // then
+        verify(exactly = 1) { notificationItemsObserver.onChanged(Success(expectedValue)) }
+        coVerify(exactly = 0) { topAdsImageViewUseCase.getImageData(any()) }
+    }
+
+    @Test fun `loadFirstPageNotification as seller should return data properly`() {
         // given
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
                 notifCenterDetailResponse,
@@ -153,14 +183,17 @@ class NotificationViewModelTest {
         verify(exactly = 1) { notificationItemsObserver.onChanged(Success(expectedValue)) }
     }
 
-    @Test fun `loadFirstPageNotification as buyer should return correct data`() {
+    @Test fun `loadFirstPageNotification as buyer should return data properly`() {
         // given
         val topAdsImageView = arrayListOf(TopAdsImageViewModel())
+        val notifFilter = Resource.success(ClearNotifCounterResponse())
         val expectedValue = NotifcenterDetailMapper().mapFirstPage(
                 notifCenterDetailResponse,
                 needSectionTitle = false,
                 needLoadMoreButton = false
         )
+
+        val notifFilterFlow = flow { emit(notifFilter) }
 
         val role = RoleType.BUYER
         viewModel.reset() // filter id
@@ -179,6 +212,10 @@ class NotificationViewModelTest {
             onSuccess.invoke(expectedValue)
         }
 
+        every {
+            clearNotifUseCase.clearNotifCounter(role)
+        } returns notifFilterFlow
+
         // when
         viewModel.loadFirstPageNotification(role)
 
@@ -186,6 +223,7 @@ class NotificationViewModelTest {
         verifyOrder {
             notificationItemsObserver.onChanged(Success(expectedValue))
             topAdsBannerObserver.onChanged(NotificationTopAdsBannerUiModel(topAdsImageView.first()))
+            clearNotifObserver.onChanged(notifFilter)
         }
     }
 
@@ -527,8 +565,6 @@ class NotificationViewModelTest {
         verify(exactly = 1) { removeWishListUseCase.createObservable(any(), any(), any()) }
     }
 
-    @Test fun `clearNotifCounter should return correctly`() {}
-
     @After fun tearDown() {
         viewModel.cancelAllUseCase()
     }
@@ -570,11 +606,6 @@ class NotificationViewModelTest {
         private val deleteReminderResponse: DeleteReminderResponse = FileUtil.parse(
                 "/success_notifcenter_delete_reminder.json",
                 DeleteReminderResponse::class.java
-        )
-
-        private val markAsReadResponse: MarkReadStatusResponse = FileUtil.parse(
-                "/success_notifcenter_mark_as_read.json",
-                MarkReadStatusResponse::class.java
         )
     }
 
