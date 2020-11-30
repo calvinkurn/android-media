@@ -4,7 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.usecase.validation.PromoCodeValidationUseCase
 import com.tokopedia.vouchercreation.create.view.uimodel.validation.PromoCodeValidation
 import io.mockk.MockKAnnotations
@@ -32,7 +32,7 @@ class CreatePromoCodeViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = CreatePromoCodeViewModel(TestCoroutineDispatchers, promoCodeValidationUseCase)
+        mViewModel = CreatePromoCodeViewModel(CoroutineTestDispatchersProvider, promoCodeValidationUseCase)
     }
 
     @Test

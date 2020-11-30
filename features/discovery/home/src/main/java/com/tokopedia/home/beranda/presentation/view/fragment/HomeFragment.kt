@@ -1179,7 +1179,6 @@ open class HomeFragment : BaseDaggerFragment(),
                 this,
                 this,
                 this,
-                this,
                 homeRecyclerView?.recycledViewPool?: RecyclerView.RecycledViewPool(),
                 this,
                 HomeComponentCallback(getHomeViewModel()),
@@ -1193,7 +1192,8 @@ open class HomeFragment : BaseDaggerFragment(),
                 Lego4AutoBannerComponentCallback(context, this),
                 FeaturedShopComponentCallback(context, this),
                 playWidgetCoordinator,
-                this
+                this,
+                CategoryNavigationCallback(context, this)
 
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())

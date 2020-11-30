@@ -451,9 +451,6 @@ public class MoneyInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         if(messageStringId == R.string.money_in_need_permission) {
             spannableString.setSpan(foregroundColorSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             spannableString.setSpan(clickableSpan, 62, 83, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        } else {
-            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
         mTvPriceElligible.setText(spannableString);
         mTvPriceElligible.setVisibility(View.VISIBLE);

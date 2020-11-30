@@ -60,6 +60,7 @@ object TopAdsDashboardConstant {
     const val EDIT_WITHOUT_GROUP_REQUEST_CODE = 49
     const val GROUP_UPDATED = 23
     const val AUTO_ADS_DISABLED = 111
+    const val HEADLINE_UPADTED = 74
     const val STATUS_ACTIVE = 1
     const val STATUS_TIDAK_TAMPIL = 2
     const val TAB_POSITION = "tab_position"
@@ -77,6 +78,17 @@ object TopAdsDashboardConstant {
     const val REQUEST_FROM_NEG = "Negative"
     const val REQUEST_FROM_BID = "Bid"
     const val INVALID_KEYWORD_TAG = "INVALID_KEYWORD_TAG"
-    const val SELLER_CREATE_FORM_PATH = "com.tokopedia.topads.view.activity.AdCreationChooserActivity"
-    const val SELLER_ONBOARDING_PATH = " com.tokopedia.topads.auto.view.acctivity.AutoAdsOnboardingActivity"
+    const val SEVEN_DAYS_RANGE_INDEX = 2
+    const val DATE_PICKER_SHEET = "datepicker"
+    const val GROUP_TYPE_HEADLINE = 3
+    const val GROUP_TYPE_PRODUCT = 1
+    const val CONST_0 = 0
+    const val CONST_1 = 1
+    const val CONST_2 = 2
+    const val CONST_3 = 3
+    const val CONST_4 = 4
+    const val CONST_5 = 5
+    const val CONST_6 = 6
+    const val CONST_7 = 7
+
 }

@@ -17,7 +17,7 @@ class KeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Uni
         var LAYOUT = R.layout.topads_dash_group_empty_state
     }
 
-    override fun bind(item: KeywordEmptyViewModel, selectMode: Boolean, fromSearch: Boolean) {
+    override fun bind(item: KeywordEmptyViewModel, selectMode: Boolean, fromSearch: Boolean ,fromHeadline :Boolean) {
         item.let {
             view.image_empty.setImageDrawable(view.context.getResDrawable(R.drawable.topads_empty_keyword))
 
@@ -26,6 +26,8 @@ class KeywordEmptyViewHolder(val view: View, private val addKeywords: (() -> Uni
                 view.text_title.text = view.context.getString(R.string.topads_dash_empty_keyword_title)
                 view.text_desc.text = view.context.getString(R.string.topads_dash_empty_keyword_desc)
                 view.btn_submit.text = view.context.getString(com.tokopedia.topads.common.R.string.add_keyword)
+                if(fromHeadline)
+                    view.btn_submit.isEnabled = false
 
             } else {
                 view.text_title.text = view.context.getString(R.string.topads_no_search_keyword_title)

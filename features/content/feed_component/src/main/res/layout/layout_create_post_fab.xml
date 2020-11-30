@@ -10,7 +10,7 @@
         android:id="@+id/layout_grey_popup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black_54">
+        android:background="@color/Unify_N700_44">
 
     </FrameLayout>
 
@@ -25,7 +25,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
         android:visibility="gone"
-        app:backgroundTint="@color/tkpd_main_green"
+        app:backgroundTint="@color/Unify_G400"
         app:srcCompat="@drawable/ic_feed_post_plus"
         tools:visibility="visible" />
 
@@ -40,7 +40,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:visibility="invisible"
-        app:backgroundTint="@color/white"
+        app:backgroundTint="@color/Unify_N0"
         app:srcCompat="@drawable/ic_feed_post_byme" />
 
 
@@ -57,7 +57,7 @@
         android:layout_toLeftOf="@id/fab_feed_byme"
         android:gravity="center"
         android:text="@string/feed_create_post_byme"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 
@@ -72,7 +72,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
         android:visibility="invisible"
-        app:backgroundTint="@color/white"
+        app:backgroundTint="@color/Unify_N0"
         app:srcCompat="@drawable/ic_feed_post_shop" />
 
     <TextView
@@ -88,7 +88,7 @@
         android:layout_toLeftOf="@id/fab_feed_shop"
         android:gravity="center"
         android:text="@string/feed_create_post_shop"
-        android:textColor="@color/white"
+        android:textColor="@color/Unify_N0"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold" />
 </RelativeLayout>
