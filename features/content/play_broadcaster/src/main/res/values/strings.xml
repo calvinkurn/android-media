@@ -146,4 +146,7 @@
     <string name="play_error_image_edit_text">Gambar/GIF tidak diperbolehkan</string>
 
     <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
+    
+    <!--Schedule-->
+    <string name="play_broadcast_schedule_add_info">Atur Jadwal Siaran</string>
 </resources>

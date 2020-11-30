@@ -30,6 +30,7 @@ import com.tokopedia.play.broadcaster.view.fragment.edit.CoverEditFragment
 import com.tokopedia.play.broadcaster.view.fragment.edit.EditCoverTitleBottomSheet
 import com.tokopedia.play.broadcaster.view.fragment.edit.ProductEditFragment
 import com.tokopedia.play.broadcaster.view.partial.ActionBarViewComponent
+import com.tokopedia.play.broadcaster.view.partial.BroadcastScheduleViewComponent
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.LivePusherState
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
@@ -71,6 +72,8 @@ class PlayBeforeLiveFragment @Inject constructor(
             }
         })
     }
+
+    private val broadcastScheduleView by viewComponent { BroadcastScheduleViewComponent(it, R.id.view_play_broadcast_schedule) }
 
     private lateinit var prepareViewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel

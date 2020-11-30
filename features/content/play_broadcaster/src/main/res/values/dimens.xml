@@ -77,4 +77,7 @@
     <dimen name="play_button_medium_height">40dp</dimen>
 
     <dimen name="play_loader_container_margin">36dp</dimen>
+
+    <!--Schedule-->
+    <dimen name="play_broadcast_schedule_icon_size">18dp</dimen>
 </resources>
