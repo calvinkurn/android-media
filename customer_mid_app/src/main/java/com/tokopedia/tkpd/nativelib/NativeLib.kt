@@ -1,24 +1,23 @@
 package com.tokopedia.tkpd.nativelib
 
-internal object NativeLib {
+import timber.log.Timber
 
-    private var libraryEnable: Boolean = false
+internal object NativeLib {
 
     @JvmStatic
     fun init() {
         try {
             System.loadLibrary("native-lib")
-            libraryEnable = true
         } catch (e: UnsatisfiedLinkError) {
-            libraryEnable = false
+            Timber.e(e)
         }
     }
 
     @JvmStatic
-    fun jniBytes(): ByteArray?{
-        if (libraryEnable) {
+    fun jniBytes(): ByteArray? {
+        try {
             return bytesFromJNI()
-        } else {
+        } catch (e: UnsatisfiedLinkError) {
             return null
         }
     }
