@@ -1,21 +1,19 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -737,5 +735,89 @@ class SellerHomeViewModelTest {
         }
 
         assert(viewModel.announcementWidgetData.value is Fail)
+    }
+
+    @Test
+    fun `should execute usecase two times when get card widget data`() {
+        val dataKeys = listOf("a", "b", "c")
+
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        every {
+            getCardDataUseCase.isFirstLoad
+        } returns true
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } returns cardDataResult
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        coVerify (exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    @Test
+    fun `get card widget data should success when there is no cached data`() {
+        var useCaseExecuteCount = 0
+        val dataKeys = listOf("a", "b", "c")
+
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        every {
+            getCardDataUseCase.isFirstLoad
+        } returns true
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecuteCount++
+            if (useCaseExecuteCount == 1) {
+                throw Exception()
+            } else {
+                cardDataResult
+            }
+        }
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        coVerify (exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
     }
 }
