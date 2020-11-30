@@ -20,6 +20,7 @@ import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
+import com.tokopedia.inbox.view.custom.NavigationHeader
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
 import com.tokopedia.inbox.view.ext.getRoleName
 import com.tokopedia.inbox.view.navigator.InboxFragmentFactoryImpl
@@ -45,11 +46,14 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var navHeader: NavigationHeader
+
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
     private var roleNotificationCounter: Typography? = null
     private var bottomNav: InboxBottomNavigationView? = null
-    private var currentRole: ConstraintLayout? = null
+    private var navHeaderContainer: ConstraintLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
     private var inboxCounter: InboxCounter = InboxCounter()
@@ -94,7 +98,10 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null
         ).also {
-            currentRole = it.findViewById(R.id.cl_current_role_container)
+            navHeader.bindNavHeaderView(it)
+            navHeader.bindValue()
+            navHeader.setBadgeCount(20)
+            navHeaderContainer = it.findViewById(R.id.inbox_toolbar)
         }
         toolbar?.setCustomViewContentView(view)
         toolbar?.setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
@@ -141,7 +148,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupSwitcher() {
         switcher = AccountSwitcherBottomSheet.create()
-        currentRole?.setOnClickListener {
+        navHeaderContainer?.setOnClickListener {
             switcher?.show(supportFragmentManager, switcher?.javaClass?.simpleName)
         }
     }
