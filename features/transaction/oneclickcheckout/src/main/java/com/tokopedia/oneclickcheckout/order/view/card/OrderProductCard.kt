@@ -5,9 +5,14 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Space
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.constraintlayout.widget.Group
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.oneclickcheckout.R
@@ -15,20 +20,20 @@ import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
-import com.tokopedia.unifycomponents.QuantityEditorUnify
-import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics): CoroutineScope {
+
+class OrderProductCard(private val view: View, private val listener: OrderProductCardListener, private val orderSummaryAnalytics: OrderSummaryAnalytics) : CoroutineScope {
 
     private lateinit var product: OrderProduct
     private lateinit var shop: OrderShop
 
+    private val mainContent by lazy { view.findViewById<ConstraintLayout>(R.id.main_content) }
     private val tvProductName by lazy { view.findViewById<Typography>(R.id.tv_product_name) }
     private val ivProductImage by lazy { view.findViewById<ImageUnify>(R.id.iv_product_image) }
     private val lblCashback by lazy { view.findViewById<Label>(R.id.lbl_cashback) }
@@ -42,6 +47,15 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private val tvProductSlashPrice by lazy { view.findViewById<Typography>(R.id.tv_product_slash_price) }
     private val ivFreeShipping by lazy { view.findViewById<ImageUnify>(R.id.iv_free_shipping) }
     private val labelError by lazy { view.findViewById<Label>(R.id.label_error) }
+    private val dividerTop by lazy { view.findViewById<View>(R.id.divider_top) }
+    private val cbPurchaseProtection by lazy { view.findViewById<CheckboxUnify>(R.id.cb_purchase_protection) }
+    private val tvProtectionTitle by lazy { view.findViewById<Typography>(R.id.tv_protection_title) }
+    private val tvProtectionDescription by lazy { view.findViewById<Typography>(R.id.tv_protection_description) }
+    private val btnProtectionInfo by lazy { view.findViewById<UnifyImageButton>(R.id.btn_protection_info) }
+    private val tvProtectionPrice by lazy { view.findViewById<Typography>(R.id.tv_protection_price) }
+    private val tvProtectionUnit by lazy { view.findViewById<Typography>(R.id.tv_protection_unit) }
+    private val spacePurchaseProtection by lazy { view.findViewById<Space>(R.id.space_purchase_protection) }
+    private val groupPurchaseProtection by lazy { view.findViewById<Group>(R.id.group_purchase_protection) }
 
     private var quantityTextWatcher: TextWatcher? = null
     private var noteTextWatcher: TextWatcher? = null
@@ -155,6 +169,28 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             qtyEditorProduct?.editText?.addTextChangedListener(quantityTextWatcher)
 
             renderProductTickerMessage()
+            renderPurchaseProtection()
+        }
+    }
+
+    private fun renderPurchaseProtection() {
+        var isPPP = false
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(mainContent)
+
+        if (isPPP) {
+            constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
+            constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
+            constraintSet.connect(dividerTop.id, ConstraintSet.TOP, spacePurchaseProtection.id, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(mainContent)
+            groupPurchaseProtection.show()
+        } else {
+            constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
+            constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
+            constraintSet.connect(dividerTop.id, ConstraintSet.TOP, tfNote.id, ConstraintSet.BOTTOM, 0)
+            constraintSet.applyTo(mainContent)
+            groupPurchaseProtection.gone()
         }
     }
 
