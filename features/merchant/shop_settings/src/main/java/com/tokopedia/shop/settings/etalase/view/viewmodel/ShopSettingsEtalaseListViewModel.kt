@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.DeleteShopEtalaseUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
-import com.tokopedia.shop.settings.common.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseUiModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment.Companion.PRIMARY_ETALASE_LIMIT
 import com.tokopedia.usecase.coroutines.Fail
@@ -15,8 +15,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ShopSettingsEtalaseListViewModel
-@Inject constructor(
+class ShopSettingsEtalaseListViewModel @Inject constructor(
         private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
         private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
         private val dispatchers: CoroutineDispatchers

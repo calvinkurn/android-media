@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:layout_margin="@dimen/dp_16"
+    android:layout_margin="@dimen/spacing_lvl4"
     android:background="@color/transparent"
     android:gravity="center">
 
@@ -14,13 +14,13 @@
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
-        android:layout_margin="@dimen/dp_20"
+        android:layout_margin="@dimen/flight_dp_20"
         android:scaleType="fitCenter" />
 
     <ImageView
         android:id="@+id/iv_close"
-        android:layout_width="@dimen/dp_24"
-        android:layout_height="@dimen/dp_24"
+        android:layout_width="@dimen/layout_lvl3"
+        android:layout_height="@dimen/layout_lvl3"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"

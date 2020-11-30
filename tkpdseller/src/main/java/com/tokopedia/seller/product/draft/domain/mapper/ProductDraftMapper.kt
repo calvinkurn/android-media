@@ -1,8 +1,8 @@
 package com.tokopedia.seller.product.draft.domain.mapper
 
 import android.text.TextUtils
-import com.tokopedia.product.manage.common.draft.data.model.ProductDraft
-import com.tokopedia.product.manage.common.draft.mapper.AddEditProductDraftMapper
+import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.draft.mapper.AddEditProductDraftMapper
 import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel
 
 object ProductDraftMapper {

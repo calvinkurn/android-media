@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white" />
 
-        <com.tokopedia.abstraction.base.view.widget.TouchViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="@dimen/viewpager_statistics_height" />

@@ -193,7 +193,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     private var defaultStartDateStr = ""
     private var defaultEndDate = ""
     private var defaultEndDateStr = ""
-    private var arrayFilterDate = arrayOf<String>()
+    private var arrayFilterDate: Array<String>? = arrayOf()
     private var onLoadMore = false
     private var onLoadMoreRecommendation = false
     private var isFetchRecommendation = false
@@ -321,7 +321,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
     private fun setInitialValue() {
         paramUohOrder.page = 1
-        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as Array<String>
+        arrayFilterDate = activity?.resources?.getStringArray(R.array.filter_date) as? Array<String>
     }
 
     private fun observingData() {
@@ -759,12 +759,14 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         showBottomSheetFilterOptions(UohConsts.CHOOSE_DATE)
         val arrayListMapDate = arrayListOf<HashMap<String, String>>()
         var i = 0
-        if (arrayFilterDate.isNotEmpty()) {
-            arrayFilterDate.forEach { optionDate ->
-                val mapKey = HashMap<String, String>()
-                mapKey["$i"] = optionDate
-                arrayListMapDate.add(mapKey)
-                i++
+        arrayFilterDate?.let { arrayDate ->
+            if (arrayDate.isNotEmpty()) {
+                arrayDate.forEach { optionDate ->
+                    val mapKey = HashMap<String, String>()
+                    mapKey["$i"] = optionDate
+                    arrayListMapDate.add(mapKey)
+                    i++
+                }
             }
         }
         tempFilterType = UohConsts.TYPE_FILTER_DATE
