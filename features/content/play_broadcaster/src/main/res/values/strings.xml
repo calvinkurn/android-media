@@ -148,5 +148,6 @@
     <string name="mock_super_long_text">Aku bergabung loh wau kok gabung keren abis wooo allala gabung terus dong</string>
     
     <!--Schedule-->
-    <string name="play_broadcast_schedule_add_info">Atur Jadwal Siaran</string>
+    <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
+    <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
 </resources>
