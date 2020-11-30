@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.data.createSelectionResponse
 import com.tokopedia.product.manage.common.feature.variant.data.model.response.GetProductVariantResponse
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
-import com.tokopedia.product.manage.verification.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import io.mockk.coEvery
 import org.junit.Test

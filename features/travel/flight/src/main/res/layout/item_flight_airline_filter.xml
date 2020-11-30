@@ -1,52 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/dp_15"
-    android:paddingLeft="@dimen/dp_5"
-    android:paddingRight="@dimen/dp_5"
-    android:paddingTop="@dimen/dp_15">
+    android:paddingLeft="@dimen/spacing_lvl2"
+    android:paddingTop="@dimen/spacing_lvl4"
+    android:paddingRight="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl4">
 
     <ImageView
         android:id="@+id/iv_logo"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_32"
+        android:layout_height="@dimen/spacing_lvl6"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_5"
-        android:layout_marginRight="@dimen/dp_5"
-        android:minWidth="@dimen/dp_72" />
+        android:layout_marginLeft="@dimen/spacing_lvl2"
+        android:layout_marginRight="@dimen/spacing_lvl2"
+        android:minWidth="@dimen/flight_dp_72" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title"
-            style="@style/TextView.Title.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="heading_2"
             tools:text="Air Asia" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="body_3"
+            android:textColor="@color/Unify_N700_68"
             android:id="@+id/tv_desc"
-            style="@style/TextView.Micro.BlackSecondary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_3"
+            android:layout_marginTop="@dimen/spacing_lvl2"
             tools:text="Mulai dari Rp5.857.900" />
     </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
-        android:layout_width="@dimen/dp_36"
-        android:layout_height="@dimen/dp_36"
+        android:layout_width="@dimen/flight_dp_36"
+        android:layout_height="@dimen/flight_dp_36"
         android:layout_gravity="center_vertical"
         android:theme="@style/checkBoxStyle" />
 </LinearLayout>
