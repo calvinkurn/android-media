@@ -256,8 +256,11 @@ class NotificationViewModelTest {
     }
 
     @Test fun `markNotificationAsRead verify haven't interaction`() {
+        // given
+        val element = NotificationUiModel()
+
         // when
-        viewModel.loadNotificationFilter(null)
+        viewModel.markNotificationAsRead(null, element)
 
         // then
         verify(exactly = 0) { markAsReadUseCase.markAsRead(any(), any()) }
