@@ -820,11 +820,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun getNewOrderPreferenceCardListener() = object : NewOrderPreferenceCard.OrderPreferenceCardListener {
 
         override fun onChangePreferenceClicked() {
-            orderSummaryAnalytics.eventChangesProfile()
+            orderSummaryAnalytics.eventClickPilihTemplateLain(userSession.get().userId)
             showPreferenceListBottomSheet()
         }
 
         override fun onAddPreferenceClicked(preference: OrderPreference) {
+            orderSummaryAnalytics.eventClickTambahTemplate(userSession.get().userId)
             val preferenceIndex = "${getString(R.string.preference_number_summary)} 2"
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
@@ -1124,6 +1125,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                                 putExtra(PreferenceEditActivity.EXTRA_IS_NEW_FLOW, viewModel.isNewFlow)
                             }
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
+                        }
+
+                        override fun onShowNewLayout() {
+                            orderSummaryAnalytics.eventViewProfileList(userSession.get().userId)
                         }
                     }).show(this@OrderSummaryPageFragment, profileId)
         }

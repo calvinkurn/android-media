@@ -153,6 +153,9 @@ class PreferenceListBottomSheet(
 
     private fun updateList(preferences: PreferenceListResponseModel) {
         adapter?.submitList(preferences.profiles, isNewFlow)
+        if (isNewFlow) {
+            listener.onShowNewLayout()
+        }
         progressBar?.gone()
         val tickerMessage = preferences.ticker
         if (tickerMessage != null) {
@@ -178,5 +181,7 @@ class PreferenceListBottomSheet(
         fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int)
 
         fun onAddPreference(itemCount: Int)
+
+        fun onShowNewLayout()
     }
 }

@@ -321,6 +321,47 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    // =============== Revamp ===============
+
+    fun eventClickTambahTemplate(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TAMBAH_TEMPLATE,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickPilihTemplateLain(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_PILIH_TEMPLATE_LAIN,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventViewProfileList(userId: String) {
+        val gtmData = getGtmData(
+                EventName.VIEW_CHECKOUT_EXPRESS_IRIS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.VIEW_PROFILE_LIST,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 
