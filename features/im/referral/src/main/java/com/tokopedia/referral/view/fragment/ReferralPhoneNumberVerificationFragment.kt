@@ -67,7 +67,6 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
                     tvPhoneNumber?.text.toString().replace("-", ""))
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.ADD_PHONE_WITH, rawPhone)
             startActivityForResult(intent, ACTION_ADD_PHONE)
-            activity?.finish()
         }
     }
 
@@ -75,6 +74,10 @@ class ReferralPhoneNumberVerificationFragment : BaseDaggerFragment() {
         if (requestCode == ACTION_ADD_PHONE && resultCode == Activity.RESULT_OK) {
             val phoneNumber = data?.getStringExtra(EXTRA_PHONE)
             tvPhoneNumber?.setText(phoneNumber)
+            activity?.run {
+                setResult(resultCode)
+                finish()
+            }
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
