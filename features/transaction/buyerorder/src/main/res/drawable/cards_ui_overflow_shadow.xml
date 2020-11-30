@@ -4,7 +4,7 @@
     <item >
         <shape android:shape="rectangle" >
             
-            <solid android:color="#64cdf4" />
+            <solid android:color="@color/Unify_B300" />
            
             
         </shape>

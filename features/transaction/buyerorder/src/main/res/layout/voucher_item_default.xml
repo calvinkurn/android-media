@@ -15,7 +15,7 @@
         android:layout_alignBottom="@+id/divider1"
         android:layout_alignParentTop="true"
         android:id="@+id/customView1"
-        app:borderColor="@color/grey_200"
+        app:borderColor="@color/Unify_N50"
         app:borderWidth="1dp"
         app:cornerRadius="4dp"
         app:cornerType="roundedscallop"
@@ -30,7 +30,7 @@
         android:layout_alignTop="@+id/divider1"
         android:layout_alignBottom="@+id/progress_bar_layout"
         android:id="@+id/customView2"
-        app:borderColor="@color/grey_200"
+        app:borderColor="@color/Unify_N50"
         app:borderWidth="1dp"
         app:cornerRadius="4dp"
         app:cornerType="scalloprounded"
@@ -206,7 +206,7 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
                 android:text="@string/text_valid_till"
-                android:textColor="@color/black_39"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/dp_12" />
 
             <TextView
@@ -215,7 +215,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal"
-                android:textColor="@color/black_39"
+                android:textColor="@color/Unify_N700_68"
                 android:textSize="@dimen/dp_12"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -244,7 +244,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="vertical"
             android:visibility="visible" />
 
@@ -254,7 +254,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:background="@color/white"
+            android:background="@color/Unify_N0"
             android:orientation="vertical" />
 
         <LinearLayout

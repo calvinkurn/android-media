@@ -153,23 +153,23 @@ class RechargeWidgetAdapter(private val recommendationItems: List<WidgetGridItem
                 when (element.tagType) {
                     1 -> {
                         MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_pink_label_buyer))
-                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_transaction_label_pink))
+                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_R500))
                     }
                     2 -> {
                         MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_green_label_buyer))
-                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_transaction_label_green))
+                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
                     }
                     3 -> {
                         MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_blue_label_buyer))
-                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_transaction_label_blue))
+                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_B500))
                     }
                     4 -> {
                         MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_yellow_label_buyer))
-                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_transaction_label_yellow))
+                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_Y400))
                     }
                     5 -> {
                         MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_grey_label_buyer))
-                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_transaction_label_grey))
+                        tagLine.setTextColor(MethodChecker.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N200))
                     }
                     else -> {
                         tagLine.hide()

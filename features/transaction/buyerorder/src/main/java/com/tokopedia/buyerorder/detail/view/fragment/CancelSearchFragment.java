@@ -248,8 +248,8 @@ public class CancelSearchFragment extends Fragment {
         submitButton.setEnabled(active);
         submitButton.setBackground(active ? ContextCompat.getDrawable(getActivity(), com.tokopedia.design.R.drawable.bg_button_green) :
                 ContextCompat.getDrawable(getActivity(), R.drawable.bg_grey_button_rounded));
-        submitButton.setTextColor(active ? ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.white) :
-                ContextCompat.getColor(getActivity(), com.tokopedia.design.R.color.grey_700));
+        submitButton.setTextColor(active ? ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N0) :
+                ContextCompat.getColor(getActivity(), com.tokopedia.unifyprinciples.R.color.Unify_N500));
     }
 
     private View.OnClickListener onOtherClickTextListener() {

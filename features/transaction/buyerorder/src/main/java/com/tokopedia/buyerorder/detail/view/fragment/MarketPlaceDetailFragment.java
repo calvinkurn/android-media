@@ -354,7 +354,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         if (!TextUtils.isEmpty(title.textColor())) {
             doubleTextView.setBottomTextColor(Color.parseColor(title.textColor()));
         } else {
-            doubleTextView.setBottomTextColor(Color.parseColor(getResources().getString(com.tokopedia.design.R.color.font_black_secondary_54)));
+            doubleTextView.setBottomTextColor(Color.parseColor(getResources().getString(com.tokopedia.unifyprinciples.R.color.Unify_N700_44)));
         }
         if (title.backgroundColor() != null && !title.backgroundColor().isEmpty() && getContext() != null) {
             Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.background_deadline_buyer);
@@ -413,16 +413,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         if (!detail.label().equalsIgnoreCase(NAMA_TOKO)) {
             if (!detail.label().equalsIgnoreCase(NO_SALIN)) {
                 doubleTextView.setTopText(detail.label());
-                doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_secondary_54));
+                doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 doubleTextView.setBottomText(detail.value());
-                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextStyle("bold");
                 doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
             } else {
                 doubleTextView.setTopText(detail.label());
                 String text = detail.value() + NO_SANIN_NEXT_LINE;
                 SpannableString spannableString = new SpannableString(text);
-                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+                doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
                 doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
                 int startIndexOfLink = text.indexOf("Salin");
                 spannableString.setSpan(new ClickableSpan() {
@@ -444,7 +444,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     public void updateDrawState(TextPaint ds) {
                         super.updateDrawState(ds);
                         ds.setUnderlineText(false);
-                        ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
+                        ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
                     }
                 }, startIndexOfLink, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 doubleTextView.setBottomText(spannableString);
@@ -461,7 +461,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             additionalText.setOnClickListener(null);
             additionalText.setText(getResources().getString(R.string.additional_text));
             additionalText.setTypeface(Typeface.DEFAULT_BOLD);
-            additionalText.setTextColor(getResources().getColor(com.tokopedia.design.R.color.font_black_primary_70));
+            additionalText.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
             additionalInfoLayout.setVisibility(View.VISIBLE);
         });
     }
@@ -511,13 +511,13 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPricing(Pricing pricing) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(pricing.label());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         if (pricing.label().contains(TOTAL_SHIPPING_PRICE) && pricing.value().contains("Rp 0"))
             doubleTextView.setBottomText(getResources().getString(R.string.tkpdtransaction_bebas_ongkir));
         else
             doubleTextView.setBottomText(pricing.value());
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.END);
         infoValue.addView(doubleTextView);
@@ -527,10 +527,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setDiscount(Discount discount) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(discount.getLabel());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomText(discount.getValue());
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setBottomGravity(Gravity.END);
         llDiscount.addView(doubleTextView);
@@ -546,11 +546,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPayMethodInfo(PayMethod payMethod) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(payMethod.getLabel());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_secondary_54));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomTextSize(TEXT_SIZE_MEDIUM);
         doubleTextView.setTopTextSize(TEXT_SIZE_MEDIUM);
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setBottomGravity(Gravity.END);
         paymentMethod.addView(doubleTextView);
     }
@@ -1034,14 +1034,14 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
-        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.font_black_primary_70));
+        doubleTextView.setTopTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_N700_68));
         doubleTextView.setTopTextSize(TEXT_SIZE_LARGE);
         doubleTextView.setTopTextStyle("bold");
         doubleTextView.setBottomText(paymentData.value());
         if (!paymentData.textColor().equals(""))
             doubleTextView.setBottomTextColor(Color.parseColor(paymentData.textColor()));
         doubleTextView.setBottomTextSize(TEXT_SIZE_LARGE);
-        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.deep_orange_500));
+        doubleTextView.setBottomTextColor(MethodChecker.getColor(getContext(), com.tokopedia.unifyprinciples.R.color.Unify_Y500));
         doubleTextView.setBottomGravity(Gravity.END);
         totalPrice.addView(doubleTextView);
     }
@@ -1064,7 +1064,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
                 ds.setUnderlineText(false);
-                ds.setColor(getResources().getColor(com.tokopedia.design.R.color.green_250)); // specific color for this link
+                ds.setColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400)); // specific color for this link
             }
         }, startIndexOfLink, startIndexOfLink + clickableLink.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);

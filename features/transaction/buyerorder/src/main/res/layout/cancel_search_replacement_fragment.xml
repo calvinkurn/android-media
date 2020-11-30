@@ -3,7 +3,7 @@
     android:id="@+id/layout_cancel_search_replacement"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/Unify_N0">
 
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -60,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@color/black" />
+                android:background="@color/Unify_N700" />
 
         </LinearLayout>
 
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@color/black" />
+                android:background="@color/Unify_N700" />
 
         </LinearLayout>
 
@@ -139,7 +139,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:layout_marginTop="@dimen/dp_10"
-                android:background="@color/black" />
+                android:background="@color/Unify_N700" />
 
         </LinearLayout>
 
@@ -200,7 +200,7 @@
                 android:gravity="center"
                 android:padding="@dimen/dp_10"
                 android:text="@string/cancel_search_replacement"
-                android:textColor="@color/grey_700" />
+                android:textColor="@color/Unify_N500" />
 
         </RelativeLayout>
 
