@@ -106,6 +106,11 @@ class PlayVideoFragment @Inject constructor(
         return inflater.inflate(R.layout.fragment_play_video, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        removePiP()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAnalytic()
@@ -214,7 +219,6 @@ class PlayVideoFragment @Inject constructor(
     }
 
     private fun setupView() {
-        pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
         videoView.setOrientation(orientation, playViewModel.videoOrientation)
     }
 
@@ -235,6 +239,10 @@ class PlayVideoFragment @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun removePiP() {
+        pipAdapter.removeByKey(FLOATING_WINDOW_KEY)
     }
 
     //region observe
