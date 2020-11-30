@@ -3,7 +3,6 @@ package com.tokopedia.product.addedit.preview.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
