@@ -13,7 +13,7 @@
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         app:typographyType="body_2"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         tools:text="tokopedia@tokopedia.com" />
 
     <androidx.appcompat.widget.AppCompatImageView

@@ -182,6 +182,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
 
     private fun successCount(list: List<CountDataItem>) {
         totalCount = list[0].totalKeywords
+        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun startEditActivity() {
@@ -255,7 +256,6 @@ class KeywordTabFragment : BaseDaggerFragment() {
         }
         adapter.notifyDataSetChanged()
         setFilterCount()
-        (activity as TopAdsGroupDetailViewActivity).setKeywordCount(totalCount)
     }
 
     private fun setFilterCount() {

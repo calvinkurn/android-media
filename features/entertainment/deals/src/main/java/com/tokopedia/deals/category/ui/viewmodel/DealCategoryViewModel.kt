@@ -72,7 +72,7 @@ class DealCategoryViewModel @Inject constructor(
     fun getCategoryBrandData(category: String, coordinates: String, location: String, page: Int = 1, isFilter: Boolean) {
         launch {
             val rawQuery = DealsSearchGqlQueries.getEventSearchQuery()
-            dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(page, isFilter), onErrorSearch(),
+            dealsSearchUseCase.getDealsSearchResult(onSuccessSearch(page, isFilter, category), onErrorSearch(),
                     "",
                     coordinates,
                     location,
@@ -88,12 +88,12 @@ class DealCategoryViewModel @Inject constructor(
         getCategoryBrandData(categoryId, location.coordinates, location.locType.name, isFilter = isFilter)
     }
 
-    private fun onSuccessSearch(page: Int, isFilter: Boolean): (SearchData) -> Unit {
+    private fun onSuccessSearch(page: Int, isFilter: Boolean, category: String): (SearchData) -> Unit {
         return {
             if (page == 1) {
                 val categoryLayout = if (it.eventSearch.brands.isNotEmpty()
-                        && it.eventSearch.products.isNotEmpty()) {
-                    mapCategoryLayout.mapCategoryLayout(it, page)
+                        || it.eventSearch.products.isNotEmpty()) {
+                    mapCategoryLayout.mapCategoryLayout(it, page, category)
                 } else {
                     mapCategoryLayout.getEmptyLayout(isFilter)
                 }

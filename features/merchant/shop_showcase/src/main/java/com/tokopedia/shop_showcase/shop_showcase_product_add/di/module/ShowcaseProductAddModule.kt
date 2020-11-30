@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
-import com.tokopedia.shop_showcase.common.ShopShowcaseDispatcherProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.shop_showcase.common.ShopShowcaseTracking
 import com.tokopedia.shop_showcase.shop_showcase_product_add.di.scope.ShowcaseProductAddScope
 import com.tokopedia.user.session.UserSession
@@ -39,5 +39,5 @@ class ShowcaseProductAddModule {
 
     @ShowcaseProductAddScope
     @Provides
-    fun provideDispatcherProvider(): ShopShowcaseDispatchProvider = ShopShowcaseDispatcherProvider()
+    fun provideDispatcherProvider(): CoroutineDispatchers = CoroutineDispatchersProvider
 }

@@ -13,6 +13,8 @@ import com.tokopedia.chatbot.EllipsizeMaker.MESSAGE_LINE_COUNT
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
+import com.tokopedia.chatbot.util.removeUnderLineFromLinkAndSetText
+
 
 /**
  * @author by nisie on 5/8/18.
@@ -45,7 +47,7 @@ class QuickReplyViewHolder(itemView: View,
 
     private fun setMessage(element: QuickReplyListViewModel) {
         if (element.message.isNotEmpty()) {
-            message.text = MethodChecker.fromHtml(element.message)
+            message.removeUnderLineFromLinkAndSetText(element.message)
             message.post {
                 if (message.lineCount >= MESSAGE_LINE_COUNT) {
                     message.maxLines = MESSAGE_LINE_COUNT
@@ -66,7 +68,7 @@ class QuickReplyViewHolder(itemView: View,
 
     private fun showFullMessage(message: String) {
         this.message.maxLines = Int.MAX_VALUE
-        this.message.text = MethodChecker.fromHtml(message)
+        this.message.removeUnderLineFromLinkAndSetText(message)
         mesageBottom.visibility = View.GONE
     }
 
