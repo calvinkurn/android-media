@@ -23,7 +23,7 @@ buildscript {
 android {
     sourceSets {
         main {
-            jniLibs.srcDirs = ["jniLibs"]
+            jniLibs.srcDirs = ["libs"]
         }
     }
 }
