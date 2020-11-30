@@ -1,5 +1,6 @@
 package com.tokopedia.shop.common.util
 
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.shop.common.constant.IGNORED_FILTER_KONDISI
@@ -31,6 +32,6 @@ object ShopUtil {
                 ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_KEY,
                 ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_OLD_VALUE
         )
-        return navType == ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_NEW_VALUE
+        return (navType == ShopPageConstant.AB_TEST_NAVIGATION_REVAMP_NEW_VALUE && !GlobalConfig.isSellerApp())
     }
 }

@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.common.travel.R;
-import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 /**
  * Created by nabillasabbaha on 29/08/18.

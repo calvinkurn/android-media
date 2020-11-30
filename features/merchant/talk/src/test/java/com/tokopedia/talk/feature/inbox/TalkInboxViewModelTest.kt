@@ -2,7 +2,7 @@ package com.tokopedia.talk.feature.inbox
 
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.feature.inbox.data.*
-import com.tokopedia.talk.util.verifyValueEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import io.mockk.coEvery
 import io.mockk.coVerify
 import org.junit.Test

@@ -4,38 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingLeft="@dimen/spacing_lvl4"
+    android:paddingTop="@dimen/spacing_lvl3"
+    android:paddingRight="@dimen/spacing_lvl4"
+    android:paddingBottom="@dimen/spacing_lvl3">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_passenger_name"
-            style="@style/TextView.Small.Bold"
-            android:padding="@dimen/dp_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_lvl1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:text="@string/flight_label_departure_flight" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_passenger_type"
-            style="@style/TextView.Small"
-            android:padding="@dimen/dp_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/spacing_lvl1"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyType="body_2"
             tools:text="@string/flight_label_departure_flight" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tg_passenger_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/dp_2"
+            android:padding="@dimen/spacing_lvl1"
             app:typographyType="body_3"
             tools:text="Pembatalan sedang diproses" />
 
@@ -43,8 +50,8 @@
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
-        android:layout_width="@dimen/dp_36"
-        android:layout_height="@dimen/dp_36"
+        android:layout_width="@dimen/flight_dp_36"
+        android:layout_height="@dimen/flight_dp_36"
         android:layout_gravity="center"
         android:theme="@style/checkBoxStyle" />
 

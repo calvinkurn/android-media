@@ -17,6 +17,7 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAttachementAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationAttachmentModel;
 
@@ -135,14 +136,14 @@ public class FlightCancellationAttachmentViewHolder extends AbstractViewHolder<F
     }
 
     private void resizeAttachmentTo60x60() {
-        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60);
-        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_60);
+        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.flight_dp_60);
+        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.flight_dp_60);
         ivAttachment.requestLayout();
     }
 
     private void resizeAttachmentTo40x40() {
-        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40);
-        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_40);
+        ivAttachment.getLayoutParams().height = context.getResources().getDimensionPixelSize(R.dimen.flight_dp_40);
+        ivAttachment.getLayoutParams().width = context.getResources().getDimensionPixelSize(R.dimen.flight_dp_40);
         ivAttachment.requestLayout();
     }
 

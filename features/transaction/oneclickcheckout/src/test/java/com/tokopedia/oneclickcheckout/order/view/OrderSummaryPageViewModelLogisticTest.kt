@@ -2,10 +2,10 @@ package com.tokopedia.oneclickcheckout.order.view
 
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorServiceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.*

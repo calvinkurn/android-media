@@ -70,7 +70,6 @@ class HomeAccountUserViewModelTest {
                 homeAccountSafeSettingProfileUseCase,
                 homeAccountRecommendationUseCase,
                 walletPref,
-                permissionChecker,
                 dispatcher
         )
 
@@ -140,7 +139,7 @@ class HomeAccountUserViewModelTest {
 
     @Test
     fun `Execute getInitialData`() {
-        viewModel.getInitialData()
+        viewModel.getBuyerData()
 
         assertFalse(viewModel.settingData.value?.items?.isEmpty() == true)
         assertFalse(viewModel.settingApplication.value?.items?.isEmpty() == true)
@@ -190,10 +189,6 @@ class HomeAccountUserViewModelTest {
         } throws expectedResult
 
         viewModel.getFirstRecommendation()
-
-        verify {
-            homeAccountRecommendationUseCase.createObservable(any())
-        }
 
         val result = viewModel.firstRecommendationData.getOrAwaitValue()
         Assertions.assertThat(result).isEqualTo(Fail(expectedResult))

@@ -41,12 +41,6 @@ class SomBottomSheetCourierProblemsAdapter(private var listener: ActionListener)
 
         holder.itemView.rl_reject_item.setOnClickListener {
             selectItem(position)
-            /*if (reasonCode.equals("7", true) && position == listChildCourierProblems.size - 1) {
-                holder.itemView.tf_reason_for_option.visibility = View.VISIBLE
-                holder.itemView.tf_reason_for_option.setPlaceholder(holder.itemView.context.getString(R.string.placeholder_reject_reason))
-            } else {
-                holder.itemView.tf_reason_for_option.visibility = View.GONE
-            }*/
         }
     }
 

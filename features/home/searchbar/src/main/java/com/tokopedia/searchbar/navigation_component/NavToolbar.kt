@@ -220,7 +220,7 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         if (toolbarThemeType != TOOLBAR_LIGHT_TYPE) {
             navIconAdapter?.setThemeState(NavToolbarIconAdapter.STATE_THEME_LIGHT)
             toolbarThemeType = TOOLBAR_LIGHT_TYPE
-            toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_96))
+            toolbar_title.setTextColor(ContextCompat.getColor(context, R.color.Unify_N700_96))
             setBackButtonColorBasedOnTheme()
             setTitleTextColorBasedOnTheme()
         }
@@ -235,7 +235,9 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
                        searchbarClickCallback: ((hint: String) -> Unit)? = null,
                        searchbarImpressionCallback: ((hint: String) -> Unit)? = null,
                        durationAutoTransition: Long = 0,
-                       shouldShowTransition: Boolean = true) {
+                       shouldShowTransition: Boolean = true,
+                       disableDefaultGtmTracker: Boolean = false
+    ) {
         showSearchbar()
 
         var applinkForController = applink
@@ -243,7 +245,11 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navSearchBarController = NavSearchbarController(
                 this,
                 applinkForController,
-                searchbarClickCallback = searchbarClickCallback, searchbarImpressionCallback = searchbarImpressionCallback, topNavComponentListener = this)
+                searchbarClickCallback = searchbarClickCallback,
+                searchbarImpressionCallback = searchbarImpressionCallback,
+                topNavComponentListener = this,
+                disableDefaultGtmTracker = disableDefaultGtmTracker
+        )
         navSearchBarController.setHint(hints, shouldShowTransition, durationAutoTransition)
     }
 
@@ -255,13 +261,15 @@ class NavToolbar: Toolbar, LifecycleObserver, TopNavComponentListener {
         navIconAdapter?.triggerLottieAnimation(lottieIconId)
     }
 
-    fun setOnBackButtonClickListener(backButtonClickListener: () -> Unit) {
+    fun setOnBackButtonClickListener(disableDefaultGtmTracker: Boolean = false, backButtonClickListener: () -> Unit) {
         nav_icon_back.setOnClickListener {
-            NavToolbarTracking.clickNavToolbarComponent(
-                    pageName = toolbarPageName,
-                    componentName = IconList.NAME_BACK_BUTTON,
-                    userId = getUserId()
-            )
+            if (!disableDefaultGtmTracker) {
+                NavToolbarTracking.clickNavToolbarComponent(
+                        pageName = toolbarPageName,
+                        componentName = IconList.NAME_BACK_BUTTON,
+                        userId = getUserId()
+                )
+            }
             backButtonClickListener.invoke()
         }
     }

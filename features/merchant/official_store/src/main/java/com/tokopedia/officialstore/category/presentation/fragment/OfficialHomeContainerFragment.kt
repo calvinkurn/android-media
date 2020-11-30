@@ -1,6 +1,7 @@
 package com.tokopedia.officialstore.category.presentation.fragment
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -67,6 +69,7 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     @Inject
     lateinit var viewModel: OfficialStoreCategoryViewModel
 
+    private var statusBar: View? = null
     private var mainToolbar: NavToolbar? = null
     private var toolbar: MainToolbar? = null
     private var tabLayout: OfficialCategoriesTab? = null
@@ -237,12 +240,26 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
     }
 
     private fun init(view: View) {
+        configStatusBar(view)
         configMainToolbar(view)
         tabLayout = view.findViewById(R.id.tablayout)
         loadingCategoryLayout = view.findViewById(R.id.view_category_tab_loading)
         viewPager = view.findViewById(R.id.viewpager)
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
+    }
+
+    //status bar background compability
+    private fun configStatusBar(view: View) {
+        statusBar = view.findViewById(R.id.statusbar)
+        activity?.let {
+            statusBar?.layoutParams?.height = DisplayMetricUtils.getStatusBarHeight(it)
+        }
+        statusBar?.visibility = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> View.INVISIBLE
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT -> View.VISIBLE
+            else -> View.GONE
+        }
     }
 
     private fun removeLoading() {
@@ -264,8 +281,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), HasComponent<Officia
                                 .addIcon(IconList.ID_NAV_GLOBAL) {}
                 )
                 setupSearchbar(
-                        listOf(HintData(placeholder = getString(R.string.os_query_search))),
-                        ApplinkConstant.OFFICIAL_SEARCHBAR
+                        hints = listOf(HintData(placeholder = getString(R.string.os_query_search))),
+                        applink = ApplinkConstant.OFFICIAL_SEARCHBAR
                 )
                 show()
             }

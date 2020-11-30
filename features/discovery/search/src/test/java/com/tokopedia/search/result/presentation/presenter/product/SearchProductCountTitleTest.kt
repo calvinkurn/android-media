@@ -22,8 +22,9 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
 
     @Test
     fun `Show ProductCountViewModel in Navigation Revamp`() {
-        `Given AB Test return navigation revamp`()
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
+        `Given AB Test return navigation revamp`()
+        setUp()
         `Given visitable list will be captured`()
         `When Load Data`()
         `Verify SearchProductCountViewModel is at the top of visitableList`()
@@ -59,6 +60,7 @@ internal class SearchProductCountTitleTest: ProductListPresenterTestFixtures() {
     fun `Show ProductCountViewModel in Existing Navigation`() {
         `Given Search Product API will return SearchProductModel`(searchProductCommonResponseJSON.jsonToObject())
         `Given AB Test return existing navigation`()
+        setUp()
         `Given visitable list will be captured`()
         `When Load Data`()
         `Verify visitableList does not have SearchProductCountViewModel`()

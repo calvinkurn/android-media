@@ -37,6 +37,10 @@ import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.ui.mapper.PlayWidgetMapper
 import com.tokopedia.play.widget.ui.type.PlayWidgetSize
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChipsEntity
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
+import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
+import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.domain.usecase.coroutine.StickyLoginUseCase
@@ -241,6 +245,7 @@ class HomeUseCaseModule {
             "            textColor\n" +
             "          }\n" +
             "           grids {\n" +
+            "             campaignCode\n" +
             "             id\n" +
             "             back_color\n" +
             "             name\n" +
@@ -593,5 +598,22 @@ class HomeUseCaseModule {
                           playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
                           mapperProviders: Map<PlayWidgetSize, @JvmSuppressWildcards PlayWidgetMapper>): PlayWidgetTools {
         return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, mapperProviders)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideBestSellerMapper(@ApplicationContext context: Context) = BestSellerMapper(context)
+
+    @HomeScope
+    @Provides
+    fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository) : GetRecommendationFilterChips {
+        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
+        return GetRecommendationFilterChips(useCase)
+    }
+
+    @HomeScope
+    @Provides
+    fun provideGetRecommendationUseCase(graphqlRepository: GraphqlRepository) : GetRecommendationUseCase {
+        return GetRecommendationUseCase(graphqlRepository)
     }
 }

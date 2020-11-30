@@ -223,6 +223,7 @@ public interface ApplinkConst {
     String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
 
     String SELLER_PURCHASE_CANCELED = "tokopedia://seller/cancelled";
+    String SELLER_PURCHASE_CANCELLATION_REQUEST = "tokopedia://seller/cancellationrequest";
     String SELLER_PURCHASE_WAITING_PICKUP = "tokopedia://seller/waitingpickup";
     String SELLER_PURCHASE_WAITING_AWB = "tokopedia://seller/waitingawb";
     String SELLER_PURCHASE_AWB_INVALID = "tokopedia://seller/awbinvalid";
@@ -400,6 +401,8 @@ public interface ApplinkConst {
         String SELLER_SEARCH = "sellerapp://seller-search";
         String PLAY_BROADCASTER = "sellerapp://play-broadcaster";
         String CENTRALIZED_PROMO = "sellerapp://centralized-promo";
+        String SHOP_FEED = "sellerapp://shop/{shop_id}/feed";
+        String CONTENT_CREATE_POST = "sellerapp://content/create_post";
     }
 
     interface Query {

@@ -23,7 +23,7 @@
         android:theme="@style/TextInputLayouts"
         app:hintTextAppearance="@style/TextInputLayoutHintText"
         >
-        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
+        <com.tokopedia.travel.passenger.presentation.widget.InstantAutoCompleteTextView
             android:id="@+id/ac_umrah_autocomplete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
