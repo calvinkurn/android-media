@@ -17,8 +17,6 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.common.utils.TalkReplyLoadTimeMonitoringListener
-import com.tokopedia.talk.feature.reading.presentation.activity.TalkReadingActivity
 import com.tokopedia.talk.feature.reply.presentation.fragment.TalkReplyFragment
 
 class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
