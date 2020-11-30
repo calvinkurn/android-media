@@ -16,6 +16,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_add_edit_multi_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:tickerType="information"
+                app:tickerShapeType="full"
+                app:titleText="@string/ticker_add_product_main_location_title"
+                app:descriptionText="@string/ticker_add_product_main_location_desc"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_add_edit_product_step_sub"
                 android:layout_width="wrap_content"
@@ -26,7 +37,7 @@
                 android:text="@string/product_subtitle_product_information"
                 android:textColor="@color/Unify_N700"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ticker_add_edit_multi_location"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 

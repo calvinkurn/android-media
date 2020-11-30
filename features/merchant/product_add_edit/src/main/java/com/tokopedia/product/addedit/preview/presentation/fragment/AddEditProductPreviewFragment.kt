@@ -111,6 +111,7 @@ import com.tokopedia.seller_migration_common.presentation.widget.SellerFeatureCa
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -174,8 +175,14 @@ class AddEditProductPreviewFragment:
     //loading
     private var loadingLayout: View? = null
 
+    // admin revamp
+    private var multiLocationTicker: Ticker? = null
+
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
+
+    // TODO: Change this dummy value to user session value
+    private val isMultiLocation = true
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -309,6 +316,9 @@ class AddEditProductPreviewFragment:
 
         //loading
         loadingLayout = view.findViewById(R.id.loading_layout)
+
+        // admin revamp
+        multiLocationTicker = view.findViewById(R.id.ticker_add_edit_multi_location)
 
         addEditProductPhotoButton?.setOnClickListener {
             // tracking
@@ -864,6 +874,7 @@ class AddEditProductPreviewFragment:
                 is Success -> {
                     val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
+                    multiLocationTicker?.showWithCondition(isMultiLocation)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
                     // continue to PLT monitoring render
