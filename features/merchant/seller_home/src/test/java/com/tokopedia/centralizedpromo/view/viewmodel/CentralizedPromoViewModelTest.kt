@@ -2,6 +2,7 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.domain.usecase.GetChatBlastSellerMetadataUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
@@ -59,6 +60,7 @@ class CentralizedPromoViewModelTest {
         MockKAnnotations.init(this)
 
         mockkObject(PromoCreationStaticData)
+        mockkObject(CentralizedPromoTracking)
 
         CentralizedPromoViewModel::class.declaredMemberProperties.filter { it.name in arrayOf("startDate", "endDate") }.forEach {
             it.isAccessible = true
@@ -279,14 +281,29 @@ class CentralizedPromoViewModelTest {
         assert(result != null && result is Fail)
     }
 
-    // just to improve coverage
     @Test
     fun trackFreeShippingImpressionTest() {
+        every {
+            CentralizedPromoTracking.sendImpressionFreeShipping(userSession, any())
+        } just runs
+
         viewModel.trackFreeShippingImpression()
+
+        verify {
+            CentralizedPromoTracking.sendImpressionFreeShipping(userSession, any())
+        }
     }
 
     @Test
     fun trackFreeShippingClickTest() {
+        every {
+            CentralizedPromoTracking.sendClickFreeShipping(userSession, any())
+        } just runs
+
         viewModel.trackFreeShippingClick()
+
+        verify {
+            CentralizedPromoTracking.sendClickFreeShipping(userSession, any())
+        }
     }
 }
