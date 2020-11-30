@@ -789,6 +789,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun openShopPage(partnerId: Long) {
         PlayAnalytics.clickShop(channelId, partnerId.toString(), playViewModel.channelType)
         openPageByApplink(ApplinkConst.SHOP, partnerId.toString())
+        playViewModel.goPiP()
     }
 
     private fun openProfilePage(partnerId: Long) {
