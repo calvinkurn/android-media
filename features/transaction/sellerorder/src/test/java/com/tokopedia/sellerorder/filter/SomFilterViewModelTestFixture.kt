@@ -2,8 +2,12 @@ package com.tokopedia.sellerorder.filter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
+import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.filter.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -13,6 +17,7 @@ import junit.framework.Assert
 import junit.framework.TestCase
 import org.junit.Before
 import org.junit.Rule
+import java.lang.reflect.Field
 
 abstract class SomFilterViewModelTestFixture {
 
@@ -26,17 +31,30 @@ abstract class SomFilterViewModelTestFixture {
 
     protected lateinit var somFilterViewModel: SomFilterViewModel
 
+    lateinit var somFilterUiModelField: Field
+
     companion object {
         val mockDate = "14 Okt 2020 - 24 Okt 2020"
         val mockIdFilter = "Siap Dikirim"
         val isResetFilter = false
         val SOM_FILTER_SUCCESS_RESPONSE = "json/som_get_order_filter_success_response.json"
+        val requestCancelFilterModel = SomFilterUiModel(
+                nameFilter = SomConsts.FILTER_TYPE_ORDER,
+                somFilterData = listOf(
+                        SomFilterChipsUiModel(
+                                id = DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
+                        )
+                ))
     }
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
         somFilterViewModel = SomFilterViewModel(dispatcher, getSomOrderFilterUseCase)
+
+        somFilterUiModelField = SomFilterViewModel::class.java.getDeclaredField("somFilterUiModel").apply {
+            isAccessible = true
+        }
     }
 
     protected fun LiveData<*>.verifyCoroutineSuccessEquals(expected: Success<*>) {
@@ -49,5 +67,10 @@ abstract class SomFilterViewModelTestFixture {
         val expectedResult = expected.throwable::class.java
         val actualResult = (value as Fail).throwable::class.java
         TestCase.assertEquals(expectedResult, actualResult)
+    }
+
+    protected fun List<SomFilterUiModel>.getRequestCancelFilter(): SomFilterChipsUiModel? {
+        return find { it.nameFilter == SomConsts.FILTER_TYPE_ORDER }?.somFilterData
+                ?.find { it.id == DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST }
     }
 }

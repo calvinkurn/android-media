@@ -737,8 +737,9 @@ class SellerHomeViewModelTest {
         assert(viewModel.announcementWidgetData.value is Fail)
     }
 
+    // example using get card widget data, any usecase is fine
     @Test
-    fun `should execute usecase two times when get card widget data`() {
+    fun `should execute use case two times when caching enabled and is first load`() {
         val dataKeys = listOf("a", "b", "c")
 
         val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
@@ -775,8 +776,9 @@ class SellerHomeViewModelTest {
         assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
     }
 
+    // example using get card widget data, any usecase is fine
     @Test
-    fun `get card widget data should success when there is no cached data`() {
+    fun `should still success when there is no cached data`() {
         var useCaseExecuteCount = 0
         val dataKeys = listOf("a", "b", "c")
 
@@ -813,6 +815,44 @@ class SellerHomeViewModelTest {
         }
 
         coVerify (exactly = 2) {
+            getCardDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(cardDataResult)
+        assertTrue(dataKeys.size == expectedResult.data.size)
+        assertEquals(expectedResult, viewModel.cardWidgetData.observeAwaitValue())
+    }
+
+    @Test
+    fun `should not get data from cache if not first load`() {
+        val dataKeys = listOf("a", "b", "c")
+
+        val cardDataResult = listOf(CardDataUiModel(), CardDataUiModel(), CardDataUiModel())
+        getCardDataUseCase.params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        every {
+            getCardDataUseCase.isFirstLoad
+        } returns false
+
+        coEvery {
+            getCardDataUseCase.executeOnBackground()
+        } returns cardDataResult
+
+        viewModel.getCardWidgetData(dataKeys)
+
+        verify (inverse = true) {
+            getCardDataUseCase.setUseCache(true)
+        }
+
+        verify (exactly = 1) {
+            getCardDataUseCase.setUseCache(false)
+        }
+
+        coVerify (exactly = 1) {
             getCardDataUseCase.executeOnBackground()
         }
 
