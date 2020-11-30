@@ -133,8 +133,6 @@
         android:id="@+id/loading_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
-        android:visibility="gone"
         app:layoutDescription="@xml/fragment_add_edit_product_preview_xml_loading_layout_scene"
         tools:visibility="visible">
 
