@@ -97,9 +97,9 @@ class NotificationViewModelTest {
         viewModel.clearNotif.observeForever(clearNotifObserver)
     }
 
-    @Test fun `hasFilter should return false if filter is not FILTER_NONE`() {
+    @Test fun `hasFilter should return true if filter is not FILTER_NONE`() {
         // given
-        val expectedValue = false
+        val expectedValue = true
         viewModel.filter = -1
 
         // when
