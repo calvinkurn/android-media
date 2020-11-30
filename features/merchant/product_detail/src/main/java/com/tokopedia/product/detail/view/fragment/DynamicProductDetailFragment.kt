@@ -649,7 +649,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
      * ImpressionComponent
      */
     override fun onImpressComponent(componentTrackDataModel: ComponentTrackDataModel) {
-        DynamicProductDetailTracking.Impression.eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel, viewModel.getDynamicProductInfoP1)
+        when(componentTrackDataModel.componentName) {
+            ProductDetailConstant.PRODUCT_PROTECTION -> DynamicProductDetailTracking.Impression
+                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
+                            viewModel.getDynamicProductInfoP1, getPPTitleName(), getPurchaseProtectionUrl())
+            else ->  DynamicProductDetailTracking.Impression
+                    .eventEcommerceDynamicComponent(trackingQueue, componentTrackDataModel,
+                            viewModel.getDynamicProductInfoP1, "", "")
+
+        }
     }
 
     /**
@@ -751,7 +759,26 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 onAffiliateClick()
                 DynamicProductDetailTracking.Click.eventClickByMe(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
+            ProductDetailConstant.PRODUCT_PROTECTION -> {
+                DynamicProductDetailTracking.Click.eventClickPDPInsuranceProtection(viewModel.getDynamicProductInfoP1, getPurchaseProtectionUrl(), componentTrackDataModel)
+                openFtInsuranceBottomSheet(getPurchaseProtectionUrl())
+            }
         }
+    }
+
+    private fun getPurchaseProtectionUrl(): String {
+        pdpUiUpdater?.productProtectionMap?.let {
+            return it.data[1].applink
+        }
+        return ""
+    }
+
+    private fun getPPTitleName(): String {
+        pdpUiUpdater?.productProtectionMap?.let {
+            if (it.title.isNotEmpty()) return it.title
+            else return ""
+        }
+        return ""
     }
 
     /**
@@ -2200,6 +2227,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             pdpInstallmentBottomSheet.arguments = bundleData
             pdpInstallmentBottomSheet.show(childFragmentManager, "FT_TAG")
         }
+    }
+
+    /**
+     * @param url : linkUrl for insurance partner to be rendered in web-view
+     */
+    private fun openFtInsuranceBottomSheet(url: String) {
+        FtPDPInsuranceBottomSheet.show(url, childFragmentManager)
     }
 
     private fun onSuccessRemoveWishlist(productId: String?) {
