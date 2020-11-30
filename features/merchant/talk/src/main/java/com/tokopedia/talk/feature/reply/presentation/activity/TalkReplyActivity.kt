@@ -37,7 +37,7 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
         @JvmStatic
         fun createIntent(context: Context, questionId: String, shopId: String) =
-                Intent(context, TalkReadingActivity::class.java).apply {
+                Intent(context, TalkReplyActivity::class.java).apply {
                     putExtra(QUESTION_ID_EXTRA, questionId)
                     putExtra(SHOP_ID_EXTRA, shopId)
                 }

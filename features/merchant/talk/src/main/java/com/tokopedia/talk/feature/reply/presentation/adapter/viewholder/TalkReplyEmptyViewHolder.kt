@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.talk.feature.reply.presentation.adapter.uimodel.TalkReplyEmptyModel
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import kotlinx.android.synthetic.main.item_talk_reply_empty_state.view.*
 
 class TalkReplyEmptyViewHolder(view: View) : AbstractViewHolder<TalkReplyEmptyModel>(view) {

@@ -6,12 +6,12 @@
       "event" : "clickPDP",
       "eventCategory" : "product talk",
       "eventAction" : "click - kirim to reply talk",
-      "eventLabel" : "{{\\d{1,}}}",
+      "eventLabel" : "{{.*}}",
       "sessionIris": "{{.{1,}}}",
-      "screenName" : "/talk-question-form",
+      "screenName" : "/product-talk",
       "currentSite" : "tokopediamarketplace",
       "businessUnit" : "physical goods",
-      "productId" : "{{\\d{1,}}}"
+      "userId" : "{{\\d{1,}}}"
     }
   ]
 }

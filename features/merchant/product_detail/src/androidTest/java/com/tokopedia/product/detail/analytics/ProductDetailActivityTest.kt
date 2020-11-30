@@ -26,14 +26,12 @@ import com.tokopedia.product.detail.util.ProductDetailIdlingResource
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionQuestionViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductMiniSocialProofViewHolder
 import com.tokopedia.test.application.espresso_component.CommonActions.clickChildViewWithId
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
 import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
 import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
-import kotlinx.android.synthetic.main.item_dynamic_discussion_most_helpful.view.*
 import org.hamcrest.core.AllOf.allOf
 import org.junit.After
 import org.junit.Before
@@ -205,7 +203,7 @@ class ProductDetailActivityTest {
 
     private fun clickSeeAllDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(14, scrollTo())
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(13, scrollTo())
         )
         waitForTalk()
         val viewInteraction = onView(withId(R.id.rv_pdp)).check(matches(isDisplayed()))
@@ -214,7 +212,7 @@ class ProductDetailActivityTest {
 
     private fun clickThreadDetailDiscussion() {
         onView(withId(R.id.rv_pdp)).perform(
-                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(14, scrollTo())
+                RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(13, scrollTo())
         )
         waitForTalk()
         val viewInteraction = onView(withId(R.id.productDiscussionMostHelpfulQuestions)).check(matches(isDisplayed()))
@@ -270,7 +268,7 @@ class ProductDetailActivityTest {
     }
 
     private fun waitForTrackerSent() {
-        Thread.sleep(3000)
+        Thread.sleep(4000L)
     }
 
     private fun fakeLogin() {

@@ -1,7 +1,5 @@
 package com.tokopedia.talk.feature.reading.presentation.activity
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,6 +15,7 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
 import com.tokopedia.talk.common.constants.TalkConstants.NO_SHADOW_ELEVATION
 import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.utils.TalkReadingLoadTimeMonitoringListener
@@ -28,20 +27,7 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
     private var shopId: String = ""
     private var isVariantSelected: Boolean = false
     private var availableVariants: String = ""
-    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-    var talkReadingLoadTimeListener: TalkReadingLoadTimeMonitoringListener? = null
-
-    companion object {
-        private const val PRODUCT_ID_EXTRA = "productId"
-        private const val SHOP_ID_EXTRA = "shopId"
-
-        @JvmStatic
-        fun createIntent(context: Context, productId: String, shopId: String) =
-                Intent(context, TalkReadingActivity::class.java).apply {
-                    putExtra(PRODUCT_ID_EXTRA, productId)
-                    putExtra(SHOP_ID_EXTRA, shopId)
-                }
-    }
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         getDataFromAppLink()
@@ -79,7 +65,6 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
         pageLoadTimePerformanceMonitoring?.let {
             it.stopMonitoring()
         }
-        talkReadingLoadTimeListener?.onStopPltListener()
         pageLoadTimePerformanceMonitoring = null
     }
 
@@ -121,8 +106,8 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
 
     private fun getDataFromIntent() {
         intent?.run {
-            shopId = getStringExtra(SHOP_ID_EXTRA).orEmpty()
-            productId = getStringExtra(PRODUCT_ID_EXTRA).orEmpty()
+            shopId = getStringExtra(PARAM_SHOP_ID) ?: ""
+            productId = getStringExtra(PRODUCT_ID) ?: ""
         }
     }
 

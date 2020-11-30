@@ -6,7 +6,7 @@
       "event" : "clickPDP",
       "eventCategory" : "talk question form",
       "eventAction" : "click - kirim new question",
-      "eventLabel" : "{{talk category:.*;success:.*;error message:.*;variant selected:true|false;}}",
+      "eventLabel" : "{{talk category:.*;success:.*;error message:.*;variant selected:.*;variant available:.*;}}",
       "screenName" : "/talk-question-form",
       "currentSite" : "tokopediamarketplace",
       "userId" : "{{\\d{1,}}}",
