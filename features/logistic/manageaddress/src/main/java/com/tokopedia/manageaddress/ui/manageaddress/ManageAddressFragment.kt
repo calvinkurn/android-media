@@ -116,7 +116,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
                 performSearch("")
             }
         } else if (requestCode == REQUEST_CODE_PARAM_EDIT) {
-            performSearch(searchAddress?.searchBarTextField.toString())
+            performSearch(searchAddress?.searchBarTextField?.text?.toString() ?: "")
         }
     }
 
