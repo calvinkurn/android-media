@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd;
 
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.device.info.DeviceInfo;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
@@ -46,6 +46,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public String versionName() {
         return BuildConfig.VERSION_NAME;
+    }
+
+    @Override
+    public int versionCode() {
+        return BuildConfig.VERSION_CODE;
     }
 
     @Override

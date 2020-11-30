@@ -43,7 +43,6 @@ import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.database.CoreLegacyDbFlowDatabase;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.customer_mid_app.BuildConfig;
 import com.tokopedia.customer_mid_app.R;
 import com.tokopedia.dev_monitoring_tools.DevMonitoring;
 import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallbacks;
@@ -290,7 +289,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         registerActivityLifecycleCallbacks(new NFCSubscriber());
         registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
         registerActivityLifecycleCallbacks(new SessionActivityLifecycleCallbacks());
-        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (GlobalConfig.DEBUG && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             registerActivityLifecycleCallbacks(new JankyFrameActivityLifecycleCallbacks.Builder().build());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
@@ -386,6 +385,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
      */
     @NonNull
     public abstract String versionName();
+
+    public abstract int versionCode();
 
     public abstract void initConfigValues();
 
@@ -531,8 +532,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             com.tokopedia.config.GlobalConfig.VERSION_CODE = pInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
-            com.tokopedia.config.GlobalConfig.VERSION_CODE = BuildConfig.VERSION_CODE;
+            GlobalConfig.VERSION_CODE = versionCode();
+            com.tokopedia.config.GlobalConfig.VERSION_CODE = versionCode();
         }
     }
 

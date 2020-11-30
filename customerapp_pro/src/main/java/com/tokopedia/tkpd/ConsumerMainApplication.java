@@ -50,6 +50,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     }
 
     @Override
+    public int versionCode() {
+        return BuildConfig.VERSION_CODE;
+    }
+
+    @Override
     public void registerActivityLifecycleCallbacks() {
         registerActivityLifecycleCallbacks(new Screenshot(getApplicationContext().getContentResolver(), new Screenshot.BottomSheetListener() {
             @Override
