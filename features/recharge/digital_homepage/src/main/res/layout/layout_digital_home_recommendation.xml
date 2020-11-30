@@ -9,15 +9,15 @@
         android:id="@+id/digital_homepage_recommendation_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/digital_homepage_recommendation_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4"
             app:typographyType="heading_5" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -26,8 +26,8 @@
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:orientation="horizontal"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16" />
+            android:paddingLeft="@dimen/spacing_lvl4"
+            android:paddingRight="@dimen/spacing_lvl4" />
 
     </LinearLayout>
 
@@ -36,7 +36,7 @@
         layout="@layout/content_digital_hone_shimmering_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/spacing_lvl4"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -6,7 +6,7 @@ import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.logisticaddaddress.domain.model.autocomplete.AutocompleteResponse
-import com.tokopedia.logisticdata.data.autocomplete.Place
+import com.tokopedia.logisticCommon.domain.model.Place
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject

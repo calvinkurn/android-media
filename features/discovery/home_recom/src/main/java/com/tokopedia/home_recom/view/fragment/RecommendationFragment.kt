@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.annotations.FragmentInflater
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -45,11 +46,9 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_product_info.*
 import javax.inject.Inject
 
@@ -109,11 +108,12 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         private const val REQUEST_FROM_PDP = 394
         private const val REQUEST_CODE_LOGIN = 283
 
-        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "") = RecommendationFragment().apply {
+        fun newInstance(productId: String = "", queryParam: String = "", ref: String = "null", internalRef: String = "",@FragmentInflater fragmentInflater: String = FragmentInflater.DEFAULT) = RecommendationFragment().apply {
             this.productId = productId
             this.queryParam = queryParam
             this.ref = ref
             this.internalRef = internalRef
+            this.fragmentInflater = fragmentInflater
         }
     }
 
@@ -159,6 +159,8 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         super.onCreateOptionsMenu(menu, inflater)
         this.menu = menu
     }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.home_recom.R.id.swipe_refresh_layout
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -223,7 +225,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
                         false)
                 val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                if(position >= 0 && adapter.data.size > position) {
+                if(position >= 0 && adapter.data.size > position && adapter.data[position] is RecommendationItemDataModel) {
                     (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = wishlistStatusFromPdp
                     adapter.notifyItemChanged(position, wishlistStatusFromPdp)
                 }
@@ -275,17 +277,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     private fun showMessageSuccessAddWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_add_wishlist)
-        view?.let {
-            Toaster.make(
-                    it,
-                    message,
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_NORMAL,
-                    getString(R.string.home_recom_go_to_wishlist),
-                    View.OnClickListener { goToWishlist() })
+        showToastSuccessWithAction(
+                getString(R.string.recom_msg_success_add_wishlist),
+                getString(R.string.home_recom_go_to_wishlist)
+        ){
+            View.OnClickListener { goToWishlist() }
         }
     }
 
@@ -295,16 +291,11 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
     }
 
     private fun showMessageSuccessRemoveWishlist() {
-        if (activity == null) return
-        val view = activity!!.findViewById<View>(android.R.id.content)
-        val message = getString(R.string.recom_msg_success_remove_wishlist)
-        Toaster.make(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL)
+        showToastSuccess(getString(R.string.recom_msg_success_remove_wishlist))
     }
 
     private fun showMessageFailedWishlistAction() {
-        if (activity == null) return
-        val view = activity?.findViewById<View>(android.R.id.content)
-        view?.let { Toaster.make(it, ErrorHandler.getErrorMessage(activity, null), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR) }
+        showToastError()
     }
 
     /**
@@ -475,18 +466,18 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                     recommendationWidgetViewModel.removeWishlist(productDetailData.id.toString()){ state, throwable ->
                         callback(state, throwable)
                         if(state){
-                            activity?.showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
+                            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_remove_wishlist))
                         } else {
-                            activity?.showToastError(MessageErrorException())
+                            showToastError(MessageErrorException())
                         }
                     }
                 } else {
                     recommendationWidgetViewModel.addWishlist(productDetailData.id.toString(), productDetailData.wishlistUrl, productDetailData.isTopads){ state, throwable ->
                         callback(state, throwable)
                         if(state){
-                            activity?.showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
+                            showToastSuccess(getString(com.tokopedia.wishlist.common.R.string.msg_success_add_wishlist))
                         } else {
-                            activity?.showToastError(MessageErrorException())
+                            showToastError(MessageErrorException())
                         }
                     }
                 }

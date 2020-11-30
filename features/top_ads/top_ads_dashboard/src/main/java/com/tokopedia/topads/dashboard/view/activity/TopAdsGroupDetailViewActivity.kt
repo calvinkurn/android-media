@@ -27,7 +27,10 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_ACTIVATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTION_DEACTIVATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_DETAIL
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_DETAIL
@@ -51,13 +54,9 @@ import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
 import kotlinx.android.synthetic.main.partial_top_ads_dashboard_statistics.*
 import kotlinx.android.synthetic.main.topads_dash_detail_view_widget.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_beranda_base.*
 import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.*
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.hari_ini
-import kotlinx.android.synthetic.main.topads_dash_fragment_group_detail_view_layout.swipe_refresh_layout
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.*
 import kotlinx.android.synthetic.main.topads_dash_layout_hari_ini.view.*
-import java.lang.NumberFormatException
 import java.util.*
 import javax.inject.Inject
 import kotlin.math.abs
@@ -170,7 +169,6 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
             val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
                 putExtra(TopAdsDashboardConstant.TAB_POSITION, 2)
                 putExtra(TopAdsDashboardConstant.GROUPID, groupId.toString())
-                putExtra(TopAdsDashboardConstant.GROUPNAME, groupName)
             }
             startActivityForResult(intent, EDIT_GROUP_REQUEST_CODE)
         }
@@ -321,7 +319,7 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
         sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
         sheet.setListener(this)
-        sheet.show(supportFragmentManager, "datepicker")
+        sheet.show(supportFragmentManager, DATE_PICKER_SHEET)
     }
 
 
@@ -355,10 +353,10 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
         viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo, groupId.toString())
     }
 
-    fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
+    private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
         swipe_refresh_layout.isRefreshing = false
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
@@ -402,11 +400,11 @@ class TopAdsGroupDetailViewActivity : BaseActivity(), HasComponent<TopAdsDashboa
     }
 
     fun setKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size))
+        detailPagerAdapter.setTitleKeyword(String.format(getString(R.string.topads_dash_keyword_count), size), CONST_1)
     }
 
     fun setNegKeywordCount(size: Int) {
-        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size))
+        detailPagerAdapter.setTitleNegKeyword(String.format(getString(R.string.topads_dash_neg_key_count), size), CONST_2)
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {

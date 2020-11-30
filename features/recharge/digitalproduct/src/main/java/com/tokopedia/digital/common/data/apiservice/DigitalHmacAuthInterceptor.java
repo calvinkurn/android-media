@@ -8,7 +8,7 @@ import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.exception.ResponseErrorException;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ public class DigitalHmacAuthInterceptor extends TkpdAuthInterceptor {
 
     public DigitalHmacAuthInterceptor(Context context,
                                       NetworkRouter networkRouter,
-                                      UserSession userSession,
+                                      UserSessionInterface userSession,
                                       String authKey) {
         super(context, networkRouter, userSession, authKey);
     }

@@ -2,13 +2,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        style="@style/TextView.Micro.BlackSecondary"
+    <com.tokopedia.unifyprinciples.Typography
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="body_3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_15"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:text="@string/flight_order_departure_schedule" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -8,7 +8,7 @@ import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.tradein.repository.TradeInRepository
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
+import com.tokopedia.tradein.view.viewcontrollers.activity.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject

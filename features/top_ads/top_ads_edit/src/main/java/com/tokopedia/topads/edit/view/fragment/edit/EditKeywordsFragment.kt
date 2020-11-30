@@ -23,9 +23,10 @@ import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.DataSuggestions
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.CURRENT_KEY_TYPE
 import com.tokopedia.topads.edit.utils.Constants.FROM_EDIT
@@ -83,8 +84,6 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     private lateinit var layoutManager: LinearLayoutManager
     private lateinit var recyclerView: RecyclerView
     private var userID: String = ""
-
-
     private val viewModelProvider by lazy {
         ViewModelProviders.of(this, viewModelFactory)
     }
@@ -221,7 +220,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
 
-    private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         minSuggestKeyword = data[0].minBid
         maxSuggestKeyword = data[0].maxBid
         adapter.setBid(minSuggestKeyword)
@@ -301,18 +300,14 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         if (data.isEmpty()) {
             setEmptyView()
         } else {
-            val negKeyword: MutableList<GetKeywordResponse.KeywordsItem> = mutableListOf()
             data.forEach { result ->
                 if ((result.type == KEYWORD_TYPE_EXACT || result.type == KEYWORD_TYPE_PHRASE) && result.status != -1) {
                     adapter.items.add(EditKeywordItemViewModel(result))
                     isnewlyAddded.add(false)
                     initialBudget.add(result.priceBid)
                     originalKeyList.add(result.tag)
-                } else if (result.status != -1) {
-                    negKeyword.add(result)
                 }
             }
-            sharedViewModel.setNegKeywords(negKeyword)
             if (adapter.items.isEmpty()) {
                 setEmptyView()
             } else {

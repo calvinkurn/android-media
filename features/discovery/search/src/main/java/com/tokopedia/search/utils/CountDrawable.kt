@@ -39,7 +39,7 @@ class CountDrawable(context: Context) : Drawable() {
 
     private fun createBadgePaint(context: Context) {
         badgePaint
-        badgePaint.color = safeGetColor(context, R.color.cart_count_color)
+        badgePaint.color = safeGetColor(context, com.tokopedia.unifyprinciples.R.color.Unify_R500)
         badgePaint.isAntiAlias = true
         badgePaint.style = Paint.Style.FILL
     }

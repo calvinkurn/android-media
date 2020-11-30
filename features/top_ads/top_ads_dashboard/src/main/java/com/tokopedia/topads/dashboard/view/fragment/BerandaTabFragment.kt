@@ -23,6 +23,7 @@ import com.tokopedia.topads.dashboard.R
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATA_INSIGHT
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_RANGE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.END_DATE_BERANDA
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
@@ -256,7 +257,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
         val sheet = CustomDatePicker.getInstance(minDate, maxDate, selectDate)
         sheet.setTitle(resources.getString(R.string.topads_dash_choose_date))
         sheet.setListener(this)
-        sheet.show(childFragmentManager, "datepicker")
+        sheet.show(childFragmentManager, DATE_PICKER_SHEET)
     }
 
     private fun onLoadTopAdsShopDepositSuccess(dataDeposit: DepositAmount) {
@@ -267,7 +268,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
 
         this.dataStatistic = dataStatistic
-        if (this.dataStatistic != null) {
+        if (this.dataStatistic != null && dataStatistic.cells.isNotEmpty()) {
             topAdsTabAdapter?.setSummary(dataStatistic.summary, resources.getStringArray(R.array.top_ads_tab_statistics_labels))
         }
         val fragment = pager.adapter?.instantiateItem(pager, pager.currentItem) as? Fragment
@@ -392,7 +393,7 @@ open class BerandaTabFragment : BaseDaggerFragment(), CustomDatePicker.ActionLis
 
     fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
-        topAdsDashboardPresenter.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
+        topAdsDashboardPresenter.getStatistic(startDate!!, endDate!!, selectedStatisticType, (activity as TopAdsDashboardActivity?)?.getAdInfo()
                 ?: MANUAL_AD, ::onSuccesGetStatisticsInfo)
     }
 

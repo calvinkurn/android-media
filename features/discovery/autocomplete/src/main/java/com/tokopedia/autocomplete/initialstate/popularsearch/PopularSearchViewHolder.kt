@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.layout_recyclerview_autocomplete.view.*
 
 class PopularSearchViewHolder(
         itemView: View,
-        listener: InitialStateItemClickListener
+        private val listener: InitialStateItemClickListener
 ) : AbstractViewHolder<PopularSearchViewModel>(itemView) {
 
     companion object {
@@ -29,18 +29,27 @@ class PopularSearchViewHolder(
         val LAYOUT = R.layout.layout_popular_autocomplete
     }
 
-    private val adapter: ItemAdapter
-
-    init {
-        val layoutManager = LinearLayoutManager(itemView.context)
-        itemView.recyclerView?.layoutManager = layoutManager
-        ViewCompat.setLayoutDirection(itemView.recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = ItemAdapter(listener)
-        itemView.recyclerView?.adapter = adapter
+    override fun bind(element: PopularSearchViewModel) {
+        bindContent(element)
     }
 
-    override fun bind(element: PopularSearchViewModel) {
-        adapter.setData(element.list)
+    private fun bindContent(element: PopularSearchViewModel) {
+        itemView.recyclerView?.let {
+            it.layoutManager = createLayoutManager()
+            it.adapter = createAdapter(element.list)
+        }
+    }
+
+    private fun createLayoutManager(): RecyclerView.LayoutManager {
+        return LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
+    }
+
+    private fun createAdapter(
+            list: List<BaseItemInitialStateSearch>
+    ): RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
+        val adapter = ItemAdapter(listener)
+        adapter.setData(list)
+        return adapter
     }
 
     private inner class ItemAdapter(private val clickListener: InitialStateItemClickListener) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
@@ -48,7 +57,7 @@ class PopularSearchViewHolder(
 
         fun setData(data: List<BaseItemInitialStateSearch>) {
             this.data = data
-            notifyItemRangeInserted(0, data.size)
+            notifyDataSetChanged()
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {

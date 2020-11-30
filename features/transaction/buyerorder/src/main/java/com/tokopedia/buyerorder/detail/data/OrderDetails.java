@@ -46,6 +46,9 @@ public class OrderDetails {
     @SerializedName("pricing")
     @Expose
     private List<Pricing> pricing;
+    @SerializedName("discount")
+    @Expose
+    private List<Discount> discounts;
 
     @SerializedName("paymentMethod")
     @Expose
@@ -95,7 +98,7 @@ public class OrderDetails {
     static final String ATTRIBUTE_BOUGHT_DATE = "Tanggal Pembelian";
     static final String ATTRIBUTE_ID = "id";
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink, RequestCancelInfo requestCancelInfo) {
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, List<Discount> discounts, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink, RequestCancelInfo requestCancelInfo) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -104,6 +107,7 @@ public class OrderDetails {
         this.detail = detail;
         this.additionalInfo = additionalInfo;
         this.pricing = pricing;
+        this.discounts = discounts;
         this.paymentMethod = paymentMethod;
         this.payMethods = payMethods;
         this.paymentData = paymentData;
@@ -151,9 +155,9 @@ public class OrderDetails {
 
     public TickerInfo getTickerInfo() { return tickerInfo; }
 
-    public List<Pricing> pricing() {
-        return pricing;
-    }
+    public List<Pricing> pricing() { return pricing; }
+
+    public List<Discount> discounts() { return discounts; }
 
     public PaymentMethod getPaymentMethod() {
         return paymentMethod;
@@ -220,6 +224,7 @@ public class OrderDetails {
                 + "additionalTickerInfo="+additionalTickerInfos +","
                 + "tickerInfo="+tickerInfo +","
                 + "pricing="+pricing +","
+                + "discounts="+discounts +","
                 + "paymentMethod="+paymentMethod +","
                 + "paymethods="+payMethods +","
                 + "paymentData="+paymentData +","

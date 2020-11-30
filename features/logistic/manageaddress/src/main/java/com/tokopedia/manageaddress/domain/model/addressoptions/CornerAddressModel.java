@@ -1,6 +1,6 @@
 package com.tokopedia.manageaddress.domain.model.addressoptions;
 
-import com.tokopedia.logisticdata.data.entity.address.RecipientAddressModel;
+import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 
 /**
  * Created by fajarnuha on 09/02/19.

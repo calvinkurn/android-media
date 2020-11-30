@@ -238,6 +238,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         AutocompleteTracking.eventClickDynamicSection(userId, label, type)
     }
 
+    override fun refreshViewWithPosition(position: Int) {
+        adapter.refreshPopularSection(position)
+    }
+
     override fun onDynamicSectionImpressed(model: DynamicInitialStateItemTrackingModel) {
         AutocompleteTracking.impressedDynamicSection(iris, model)
     }

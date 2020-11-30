@@ -73,7 +73,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
             setDisplayHomeAsUpEnabled(enableBackBtn)
             setDisplayShowTitleEnabled(false)
             elevation = 0f
-            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@AddPinActivity, R.color.Neutral_N0)))
+            setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this@AddPinActivity, com.tokopedia.unifyprinciples.R.color.Neutral_N0)))
         }
     }
 
@@ -89,7 +89,7 @@ class AddPinActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSetti
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setWindowFlag(false)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.Neutral_N0)
+            window.statusBarColor = ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N0)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

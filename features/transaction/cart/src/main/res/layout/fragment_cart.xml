@@ -27,9 +27,25 @@
             android:layout_width="match_parent"
             android:layout_height="?actionBarSize"
             android:minHeight="?attr/actionBarSize"
+            android:visibility="gone"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp" />
+
+        <com.tokopedia.searchbar.navigation_component.NavToolbar
+            android:id="@+id/nav_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            android:minHeight="?attr/actionBarSize"
+            android:gravity="top"
+            android:visibility="gone"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:toolbarAlwaysShowShadow="false"
+            app:toolbarInitialTheme="light"
+            app:toolbarTitle="@string/cart"
+            app:toolbarPageName="@string/toolbar_page_name_cart"
+            app:toolbarContentType="typeTitle" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -56,20 +72,6 @@
                     android:layout_above="@+id/bottom_layout"
                     android:layout_alignParentTop="true" />
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/card_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:clickable="false"
-                    android:visibility="gone"
-                    app:cardElevation="@dimen/dp_3"
-                    tools:visibility="visible">
-
-                    <include layout="@layout/item_select_all" />
-
-                </androidx.cardview.widget.CardView>
-
                 <View
                     android:id="@+id/bottom_layout_shadow"
                     android:layout_width="match_parent"
@@ -82,6 +84,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_above="@id/bottom_layout"
+                    android:layout_marginBottom="-10dp"
                     android:orientation="vertical"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -162,21 +165,32 @@
 
                         </LinearLayout>
 
-                        <com.tokopedia.unifycomponents.UnifyButton
-                            android:id="@+id/go_to_courier_page_button"
+                        <FrameLayout
                             android:layout_width="@dimen/dp_150"
                             android:layout_height="@dimen/dp_40"
                             android:layout_gravity="center_vertical"
                             android:layout_marginStart="@dimen/dp_10"
-                            android:layout_marginLeft="@dimen/dp_10"
                             android:layout_marginEnd="@dimen/dp_16"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:contentDescription="@string/content_desc_go_to_courier_page_button"
-                            android:gravity="center_vertical"
-                            app:unifyButtonSize="medium"
-                            app:unifyButtonType="transaction"
-                            app:unifyButtonVariant="filled"
-                            tools:text="Checkout" />
+                            android:gravity="center_vertical">
+
+                            <com.tokopedia.unifycomponents.UnifyButton
+                                android:id="@+id/go_to_courier_page_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical"
+                                android:contentDescription="@string/content_desc_go_to_courier_page_button"
+                                android:gravity="center_vertical"
+                                app:unifyButtonSize="medium"
+                                app:unifyButtonType="transaction"
+                                app:unifyButtonVariant="filled"
+                                tools:text="Checkout" />
+
+                            <View
+                                android:id="@+id/v_disabled_go_to_courier_page_button"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"/>
+
+                        </FrameLayout>
 
                     </LinearLayout>
 
@@ -204,5 +218,11 @@
         </FrameLayout>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/tmp_animated_image"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
+        android:visibility="gone" />
 
 </LinearLayout>

@@ -6,7 +6,7 @@ import com.tokopedia.discovery2.datamapper.discoveryPageData
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.ArrayList
 
 data class ComponentsItem(
@@ -71,14 +71,20 @@ data class ComponentsItem(
         var rpc_discoQuery:  Map<String, String?>? = null,
         var pinnedActiveTabId: String? = "",
         var dynamicOriginalId: String? = "",
-        var showVerticalLoader: Boolean = false) {
+        var showVerticalLoader: Boolean = false,
+        var rpc_PinnedProduct: String? = "",
+        var loadForHorizontal: Boolean = false,
+        var pageLoadedCounter: Int = 1,
+        var tabName: String? = "") {
 
     private var componentsItem: List<ComponentsItem>? = null
 
-    fun setComponentsItem(listComponents: List<ComponentsItem>?) {
+    fun setComponentsItem(listComponents: List<ComponentsItem>?, tabName: String? = "") {
         listComponents?.forEach {
             it.parentComponentId = this.id
             it.pageEndPoint = this.pageEndPoint
+            it.tabName = tabName
+            it.data?.firstOrNull()?.tabName = tabName
             discoveryPageData[this.pageEndPoint]?.componentMap?.set(it.id, it)
         }
         componentsItem = listComponents
