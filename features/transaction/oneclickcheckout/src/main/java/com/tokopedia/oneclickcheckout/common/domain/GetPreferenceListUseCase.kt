@@ -88,6 +88,4 @@ class GetPreferenceListUseCaseImpl @Inject constructor(private val graphql: Grap
         }
         throw MessageErrorException(result.getErrorMessage() ?: DEFAULT_ERROR_MESSAGE)
     }
-
-
 }

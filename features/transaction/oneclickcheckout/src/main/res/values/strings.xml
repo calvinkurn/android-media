@@ -43,6 +43,8 @@
     <string name="title_one_click_checkout_preference">Pengaturan Beli Langsung</string>
     <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>
     <string name="preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu untuk langsung dipakai setiap belanja.</string>
+    <string name="new_preference_list_empty_header">Kamu belum punya template Beli Langsung </string>
+    <string name="new_preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu sebagai template, tinggal langsung pakai setiap belanja.</string>
     <string name="add_first_preference">Atur</string>
     <string name="new_add_first_preference">Buat Template</string>
     <string name="add_preference">Tambah Pilihan</string>
@@ -70,6 +72,7 @@
     <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
     <string name="logistic_promo_info_title">Bebas Ongkir</string>
     <string name="logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai pilihan pengiriman, tapi bisa digunakan saat Beli Langsung.</string>
+    <string name="new_logistic_promo_info_desc">Bebas Ongkir tidak bisa disimpan sebagai template. Jika tersedia, akan direkomendasikan sebelum kamu bayar.</string>
 
     <string name="default_action_occ_info_bottom_sheet">Lanjut Belanja</string>
     <string name="search_not_found">Pencarian tidak dapat ditemukan</string>

@@ -27,5 +27,6 @@ data class TextsModel(
 )
 
 data class LogisticPromoInfo(
-        val imageUrl: String = ""
+        val imageUrl: String = "",
+        val isNewLayout: Boolean = false
 ) : ServicesItem()

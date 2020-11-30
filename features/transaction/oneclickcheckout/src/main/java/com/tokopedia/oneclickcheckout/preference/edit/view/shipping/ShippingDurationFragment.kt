@@ -55,6 +55,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private var contentLayout: Group? = null
     private var globalError: GlobalError? = null
 
+    private var isNewLayout = false
+
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
 
@@ -90,7 +92,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
             }
         }
 
-        viewModel.shippingDuration.observe(viewLifecycleOwner, Observer {
+        viewModel.shippingDuration.observe(viewLifecycleOwner, {
             when (it) {
                 is OccState.Success -> {
                     swipeRefreshLayout?.isRefreshing = false
@@ -161,7 +163,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     private fun hitRates() {
         val parent = activity
         if (parent is PreferenceEditParent) {
-            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam())
+            viewModel.getRates(parent.getListShopShipment(), parent.getShippingParam(), parent.isNewFlow())
         }
     }
 

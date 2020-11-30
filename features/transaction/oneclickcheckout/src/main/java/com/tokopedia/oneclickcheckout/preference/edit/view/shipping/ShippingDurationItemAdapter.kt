@@ -24,6 +24,7 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     companion object {
         private const val SHIPPING_DURATION_VIEW_TYPE = 1
         private const val LOGISTIC_PROMO_INFO_VIEW_TYPE = 2
+        private const val LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE = 3
     }
 
     fun renderData(data: List<ServicesItem>) {
@@ -39,6 +40,8 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == LOGISTIC_PROMO_INFO_VIEW_TYPE) {
             return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info))
+        } else if (viewType == LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE) {
+            return LogisticPromoInfoViewHolder(parent.inflateLayout(R.layout.item_logistic_promo_info_new))
         }
         return ShippingDurationViewHolder(parent.inflateLayout(R.layout.item_shipping_duration))
     }
@@ -48,8 +51,9 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (shippingDurationList[position] is LogisticPromoInfo) {
-            return LOGISTIC_PROMO_INFO_VIEW_TYPE
+        val servicesItem = shippingDurationList[position]
+        if (servicesItem is LogisticPromoInfo) {
+            return if (servicesItem.isNewLayout) LOGISTIC_PROMO_INFO_NEW_VIEW_TYPE else LOGISTIC_PROMO_INFO_VIEW_TYPE
         }
         return SHIPPING_DURATION_VIEW_TYPE
     }
