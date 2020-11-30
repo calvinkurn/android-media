@@ -8,6 +8,7 @@ import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
 import com.tokopedia.notifcenter.data.entity.clearnotif.ClearNotifCounterResponse
 import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.filter.NotifcenterFilterResponse
+import com.tokopedia.notifcenter.data.entity.markasread.MarkReadStatusResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotifcenterDetailResponse
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
@@ -94,6 +95,32 @@ class NotificationViewModelTest {
         viewModel.topAdsBanner.observeForever(topAdsBannerObserver)
         viewModel.filterList.observeForever(filterListObserver)
         viewModel.clearNotif.observeForever(clearNotifObserver)
+    }
+
+    @Test fun `hasFilter should return false if filter is not FILTER_NONE`() {
+        // given
+        val expectedValue = false
+        viewModel.filter = -1
+
+        // when
+        val hasFilter = viewModel.hasFilter()
+
+        assert(hasFilter == expectedValue)
+    }
+
+    @Test fun `loadFirstPageNotification verify haven't interaction`() {
+        // when
+        viewModel.loadFirstPageNotification(null)
+
+        // then
+        verify(exactly = 0) {
+            notifcenterDetailUseCase.getFirstPageNotification(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+            )
+        }
     }
 
     @Test fun `loadFirstPageNotification should return data properly`() {
@@ -185,6 +212,14 @@ class NotificationViewModelTest {
         verify(exactly = 1) { notificationItemsObserver.onChanged(Fail(expectedValue)) }
     }
 
+    @Test fun `loadNotificationFilter verify haven't interaction`() {
+        // when
+        viewModel.loadNotificationFilter(null)
+
+        // then
+        verify(exactly = 0) { notifcenterFilterUseCase.getFilter(any()) }
+    }
+
     @Test fun `loadNotificationFilter should return filter list properly`() {
         runBlocking {
             // given
@@ -220,6 +255,14 @@ class NotificationViewModelTest {
         }
     }
 
+    @Test fun `markNotificationAsRead verify haven't interaction`() {
+        // when
+        viewModel.loadNotificationFilter(null)
+
+        // then
+        verify(exactly = 0) { markAsReadUseCase.markAsRead(any(), any()) }
+    }
+
     @Test fun `markNotificationAsRead should called markAsRead() properly`() {
         // given
         val role = RoleType.BUYER
@@ -230,6 +273,21 @@ class NotificationViewModelTest {
 
         // then
         verify(exactly = 1) { markAsReadUseCase.markAsRead(role, "") }
+    }
+
+    @Test fun `loadMoreEarlier verify haven't interaction`() {
+        // when
+        viewModel.loadMoreEarlier(null)
+
+        // then
+        verify(exactly = 0) {
+            notifcenterDetailUseCase.getMoreEarlierNotifications(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+            )
+        }
     }
 
     @Test fun `loadMoreEarlier should return correctly`() {
@@ -354,6 +412,25 @@ class NotificationViewModelTest {
         }
     }
 
+    @Test fun `loadMoreNew verify haven't interaction`() {
+        // given
+        val onSuccess: (NotificationDetailResponseModel) -> Unit = {}
+        val onError: (Throwable) -> Unit = {}
+
+        // when
+        viewModel.loadMoreNew(null, onSuccess, onError)
+
+        // then
+        verify(exactly = 0) {
+            notifcenterDetailUseCase.getMoreNewNotifications(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+            )
+        }
+    }
+
     @Test fun `loadMoreNew with lambda should called getMoreNewNotifications() in usecase`() {
         // given
         val role = RoleType.BUYER
@@ -365,6 +442,25 @@ class NotificationViewModelTest {
 
         // then
         verify(exactly = 1) { notifcenterDetailUseCase.getMoreNewNotifications(any(), any(), any(), any()) }
+    }
+
+    @Test fun `loadMoreEarlier with lambda verify haven't interaction`() {
+        // given
+        val onSuccess: (NotificationDetailResponseModel) -> Unit = {}
+        val onError: (Throwable) -> Unit = {}
+
+        // when
+        viewModel.loadMoreEarlier(null, onSuccess, onError)
+
+        // then
+        verify(exactly = 0) {
+            notifcenterDetailUseCase.getMoreEarlierNotifications(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+            )
+        }
     }
 
     @Test fun `loadMoreEarlier with lambda should called getMoreEarlierNotifications() in usecase`() {
@@ -428,6 +524,8 @@ class NotificationViewModelTest {
         verify(exactly = 1) { removeWishListUseCase.createObservable(any(), any(), any()) }
     }
 
+    @Test fun `clearNotifCounter should return correctly`() {}
+
     @After fun tearDown() {
         viewModel.cancelAllUseCase()
     }
@@ -469,6 +567,11 @@ class NotificationViewModelTest {
         private val deleteReminderResponse: DeleteReminderResponse = FileUtil.parse(
                 "/success_notifcenter_delete_reminder.json",
                 DeleteReminderResponse::class.java
+        )
+
+        private val markAsReadResponse: MarkReadStatusResponse = FileUtil.parse(
+                "/success_notifcenter_mark_as_read.json",
+                MarkReadStatusResponse::class.java
         )
     }
 
