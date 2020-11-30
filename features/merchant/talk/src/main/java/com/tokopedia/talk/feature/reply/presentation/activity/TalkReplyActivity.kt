@@ -27,9 +27,8 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var shopId = ""
     private var source = ""
     private var inboxType = ""
-    var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+    private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var talkReplyFragment: TalkReplyFragment? = null
-    var talkReplyLoadTimeMonitoringListener: TalkReplyLoadTimeMonitoringListener? = null
 
     companion object {
         private const val QUESTION_ID_EXTRA = "questionId"
@@ -111,7 +110,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         pageLoadTimePerformanceMonitoring?.let {
             it.stopMonitoring()
         }
-        talkReplyLoadTimeMonitoringListener?.onStopPltListener()
         pageLoadTimePerformanceMonitoring = null
     }
 
