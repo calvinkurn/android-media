@@ -53,7 +53,6 @@
             app:layout_constraintLeft_toLeftOf="@id/constraint_layout"
             app:layout_constraintRight_toRightOf="@id/constraint_layout"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_12"/>
 
@@ -64,10 +63,10 @@
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@id/constraint_layout"
             app:layout_constraintBottom_toBottomOf="@id/constraint_layout"
-            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16">
+            android:layout_marginEnd="@dimen/dp_16">
 
         </LinearLayout>
 
@@ -81,9 +80,7 @@
             app:layout_constraintBottom_toTopOf="@id/ll_label_order"
             app:layout_constraintLeft_toLeftOf="@id/constraint_layout"
             android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_12">
 
@@ -107,7 +104,7 @@
                     app:typographyWeight="bold"
                     app:typographyType="small"
                     tools:text="24 Products"
-                    android:textColor="@color/white"
+                    android:textColor="@color/Unify_N0"
                     android:gravity="center"
                     android:layout_marginBottom="@dimen/dp_2"/>
 
@@ -123,7 +120,6 @@
             android:text="@string/response_due"
             app:layout_constraintTop_toBottomOf="@id/label_invoice"
             app:layout_constraintEnd_toEndOf="@id/constraint_layout"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_10"/>
 
@@ -137,7 +133,6 @@
             app:layout_constraintEnd_toEndOf="@id/constraint_layout"
             app:layout_constraintTop_toBottomOf="@id/label_due_response"
             android:layout_marginTop="@dimen/dp_5"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginEnd="@dimen/dp_16">
 
             <RelativeLayout
@@ -153,7 +148,6 @@
                     android:layout_height="@dimen/dp_12"
                     android:layout_gravity="start"
                     android:layout_marginEnd="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_4"
                     app:srcCompat="@drawable/ic_label_due_time"
                     tools:ignore="ContentDescription" />
 
@@ -163,9 +157,8 @@
                     android:layout_height="wrap_content"
                     app:typographyType="small"
                     app:typographyWeight="bold"
-                    android:textColor="@color/white"
+                    android:textColor="@color/Unify_N0"
                     tools:text="7 Hari 7 malam"
-                    android:layout_toRightOf="@id/ic_time"
                     android:layout_toEndOf="@id/ic_time"/>
 
             </RelativeLayout>
@@ -177,7 +170,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_18"
             android:gravity="start"
             app:layout_constraintEnd_toStartOf="@+id/label_due_response"
@@ -191,10 +183,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_4"
-            android:layout_marginRight="@dimen/dp_4"
             android:ellipsize="end"
             android:gravity="start"
             android:maxLines="2"

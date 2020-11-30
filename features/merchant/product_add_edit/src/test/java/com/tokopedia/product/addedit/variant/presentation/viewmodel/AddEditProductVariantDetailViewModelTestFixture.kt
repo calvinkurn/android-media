@@ -2,13 +2,8 @@ package com.tokopedia.product.addedit.variant.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.description.presentation.model.DescriptionInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
-import com.tokopedia.product.addedit.variant.data.model.Unit
-import com.tokopedia.product.addedit.variant.data.model.UnitValue
-import com.tokopedia.product.addedit.variant.data.model.VariantDetail
-import com.tokopedia.product.addedit.variant.domain.GetVariantCategoryCombinationUseCase
 import com.tokopedia.product.addedit.variant.presentation.model.*
 import io.mockk.MockKAnnotations
 import io.mockk.clearAllMocks

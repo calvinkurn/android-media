@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -60,8 +60,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.supportV4
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.miscDependencies.parcelerApi
-    kapt rootProject.ext.miscDependencies.parceler
 
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"

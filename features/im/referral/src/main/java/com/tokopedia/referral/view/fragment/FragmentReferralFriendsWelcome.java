@@ -155,7 +155,7 @@ public class FragmentReferralFriendsWelcome extends BaseDaggerFragment implement
         presenter.copyVoucherCode(referralCodeTextView.getText().toString());
         if (!TextUtils.isEmpty(referralCodeTextView.getText().toString())) {
             btnCopyReferralCode.setText(R.string.copied);
-            btnCopyReferralCode.setTextColor(getResources().getColor(R.color.green_250));
+            btnCopyReferralCode.setTextColor(getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G400));
             imgTick.setVisibility(View.VISIBLE);
         }
     }

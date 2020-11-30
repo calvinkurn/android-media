@@ -105,23 +105,21 @@ class NotificationAdapter constructor(
         }
     }
 
-    fun finishDeleteReminder(viewHolderState: ViewHolderState?) {
+    fun loadingStateReminder(viewHolderState: ViewHolderState?) {
         updateLoadingBumpReminderFor(
                 viewHolderState = viewHolderState,
-                isLoading = false,
-                hasReminder = false
+                isLoading = true
         )
     }
 
-    fun loadingStateReminder(viewHolderState: ViewHolderState?) {
-        updateLoadingBumpReminderFor(viewHolderState, true)
-    }
-
-    fun finishBumpReminder(viewHolderState: ViewHolderState?) {
+    fun successUpdateReminderState(
+            viewHolderState: ViewHolderState?,
+            isBumpReminder: Boolean
+    ) {
         updateLoadingBumpReminderFor(
                 viewHolderState = viewHolderState,
                 isLoading = false,
-                hasReminder = true
+                hasReminder = isBumpReminder
         )
     }
 
@@ -131,22 +129,17 @@ class NotificationAdapter constructor(
             hasReminder: Boolean? = null
     ) {
         viewHolderState ?: return
-        val notif = viewHolderState.visitable as? NotificationUiModel ?: return
-        val elementData = getUpToDateUiModelPosition(
-                viewHolderState.previouslyKnownPosition,
-                notif
+        val notificationItem = viewHolderState.visitable
+                as? NotificationUiModel ?: return
+        val itemMetaData = getUpToDateUiModelPosition(
+                viewHolderState.previouslyKnownPosition, notificationItem
         )
-        val position = elementData.first
-        val item = elementData.second
-        if (viewHolderState.payload is ProductData && position != RecyclerView.NO_POSITION) {
-            val payload = PayloadBumpReminderState(
-                    viewHolderState.payload, item
-            )
-            viewHolderState.payload.loadingReminderState = isLoading
-            hasReminder?.let {
-                viewHolderState.payload.hasReminder = it
-            }
-            notifyItemChanged(position, payload)
+        val itemPosition = itemMetaData.first
+        val product = viewHolderState.payload
+        if (product is ProductData && itemPosition != RecyclerView.NO_POSITION) {
+            val payload = PayloadBumpReminderState(product, notificationItem)
+            product.update(isLoading, hasReminder)
+            notifyItemChanged(itemPosition, payload)
         }
     }
 

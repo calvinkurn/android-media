@@ -5,9 +5,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vouchercreation.coroutine.TestCoroutineDispatchers
+import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.vouchercreation.create.domain.model.ShopInfo
-import com.tokopedia.vouchercreation.create.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.create.domain.usecase.InitiateVoucherUseCase
 import com.tokopedia.vouchercreation.create.view.enums.VoucherCreationStep
 import com.tokopedia.vouchercreation.create.view.uimodel.initiation.InitiateVoucherUiModel
@@ -47,7 +47,7 @@ class CreateMerchantVoucherStepsViewModelTest {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        mViewModel = CreateMerchantVoucherStepsViewModel(TestCoroutineDispatchers, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
+        mViewModel = CreateMerchantVoucherStepsViewModel(CoroutineTestDispatchersProvider, initiateVoucherUseCase, basicShopInfoUseCase, userSession)
     }
 
     @Test
@@ -131,8 +131,6 @@ class CreateMerchantVoucherStepsViewModelTest {
 
         mViewModel.initiateVoucherPage()
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             initiateVoucherUseCase.executeOnBackground()
         }
@@ -176,8 +174,6 @@ class CreateMerchantVoucherStepsViewModelTest {
 
         mViewModel.initiateEditDuplicateVoucher()
 
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
-
         coVerify {
             basicShopInfoUseCase.executeOnBackground()
             initiateVoucherUseCase.executeOnBackground()
@@ -202,8 +198,6 @@ class CreateMerchantVoucherStepsViewModelTest {
         } throws throwable
 
         mViewModel.initiateEditDuplicateVoucher()
-
-        mViewModel.coroutineContext[Job]?.children?.forEach { it.join() }
 
         coVerify {
             basicShopInfoUseCase.executeOnBackground()

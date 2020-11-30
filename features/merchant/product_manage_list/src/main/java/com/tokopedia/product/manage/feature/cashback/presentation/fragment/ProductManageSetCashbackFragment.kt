@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.util.ProductManageListErrorHandler
 import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.di.DaggerProductManageSetCashbackComponent
@@ -27,7 +28,6 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectUiModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.EXTRA_RESULT_STATUS
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -243,8 +243,8 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
-        Toaster.make(setCashbackCoordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+        Toaster.make(setCashbackCoordinatorLayout, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(com.tokopedia.product.manage.common.R.string.product_manage_snack_bar_retry),
                 View.OnClickListener {
                     viewModel.setCashback(productId = setCashbackResult.productId,
                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)

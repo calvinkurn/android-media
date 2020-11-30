@@ -18,8 +18,11 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.inboxcommon.InboxFragment
+import com.tokopedia.inboxcommon.RoleType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -32,13 +35,14 @@ import com.tokopedia.talk.feature.inbox.data.TalkInboxTab
 import com.tokopedia.talk.feature.inbox.di.DaggerTalkInboxComponent
 import com.tokopedia.talk.feature.inbox.di.TalkInboxComponent
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxAdapterTypeFactory
-import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxOldUiModel
 import com.tokopedia.talk.feature.inbox.data.TalkInboxViewState
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.BaseTalkInboxUiModel
+import com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel.TalkInboxUiModel
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxListener
 import com.tokopedia.talk.feature.inbox.presentation.listener.TalkInboxViewHolderListener
 import com.tokopedia.talk.feature.inbox.presentation.viewmodel.TalkInboxViewModel
 import com.tokopedia.talk_old.R
-import com.tokopedia.talk_old.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -47,13 +51,15 @@ import kotlinx.android.synthetic.main.partial_talk_connection_error.view.*
 import kotlinx.android.synthetic.main.partial_talk_inbox_empty.*
 import javax.inject.Inject
 
-class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
-        HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract, TalkInboxViewHolderListener {
+class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapterTypeFactory>(),
+        HasComponent<TalkInboxComponent>, TalkPerformanceMonitoringContract, TalkInboxViewHolderListener, InboxFragment {
 
     companion object {
         const val TAB_PARAM = "tab_param"
         const val EMPTY_DISCUSSION_IMAGE = "https://ecs7.tokopedia.net/android/talk_inbox_empty.png"
         const val REPLY_REQUEST_CODE = 420
+        const val EMPTY_SELLER_READ_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_read.png"
+        const val EMPTY_SELLER_DISCUSSION = "https://ecs7.tokopedia.net/android/others/talk_inbox_seller_empty_unread.png"
 
         fun createNewInstance(tab: TalkInboxTab, talkInboxListener: TalkInboxListener? = null): TalkInboxFragment {
             return TalkInboxFragment().apply {
@@ -87,7 +93,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
-        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB, this)
+        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB, this, isOldView())
     }
 
     override fun getScreenName(): String {
@@ -98,12 +104,8 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         component?.inject(this)
     }
 
-    override fun onItemClicked(talkUiModel: TalkInboxUiModel?) {
-        talkUiModel?.inboxDetail?.let {
-            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
-                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
-            goToReply(it.questionID)
-        }
+    override fun onItemClicked(talkOldUiModel: BaseTalkInboxUiModel?) {
+        // No Op
     }
 
     override fun loadData(page: Int) {
@@ -154,6 +156,32 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         talkInboxTracking.eventItemImpress(inboxType, talkId, viewModel.getUserId(), position, isUnread, trackingQueue)
     }
 
+    override fun onInboxItemClicked(talkInboxUiModel: TalkInboxUiModel?, talkInboxOldUiModel: TalkInboxOldUiModel?) {
+        talkInboxUiModel?.inboxDetail?.let {
+            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
+                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+            goToReply(it.questionID)
+        }
+        talkInboxOldUiModel?.inboxDetail?.let {
+            talkInboxTracking.eventClickThread(viewModel.getType(), it.questionID, it.productID,
+                    viewModel.getActiveFilter(), !it.isUnread, viewModel.getShopId(), viewModel.getUnreadCount(), viewModel.getUserId())
+            goToReply(it.questionID)
+        }
+    }
+
+    override fun onRoleChanged(role: Int) {
+        when(role) {
+            RoleType.BUYER -> inboxType = TalkInboxTab.BUYER_TAB
+            RoleType.SELLER -> inboxType = TalkInboxTab.SHOP_TAB
+        }
+        clearAllData()
+        setInboxType()
+    }
+
+    override fun onPageClickedAgain() {
+        getRecyclerView(view).scrollToPosition(0)
+    }
+
     override fun onPause() {
         super.onPause()
         if (::trackingQueue.isInitialized) {
@@ -187,7 +215,6 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initSortFilter()
-        initEmptyState()
         initErrorPage()
     }
 
@@ -199,7 +226,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     private fun goToReply(questionId: String) {
         val intent = RouteManager.getIntent(context, Uri.parse(UriUtil.buildUri(ApplinkConstInternalGlobal.TALK_REPLY, questionId))
                 .buildUpon()
-                .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkDetailsActivity.SOURCE_INBOX)
+                .appendQueryParameter(TalkConstants.PARAM_SOURCE, TalkConstants.INBOX_SOURCE)
                 .appendQueryParameter(TalkConstants.PARAM_TYPE, inboxType)
                 .build().toString()
         )
@@ -214,6 +241,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                         talkInboxTracking.eventLazyLoad(viewModel.getType(), it.page, inbox.count { inbox -> inbox.isUnread }, inbox.count { inbox -> !inbox.isUnread }, shopID, viewModel.getUserId())
                         hideFullPageError()
                         hideFullPageLoading()
+                        hideLoading()
                         if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                             talkInboxListener?.updateUnreadCounter(it.data.sellerUnread, it.data.buyerUnread)
                             hideLoading()
@@ -232,12 +260,17 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                                 return@Observer
                             }
                         }
-                        renderData(inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
+                        if(isOldView()) {
+                            renderOldData(inbox.map { inbox -> TalkInboxOldUiModel(inbox) }, it.data.hasNext)
+                        } else {
+                            renderData(inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
+                        }
                     }
 
                 }
                 is TalkInboxViewState.Fail -> {
                     hideFullPageLoading()
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageError()
                     } else {
@@ -245,12 +278,19 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
                     }
                 }
                 is TalkInboxViewState.Loading -> {
+                    hideLoading()
                     if(it.page == TalkConstants.DEFAULT_INITIAL_PAGE) {
                         showFullPageLoading()
                     }
                 }
             }
         })
+    }
+
+    private fun renderOldData(data: List<TalkInboxOldUiModel>, hasNext: Boolean) {
+        hideEmpty()
+        talkInboxRecyclerView.show()
+        renderList(data, hasNext)
     }
 
     private fun renderData(data: List<TalkInboxUiModel>, hasNext: Boolean) {
@@ -260,8 +300,11 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun initErrorPage() {
-        inboxPageError.talkConnectionErrorRetryButton.setOnClickListener {
-            loadInitialData()
+        inboxPageError.apply {
+            talkConnectionErrorRetryButton.setOnClickListener {
+                loadInitialData()
+            }
+            reading_image_error.loadImageDrawable(com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection)
         }
     }
 
@@ -278,26 +321,48 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
             Toaster.build(talkInboxContainer, getString(R.string.inbox_toaster_connection_error), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.talk_retry), View.OnClickListener { loadData(currentPage) }). show() }
     }
 
-    private fun initEmptyState() {
-        talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
-    }
-
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
-        talkInboxSortFilter.hide()
+        if(isSellerTab() && !isOldView()){
+            talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
+            talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
+        } else {
+            talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+            talkInboxEmptySubtitle.text = ""
+        }
         talkInboxEmpty.show()
     }
 
     private fun showEmptyUnread() {
-        talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
-        talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
+        when {
+            isSellerTab() && !isOldView() -> {
+                talkInboxEmptyImage.loadImage(EMPTY_SELLER_READ_DISCUSSION)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_seller_unread_title)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_unread_subtitle)
+            }
+            else -> {
+                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_unread_discussion)
+            }
+        }
         talkInboxEmpty.show()
         talkInboxRecyclerView.hide()
     }
 
     private fun showEmptyRead() {
-        talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
-        talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
+        when {
+            isSellerTab() && !isOldView() -> {
+                talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
+            }
+            else -> {
+                talkInboxEmptyImage.loadImage(EMPTY_DISCUSSION_IMAGE)
+                talkInboxEmptyTitle.text = getString(R.string.inbox_empty_title)
+                talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_read_discussion)
+            }
+        }
         talkInboxEmpty.show()
         talkInboxRecyclerView.hide()
     }
@@ -307,11 +372,19 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
     }
 
     private fun showFullPageLoading() {
-        inboxPageLoading.show()
+        if(isOldView()) {
+            inboxPageLoading.show()
+            return
+        }
+        unifiedInboxPageLoading.show()
     }
 
     private fun hideFullPageLoading() {
-        inboxPageLoading.hide()
+        if(isOldView()) {
+            inboxPageLoading.hide()
+            return
+        }
+        unifiedInboxPageLoading.hide()
     }
 
     private fun getDataFromArgument() {
@@ -350,7 +423,7 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
 
     private fun selectFilter(filter: TalkInboxFilter) {
         viewModel.setFilter(filter)
-        showLoading()
+        showFullPageLoading()
         clearAllData()
     }
 
@@ -360,6 +433,18 @@ class TalkInboxFragment : BaseListFragment<TalkInboxUiModel, TalkInboxAdapterTyp
         } else {
             ChipsUnify.TYPE_NORMAL
         }
+    }
+
+    private fun setInboxType()  {
+        viewModel.setInboxType(inboxType)
+    }
+
+    private fun isOldView(): Boolean {
+        return false
+    }
+
+    private fun isSellerTab(): Boolean {
+        return viewModel.getType() == TalkInboxTab.SHOP_TAB
     }
 
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorder.unifiedhistory.list.view.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.tokopedia.buyerorder.unifiedhistory.list.data.model.UohTypeData
 import com.tokopedia.buyerorder.unifiedhistory.list.view.adapter.viewholder.*
 import com.tokopedia.buyerorder.unifiedhistory.list.view.fragment.UohListFragment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import timber.log.Timber
 
 /**
  * Created by fwidjaja on 22/07/20.
@@ -130,13 +132,21 @@ class UohItemAdapter : RecyclerView.Adapter<UohItemAdapter.BaseViewHolder<*>>() 
     }
 
     fun showLoaderAtIndex(index: Int) {
-        listTypeData[index] = UohTypeData("", TYPE_LOADER)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData("", TYPE_LOADER)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.w("P2#ORDER_HISTORY#error_show;err='${Log.getStackTraceString(ex)}'")
+        }
     }
 
     fun updateDataAtIndex(index: Int, order: UohListOrder.Data.UohOrders.Order) {
-        listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
-        notifyItemChanged(index)
+        try {
+            listTypeData[index] = UohTypeData(order, TYPE_ORDER_LIST)
+            notifyItemChanged(index)
+        } catch (ex: Exception) {
+            Timber.w("P2#ORDER_HISTORY#error_update;err='${Log.getStackTraceString(ex)}'")
+        }
     }
 
     fun addList(list: List<UohTypeData>) {

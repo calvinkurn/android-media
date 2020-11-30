@@ -15,7 +15,7 @@
     <com.tokopedia.unifyprinciples.Typography
         app:typographyType="heading_4"
         android:id="@+id/text"
-        android:textColor="@color/clr_31353B"
+        android:textColor="@color/Unify_N700"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:singleLine="true"

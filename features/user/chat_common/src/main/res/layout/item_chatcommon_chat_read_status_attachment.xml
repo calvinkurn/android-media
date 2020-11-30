@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:gravity="center_vertical"
-        tools:layout_height="wrap_content"
-        tools:layout_width="wrap_content"
-        tools:orientation="horizontal"
-        tools:parentTag="android.widget.LinearLayout">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:gravity="center_vertical"
+    tools:layout_height="wrap_content"
+    tools:layout_width="wrap_content"
+    tools:orientation="horizontal"
+    tools:parentTag="android.widget.LinearLayout">
 
     <ImageView
-            android:id="@+id/chat_status"
-            android:layout_width="@dimen/chatcommon_14dp"
-            android:layout_height="@dimen/chatcommon_14dp"
-            android:layout_marginEnd="@dimen/spacing_lvl1"
-            android:layout_marginRight="@dimen/spacing_lvl1"
-            tools:srcCompat="@drawable/ic_chatcommon_check_read_rounded_green" />
+        android:id="@+id/chat_status"
+        android:layout_width="@dimen/chatcommon_14dp"
+        android:layout_height="@dimen/chatcommon_14dp"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        tools:srcCompat="@drawable/ic_chatcommon_check_read_rounded_green" />
 
     <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/hour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:textColor="@color/Neutral_N700_44"
-            app:typographyType="body_3"
-            tools:text="11:00" />
+        android:id="@+id/hour"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:textColor="@color/Unify_N700_44"
+        app:typographyType="body_3"
+        tools:text="11:00" />
+
 </merge>

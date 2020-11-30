@@ -9,8 +9,6 @@ import android.widget.LinearLayout
 import androidx.collection.ArrayMap
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.entity.bumpreminder.BumpReminderResponse
-import com.tokopedia.notifcenter.data.entity.deletereminder.DeleteReminderResponse
 import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.state.Resource
 import com.tokopedia.notifcenter.data.state.Status
@@ -30,13 +28,18 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
         listener = parentFragment as? NotificationItemListener
     }
 
-    fun handleEventBumpReminder(
-            data: Resource<BumpReminderResponse>,
-            viewHolderState: ViewHolderState?
+    fun handleEventReminderState(
+            data: Resource<Any>,
+            viewHolderState: ViewHolderState?,
+            isBumpReminder: Boolean
     ) {
         when (data.status) {
             Status.SUCCESS -> {
-                showMessage(R.string.title_success_bump_reminder)
+                if (isBumpReminder) {
+                    showMessage(R.string.title_success_bump_reminder)
+                } else {
+                    showMessage(R.string.title_success_delete_reminder)
+                }
             }
             Status.ERROR -> {
                 data.throwable?.let { error ->
@@ -48,33 +51,9 @@ class NotificationProductLongerContentBottomSheet : NotificationLongerContentBot
         }
         val payload = viewHolderState?.payload
         if (payload is ProductData) {
-            val index = notification?.productData?.indexOf(payload) ?: return
-            val product = notification?.productData?.get(index)
-            product?.update(payload)
-            val productView = products[product?.productId]
-            productView?.bumpReminderState(product)
-        }
-    }
-
-    fun handleEventDeleteReminder(
-            data: Resource<DeleteReminderResponse>,
-            viewHolderState: ViewHolderState?
-    ) {
-        when (data.status) {
-            Status.SUCCESS -> {
-                showMessage(R.string.title_success_delete_reminder)
-            }
-            Status.ERROR -> {
-                data.throwable?.let { error ->
-                    showErrorMessage(error)
-                }
-            }
-            else -> {
-            }
-        }
-        val payload = viewHolderState?.payload
-        if (payload is ProductData) {
-            val index = notification?.productData?.indexOf(payload) ?: return
+            val index = notification?.productData?.indexOfFirst {
+                it.productId == payload.productId
+            } ?: return
             val product = notification?.productData?.get(index)
             product?.update(payload)
             val productView = products[product?.productId]

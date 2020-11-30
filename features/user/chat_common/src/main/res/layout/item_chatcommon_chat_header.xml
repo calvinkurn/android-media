@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -16,7 +17,7 @@
         android:layout_marginTop="@dimen/chatcommon_12dp"
         android:paddingBottom="@dimen/spacing_lvl4"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/chatcommon_hour_time"
+        android:textColor="@color/Unify_N700_44"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,4 +44,5 @@
         <include layout="@layout/item_chatcommon_header_role_user" />
 
     </LinearLayout>
+
 </merge>

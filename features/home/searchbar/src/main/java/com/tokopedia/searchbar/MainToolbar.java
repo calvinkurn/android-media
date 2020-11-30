@@ -3,17 +3,19 @@ package com.tokopedia.searchbar;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -143,7 +145,7 @@ public class MainToolbar extends Toolbar {
         btnInbox.setOnClickListener(v -> {
             if (userSession.isLoggedIn()) {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
-                RouteManager.route(context, ApplinkConst.INBOX);
+                RouteManager.route(context, ApplinkConstInternalMarketplace.INBOX);
             } else {
                 searchBarAnalytics.eventTrackingWishlist(SearchBarConstant.INBOX, screenName);
                 RouteManager.route(context, ApplinkConst.LOGIN);

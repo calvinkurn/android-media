@@ -409,6 +409,9 @@ data class Form(
         @SerializedName("element_type")
         @Expose
         val elementType: String = "",
+        @SerializedName("options")
+        @Expose
+        val options: String = "",
         @SerializedName("error_message")
         @Expose
         val errorMessage: String = "",

@@ -1,6 +1,6 @@
-package com.tokopedia.digital.home.domain
+package com.tokopedia.digital.home.old.domain
 
-import com.tokopedia.digital.home.model.*
+import com.tokopedia.digital.home.old.model.*
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase

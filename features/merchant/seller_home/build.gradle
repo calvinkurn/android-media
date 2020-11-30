@@ -17,7 +17,7 @@ android {
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://hansel.io/maven' }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
         jcenter()
         google()
     }
@@ -88,7 +88,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
-    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation project(rootProject.ext.libraries.unitTest)
 
     // UI Test
     androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
