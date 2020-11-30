@@ -620,13 +620,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     val newView: View = when (onboarding.coachmarkType) {
                         1 -> generateNewCoachMarkAnchorType1(it, detailIndexed.index)
                         2 -> generateNewCoachMarkAnchorType2(it, detailIndexed.index)
-                        3 -> generateNewCoachMarkAnchorType3(it, detailIndexed.index)
+                        3 -> generateNewCoachMarkAnchorForExistingUserOneProfile(it, detailIndexed.index)
                         4 -> generateNewCoachMarkAnchorType4(it, detailIndexed.index)
                         else -> it.findViewById(R.id.tv_header_2)
                     }
                     coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message))
                 }
                 val coachMark = CoachMark2(it.context)
+                coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                        triggerCoachMarkAnalytics(onboarding, currentIndex, false)
+                    }
+                })
+                coachMark.onFinishListener = {
+                    when (onboarding.coachmarkType) {
+                        2 -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                        3 -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
+                        4 -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
+                    }
+                }
                 // manual scroll first item
                 val firstView = coachMarkItems.first().anchorView
                 firstView.post {
@@ -634,7 +646,60 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     ViewHelper.getRelativePositionRec(firstView, scrollview, relativeLocation)
                     scrollview.scrollTo(0, relativeLocation.last())
                     coachMark.showCoachMark(coachMarkItems, scrollview)
-                    orderSummaryAnalytics.eventViewOnboardingTicker()
+                    // trigger first analytics
+                    triggerCoachMarkAnalytics(onboarding, 0, true)
+                }
+            }
+        }
+    }
+
+    private fun triggerCoachMarkAnalytics(onboarding: OccMainOnboarding, currentIndex: Int, firstView: Boolean) {
+        when (onboarding.coachmarkType) {
+            1 -> when (currentIndex) {
+                0 -> {
+                    orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
+                }
+                1 -> {
+                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
+                    orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
+                }
+            }
+            2 -> when (currentIndex) {
+                0 -> {
+                    orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                }
+                1 -> {
+                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                    orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
+//                    orderSummaryAnalytics.eventClickBalikOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                }
+                2 -> {
+                    orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                    orderSummaryAnalytics.eventViewCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                }
+            }
+            3 -> when (currentIndex) {
+                0 -> {
+                    if (!firstView) {
+                        orderSummaryAnalytics.eventClickBalikOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
+                    }
+                    orderSummaryAnalytics.eventViewCoachmark1ForExistingUserOneProfile(userSession.get().userId)
+                }
+                1 -> {
+                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForExistingUserOneProfile(userSession.get().userId)
+                    orderSummaryAnalytics.eventViewCoachmark2ForExistingUserOneProfile(userSession.get().userId)
+                }
+            }
+            4 -> when (currentIndex) {
+                0 -> {
+                    if (!firstView) {
+                        orderSummaryAnalytics.eventClickBalikOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
+                    }
+                    orderSummaryAnalytics.eventViewCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
+                }
+                1 -> {
+                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
+                    orderSummaryAnalytics.eventViewCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
                 }
             }
         }
@@ -655,7 +720,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun generateNewCoachMarkAnchorType3(view: View, index: Int): View {
+    private fun generateNewCoachMarkAnchorForExistingUserOneProfile(view: View, index: Int): View {
         return when (index) {
             0 -> view.findViewById(R.id.btn_new_change_duration)
             else -> view.findViewById(R.id.tv_new_choose_preference)

@@ -475,6 +475,30 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST = "preference - click tambah template beli langsung on profile list";
         String CLICK_EDIT_PROFILE_ON_PROFILE_LIST = "preference - click edit profile on profile list";
 
+        String VIEW_COACHMARK_1_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 1 for existing user one profile";
+        String VIEW_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "view coachmark 2 for existing user one profile";
+        String CLICK_LANJUT_ON_COACHMARK_1_FOR_EXISTING_USER_ONE_PROFILE = "click lanjut on coachmark 1 for existing user one profile";
+        String CLICK_BALIK_ON_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "click balik on coachmark 2 for existing user one profile";
+        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_ONE_PROFILE = "click done on coachmark 2 for existing user one profile";
+
+        String VIEW_COACHMARK_1_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 1 for existing user multi profile";
+        String VIEW_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "view coachmark 2 for existing user multi profile";
+        String CLICK_LANJUT_ON_COACHMARK_1_FOR_EXISTING_USER_MULTI_PROFILE = "click lanjut on coachmark 1 for existing user multi profile";
+        String CLICK_BALIK_ON_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "click balik on coachmark 2 for existing user multi profile";
+        String CLICK_DONE_ON_COACHMARK_2_FOR_EXISTING_USER_MULTI_PROFILE = "click done on coachmark 2 for existing user multi profile";
+
+        String VIEW_COACHMARK_1_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 1 for new buyer before create profile";
+        String VIEW_COACHMARK_2_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "view coachmark 2 for new buyer before create profile";
+        String CLICK_LANJUT_ON_COACHMARK_1_FOR_NEW_BUYER_BEFORE_CREATE_PROFILE = "click lanjut on coachmark 1 for new buyer before create profile";
+
+        String VIEW_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 1 for new buyer after create profile";
+        String VIEW_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 2 for new buyer after create profile";
+        String VIEW_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "view coachmark 3 for new buyer after create profile";
+        String CLICK_LANJUT_ON_COACHMARK_1_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click lanjut on coachmark 1 for new buyer after create profile";
+        String CLICK_LANJUT_ON_COACHMARK_2_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click lanjut on coachmark 2 for new buyer after create profile";
+        String CLICK_BALIK_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click balik on coachmark 3 for new buyer after create profile";
+        String CLICK_DONE_ON_COACHMARK_3_FOR_NEW_BUYER_AFTER_CREATE_PROFILE = "click done on coachmark 3 for new buyer after create profile";
+
         // Shipping experience
         String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";
         String CLICK_CEK_ON_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "click cek on summary transaction ticker courier not complete";
