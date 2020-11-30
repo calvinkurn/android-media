@@ -9,11 +9,17 @@ data class ChannelInfoUiModel(
         val showPinnedProduct: Boolean,
         val titleBottomSheet: String,
         val partnerInfo: PartnerInfoUiModel,
-        val feedInfo: FeedInfoUiModel
+        val feedInfo: FeedInfoUiModel,
+        val shareInfo: ShareInfoUiModel
 )
 
 data class FeedInfoUiModel(
         val contentId: String,
         val contentType: Int,
         val likeType: Int
+)
+
+data class ShareInfoUiModel(
+        val content: String,
+        val isShowButton: Boolean
 )

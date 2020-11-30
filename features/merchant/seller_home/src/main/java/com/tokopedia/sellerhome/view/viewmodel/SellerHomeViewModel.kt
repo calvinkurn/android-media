@@ -2,8 +2,8 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.seller.menu.common.coroutine.SellerHomeCoroutineDispatcher
 import com.tokopedia.sellerhome.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
@@ -41,7 +41,7 @@ class SellerHomeViewModel @Inject constructor(
         private val getMultiLineGraphUseCase: Lazy<GetMultiLineGraphUseCase>,
         private val getAnnouncementUseCase: Lazy<GetAnnouncementDataUseCase>,
         private val remoteConfig: SellerHomeRemoteConfig,
-        private val dispatcher: SellerHomeCoroutineDispatcher
+        private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
@@ -103,7 +103,7 @@ class SellerHomeViewModel @Inject constructor(
     val announcementWidgetData: LiveData<Result<List<AnnouncementDataUiModel>>>
         get() = _announcementWidgetData
 
-    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io()) {
+    private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
         executeOnBackground()
     }
 
@@ -214,7 +214,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getMultiLineGraphWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io()) {
+            val result: Success<List<MultiLineGraphDataUiModel>> = Success(withContext(dispatcher.io) {
                 getMultiLineGraphUseCase.get().params = GetMultiLineGraphUseCase.getRequestParams(dataKeys, dynamicParameter)
                 return@withContext getMultiLineGraphUseCase.get().executeOnBackground()
             })
@@ -226,7 +226,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getAnnouncementWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
-            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io()) {
+            val result: Success<List<AnnouncementDataUiModel>> = Success(withContext(dispatcher.io) {
                 getAnnouncementUseCase.get().params = GetAnnouncementDataUseCase.createRequestParams(dataKeys)
                 return@withContext getAnnouncementUseCase.get().executeOnBackground()
             })
@@ -238,7 +238,7 @@ class SellerHomeViewModel @Inject constructor(
 
     fun getShopLocation() {
         launchCatchError(block = {
-            val result: Success<ShippingLoc> = Success(withContext(dispatcher.io()) {
+            val result: Success<ShippingLoc> = Success(withContext(dispatcher.io) {
                 getShopLocationUseCase.get().params = GetShopLocationUseCase.getRequestParams(shopId)
                 return@withContext getShopLocationUseCase.get().executeOnBackground()
             })

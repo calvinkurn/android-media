@@ -117,7 +117,6 @@ import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -933,29 +932,6 @@ class SomDetailFragment : BaseDaggerFragment(),
                 }
             }
         })
-    }
-
-    override fun onShowBottomSheetInfo(title: String, resIdDesc: Int) {
-        val bottomSheetUnify = BottomSheetUnify()
-        val childView = View.inflate(context, R.layout.bottomsheet_som_info, null)
-
-        val bottomSheetDesc: Typography = childView.findViewById(R.id.bottomsheet_desc)
-        bottomSheetDesc.setText(resIdDesc)
-
-        val childBtn: UnifyButton = childView.findViewById(R.id.btn_mengerti)
-        childBtn.setOnClickListener { bottomSheetUnify.dismiss() }
-
-        fragmentManager?.let {
-            bottomSheetUnify.apply {
-                clearClose(false)
-                clearHeader(false)
-                setTitle(title)
-                setOnDismissListener { this.dismiss() }
-                setCloseClickListener { this.dismiss() }
-                setChild(childView)
-            }
-            bottomSheetUnify.show(it, TAG_BOTTOMSHEET)
-        }
     }
 
     override fun onShowBuyerRequestCancelReasonBottomSheet(it: SomDetailOrder.Data.GetSomDetail.Button) {

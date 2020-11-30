@@ -210,7 +210,7 @@ class AddEditProductDescriptionFragment:
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         textFieldDescription.setCounter(MAX_DESCRIPTION_CHAR)
         textFieldDescription.textFieldInput.apply {

@@ -10,7 +10,8 @@
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/relativeLayoutUsePromoGlobal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_N0">
 
         <RelativeLayout
             android:layout_width="match_parent"
