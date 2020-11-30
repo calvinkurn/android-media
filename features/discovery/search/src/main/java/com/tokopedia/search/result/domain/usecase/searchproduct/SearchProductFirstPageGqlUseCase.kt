@@ -168,6 +168,7 @@ class SearchProductFirstPageGqlUseCase(
                             gold_shop
                             gold_shop_badge
                             shop_is_official
+                            merchant_vouchers
                             product {
                                 id
                                 name
