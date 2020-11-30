@@ -6,7 +6,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneRecommendationItemDataModel
 import com.tokopedia.product.detail.view.viewmodel.AddToCartDoneViewModel
 import com.tokopedia.product.util.BaseProductViewModelTest
-import com.tokopedia.product.util.TestDispatcherProvider
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -45,12 +45,10 @@ class AddToCartDoneViewModelTest : BaseProductViewModelTest() {
     @RelaxedMockK
     lateinit var addToCartUseCase: AddToCartUseCase
 
-    private val dispatchers =  TestDispatcherProvider()
-
     private val viewModel by lazy {
         AddToCartDoneViewModel(userSessionInterface, addWishListUseCase,
                 removeWishListUseCase, getRecommendationUseCase,
-                addToCartUseCase, dispatchers)
+                addToCartUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

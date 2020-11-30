@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -193,7 +194,7 @@ class SomListOrderViewHolder(
             val deadlineText = element.deadlineText
             val deadlineColor = element.deadlineColor
             if (deadlineText.isNotBlank() && deadlineColor.isNotBlank()) {
-                val filter: ColorFilter = LightingColorFilter(Color.BLACK, Color.parseColor(deadlineColor))
+                val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), Color.parseColor(deadlineColor))
                 val textBackgroundDrawable = MethodChecker.getDrawable(context, R.drawable.bg_due_response_text).apply {
                     colorFilter = filter
                 }
@@ -208,7 +209,7 @@ class SomListOrderViewHolder(
                 }
                 icDeadline.apply {
                     background = iconBackgroundDrawable
-                    colorFilter = LightingColorFilter(Color.BLACK, Color.WHITE)
+                    colorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G900), ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
                     val padding = getDimens(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
                     setPadding(padding, padding, 0, padding)
                 }

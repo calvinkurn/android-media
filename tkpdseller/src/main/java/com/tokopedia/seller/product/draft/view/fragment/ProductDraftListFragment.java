@@ -2,6 +2,7 @@ package com.tokopedia.seller.product.draft.view.fragment;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,7 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.tokopedia.seller.common.utils.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
@@ -28,8 +29,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant;
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
 import com.tokopedia.seller.manageitem.data.db.ProductDraftViewModel;
@@ -53,6 +52,12 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.ADD_PRODUCT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.CLICK;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.CLICK_DRAFT_PRODUCT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.DELETE_DRAFT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.DRAFT_PRODUCT;
+import static com.tokopedia.seller.product.draft.analytic.ProductDraftAnalyticsConstantKt.EDIT_DRAFT;
 
 /**
  * Created by Hendry on 6/19/2017.
@@ -77,9 +82,10 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     ProductDraftListTracker tracker;
 
     private BroadcastReceiver draftBroadCastReceiver;
-    private TkpdProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
     private MenuItem menuDelete;
     private String shopId;
+    private Boolean draftListChanged = false;
 
     OnProductDraftListFragmentListener onProductDraftListFragmentListener;
 
@@ -94,6 +100,10 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public static ProductDraftListFragment newInstance() {
         return new ProductDraftListFragment();
+    }
+
+    public Boolean getDraftListChanged() {
+        return draftListChanged;
     }
 
     @Override
@@ -118,7 +128,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 }
                 AlertDialog dialog = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
                         .setMessage(MethodChecker.fromHtml(message))
-                        .setPositiveButton(getString(R.string.action_delete), new DialogInterface.OnClickListener() {
+                        .setPositiveButton(getString(R.string.label_delete), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 adapter.confirmDelete(position);
@@ -129,7 +139,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                                     // go to empty state if all data has been deleted
                                     resetPageAndSearch();
                                 }
-                                tracker.sendEventDraftProductClicked(AppEventTracking.EventLabel.DELETE_DRAFT);
+                                tracker.sendEventDraftProductClicked(DELETE_DRAFT);
                             }
                         }).setNegativeButton(getString(R.string.label_cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface arg0, int arg1) {
@@ -218,7 +228,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                 .toString();
         Intent intent = RouteManager.getIntent(getContext(), uri);
 
-        eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
+        eventDraftProductClicked(EDIT_DRAFT);
         if (intent != null) {
             startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
         }
@@ -247,16 +257,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     private void showProgressDialog() {
         if (progressDialog == null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+            progressDialog = new ProgressDialog(getActivity());
             progressDialog.setCancelable(false);
         }
-        if (!progressDialog.isProgress()) {
-            progressDialog.showDialog();
+        if (!progressDialog.isShowing()) {
+            progressDialog.show();
         }
     }
 
     private void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isProgress()) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
     }
@@ -279,8 +289,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             draftBroadCastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT))) {
+                    if (intent.getAction().equals(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)) {
                         resetPageAndSearch();
+                        draftListChanged = true;
                     }
                 }
             };
@@ -334,7 +345,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     @Override
     public void onEmptyButtonClicked() {
-        eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
+        eventDraftProductClicked(ADD_PRODUCT);
         ProductAddEditDraftListPageTracking.INSTANCE.eventAddEditDraftClicked(shopId, ProductAddEditDraftListPageTracking.CLICK_ADD_PRODUCT);
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.PRODUCT_ADD);
         startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT);
@@ -342,9 +353,9 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
 
     public void eventDraftProductClicked(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
-                AppEventTracking.Category.DRAFT_PRODUCT,
-                AppEventTracking.Action.CLICK,
+                CLICK_DRAFT_PRODUCT,
+                DRAFT_PRODUCT,
+                CLICK,
                 label);
     }
 
