@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Unify_N0"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <fragment
@@ -30,7 +31,7 @@
         app:toolbarContentType="typeTitle"
         app:toolbarInitialTheme="light"
         app:toolbarBackButton="close"
-        app:toolbarAlwaysShowShadow="true"
+        app:toolbarAlwaysShowShadow="false"
         app:toolbarPageName="nav page"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
