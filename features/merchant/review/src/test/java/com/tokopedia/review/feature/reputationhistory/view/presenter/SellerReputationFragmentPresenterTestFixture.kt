@@ -1,5 +1,6 @@
 package com.tokopedia.review.feature.reputationhistory.view.presenter
 
+import androidx.fragment.app.FragmentActivity
 import com.tokopedia.core.gcm.GCMHandler
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationMergeUseCase
 import com.tokopedia.review.feature.reputationhistory.domain.interactor.ReviewReputationUseCase
@@ -26,10 +27,13 @@ abstract class SellerReputationFragmentPresenterTestFixture {
     lateinit var gcmHandler: GCMHandler
 
     @RelaxedMockK
-    lateinit var view: SellerReputationView
+    lateinit var presenterView: SellerReputationView
 
     @RelaxedMockK
     lateinit var errorNetworkListener: DefaultErrorSubscriber.ErrorNetworkListener
+
+    @RelaxedMockK
+    lateinit var activity: FragmentActivity
 
     protected lateinit var presenter: SellerReputationFragmentPresenter
 
@@ -38,12 +42,13 @@ abstract class SellerReputationFragmentPresenterTestFixture {
         MockKAnnotations.init(this)
         presenter = SellerReputationFragmentPresenter()
         presenter.apply {
-            setReviewReputationUseCase(reviewReputationUseCase)
-            setReviewReputationMergeUseCase(reviewReputationMergeUseCase)
+            attachView(presenterView)
             setUserSession(userSession)
+            setReviewReputationUseCase(reviewReputationUseCase)
             setGcmHandler(gcmHandler)
             setErrorNetworkListener(errorNetworkListener)
-            attachView(view)
+            setReviewReputationMergeUseCase(reviewReputationMergeUseCase)
+            fillMessages(activity)
         }
     }
 

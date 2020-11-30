@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyLong
 import rx.observers.TestSubscriber
 
 class SellerReputationFragmentPresenterTest : SellerReputationFragmentPresenterTestFixture() {
@@ -22,8 +23,12 @@ class SellerReputationFragmentPresenterTest : SellerReputationFragmentPresenterT
             testSubscriber.onStart()
             testSubscriber.onCompleted()
             testSubscriber.onNext(expectedResponse)
+            presenter.resetHitNetwork()
         }
 
+        presenter.formatDate(anyLong())
+        presenter.setStartDate(anyLong())
+        presenter.setEndDate(anyLong())
         presenter.incrementPage()
         presenter.networkStatus = NetworkStatus.LOADMORE
         presenter.loadMoreNetworkCall()
@@ -47,6 +52,9 @@ class SellerReputationFragmentPresenterTest : SellerReputationFragmentPresenterT
             testSubscriber.onError(expectedResponse)
         }
 
+        presenter.formatDate(anyLong())
+        presenter.setStartDate(anyLong())
+        presenter.setEndDate(anyLong())
         presenter.incrementPage()
         presenter.networkStatus = NetworkStatus.LOADMORE
         presenter.loadMoreNetworkCall()
@@ -67,6 +75,7 @@ class SellerReputationFragmentPresenterTest : SellerReputationFragmentPresenterT
             testSubscriber.onStart()
             testSubscriber.onCompleted()
             testSubscriber.onNext(expectedResponse)
+            presenter.resetHitNetwork()
         }
 
         presenter.resetPage()
