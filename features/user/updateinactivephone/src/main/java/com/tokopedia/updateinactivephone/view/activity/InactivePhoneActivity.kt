@@ -95,17 +95,12 @@ class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface
         }
     }
 
-
-    private fun getAppPackageName(): String? {
-        return if (GlobalConfig.isSellerApp()) {
-            PACKAGE_SELLER_APP
-        } else PACKAGE_CONSUMER_APP
+    private fun getAppPackageName(): String {
+        return applicationContext.packageName
     }
 
     companion object {
 
-        private const val PACKAGE_SELLER_APP = "com.tokopedia.sellerapp"
-        private const val PACKAGE_CONSUMER_APP = "com.tokopedia.tkpd"
         private const val APPLINK_PLAY_STORE = "market://details?id="
         private const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id="
 
