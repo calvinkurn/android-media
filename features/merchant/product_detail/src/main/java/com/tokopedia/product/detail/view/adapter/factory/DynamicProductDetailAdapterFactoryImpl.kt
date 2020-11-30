@@ -97,6 +97,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
         return ProductTopAdsImageViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductDetailInfoDataModel): Int {
+        return ProductDetailInfoViewHolder.LAYOUT
+    }
+
     override fun type(reportData: ProductReportDataModel): Int {
         return ProductReportViewHolder.LAYOUT
     }
@@ -124,6 +128,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
             ProductCustomInfoViewHolder.LAYOUT -> ProductCustomInfoViewHolder(view, listener)
             ProductTopAdsImageViewHolder.LAYOUT -> ProductTopAdsImageViewHolder(view, listener)
+            ProductDetailInfoViewHolder.LAYOUT -> ProductDetailInfoViewHolder(view, listener)
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
