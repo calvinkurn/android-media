@@ -44,6 +44,8 @@ dependencies {
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
+
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

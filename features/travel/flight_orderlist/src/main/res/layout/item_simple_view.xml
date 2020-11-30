@@ -7,34 +7,38 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingBottom="@dimen/dp_4"
-    android:paddingTop="@dimen/dp_4">
+    android:paddingTop="@dimen/spacing_lvl2"
+    android:paddingBottom="@dimen/spacing_lvl2">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title"
-        style="@style/TextView.Micro"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:maxLines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
         tools:text="@string/app_name" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_content"
-        style="@style/TextView.Micro"
         android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="end"
         android:maxLines="1"
         android:scrollHorizontally="true"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="body_3"
         tools:text="@string/app_name" />
 
     <ImageView
         android:id="@+id/iv_arrow"
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_16"
+        android:layout_width="@dimen/layout_lvl1"
+        android:layout_height="@dimen/layout_lvl2"
         android:layout_gravity="center_vertical|end"
-        android:layout_marginLeft="@dimen/dp_8"
-        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginLeft="@dimen/spacing_lvl3"
         android:visibility="gone"
         app:srcCompat="@drawable/ic_arrow_right_default"
         tools:visibility="visible" />

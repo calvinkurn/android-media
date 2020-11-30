@@ -46,7 +46,6 @@ public class TkpdBaseURL {
 
         public static final String PATH_GET_OPEN_SHOP_FORM = "get_open_shop_form.pl";
 
-        public static final String PATH_EVENT_SHOP_ADD_ETALASE = "event_shop_add_etalase.pl";
         public static final String PATH_GET_SHOP_ETALASE = "get_shop_etalase.pl";
 
         public static final String PATH_GET_SHOP_INFO = "get_shop_info.pl";
