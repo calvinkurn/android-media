@@ -21,10 +21,10 @@ data class TotalLikeContent(
     )
 
     data class Metric(
-            @SerializedName("likeChannel") // TODO: wait for update from BE side
+            @SerializedName("totalLikeFmt")
             val fmt: String = "",
 
-            @SerializedName("likeChannel")
+            @SerializedName("totalLike")
             val value: String = ""
     )
 

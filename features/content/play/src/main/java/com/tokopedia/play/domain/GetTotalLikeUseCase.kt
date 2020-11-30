@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.data.TotalLike
 import com.tokopedia.play.data.TotalLikeContent
 import com.tokopedia.usecase.coroutines.UseCase
@@ -26,7 +27,7 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRep
         return try {
             val metric = response.totalLikeContent.data.first().channel.metrics
             TotalLike(
-                    totalLike = metric.value.toInt(),
+                    totalLike = metric.value.toIntOrZero(),
                     totalLikeFormatted = metric.fmt
             )
         } catch (e: Throwable) {
@@ -40,12 +41,13 @@ class GetTotalLikeUseCase @Inject constructor(private val gqlUseCase: GraphqlRep
         private val query = getQuery()
 
         private fun getQuery() : String =  """
-            query GetTotalLikes(${'$'}channelId: String!){
+             query GetTotalLikes(${'$'}channelId: String!){
               broadcasterReportSummariesBulk(channelIDs: [${'$'}channelId]) {
                 reportData {
                   channel {
                     metrics {
-                      likeChannel
+                      totalLike
+                      totalLikeFmt
                     }
                   }
                 }
