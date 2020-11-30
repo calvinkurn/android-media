@@ -182,7 +182,7 @@ class DiscoveryAnalytics(val pageType: String = EMPTY_STRING,
                 USER_ID to (userID ?: ""),
                 BUSINESS_UNIT to HOME_BROWSE,
                 PAGE_TYPE to pageType,
-                PAGE_PATH to pagePath)
+                PAGE_PATH to removeDashPageIdentifier(pageIdentifier))
         getTracker().sendGeneralEvent(map)
     }
 

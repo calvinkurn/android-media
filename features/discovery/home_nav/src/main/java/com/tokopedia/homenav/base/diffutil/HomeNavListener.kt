@@ -9,4 +9,5 @@ interface HomeNavListener {
     fun onRefresh()
     fun onMenuClick(homeNavMenuViewModel: HomeNavMenuViewModel)
     fun onMenuImpression(homeNavMenuViewModel: HomeNavMenuViewModel)
+    fun getUserId(): String
 }

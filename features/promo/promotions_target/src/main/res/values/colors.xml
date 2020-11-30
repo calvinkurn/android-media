@@ -9,5 +9,9 @@
     <color name="t_promo_white_50">#50FAFAFA</color>
     <color name="t_promo_toast_96">#f531353b</color>
     <color name="t_promo_shadow_color">#50000000</color>
+    <color name="t_promo_error">#D6001C</color>
+    <color name="t_promo_title_color">#31353B</color>
+    <color name="t_promo_active_green">#42b549</color>
+    <color name="t_promo_inactive_green">#DBDEE2</color>
 
 </resources>
