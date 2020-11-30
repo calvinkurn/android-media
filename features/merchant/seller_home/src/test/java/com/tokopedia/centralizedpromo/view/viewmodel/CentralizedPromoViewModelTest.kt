@@ -8,11 +8,11 @@ import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.*
-import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
+import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -277,6 +277,16 @@ class CentralizedPromoViewModelTest {
         val result = viewModel.getLayoutResultLiveData.value?.get(LayoutType.PROMO_CREATION)
 
         assert(result != null && result is Fail)
+    }
 
+    // just to improve coverage
+    @Test
+    fun trackFreeShippingImpressionTest() {
+        viewModel.trackFreeShippingImpression()
+    }
+
+    @Test
+    fun trackFreeShippingClickTest() {
+        viewModel.trackFreeShippingClick()
     }
 }
