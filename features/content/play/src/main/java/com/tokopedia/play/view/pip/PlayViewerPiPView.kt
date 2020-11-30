@@ -7,7 +7,9 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.R
+import com.tokopedia.play.view.fragment.PlayVideoFragment
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -24,6 +26,8 @@ class PlayViewerPiPView : ConstraintLayout {
 
     private val playVideoManager: PlayVideoManager
         get() = PlayVideoManager.getInstance(context)
+
+    private val pipAdapter = FloatingWindowAdapter(context)
 
     private val videoListener = object : PlayVideoManager.Listener {
         override fun onVideoPlayerChanged(player: ExoPlayer) {
@@ -60,7 +64,7 @@ class PlayViewerPiPView : ConstraintLayout {
     private fun setupView() {
         playVideoManager.addListener(videoListener)
         flCloseArea.setOnClickListener {
-            // TODO click close
+            pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
         }
     }
 

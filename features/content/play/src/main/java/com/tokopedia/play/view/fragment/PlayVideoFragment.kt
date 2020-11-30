@@ -338,6 +338,6 @@ class PlayVideoFragment @Inject constructor(
     companion object {
         private const val BLUR_RADIUS = 25f
 
-        private const val FLOATING_WINDOW_KEY = "PLAY_VIEWER_PIP"
+        const val FLOATING_WINDOW_KEY = "PLAY_VIEWER_PIP"
     }
 }
