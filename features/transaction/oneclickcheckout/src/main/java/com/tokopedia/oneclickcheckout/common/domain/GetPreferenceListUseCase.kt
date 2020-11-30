@@ -33,6 +33,7 @@ abstract class GetPreferenceListUseCase(defaultDispatchers: CoroutineDispatcher 
                         tickers
                         success
                         max_profile
+                        enable_occ_revamp
                         profiles {
                             profile_id
                             enable
