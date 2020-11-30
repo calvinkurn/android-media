@@ -9,7 +9,7 @@
         android:id="@+id/search_input_view_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/digital_common_bg_search_input_text_area"
+        android:background="@drawable/bg_digital_homepage_search_view_background_gray"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="@dimen/spacing_lvl3">

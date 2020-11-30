@@ -63,7 +63,7 @@
             android:layout_below="@id/product_promo_price"
             android:layout_alignParentLeft="true"
             android:lines="1"
-            android:textColor="@color/Red_R400"
+            android:textColor="@color/Yellow_Y500"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Pulsa 40.000" />
