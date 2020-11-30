@@ -464,6 +464,14 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TAMBAH_TEMPLATE = "preference - click tambah template";
         String CLICK_PILIH_TEMPLATE_LAIN = "preference - click pilih template lain";
         String VIEW_PROFILE_LIST = "view profile list";
+        String CLICK_ARROW_TO_CHANGE_ADDRESS_OPTION = "address - click arrow to change address option";
+        String CLICK_SELECTED_ADDRESS_OPTION = "address - click selected address option";
+        String CLICK_ARROW_TO_CHANGE_DURATION_OPTION = "duration - click arrow to change duration option";
+        String CLICK_SELECTED_DURATION_OPTION_NEW = "duration - click selected duration option";
+        String CLICK_ARROW_TO_CHANGE_PAYMENT_OPTION = "payment - click arrow to change payment option";
+        String CLICK_SELECTED_PAYMENT_OPTION = "payment - click selected payment option";
+        String CLICK_PROFILE_OPTION_ON_PROFILE_LIST = "preference - click profile option on profile list";
+        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY = "preference - click tambah template beli langsung on order summary";
 
         // Shipping experience
         String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";

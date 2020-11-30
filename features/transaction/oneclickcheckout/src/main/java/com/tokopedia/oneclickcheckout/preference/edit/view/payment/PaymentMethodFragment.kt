@@ -261,8 +261,10 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 })
                 parent.finish()
             } else if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                 parent.goBack()
             } else {
+                preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                 parent.addFragment(PreferenceSummaryFragment.newInstance())
             }
         }
@@ -299,7 +301,6 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             if (isSuccess != null && isSuccess.equals("true", true)) {
                 val gatewayCode = uri.getQueryParameter(QUERY_PARAM_GATEWAY_CODE)
                 if (gatewayCode != null) {
-                    preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                     goToNextStep(gatewayCode, generateMetadata(uri))
                 }
             }

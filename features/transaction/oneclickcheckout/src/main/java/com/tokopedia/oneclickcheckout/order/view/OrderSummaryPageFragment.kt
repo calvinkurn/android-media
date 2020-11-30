@@ -245,6 +245,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val gateway = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_GATEWAY)
         val metadata = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_METADATA)
         if (gateway != null && metadata != null) {
+            orderSummaryAnalytics.eventClickSelectedPaymentOption(gateway, userSession.get().userId)
             viewModel.choosePayment(gateway, metadata)
         }
     }
@@ -708,7 +709,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         buttonAturPilihan?.setOnClickListener {
-            orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
+            if (viewModel.isNewFlow) {
+                orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnOrderSummary(userSession.get().userId)
+            } else {
+                orderSummaryAnalytics.eventUserSetsFirstPreference(userSession.get().userId)
+            }
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
@@ -851,6 +856,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onAddressChange(addressId: String) {
+            orderSummaryAnalytics.eventClickSelectedAddressOption(addressId, userSession.get().userId)
             viewModel.chooseAddress(addressId)
         }
 
@@ -860,7 +866,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
-            orderSummaryAnalytics.eventClickSelectedDurationOption(selectedServiceId.toString(), userSession.get().userId)
+            orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedShippingCourierUiModel.productData.shipperProductId.toString(), userSession.get().userId)
             viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
         }
 
@@ -873,8 +879,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             viewModel.updateProduct(null, shouldReloadRates = true)
         }
 
-        override fun chooseAddress() {
+        override fun chooseAddress(currentAddressId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
+                orderSummaryAnalytics.eventClickArrowToChangeAddressOption(currentAddressId, userSession.get().userId)
                 newOrderPreferenceCard.showAddressBottomSheet(this@OrderSummaryPageFragment, viewModel.getAddressCornerUseCase.get())
             }
         }
@@ -886,9 +893,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        override fun chooseDuration(isDurationError: Boolean) {
+        override fun chooseDuration(isDurationError: Boolean, currentSpId: String) {
             if (isDurationError) {
                 orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
+            } else if (currentSpId.isNotEmpty()) {
+                orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
             }
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 newOrderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
@@ -896,6 +905,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         override fun choosePayment(preference: OrderPreference) {
+            val currentGatewayCode = preference.preference.payment.gatewayCode
+            orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
                 putExtra(PreferenceEditActivity.EXTRA_IS_EXTRA_PROFILE, false)
@@ -903,7 +914,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.preference.profileId)
                 putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.preference.address.addressId)
                 putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.preference.shipment.serviceId)
-                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.preference.payment.gatewayCode)
+                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, currentGatewayCode)
                 putExtra(PreferenceEditActivity.EXTRA_PAYMENT_PROFILE, viewModel.getPaymentProfile())
                 val orderCost = viewModel.orderTotal.value.orderCost
                 val priceWithoutPaymentFee = orderCost.totalPrice - orderCost.paymentFee
@@ -1083,8 +1094,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     getPreferenceListUseCase = viewModel.getPreferenceListUseCase.get(),
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
+                            if (viewModel.isNewFlow) {
+                                orderSummaryAnalytics.eventClickProfileOptionOnProfileList(preference.profileId.toString(), userSession.get().userId)
+                            } else {
+                                orderSummaryAnalytics.eventClickGunakanPilihanIniFromGantiPilihanOSP()
+                            }
                             viewModel.updatePreference(preference)
-                            orderSummaryAnalytics.eventClickGunakanPilihanIniFromGantiPilihanOSP()
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {

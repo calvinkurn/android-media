@@ -144,7 +144,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 tvShippingDuration?.text = view.context.getString(R.string.lbl_shipping_with_name, shipping.serviceName)
                 tvShippingDuration?.visible()
                 setMultiViewsOnClickListener(tvShippingDuration, btnChangeDuration) {
-                    listener.chooseDuration(false)
+                    listener.chooseDuration(false, shipping.getRealShipperProductId().toString())
                 }
                 btnChangeDuration?.visible()
                 tvShippingCourier?.text = shipping.shipperName
@@ -179,7 +179,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvShippingPrice?.visible()
                     }
                     setMultiViewsOnClickListener(tvShippingCourier, tvShippingPrice, btnChangeCourier) {
-                        listener.chooseDuration(false)
+                        listener.chooseDuration(false, shipping.getRealShipperProductId().toString())
                     }
                 } else {
                     tvShippingPrice?.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
@@ -205,7 +205,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                 tvShippingErrorMessage?.text = span
                 tvShippingErrorMessage?.visible()
                 tvShippingErrorMessage?.setOnClickListener {
-                    listener.chooseDuration(true)
+                    listener.chooseDuration(true, "")
                 }
                 tvShippingCourier?.gone()
                 btnChangeCourier?.gone()
@@ -491,7 +491,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
         tvAddressDetail?.text = "${addressModel.addressStreet}, ${addressModel.districtName}, ${addressModel.cityName}, ${addressModel.provinceName} ${addressModel.postalCode}"
 
         setMultiViewsOnClickListener(tvAddressName, tvAddressReceiver, tvAddressDetail, btnChangeAddress) {
-            listener.chooseAddress()
+            listener.chooseAddress(addressModel.addressId.toString())
         }
     }
 
@@ -595,11 +595,11 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
 
         fun reloadShipping()
 
-        fun chooseAddress()
+        fun chooseAddress(currentAddressId: String)
 
         fun chooseCourier()
 
-        fun chooseDuration(isDurationError: Boolean)
+        fun chooseDuration(isDurationError: Boolean, currentSpId: String)
 
         fun choosePayment(preference: OrderPreference)
 
