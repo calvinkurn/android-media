@@ -63,8 +63,10 @@ class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface
         val minimumVersionSeller = remoteConfig.getLong(KEY_MINIMUM_VERSION_SELLER)
         val minimumVersionCustomer = remoteConfig.getLong(KEY_MINIMUM_VERSION_CUSTOMER)
 
-        if (GlobalConfig.VERSION_CODE < minimumVersionSeller || GlobalConfig.VERSION_CODE < minimumVersionCustomer) {
-            showDialogChecker()
+        if (GlobalConfig.isSellerApp()) {
+            if (GlobalConfig.VERSION_CODE < minimumVersionSeller) showDialogChecker()
+        } else {
+            if (GlobalConfig.VERSION_CODE < minimumVersionCustomer) showDialogChecker()
         }
     }
 
