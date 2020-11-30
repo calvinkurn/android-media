@@ -21,7 +21,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -41,20 +40,18 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticdata.data.constant.LogisticConstant
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
+import com.tokopedia.oneclickcheckout.common.OVO_ACTIVATION_URL
 import com.tokopedia.oneclickcheckout.common.view.model.OccGlobalEvent
 import com.tokopedia.oneclickcheckout.common.view.model.OccState
 import com.tokopedia.oneclickcheckout.common.view.model.preference.ProfilesItemModel
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.data.get.OccMainOnboarding
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.ErrorCheckoutBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OccInfoBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
-import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PreferenceListBottomSheet
+import com.tokopedia.oneclickcheckout.order.view.bottomsheet.*
 import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
@@ -63,6 +60,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerActivity
 import com.tokopedia.oneclickcheckout.preference.edit.view.payment.creditcard.CreditCardPickerFragment
+import com.tokopedia.oneclickcheckout.preference.edit.view.payment.topup.OvoTopUpWebViewActivity
 import com.tokopedia.promocheckout.common.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.common.constant.*
@@ -83,6 +81,7 @@ import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import javax.inject.Named
 
 class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderProductCardListener {
 
@@ -94,6 +93,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     @Inject
     lateinit var userSession: Lazy<UserSessionInterface>
+
+    @Inject
+    @field:Named(OVO_ACTIVATION_URL)
+    lateinit var ovoActivationUrl: Lazy<String>
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -166,6 +169,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 PaymentConstant.REQUEST_CODE -> onResultFromPayment(resultCode)
                 REQUEST_CODE_CREDIT_CARD -> onResultFromCreditCardPicker(resultCode, data)
                 REQUEST_CODE_CREDIT_CARD_ERROR -> refresh()
+                REQUEST_CODE_OVO_TOP_UP -> refresh()
             }
         }
     }
@@ -226,8 +230,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun onResultFromCreditCardPicker(resultCode: Int, data: Intent?) {
         val metadata = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_METADATA)
-        if (metadata != null) {
-            viewModel.updateCreditCard(metadata)
+        val gatewayCode = data?.getStringExtra(CreditCardPickerFragment.EXTRA_RESULT_GATEWAY_CODE)
+        if (gatewayCode != null && metadata != null) {
+            viewModel.updateCreditCard(gatewayCode, metadata)
         }
     }
 
@@ -589,9 +594,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun showEmptyPreferenceCard() {
-        imageEmptyProfile?.let {
-            ImageHandler.LoadImage(it, EMPTY_PROFILE_IMAGE)
-        }
+        imageEmptyProfile?.setImageUrl(EMPTY_PROFILE_IMAGE)
         emptyPreferenceCard?.visible()
         preferenceCard?.gone()
         orderTotalPaymentCard.setPaymentVisible(false)
@@ -774,6 +777,29 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         override fun onChangeCreditCardClicked(additionalData: OrderPaymentCreditCardAdditionalData) {
             context?.let {
                 startActivityForResult(CreditCardPickerActivity.createIntent(it, additionalData), REQUEST_CODE_CREDIT_CARD)
+            }
+        }
+
+        override fun onOvoActivateClicked(callbackUrl: String) {
+            OvoActivationWebViewBottomSheet(ovoActivationUrl.get(), callbackUrl, object : OvoActivationWebViewBottomSheet.OvoActivationWebViewBottomSheetListener {
+                override fun onActivationResult(isSuccess: Boolean) {
+                    view?.let {
+                        it.post {
+                            if (isSuccess) {
+                                Toaster.build(it, getString(R.string.message_ovo_activation_success), actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                            } else {
+                                Toaster.build(it, getString(R.string.message_ovo_activation_failed), type = Toaster.TYPE_ERROR, actionText = getString(R.string.button_ok_message_ovo_activation)).show()
+                            }
+                            refresh()
+                        }
+                    }
+                }
+            }).show(this@OrderSummaryPageFragment, userSession.get())
+        }
+
+        override fun onOvoTopUpClicked(callbackUrl: String, isHideDigital: Int, customerData: OrderPaymentOvoCustomerData) {
+            context?.let {
+                startActivityForResult(OvoTopUpWebViewActivity.createIntent(it, callbackUrl, isHideDigital, customerData), REQUEST_CODE_OVO_TOP_UP)
             }
         }
     }
@@ -1103,6 +1129,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         const val REQUEST_CODE_CREDIT_CARD = 15
         const val REQUEST_CODE_CREDIT_CARD_ERROR = 16
+
+        const val REQUEST_CODE_OVO_TOP_UP = 17
 
         const val QUERY_PRODUCT_ID = "product_id"
 

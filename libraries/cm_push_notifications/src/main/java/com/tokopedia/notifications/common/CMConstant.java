@@ -10,6 +10,7 @@ public interface CMConstant {
         String KEY_IS_CM_PUSH_ENABLE = "app_cm_push_enable_new2";
         String KEY_IS_OFFLINE_PUSH_ENABLE = "app_cm_offline_push_enabled";
         String KEY_CM_PUSH_END_TIME_INTERVAL = "app_cm_push_end_time_interval";
+        String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
     }
 
 
@@ -188,10 +189,12 @@ public interface CMConstant {
 
     interface CouponCodeExtra {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface CustomValuesKeys {
         String COUPON_CODE = "coupon_code";
+        String GRATIFICATION_ID = "gratificationId";
     }
 
     interface TimberTags {

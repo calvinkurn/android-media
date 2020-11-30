@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.officialstore.OfficialStoreDispatcherProvider
 import com.tokopedia.officialstore.category.data.model.Category
+import com.tokopedia.officialstore.common.handleResult
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -46,9 +47,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     var currentSlug: String = ""
         private set
-
-    val userId: String
-        get() = userSessionInterface.userId
 
 
     val officialStoreBannersResult: LiveData<Result<OfficialStoreBanners>>
@@ -95,6 +93,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
             val categoryId = category?.categoryId?.toIntOrNull() ?: 0
             currentSlug = "${category?.prefixUrl}${category?.slug}"
 
+            _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, true)
             _officialStoreBannersResult.value = getOfficialStoreBanners(currentSlug, false)
             _officialStoreBenefitResult.value = getOfficialStoreBenefit()
             _officialStoreFeaturedShopResult.value = getOfficialStoreFeaturedShop(categoryId)
@@ -181,18 +180,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getProductRecommendation(categoryId: String, pageNumber: Int, pageName: String): Result<RecommendationWidget> {
-        return withContext(dispatchers.io()) {
-            try {
-                val requestParams = getRecommendationUseCase.getOfficialStoreRecomParams(pageNumber, pageName, categoryId)
-                val dataProductResponse = getRecommendationUseCase.createObservable(requestParams).toBlocking()
-                Success(dataProductResponse.first().get(0))
-            } catch (t: Throwable) {
-                Fail(t)
-            }
-        }
-    }
-
     fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)) {
         if (model.isTopAds) {
             launchCatchError(block = {
@@ -233,13 +220,6 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 callback.invoke(true, null)
             }
         })
-    }
-
-    private fun Result<Any>.handleResult(callback: (Boolean, Throwable?) -> Unit) {
-        when (this) {
-            is Success -> callback.invoke(true, null)
-            is Fail -> callback.invoke(false, throwable)
-        }
     }
 
     fun isLoggedIn() = userSessionInterface.isLoggedIn

@@ -17,7 +17,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
@@ -32,6 +31,7 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemList
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminderWidgetCallback
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
+import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.usecase.coroutines.Fail
@@ -42,14 +42,17 @@ import javax.inject.Inject
 class RechargeHomepageFragment : BaseDaggerFragment(),
         RechargeHomepageItemListener,
         RechargeHomepageAdapter.LoaderListener,
-        SearchInputView.FocusChangeListener {
+        RechargeSearchBarWidget.FocusChangeListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: RechargeHomepageViewModel
+
     @Inject
     lateinit var rechargeHomepageAnalytics: RechargeHomepageAnalytics
 
@@ -106,7 +109,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             }
         })
 
-        swipe_refresh_layout.setOnRefreshListener{
+        swipe_refresh_layout.setOnRefreshListener {
             swipe_refresh_layout.isRefreshing = true
             loadData()
         }
@@ -158,7 +161,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
 
-        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(com.tokopedia.common_digital.R.id.search_input_view_container)
+        val searchBarContainer = digital_homepage_search_view.findViewById<LinearLayout>(R.id.search_input_view_container)
         if (offsetAlpha >= 255) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
             digital_homepage_toolbar.toOnScrolledMode()
@@ -197,8 +200,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             hideLoading()
 
             val mappedData = RechargeHomepageSectionMapper.mapHomepageSections(it)
-            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull {
-                homeComponent -> homeComponent.visitableId()?.toInt()
+            val homeComponentIDs: List<Int> = mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
+                homeComponent.visitableId()?.toInt()
             }
             homeComponentsData = it.filter { section -> section.id in homeComponentIDs }
             adapter.renderList(mappedData)
@@ -346,7 +349,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onFocusChanged(hasFocus: Boolean) {
         if (hasFocus) {
-            digital_homepage_search_view.searchTextView.clearFocus()
+            digital_homepage_search_view.getSearchTextView()?.let { it.clearFocus() }
             rechargeHomepageAnalytics.eventClickSearchBox(userSession.userId)
             context?.let { context -> startActivity(DigitalHomePageSearchActivity.getCallingIntent(context)) }
         }

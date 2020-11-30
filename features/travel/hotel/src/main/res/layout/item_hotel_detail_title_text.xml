@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/hotel_order_detail_transaction_date"
-        android:textColor="@color/Neutral_N700_68"
+        android:textColor="@color/Unify_N700_68"
         app:typographyType="body_3"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:textColor="@color/Neutral_N700_96"
+        android:textColor="@color/Unify_N700_96"
         android:gravity="end"
         app:typographyType="body_3"
         app:typographyWeight="bold"
@@ -34,6 +34,6 @@
         tools:text="1 Sep 2017, 05:00 WIB"
         tools:textSize="@dimen/sp_12"
         tools:textStyle="bold"
-        tools:textColor="@color/Neutral_N700_96"/>
+        tools:textColor="@color/Unify_N700_96"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

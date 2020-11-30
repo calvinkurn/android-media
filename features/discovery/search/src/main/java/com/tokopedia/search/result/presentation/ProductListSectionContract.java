@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -15,7 +16,6 @@ import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.BroadMatchItemViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
-import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.sortfilter.SortFilterItem;
 
@@ -91,8 +91,6 @@ public interface ProductListSectionContract {
         void setDefaultLayoutType(int defaultView);
 
         void showFreeOngkirShowCase(boolean hasFreeOngkirBadge);
-
-        void redirectToBrowser(String url);
 
         void showRefreshLayout();
 
@@ -189,6 +187,14 @@ public interface ProductListSectionContract {
         void trackEventGoToShopPage(Object dataLayer);
 
         void addLocalSearchRecommendation(List<Visitable> visitableList);
+
+        void trackEventSearchResultChangeView(String viewType);
+
+        void switchSearchNavigationLayoutTypeToListView(int position);
+
+        void switchSearchNavigationLayoutTypeToBigGridView(int position);
+
+        void switchSearchNavigationLayoutTypeToSmallGridView(int position);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -196,8 +202,6 @@ public interface ProductListSectionContract {
         void loadMoreData(Map<String, Object> searchParameter);
 
         void loadData(Map<String, Object> searchParameter);
-
-        void onBannedProductsGoToBrowserClick(String url);
 
         String getUserId();
 
@@ -227,9 +231,6 @@ public interface ProductListSectionContract {
 
         List<Option> getQuickFilterOptionList();
 
-        @Nullable
-        DynamicFilterModel getDynamicFilterModel();
-
         void getProductCount(Map<String, String> mapParameter);
 
         void onFreeOngkirOnBoardingShown();
@@ -245,5 +246,7 @@ public interface ProductListSectionContract {
         void handleAddToCartAction(@NotNull ProductCardOptionsModel productCardOptionModel);
 
         void handleVisitShopAction();
+
+        void handleChangeView(int position, SearchConstant.ViewType currentLayoutType);
     }
 }
