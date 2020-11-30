@@ -174,12 +174,22 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     }
 
     private fun renderPurchaseProtection() {
-        var isPPP = false
-
         val constraintSet = ConstraintSet()
         constraintSet.clone(mainContent)
 
-        if (isPPP) {
+        if (product.purchaseProtectionPlanData.isProtectionAvailable) {
+            tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
+            tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
+            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPrice, false)
+            btnProtectionInfo.setOnClickListener {
+                val url = product.purchaseProtectionPlanData.protectionLinkUrl
+                if (url.isNotBlank()) {
+                    listener.onPurchaseProtectionInfoClicked(url)
+                }
+            }
+            cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
+            cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
+
             constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
             constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
             constraintSet.connect(dividerTop.id, ConstraintSet.TOP, spacePurchaseProtection.id, ConstraintSet.BOTTOM, 0)
@@ -250,6 +260,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     interface OrderProductCardListener {
 
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
+
+        fun onPurchaseProtectionInfoClicked(url: String)
     }
 
     companion object {
