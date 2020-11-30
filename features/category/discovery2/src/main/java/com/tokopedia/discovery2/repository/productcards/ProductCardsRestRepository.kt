@@ -21,17 +21,18 @@ class ProductCardsRestRepository @Inject constructor() : BaseRepository(), Produ
 
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
+        val creativeName = response.data.component?.creativeName ?: ""
         return when (productComponentName) {
             ComponentNames.ProductCardRevamp.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, componentProperties, creativeName)
             ComponentNames.ProductCardCarousel.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardCarouselItem.componentName, componentProperties, creativeName)
             ComponentNames.ProductCardSprintSale.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleItem.componentName, componentProperties, creativeName)
             ComponentNames.ProductCardSprintSaleCarousel.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleCarouselItem.componentName, componentProperties)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardSprintSaleCarouselItem.componentName, componentProperties, creativeName)
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null)
+                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.ProductCardRevampItem.componentName, null, creativeName)
 
         }
     }

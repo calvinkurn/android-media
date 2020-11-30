@@ -10,14 +10,13 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationReasonAndProofActivity;
@@ -25,11 +24,12 @@ import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationAdapterT
 import com.tokopedia.flight.cancellation.view.adapter.viewholder.FlightCancellationViewHolder;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationPresenter;
+import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationPassengerModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationReasonAndAttachmentModel;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -65,7 +67,7 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     FlightCancellationPresenter flightCancellationPresenter;
 
     private LinearLayout btnContainer;
-    private AppCompatButton btnSubmit;
+    private UnifyButton btnSubmit;
 
     private boolean isFirstRelationCheck = true;
 
@@ -250,16 +252,14 @@ public class FlightCancellationFragment extends BaseListFragment<FlightCancellat
     @Override
     public void showAutoCheckDialog() {
         isFirstRelationCheck = false;
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_title));
-        dialog.setDesc(getString(
+        dialog.setDescription(getString(
                 com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_desc));
-        dialog.setBtnOk(getString(com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_button));
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
+        dialog.setPrimaryCTAText(getString(com.tokopedia.flight.R.string.flight_cancellation_auto_check_dialog_button));
+        dialog.setPrimaryCTAClickListener(() -> {
+            dialog.dismiss();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }

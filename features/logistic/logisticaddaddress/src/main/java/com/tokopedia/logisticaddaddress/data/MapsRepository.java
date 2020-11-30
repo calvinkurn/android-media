@@ -2,11 +2,11 @@ package com.tokopedia.logisticaddaddress.data;
 
 import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.logisticaddaddress.domain.IMapsMapper;
-import com.tokopedia.logisticdata.data.apiservice.MapsApi;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.Data;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.CoordinateModel;
-import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
+import com.tokopedia.logisticCommon.data.apiservice.MapsApi;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Data;
+import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.viewmodel.AutoCompleteViewModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.CoordinateModel;
+import com.tokopedia.logisticCommon.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticaddaddress.di.GeolocationScope;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.utils.TKPDMapParam;

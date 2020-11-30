@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="shopwidget_shop_has_no_product">Toko belum ada produk</string>
+    <string name="shopwidget_shop_product_item_price">Rp%s</string>
+    <string name="shopwidget_shop_voucher_free_shipping">Gratis Ongkir</string>
+    <string name="shopwidget_shop_voucher_cashback_percentage">Cashback %s%%</string>
+    <string name="shopwidget_shop_voucher_cashback_not_percentage">Cashback Rp%s</string>
+    <string name="shopwidget_shop_status_closed">Toko Tutup Sementara</string>
+    <string name="shopwidget_shop_status_moderated">Dalam Pengawasan</string>
+    <string name="shopwidget_shop_status_inactive">Toko Sudah Tidak Aktif</string>
+    <string name="shopwidget_shop_voucher_cashback_rb">%srb</string>
+    <string name="shopwidget_shop_see_shop_button">Lihat Toko</string>
+
+</resources>

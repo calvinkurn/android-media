@@ -64,8 +64,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         this.onImageEditThumbnailAdapterListener = onImageEditThumbnailAdapterListener;
         roundedSize = context.getResources().getDimension(R.dimen.dp_6);
         thumbnailSize = context.getResources().getDimensionPixelOffset(R.dimen.dp_72);
-        grayColor = ContextCompat.getColor(context, R.color.grey_100);
-        whiteColor = ContextCompat.getColor(context, R.color.white);
+        grayColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N50);
+        whiteColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0);
     }
 
     public void setCanReorder(boolean canReorder) {

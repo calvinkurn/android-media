@@ -87,6 +87,8 @@ data class ShopLayoutWidget(
                 val totalNotify: Int = 0,
                 @SerializedName("totalNotifyWording")
                 val totalNotifyWording: String = "",
+                @SerializedName("dynamicRule")
+                val dynamicRule: DynamicRule = DynamicRule(),
                 @SerializedName("banners")
                 val listBanner: List<Banner> = listOf(),
                 @SerializedName("products")
@@ -166,6 +168,18 @@ data class ShopLayoutWidget(
                 data class StockWording(
                         @SerializedName("title")
                         val title: String = ""
+                )
+            }
+
+            data class DynamicRule(
+                    @SerializedName("descriptionHeader")
+                    val descriptionHeader: String = "",
+                    @SerializedName("dynamicRoleData")
+                    val dynamicRoleData: List<DynamicRoleData> = listOf()
+            ){
+                data class DynamicRoleData(
+                        @SerializedName("ruleID")
+                        val ruleID: String = ""
                 )
             }
         }

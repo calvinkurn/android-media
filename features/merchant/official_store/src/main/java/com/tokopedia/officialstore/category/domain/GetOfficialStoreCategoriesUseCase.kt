@@ -38,7 +38,7 @@ class GetOfficialStoreCategoriesUseCase @Inject constructor(
             graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(GraphqlConstant.ExpiryTimes.MONTHS_3.`val`()).build())
         }
         else{
-            graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+            graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).setExpiryTime(GraphqlConstant.ExpiryTimes.MONTHS_3.`val`()).build())
         }
         return executeOnBackground()
     }

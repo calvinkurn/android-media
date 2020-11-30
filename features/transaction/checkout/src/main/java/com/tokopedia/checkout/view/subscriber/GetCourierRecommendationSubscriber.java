@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.view.ShipmentContract;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData;
 
 import java.util.List;
 
@@ -32,13 +32,15 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
     private final List<ShopShipment> shopShipmentList;
     private final boolean isInitialLoad;
     private final boolean isTradeInDropOff;
+    private final boolean isForceReloadRates;
 
     public GetCourierRecommendationSubscriber(ShipmentContract.View view, ShipmentContract.Presenter presenter,
                                               int shipperId, int spId, int itemPosition,
                                               ShippingCourierConverter shippingCourierConverter,
                                               ShipmentCartItemModel shipmentCartItemModel,
                                               List<ShopShipment> shopShipmentList,
-                                              boolean isInitialLoad, boolean isTradeInDropOff) {
+                                              boolean isInitialLoad, boolean isTradeInDropOff,
+                                              boolean isForceReloadRates) {
         this.view = view;
         this.presenter = presenter;
         this.shipperId = shipperId;
@@ -49,6 +51,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         this.shopShipmentList = shopShipmentList;
         this.isInitialLoad = isInitialLoad;
         this.isTradeInDropOff = isTradeInDropOff;
+        this.isForceReloadRates = isForceReloadRates;
     }
 
     @Override
@@ -62,13 +65,13 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
         if (isInitialLoad) {
             view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
         } else {
-            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel);
         }
     }
 
     @Override
     public void onNext(ShippingRecommendationData shippingRecommendationData) {
-        if (isInitialLoad) {
+        if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
@@ -104,9 +107,10 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                             courierItemData.setBenefitAmount(shippingRecommendationData.getLogisticPromo().getBenefitAmount());
                                             courierItemData.setPromoTitle(shippingRecommendationData.getLogisticPromo().getTitle());
                                             courierItemData.setHideShipperName(shippingRecommendationData.getLogisticPromo().getHideShipperName());
+                                            courierItemData.setShipperName(shippingRecommendationData.getLogisticPromo().getShipperName());
                                         }
                                     }
-                                    view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff);
+                                    view.renderCourierStateSuccess(courierItemData, itemPosition, isTradeInDropOff, isForceReloadRates);
                                     return;
                                 }
                             }
@@ -124,14 +128,14 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
                                     shippingDurationUiModel.getShippingCourierViewModelList(),
-                                    itemPosition, shipmentCartItemModel, shopShipmentList
+                                    itemPosition, shipmentCartItemModel
                             );
                             return;
                         }
                     }
                 }
             }
-            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel, shopShipmentList);
+            view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel);
         }
     }
 

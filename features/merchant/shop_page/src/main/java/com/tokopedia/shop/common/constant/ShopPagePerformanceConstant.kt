@@ -15,20 +15,18 @@ object ShopPagePerformanceConstant {
         const val SHOP_TRACE_MIDDLE = "mp_shop_network"
         const val SHOP_TRACE_RENDER = "mp_shop_render"
 
-        const val SHOP_PAGE_HEADER_RESULT_TRACE = "shop_page_header_result_trace"
-        const val SHOP_PAGE_HEADER_RESULT_PLT_PREPARE_METRICS = "shop_page_header_result_plt_prepare_metrics"
-        const val SHOP_PAGE_HEADER_RESULT_PLT_NETWORK_METRICS = "shop_page_header_result_plt_network_metrics"
-        const val SHOP_PAGE_HEADER_RESULT_PLT_RENDER_METRICS = "shop_page_header_result_plt_render_metrics"
+        const val SHOP_TRACE_ACTIVITY_PREPARE = "mp_shop_activity_prepare"
+        const val SHOP_TRACE_P1_MIDDLE = "mp_shop_p1_network"
+        const val SHOP_TRACE_HEADER_SHOP_NAME_AND_PICTURE_RENDER = "mp_shop_header_shop_name_and_picture_render"
+        const val SHOP_TRACE_HEADER_CONTENT_DATA_MIDDLE = "mp_shop_header_content_data_network"
+        const val SHOP_TRACE_HEADER_CONTENT_DATA_RENDER = "mp_shop_header_content_data_render"
 
-        const val SHOP_PAGE_HOME_TAB_RESULT_TRACE = "shop_page_home_tab_result_trace"
-        const val SHOP_PAGE_HOME_TAB_RESULT_PLT_PREPARE_METRICS = "shop_page_home_tab_result_plt_prepare_metrics"
-        const val SHOP_PAGE_HOME_TAB_RESULT_PLT_NETWORK_METRICS = "shop_page_home_tab_result_plt_network_metrics"
-        const val SHOP_PAGE_HOME_TAB_RESULT_PLT_RENDER_METRICS = "shop_page_home_tab_result_plt_render_metrics"
+        const val SHOP_TRACE_HOME_PREPARE = "mp_shop_home_prepare"
+        const val SHOP_TRACE_HOME_MIDDLE = "mp_shop_home_network"
+        const val SHOP_TRACE_HOME_RENDER = "mp_shop_home_render"
 
-        const val SHOP_PAGE_PRODUCT_TAB_RESULT_TRACE = "shop_page_product_tab_result_trace"
-        const val SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_PREPARE_METRICS = "shop_page_product_tab_result_plt_prepare_metrics"
-        const val SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_NETWORK_METRICS = "shop_page_product_tab_result_plt_network_metrics"
-        const val SHOP_PAGE_PRODUCT_TAB_RESULT_PLT_RENDER_METRICS = "shop_page_product_tab_result_plt_render_metrics"
-
+        const val SHOP_TRACE_PRODUCT_PREPARE = "mp_shop_product_prepare"
+        const val SHOP_TRACE_PRODUCT_MIDDLE = "mp_shop_product_network"
+        const val SHOP_TRACE_PRODUCT_RENDER = "mp_shop_product_render"
     }
 }

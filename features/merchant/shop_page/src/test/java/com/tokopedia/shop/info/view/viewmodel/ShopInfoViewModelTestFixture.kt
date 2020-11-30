@@ -6,6 +6,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopRep
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesByShopIdUseCase
 import com.tokopedia.shop.info.domain.usecase.GetShopStatisticUseCase
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +33,9 @@ abstract class ShopInfoViewModelTestFixture {
 
     protected lateinit var viewModel: ShopInfoViewModel
 
+    private val testCoroutineDispatcherProvider by lazy {
+        CoroutineTestDispatchersProvider
+    }
     @Before
     fun setUp() {
         MockKAnnotations.init(this)
@@ -42,7 +46,7 @@ abstract class ShopInfoViewModelTestFixture {
                 getShopInfoUseCase,
                 getShopStatisticsUseCase,
                 getShopReputationUseCase,
-                Dispatchers.Unconfined
+                testCoroutineDispatcherProvider
         )
     }
 }

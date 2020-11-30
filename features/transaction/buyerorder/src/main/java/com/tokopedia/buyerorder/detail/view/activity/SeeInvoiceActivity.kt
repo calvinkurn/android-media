@@ -80,7 +80,7 @@ class SeeInvoiceActivity : BaseSimpleWebViewActivity() {
                     .build()
             try {
                 printManager?.print(jobName, printAdapter, prinAttr)
-            } catch (e: ActivityNotFoundException) {
+            } catch (e: Throwable) {
                 e.printStackTrace()
             }
         }
