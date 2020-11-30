@@ -16,13 +16,13 @@ fun ImageView.loadImage(drawable: Drawable) = this.setImageDrawable(drawable)
 
 fun ImageView.loadImage(resource: Int) = this.setImageResource(resource)
 
-fun ImageView.loadImage(url: String) = call(url, Properties())
+fun ImageView.loadImage(url: String?) = call(url, Properties())
 
 fun ImageView.loadImage(uri: Uri) = this.setImageURI(uri)
 
 fun ImageView.loadAsGif(url: String) = loadGifImage(this, url)
 
-inline fun ImageView.loadImage(url: String, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
+inline fun ImageView.loadImage(url: String?, properties: Properties.() -> Unit) = call(url, Properties().apply(properties))
 
 fun ImageView.loadImageCircle(url: String) {
     call(url, Properties().apply {

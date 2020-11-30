@@ -359,7 +359,7 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener?) : Abstr
             tvBalanceTokoPoint.visibility = View.VISIBLE
             mTextCouponCount.visibility = View.VISIBLE
 
-            ImageHandler.loadImageAndCache(ivLogoTokoPoint, element.tokopointsDrawerBBOHomeData?.iconImageURL)
+            ivLogoTokoPoint.loadImage(element.tokopointsDrawerBBOHomeData?.iconImageURL)
             mTextCouponCount.setTypeface(mTextCouponCount.typeface, Typeface.BOLD)
             element.tokopointsDrawerBBOHomeData?.sectionContent?.let { sectionContent ->
                 if (sectionContent.isNotEmpty()) {

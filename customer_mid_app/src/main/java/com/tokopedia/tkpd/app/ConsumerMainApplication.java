@@ -50,6 +50,8 @@ import com.tokopedia.dev_monitoring_tools.beta.BetaSignActivityLifecycleCallback
 import com.tokopedia.dev_monitoring_tools.session.SessionActivityLifecycleCallbacks;
 import com.tokopedia.dev_monitoring_tools.ui.JankyFrameActivityLifecycleCallbacks;
 import com.tokopedia.developer_options.stetho.StethoUtil;
+import com.tokopedia.media.common.Loader;
+import com.tokopedia.media.common.common.ToasterActivityLifecycle;
 import com.tokopedia.notifications.data.AmplificationDataSource;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
@@ -217,10 +219,16 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     @NotNull
     private Boolean executePreCreateSequence() {
         initReact();
+        initMedialoader();
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         Chucker.registerDefaultCrashHandler(new ChuckerCollector(ConsumerMainApplication.this, false));
         FpmLogger.init(ConsumerMainApplication.this);
         return true;
+    }
+
+    private void initMedialoader() {
+        this.registerActivityLifecycleCallbacks(new ToasterActivityLifecycle(this));
+        Loader.initialize(getApplicationContext());
     }
 
     protected void setVersionName() {
