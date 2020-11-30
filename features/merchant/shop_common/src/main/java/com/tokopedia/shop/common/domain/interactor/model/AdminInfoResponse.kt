@@ -27,6 +27,11 @@ data class AdminInfoData(
         val responseDetail: AdminInfoResponseDetail? = AdminInfoResponseDetail()
 )
 
+sealed class AdminInfoResult {
+        class Success(val data: AdminInfoData): AdminInfoResult()
+        class Fail(val throwable: Exception): AdminInfoResult()
+}
+
 data class AdminInfoPermissionList(
         @SerializedName("permission_list")
         @Expose

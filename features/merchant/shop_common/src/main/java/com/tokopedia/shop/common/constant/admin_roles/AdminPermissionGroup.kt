@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.constant
+package com.tokopedia.shop.common.constant.admin_roles
 
 import androidx.annotation.StringDef
 
