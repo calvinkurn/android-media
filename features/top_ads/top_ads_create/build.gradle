@@ -53,3 +53,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply plugin: 'kotlin-android'
