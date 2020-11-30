@@ -18,7 +18,6 @@ import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
 import com.tokopedia.talk.common.constants.TalkConstants.PRODUCT_ID
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.common.utils.TalkReadingLoadTimeMonitoringListener
 import com.tokopedia.talk.feature.reading.presentation.fragment.TalkReadingFragment
 
 class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, TalkPerformanceMonitoringListener {
