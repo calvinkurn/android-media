@@ -48,7 +48,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
 
     private fun setQuickFilters() {
         quickSortFilter.let {
-            it.textView?.text = fragment.getString(R.string.filter)
+            it.textView.text = fragment.getString(R.string.filter)
             it.parentListener = { openBottomSheetFilterRevamp() }
             it.sortFilterItems.removeAllViews()
         }
@@ -81,7 +81,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun setSortFilterItemState(options: List<Option>) {
-        if (quickFilterViewModel.getQuickFiltersList().size != quickSortFilter.chipItems?.size) return
+        if (quickFilterViewModel.getQuickFiltersList().size != quickSortFilter.chipItems.size) return
         var selectedCount = 0
         for (i in options.indices) {
             if (quickFilterViewModel.isQuickFilterSelected(options[i])) {
@@ -94,7 +94,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun setQuickFilterChipsSelected(position: Int) {
-        quickSortFilter.chipItems?.get(position)?.apply {
+        quickSortFilter.chipItems[position].apply {
             this.type = ChipsUnify.TYPE_SELECTED
             this.refChipUnify.chipType = ChipsUnify.TYPE_SELECTED
             this.typeUpdated = false
@@ -102,7 +102,7 @@ class QuickFilterViewHolder(itemView: View, private val fragment: Fragment) : Ab
     }
 
     private fun setQuickFilterChipsNormal(position: Int) {
-        quickSortFilter.chipItems?.get(position)?.apply {
+        quickSortFilter.chipItems[position].apply {
             this.type = ChipsUnify.TYPE_NORMAL
             this.refChipUnify.chipType = ChipsUnify.TYPE_NORMAL
             this.typeUpdated = false
