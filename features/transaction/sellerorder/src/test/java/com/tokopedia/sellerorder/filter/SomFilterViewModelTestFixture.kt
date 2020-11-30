@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import com.tokopedia.applink.order.DeeplinkMapperOrder
 import com.tokopedia.sellerorder.SomTestDispatcherProvider
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_ORDER
 import com.tokopedia.sellerorder.filter.domain.usecase.GetSomOrderFilterUseCase
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterChipsUiModel
 import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
@@ -32,19 +33,13 @@ abstract class SomFilterViewModelTestFixture {
     protected lateinit var somFilterViewModel: SomFilterViewModel
 
     lateinit var somFilterUiModelField: Field
+    lateinit var requestCancelFilterModel: SomFilterUiModel
 
     companion object {
         val mockDate = "14 Okt 2020 - 24 Okt 2020"
         val mockIdFilter = "Siap Dikirim"
         val isResetFilter = false
         val SOM_FILTER_SUCCESS_RESPONSE = "json/som_get_order_filter_success_response.json"
-        val requestCancelFilterModel = SomFilterUiModel(
-                nameFilter = SomConsts.FILTER_TYPE_ORDER,
-                somFilterData = listOf(
-                        SomFilterChipsUiModel(
-                                id = DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST
-                        )
-                ))
     }
 
     @Before
@@ -55,6 +50,18 @@ abstract class SomFilterViewModelTestFixture {
         somFilterUiModelField = SomFilterViewModel::class.java.getDeclaredField("somFilterUiModel").apply {
             isAccessible = true
         }
+
+        requestCancelFilterModel = SomFilterUiModel(
+                nameFilter = FILTER_TYPE_ORDER,
+                canSelectMany = true,
+                isDividerVisible = true,
+                somFilterData = listOf(
+                        SomFilterChipsUiModel(
+                                id = DeeplinkMapperOrder.FILTER_CANCELLATION_REQUEST,
+                                idFilter = FILTER_TYPE_ORDER,
+                                isSelected = false
+                        )
+                ))
     }
 
     protected fun LiveData<*>.verifyCoroutineSuccessEquals(expected: Success<*>) {

@@ -64,10 +64,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
+            somFilterViewModel.updateFilterSelected.observeAwaitValue()
             assertTrue(somFilterViewModel.filterResult.observeAwaitValue() is Success)
             assertNotNull(somFilterViewModel.filterResult.observeAwaitValue())
             assertEquals(mockCancelFilterApplied, somFilterViewModel.isRequestCancelFilterApplied())
-            assertTrue((somFilterUiModelField.get(somFilterViewModel) as List<SomFilterUiModel>).getRequestCancelFilter()?.isSelected == true)
+            assertEquals(true, (somFilterUiModelField.get(somFilterViewModel) as List<SomFilterUiModel>).getRequestCancelFilter()?.isSelected)
         }
     }
 
@@ -75,7 +76,7 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
     @Test
     fun `when get som filter data should return success and should not select request cancel filter`() {
         runBlocking {
-            val baseSomFilterList = mutableListOf<BaseSomFilter>()
+            val baseSomFilterList = mutableListOf<BaseSomFilter>(requestCancelFilterModel)
             val mockCancelFilterApplied = false
             coEvery {
                 getSomOrderFilterUseCase.execute()
@@ -86,10 +87,11 @@ class SomFilterViewModelTest : SomFilterViewModelTestFixture() {
             coVerify {
                 getSomOrderFilterUseCase.execute()
             }
+            somFilterViewModel.updateFilterSelected.observeAwaitValue()
             assertTrue(somFilterViewModel.filterResult.observeAwaitValue() is Success)
             assertNotNull(somFilterViewModel.filterResult.observeAwaitValue())
             assertEquals(mockCancelFilterApplied, somFilterViewModel.isRequestCancelFilterApplied())
-            assertTrue((somFilterUiModelField.get(somFilterViewModel) as List<SomFilterUiModel>).getRequestCancelFilter()?.isSelected == false)
+            assertEquals(false, (somFilterUiModelField.get(somFilterViewModel) as List<SomFilterUiModel>).getRequestCancelFilter()?.isSelected)
         }
     }
 
