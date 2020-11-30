@@ -77,7 +77,7 @@ class InactivePhoneActivity : BaseSimpleActivity(), FragmentTransactionInterface
             setPrimaryCTAClickListener {
                 gotoPlayStore()
             }
-            setPrimaryCTAClickListener {
+            setSecondaryCTAClickListener {
                 finish()
             }
             setCancelable(false)
