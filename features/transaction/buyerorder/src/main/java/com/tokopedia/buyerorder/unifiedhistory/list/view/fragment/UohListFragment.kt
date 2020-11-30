@@ -1527,9 +1527,9 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             var eeProductId = ""
             var eeProductPrice = ""
             if (order.metadata.listProducts.isNotEmpty()) {
-                val objProduct = jsonArray.get(i).asJsonObject
-                eeProductId = objProduct.get(EE_PRODUCT_ID).asString
-                eeProductPrice = objProduct.get(EE_PRODUCT_PRICE).asString
+                val objProduct = jsonArray.get(i)?.asJsonObject
+                eeProductId = objProduct?.get(EE_PRODUCT_ID).toString()
+                eeProductPrice = objProduct?.get(EE_PRODUCT_PRICE).toString()
             }
 
             arrayListProducts.add(ECommerceImpressions.Impressions(
