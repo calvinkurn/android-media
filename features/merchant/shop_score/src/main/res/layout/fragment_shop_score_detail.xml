@@ -51,7 +51,7 @@
                 android:paddingStart="16dp"
                 android:paddingTop="8dp"
                 android:text="@string/subtitle_shop_score_detail_summary_description"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="12sp" />
 
             <View
@@ -81,7 +81,7 @@
                 android:paddingStart="16dp"
                 android:paddingTop="4dp"
                 android:text="@string/subtitle_shop_score_indicator_thirtydays"
-                android:textColor="@color/Unify_N700_32"
+                android:textColor="@color/Unify_N700_44"
                 android:textSize="12sp" />
 
             <androidx.recyclerview.widget.RecyclerView
