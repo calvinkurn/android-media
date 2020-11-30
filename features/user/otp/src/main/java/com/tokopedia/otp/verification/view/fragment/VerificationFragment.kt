@@ -7,6 +7,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
@@ -88,6 +89,23 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
 
     private var isRunningCountDown = false
     private var isFirstSendOtp = true
+
+    private var tempOtp: CharSequence? = null
+    private var indexTempOtp = 0
+    private val delayAnimateText: Long = 350
+
+    private val handler: Handler = Handler()
+
+    private val characterAdder: Runnable = object : Runnable {
+        override fun run() {
+            tempOtp?.let {
+                viewBound.pin?.value = it.subSequence(0, indexTempOtp++)
+                if (indexTempOtp <= it.length) {
+                    handler.postDelayed(this, delayAnimateText)
+                }
+            }
+        }
+    }
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory).get(VerificationViewModel::class.java)
@@ -190,8 +208,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-
-        showLoading()
         viewModel.otpValidate(
                 code = code,
                 otpType = otpData.otpType.toString(),
@@ -233,7 +249,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                             }
                         }
                     }
-                    hideLoading()
                     setPrefixMiscall(otpRequestData.prefixMisscall)
                     startCountDown()
                     viewBound.containerView?.let {
@@ -256,7 +271,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
     private fun onFailedSendOtp(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
-            hideLoading()
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -290,7 +304,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
                             analytics.trackSuccessClickVerificationRegisterEmailButton()
                         }
                     }
-                    hideLoading()
                     resetCountDown()
 
                     activity?.let { activity ->
@@ -329,7 +342,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
     private fun onFailedOtpValidate(): (Throwable) -> Unit {
         return { throwable ->
             throwable.printStackTrace()
-            hideLoading()
             viewBound.containerView?.let {
                 val message = ErrorHandler.getErrorMessage(context, throwable)
                 Toaster.make(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR)
@@ -350,10 +362,17 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
     private fun getOtpReceiverListener(): ReceiveSMSListener {
         return object : ReceiveSMSListener {
             override fun onReceiveOTP(otpCode: String) {
-                viewBound.pin?.value = otpCode
-                validate(otpCode)
+                animateText(otpCode)
             }
         }
+    }
+
+    fun animateText(txt: CharSequence) {
+        tempOtp = txt
+        indexTempOtp = 0
+        viewBound.pin?.value = ""
+        handler.removeCallbacks(characterAdder)
+        handler.postDelayed(characterAdder, delayAnimateText)
     }
 
     private fun isCountdownFinished(): Boolean {
@@ -621,11 +640,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         autoFillPhoneNumber(phoneNumber)
     }
 
-    private fun showLoading() {
-        viewBound.loader?.show()
-        viewBound.containerView?.hide()
-    }
-
     private fun autoFillPhoneNumber(number: String) {
         val phoneHint = replaceRegionPhoneCode(viewBound.pin?.pinPrefixText.toString())
         var phoneNumber = replaceRegionPhoneCode(number)
@@ -647,11 +661,6 @@ class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed, PhoneCall
         }
 
         return result.replace(symbolRegex, "")
-    }
-
-    private fun hideLoading() {
-        viewBound.loader?.hide()
-        viewBound.containerView?.show()
     }
 
     companion object {

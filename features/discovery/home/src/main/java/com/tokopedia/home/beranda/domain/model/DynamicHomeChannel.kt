@@ -449,7 +449,10 @@ data class DynamicHomeChannel(
             val textColor: String = "",
             @Expose
             @SerializedName("recommendationType")
-            val recommendationType: String = ""
+            val recommendationType: String = "",
+            @Expose
+            @SerializedName("campaignCode")
+            val campaignCode: String = "",
     )
 
     data class Benefit(
