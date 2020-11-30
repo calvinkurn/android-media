@@ -657,7 +657,7 @@ data class SearchProductModel(
 
             @SerializedName("original_price")
             @Expose
-            val originalPrice: Int = 0,
+            val originalPrice: String = "",
 
             @SerializedName("discount_expired")
             @Expose

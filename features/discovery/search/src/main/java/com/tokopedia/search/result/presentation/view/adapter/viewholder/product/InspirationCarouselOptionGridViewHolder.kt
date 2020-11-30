@@ -37,7 +37,7 @@ class InspirationCarouselOptionGridViewHolder(
                 formattedPrice = priceStr,
                 ratingCount = rating,
                 reviewCount = countReview,
-                slashedPrice = originalPrice.toString(),
+                slashedPrice = originalPrice,
                 discountPercentage = discountPercentage.toString()
         )
     }
