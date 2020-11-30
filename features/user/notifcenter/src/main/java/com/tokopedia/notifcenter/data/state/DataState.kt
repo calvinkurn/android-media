@@ -13,6 +13,9 @@ class Resource<out T> private constructor(
         val throwable: Throwable?,
         val needUpdate: Boolean = true
 ) {
+
+    var referer: Any? = null
+
     companion object {
         fun <T> success(data: T?, needUpdate: Boolean = true): Resource<T> {
             return Resource(Status.SUCCESS, data, null)

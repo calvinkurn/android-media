@@ -41,7 +41,7 @@ class NotifcenterFilterV2UseCase @Inject constructor(
     }
 
     private fun getCacheKey(role: Int): String {
-        return "role - ${javaClass.name}"
+        return "$role - ${javaClass.name}"
     }
 
     private suspend fun getFilterFromNetwork(

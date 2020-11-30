@@ -239,6 +239,7 @@ class NotifcenterDetailUseCase @Inject constructor(
                     }
                     total_product 
                     product_data {
+                        has_reminder
                         product_id 
                         name 
                         url 
@@ -286,7 +287,6 @@ class NotifcenterDetailUseCase @Inject constructor(
                         stock 
                         type_button 
                         is_show 
-                        is_reminded 
                     }
                     bottomsheet {
                         title 
@@ -340,6 +340,7 @@ class NotifcenterDetailUseCase @Inject constructor(
                     }
                     total_product 
                     product_data {
+                        has_reminder
                         product_id 
                         name 
                         url 
@@ -387,7 +388,6 @@ class NotifcenterDetailUseCase @Inject constructor(
                         stock 
                         type_button 
                         is_show 
-                        is_reminded 
                     }
                     bottomsheet {
                         title 

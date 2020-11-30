@@ -3,7 +3,7 @@ package com.tokopedia.talk.feature.inbox.presentation.adapter.uimodel
 import com.tokopedia.talk.feature.inbox.data.DiscussionInboxDetail
 import com.tokopedia.talk.feature.inbox.presentation.adapter.TalkInboxAdapterTypeFactory
 
-class TalkInboxUiModel (
+class TalkInboxOldUiModel (
         val inboxDetail: DiscussionInboxDetail
 ) : BaseTalkInboxUiModel {
 

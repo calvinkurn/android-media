@@ -9,15 +9,18 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.notifcenter.data.entity.notification.NotificationDetailResponseModel
+import com.tokopedia.notifcenter.data.entity.notification.ProductData
 import com.tokopedia.notifcenter.data.uimodel.BigDividerUiModel
 import com.tokopedia.notifcenter.data.uimodel.LoadMoreUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationTopAdsBannerUiModel
 import com.tokopedia.notifcenter.data.uimodel.NotificationUiModel
 import com.tokopedia.notifcenter.presentation.adapter.common.NotificationAdapterListener
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.notification.NotificationTypeFactory
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.ViewHolderState
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.CarouselProductNotificationViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.LoadMoreViewHolder
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.RecommendationViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.v3.payload.PayloadBumpReminderState
 
 class NotificationAdapter constructor(
         private val typeFactory: NotificationTypeFactory
@@ -102,6 +105,44 @@ class NotificationAdapter constructor(
         }
     }
 
+    fun loadingStateReminder(viewHolderState: ViewHolderState?) {
+        updateLoadingBumpReminderFor(
+                viewHolderState = viewHolderState,
+                isLoading = true
+        )
+    }
+
+    fun successUpdateReminderState(
+            viewHolderState: ViewHolderState?,
+            isBumpReminder: Boolean
+    ) {
+        updateLoadingBumpReminderFor(
+                viewHolderState = viewHolderState,
+                isLoading = false,
+                hasReminder = isBumpReminder
+        )
+    }
+
+    private fun updateLoadingBumpReminderFor(
+            viewHolderState: ViewHolderState?,
+            isLoading: Boolean,
+            hasReminder: Boolean? = null
+    ) {
+        viewHolderState ?: return
+        val notificationItem = viewHolderState.visitable
+                as? NotificationUiModel ?: return
+        val itemMetaData = getUpToDateUiModelPosition(
+                viewHolderState.previouslyKnownPosition, notificationItem
+        )
+        val itemPosition = itemMetaData.first
+        val product = viewHolderState.payload
+        if (product is ProductData && itemPosition != RecyclerView.NO_POSITION) {
+            val payload = PayloadBumpReminderState(product, notificationItem)
+            product.update(isLoading, hasReminder)
+            notifyItemChanged(itemPosition, payload)
+        }
+    }
+
     private fun adjustDividerPadding(position: Int, response: NotificationDetailResponseModel) {
         if (response.hasNext) return
         val nextPosition = position + 1
@@ -145,4 +186,5 @@ class NotificationAdapter constructor(
         val item = visitables.getOrNull(position + 1) ?: return false
         return item is BigDividerUiModel
     }
+
 }
