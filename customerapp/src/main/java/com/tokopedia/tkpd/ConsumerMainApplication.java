@@ -14,6 +14,17 @@ import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+    }
+
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    private native byte[] bytesFromJNI();
+
     @Override
     public void initConfigValues() {
         GlobalConfig.PACKAGE_APPLICATION = "com.tokopedia.tkpd";
@@ -51,6 +62,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
+    }
+
+    @Override
+    protected byte[] getJniBytes() {
+        return bytesFromJNI();
     }
 
     @Override

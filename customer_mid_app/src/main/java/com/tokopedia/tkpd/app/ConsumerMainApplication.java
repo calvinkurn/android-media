@@ -60,7 +60,6 @@ import com.tokopedia.shakedetect.ShakeSubscriber;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
-import com.tokopedia.tkpd.nativelib.NativeLib;
 import com.tokopedia.tkpd.nfc.NFCSubscriber;
 import com.tokopedia.tkpd.timber.LoggerActivityLifecycleCallbacks;
 import com.tokopedia.tkpd.timber.TimberWrapper;
@@ -100,7 +99,6 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        NativeLib.init();
     }
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
@@ -180,7 +178,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
                     rawCertJava = info.signatures[0].toByteArray();
                 }
             }
-            byte[] rawCertNative = NativeLib.jniBytes();
+            byte[] rawCertNative = getJniBytes();
             // handle if the library is failing
             if (rawCertNative == null) {
                 Timber.w("P1#APP_SIGNATURE_FAILED#'rawCertNative==null'");
@@ -200,6 +198,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             return false;
         }
     }
+
+    protected abstract byte[] getJniBytes();
 
     private String getInfoFromBytes(byte[] bytes) {
         if (null == bytes) {

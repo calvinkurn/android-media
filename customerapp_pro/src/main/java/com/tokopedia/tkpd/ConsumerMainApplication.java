@@ -27,6 +27,17 @@ import kotlin.Pair;
 
 public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMainApplication {
 
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+    }
+
+    /**
+     * A native method that is implemented by the 'native-lib' native library,
+     * which is packaged with this application.
+     */
+    private native byte[] bytesFromJNI();
+
     protected void setVersionName() {
         Pair<String, String> versions = AuthHelper.getVersionName(BuildConfig.VERSION_NAME);
         String version = versions.getFirst();
@@ -52,6 +63,11 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public int versionCode() {
         return BuildConfig.VERSION_CODE;
+    }
+
+    @Override
+    protected byte[] getJniBytes() {
+        return bytesFromJNI();
     }
 
     @Override

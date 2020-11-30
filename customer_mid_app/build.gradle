@@ -14,9 +14,6 @@ buildscript {
         maven {
             url 'https://www.jitpack.io'
         }
-        flatDir {
-            dirs 'libs'
-        }
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
@@ -26,12 +23,6 @@ buildscript {
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ["libs"]
-        }
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
