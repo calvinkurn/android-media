@@ -47,5 +47,6 @@ interface DynamicChannelEventHandler : CountDownView.CountDownListener {
     fun onFlashSaleCardImpressedComponent(position: Int,grid: ChannelGrid, channel: ChannelModel)
     fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String)
     fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String)
+    fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String)
 
 }

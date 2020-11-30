@@ -804,7 +804,7 @@ class OfficialHomeFragment :
 
     override fun onFlashSaleCardImpressedComponent(position: Int, grid: ChannelGrid, channel: ChannelModel) {
         tracking?.flashSaleCardImpressionComponent(
-                viewModel.currentSlug,
+                viewModel.currentSlugDC,
                 channel,
                 grid,
                 position.toString(),
@@ -814,7 +814,17 @@ class OfficialHomeFragment :
 
     override fun onMixFlashSaleSeeAllClickedComponent(channel: ChannelModel, applink: String) {
         tracking?.seeAllMixFlashSaleClickedComponent(
-                viewModel.currentSlug,
+                viewModel.currentSlugDC,
+                channel
+        )
+        if (!TextUtils.isEmpty(applink)) {
+            RouteManager.route(context, applink)
+        }
+    }
+
+    override fun onSeeAllBannerClickedComponent(channel: ChannelModel, applink: String) {
+        tracking?.seeAllBannerFlashSaleClickedComponent(
+                viewModel.currentSlugDC,
                 channel
         )
         if (!TextUtils.isEmpty(applink)) {
@@ -824,7 +834,7 @@ class OfficialHomeFragment :
 
     override fun onFlashSaleCardClickedComponent(position: Int, channel: ChannelModel, grid: ChannelGrid, applink: String) {
         tracking?.flashSaleCardClickedComponent(
-                viewModel.currentSlug,
+                viewModel.currentSlugDC,
                 channel,
                 grid,
                 position.toString(),

@@ -913,6 +913,21 @@ class OfficialStoreTracking(context: Context) {
             DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
             else -> ""
         }
+        val eventActionValue = "click view all card on $valueDynamicMix"
+        tracker.sendGeneralEvent(DataLayer.mapOf(
+                EVENT, CLICK_OS_MICROSITE,
+                EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
+                EVENT_ACTION, eventActionValue,
+                EVENT_LABEL, channel.id
+        ))
+    }
+
+    fun seeAllBannerFlashSaleClickedComponent(categoryName: String, channel: ChannelModel) {
+        val valueDynamicMix = when (channel.layout) {
+            DynamicChannelIdentifiers.LAYOUT_MIX_TOP -> VALUE_DYNAMIC_MIX_TOP_CAROUSEL
+            DynamicChannelIdentifiers.LAYOUT_MIX_LEFT -> VALUE_DYNAMIC_MIX_LEFT_CAROUSEL
+            else -> ""
+        }
         val eventActionValue = "click view all on $valueDynamicMix"
         tracker.sendGeneralEvent(DataLayer.mapOf(
                 EVENT, CLICK_OS_MICROSITE,

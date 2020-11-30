@@ -42,5 +42,6 @@ class OSMixLeftComponentCallback(private val dcEventHandler: DynamicChannelEvent
     }
 
     override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+        dcEventHandler.onSeeAllBannerClickedComponent(channel, applink)
     }
 }
