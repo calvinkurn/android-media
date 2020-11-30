@@ -27,6 +27,10 @@ import com.tokopedia.inbox.view.navigator.InboxNavigator
 import com.tokopedia.inbox.viewmodel.InboxViewModel
 import com.tokopedia.inboxcommon.InboxFragmentContainer
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.ContentType.TOOLBAR_TYPE_CUSTOM
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
@@ -47,6 +51,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var bottomNav: InboxBottomNavigationView? = null
     private var currentRole: ConstraintLayout? = null
     private var fragmentContainer: FrameLayout? = null
+    private var toolbar: NavToolbar? = null
     private var inboxCounter: InboxCounter = InboxCounter()
 
     private val viewModel by lazy {
@@ -61,18 +66,38 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         setContentView(R.layout.activity_inbox)
         setupView()
         setupConfig()
-        setupSwitcher()
         setupNavigator()
         setupBackground()
         setupNotificationBar()
         setupBottomNav()
         setupObserver()
         setupInitialPage()
+        setupToolbar()
+        setupSwitcher()
     }
 
     override fun clearNotificationCounter() {
         inboxCounter.getByRole(InboxConfig.role)?.notifcenterInt = 0
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
+    }
+
+    private fun setupToolbar() {
+        toolbar?.setIcon(
+                IconBuilder()
+                        .addIcon(IconList.ID_CART) {
+                            Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show()
+                        }
+                        .addIcon(IconList.ID_NAV_GLOBAL) {
+                            Toast.makeText(this, "ID_NAV_GLOBAL clicked", Toast.LENGTH_SHORT).show()
+                        }
+        )
+        val view = View.inflate(
+                this, R.layout.partial_inbox_nav_content_view, null
+        ).also {
+            currentRole = it.findViewById(R.id.cl_current_role_container)
+        }
+        toolbar?.setCustomViewContentView(view)
+        toolbar?.setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
     }
 
     private fun setupInjector() {
@@ -85,8 +110,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupView() {
         roleNotificationCounter = findViewById(R.id.unread_counter)
         bottomNav = findViewById(R.id.inbox_bottom_nav)
-        currentRole = findViewById(R.id.cl_current_role_container)
         fragmentContainer = findViewById(R.id.fragment_contaier)
+        toolbar = findViewById(R.id.inbox_nav_toolbar)
     }
 
     override fun onDestroy() {

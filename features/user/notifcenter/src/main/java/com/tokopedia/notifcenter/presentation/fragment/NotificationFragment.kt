@@ -4,9 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.StringRes
 import androidx.collection.ArrayMap
 import androidx.lifecycle.Observer
@@ -118,6 +116,18 @@ class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTypeFact
         super.onCreate(savedInstanceState)
         initRecommendationComponent()
         viewModel.loadNotificationFilter(containerListener?.role)
+        initToolbar()
+//        setHasOptionsMenu(true)
+    }
+
+    private fun initToolbar() {
+//        navToolbarObject.setIcon(
+//                IconBuilder()
+//                        .addIcon(IconList.ID_MESSAGE) {}
+//                        .addIcon(IconList.ID_NOTIFICATION) {}
+//                        .addIcon(IconList.ID_CART) {}
+//                        .addIcon(IconList.ID_NAV_GLOBAL) {}
+//        )
     }
 
     private fun initRecommendationComponent() {

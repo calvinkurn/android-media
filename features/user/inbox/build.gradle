@@ -20,7 +20,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.inboxCommon)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
-    implementation project(rootProject.ext.features.homeNav)
+    implementation project(rootProject.ext.features.searchbar)
 
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
