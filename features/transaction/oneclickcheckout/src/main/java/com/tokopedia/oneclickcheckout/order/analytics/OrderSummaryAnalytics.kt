@@ -466,6 +466,32 @@ class OrderSummaryAnalytics : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    fun eventClickTambahTemplateBeliLangsungOnProfileList(userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST,
+                ""
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
+    fun eventClickEditProfileOnProfileList(profileId:String, userId: String) {
+        val gtmData = getGtmData(
+                EventName.CLICK_CHECKOUT_EXPRESS,
+                EventCategory.ORDER_SUMMARY,
+                EventAction.CLICK_EDIT_PROFILE_ON_PROFILE_LIST,
+                profileId
+        )
+        gtmData[ExtraKey.USER_ID] = userId
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        sendGeneralEvent(gtmData)
+    }
+
     companion object {
         private const val NOT_SUCCESS = "not success"
 

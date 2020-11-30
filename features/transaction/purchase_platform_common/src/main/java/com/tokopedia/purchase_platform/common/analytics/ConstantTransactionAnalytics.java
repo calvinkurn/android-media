@@ -472,6 +472,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_SELECTED_PAYMENT_OPTION = "payment - click selected payment option";
         String CLICK_PROFILE_OPTION_ON_PROFILE_LIST = "preference - click profile option on profile list";
         String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_ORDER_SUMMARY = "preference - click tambah template beli langsung on order summary";
+        String CLICK_TAMBAH_TEMPLATE_BELI_LANGSUNG_ON_PROFILE_LIST = "preference - click tambah template beli langsung on profile list";
+        String CLICK_EDIT_PROFILE_ON_PROFILE_LIST = "preference - click edit profile on profile list";
 
         // Shipping experience
         String VIEW_SUMMARY_TRANSACTION_TICKER_COURIER_NOT_COMPLETE = "view summary transaction ticker courier not complete";

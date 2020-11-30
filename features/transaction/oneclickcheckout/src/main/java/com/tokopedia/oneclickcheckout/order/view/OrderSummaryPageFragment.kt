@@ -1103,7 +1103,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, position: Int, profileSize: Int) {
-                            orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
+                            if (viewModel.isNewFlow) {
+                                orderSummaryAnalytics.eventClickEditProfileOnProfileList(preference.profileId.toString(), userSession.get().userId)
+                            } else {
+                                orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
+                            }
                             val preferenceIndex = "${getString(R.string.lbl_summary_preference_option)} $position"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
@@ -1125,7 +1129,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onAddPreference(itemCount: Int) {
-                            orderSummaryAnalytics.eventAddPreferensiFromOSP()
+                            if (viewModel.isNewFlow) {
+                                orderSummaryAnalytics.eventClickTambahTemplateBeliLangsungOnProfileList(userSession.get().userId)
+                            } else {
+                                orderSummaryAnalytics.eventAddPreferensiFromOSP()
+                            }
                             val preferenceIndex = "${getString(R.string.preference_number_summary)} ${itemCount + 1}"
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT).apply {
                                 putExtra(PreferenceEditActivity.EXTRA_FROM_FLOW, PreferenceEditActivity.FROM_FLOW_OSP)
