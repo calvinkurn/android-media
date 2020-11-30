@@ -16,6 +16,7 @@ import com.tokopedia.flight.passenger.view.adapter.FlightAmenityAdapterTypeFacto
 import com.tokopedia.flight.passenger.view.adapter.viewholder.FlightBookingAmenityViewHolder;
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityMetaModel;
 import com.tokopedia.flight.passenger.view.model.FlightBookingAmenityModel;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class FlightBookingAmenityFragment extends BaseListFragment<FlightBooking
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(com.tokopedia.flight.R.layout.fragment_booking_luggage, container, false);
-        Button button = (Button) view.findViewById(com.tokopedia.flight.R.id.button_save);
+        UnifyButton button = (UnifyButton) view.findViewById(com.tokopedia.flight.R.id.button_save);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
