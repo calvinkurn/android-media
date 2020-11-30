@@ -47,9 +47,4 @@ class BroadcastScheduleViewComponent(
         clScheduleDesc.visibility = View.VISIBLE
         tvDescSchedule.text = model.formattedTime
     }
-
-    interface Listener {
-
-        fun onAddEditBroadcastScheduleClicked(view: BroadcastScheduleViewComponent)
-    }
 }
