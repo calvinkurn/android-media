@@ -1,4 +1,4 @@
-package com.tokopedia.notifications.util
+package com.tokopedia.notifications.utils
 
 fun <T> ArrayList<T>.onlyOne(): Boolean {
     if (size == 1) return true
