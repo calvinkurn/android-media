@@ -58,6 +58,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.searchbar)
+    implementation project(rootProject.ext.libraries.analytics)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.icons
@@ -80,6 +81,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
+    implementation project(rootProject.ext.libraries.analytics)
+
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
