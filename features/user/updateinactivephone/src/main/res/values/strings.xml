@@ -113,7 +113,7 @@
   
   <string name="text_update_dialog_title">Update aplikasimu, yuk!</string>
   <string name="text_update_dialog_description">Aplikasimu harus di-update dulu biar bisa pakai semua fitur Tokopedia.</string>
-  <string name="text_update_cta_primary">Update</string>
+  <string name="text_update_cta_primary">Update Sekarang</string>
   <string name="text_update_cta_secondary">Batal</string>
 
 </resources>
