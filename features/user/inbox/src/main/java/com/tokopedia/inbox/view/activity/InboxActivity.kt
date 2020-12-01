@@ -18,7 +18,6 @@ import com.tokopedia.inbox.common.InboxFragmentType
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.di.DaggerInboxComponent
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
-import com.tokopedia.inbox.view.binder.BadgeCounterBinder
 import com.tokopedia.inbox.view.custom.InboxBottomNavigationView
 import com.tokopedia.inbox.view.custom.NavigationHeader
 import com.tokopedia.inbox.view.dialog.AccountSwitcherBottomSheet
@@ -33,7 +32,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -51,12 +49,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private var switcher: AccountSwitcherBottomSheet? = null
     private var navigator: InboxNavigator? = null
-    private var roleNotificationCounter: Typography? = null
     private var bottomNav: InboxBottomNavigationView? = null
     private var navHeaderContainer: ConstraintLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
-    private var inboxCounter: InboxCounter = InboxCounter()
+    private var inboxBadgeCounter: InboxCounter = InboxCounter()
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(InboxViewModel::class.java)
@@ -81,7 +78,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     override fun clearNotificationCounter() {
-        inboxCounter.getByRole(InboxConfig.role)?.notifcenterInt = 0
+        inboxBadgeCounter.getByRole(InboxConfig.role)?.notifcenterInt = 0
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, 0)
     }
 
@@ -115,7 +112,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupView() {
-        roleNotificationCounter = findViewById(R.id.unread_counter)
         bottomNav = findViewById(R.id.inbox_bottom_nav)
         fragmentContainer = findViewById(R.id.fragment_contaier)
         toolbar = findViewById(R.id.inbox_nav_toolbar)
@@ -130,7 +126,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         navigator?.notifyRoleChanged(role)
         navHeader.bindValue()
         showNotificationRoleChanged(role)
-        updateBottomNavNotificationCounter()
+        updateBadgeCounter()
     }
 
     private fun showNotificationRoleChanged(@RoleType role: Int) {
@@ -184,25 +180,18 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun setupObserver() {
         viewModel.notifications.observe(this, Observer { result ->
             if (result is Success) {
-                inboxCounter = result.data
-                updateBottomNavNotificationCounter()
-                updateToolbarNotificationCounter()
+                inboxBadgeCounter = result.data
+                updateBadgeCounter()
             }
         })
     }
 
-    private fun updateBottomNavNotificationCounter() {
-        val notificationRole = inboxCounter.getByRole(InboxConfig.role) ?: return
+    private fun updateBadgeCounter() {
+        val notificationRole = inboxBadgeCounter.getByRole(InboxConfig.role) ?: return
         bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
         bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
         bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
         navHeader.setBadgeCount(notificationRole.totalInt)
-    }
-
-    private fun updateToolbarNotificationCounter() {
-        // TODO: to be implemented on global nav custom view
-        val notificationRole = inboxCounter.getByRole(InboxConfig.role)
-        BadgeCounterBinder.bindBadgeCounter(roleNotificationCounter, notificationRole?.totalInt)
     }
 
     private fun setupBottomNav() {

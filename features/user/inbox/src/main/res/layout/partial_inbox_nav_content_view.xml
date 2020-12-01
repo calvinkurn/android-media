@@ -50,7 +50,7 @@
         app:srcCompat="@drawable/ic_inbox_chevron_down" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/unread_counter"
+        android:id="@+id/unread_header_counter"
         style="@style/BadgeCounter"
         android:layout_marginStart="@dimen/spacing_lvl3"
         android:layout_marginTop="@dimen/spacing_lvl1"

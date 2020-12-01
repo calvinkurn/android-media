@@ -26,7 +26,7 @@ class NavigationHeader @Inject constructor(
     fun bindNavHeaderView(view: View?) {
         thumbnail = view?.findViewById(R.id.iv_user_thumbnail)
         name = view?.findViewById(R.id.txt_user_name)
-        badgeCounter = view?.findViewById(R.id.unread_counter)
+        badgeCounter = view?.findViewById(R.id.unread_header_counter)
     }
 
     fun bindValue() {
