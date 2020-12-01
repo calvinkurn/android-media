@@ -64,13 +64,13 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) : 
                 if (productCardOptionsModel.wishlistResult.isAddWishlist) {
                     if (productCardOptionsModel.wishlistResult.isSuccess) {
                         NetworkErrorHelper.showSnackbar(itemView.context as Activity, itemView.context.getString(R.string.discovery_msg_success_add_wishlist))
-                        productCardItemViewModel.components.data?.firstOrNull()?.isWishList = productCardOptionsModel.isWishlisted
+                        productCardItemViewModel.components.data?.firstOrNull()?.isWishList = productCardOptionsModel.wishlistResult.isAddWishlist
                     } else {
                         NetworkErrorHelper.showSnackbar(itemView.context as Activity, itemView.context.getString(R.string.discovery_msg_error_add_wishlist))
                     }
                 } else {
                     if (productCardOptionsModel.wishlistResult.isSuccess) {
-                        productCardItemViewModel.components.data?.firstOrNull()?.isWishList = productCardOptionsModel.isWishlisted
+                        productCardItemViewModel.components.data?.firstOrNull()?.isWishList = productCardOptionsModel.wishlistResult.isAddWishlist
                         NetworkErrorHelper.showSnackbar(itemView.context as Activity, itemView.context.getString(R.string.discovery_msg_success_remove_wishlist))
                     } else {
                         NetworkErrorHelper.showSnackbar(itemView.context as Activity, itemView.context.getString(R.string.discovery_msg_error_remove_wishlist))

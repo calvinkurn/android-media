@@ -27,6 +27,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = EMPTY_STRING,
     open fun trackBackClick() {}
     open fun trackShareClick() {}
     open fun trackSearchClick() {}
+    open fun trackGlobalNavBarClick(buttonName : String, userID : String?) {}
     open fun trackLihatSemuaClick(headerName: String?) {}
     open fun trackImpressionIconDynamicComponent(headerName: String, icons: List<DataItem>) {}
     open fun trackClickIconDynamicComponent(iconPosition: Int, icon: DataItem) {}

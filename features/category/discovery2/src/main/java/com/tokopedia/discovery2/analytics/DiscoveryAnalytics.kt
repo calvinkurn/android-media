@@ -166,7 +166,7 @@ open class DiscoveryAnalytics(pageType: String = EMPTY_STRING,
     }
 
 
-    fun trackGlobalNavBarClick(buttonName : String, userID : String?) {
+    override fun trackGlobalNavBarClick(buttonName : String, userID : String?) {
         val eventCategory = "$TOP_NAV - $VALUE_DISCOVERY_PAGE"
         val map: MutableMap<String, Any> = mutableMapOf(
                 KEY_EVENT to CLICK_NAV_DRAWER,
