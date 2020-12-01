@@ -1,34 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_sheet_umrah_home_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/img_umrah_home_page_bottom_sheet_closed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dp_16"
-        app:srcCompat="@drawable/umrah_ic_home_page_closed"
-        tools:ignore="ContentDescription" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_umrah_home_page_bottom_sheet_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_toEndOf="@+id/img_umrah_home_page_bottom_sheet_closed"
-        android:layout_toRightOf="@+id/img_umrah_home_page_bottom_sheet_closed"
-        android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_3"
-        tools:text="Harga" />
-
     <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:layout_marginLeft="@dimen/spacing_lvl3"
+        android:layout_marginRight="@dimen/spacing_lvl3"
         android:id="@+id/rv_umrah_home_page_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_umrah_home_page_bottom_sheet_title" />
+        android:layout_height="wrap_content" />
 </RelativeLayout>

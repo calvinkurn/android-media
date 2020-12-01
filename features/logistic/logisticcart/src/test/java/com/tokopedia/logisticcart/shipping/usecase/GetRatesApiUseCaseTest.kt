@@ -8,8 +8,8 @@ import com.tokopedia.logisticcart.domain.executor.TestSceduler
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationConverter
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesApiGqlResponse
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.every
 import io.mockk.mockk

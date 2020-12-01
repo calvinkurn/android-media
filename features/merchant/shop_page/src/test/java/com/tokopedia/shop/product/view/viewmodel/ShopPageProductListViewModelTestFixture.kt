@@ -5,8 +5,10 @@ import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVouche
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
+import com.tokopedia.shop.common.domain.RestrictionEngineNplUseCase
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCaseNew
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
@@ -16,9 +18,10 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.domain.interactor.GetShopProductSortUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.util.TestCoroutineDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import dagger.Lazy
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockkObject
@@ -71,12 +74,15 @@ abstract class ShopPageProductListViewModelTestFixture {
     lateinit var userSession: UserSessionInterface
     @RelaxedMockK
     lateinit var shopProductSortMapper: ShopProductSortMapper
-
+    @RelaxedMockK
+    lateinit var restrictionEngineNplUseCase: RestrictionEngineNplUseCase
+    @RelaxedMockK
+    lateinit var toggleFavouriteShopUseCase: Lazy<ToggleFavouriteShopUseCase>
 
     protected lateinit var viewModelShopPageProductListViewModel: ShopPageProductListViewModel
     protected lateinit var viewModelShopPageProductListResultViewModel: ShopPageProductListResultViewModel
     private val testCoroutineDispatcherProvider by lazy {
-        TestCoroutineDispatcherProviderImpl
+        CoroutineTestDispatchersProvider
     }
 
     @Before
@@ -116,7 +122,9 @@ abstract class ShopPageProductListViewModelTestFixture {
                 shopProductSortMapper,
                 testCoroutineDispatcherProvider,
                 getShopFilterBottomSheetDataUseCase,
-                getShopFilterProductCountUseCase
+                getShopFilterProductCountUseCase,
+                restrictionEngineNplUseCase,
+                toggleFavouriteShopUseCase
         )
     }
 }

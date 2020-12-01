@@ -6,7 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.listener.*
+import com.tokopedia.home.beranda.listener.HomeCategoryListener
+import com.tokopedia.home.beranda.listener.HomeFeedsListener
+import com.tokopedia.home.beranda.listener.HomeReviewListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
@@ -29,6 +31,10 @@ import com.tokopedia.home_component.viewholders.*
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
+import com.tokopedia.recommendation_widget_common.widget.bestseller.BestSellerViewHolder
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationTypeFactory
+import com.tokopedia.recommendation_widget_common.widget.bestseller.factory.RecommendationWidgetListener
+import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.recharge_component.RechargeComponentTypeFactory
 import com.tokopedia.recharge_component.listener.RechargeBUWidgetListener
 import com.tokopedia.recharge_component.model.RechargeBUWidgetDataModel
@@ -40,8 +46,7 @@ import java.util.*
  * @author by errysuprayogi on 11/28/17.
  */
 
-class HomeAdapterFactory(private val listener: HomeCategoryListener, private val inspirationListener: HomeInspirationListener,
-                         private val homeFeedsListener: HomeFeedsListener,
+class HomeAdapterFactory(private val listener: HomeCategoryListener, private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
@@ -56,10 +61,13 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val lego4AutoBannerListener: Lego4AutoBannerListener,
                          private val featuredShopListener: FeaturedShopListener,
                          private val playWidgetCoordinator: PlayWidgetCoordinator,
+                         private val bestSellerListener: RecommendationWidgetListener,
+                         private val categoryNavigationListener: CategoryNavigationListener,
                          private val rechargeBUWidgetListener: RechargeBUWidgetListener
 ) :
         BaseAdapterTypeFactory(),
-        HomeTypeFactory, HomeComponentTypeFactory, RechargeComponentTypeFactory {
+        HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
+        RechargeComponentTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -80,6 +88,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(homepageBannerDataModel: HomepageBannerDataModel): Int {
         return BannerViewHolder.LAYOUT
+    }
+
+    override fun type(bestSellerDataModel: BestSellerDataModel): Int {
+        return BestSellerViewHolder.LAYOUT
     }
 
     override fun type(tickerDataModel: TickerDataModel): Int {
@@ -203,6 +215,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(dataModel: CarouselPlayWidgetDataModel) =
             CarouselPlayWidgetViewHolder.LAYOUT
 
+    override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int {
+        return CategoryNavigationViewHolder.LAYOUT
+    }
+
     //end of Home-Component section
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
@@ -284,6 +300,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             CategoryWidgetViewHolder.LAYOUT -> viewHolder = CategoryWidgetViewHolder(view, listener)
+            BestSellerViewHolder.LAYOUT -> viewHolder = BestSellerViewHolder(view, bestSellerListener)
             ProductHighlightComponentViewHolder.LAYOUT -> viewHolder = ProductHighlightComponentViewHolder(
                     view,
                     homeComponentListener,
@@ -330,6 +347,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     featuredShopListener,
                     homeComponentListener
             )
+            CategoryNavigationViewHolder.LAYOUT -> viewHolder = CategoryNavigationViewHolder(view, categoryNavigationListener)
             CarouselPlayWidgetViewHolder.LAYOUT -> viewHolder = CarouselPlayWidgetViewHolder(PlayWidgetViewHolder(view, playWidgetCoordinator), listener)
             RechargeBUWidgetMixLeftViewHolder.LAYOUT -> viewHolder =
                     RechargeBUWidgetMixLeftViewHolder(view, rechargeBUWidgetListener, parentRecycledViewPool)

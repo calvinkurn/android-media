@@ -343,7 +343,7 @@ data class DataItem(
         val thresholdInterest: String? = null,
 
         @SerializedName("notify_me")
-        var notifyMe: Boolean = false,
+        var notifyMe: Boolean? = null,
 
         @SerializedName("campaign_id")
         val campaignId: String = "",
@@ -363,6 +363,9 @@ data class DataItem(
         @SerializedName("labels")
         var labelsGroupList: List<LabelsGroup>? = null,
 
+        @SerializedName("carousel_component_id")
+        var flashTimerTargetComponent: String = "",
+
         var shopAdsClickURL: String? = "",
 
         var shopAdsViewURL: String? = "",
@@ -373,7 +376,8 @@ data class DataItem(
 
         var positionForParentItem: Int = 0,
 
-        var typeProductCard: String? = ""
+        var typeProductCard: String? = "",
+        var tabName: String? = ""
 ) {
     val leftMargin: Int
         get() {

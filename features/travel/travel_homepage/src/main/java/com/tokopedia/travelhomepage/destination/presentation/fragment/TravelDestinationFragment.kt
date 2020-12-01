@@ -102,7 +102,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        destinationViewModel.travelDestinationCityModel.observe(this, Observer {
+        destinationViewModel.travelDestinationCityModel.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> {
                     cityId = it.data.cityId
@@ -119,14 +119,14 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
             }
         })
 
-        destinationViewModel.travelDestinationItemList.observe(this, Observer {
+        destinationViewModel.travelDestinationItemList.observe(viewLifecycleOwner, Observer {
             clearAllData()
             it?.run {
                 if (it.isEmpty()) showNetworkErrorLayout()
                 else renderList(this) }
         })
 
-        destinationViewModel.isAllError.observe(this, Observer {
+        destinationViewModel.isAllError.observe(viewLifecycleOwner, Observer {
             it?.let { isAllError ->
                 if (isAllError) showNetworkErrorLayout()
             }
@@ -231,7 +231,7 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         (activity as TravelDestinationActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val navIcon = travel_homepage_destination_toolbar.navigationIcon
-        navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+        navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
         (activity as TravelDestinationActivity).supportActionBar?.setHomeAsUpIndicator(navIcon)
 
         collapsing_toolbar.title = ""
@@ -248,11 +248,11 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                 }
                 if (scrollRange + verticalOffset == 0) {
                     collapsing_toolbar.title = cityName
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.black), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700), PorterDuff.Mode.SRC_ATOP)
                     isShow = true
                 } else if (isShow) {
                     collapsing_toolbar.title = " "
-                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.design.R.color.white), PorterDuff.Mode.SRC_ATOP)
+                    navIcon?.setColorFilter(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0), PorterDuff.Mode.SRC_ATOP)
                     isShow = false
                 }
 
