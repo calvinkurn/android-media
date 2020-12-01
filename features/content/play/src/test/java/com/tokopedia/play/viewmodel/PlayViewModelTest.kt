@@ -124,7 +124,8 @@ class PlayViewModelTest {
                 ),
                 showCart = mockChannel.configuration.showCart,
                 showPinnedProduct = mockChannel.configuration.showPinnedProduct,
-                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet
+                titleBottomSheet = mockChannel.configuration.pinnedProduct.titleBottomSheet,
+                shareInfo = modelBuilder.buildShareInfoUiModel(mockChannel)
         )
         val expectedResult = NetworkResult.Success(expectedModel)
 

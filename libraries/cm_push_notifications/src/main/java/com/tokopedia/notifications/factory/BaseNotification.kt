@@ -38,7 +38,7 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
-const val IMAGE_DOWNLOAD_TIME_OUT_SECOND  = 10L
+const val IMAGE_DOWNLOAD_TIME_OUT_SECOND = 10L
 
 interface BaseNotificationContract {
     fun defaultIcon(): Bitmap
@@ -147,14 +147,14 @@ abstract class BaseNotification internal constructor(
             R.mipmap.ic_big_notif_seller
         else
             com.tokopedia.resources.common.R.mipmap.ic_launcher_customerapp
-    internal val bitmapLargeIcon : Bitmap
-    get() = createBitmap()
+    internal val bitmapLargeIcon: Bitmap
+        get() = createBitmap()
 
     override fun defaultIcon(): Bitmap {
         return bitmapLargeIcon
     }
 
-    private fun createBitmap() : Bitmap {
+    private fun createBitmap(): Bitmap {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val drawable = context.resources.getDrawable(drawableLargeIcon)
             val bmp = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
@@ -394,8 +394,14 @@ abstract class BaseNotification internal constructor(
         fun updateIntentWithCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
             baseNotificationModel.customValues?.let {
                 if (it.isNotEmpty()) {
-                    intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
-                            (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE))
+                    val couponCode = (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE)
+                    val gratificationId = (JSONObject(it)).optString(CMConstant.CustomValuesKeys.GRATIFICATION_ID)
+                    if (!couponCode.isNullOrEmpty()) {
+                        intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, couponCode)
+                    }
+                    if (!gratificationId.isNullOrEmpty()) {
+                        intent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID, gratificationId)
+                    }
                 }
             }
             return intent

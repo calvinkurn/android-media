@@ -20,9 +20,7 @@ class OtherTransactionViewHolder(itemView: View, val mainNavListener: MainNavLis
 
     override fun bind(otherTransactionModel: OtherTransactionModel) {
         val context = itemView.context
-        itemView.transaction_others_count.text = String.format(
-                context.getString(R.string.transaction_others_count, otherTransactionModel.othersTransactionCount.toString())
-        )
+        itemView.transaction_others_count.text = context.getString(R.string.transaction_others_count)
 
         itemView.setOnClickListener {
             TrackingTransactionSection.clickOnOrderStatus(

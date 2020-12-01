@@ -194,4 +194,6 @@ yang ditemukan</string>
     <string name="title_topchat_see_detail">Lihat Selengkapnya</string>
     <string name="title_topchat_reply_from_broadcast">Reply from Broadcast Chat</string>
     <string name="action_pay">Bayar</string>
+    <string name="title_topchat_sender_chat_banned">Pesan ini mengandung kata yang tidak diizinkan.</string>
+    <string name="title_topchat_check_tnc"><![CDATA[Cek Syarat & Ketentuan]]></string>
 </resources>

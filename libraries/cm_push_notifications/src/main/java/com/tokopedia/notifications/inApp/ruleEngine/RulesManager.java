@@ -34,8 +34,8 @@ public class RulesManager {
         return rulesManager;
     }
 
-    public void checkValidity(String entity, long currentTime, DataProvider dataProvider) {
-        ruleInterpreter.checkForValidity(entity, currentTime, dataProvider);
+    public void checkValidity(String entity, long currentTime, DataProvider dataProvider, int entityHashCode, boolean isActivity) {
+        ruleInterpreter.checkForValidity(entity, currentTime, dataProvider, entityHashCode, isActivity);
     }
 
     public void dataConsumed(long id) {

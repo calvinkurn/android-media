@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.view.sheet
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -20,6 +19,7 @@ private const val SELECTED_STATUS_0 = 0;
 private const val SELECTED_STATUS_1 = 1;
 private const val SELECTED_STATUS_2 = 2;
 private const val SELECTED_STATUS_3 = 3;
+
 class TopadsGroupFilterSheet : BottomSheetUnify() {
     private var dialog: BottomSheetDialog? = null
     var onSubmitClick: (() -> Unit)? = null
@@ -41,11 +41,10 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
             it.status_title?.visibility = View.VISIBLE
 
             it.active?.setOnClickListener { v ->
-                if(v.active.chipType == ChipsUnify.TYPE_NORMAL) {
-                    v.active.chipType =  ChipsUnify.TYPE_SELECTED
+                if (v.active.chipType == ChipsUnify.TYPE_NORMAL) {
+                    v.active.chipType = ChipsUnify.TYPE_SELECTED
                     selectedStatus = SELECTED_STATUS_1
-                }
-                else {
+                } else {
                     v.active.chipType = ChipsUnify.TYPE_NORMAL
                     selectedStatus = SELECTED_STATUS_0
                 }
@@ -53,18 +52,18 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
                 it.tidak_tampil?.chipType = ChipsUnify.TYPE_NORMAL
             }
             it.tidak_tampil?.setOnClickListener { v ->
-                 if(v.tidak_tampil.chipType == ChipsUnify.TYPE_NORMAL) {
-                     v.tidak_tampil.chipType= ChipsUnify.TYPE_SELECTED
-                     selectedStatus = SELECTED_STATUS_2
-                 } else {
-                     v.tidak_tampil.chipType = ChipsUnify.TYPE_NORMAL
-                     selectedStatus = SELECTED_STATUS_0
-                 }
+                if (v.tidak_tampil.chipType == ChipsUnify.TYPE_NORMAL) {
+                    v.tidak_tampil.chipType = ChipsUnify.TYPE_SELECTED
+                    selectedStatus = SELECTED_STATUS_2
+                } else {
+                    v.tidak_tampil.chipType = ChipsUnify.TYPE_NORMAL
+                    selectedStatus = SELECTED_STATUS_0
+                }
                 it.active?.chipType = ChipsUnify.TYPE_NORMAL
                 it.tidak_aktif?.chipType = ChipsUnify.TYPE_NORMAL
             }
             it.tidak_aktif?.setOnClickListener { v ->
-                if(v.tidak_aktif.chipType == ChipsUnify.TYPE_NORMAL) {
+                if (v.tidak_aktif.chipType == ChipsUnify.TYPE_NORMAL) {
                     v.tidak_aktif.chipType = ChipsUnify.TYPE_SELECTED
                     selectedStatus = SELECTED_STATUS_3
                 } else {
@@ -116,6 +115,24 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
         return selectedStatus
     }
 
+    fun getSelectedText(context: Context?): String {
+        context?.run {
+            return when (selectedStatus) {
+                SELECTED_STATUS_1 -> {
+                    getString(R.string.topads_active)
+                }
+                SELECTED_STATUS_2 -> {
+                    getString(R.string.topads_dash_tidak_tampil)
+                }
+                SELECTED_STATUS_3 -> {
+                    getString(R.string.topads_dash_tidak_active)
+                }
+                else -> ""
+            }
+        }
+        return ""
+    }
+
     fun show() {
         dialog?.show()
     }
@@ -126,12 +143,14 @@ class TopadsGroupFilterSheet : BottomSheetUnify() {
 
     companion object {
         lateinit var list: Array<String>
-        fun newInstance(context: Context): TopadsGroupFilterSheet {
+        fun newInstance(context: Context?): TopadsGroupFilterSheet {
             val fragment = TopadsGroupFilterSheet()
-            fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
-            fragment.dialog?.setContentView(R.layout.topads_dash_filter_bottomsheet)
-            list = context.resources.getStringArray(R.array.top_ads_sort_value)
-            fragment.setupView(context)
+            context?.let {
+                fragment.dialog = BottomSheetDialog(context, com.tokopedia.topads.common.R.style.CreateAdsBottomSheetDialogTheme)
+                fragment.dialog?.setContentView(R.layout.topads_dash_filter_bottomsheet)
+                list = context.resources.getStringArray(R.array.top_ads_sort_value)
+                fragment.setupView(context)
+            }
             return fragment
         }
     }
