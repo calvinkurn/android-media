@@ -50,7 +50,7 @@ object HotelSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_title)
@@ -60,7 +60,7 @@ object HotelSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice? {
+    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_title)
@@ -70,7 +70,7 @@ object HotelSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_title)
@@ -98,7 +98,7 @@ object HotelSliceProviderUtil {
                 0)
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getMyHotelOrderSlices(context: Context, sliceUri: Uri, orderList: List<HotelOrderListModel>): Slice? {
+    fun getMyHotelOrderSlices(context: Context, sliceUri: Uri, orderList: List<HotelOrderListModel>): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_hotel_order_title)

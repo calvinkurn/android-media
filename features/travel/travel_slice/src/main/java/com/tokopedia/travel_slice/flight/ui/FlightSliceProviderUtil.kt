@@ -23,7 +23,7 @@ import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
 object FlightSliceProviderUtil {
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getFailedFetchDataSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
@@ -33,7 +33,7 @@ object FlightSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice? {
+    fun getUserNotLoggedIn(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
@@ -43,7 +43,7 @@ object FlightSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice? {
+    fun getLoadingStateSlices(context: Context, sliceUri: Uri): Slice {
         return list(context, sliceUri, ListBuilder.INFINITY) {
             header {
                 title = context.getString(R.string.slice_flight_title)
@@ -53,7 +53,7 @@ object FlightSliceProviderUtil {
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
-    fun getFlightOrderSlices(context: Context, sliceUri: Uri, orderList: List<FlightOrderListEntity>): Slice? =
+    fun getFlightOrderSlices(context: Context, sliceUri: Uri, orderList: List<FlightOrderListEntity>): Slice =
             list(context, sliceUri, ListBuilder.INFINITY) {
                 header {
                     title = context.getString(R.string.slice_flight_title)

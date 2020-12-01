@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.travel_slice.hotel.data.HotelData
-import com.tokopedia.travel_slice.hotel.data.HotelOrderListModel
 import com.tokopedia.travel_slice.di.DaggerTravelSliceComponent
 import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
 import com.tokopedia.travel_slice.flight.data.FlightSliceRepository
 import com.tokopedia.travel_slice.flight.ui.FlightSliceProviderUtil
+import com.tokopedia.travel_slice.hotel.data.HotelData
+import com.tokopedia.travel_slice.hotel.data.HotelOrderListModel
 import com.tokopedia.travel_slice.hotel.data.HotelSliceRepository
 import com.tokopedia.travel_slice.hotel.ui.HotelSliceProviderUtil
 import com.tokopedia.travel_slice.hotel.util.TravelDateUtils.validateCheckInDate
@@ -42,6 +42,8 @@ class MainSliceProvider : SliceProvider() {
     @Inject
     lateinit var hotelSliceRepository: HotelSliceRepository
 
+    private var sliceHashMap: HashMap<Uri, Slice> = HashMap()
+
     private var flightOrderList = listOf<FlightOrderListEntity>()
     private var hotelList = listOf<HotelData>()
     private var orderList = listOf<HotelOrderListModel>()
@@ -60,6 +62,10 @@ class MainSliceProvider : SliceProvider() {
         init()
 
         val type = sliceUri.getQueryParameter(ARG_TYPE)?.toLowerCase() ?: TYPE_HOTEL
+
+        sliceHashMap[sliceUri]?.let {
+            return it
+        }
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return null
         return when (sliceUri.lastPathSegment) {
@@ -81,7 +87,7 @@ class MainSliceProvider : SliceProvider() {
 
             getHotelData(sliceUri)
         }
-        return when (status) {
+        val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
                 status = TravelSliceStatus.INIT
@@ -97,6 +103,9 @@ class MainSliceProvider : SliceProvider() {
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
         }
+
+        sliceHashMap[sliceUri] = slice
+        return slice
     }
 
     private fun getHotelData(sliceUri: Uri) {
@@ -125,7 +134,8 @@ class MainSliceProvider : SliceProvider() {
 
             getHotelOrderData(sliceUri)
         }
-        return when (status) {
+
+        val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
                 status = TravelSliceStatus.INIT
@@ -141,6 +151,9 @@ class MainSliceProvider : SliceProvider() {
                 HotelSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
             }
         }
+
+        sliceHashMap[sliceUri] = slice
+        return slice
     }
 
     private fun getHotelOrderData(sliceUri: Uri) {
@@ -168,7 +181,7 @@ class MainSliceProvider : SliceProvider() {
 
             getFlightOrderData(sliceUri)
         }
-        return when (status) {
+        val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> FlightSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
                 status = TravelSliceStatus.INIT
@@ -184,6 +197,9 @@ class MainSliceProvider : SliceProvider() {
                 FlightSliceProviderUtil.getUserNotLoggedIn(contextNonNull, sliceUri)
             }
         }
+
+        sliceHashMap[sliceUri] = slice
+        return slice
     }
 
     private fun getFlightOrderData(sliceUri: Uri) {
