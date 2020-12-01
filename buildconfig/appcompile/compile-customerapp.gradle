@@ -173,7 +173,7 @@ include "features:promo:loyalty_common"
 include "features:promo:promotions_target"
 
 include "features:top_ads:top_ads_detail_sheet"
-include "features:top_ads:top_ads_widget"
+include "features:top_ads:top_ads_dashboard"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"

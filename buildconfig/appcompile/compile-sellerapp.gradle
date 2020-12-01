@@ -122,8 +122,6 @@ include "features:transaction:atc_common"
 include "features:transaction:purchase_platform_common"
 include "features:transaction:sellerorder"
 
-include "features:top_ads:top_ads_widget"
-
 include "features:user:attachproduct"
 include "features:user:attachcommon"
 include "features:user:chat_common"
