@@ -15,7 +15,7 @@ data class CheckoutGeneralV2InstantParams(
         val carts : Carts = Carts(),
         @SerializedName("gateway_code")
         @Expose
-        val gatewayCode : String = "ZERO"
+        val gatewayCode : String = ""
 )
 
 data class Carts(
