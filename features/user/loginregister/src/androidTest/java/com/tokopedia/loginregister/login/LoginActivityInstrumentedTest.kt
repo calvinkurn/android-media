@@ -99,10 +99,6 @@ class LoginActivityInstrumentedTest {
         onRegisterFooterSpannableClick()
         onSocmedBtnClick()
         clickGoogleLogin()
-//        fragment.onDismissBottomSheet()
-//        onSocmedBtnClick()
-//        clickFacebookLogin()
-//        fragment.onDismissBottomSheet()
         assertThat(
             getAnalyticsWithQuery(gtmLogDBSource, context, trackerPath),
             hasAllSuccess()
@@ -132,26 +128,22 @@ class LoginActivityInstrumentedTest {
 
     /* click login email */
     fun onLoginViaEmail() {
-        Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
         onView(withId(R.id.register_btn)).perform(click())
     }
 
     fun clickUbahButton(){
-        Thread.sleep(1000)
         onView(withId(R.id.change_button)).perform(click())
     }
 
     /* click login email */
     fun onLoginViaPhone() {
-        Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("082242454504"))
         onView(withId(R.id.register_btn)).perform(click())
     }
 
     /* goto forgot password if clicked */
     fun forgotPassClick() {
-        Thread.sleep(1000)
         onView(allOf(withId(R.id.input_email_phone), withContentDescription(R.string.content_desc_input_email_phone))).perform(replaceText("yorisprayogo@gmail.com"))
         onView(withId(R.id.register_btn)).perform(click())
         onView(allOf(withId(R.id.forgot_pass), withContentDescription(R.string.content_desc_forgot_pass))).perform(click())
