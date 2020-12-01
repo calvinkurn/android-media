@@ -135,8 +135,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().initializeAllApis();
         createAndCallPreSeq();
         super.onCreate();
-        initializeAbTestVariant();
         createAndCallPostSeq();
+        initializeAbTestVariant();
         createAndCallFontLoad();
         registerActivityLifecycleCallbacks();
 
