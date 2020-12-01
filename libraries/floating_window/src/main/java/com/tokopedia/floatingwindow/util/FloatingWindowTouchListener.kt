@@ -11,7 +11,6 @@ import kotlin.math.hypot
  */
 class FloatingWindowTouchListener(
         view: View,
-        private val onClick: (View) -> Unit,
         private val initialPosition: () -> Point,
         private val positionListener: (x: Int, y: Int) -> Unit
 ) : View.OnTouchListener {
@@ -29,7 +28,7 @@ class FloatingWindowTouchListener(
 
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
 
-        when (motionEvent.action) {
+        return when (motionEvent.action) {
 
             MotionEvent.ACTION_DOWN -> {
                 pointerStartX = motionEvent.rawX.toInt()
@@ -39,6 +38,8 @@ class FloatingWindowTouchListener(
                     initialY = y
                 }
                 moving = false
+
+                true
             }
 
             MotionEvent.ACTION_MOVE -> {
@@ -48,18 +49,22 @@ class FloatingWindowTouchListener(
                     positionListener(initialX + deltaX.toInt(), initialY + deltaY.toInt())
                     moving = true
                 }
+
+                true
             }
 
             MotionEvent.ACTION_UP -> {
                 val deltaX = motionEvent.rawX - pointerStartX
                 val deltaY = motionEvent.rawY - pointerStartY
                 if (hypot(deltaX, deltaY) <= touchSlop) {
-                    onClick(view)
+                    view.performClick()
                 }
-            }
-        }
 
-        return true
+                true
+            }
+
+            else -> false
+        }
     }
 
 }

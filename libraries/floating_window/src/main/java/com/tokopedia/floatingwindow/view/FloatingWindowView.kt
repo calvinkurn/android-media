@@ -20,19 +20,10 @@ class FloatingWindowView private constructor(
 
     private val layouter = FloatingWindowLayouter(view, layoutParams)
 
-    private var mOnClickedListener: OnClickedListener = OnClickedListener {}
     private var mOnDraggedListener: OnDraggedListener = OnDraggedListener.DEFAULT_MOVE
-
-    fun doOnClick(onClick: OnClickedListener) {
-        mOnClickedListener = onClick
-    }
 
     fun doOnDragged(onDragged: OnDraggedListener) {
         mOnDraggedListener = onDragged
-    }
-
-    internal fun onClick() {
-        mOnClickedListener.onClicked(layouter)
     }
 
     internal fun onDragged(point: Point) {

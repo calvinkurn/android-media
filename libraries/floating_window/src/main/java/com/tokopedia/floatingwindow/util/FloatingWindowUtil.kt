@@ -20,9 +20,8 @@ fun Context.isDrawOverOtherAppsEnabled(): Boolean {
 }
 
 fun View.registerDraggableTouchListener(
-        onClicked: (View) -> Unit,
         initialPosition: () -> Point,
         onDragged: (x: Int, y: Int) -> Unit
 ) {
-    FloatingWindowTouchListener( this, onClicked, initialPosition, onDragged)
+    FloatingWindowTouchListener( this, initialPosition, onDragged)
 }

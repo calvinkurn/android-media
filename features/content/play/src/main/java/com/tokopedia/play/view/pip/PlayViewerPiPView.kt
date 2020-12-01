@@ -7,6 +7,8 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ui.PlayerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.R
 import com.tokopedia.play.view.fragment.PlayVideoFragment
@@ -43,10 +45,14 @@ class PlayViewerPiPView : ConstraintLayout {
         }
     }
 
+    private var mChannelId: String? = null
+
     private val pvVideo: PlayerView
     private val flLoading: FrameLayout
     private val ivLoading: LoaderUnify
     private val flCloseArea: FrameLayout
+
+    private var isRoutingToRoom: Boolean = false
 
     init {
         val view = View.inflate(context, R.layout.view_play_viewer_pip, this)
@@ -59,12 +65,32 @@ class PlayViewerPiPView : ConstraintLayout {
         setupView()
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        playVideoManager.removeListener(videoListener)
+        if (!isRoutingToRoom) {
+            if (playVideoManager.isVideoLive()) playVideoManager.release()
+            else playVideoManager.stop()
+        }
+    }
+
+    fun setChannelId(channelId: String) {
+        mChannelId = channelId
+    }
+
     fun getPlayerView(): PlayerView = pvVideo
 
     private fun setupView() {
         playVideoManager.addListener(videoListener)
         flCloseArea.setOnClickListener {
             pipAdapter.removeByKey(PlayVideoFragment.FLOATING_WINDOW_KEY)
+        }
+
+        setOnClickListener {
+            mChannelId?.let { channelId ->
+                isRoutingToRoom = true
+                RouteManager.route(context, ApplinkConst.PLAY_DETAIL, channelId)
+            }
         }
     }
 

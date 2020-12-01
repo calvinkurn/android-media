@@ -162,6 +162,7 @@ class PlayVideoFragment @Inject constructor(
 
         val view = PlayViewerPiPView(requireContext()).also {
             PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), it.getPlayerView())
+            it.setChannelId(channelId)
         }
 
         val scaledWidth = (scaleFactor * width).toInt()
@@ -198,9 +199,9 @@ class PlayVideoFragment @Inject constructor(
             layouter.updatePosition(newPoint.x, newPoint.y)
         }
 
-        floatingView.doOnClick {
-            RouteManager.route(floatingView.view.context, ApplinkConst.PLAY_DETAIL, channelId)
-        }
+//        floatingView.doOnClick {
+//            RouteManager.route(floatingView.view.context, ApplinkConst.PLAY_DETAIL, channelId)
+//        }
 
         pipAdapter.addView(
                 floatingView = floatingView,

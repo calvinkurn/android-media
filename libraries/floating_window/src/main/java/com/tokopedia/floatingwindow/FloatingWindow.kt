@@ -56,9 +56,6 @@ internal class FloatingWindow private constructor(context: Context) {
         }
 
         floatingView.view.registerDraggableTouchListener(
-                onClicked = {
-                    floatingView.onClick()
-                },
                 initialPosition = { Point(floatingView.layoutParams.x, floatingView.layoutParams.y) },
                 onDragged = { x, y ->
                     floatingView.onDragged(Point(x, y))
