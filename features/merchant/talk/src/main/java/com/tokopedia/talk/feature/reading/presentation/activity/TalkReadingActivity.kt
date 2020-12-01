@@ -29,8 +29,8 @@ class TalkReadingActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, T
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        getDataFromAppLink()
         getDataFromIntent()
+        getDataFromAppLink()
         super.onCreate(savedInstanceState)
         startPerformanceMonitoring()
         setUpToolBar()
