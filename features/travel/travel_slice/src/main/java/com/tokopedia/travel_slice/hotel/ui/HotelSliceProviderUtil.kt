@@ -12,9 +12,11 @@ import androidx.slice.builders.*
 import androidx.slice.builders.ListBuilder.SMALL_IMAGE
 import com.bumptech.glide.Glide
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel
 import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.hotel.data.HotelData
 import com.tokopedia.travel_slice.hotel.data.HotelOrderListModel
+import com.tokopedia.travel_slice.ui.provider.TravelSliceActivity
 import kotlin.math.max
 
 /**
@@ -83,18 +85,18 @@ object HotelSliceProviderUtil {
 
     private fun buildIntentFromHotelDetail(context: Context, hotelId: Long, checkIn: String): PendingIntent {
         return PendingIntent.getActivity(context, 0,
-               RouteManager.getIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)),
+                TravelSliceActivity.createHotelDetailIntent(context, context.getString(R.string.hotel_detail_applink, hotelId.toString(), checkIn)),
                 0)
     }
 
     private fun buildIntentFromHotelDashboard(context: Context): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                RouteManager.getIntent(context, context.getString(R.string.hotel_dashboard_applink)),
+                TravelSliceActivity.createHotelDashboardIntent(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL),
                 0)
 
-    private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
+    private fun buildIntentFromHotelOrderApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                 RouteManager.getIntent(context, applink) ,
+                 TravelSliceActivity.createHotelOrderDetailIntent(context, applink),
                 0)
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -110,7 +112,7 @@ object HotelSliceProviderUtil {
                     subtitle = it.statusStr
                     setTitleItem(IconCompat.createWithResource(context, R.drawable.ic_travel_slice_hotel), SMALL_IMAGE)
 
-                    primaryAction = SliceAction.create(buildIntentFromApplink(context, it.applink),
+                    primaryAction = SliceAction.create(buildIntentFromHotelOrderApplink(context, it.applink),
                             IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
                             ListBuilder.ICON_IMAGE, "")
                 }

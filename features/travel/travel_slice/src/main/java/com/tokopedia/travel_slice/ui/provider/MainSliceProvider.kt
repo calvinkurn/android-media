@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.slice.Slice
 import androidx.slice.SliceProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
@@ -21,6 +22,7 @@ import com.tokopedia.travel_slice.hotel.ui.HotelSliceProviderUtil
 import com.tokopedia.travel_slice.hotel.util.TravelDateUtils.validateCheckInDate
 import com.tokopedia.travel_slice.utils.TravelSliceStatus
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
@@ -41,6 +43,9 @@ class MainSliceProvider : SliceProvider() {
 
     @Inject
     lateinit var hotelSliceRepository: HotelSliceRepository
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private var sliceHashMap: HashMap<Uri, Slice> = HashMap()
 
@@ -77,7 +82,10 @@ class MainSliceProvider : SliceProvider() {
 
     private fun init() {
         GraphqlClient.init(contextNonNull)
-        DaggerTravelSliceComponent.builder().build().inject(this)
+        DaggerTravelSliceComponent.builder()
+                .baseAppComponent((requireNotNull(context).applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -104,7 +112,7 @@ class MainSliceProvider : SliceProvider() {
             }
         }
 
-        sliceHashMap[sliceUri] = slice
+        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) sliceHashMap[sliceUri] = slice
         return slice
     }
 
@@ -152,13 +160,13 @@ class MainSliceProvider : SliceProvider() {
             }
         }
 
-        sliceHashMap[sliceUri] = slice
+        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) sliceHashMap[sliceUri] = slice
         return slice
     }
 
     private fun getHotelOrderData(sliceUri: Uri) {
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
-            val isLoggedIn = UserSession(contextNonNull).isLoggedIn
+            val isLoggedIn = userSession.isLoggedIn
             orderList = hotelSliceRepository.getHotelOrderData(isLoggedIn)
 
             status = TravelSliceStatus.SUCCESS
@@ -198,13 +206,13 @@ class MainSliceProvider : SliceProvider() {
             }
         }
 
-        sliceHashMap[sliceUri] = slice
+        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) sliceHashMap[sliceUri] = slice
         return slice
     }
 
     private fun getFlightOrderData(sliceUri: Uri) {
         CoroutineScope(Dispatchers.IO).launchCatchError(block = {
-            val isLoggedIn = UserSession(contextNonNull).isLoggedIn
+            val isLoggedIn = userSession.isLoggedIn
             flightOrderList = flightSliceRepository.getFlightOrderData(isLoggedIn)
 
             status = TravelSliceStatus.SUCCESS

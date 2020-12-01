@@ -15,6 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel_slice.R
 import com.tokopedia.travel_slice.flight.data.FlightOrderListEntity
+import com.tokopedia.travel_slice.ui.provider.TravelSliceActivity
 
 /**
  * @author by jessica on 25/11/20
@@ -98,7 +99,7 @@ object FlightSliceProviderUtil {
                 row {
                     title = context.getString(R.string.slice_flight_see_more)
 
-                    primaryAction = SliceAction.create(buildIntentFromApplink(context, ApplinkConst.FLIGHT_ORDER),
+                    primaryAction = SliceAction.create(buildIntentFromOrderListApplink(context),
                             IconCompat.createWithResource(context, R.drawable.abc_tab_indicator_material),
                             ListBuilder.ICON_IMAGE, "")
                 }
@@ -106,9 +107,14 @@ object FlightSliceProviderUtil {
 
     private fun String.getBitmap(context: Context): Bitmap? = Glide.with(context).asBitmap().load(this).submit().get()
 
+    private fun buildIntentFromOrderListApplink(context: Context): PendingIntent =
+            PendingIntent.getActivity(context, 0,
+            TravelSliceActivity.createFlightOrderListIntent(context, ApplinkConst.FLIGHT_ORDER),
+            0)
+
     private fun buildIntentFromApplink(context: Context, applink: String): PendingIntent =
         PendingIntent.getActivity(context, 0,
-                 RouteManager.getIntent(context, applink),
+                TravelSliceActivity.createFlightOrderDetailIntent(context, applink),
                 0)
 
 }

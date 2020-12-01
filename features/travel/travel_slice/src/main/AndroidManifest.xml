@@ -15,5 +15,20 @@
                 <category android:name="android.app.slice.category.SLICE" />
             </intent-filter>
         </provider>
+
+        <activity android:name=".ui.provider.TravelSliceActivity"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/travel_slice_host"
+                    android:path="@string/travel_slice_path"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

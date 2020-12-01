@@ -14,6 +14,8 @@ object ApplinkConstInternalTravel {
     val HOST_FLIGHT = "pesawat"
     @JvmField
     val HOST_TRAVEL_HOMEPAGE = "travelentertainment"
+    @JvmField
+    val HOST_TRAVEL_SLICE = "travelslice"
 
     @JvmField
     val INTERNAL_HOTEL = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_HOTEL"
@@ -50,4 +52,6 @@ object ApplinkConstInternalTravel {
     @JvmField
     val EXTRA_DESTINATION_WEB_URL = "EXTRA_DESTINATION_WEB_URL"
 
+    @JvmField
+    val TRAVEL_ACTION = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://$HOST_TRAVEL_SLICE/main"
 }
