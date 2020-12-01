@@ -8,7 +8,7 @@
     android:id="@+id/base_item_filter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="@dimen/dp_12"
+    android:padding="@dimen/unify_space_12"
     android:gravity="center"
     android:background="@drawable/umrah_bg_search_filter_chip"
     tools:targetApi="m"
@@ -16,19 +16,21 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_2"
-        android:layout_marginRight="@dimen/dp_2"
+        android:layout_width="@dimen/spacing_lvl4"
+        android:layout_height="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl1"
+        android:layout_marginRight="@dimen/spacing_lvl1"
         android:visibility="gone"
         tools:visibility="visible"/>
 
-    <com.tokopedia.design.component.TextViewCompat
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:lineSpacingExtra="@dimen/sp_6"
+        android:lineSpacingExtra="@dimen/fontSize_lvl10"
         tools:text="@string/label_filter"
-        app:fontSize="small"/>
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        />
 
 </LinearLayout>

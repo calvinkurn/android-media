@@ -407,6 +407,7 @@ object EventQuery {
                     forms_package {
                         id
                         product_id
+                        options
                         name
                         title
                         value
@@ -444,6 +445,7 @@ object EventQuery {
                         forms_item {
                            id
                            product_id
+                           options
                             name
                            title
                            value
@@ -471,6 +473,7 @@ object EventQuery {
                 forms {
                     id
                     product_id
+                    options
                     name
                     title
                     value

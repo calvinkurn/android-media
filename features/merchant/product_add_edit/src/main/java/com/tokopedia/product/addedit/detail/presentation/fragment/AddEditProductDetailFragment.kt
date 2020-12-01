@@ -253,7 +253,7 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         // set bg color programatically, to reduce overdraw
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        context?.let { activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
 
         // add edit product photo views
         addProductPhotoButton = view.findViewById(R.id.tv_add_product_photo)
@@ -892,8 +892,15 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
         viewModel.isNameRecommendationSelected = true
 
-        productNameField?.textFieldInput?.setText(productName)
-        productNameField?.textFieldInput?.setSelection(productName.length)
+        var newProductName = productName
+        val maxLengthKeyword = 70
+
+        if (productName.trim().length > maxLengthKeyword) {
+            newProductName = productName.take(maxLengthKeyword)
+        }
+
+        productNameField?.textFieldInput?.setText(newProductName)
+        productNameField?.textFieldInput?.setSelection(newProductName.length)
 
         if (viewModel.isAdding) {
             ProductAddMainTracking.clickProductNameRecom(shopId, productName)
@@ -1427,13 +1434,13 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private fun enableSubmitButton() {
         submitButton?.isClickable = true
         submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.product_add_edit_rect_green_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, android.R.color.white)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
     }
 
     private fun disableSubmitButton() {
         submitButton?.isClickable = false
         submitButton?.setBackgroundResource(com.tokopedia.product.addedit.R.drawable.rect_grey_solid)
-        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32)) }
+        context?.let { submitTextView?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_44)) }
     }
 
     private fun showDurationUnitOption() {

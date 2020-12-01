@@ -14,7 +14,6 @@ import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop_showcase.R
-import com.tokopedia.shop_showcase.shop_showcase_management.data.model.ShowcaseList.ShowcaseItem
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import kotlinx.android.synthetic.main.shop_showcase_item_picker.view.*
@@ -27,7 +26,7 @@ class ShopShowcasePickerAdapter(
     private var totalCheckedItem = 0
     private var lastSelectedRadioPosition = -1
     private var showcaseList: List<ShopEtalaseModel> = listOf()
-    private var preSelectedShowcaseList: List<ShowcaseItemPicker> = listOf()
+    private var preSelectedShowcaseList: MutableList<ShowcaseItemPicker> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopShowcasePickerViewHolder {
         return ShopShowcasePickerViewHolder(
@@ -48,7 +47,7 @@ class ShopShowcasePickerAdapter(
     fun updateDataSet(newList: List<ShopEtalaseModel> = listOf(), preSelectedShowcase: List<ShowcaseItemPicker>? = listOf(), totalChecked: Int = 0) {
         if(preSelectedShowcase?.size.isMoreThanZero()) {
             preSelectedShowcase?.let {
-                preSelectedShowcaseList = it
+                preSelectedShowcaseList = it.toMutableList()
             }
         } else {
             showcaseList = newList
@@ -112,7 +111,10 @@ class ShopShowcasePickerAdapter(
                         item.isChecked = !item.isChecked
                         btnCheckboxPicker?.isChecked = item.isChecked
                         if(item.isChecked) totalCheckedItem += 1
-                        else totalCheckedItem -= 1
+                        else {
+                            preSelectedShowcaseList.remove(ShowcaseItemPicker(showcaseId = item.id, showcaseName = item.name))
+                            totalCheckedItem -= 1
+                        }
                         listener.onPickerItemClicked(item, totalCheckedItem)
                         notifyDataSetChanged()
                     }

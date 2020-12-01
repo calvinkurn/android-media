@@ -272,6 +272,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshPopularSearch(featureId: String) {
+        refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
@@ -299,7 +300,7 @@ class InitialStatePresenter @Inject constructor(
             listVisitable.forEachIndexed { index, visitable ->
                 if (visitable is PopularSearchViewModel && visitable.featureId == featureId) {
                     visitable.list = refreshedPopularSearchData
-                    refreshIndex = index
+                    if (listVisitable[index - 1] is PopularSearchTitleViewModel) refreshIndex = index - 1
                 }
             }
 
@@ -317,6 +318,7 @@ class InitialStatePresenter @Inject constructor(
     }
 
     override fun refreshDynamicSection(featureId: String) {
+        refreshInitialStateUseCase.unsubscribe()
         refreshInitialStateUseCase.execute(
                 RefreshInitialStateUseCase.getParams(
                         searchParameter,
@@ -344,7 +346,7 @@ class InitialStatePresenter @Inject constructor(
             listVisitable.forEachIndexed { index, visitable ->
                 if (visitable is DynamicInitialStateSearchViewModel && visitable.featureId == featureId) {
                     visitable.list = dynamicInitialStateData
-                    refreshIndex = index
+                    if (listVisitable[index - 1] is DynamicInitialStateTitleViewModel) refreshIndex = index - 1
                 }
             }
 

@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.feature.etalase.view.viewmodel
 
+import com.tokopedia.unit.test.ext.verifyErrorEquals
+import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.product.manage.feature.etalase.data.model.EtalaseViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.usecase.coroutines.Fail

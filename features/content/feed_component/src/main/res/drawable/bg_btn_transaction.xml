@@ -2,13 +2,13 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false">
         <shape>
-            <solid android:color="@color/Neutral_N75"/>
+            <solid android:color="@color/Unify_N75"/>
             <corners android:radius="@dimen/dp_6"/>
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/Yellow_Y500"/>
+            <solid android:color="@color/Unify_Y500"/>
             <corners android:radius="@dimen/dp_6"/>
         </shape>
     </item>
