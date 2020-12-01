@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.paylater.R
 import com.tokopedia.paylater.domain.model.OfferListResponse
 import com.tokopedia.paylater.presentation.adapter.PayLaterOfferDescriptionAdapter
@@ -27,6 +29,10 @@ class PaymentOptionsFragment: Fragment() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = PayLaterOfferDescriptionAdapter(responseData.offerItemList)
         }
+        ImageHandler.loadImage(context,
+                ivPaylaterPartner,
+                "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+                R.drawable.ic_loading_image)
     }
 
     companion object {

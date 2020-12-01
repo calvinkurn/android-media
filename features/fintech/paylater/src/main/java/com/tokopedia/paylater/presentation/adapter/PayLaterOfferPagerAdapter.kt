@@ -14,4 +14,8 @@ class PayLaterOfferPagerAdapter(val context: Context, fm: FragmentManager, behav
         return list[position]
     }
 
+    override fun getPageWidth(position: Int): Float {
+        return 0.9f
+    }
+
 }

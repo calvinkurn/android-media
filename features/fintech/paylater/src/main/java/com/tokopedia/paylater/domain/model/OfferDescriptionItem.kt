@@ -5,5 +5,6 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class OfferDescriptionItem(
-        val offerItemPoint: String? = ""
+        val offerItemPoint: String? = "",
+        val isHighlight: Boolean? = false
 ): Parcelable

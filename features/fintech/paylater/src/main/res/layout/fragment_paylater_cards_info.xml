@@ -3,22 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginStart="@dimen/spacing_lvl4"
-    android:layout_marginEnd="@dimen/spacing_lvl4">
+    android:layout_height="wrap_content"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
         android:background="@color/Neutral_N0"
         android:orientation="vertical">
 
-        <ImageView
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivPaylaterPartner"
-            android:layout_width="72dp"
-            android:layout_height="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerInside"
             android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -26,12 +26,14 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvTitlePaylaterPartner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/kredivo"
             android:textSize="@dimen/unify_font_14"
             app:layout_constraintBottom_toBottomOf="@+id/ivPaylaterPartner"
+            app:layout_constraintEnd_toStartOf="@+id/tvPaylaterPartnerStatus"
             app:layout_constraintStart_toEndOf="@+id/ivPaylaterPartner"
             app:layout_constraintTop_toTopOf="@+id/ivPaylaterPartner"
             app:typographyType="body_2"
@@ -66,37 +68,14 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="2dp"
-            app:layout_constrainedHeight="true"
-            app:layout_constraintBottom_toTopOf="@+id/btnHowToUse"
+            android:paddingBottom="@dimen/spacing_lvl4"
+            android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/borderGrey"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:listitem="@layout/paylater_cards_content_info_item" />
 
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnHowToUse"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/sp_how_to_use"
-            android:textSize="@dimen/unify_font_12"
-            app:layout_constraintBottom_toTopOf="@+id/btnSeeMore"
-            app:unifyButtonSize="small"
-            app:unifyButtonType="main" />
-
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btnSeeMore"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:text="@string/sp_see_more"
-            android:textSize="@dimen/unify_font_12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:unifyButtonSize="small"
-            app:unifyButtonType="alternate"
-            app:unifyButtonVariant="ghost" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.tokopedia.unifycomponents.CardUnify>
