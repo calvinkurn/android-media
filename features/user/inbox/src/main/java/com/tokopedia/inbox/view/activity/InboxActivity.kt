@@ -128,6 +128,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     override fun onRoleChanged(@RoleType role: Int) {
         navigator?.notifyRoleChanged(role)
+        navHeader.bindValue()
         showNotificationRoleChanged(role)
         updateBottomNavNotificationCounter()
     }
