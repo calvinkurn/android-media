@@ -497,7 +497,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureSearchNavigationSearchBar(){
-        String query = URLEncoder.encode(searchParameter.getSearchQuery()).replace("+", " ");
+        String query = searchParameter.getSearchQuery();
 
         List<HintData> hintData = new ArrayList();
         hintData.add(new HintData(query, query));
