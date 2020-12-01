@@ -18,7 +18,7 @@ import com.tokopedia.talk.feature.reply.presentation.widget.listeners.OnKebabCli
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyHeaderListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.TalkReplyUnmaskCardListener
 import com.tokopedia.talk.feature.reply.presentation.widget.listeners.ThreadListener
-import com.tokopedia.talk_old.R
+import com.tokopedia.talk.R
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
