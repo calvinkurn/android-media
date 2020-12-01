@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.widget
 
+import android.content.ContentResolver
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -9,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.view.adapter.VideoPictureAdapter
+import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 
 /**
@@ -21,6 +25,8 @@ class VideoPictureView @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
     var shouldRenderViewPager: Boolean = true
+    private var componentTrackDataModel: ComponentTrackDataModel? = null
+    private var mListener: DynamicProductDetailListener? = null
     private var videoPictureAdapter: VideoPictureAdapter? = null
 
     init {
@@ -28,7 +34,11 @@ class VideoPictureView @JvmOverloads constructor(
         pdp_view_pager.offscreenPageLimit = 2
     }
 
-    fun setup(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
+    fun setup(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator,
+              listener: DynamicProductDetailListener, componentTrackDataModel: ComponentTrackDataModel) {
+        this.mListener = listener
+        this.componentTrackDataModel = componentTrackDataModel
+
         if (videoPictureAdapter == null) {
             setupViewPagerCallback(productVideoCoordinator)
             setPageControl(media)
@@ -56,10 +66,11 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupViewPager(media: List<MediaDataModel>, productVideoCoordinator: ProductVideoCoordinator) {
+        val mediaList = processMedia(media)
         videoPictureAdapter = VideoPictureAdapter(productVideoCoordinator)
         pdp_view_pager?.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         pdp_view_pager?.adapter = videoPictureAdapter
-        videoPictureAdapter?.mediaData = media
+        videoPictureAdapter?.mediaData = mediaList
 
         (pdp_view_pager?.getChildAt(0) as RecyclerView).addOneTimeGlobalLayoutListener {
             productVideoCoordinator.onScrollChangedListener(pdp_view_pager, 0)
@@ -71,16 +82,20 @@ class VideoPictureView @JvmOverloads constructor(
     }
 
     private fun setupViewPagerCallback(productVideoCoordinator: ProductVideoCoordinator) {
-        (pdp_view_pager.getChildAt(0) as RecyclerView)
         pdp_view_pager?.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             var lastPosition = 0
             override fun onPageSelected(position: Int) {
-                imageSliderPageControl?.setCurrentIndicator(position)
-                lastPosition = position
+                if (lastPosition != position) {
+                    videoPictureAdapter?.mediaData?.getOrNull(position)?.run {
+                        mListener?.onSwipePicture(type, urlOriginal, position, componentTrackDataModel)
+                    }
+                    imageSliderPageControl?.setCurrentIndicator(position)
+                    lastPosition = position
+                }
             }
 
-            override fun onPageScrollStateChanged(b: Int) {
-                if (b == RecyclerView.SCROLL_STATE_IDLE) {
+            override fun onPageScrollStateChanged(state: Int) {
+                if (state == RecyclerView.SCROLL_STATE_IDLE) {
                     productVideoCoordinator.onScrollChangedListener(pdp_view_pager, lastPosition)
                 }
             }
@@ -99,5 +114,18 @@ class VideoPictureView @JvmOverloads constructor(
         pdp_view_pager?.postDelayed({
             pdp_view_pager?.setCurrentItem(0, false)
         }, 100)
+    }
+
+    private fun processMedia(media: List<MediaDataModel>?): List<MediaDataModel> {
+        return if (media == null || media.isEmpty()) {
+            val resId = R.drawable.product_no_photo_default
+            val res = context.resources
+            val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://" + res.getResourcePackageName(resId)
+                    + '/'.toString() + res.getResourceTypeName(resId)
+                    + '/'.toString() + res.getResourceEntryName(resId))
+            mutableListOf(MediaDataModel(urlOriginal = uriNoPhoto.toString()))
+        } else
+            media.toMutableList()
     }
 }

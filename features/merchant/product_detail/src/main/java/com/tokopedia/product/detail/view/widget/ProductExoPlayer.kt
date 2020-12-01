@@ -133,16 +133,16 @@ class ProductExoPlayer(val context: Context) {
 
     companion object {
         //Minimum Video you want to buffer while Playing
-        private const val MIN_BUFFER_DURATION = 32 * 1024
+        private const val MIN_BUFFER_DURATION = 2000
 
         //Max Video you want to buffer during PlayBack
-        private const val MAX_BUFFER_DURATION = 64 * 1024
+        private const val MAX_BUFFER_DURATION = 5000
 
         //Min Video you want to buffer before start Playing it
-        private const val MIN_PLAYBACK_START_BUFFER = 1024
+        private const val MIN_PLAYBACK_START_BUFFER = 1500
 
         //Min video You want to buffer when user resumes video
-        private const val MIN_PLAYBACK_RESUME_BUFFER = 1024
+        private const val MIN_PLAYBACK_RESUME_BUFFER = 2000
     }
 }
 
