@@ -185,7 +185,6 @@ class OrderSummaryPageCalculator @Inject constructor(private val orderSummaryAna
                             paymentErrorMessage = null, buttonType = OccButtonType.PAY, buttonState = currentState)
                 }
                 val tickerMessage = if (isNewFlow) null else payment.ovoData.topUp.errorTicker
-//                val errorMessageOvo = if (isNewFlow) OVO_INSUFFICIENT_MESSAGE else payment.ovoData.topUp.errorMessage
                 return@withContext payment.copy(isCalculationError = true, ovoErrorData = OrderPaymentOvoErrorData(isBlockingError = isNewFlow, message = payment.ovoData.topUp.errorMessage, buttonTitle = payment.ovoData.topUp.buttonTitle,
                         type = OrderPaymentOvoErrorData.TYPE_TOP_UP, callbackUrl = payment.ovoData.callbackUrl, isHideDigital = payment.ovoData.topUp.isHideDigital)) to orderTotal.copy(orderCost = orderCost,
                         paymentErrorMessage = tickerMessage, buttonType = OccButtonType.CHOOSE_PAYMENT, buttonState = currentState)
