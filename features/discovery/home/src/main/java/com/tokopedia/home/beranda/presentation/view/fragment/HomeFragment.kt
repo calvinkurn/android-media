@@ -163,12 +163,12 @@ import org.jetbrains.annotations.NotNull
 import rx.Observable
 import rx.schedulers.Schedulers
 import java.io.UnsupportedEncodingException
-import java.lang.Exception
 import java.net.URLEncoder
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import kotlin.Exception
 import kotlin.collections.ArrayList
 
 /**

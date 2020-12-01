@@ -63,7 +63,9 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
             activity.intent.extras?.let {
                 bundle = it
             }
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
         UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
     }
 
