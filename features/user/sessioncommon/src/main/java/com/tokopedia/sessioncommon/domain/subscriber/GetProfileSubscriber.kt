@@ -53,6 +53,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
 
                 getLocationAdminUseCase?.let {
                     it.execute(shopId, GetLocationAdminSubscriber(
+                        userSession,
                         { onSuccessGetUserProfile(response) },
                         showLocationAdminPopUp,
                         showLocationAdminError
