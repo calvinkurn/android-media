@@ -1,4 +1,4 @@
-include "features:top_ads:top_ads_sheet"
+include "features:top_ads:top_ads_detail_sheet"
 
 
 include 'features:common:resources_common'
@@ -21,7 +21,6 @@ include "tkpdabstraction"
 
 include "features:promo:loyalty_common"
 include "libraries:core_network"
-include "features:top_ads:top_ads_autoads"
 include ":libraries:graphql"
 include ":libraries:akamai_bot_lib"
 include ":testapp-features:user:logintestapp"

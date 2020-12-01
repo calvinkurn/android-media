@@ -3,7 +3,6 @@ package com.tokopedia.topads.detail_sheet.viewmodel
 import android.content.res.Resources
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.topads.common.data.response.ProductActionResponse
 import com.tokopedia.topads.common.data.response.TopAdsAutoAds
@@ -12,25 +11,21 @@ import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataIt
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetGroupProductDataUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetProductStatisticsUseCase
 import com.tokopedia.topads.common.domain.interactor.TopAdsProductActionUseCase
-import com.tokopedia.topads.detail_sheet.R
-import com.tokopedia.topads.detail_sheet.data.AdData
 import com.tokopedia.topads.detail_sheet.data.AdInfo
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.every
 import io.mockk.invoke
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.TestCase
 import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.any
 
 /**
  * Created by Pika on 25/11/20.
  */
-class TopAdsSheetViewModelTest : TestCase() {
+class TopAdsSheetViewModelTest {
+
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
@@ -40,20 +35,18 @@ class TopAdsSheetViewModelTest : TestCase() {
     private val topAdsProductActionUseCase: TopAdsProductActionUseCase = mockk(relaxed = true)
     private val topAdsGetAutoAdsStatusUseCase: GraphqlUseCase<TopAdsAutoAds.Response> = mockk(relaxed = true)
     private val testDispatcher = TestCoroutineDispatcher()
-    private var autoAdsObserver = mockk<Observer<TopAdsAutoAdsData>>(relaxed = true)
-
-
     private lateinit var viewModel: TopAdsSheetViewModel
     private lateinit var resources: Resources
     private lateinit var adIds: List<String>
 
-    public override fun setUp() {
+    @Before
+    fun setUp() {
         viewModel = TopAdsSheetViewModel(topAdsGetGroupProductDataUseCase, topAdsGetProductStatisticsUseCase, topAdsGetGroupIdUseCase, topAdsProductActionUseCase, topAdsGetAutoAdsStatusUseCase, testDispatcher)
         resources = mockk(relaxed = true)
-        viewModel.autoAdsData.observeForever(autoAdsObserver)
         adIds = mutableListOf()
     }
 
+    @Test
     fun testGetProductStats() {
         val data = WithoutGroupDataItem()
         every {
@@ -90,6 +83,7 @@ class TopAdsSheetViewModelTest : TestCase() {
         verify { topAdsGetGroupProductDataUseCase.setQueryString(any()) }
     }
 
+    @Test
     fun testGetGroupId() {
         val data = AdInfo()
         every {
@@ -120,6 +114,7 @@ class TopAdsSheetViewModelTest : TestCase() {
         }
     }
 
+    @Test
     fun testSetProductAction() {
         val data = ProductActionResponse()
         every {
@@ -151,6 +146,8 @@ class TopAdsSheetViewModelTest : TestCase() {
         }
     }
 
+
+    @Test
     fun testGetAutoAdsStatus() {
         val data = TopAdsAutoAds.Response(mockk(relaxed = true))
         every {
@@ -167,8 +164,11 @@ class TopAdsSheetViewModelTest : TestCase() {
     }
 
     @Test
-    fun `test auto ads success`(){
+    fun `test auto ads success`() {
         val data = TopAdsAutoAds.Response(mockk(relaxed = true))
+        var autoAdsObserver: Observer<TopAdsAutoAdsData> = mockk(relaxed = true)
+
+        viewModel.autoAdsData.observeForever(autoAdsObserver)
         every {
             topAdsGetAutoAdsStatusUseCase.execute(captureLambda(), any())
         } answers {
@@ -199,6 +199,7 @@ class TopAdsSheetViewModelTest : TestCase() {
         }
     }
 
+    @Test
     fun testOnClear() {
         viewModel.onCleared()
         verify { topAdsGetGroupProductDataUseCase.unsubscribe() }
