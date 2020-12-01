@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -134,5 +135,6 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
         } else {
             super.onBackPressed()
         }
+        KeyboardHandler.hideSoftKeyboard(this)
     }
 }
