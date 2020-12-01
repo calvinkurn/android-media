@@ -16,7 +16,7 @@ import com.tokopedia.review.R;
  * @author normansyahputa on 3/20/17.
  */
 
-public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationViewModel> {
+public class ReputationView extends FrameLayout implements BaseView<ReputationView.ReputationUiModel> {
 
     LinearLayout reputationBadgeListener;
     TextView reputationPoints;
@@ -43,14 +43,14 @@ public class ReputationView extends FrameLayout implements BaseView<ReputationVi
     }
 
     @Override
-    public void init(ReputationViewModel data) {
+    public void init(ReputationUiModel data) {
 
         ReputationLevelUtils.setReputationMedalsWithoutDialog(getContext(), reputationBadgeListener, data.typeMedal, data.levelMedal, data.reputationPoints);
 
         reputationPoints.setText(String.format("%s %s", data.stats.shopReputationScore, getContext().getString(R.string.point)));
     }
 
-    public static class ReputationViewModel {
+    public static class ReputationUiModel {
         public int typeMedal;
         public int levelMedal;
         public String reputationPoints;

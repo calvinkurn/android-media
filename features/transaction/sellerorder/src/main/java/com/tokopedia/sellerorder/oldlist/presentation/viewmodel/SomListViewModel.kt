@@ -94,7 +94,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadUserRoles(userId: Int) {
-        if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
+        if (getUserRolesJob?.isCompleted != false) {
             getUserRolesJob = launchCatchError(block = {
                 getUserRoleUseCase.setUserId(userId)
                 _userRoleResult.postValue(getUserRoleUseCase.execute())
@@ -105,7 +105,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadTopAdsShopInfo(shopId: Int) {
-        if (getTopAdsGetShopInfoJob == null || getTopAdsGetShopInfoJob?.isCompleted != false) {
+        if (getTopAdsGetShopInfoJob?.isCompleted != false) {
             getTopAdsGetShopInfoJob = launchCatchError(block = {
                 topAdsGetShopInfo = topAdsGetShopInfoUseCase.execute(shopId)
             }, onError = {

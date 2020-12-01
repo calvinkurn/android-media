@@ -76,6 +76,9 @@ object ProductTrackingConstant {
         const val KEY_ADD = "add"
         const val BUSINESS_UNIT = "physical goods"
         const val CURRENT_SITE = "tokopediamarketplace"
+        const val CURRENT_SITE_FINTECH = "tokopediafintechinsurance"
+        const val KEY_FINTECH = "fintech"
+        const val KEY_INSURANCE = "insurance"
         const val KEY_DISCUSSION_USER_ID = "userId"
         const val SWIPE_IMAGE_BUSINESS_UNIT = "Physical Goods - PDP"
 
@@ -125,7 +128,6 @@ object ProductTrackingConstant {
         const val CLICK_CATEGORY = "click - category on informasi produk"
         const val CLICK_ETALASE = "click - etalase on informasi produk"
         const val CLICK_TAB_DESCRIPTION_ON_PRODUCT_DESCRIPTION = "click - tab deskripsi on description area"
-        const val CLICK_TAB_SPECIFICATION_ON_PRODUCT_DESCRIPTION = "click - tab spesifikasi on description area"
         const val CLICK_LIHAT_SEMUA_ON_SIMULASI_CICILAN = "click - info cicilan"
         const val CLICK_PAGE_CHAT = "click - page chat"
         const val CLICK_BUTTON_CHAT = "click - sticky chat"
@@ -164,6 +166,7 @@ object ProductTrackingConstant {
         const val CLICK_BUY_ACTIVATION_OVO = "click - beli then go to bottomsheet ovo activation"
         const val CLICK_SEE_BOTTOMSHEET_OVO = "click - beli then show bottomsheet"
         const val CLICK_TOPUP_BOTTOMSHEET_OVO = "on bottomsheet"
+        const val CLICK_PP_INSURANCE_BOTTOMSHEET = "click - pp - insurance section"
 
         const val ACTION_VIEW_ERROR_WHEN_ADD_TO_CART = "view error when add to cart"
 
@@ -175,6 +178,14 @@ object ProductTrackingConstant {
 
         const val CLICK_TDN_BANNER_ADS_WIDGET= "click - tdn banner ads widget"
         const val VIEW_TDN_BANNER_ADS_WIDGET= "view - tdn banner ads widget"
+
+        const val CLICK_VARIANT_GUIDELINE_BOTTOM_SHEET = "click - panduan ukuran on product detail bottomsheet"
+        const val CLICK_SHOP_NOTES_BOTTOM_SHEET = "click - lihat informasi penting catatan toko on product detail bottomsheet"
+        const val CLICK_SPECIFICATION_BOTTOM_SHEET = "click - selengkapnya on product detail bottomsheet"
+        const val CLICK_CATEGORY_BOTTOM_SHEET = "click - kategori on product detail bottomsheet"
+        const val CLICK_ETALASE_BOTTOM_SHEET = "click - etalase on product detail bottomsheet"
+        const val CLICK_WRITE_DISCUSSION_BOTTOM_SHEET = "click - tanya di diskusi on product detail bottomsheet"
+        const val CLICK_CHECK_DISCUSSION_BOTTOM_SHEET = "click - cek di diskusi on product detail bottomsheet"
 
         const val CLICK_REPORT_FROM_COMPONENT= "click - laporkan on produk bermasalah"
         const val CLICK_SHARE_FROM_CONTENT= "click - share product button on pdp"
