@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
-import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.views.GyroView
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
 

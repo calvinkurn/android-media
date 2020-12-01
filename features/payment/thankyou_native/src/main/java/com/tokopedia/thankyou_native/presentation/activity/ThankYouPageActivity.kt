@@ -1,6 +1,5 @@
 package com.tokopedia.thankyou_native.presentation.activity
 
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication

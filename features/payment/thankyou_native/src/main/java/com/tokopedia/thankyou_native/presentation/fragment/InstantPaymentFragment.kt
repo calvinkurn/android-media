@@ -1,7 +1,6 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,13 +9,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.RecyclerView
 import com.airbnb.lottie.LottieComposition
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.promotionstarget.presentation.dpToPx
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.data.mapper.CashOnDelivery
 import com.tokopedia.thankyou_native.data.mapper.PaymentTypeMapper
@@ -26,8 +23,6 @@ import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.ScrollHelper
 import com.tokopedia.thankyou_native.presentation.viewModel.CheckWhiteListViewModel
 import com.tokopedia.thankyou_native.presentation.views.GyroView
-import com.tokopedia.thankyou_native.presentation.views.OnViewAddedListener
-import com.tokopedia.thankyou_native.presentation.views.ThankYouPageLinearLayout
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
