@@ -181,13 +181,6 @@ class AddEditProductPreviewFragment:
     private lateinit var userSession: UserSessionInterface
     private lateinit var shopId: String
 
-    // TODO: Change this dummy value to user session value
-    private val isShopAdmin = true
-    private val isShopOwner = true
-    private val isMultiLocation = true
-    private val isManageProductAdmin = true
-    private val isManageStockAdmin = true
-
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
 
@@ -473,10 +466,10 @@ class AddEditProductPreviewFragment:
             checkEnableOrNot()
         }
 
-        // Will show admin multi location ticker only if adding product
-        if (isAdding()) {
-            multiLocationTicker?.showWithCondition(isMultiLocation && isShopAdmin)
-        }
+        val shouldShowMultiLocationTicker =
+                isAdding() && userSession.isMultiLocationShop &&
+                        (userSession.isShopOwner || userSession.isShopAdmin)
+        multiLocationTicker?.showWithCondition(shouldShowMultiLocationTicker)
 
         context?.let { UpdateShopActiveService.startService(it) }
         //If you add another observe, don't forget to remove observers at removeObservers()

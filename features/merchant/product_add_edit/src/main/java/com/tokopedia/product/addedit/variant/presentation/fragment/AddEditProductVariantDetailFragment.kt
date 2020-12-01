@@ -16,7 +16,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_DETAIL_PLT_PREPARE_METRICS
@@ -80,9 +80,6 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     private var variantDetailFieldsAdapter: VariantDetailFieldsAdapter? = null
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
-
-    // TODO: Change this dummy value to user session value
-    private val isMultiLocation = true
 
     override fun getScreenName(): String {
         return ""
@@ -155,8 +152,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             sendTrackerSaveVariantDetailData()
         }
 
-        // TODO: Change wording according to roles
-        view.findViewById<Ticker>(R.id.ticker_add_edit_variant_multi_location)?.showWithCondition(isMultiLocation)
+        view.findViewById<Ticker>(R.id.ticker_add_edit_variant_multi_location)?.configAdminDescription(viewModel.isEditMode)
 
         observeSelectedVariantSize()
         observeInputStatus()
@@ -462,6 +458,48 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             setNavigationOnClickListener {
                 activity?.onBackPressed()
             }
+        }
+    }
+
+    private fun Ticker.configAdminDescription(isEdit: Boolean) {
+        when {
+            userSession.isShopOwner -> {
+                if (isEdit) {
+                    setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
+                    show()
+                } else {
+                    if (userSession.isLocationAdmin) {
+                        setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
+                        show()
+                    }
+                }
+            }
+            userSession.isShopAdmin && userSession.isManageProductAdmin && userSession.isManageStockAdmin -> {
+                if (userSession.isLocationAdmin) {
+                    if (isEdit) {
+                        setTextDescription(context?.getString(R.string.ticker_edit_variant_edit_location_status).orEmpty())
+                    } else {
+                        setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
+                    }
+                    show()
+                }
+            }
+            userSession.isShopAdmin && userSession.isManageProductAdmin -> {
+                if (isEdit) {
+                    if (userSession.isLocationAdmin) {
+                        setTextDescription(context?.getString(R.string.ticker_edit_product_main_location_status).orEmpty())
+                    } else {
+                        setTextDescription(context?.getString(R.string.ticker_edit_variant_cant_edit_stock).orEmpty())
+                    }
+                    show()
+                } else {
+                    if (userSession.isLocationAdmin) {
+                        setTextDescription(context?.getString(R.string.ticker_add_product_variant_main_location).orEmpty())
+                        show()
+                    }
+                }
+            }
+            else -> {}
         }
     }
 }

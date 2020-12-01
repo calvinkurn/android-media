@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.variant.presentation.dialog
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,16 +12,20 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.common.AddEditProductComponentBuilder
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
 import com.tokopedia.product.addedit.common.util.setModeToNumberInput
 import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
+import com.tokopedia.product.addedit.variant.di.DaggerAddEditProductVariantComponent
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
+import javax.inject.Inject
 
 class MultipleVariantEditInputBottomSheet(
         private var enableEditSku: Boolean = false,
@@ -32,20 +37,14 @@ class MultipleVariantEditInputBottomSheet(
         const val TAG = "Tag Multiple Variant Edit Input"
     }
 
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
     private var contentView: View? = null
     private var isPriceError = false
     private var isStockError = false
     private var trackerShopId = ""
     private var trackerIsEditMode = false
-
-    private var multiLocationTicker: Ticker? = null
-
-    // TODO: Change these dummy values to user session values
-    private val isShopOwner = false
-    private val isShopAdmin = true
-    private val isMultiLocation = false
-    private val canManageProduct = true
-    private val canManageStock = false
 
     interface MultipleVariantEditInputListener {
         fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -57,6 +56,11 @@ class MultipleVariantEditInputBottomSheet(
         setCloseClickListener {
             dismiss()
         }
+    }
+
+    override fun onAttach(context: Context) {
+        injectDependency()
+        super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -92,6 +96,13 @@ class MultipleVariantEditInputBottomSheet(
         }
     }
 
+    private fun injectDependency() {
+        DaggerAddEditProductVariantComponent.builder()
+                .addEditProductComponent(activity?.application?.let { AddEditProductComponentBuilder.getComponent(it) })
+                .build()
+                .inject(this)
+    }
+
     private fun initChildLayout() {
         setTitle(getString(com.tokopedia.product.addedit.R.string.label_variant_multiple_input_bottom_sheet_title))
         overlayClickDismiss = false
@@ -99,9 +110,11 @@ class MultipleVariantEditInputBottomSheet(
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
 
         contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.run {
-            val couldShowTicker = (isShopOwner || isShopAdmin) && isMultiLocation && canManageProduct
+            val couldShowTicker =
+                    (userSession.isShopOwner || userSession.isShopAdmin) &&
+                            userSession.isLocationAdmin && userSession.isManageProductAdmin
             if (couldShowTicker) {
-                if (canManageStock) {
+                if (userSession.isManageStockAdmin) {
                     setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
                 } else {
                     setTextDescription(context?.getString(R.string.ticker_edit_variant_cant_edit_stock).orEmpty())
@@ -121,7 +134,8 @@ class MultipleVariantEditInputBottomSheet(
                 updateSubmitButtonInput()
             }
         }
-        if (canManageStock || isShopOwner) {
+        val canEditStock = userSession.isManageStockAdmin || userSession.isShopOwner
+        if (canEditStock) {
             contentView?.tfuStock.setModeToNumberInput()
             contentView?.tfuStock?.textFieldInput?.afterTextChanged {
                 validateStock()

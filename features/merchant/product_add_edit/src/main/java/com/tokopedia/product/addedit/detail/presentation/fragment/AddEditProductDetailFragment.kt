@@ -200,15 +200,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
     private var submitTextView: AppCompatTextView? = null
     private var submitLoadingIndicator: LoaderUnify? = null
 
-    // TODO: Change these dummy values to user session values
-    private val isShopOwner = false
-    private val isShopAdmin = true
-    private val isLocationAdmin = true
-    private val canManageProduct = true
-    private val canManageStock = false
-
     private val canModifyStockTextField by lazy {
-        isShopAdmin && canManageStock
+        (userSession.isShopOwner || userSession.isShopAdmin) && userSession.isManageStockAdmin
     }
 
     // PLT monitoring
@@ -1709,8 +1702,8 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
 
     private fun getStockAllocationMessage(): String =
             when {
-                isLocationAdmin && viewModel.isEditing -> context?.getString(R.string.message_edit_product_stock_only_main_location).orEmpty()
-                isLocationAdmin && viewModel.isAdding -> context?.getString(R.string.message_add_product_stock_only_main_location).orEmpty()
+                userSession.isLocationAdmin && viewModel.isEditing -> context?.getString(R.string.message_edit_product_stock_only_main_location).orEmpty()
+                userSession.isLocationAdmin && viewModel.isAdding -> context?.getString(R.string.message_add_product_stock_only_main_location).orEmpty()
                 else -> ""
             }
 
