@@ -2798,8 +2798,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val localCacheHandler = LocalCacheHandler(context, "CART")
             val cartCount = localCacheHandler.getInt("CACHE_TOTAL_CART", 0)
 
-            if(cartImageView.tag as? Int == null) {
-                return
+            if (cartImageView.tag as? Int == null) {
+                return@run
             }
 
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
