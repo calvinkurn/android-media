@@ -83,7 +83,7 @@ class FlightCancellationPassengerFragment : BaseListFragment<FlightCancellationM
                 activity?.let { mActivity ->
                     val intent = Intent()
                     intent.putExtra(EXTRA_IS_CANCEL_ERROR, true)
-                    mActivity.setResult(Activity.RESULT_CANCELED)
+                    mActivity.setResult(Activity.RESULT_CANCELED, intent)
                     mActivity.finish()
                 }
             }

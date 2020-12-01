@@ -33,6 +33,7 @@ import com.tokopedia.flight.orderdetail.presentation.customview.FlightOrderDetai
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailButtonModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
 import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailErrorModel
+import com.tokopedia.flight.orderdetail.presentation.model.mapper.FlightOrderDetailStatusMapper
 import com.tokopedia.flight.orderdetail.presentation.viewmodel.FlightOrderDetailViewModel
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightCancellationJourney
 import com.tokopedia.flight.resend_email.presentation.bottomsheet.FlightOrderResendEmailBottomSheet
@@ -333,7 +334,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_cancellation),
                         getString(R.string.flight_label_cancel_ticket),
                         getString(R.string.flight_order_detail_cancel_description),
-                        true,
+                        FlightOrderDetailStatusMapper.getStatusOrder(data.status) == FlightOrderDetailStatusMapper.SUCCESS,
                         true
                 )
         )
