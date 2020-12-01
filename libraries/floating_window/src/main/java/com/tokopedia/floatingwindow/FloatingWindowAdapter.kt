@@ -3,12 +3,7 @@ package com.tokopedia.floatingwindow
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.PixelFormat
-import android.os.Build
 import android.util.DisplayMetrics
-import android.view.Gravity
-import android.view.View
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.floatingwindow.permission.FloatingWindowPermissionManager
 import com.tokopedia.floatingwindow.view.FloatingWindowView

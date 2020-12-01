@@ -20,6 +20,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.PlayViewerPiPCoordinator
 import com.tokopedia.play.util.blur.ImageBlurUtil
 import com.tokopedia.play.util.observer.DistinctEventObserver
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -148,65 +149,14 @@ class PlayVideoFragment @Inject constructor(
         val videoMeta = playViewModel.observableVideoMeta.value ?: return
         val videoPlayer: General = videoMeta.videoPlayer as? General ?: return
 
-        val scaleFactor =
-                if (playViewModel.videoOrientation is VideoOrientation.Horizontal) 0.6f
-                else 0.3f
-
-        val screenWidth = getScreenWidth()
-        val screenHeight = getScreenHeight()
-        val (width, height) = if (playViewModel.videoOrientation is VideoOrientation.Horizontal) {
-            screenWidth to (9f/16 * screenWidth).toInt()
-        } else {
-            screenWidth to screenHeight
-        }
-
-        val view = PlayViewerPiPView(requireContext()).also {
-            PlayerView.switchTargetView(videoPlayer.exoPlayer, videoView.getPlayerView(), it.getPlayerView())
-            it.setChannelId(channelId)
-        }
-
-        val scaledWidth = (scaleFactor * width).toInt()
-        val scaledHeight = (scaleFactor * height).toInt()
-
-        val floatingView = FloatingWindowView.Builder(
-                key = FLOATING_WINDOW_KEY,
-                view = view,
-                width = scaledWidth,
-                height = scaledHeight,
-        ).setX(screenWidth - scaledWidth - 16)
-                .setY(screenHeight - scaledHeight - 16)
-                .build()
-
-        floatingView.doOnDragged { layouter, point ->
-            val newPoint = Point()
-            val startLimit = 16
-            val endLimit = layouter.screenWidth - layouter.viewWidth - 16
-            val topLimit = 16
-            val bottomLimit = layouter.screenHeight - layouter.viewHeight - 16
-
-            newPoint.x = when {
-                point.x > endLimit -> endLimit
-                point.x < startLimit -> startLimit
-                else -> point.x
-            }
-
-            newPoint.y = when {
-                point.y > bottomLimit -> bottomLimit
-                point.y < topLimit -> topLimit
-                else -> point.y
-            }
-
-            layouter.updatePosition(newPoint.x, newPoint.y)
-        }
-
-//        floatingView.doOnClick {
-//            RouteManager.route(floatingView.view.context, ApplinkConst.PLAY_DETAIL, channelId)
-//        }
-
-        pipAdapter.addView(
-                floatingView = floatingView,
-                overwrite = true
-        )
+        PlayViewerPiPCoordinator(
+                context = requireContext(),
+                playerView = videoView.getPlayerView(),
+                videoPlayer = videoPlayer,
+                videoOrientation = playViewModel.videoOrientation,
+                channelId = channelId,
+                pipAdapter = pipAdapter
+        ).startPip()
     }
 
     private fun initAnalytic() {

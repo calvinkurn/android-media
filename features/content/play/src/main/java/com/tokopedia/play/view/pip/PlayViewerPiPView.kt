@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.pip
 
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
@@ -89,7 +90,9 @@ class PlayViewerPiPView : ConstraintLayout {
         setOnClickListener {
             mChannelId?.let { channelId ->
                 isRoutingToRoom = true
-                RouteManager.route(context, ApplinkConst.PLAY_DETAIL, channelId)
+                val intent = RouteManager.getIntent(context, ApplinkConst.PLAY_DETAIL, channelId)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
             }
         }
     }
