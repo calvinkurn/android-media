@@ -271,21 +271,21 @@ class ReviewSmileyWidget : BaseCustomView {
     private fun setBadSmileyText() {
         this.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_bad)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y500))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y500))
         }
     }
 
     private fun setMediocreSmileyText() {
         this.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_mediocre)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Yellow_Y300))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Y300))
         }
     }
 
     private fun setExcellentSmileyText() {
         this.reviewEditableText.apply {
             text = context.getString(R.string.review_detail_score_excellent)
-            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Green_G500))
+            setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         }
     }
 }

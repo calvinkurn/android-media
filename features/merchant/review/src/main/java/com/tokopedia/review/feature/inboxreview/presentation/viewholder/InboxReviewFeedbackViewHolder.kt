@@ -39,9 +39,9 @@ class InboxReviewFeedbackViewHolder(view: View,
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
             }
             if(element.replyText.isNotBlank()) {
-                containerInboxReview?.setBackgroundColor(Color.WHITE)
+                containerInboxReview?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
-                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.light_G100))
+                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
@@ -75,10 +75,10 @@ class InboxReviewFeedbackViewHolder(view: View,
             replyFeedbackState?.background = ContextCompat.getDrawable(context, R.drawable.rectangle_8)
             if (feedbackText.isEmpty()) {
                 tvFeedbackReview?.text = getString(R.string.review_not_found)
-                tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700_44))
+                tvFeedbackReview?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
             } else {
                 tvFeedbackReview?.apply {
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.light_N700_96))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     text = feedbackText.toReviewDescriptionFormatted(ProductFeedbackDetailViewHolder.FEEDBACK_MAX_CHAR)
                     setOnClickListener {
                         feedbackInboxReviewListener.onInFullReviewClicked(

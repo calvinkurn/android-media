@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:orientation="vertical"
     android:paddingTop="@dimen/dp_8">
 
@@ -14,7 +14,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,7 +28,7 @@
         android:layout_marginRight="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_img"
         app:layout_constraintTop_toTopOf="@+id/loader_img" />
@@ -43,7 +43,7 @@
         android:layout_marginRight="@dimen/layout_lvl8"
         android:layout_marginTop="@dimen/layout_lvl1"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/loader_img"
         app:layout_constraintTop_toBottomOf="@id/loader_title" />
@@ -55,7 +55,7 @@
         android:layout_height="@dimen/layout_lvl7"
         android:layout_marginTop="@dimen/layout_lvl3"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loader_img" />
@@ -78,7 +78,7 @@
         android:layout_marginStart="@dimen/layout_lvl6"
         android:layout_marginEnd="@dimen/layout_lvl6"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/review_pending_shimmering_star" />
@@ -91,7 +91,7 @@
         android:layout_marginStart="@dimen/layout_lvl5"
         android:layout_marginEnd="@dimen/layout_lvl5"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="@id/loader_star"
         app:layout_constraintStart_toStartOf="@id/loader_star"
         app:layout_constraintTop_toBottomOf="@+id/loader_star" />
@@ -104,7 +104,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loader_star_text" />
 
@@ -116,7 +116,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -131,7 +131,7 @@
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loader_review_input" />
 
@@ -143,7 +143,7 @@
         android:layout_marginTop="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl2"
         app:corners="8"
-        app:custom_color="@color/shimmer_custom_color"
+        app:custom_color="@color/Unify_N50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

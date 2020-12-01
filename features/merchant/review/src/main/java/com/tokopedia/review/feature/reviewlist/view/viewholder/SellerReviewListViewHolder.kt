@@ -30,7 +30,7 @@ class SellerReviewListViewHolder(val view: View,
     private val ivRating: AppCompatImageView = view.findViewById(R.id.ivRating)
 
     override fun bind(element: ProductReviewUiModel) {
-        view.itemRatingProduct.setBackgroundColor(Color.WHITE)
+        view.itemRatingProduct.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
 
         ivItemProduct.setImageUrl(element.productImageUrl.orEmpty())
         tgTitleProduct.text = element.productName

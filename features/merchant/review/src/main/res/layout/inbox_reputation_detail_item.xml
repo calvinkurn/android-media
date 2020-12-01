@@ -23,7 +23,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/grey_300"/>
+            android:background="@color/Unify_N100"/>
 
         <LinearLayout
             android:id="@+id/add_review_layout"

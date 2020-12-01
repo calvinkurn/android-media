@@ -116,10 +116,10 @@ public class InboxReputationFilterAdapter
             ViewHolder holder = (ViewHolder) parent;
             holder.filter.setText(listOption.get(position).getName());
             if (listOption.get(position).isSelected()) {
-                holder.filter.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.medium_green));
+                holder.filter.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G400));
                 holder.check.setVisibility(View.VISIBLE);
             } else {
-                holder.filter.setTextColor(MethodChecker.getColor(context, R.color.black_54));
+                holder.filter.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44));
                 holder.check.setVisibility(View.GONE);
             }
         }

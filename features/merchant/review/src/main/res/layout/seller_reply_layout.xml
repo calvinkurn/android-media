@@ -5,7 +5,7 @@
     android:id="@+id/seller_reply_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
             android:layout_alignParentBottom="true"
-            android:background="@color/grey_300"/>
+            android:background="@color/Unify_N100"/>
 
     </RelativeLayout>
 
@@ -99,7 +99,7 @@
             android:paddingRight="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_10"
             android:text="@string/seller"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             style="@style/TextView.Micro.Bold"
             android:textStyle="normal"
             />
@@ -143,5 +143,5 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
         android:layout_alignParentBottom="true"
-        android:background="@color/grey_300"/>
+        android:background="@color/Unify_N100"/>
 </RelativeLayout>

@@ -4,7 +4,7 @@
     android:id="@+id/seller_reputation_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_N0"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentTop="true"
-            android:background="#e0e0e0" />
+            android:background="@color/Unify_N100" />
 
         <TextView
             android:id="@+id/reputation_point_calculation"
@@ -48,14 +48,14 @@
             android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:text="@string/reputation_point_calculation"
-            android:textColor="@color/font_black_secondary_54"
+            android:textColor="@color/Unify_N700_44"
             android:textSize="16sp" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignParentBottom="true"
-            android:background="#e0e0e0" />
+            android:background="@color/Unify_N100" />
 
     </RelativeLayout>
 
@@ -64,6 +64,6 @@
         android:layout_width="match_parent"
         android:layout_height="16dp"
         android:layout_below="@id/rl_reputation_point_calculation"
-        android:background="@color/white_fifty_percent" />
+        android:background="@color/Unify_N50" />
 
 </RelativeLayout>

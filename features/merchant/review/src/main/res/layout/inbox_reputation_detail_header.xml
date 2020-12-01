@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:gravity="center_vertical"
-                android:textColor="@color/white"
+                android:textColor="@color/Unify_N0"
                 style="@style/TextView.Micro"
                 tools:text="@string/already_favorite"
 
@@ -100,7 +100,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         />
 
     <LinearLayout
@@ -116,7 +116,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/red_deadline"
+            android:background="@color/Unify_R100"
             android:gravity="center"
             android:paddingTop="@dimen/dp_3"
             android:paddingBottom="@dimen/dp_3"
@@ -145,7 +145,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/grey_300"
+            android:background="@color/Unify_N100"
             />
     </LinearLayout>
 
@@ -163,7 +163,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@color/grey_200"
+            android:background="@color/Unify_N50"
             android:gravity="center"
             android:paddingTop="@dimen/dp_3"
             android:paddingBottom="@dimen/dp_3"
@@ -192,7 +192,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:background="@color/grey_300"
+            android:background="@color/Unify_N100"
             />
     </LinearLayout>
 
@@ -237,7 +237,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_half"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_N100"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         />

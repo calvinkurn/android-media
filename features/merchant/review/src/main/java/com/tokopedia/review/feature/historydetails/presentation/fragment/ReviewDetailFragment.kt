@@ -105,7 +105,7 @@ class ReviewDetailFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.decorView?.setBackgroundColor(Color.WHITE)
+        activity?.window?.decorView?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 
     override fun getScreenName(): String {
@@ -284,13 +284,13 @@ class ReviewDetailFragment : BaseDaggerFragment(),
             if(reviewText.isEmpty()) {
                 reviewDetailContent.apply {
                     text = getString(R.string.no_reviews_yet)
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_32))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_44))
                     show()
                 }
             } else {
                 reviewDetailContent.apply {
                     text = reviewText
-                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_96))
+                    setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96))
                     show()
                 }
             }

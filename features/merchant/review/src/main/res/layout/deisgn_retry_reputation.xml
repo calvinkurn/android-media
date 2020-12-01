@@ -24,7 +24,7 @@
         android:layout_centerHorizontal="true"
         android:text="@string/reputation_history_label_good_job"
         android:layout_marginBottom="2dp"
-        android:textColor="@color/font_black_disabled_38"
+        android:textColor="@color/Unify_N700_32"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -39,7 +39,7 @@
         android:gravity="center"
         android:text="@string/reputation_history_label_info_no_penalty"
         android:textAlignment="gravity"
-        android:textColor="@color/font_black_disabled_38"
+        android:textColor="@color/Unify_N700_32"
         android:textSize="12sp" />
 
     <LinearLayout
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/reputation_history_label_change_date"
-            android:textColor="@color/tkpd_main_green"
+            android:textColor="@color/Unify_G400"
             android:textSize="14sp" />
     </LinearLayout>
 
