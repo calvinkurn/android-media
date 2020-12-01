@@ -129,12 +129,12 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     }
 
     override fun onBackPressed() {
+        KeyboardHandler.hideSoftKeyboard(this)
         if(talkReplyFragment?.getDidUserWriteQuestion() == true) {
             talkReplyFragment?.goToReading()
             finish()
         } else {
             super.onBackPressed()
         }
-        KeyboardHandler.hideSoftKeyboard(this)
     }
 }
