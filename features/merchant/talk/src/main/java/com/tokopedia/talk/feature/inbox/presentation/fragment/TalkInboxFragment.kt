@@ -93,7 +93,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
     }
 
     override fun getAdapterTypeFactory(): TalkInboxAdapterTypeFactory {
-        return TalkInboxAdapterTypeFactory(inboxType == TalkInboxTab.SHOP_TAB, this, isOldView())
+        return TalkInboxAdapterTypeFactory( this, isOldView())
     }
 
     override fun getScreenName(): String {
@@ -261,9 +261,9 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
                             }
                         }
                         if(isOldView()) {
-                            renderOldData(inbox.map { inbox -> TalkInboxOldUiModel(inbox) }, it.data.hasNext)
+                            renderOldData(inbox.map { inbox -> TalkInboxOldUiModel(inbox, isSellerView()) }, it.data.hasNext)
                         } else {
-                            renderData(inbox.map { inbox -> TalkInboxUiModel(inbox) }, it.data.hasNext)
+                            renderData(inbox.map { inbox -> TalkInboxUiModel(inbox, isSellerView()) }, it.data.hasNext)
                         }
                     }
 
@@ -323,7 +323,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun showEmptyInbox() {
         talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
-        if(isSellerTab() && !isOldView()){
+        if(isSellerView() && !isOldView()){
             talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
             talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
         } else {
@@ -335,7 +335,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun showEmptyUnread() {
         when {
-            isSellerTab() && !isOldView() -> {
+            isSellerView() && !isOldView() -> {
                 talkInboxEmptyImage.loadImage(EMPTY_SELLER_READ_DISCUSSION)
                 talkInboxEmptyTitle.text = getString(R.string.inbox_empty_seller_unread_title)
                 talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_unread_subtitle)
@@ -352,7 +352,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
 
     private fun showEmptyRead() {
         when {
-            isSellerTab() && !isOldView() -> {
+            isSellerView() && !isOldView() -> {
                 talkInboxEmptyImage.loadImage(EMPTY_SELLER_DISCUSSION)
                 talkInboxEmptyTitle.text = getString(R.string.inbox_all_empty)
                 talkInboxEmptySubtitle.text = getString(R.string.inbox_empty_seller_subtitle)
@@ -443,7 +443,7 @@ class TalkInboxFragment : BaseListFragment<BaseTalkInboxUiModel, TalkInboxAdapte
         return false
     }
 
-    private fun isSellerTab(): Boolean {
+    private fun isSellerView(): Boolean {
         return viewModel.getType() == TalkInboxTab.SHOP_TAB
     }
 

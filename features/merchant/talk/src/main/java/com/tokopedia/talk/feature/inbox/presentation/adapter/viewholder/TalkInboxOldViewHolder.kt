@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.item_talk_inbox.view.*
 
 class TalkInboxOldViewHolder(
         view: View,
-        private val isSellerView: Boolean,
         private val talkInboxViewHolderListener: TalkInboxViewHolderListener
 ) : AbstractViewHolder<TalkInboxOldUiModel>(view) {
 
@@ -30,7 +29,7 @@ class TalkInboxOldViewHolder(
             setProductName(productName)
             setQuestion(content, isMasked)
             setNotification(isUnread)
-            setCountAndDate(totalAnswer, lastReplyTime)
+            setCountAndDate(totalAnswer, lastReplyTime, element.isSellerView)
             itemView.addOnImpressionListener(ImpressHolder()) {
                 talkInboxViewHolderListener.onInboxItemImpressed(questionID, adapterPosition, isUnread)
             }
@@ -77,7 +76,7 @@ class TalkInboxOldViewHolder(
         }
     }
 
-    private fun setCountAndDate(totalAnswer: Int, date: String) {
+    private fun setCountAndDate(totalAnswer: Int, date: String, isSellerView: Boolean) {
         with(itemView) {
             when {
                 totalAnswer == 0 && isSellerView -> {
