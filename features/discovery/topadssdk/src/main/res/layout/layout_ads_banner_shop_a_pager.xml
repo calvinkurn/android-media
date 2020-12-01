@@ -74,27 +74,7 @@
             android:visibility="visible"
             app:layout_constraintStart_toEndOf="@id/shop_image"
             app:layout_constraintTop_toBottomOf="@id/shop_name"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <com.tokopedia.unifycomponents.Label
-                android:id="@+id/label1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cashback 10%"
-                app:labelType="general_light_green"
-                app:layout_constraintStart_toEndOf="@id/shop_image"
-                app:layout_constraintTop_toBottomOf="@id/shop_name" />
-
-            <com.tokopedia.unifycomponents.Label
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Gratis Ongkir"
-                android:layout_marginStart="@dimen/dp_4"
-                app:labelType="general_light_green"
-                app:layout_constraintStart_toEndOf="@id/label1"
-                app:layout_constraintTop_toBottomOf="@id/shop_name" />
-
-        </LinearLayout>
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
