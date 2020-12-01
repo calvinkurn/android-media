@@ -1,18 +1,18 @@
 package com.tokopedia.notifications.di.module
 
-import android.app.Application
+import android.content.Context
 import com.tokopedia.notifications.di.scope.CMNotificationScope
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
 
-@Module class LifecycleModule(private val application: Application) {
+@Module class LifecycleModule(private val context: Context) {
 
     @Provides
     @CMNotificationScope
     fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(application.applicationContext)
+        return FirebaseRemoteConfigImpl(context)
     }
 
 }
