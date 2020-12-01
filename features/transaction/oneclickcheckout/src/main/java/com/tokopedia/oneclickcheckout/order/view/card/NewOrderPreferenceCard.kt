@@ -339,7 +339,7 @@ class NewOrderPreferenceCard(private val view: View, private val listener: Order
                         tvPaymentErrorMessage?.text = span
                         tvPaymentErrorMessage?.visible()
                         tvPaymentOvoErrorAction?.gone()
-                        if (payment.ovoErrorData.type != OrderPaymentOvoErrorData.TYPE_ACTIVATION) {
+                        if (payment.ovoErrorData.type != OrderPaymentOvoErrorData.TYPE_TOP_UP) {
                             tvPaymentDetail?.gone()
                         }
                     } else {
