@@ -290,9 +290,11 @@ class AddEditProductPreviewViewModel @Inject constructor(
     fun getIsDataChanged(): Boolean = productInputModel.value?.isDataChanged ?: false
 
     fun validateProductNameInput(productName: String) {
+        mIsLoading.value = true
         productInputModel.value?.detailInputModel?.apply {
             if (productName == currentProductName) {
                 mValidationResult.value = ValidationResultModel(VALIDATION_SUCCESS)
+                mIsLoading.value = false
                 return
             }
         }
@@ -306,10 +308,13 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val validationResult = if (response.productValidateV3.isSuccess)
                 VALIDATION_SUCCESS else VALIDATION_ERROR
             mValidationResult.value = ValidationResultModel(validationResult, validationMessage)
+            mIsLoading.value = false
         }, onError = {
             // log error
             AddEditProductErrorHandler.logExceptionToCrashlytics(it)
-            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR, it.localizedMessage.orEmpty())
+            mValidationResult.value = ValidationResultModel(VALIDATION_ERROR,
+                    resourceProvider.getGqlErrorMessage().orEmpty())
+            mIsLoading.value = false
         })
     }
 
