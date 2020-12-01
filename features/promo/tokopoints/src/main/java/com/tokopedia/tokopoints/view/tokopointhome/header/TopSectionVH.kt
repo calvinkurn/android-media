@@ -30,6 +30,7 @@ import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.unifycomponents.NotificationUnify
 
+
 class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHeightListener, val toolbarItemList: Any?) : RecyclerView.ViewHolder(itemView) {
 
     lateinit var cardTierInfo: ConstraintLayout
@@ -78,6 +79,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             } else {
                 mTargetText?.text = Html.fromHtml(it.text)
             }
+
             cardTierInfo.setBackgroundColor(Color.parseColor("#" + it.backgroundColor))
             cardTierInfo.setOnClickListener {
                 RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
@@ -211,7 +213,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
                             0, it,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     if (userSavingInfo.descriptions.size>1) {
-                        spannable.setSpan(StyleSpan(Typeface.BOLD),0,it,0)
+                        spannable.setSpan(StyleSpan(Typeface.BOLD),0,it, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
                 }
             }

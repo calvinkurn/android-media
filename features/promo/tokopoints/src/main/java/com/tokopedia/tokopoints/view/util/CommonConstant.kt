@@ -34,6 +34,9 @@ interface CommonConstant {
             const val PIN = "pin"
             const val STACK_ID = "stackID"
             const val APIVERSION = "apiVersion"
+            const val SAVING_YEAR = "year"
+            const val SAVING_MONTH = "month"
+            const val SAVING_TYPE = "type"
         }
     }
 

@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         tools:text="Kupon berakhir dalam"
         android:layout_marginTop="@dimen/dp_3"
-        android:visibility="visible"
+        android:visibility="gone"
         android:textColor="@color/tp_textcolor_dynamic_action"
         app:layout_constraintStart_toStartOf="@id/text_title_column"
         app:layout_constraintTop_toBottomOf="@id/text_sub_title_column"
@@ -58,7 +58,7 @@
         app:timer_unify_single_textWidth="full_radius"
         app:timer_unify_single_type="auto"
         app:timer_unify_single_variant="informative"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_see_all_column"

@@ -12,8 +12,10 @@ import com.tokopedia.tokopoints.view.util.CommonConstant
 import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.collections.HashMap
 
 @TokoPointScope
 class TokopointsHomeRepository @Inject constructor(@Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_TOP_SECTION_NEW) private val tp_gql_topsection_new: String,
@@ -56,8 +58,12 @@ class TokopointsHomeRepository @Inject constructor(@Named(CommonConstant.GQLQuer
     }
 
     suspend fun getUserSavingData() = withContext(Dispatchers.IO){
+        val variables: MutableMap<String, Any> = HashMap()
+        variables[CommonConstant.GraphqlVariableKeys.SAVING_YEAR] = Calendar.getInstance().get(Calendar.YEAR)
+        variables[CommonConstant.GraphqlVariableKeys.SAVING_MONTH] = 0
+        variables[CommonConstant.GraphqlVariableKeys.SAVING_TYPE] = 1
         mGetUserSavingUsecase.clearRequest()
-        val requestSaving = GraphqlRequest(tp_gql_usersaving,UserSavingResponse::class.java,false)
+        val requestSaving = GraphqlRequest(tp_gql_usersaving,UserSavingResponse::class.java,variables,false)
         mGetUserSavingUsecase.addRequest(requestSaving)
         mGetUserSavingUsecase.executeOnBackground()
     }

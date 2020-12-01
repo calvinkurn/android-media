@@ -291,11 +291,8 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     override fun renderRewardUi(topSectionData: TopSectionResponse?,sections: List<SectionContent>) {
         mContainerMain?.displayedChild = CONTAINER_DATA
         addDynamicToolbar(topSectionData?.tokopediaRewardTopSection?.dynamicActionList)
-        if (sections.isEmpty()) {
-            return
-        }
-        if (adapter == null) {
 
+        if (adapter == null) {
             val topSectionViewBinder = TopSectionViewBinder(topSectionData, this, toolbarItemList)
             @Suppress("UNCHECKED_CAST")
             viewBinders.put(
@@ -303,105 +300,108 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
                     topSectionViewBinder as SectionItemBinder)
             topSectionData?.let { sectionList.add(0,it) }
 
-            for (sectionContent in sections) {
-                if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
-                    sectionListViewBinder = SectionHorizontalViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionListViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-                if (sectionContent.layoutTickerAttr != null && sectionContent.layoutTickerAttr.tickerList != null && !sectionContent.layoutTickerAttr.tickerList.isEmpty()) {
-                    val sectionTickerViewBinder = SectionTickerViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionTickerViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-
-                if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
-                        && !sectionContent.layoutCategoryAttr.categoryTokopointsList!!.isEmpty()) {
-                    val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionCategoryViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-
-                if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList!!.isEmpty()) {
-                    val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionCatalogListViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-                }
-
-                if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
-
-                    val sectionTopAdsViewBinder = SectionTopadsViewBinder()
-                    @Suppress("UNCHECKED_CAST")
-                    viewBinders.put(
-                            sectionContent.layoutType,
-                            sectionTopAdsViewBinder as SectionItemBinder)
-                    sectionList.add(sectionContent)
-
-                }
-                when (sectionContent.layoutBannerAttr.bannerType) {
-                    CommonConstant.BannerType.BANNER_2_1 -> {
-                        val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
+            if (!sections.isNullOrEmpty()) {
+                for (sectionContent in sections) {
+                    if (sectionContent.layoutCouponAttr != null && sectionContent.layoutCouponAttr.couponList != null && !sectionContent.layoutCouponAttr.couponList.isEmpty()) {
+                        sectionListViewBinder = SectionHorizontalViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalImagesViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionListViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
-
                     }
-                    CommonConstant.BannerType.BANNER_3_1 -> {
-                        val verticalBanner31ViewBinder = SectionVerticalBanner31ViewBinder()
+                    if (sectionContent.layoutTickerAttr != null && sectionContent.layoutTickerAttr.tickerList != null && !sectionContent.layoutTickerAttr.tickerList.isEmpty()) {
+                        val sectionTickerViewBinder = SectionTickerViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalBanner31ViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionTickerViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
 
-                    CommonConstant.BannerType.BANNER_1_1 -> {
-                        val verticalBanner11ViewBinder = SectionVerticalBanner11ViewBinder()
+                    if (sectionContent.layoutCategoryAttr != null && sectionContent.layoutCategoryAttr.categoryTokopointsList != null
+                            && !sectionContent.layoutCategoryAttr.categoryTokopointsList!!.isEmpty()) {
+                        val sectionCategoryViewBinder = SectionVerticalCategoryViewBinder()
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalBanner11ViewBinder as SectionItemBinder)
-                        sectionList.add(sectionContent)
-                    }
-                    CommonConstant.BannerType.COLUMN_2_1_BY_1,
-                    CommonConstant.BannerType.COLUMN_2_3_BY_4,
-                    CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
-                        val verticalColumn234ViewBinder = SectionVerticalColumnViewBinder()
-                        @Suppress("UNCHECKED_CAST")
-                        viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalColumn234ViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionCategoryViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
 
-                    CommonConstant.BannerType.CAROUSEL_1_1,
-                    CommonConstant.BannerType.CAROUSEL_2_1,
-                    CommonConstant.BannerType.CAROUSEL_3_1 -> {
-                        val verticalCarousel31ViewBinder = SectionHorizontalCarouselViewBinder()
+                    if (sectionContent.layoutCatalogAttr != null && sectionContent.layoutCatalogAttr.catalogList != null && !sectionContent.layoutCatalogAttr.catalogList!!.isEmpty()) {
+                        val sectionCatalogListViewBinder = SectionHoriZontalCatalogViewBinder(mPresenter)
                         @Suppress("UNCHECKED_CAST")
                         viewBinders.put(
-                                sectionContent.layoutBannerAttr.bannerType,
-                                verticalCarousel31ViewBinder as SectionItemBinder)
+                                sectionContent.layoutType,
+                                sectionCatalogListViewBinder as SectionItemBinder)
                         sectionList.add(sectionContent)
                     }
-                    else -> {
+
+                    if (sectionContent.layoutTopAdsAttr != null && sectionContent.layoutTopAdsAttr.jsonTopAdsDisplayParam.isNotEmpty()) {
+
+                        val sectionTopAdsViewBinder = SectionTopadsViewBinder()
+                        @Suppress("UNCHECKED_CAST")
+                        viewBinders.put(
+                                sectionContent.layoutType,
+                                sectionTopAdsViewBinder as SectionItemBinder)
+                        sectionList.add(sectionContent)
+
+                    }
+                    when (sectionContent.layoutBannerAttr.bannerType) {
+                        CommonConstant.BannerType.BANNER_2_1 -> {
+                            val verticalImagesViewBinder = SectionVerticalBanner21ViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalImagesViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+
+                        }
+                        CommonConstant.BannerType.BANNER_3_1 -> {
+                            val verticalBanner31ViewBinder = SectionVerticalBanner31ViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalBanner31ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+
+                        CommonConstant.BannerType.BANNER_1_1 -> {
+                            val verticalBanner11ViewBinder = SectionVerticalBanner11ViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalBanner11ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+                        CommonConstant.BannerType.COLUMN_2_1_BY_1,
+                        CommonConstant.BannerType.COLUMN_2_3_BY_4,
+                        CommonConstant.BannerType.COLUMN_3_1_BY_1 -> {
+                            val verticalColumn234ViewBinder = SectionVerticalColumnViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalColumn234ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+
+                        CommonConstant.BannerType.CAROUSEL_1_1,
+                        CommonConstant.BannerType.CAROUSEL_2_1,
+                        CommonConstant.BannerType.CAROUSEL_3_1 -> {
+                            val verticalCarousel31ViewBinder = SectionHorizontalCarouselViewBinder()
+                            @Suppress("UNCHECKED_CAST")
+                            viewBinders.put(
+                                    sectionContent.layoutBannerAttr.bannerType,
+                                    verticalCarousel31ViewBinder as SectionItemBinder)
+                            sectionList.add(sectionContent)
+                        }
+                        else -> {
+                        }
                     }
                 }
             }
+
 
 
             adapter = SectionAdapter(viewBinders)

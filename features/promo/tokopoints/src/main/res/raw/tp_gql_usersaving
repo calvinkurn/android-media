@@ -1,6 +1,5 @@
-
-{
-  tokopointsUserSaving(year:0,month:0,type:1){
+query tokopointsUserSaving($year: Int, $month: Int, $type: Int){
+    tokopointsUserSaving:tokopointsUserSaving(year: $year, month: $month, type: $type){
     resultStatus {
       code
       status
