@@ -11,7 +11,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -19,13 +18,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.sellerhome.R
 import com.tokopedia.seller.menu.common.analytics.*
-import com.tokopedia.sellerhome.settings.view.bottomsheet.SettingsFreeShippingBottomSheet
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.*
+import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LocalLoad
@@ -149,12 +147,10 @@ class OtherMenuViewHolder(private val itemView: View,
         }
     }
 
-    fun setupFreeShippingLayout(fm: FragmentManager?) {
+    fun setupFreeShippingLayout() {
         itemView.shopInfoLayout.findViewById<FrameLayout>(R.id.freeShippingLayout)?.apply {
-            val freeShippingBottomSheet = SettingsFreeShippingBottomSheet.createInstance()
-
             setOnClickListener {
-                freeShippingBottomSheet.show(fm)
+                listener.onFreeShippingClicked()
                 freeShippingTracker.trackFreeShippingClick()
             }
             visibility = View.VISIBLE
@@ -358,6 +354,7 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onRefreshShopInfo()
         fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
         fun onTopAdsTooltipClicked(isTopAdsActive: Boolean)
+        fun onFreeShippingClicked()
     }
 
 }

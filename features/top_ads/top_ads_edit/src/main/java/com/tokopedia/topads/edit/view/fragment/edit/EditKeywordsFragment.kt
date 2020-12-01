@@ -23,9 +23,10 @@ import com.tokopedia.topads.common.data.response.KeywordDataItem
 import com.tokopedia.topads.common.view.sheet.TopAdsEditKeywordBidSheet
 import com.tokopedia.topads.edit.R
 import com.tokopedia.topads.edit.data.SharedViewModel
-import com.tokopedia.topads.edit.data.param.DataSuggestions
+import com.tokopedia.topads.common.data.model.DataSuggestions
 import com.tokopedia.topads.edit.data.response.GetKeywordResponse
-import com.tokopedia.topads.edit.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.ResponseBidInfo
+import com.tokopedia.topads.common.data.response.TopadsBidInfo
 import com.tokopedia.topads.edit.di.TopAdsEditComponent
 import com.tokopedia.topads.edit.utils.Constants.CURRENT_KEY_TYPE
 import com.tokopedia.topads.edit.utils.Constants.FROM_EDIT
@@ -219,7 +220,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
     }
 
 
-    private fun onSuccessSuggestion(data: List<ResponseBidInfo.Result.TopadsBidInfo.DataItem>) {
+    private fun onSuccessSuggestion(data: List<TopadsBidInfo.DataItem>) {
         minSuggestKeyword = data[0].minBid
         maxSuggestKeyword = data[0].maxBid
         adapter.setBid(minSuggestKeyword)

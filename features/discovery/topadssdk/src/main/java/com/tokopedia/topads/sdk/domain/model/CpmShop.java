@@ -47,6 +47,9 @@ public class CpmShop implements Parcelable {
     @SerializedName(KEY_IS_POWER_MERCHANT)
     private boolean isPowerMerchant;
 
+    public CpmShop(){
+    }
+
     public CpmShop(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_ID)){
             setId(object.getString(KEY_ID));

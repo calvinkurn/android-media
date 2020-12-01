@@ -6,7 +6,7 @@ import com.tokopedia.review.feature.inbox.buyerreview.domain.model.InboxReputati
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.InboxReputationDetailDomain;
 import com.tokopedia.review.feature.inbox.buyerreview.domain.model.inboxdetail.ReviewDomain;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.InboxReputationItemUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -48,7 +48,7 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
             public Observable<InboxReputationDetailDomain> call(final InboxReputationDetailDomain inboxReputationDetailDomain) {
                 if (inboxReputationDetailDomain.getInboxReputationDomain().getInboxReputation()
                         .get(0).getRevieweeData().getRevieweeRoleId() ==
-                        InboxReputationItemViewModel.ROLE_SELLER) {
+                        InboxReputationItemUiModel.ROLE_SELLER) {
                     return checkShopFavoritedUseCase.createObservable(getShopFavoritedParam(inboxReputationDetailDomain, requestParams))
                             .flatMap(new Func1<CheckShopFavoriteDomain, Observable<InboxReputationDetailDomain>>() {
                                 @Override
