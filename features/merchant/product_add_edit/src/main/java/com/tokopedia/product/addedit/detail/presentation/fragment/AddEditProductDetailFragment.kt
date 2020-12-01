@@ -98,6 +98,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.list.ListItemUnify
 import com.tokopedia.unifycomponents.list.ListUnify
 import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -634,6 +635,23 @@ class AddEditProductDetailFragment : BaseDaggerFragment(),
             }
             submitTextView?.show()
             submitLoadingIndicator?.hide()
+        }
+
+        // Add admin info ticker if cannot edit stock
+        val shouldShowAdminInfoTicker =
+                viewModel.isEditing && !userSession.isShopOwner && userSession.isShopAdmin
+                        && userSession.isManageProductAdmin && !userSession.isManageStockAdmin
+        if (shouldShowAdminInfoTicker) {
+            view.findViewById<Ticker>(R.id.ticker_add_edit_admin_info)?.run {
+                val description =
+                        if (userSession.isLocationAdmin) {
+                            context.getString(R.string.ticker_edit_product_main_location_status)
+                        } else {
+                            context.getString(R.string.ticker_edit_variant_cant_edit_stock)
+                        }
+                setTextDescription(description)
+                show()
+            }
         }
 
         enableProductNameField()
