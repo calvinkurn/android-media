@@ -50,11 +50,11 @@ class TabsViewHolder(itemView: View, private val fragment: Fragment) : AbstractV
                 layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
                 tabMode = TabLayout.MODE_SCROLLABLE
                 removeAllTabs()
-                setBackgroundResource(R.drawable.tabs_border_bottom)
+                setBackgroundResource(0)
             }
             tabsHolder.apply {
-                whiteShadeLeft.setBackgroundResource(R.drawable.tabs_side_shadow)
-                whiteShadeRight.setBackgroundResource(R.drawable.tabs_side_shadow)
+                whiteShadeLeft.setBackgroundResource(0)
+                whiteShadeRight.setBackgroundResource(0)
                 getUnifyTabLayout().setSelectedTabIndicator(null)
             }
             it.forEach {
