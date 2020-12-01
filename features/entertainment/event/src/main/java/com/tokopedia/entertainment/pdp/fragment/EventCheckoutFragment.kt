@@ -408,7 +408,8 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                         else -> {
                             progressDialog.show()
                             eventPDPTracking.onClickCheckoutButton(productDetailData, metadata.itemMap)
-                            metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage)
+                            metadata = getPassengerMetaData(metadata, forms, listAdditionalItem, eventCheckoutAdditionalDataPackage,
+                                    it.getString(R.string.ent_checkout_data_nullable_form))
                             if(gatewayCode.isNullOrEmpty()) {
                                 eventCheckoutViewModel.checkoutEvent(EventQuery.mutationEventCheckoutV2(),
                                         getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
@@ -571,11 +572,12 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
 
         const val ORDER_LIST_EVENT = "/order-list"
 
-        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String) = EventCheckoutFragment().also {
+        fun newInstance(urlPDP: String, metadata: MetaDataResponse, packageID: String, gatewayCode: String) = EventCheckoutFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_PDP, urlPDP)
                 putParcelable(EXTRA_META_DATA, metadata)
                 putString(EXTRA_PACKAGE_ID, packageID)
+                putString(EXTRA_GATEWAY_CODE, gatewayCode)
             }
         }
     }
