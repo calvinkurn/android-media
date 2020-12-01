@@ -58,7 +58,7 @@
             android:id="@+id/attach_product_item_price"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            android:textColor="@color/attachproduct_deep_orange_500"
+            android:textColor="@color/Unify_Y500"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/attach_product_item_name"
