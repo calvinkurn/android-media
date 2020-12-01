@@ -103,9 +103,9 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
         val popularSearchTrackingModel = slotPopularSearchTrackingModel.captured
         val dynamicSectionTrackingModel = slotDynamicSectionTrackingModel.captured
 
-        val recentViewListResponse = getDataLayerForRecentView(initialStateData[0].items)
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[1].items.take(3))
-        val popularSearchListResponse = getDataLayerForPromo(initialStateData[2].items)
+        val recentViewListResponse = getDataLayerForRecentView(initialStateData[1].items)
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items.take(3))
+        val popularSearchListResponse = getDataLayerForPromo(initialStateData[3].items)
         val dynamicSectionResponse = getDataLayerForPromo(initialStateCommonData[3].items)
 
         assert(recentViewItemList.containsAll(recentViewListResponse))
@@ -127,7 +127,7 @@ internal class InitialStateImpressionTest: InitialStatePresenterTestFixtures() {
     private fun `Then verify recent search impressed the hidden item`(initialStateData: List<InitialStateData>) {
         val recentSearchItemList = slotRecentSearchItemList.captured
 
-        val recentSearchListResponse = getDataLayerForPromo(initialStateData[1].items).takeLast(2)
+        val recentSearchListResponse = getDataLayerForPromo(initialStateData[2].items).takeLast(2)
 
         assert(recentSearchItemList.containsAll(recentSearchListResponse))
     }
