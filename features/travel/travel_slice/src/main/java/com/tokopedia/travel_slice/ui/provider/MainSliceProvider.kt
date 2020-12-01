@@ -59,7 +59,7 @@ class MainSliceProvider : SliceProvider() {
         contextNonNull = context ?: return null
         init()
 
-        val type = sliceUri.getQueryParameter(ARG_TYPE) ?: TYPE_HOTEL
+        val type = sliceUri.getQueryParameter(ARG_TYPE)?.toLowerCase() ?: TYPE_HOTEL
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return null
         return when (sliceUri.lastPathSegment) {
@@ -212,8 +212,8 @@ class MainSliceProvider : SliceProvider() {
         const val DATA_PARAM = "data"
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
 
-        private const val TYPE_FLIGHT = "Flight"
-        private const val TYPE_HOTEL = "Hotel"
+        private const val TYPE_FLIGHT = "flight"
+        private const val TYPE_HOTEL = "hotel"
 
         const val BOOK_HOTEL = "book_hotel"
         const val MY_BOOKING = "my_booking"

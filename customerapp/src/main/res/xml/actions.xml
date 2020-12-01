@@ -17,7 +17,7 @@
         </fulfillment>
     </action>
 
-    <action intentName="actions.intent.GET_RESERVATION" queryPatterns="@array/TravelOrderListCustomQuery">
+    <action intentName="custom.actions.intent.GET_RESERVATION" queryPatterns="@array/TravelOrderListCustomQuery">
         <parameter name="travelType" type="https://schema.org/Text" />
         <fulfillment
             fulfillmentMode="actions.fulfillment.SLICE"
