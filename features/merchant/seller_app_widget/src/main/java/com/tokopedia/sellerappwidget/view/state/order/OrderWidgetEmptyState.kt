@@ -2,11 +2,13 @@ package com.tokopedia.sellerappwidget.view.state.order
 
 import android.appwidget.AppWidgetManager
 import android.content.Context
-import android.view.View
 import android.widget.RemoteViews
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.sellerappwidget.R
-import com.tokopedia.sellerappwidget.common.*
+import com.tokopedia.sellerappwidget.common.AppWidgetHelper
+import com.tokopedia.sellerappwidget.common.Const
+import com.tokopedia.sellerappwidget.common.WidgetSize
+import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 
 /**
@@ -32,8 +34,8 @@ object OrderWidgetEmptyState {
         )
         when (widgetSize) {
             WidgetSize.SMALL -> OrderWidgetStateHelper.setupSmallCommonWidget(context, remoteViews, data)
-            WidgetSize.NORMAL -> OrderWidgetStateHelper.setupNormalCommonWidget(context, remoteViews, data)
-            else -> OrderWidgetStateHelper.setupLargeCommonWidget(context, remoteViews, data)
+            WidgetSize.NORMAL -> OrderWidgetStateHelper.setupNormalCommonWidget<OrderAppWidget>(context, remoteViews, data)
+            else -> OrderWidgetStateHelper.setupLargeCommonWidget<OrderAppWidget>(context, remoteViews, data)
         }
     }
 }

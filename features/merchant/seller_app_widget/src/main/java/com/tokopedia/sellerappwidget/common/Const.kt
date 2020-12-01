@@ -13,9 +13,11 @@ object Const {
 
     object Extra {
         const val BUNDLE = "extra_bundle"
-        const val ORDER_ITEM = "item"
-        const val ORDER_ITEMS = "items"
+        const val ORDER_ITEM = "order"
+        const val ORDER_ITEMS = "orders"
         const val ORDER_STATUS_ID = "order_status_id"
+        const val CHAT = "chat"
+        const val CHAT_ITEMS = "chats"
     }
 
     object Action {

@@ -48,7 +48,7 @@ object OrderWidgetSuccessState {
             setTextViewText(R.id.tvSawSmallOrderShopName, userSession.shopName)
             setInt(R.id.btnSawSmallOrderRefresh, Const.Method.SET_IMAGE_RESOURCE, R.drawable.ic_saw_refresh)
 
-            OrderWidgetStateHelper.setupRefreshIntent(context, remoteViews, R.id.btnSawSmallOrderRefresh, widgetId)
+            OrderWidgetStateHelper.setupRefreshIntent<OrderAppWidget>(context, remoteViews, R.id.btnSawSmallOrderRefresh, widgetId)
 
             registerAppLinkIntent(context, R.id.containerSawSmallOrderNewOrder, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_NEW_ORDER, widgetId)
             registerAppLinkIntent(context, R.id.containerSawSmallOrderReadyToShip, ApplinkConstInternalSellerapp.SELLER_HOME_SOM_READY_TO_SHIP, widgetId)
@@ -66,7 +66,7 @@ object OrderWidgetSuccessState {
 
             setupOrderList(context, this, orderItemsByType, widgetId, orderStatusId)
 
-            OrderWidgetStateHelper.setupRefreshIntent(context, remoteViews, R.id.btnSawOrderRefresh, widgetId)
+            OrderWidgetStateHelper.setupRefreshIntent<OrderAppWidget>(context, remoteViews, R.id.btnSawOrderRefresh, widgetId)
 
             //setup switch button click event
             val mOrderStatusId = if (orderStatusId == Const.OrderStatusId.NEW_ORDER) {

@@ -6,9 +6,9 @@
 
     <include layout="@layout/saw_app_widget_order_common_small"/>
 
-    <include layout="@layout/saw_app_widget_order_common_normal"/>
+    <include layout="@layout/saw_app_widget_common_normal"/>
 
-    <include layout="@layout/saw_app_widget_order_common_large"/>
+    <include layout="@layout/saw_app_widget_common_large"/>
 
     <include layout="@layout/saw_app_widget_order_list_success" />
 

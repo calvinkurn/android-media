@@ -8,6 +8,7 @@ import com.tokopedia.sellerappwidget.R
 import com.tokopedia.sellerappwidget.common.AppWidgetHelper
 import com.tokopedia.sellerappwidget.common.Const
 import com.tokopedia.sellerappwidget.common.WidgetSize
+import com.tokopedia.sellerappwidget.view.appwidget.OrderAppWidget
 import com.tokopedia.sellerappwidget.view.model.CommonStateUiModel
 
 /**
@@ -56,7 +57,7 @@ object OrderWidgetNoLoginState {
                 ctaText = context.getString(R.string.saw_login_now),
                 appLink = ApplinkConst.LOGIN
         )
-        OrderWidgetStateHelper.setupNormalCommonWidget(context, remoteView, data)
+        OrderWidgetStateHelper.setupNormalCommonWidget<OrderAppWidget>(context, remoteView, data)
     }
 
     private fun setupViewLargeWidget(context: Context, remoteView: RemoteViews, widgetId: Int) {
@@ -68,6 +69,6 @@ object OrderWidgetNoLoginState {
                 ctaText = context.getString(R.string.saw_login_now),
                 appLink = ApplinkConst.LOGIN
         )
-        OrderWidgetStateHelper.setupLargeCommonWidget(context, remoteView, data)
+        OrderWidgetStateHelper.setupLargeCommonWidget<OrderAppWidget>(context, remoteView, data)
     }
 }

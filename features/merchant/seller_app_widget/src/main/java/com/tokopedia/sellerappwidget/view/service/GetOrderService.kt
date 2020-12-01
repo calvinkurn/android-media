@@ -99,11 +99,7 @@ class GetOrderService : JobIntentService(), OrderAppWidgetView {
     }
 
     override fun onFailedGetOrderList(fail: Fail) {
-        val code = fail.throwable.message
-        when (code) {
-            "1" -> OrderAppWidget.setOnError(applicationContext)
-            else -> OrderAppWidget.setOnNoLogin(applicationContext)
-        }
+        OrderAppWidget.setOnError(applicationContext)
         GetOrderWorker.runWorkerPeriodically(applicationContext)
         Timber.e(fail.throwable)
     }
