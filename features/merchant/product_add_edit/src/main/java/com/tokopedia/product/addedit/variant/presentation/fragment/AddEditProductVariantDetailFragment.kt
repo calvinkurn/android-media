@@ -81,7 +81,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
     // PLT Monitoring
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
-    // TOOD: Change this dummy value to user session value
+    // TODO: Change this dummy value to user session value
     private val isMultiLocation = true
 
     override fun getScreenName(): String {
@@ -155,6 +155,7 @@ class AddEditProductVariantDetailFragment : BaseDaggerFragment(),
             sendTrackerSaveVariantDetailData()
         }
 
+        // TODO: Change wording according to roles
         view.findViewById<Ticker>(R.id.ticker_add_edit_variant_multi_location)?.showWithCondition(isMultiLocation)
 
         observeSelectedVariantSize()

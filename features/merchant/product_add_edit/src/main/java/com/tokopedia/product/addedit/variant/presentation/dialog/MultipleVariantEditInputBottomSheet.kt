@@ -7,6 +7,9 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.util.getText
 import com.tokopedia.product.addedit.common.util.getTextBigIntegerOrZero
@@ -15,6 +18,7 @@ import com.tokopedia.product.addedit.tracking.ProductAddVariantDetailTracking
 import com.tokopedia.product.addedit.tracking.ProductEditVariantDetailTracking
 import com.tokopedia.product.addedit.variant.presentation.model.MultipleVariantEditInputModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import kotlinx.android.synthetic.main.add_edit_product_multiple_variant_edit_input_bottom_sheet_content.view.*
 import java.math.BigInteger
 
@@ -33,6 +37,15 @@ class MultipleVariantEditInputBottomSheet(
     private var isStockError = false
     private var trackerShopId = ""
     private var trackerIsEditMode = false
+
+    private var multiLocationTicker: Ticker? = null
+
+    // TODO: Change these dummy values to user session values
+    private val isShopOwner = false
+    private val isShopAdmin = true
+    private val isMultiLocation = false
+    private val canManageProduct = true
+    private val canManageStock = false
 
     interface MultipleVariantEditInputListener {
         fun onMultipleEditInputFinished(multipleVariantEditInputModel: MultipleVariantEditInputModel)
@@ -84,6 +97,21 @@ class MultipleVariantEditInputBottomSheet(
         overlayClickDismiss = false
         contentView = View.inflate(context,
                 R.layout.add_edit_product_multiple_variant_edit_input_bottom_sheet_content, null)
+
+        contentView?.findViewById<Ticker>(R.id.ticker_multiple_variant_multi_location)?.run {
+            val couldShowTicker = (isShopOwner || isShopAdmin) && isMultiLocation && canManageProduct
+            if (couldShowTicker) {
+                if (canManageStock) {
+                    setTextDescription(context?.getString(R.string.ticker_edit_variant_main_location).orEmpty())
+                } else {
+                    setTextDescription(context?.getString(R.string.ticker_edit_variant_cant_edit_stock).orEmpty())
+                }
+                show()
+            } else {
+                hide()
+            }
+        }
+
         contentView?.tfuSku?.visibility = if (enableEditSku) View.VISIBLE else View.GONE
         contentView?.tfuPrice?.visibility = if (enableEditPrice) View.VISIBLE else View.GONE
         contentView?.tfuPrice.setModeToNumberInput()
@@ -93,10 +121,14 @@ class MultipleVariantEditInputBottomSheet(
                 updateSubmitButtonInput()
             }
         }
-        contentView?.tfuStock.setModeToNumberInput()
-        contentView?.tfuStock?.textFieldInput?.afterTextChanged {
-            validateStock()
-            updateSubmitButtonInput()
+        if (canManageStock || isShopOwner) {
+            contentView?.tfuStock.setModeToNumberInput()
+            contentView?.tfuStock?.textFieldInput?.afterTextChanged {
+                validateStock()
+                updateSubmitButtonInput()
+            }
+        } else {
+            contentView?.tfuStock?.gone()
         }
         contentView?.tfuSku?.textFieldInput?.afterTextChanged {
             updateSubmitButtonInput()

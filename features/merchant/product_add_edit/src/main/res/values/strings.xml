@@ -296,6 +296,7 @@
     <string name="ticker_add_product_main_location_desc">Produk akan ditambahkan ke lokasi utama. Kamu bisa alokasikan produk lewat Ubah Sekaligus di desktop, ya.</string>
     <string name="ticker_add_product_variant_main_location">Stok akan berlaku untuk di lokasi utamamu. Kamu dapat atur alokasi stok setelah tambah produk.</string>
     <string name="ticker_edit_variant_main_location">Hanya mengubah stok varian di lokasi utama. Atur stok varian lokasi lain lewat desktop, ya.</string>
+    <string name="ticker_edit_variant_cant_edit_stock">Kamu tidak punya akses untuk ubah stok produk.</string>
 
     <!--CONTENT DESC-->
     <string name="content_desc_tv_start_add_edit_product_photo">text mulai</string>

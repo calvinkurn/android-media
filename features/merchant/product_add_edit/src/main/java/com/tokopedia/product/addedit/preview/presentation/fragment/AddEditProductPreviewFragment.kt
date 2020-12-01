@@ -182,7 +182,11 @@ class AddEditProductPreviewFragment:
     private lateinit var shopId: String
 
     // TODO: Change this dummy value to user session value
+    private val isShopAdmin = true
+    private val isShopOwner = true
     private val isMultiLocation = true
+    private val isManageProductAdmin = true
+    private val isManageStockAdmin = true
 
     @Inject
     lateinit var viewModel: AddEditProductPreviewViewModel
@@ -467,6 +471,11 @@ class AddEditProductPreviewFragment:
         if(viewModel.productInputModel.value?.requestCode != null) {
             viewModel.productInputModel.value?.let { displayAddModeDetail(it) }
             checkEnableOrNot()
+        }
+
+        // Will show admin multi location ticker only if adding product
+        if (isAdding()) {
+            multiLocationTicker?.showWithCondition(isMultiLocation && isShopAdmin)
         }
 
         context?.let { UpdateShopActiveService.startService(it) }
@@ -874,7 +883,6 @@ class AddEditProductPreviewFragment:
                 is Success -> {
                     val isVariantEmpty = result.data.variant.products.isEmpty()
                     showEmptyVariantState(isVariantEmpty)
-                    multiLocationTicker?.showWithCondition(isMultiLocation)
                     showProductStatus(result.data)
                     handleSetCashBackResult()
                     // continue to PLT monitoring render
