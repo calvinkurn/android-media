@@ -135,6 +135,18 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     navigateToWebview(E_TICKET_TITLE, it.data)
                 }
                 is Fail -> {
+                    showSnackbar(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), E_TICKET_TITLE))
+                }
+            }
+        })
+
+        flightOrderDetailViewModel.invoiceData.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> {
+                    navigateToWebview(INVOICE_TITLE, it.data)
+                }
+                is Fail -> {
+                    showSnackbar(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), INVOICE_TITLE))
                 }
             }
         })
@@ -152,7 +164,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         when (requestCode) {
             REQUEST_CODE_SEND_E_TICKET -> {
                 if (resultCode == Activity.RESULT_OK)
-                    showSnackbarSuccess(getString(com.tokopedia.flight.orderlist.R.string.resend_eticket_success))
+                    showSnackbar(getString(com.tokopedia.flight.orderlist.R.string.resend_eticket_success))
             }
             REQUEST_CODE_CANCELLATION -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -192,6 +204,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onDetailPaymentClicked() {
         openDetailPaymentBottomSheet()
+    }
+
+    override fun onInvoiceIdClicked() {
+        flightOrderDetailViewModel.fetchInvoiceData()
     }
 
     private fun showLoading() {
@@ -363,7 +379,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
             val clipboardManager: ClipboardManager = it.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clipData = ClipData.newPlainText(label, textToCopy)
             clipboardManager.setPrimaryClip(clipData)
-            showSnackbarSuccess(getString(R.string.flight_order_detail_success_copy_message, label))
+            showSnackbar(getString(R.string.flight_order_detail_success_copy_message, label))
         }
     }
 
@@ -377,7 +393,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
         bottomSheet.show(requireFragmentManager(), FlightOrderDetailPaymentDetailBottomSheet.TAG)
     }
 
-    private fun showSnackbarSuccess(message: String) {
+    private fun showSnackbar(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 
@@ -434,6 +450,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     companion object {
         private const val E_TICKET_TITLE = "E-Ticket"
+        private const val INVOICE_TITLE = "Invoice"
 
         private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
