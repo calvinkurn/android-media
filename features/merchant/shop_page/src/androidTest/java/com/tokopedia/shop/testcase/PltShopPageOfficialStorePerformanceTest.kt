@@ -2,6 +2,7 @@ package com.tokopedia.shop.testcase
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
@@ -22,6 +23,7 @@ class PltShopPageOfficialStorePerformanceTest {
 
     companion object {
         private const val SAMPLE_SHOP_ID = "3418893"
+        private const val PATH_HOME = "/home"
     }
 
     private val TEST_CASE_SHOP_PAGE_OFFICIAL_STORE_HOME_TAB_LOAD_TIME_PERFORMANCE = "shop_page_official_store_home_tab_test_case_page_load_time"
@@ -43,6 +45,7 @@ class PltShopPageOfficialStorePerformanceTest {
             )
             val intent = Intent()
             intent.putExtra(SHOP_ID, SAMPLE_SHOP_ID)
+            intent.data = Uri.parse(PATH_HOME)
             activityRule.launchActivity(intent)
         }
     }
