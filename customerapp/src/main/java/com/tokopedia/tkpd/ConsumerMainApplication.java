@@ -134,8 +134,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
         createAndCallPreSeq();
-        initializeAbTestVariant();
         super.onCreate();
+        initializeAbTestVariant();
         createAndCallPostSeq();
         createAndCallFontLoad();
         registerActivityLifecycleCallbacks();
