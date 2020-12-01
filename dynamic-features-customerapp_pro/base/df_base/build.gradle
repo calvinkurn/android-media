@@ -62,7 +62,6 @@ dependencies {
     //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
 
     //Content
-    implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.kol)
     implementation project(rootProject.ext.features.interestPick)
@@ -105,6 +104,7 @@ dependencies {
     implementation project(rootProject.ext.features.talk)
     implementation project(rootProject.ext.features.shopShowcase)
     implementation project(rootProject.ext.features.brandlist)
+    implementation project(rootProject.ext.features.review)
     implementation project(rootProject.ext.features.reviewProduct)
     implementation project(rootProject.ext.features.shopPage)
     //Operational
@@ -115,6 +115,7 @@ dependencies {
     implementation project(rootProject.ext.features.pms)
 
     //Promo
+    implementation project(rootProject.ext.features.promoCheckout)
 
     //Salam
 
@@ -142,4 +143,5 @@ dependencies {
     implementation project(rootProject.ext.features.oneclickcheckout)
     implementation project(rootProject.ext.features.promoCheckoutMarketplace)
     implementation project(rootProject.ext.features.atc_variant)
+    implementation project(rootProject.ext.features.buyerorder)
 }

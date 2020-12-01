@@ -1,5 +1,7 @@
 package com.tokopedia.notifications.inApp.viewEngine;
 
+import android.text.TextUtils;
+
 import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -66,9 +68,30 @@ public class CmInAppBundleConvertor {
             if (map.containsKey(RulesUtil.Constants.Payload.NOTIFICATION_TYPE))
                 cmInApp.setType(map.get(RulesUtil.Constants.Payload.NOTIFICATION_TYPE));
 
+            if (map.containsKey(RulesUtil.Constants.Payload.CUSTOM_VALUES))
+                cmInApp.setCustomValues(map.get(RulesUtil.Constants.Payload.CUSTOM_VALUES));
+
+            if(!TextUtils.isEmpty(cmInApp.getType()) && cmInApp.getType().equals(CmInAppConstant.TYPE_GRATIF)){
+                cmInApp.setScreen("");
+            }
+
             if (map.containsKey(RulesUtil.Constants.Payload.SCREEN_NAME))
                 cmInApp.setScreen(map.get(RulesUtil.Constants.Payload.SCREEN_NAME));
-            else
+
+            if (map.containsKey(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME)) {
+                String screenName = cmInApp.getScreen();
+                String finalScreenName = map.get(RulesUtil.Constants.Payload.MULTIPLE_SCREEN_NAME);
+                if(!TextUtils.isEmpty(finalScreenName)){
+                    StringBuilder sb = new StringBuilder(finalScreenName);
+                    if (!TextUtils.isEmpty(screenName)) {
+                        sb.append(",");
+                        sb.append(screenName);
+                    }
+                    cmInApp.setScreen(sb.toString());
+                }
+            }
+
+            if(TextUtils.isEmpty(cmInApp.getScreen()))
                 return null;
 
             if (!map.containsKey(RulesUtil.Constants.Payload.UI)) {

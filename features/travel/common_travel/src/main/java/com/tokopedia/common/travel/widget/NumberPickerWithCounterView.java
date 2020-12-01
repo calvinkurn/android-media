@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.tokopedia.common.travel.R;
-import com.tokopedia.design.base.BaseCustomView;
+import com.tokopedia.unifycomponents.BaseCustomView;
 
 /**
  * @author by alvarisi on 10/25/17.
