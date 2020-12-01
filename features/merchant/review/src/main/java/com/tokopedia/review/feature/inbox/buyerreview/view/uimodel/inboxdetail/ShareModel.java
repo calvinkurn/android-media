@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 /**
  * @author by nisie on 9/28/17.

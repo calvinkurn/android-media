@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.filter;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.filter;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * @author by nisie on 8/21/17.
  */
 
-public class OptionViewModel implements Parcelable {
+public class OptionUiModel implements Parcelable {
     private String name;
     private String key;
     private String value;
@@ -15,7 +15,7 @@ public class OptionViewModel implements Parcelable {
     private boolean isActive;
     private int position;
 
-    public OptionViewModel(String name, String key, String value, int position) {
+    public OptionUiModel(String name, String key, String value, int position) {
         this.name = name;
         this.key = key;
         this.value = value;
@@ -24,7 +24,7 @@ public class OptionViewModel implements Parcelable {
         this.position = position;
     }
 
-    public OptionViewModel(String name) {
+    public OptionUiModel(String name) {
         this.name = name;
         this.key = "";
         this.value = "";
@@ -33,7 +33,7 @@ public class OptionViewModel implements Parcelable {
         this.position = 0;
     }
 
-    protected OptionViewModel(Parcel in) {
+    protected OptionUiModel(Parcel in) {
         name = in.readString();
         key = in.readString();
         value = in.readString();
@@ -42,15 +42,15 @@ public class OptionViewModel implements Parcelable {
         position = in.readInt();
     }
 
-    public static final Creator<OptionViewModel> CREATOR = new Creator<OptionViewModel>() {
+    public static final Creator<OptionUiModel> CREATOR = new Creator<OptionUiModel>() {
         @Override
-        public OptionViewModel createFromParcel(Parcel in) {
-            return new OptionViewModel(in);
+        public OptionUiModel createFromParcel(Parcel in) {
+            return new OptionUiModel(in);
         }
 
         @Override
-        public OptionViewModel[] newArray(int size) {
-            return new OptionViewModel[size];
+        public OptionUiModel[] newArray(int size) {
+            return new OptionUiModel[size];
         }
     };
 

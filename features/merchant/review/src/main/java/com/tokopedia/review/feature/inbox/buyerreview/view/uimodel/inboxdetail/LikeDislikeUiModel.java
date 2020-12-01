@@ -1,17 +1,17 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 /**
  * @author by nisie on 9/29/17.
  */
 
-public class LikeDislikeViewModel {
+public class LikeDislikeUiModel {
 
     private int reviewId;
     private int totalLike;
     private int totalDislike;
     private int likeStatus;
 
-    public LikeDislikeViewModel(int reviewId, int totalLike, int totalDislike, int likeStatus) {
+    public LikeDislikeUiModel(int reviewId, int totalLike, int totalDislike, int likeStatus) {
         this.reviewId = reviewId;
         this.totalLike = totalLike;
         this.totalDislike = totalDislike;
