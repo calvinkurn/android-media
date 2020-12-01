@@ -48,6 +48,7 @@ class MainSliceProvider : SliceProvider() {
     lateinit var userSession: UserSessionInterface
 
     private var sliceHashMap: HashMap<Uri, Slice> = HashMap()
+    private var isAlreadyInit: Boolean = false
 
     private var flightOrderList = listOf<FlightOrderListEntity>()
     private var hotelList = listOf<HotelData>()
@@ -63,14 +64,18 @@ class MainSliceProvider : SliceProvider() {
     }
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-        contextNonNull = context ?: return null
-        init()
 
-        val type = sliceUri.getQueryParameter(ARG_TYPE)?.toLowerCase() ?: TYPE_HOTEL
+        if (!isAlreadyInit) {
+            contextNonNull = context ?: return null
+            init()
+            isAlreadyInit = true
+        }
 
         sliceHashMap[sliceUri]?.let {
             return it
         }
+
+        val type = sliceUri.getQueryParameter(ARG_TYPE)?.toLowerCase() ?: TYPE_HOTEL
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return null
         return when (sliceUri.lastPathSegment) {
@@ -98,21 +103,22 @@ class MainSliceProvider : SliceProvider() {
         val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
-                status = TravelSliceStatus.INIT
                 if (hotelList.isEmpty()) HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
                 else HotelSliceProviderUtil.getHotelRecommendationSlices(contextNonNull, sliceUri, city, checkIn, hotelList)
             }
             TravelSliceStatus.FAILURE -> {
-                status = TravelSliceStatus.INIT
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             else -> {
-                status = TravelSliceStatus.INIT
+                status = TravelSliceStatus.FAILURE
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
         }
 
-        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) sliceHashMap[sliceUri] = slice
+        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) {
+            status = TravelSliceStatus.INIT
+            sliceHashMap[sliceUri] = slice
+        }
         return slice
     }
 
@@ -146,12 +152,10 @@ class MainSliceProvider : SliceProvider() {
         val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> HotelSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
-                status = TravelSliceStatus.INIT
                 if (orderList.isNotEmpty()) HotelSliceProviderUtil.getMyHotelOrderSlices(contextNonNull, sliceUri, orderList)
                 else HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.FAILURE -> {
-                status = TravelSliceStatus.INIT
                 HotelSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.USER_NOT_LOG_IN -> {
@@ -160,7 +164,10 @@ class MainSliceProvider : SliceProvider() {
             }
         }
 
-        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) sliceHashMap[sliceUri] = slice
+        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) {
+            status = TravelSliceStatus.INIT
+            sliceHashMap[sliceUri] = slice
+        }
         return slice
     }
 
@@ -192,12 +199,10 @@ class MainSliceProvider : SliceProvider() {
         val slice = when (status) {
             TravelSliceStatus.INIT, TravelSliceStatus.LOADING -> FlightSliceProviderUtil.getLoadingStateSlices(contextNonNull, sliceUri)
             TravelSliceStatus.SUCCESS -> {
-                status = TravelSliceStatus.INIT
                 if (flightOrderList.isNotEmpty()) FlightSliceProviderUtil.getFlightOrderSlices(contextNonNull, sliceUri, flightOrderList)
                 else FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.FAILURE -> {
-                status = TravelSliceStatus.INIT
                 FlightSliceProviderUtil.getFailedFetchDataSlices(contextNonNull, sliceUri)
             }
             TravelSliceStatus.USER_NOT_LOG_IN -> {
@@ -206,7 +211,10 @@ class MainSliceProvider : SliceProvider() {
             }
         }
 
-        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) sliceHashMap[sliceUri] = slice
+        if (status == TravelSliceStatus.SUCCESS || status == TravelSliceStatus.FAILURE) {
+            status = TravelSliceStatus.INIT
+            sliceHashMap[sliceUri] = slice
+        }
         return slice
     }
 
