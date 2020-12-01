@@ -10,7 +10,7 @@
 
     <style name="CustomTabLayout" parent="Widget.Design.TabLayout" >
         <item name="tabIndicatorColor">@color/tkpd_main_green</item>
-        <item name="tabIndicatorHeight">@dimen/dp_3</item>
+        <item name="tabIndicatorHeight">@dimen/spacing_lvl2</item>
         <item name="tabSelectedTextColor">@color/tkpd_main_green</item>
         <item name="tabPaddingStart">10dp</item>
         <item name="tabPaddingEnd">10dp</item>
@@ -19,7 +19,7 @@
 
     <style name="CustomTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/font_black_disabled_38</item>
+        <item name="android:textColor">@color/Neutral_N700_68</item>
         <item name="textAllCaps">false</item>
     </style>
 

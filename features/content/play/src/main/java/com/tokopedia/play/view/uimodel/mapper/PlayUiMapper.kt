@@ -59,7 +59,8 @@ object PlayUiMapper {
             feedInfo = mapFeedInfo(channel.configuration.feedsLikeParams),
             showCart = channel.configuration.showCart,
             showPinnedProduct = channel.configuration.showPinnedProduct,
-            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet
+            titleBottomSheet = channel.configuration.pinnedProduct.titleBottomSheet,
+            shareInfo = mapShareInfo(channel.share, channel)
     )
 
     private fun mapPartnerInfo(partner: Channel.Partner) = PartnerInfoUiModel(
@@ -75,6 +76,22 @@ object PlayUiMapper {
             contentType = feedInfo.contentType,
             likeType = feedInfo.likeType
     )
+
+    private fun mapShareInfo(shareInfo: Channel.Share, channel: Channel): ShareInfoUiModel {
+        val fullShareContent = try {
+            shareInfo.text.replace("${'$'}{url}", shareInfo.redirectUrl)
+        } catch (e: Throwable) {
+            "${shareInfo.text}/n${shareInfo.redirectUrl}"
+        }
+
+        return ShareInfoUiModel(
+                content = fullShareContent,
+                isShowButton = shareInfo.isShowButton
+                        && shareInfo.redirectUrl.isNotBlank()
+                        && channel.configuration.active
+                        && !channel.configuration.freezed
+        )
+    }
 
     fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = if (pinnedMessage.pinnedMessageId > 0 && pinnedMessage.title.isNotEmpty()) {
         PinnedMessageUiModel(

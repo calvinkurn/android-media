@@ -10,12 +10,12 @@
         android:id="@+id/view_recharge_home_product_banner_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
-        android:background="@android:color/holo_purple"
+        android:background="@color/Green_G500"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@android:color/holo_purple" />
+        tools:background="@color/Green_G500" />
 
     <com.tokopedia.home_component.customview.DynamicChannelHeaderView
         android:id="@+id/view_recharge_home_product_banner_header"

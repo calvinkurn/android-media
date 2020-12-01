@@ -3,7 +3,7 @@ package com.tokopedia.shop.score.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.shop.score.coroutine.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop.score.domain.usecase.GetShopScoreUseCase
 import com.tokopedia.shop.score.view.mapper.ShopScoreDetailMapper
 import com.tokopedia.shop.score.view.model.ShopScoreDetailData

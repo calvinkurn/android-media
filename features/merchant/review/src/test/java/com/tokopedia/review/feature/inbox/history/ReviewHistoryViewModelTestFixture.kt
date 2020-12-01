@@ -1,7 +1,7 @@
 package com.tokopedia.review.feature.inbox.history
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.review.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.inbox.history.domain.usecase.ProductrevFeedbackHistoryUseCase
 import com.tokopedia.review.feature.inbox.history.presentation.viewmodel.ReviewHistoryViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -26,7 +26,7 @@ abstract class ReviewHistoryViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = ReviewHistoryViewModel(TestCoroutineDispatchers, userSession, productrevFeedbackHistoryUseCase)
+        viewModel = ReviewHistoryViewModel(CoroutineTestDispatchersProvider, userSession, productrevFeedbackHistoryUseCase)
         viewModel.reviewList.observeForever {  }
     }
 }

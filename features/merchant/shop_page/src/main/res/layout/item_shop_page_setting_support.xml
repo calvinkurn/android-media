@@ -24,7 +24,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/shop_page_setting_support"
-        android:textColor="@color/clr_f531353b"
+        android:textColor="@color/Unify_N700_96"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/iv_support"
         app:layout_constraintTop_toTopOf="parent" />
@@ -45,7 +45,7 @@
             android:layout_marginTop="@dimen/dp_14"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_page_setting_support_center"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_12" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -56,7 +56,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_page_setting_action_get_support"
-            android:textColor="@color/clr_ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12" />
     </LinearLayout>
 
@@ -76,7 +76,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_page_setting_seller_center"
-            android:textColor="@color/clr_f531353b"
+            android:textColor="@color/Unify_N700_96"
             android:textSize="@dimen/sp_12" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -87,7 +87,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:lineSpacingExtra="@dimen/sp_6"
             android:text="@string/shop_page_setting_action_get_tips"
-            android:textColor="@color/clr_ae31353b"
+            android:textColor="@color/Unify_N700_68"
             android:textSize="@dimen/sp_12" />
 
     </LinearLayout>

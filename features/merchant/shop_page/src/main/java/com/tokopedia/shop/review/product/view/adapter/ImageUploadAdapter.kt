@@ -85,9 +85,9 @@ class ImageUploadAdapter(var context: Context) : RecyclerView.Adapter<ImageUploa
 
     private fun setBorder(holder: ViewHolder, position: Int) {
         if (list[position].isSelected) {
-            holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.design.R.color.green_500))
+            holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         } else {
-            holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.design.R.color.white))
+            holder.image.setBackgroundColor(context.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
         }
     }
 

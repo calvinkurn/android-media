@@ -75,7 +75,6 @@
     <string name="add_keywords">Tambah Kata Kunci</string>
     <string name="bid_range">Rp %s - Rp %s</string>
     <string name="kata_kunci_count">Kata Kunci (%d)</string>
-     <string name="error_max_selected_keyword">Batas maksimum 50 kata kunci</string>
     <string name="group_name_step">Buat Grup Iklan</string>
     <string name="bid_info_step">Atur Biaya Iklan</string>
     <string name="summary_page_step">Ringkasan Iklan</string>
