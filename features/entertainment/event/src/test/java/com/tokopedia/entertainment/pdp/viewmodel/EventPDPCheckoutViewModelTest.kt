@@ -141,7 +141,7 @@ class EventPDPCheckoutViewModelTest {
 
         coEvery { graphqlRepository.getReseponse(any(),any()) } returns gqlResponse
 
-        eventCheckoutViewModel.checkoutEventInstant("", CheckoutGeneralV2InstantParams())
+        eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
 
         val actual = eventCheckoutViewModel.eventCheckoutInstantResponse.value
         assertEquals(actual, checkoutMock)
@@ -154,7 +154,7 @@ class EventPDPCheckoutViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(),any()) } coAnswers {throw error}
 
         //when
-        eventCheckoutViewModel.checkoutEventInstant("", CheckoutGeneralV2InstantParams())
+        eventCheckoutViewModel.checkoutEventInstant(CheckoutGeneralV2InstantParams())
 
         //then
         val actual = eventCheckoutViewModel.errorGeneralValue.value

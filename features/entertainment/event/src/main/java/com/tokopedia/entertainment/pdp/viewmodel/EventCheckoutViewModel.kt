@@ -3,6 +3,7 @@ package com.tokopedia.entertainment.pdp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.entertainment.common.util.EventQuery
 import com.tokopedia.entertainment.pdp.data.EventProductDetailEntity
 import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2InstantParams
 import com.tokopedia.entertainment.pdp.data.checkout.CheckoutGeneralV2Params
@@ -77,11 +78,11 @@ class EventCheckoutViewModel @Inject constructor(private val dispatcher: Corouti
         }
     }
 
-    fun checkoutEventInstant(rawQuery:String, checkoutGeneralV2InstantParams: CheckoutGeneralV2InstantParams) {
+    fun checkoutEventInstant(checkoutGeneralV2InstantParams: CheckoutGeneralV2InstantParams) {
         launchCatchError(block = {
 
             val params = mapOf(PARAM to checkoutGeneralV2InstantParams)
-            val graphqlRequest = GraphqlRequest(rawQuery,EventCheckoutInstantResponse::class.java, params)
+            val graphqlRequest = GraphqlRequest(EventQuery.mutationEventCheckoutInstant(),EventCheckoutInstantResponse::class.java, params)
 
             val response = withContext(dispatcher) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             eventCheckoutInstantResponseMutable.value = response.getSuccessData<EventCheckoutInstantResponse>()
