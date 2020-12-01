@@ -180,7 +180,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (product.purchaseProtectionPlanData.isProtectionAvailable) {
             tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
             tvProtectionDescription.text = product.purchaseProtectionPlanData.protectionSubtitle
-            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPrice, false)
+            tvProtectionPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.purchaseProtectionPlanData.protectionPrice, false).removeDecimalSuffix()
             btnProtectionInfo.setOnClickListener {
                 val url = product.purchaseProtectionPlanData.protectionLinkUrl
                 if (url.isNotBlank()) {
@@ -188,7 +188,13 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 }
             }
             cbPurchaseProtection.isEnabled = !product.purchaseProtectionPlanData.isProtectionCheckboxDisabled
+            cbPurchaseProtection.setOnCheckedChangeListener { buttonView, isChecked ->
+                product.purchaseProtectionPlanData.stateChecked = isChecked
+                listener.onProductChange(product, false)
+                listener.onPurchaseProtectionCheckedChange()
+            }
             cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
+            tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
 
             constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
             constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
@@ -262,6 +268,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
 
         fun onPurchaseProtectionInfoClicked(url: String)
+
+        fun onPurchaseProtectionCheckedChange()
     }
 
     companion object {
