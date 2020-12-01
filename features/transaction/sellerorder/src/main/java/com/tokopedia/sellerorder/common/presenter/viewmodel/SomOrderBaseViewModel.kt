@@ -79,7 +79,7 @@ abstract class SomOrderBaseViewModel constructor(
     }
 
     fun getUserRoles() {
-        if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
+        if (getUserRolesJob?.isCompleted != false) {
             getUserRolesJob = launchCatchError(block = {
                 getUserRoleUseCase.setUserId(userSession.userId.toIntOrZero())
                 _userRoleResult.postValue(getUserRoleUseCase.execute())

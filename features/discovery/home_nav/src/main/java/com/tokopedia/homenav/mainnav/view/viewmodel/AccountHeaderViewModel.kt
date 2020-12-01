@@ -45,6 +45,11 @@ data class AccountHeaderViewModel(
         const val KEY_USER_NAME = "user_name"
         const val KEY_PROFILE_PICTURE = "profile_picture"
         const val ERROR_TEXT = "Gagal memuat, klik untuk coba lagi"
+
+        const val ERROR_TEXT_PROFILE = "Gagal Memuat Profil"
+        const val ERROR_TEXT_OVO = "Gagal Memuat Saldo Ovo"
+        const val ERROR_TEXT_SHOP = "Gagal Memuat Toko.  %s"
+        const val ERROR_TEXT_SHOP_TRY = "Coba Lagi"
     }
 
     fun copy(): AccountHeaderViewModel {

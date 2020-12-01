@@ -103,6 +103,11 @@ class MainNavViewModel @Inject constructor(
         get() = _shopResultListener
     private val _shopResultListener: MutableLiveData<Result<AccountHeaderViewModel>> = MutableLiveData()
 
+    //network process live data, false if it is processing and true if it is finished
+    val networkProcessLiveData: LiveData<Boolean>
+        get() = _networkProcessLiveData
+    private val _networkProcessLiveData: MutableLiveData<Boolean> = MutableLiveData(false)
+
     private var navNotification: NavNotificationModel = NavNotificationModel(
             unreadCountInboxTicket = 0,
             unreadCountComplain = 0
@@ -202,6 +207,7 @@ class MainNavViewModel @Inject constructor(
     }
 
     private fun getMainNavData() {
+        _networkProcessLiveData.value = false
         launch {
             val p1DataJob = launchCatchError(context = coroutineContext, block = {
                 getMainNavContent()
@@ -255,6 +261,9 @@ class MainNavViewModel @Inject constructor(
         _mainNavListVisitable.addTransactionMenu()
         _mainNavListVisitable.addUserMenu()
         val resultWithUpdatedList = result.copy(dataList = _mainNavListVisitable)
+
+        //PLT network process is finished
+        _networkProcessLiveData.postValue(true)
         updateNavData(resultWithUpdatedList)
     }
 
