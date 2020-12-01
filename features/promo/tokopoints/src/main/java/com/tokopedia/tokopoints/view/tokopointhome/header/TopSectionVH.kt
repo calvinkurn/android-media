@@ -2,6 +2,7 @@ package com.tokopedia.tokopoints.view.tokopointhome.header
 
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import android.text.Html
 import android.text.Spannable
@@ -79,8 +80,7 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
             } else {
                 mTargetText?.text = Html.fromHtml(it.text)
             }
-
-            cardTierInfo.setBackgroundColor(Color.parseColor("#" + it.backgroundColor))
+            customBackground(cardTierInfo,Color.parseColor("#" + it.backgroundColor),16F)
             cardTierInfo.setOnClickListener {
                 RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW_TITLE, itemView.context.resources.getString(R.string.tp_label_membership), CommonConstant.WebLink.MEMBERSHIP)
                 AnalyticsTrackerUtil.sendEvent(itemView.context,
@@ -175,6 +175,14 @@ class TopSectionVH(itemView: View, val cardRuntimeHeightListener: CardRuntimeHei
         toolbarItemList as ArrayList<NotificationUnify>
         toolbarItemList[index].hide()
         dynamicActionListItem?.counter?.isShowCounter = false
+    }
+
+    private fun customBackground(v: View, backgroundColor: Int, radii: Float) {
+        val shape = GradientDrawable()
+        shape.shape = GradientDrawable.RECTANGLE
+        shape.cornerRadii = floatArrayOf(radii, radii, radii, radii, radii, radii, radii, radii)
+        shape.setColor(backgroundColor)
+        v.background = shape
     }
 
     private fun renderUserSaving(userSavingInfo: UserSaving) {

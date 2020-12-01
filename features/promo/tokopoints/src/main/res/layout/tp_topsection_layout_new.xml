@@ -58,19 +58,16 @@
         app:typographyWeight="bold"
         tools:text="Classic Member" />
 
-    <com.tokopedia.unifycomponents.CardUnify
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container_target"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_10"
         android:layout_below="@id/img_egg"
-        android:id="@+id/container_target_parent"
-        android:layout_marginTop="@dimen/dp_9">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:id="@+id/container_target"
-        android:layout_height="wrap_content">
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_9"
+        android:layout_marginEnd="@dimen/tp_margin_medium"
+        android:layout_marginRight="@dimen/tp_margin_medium">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_targetText"
@@ -106,12 +103,11 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.tokopedia.unifycomponents.CardUnify>
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/card_point"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/container_target_parent"
+        android:layout_below="@id/container_target"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_9"
