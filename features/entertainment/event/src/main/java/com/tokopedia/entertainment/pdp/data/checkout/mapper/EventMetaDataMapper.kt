@@ -65,9 +65,9 @@ object EventMetaDataMapper {
         return checkoutGeneralV2Params
     }
 
-    fun getCheckoutParamInstant(metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2InstantParams {
+    fun getCheckoutParamInstant(gatewayCode:String, metaDataResponse: MetaDataResponse, productDetailData: ProductDetailData, packageV3: PackageV3): CheckoutGeneralV2InstantParams {
         val gson = Gson()
-        val checkoutGeneralV2InstantParams = CheckoutGeneralV2InstantParams()
+        val checkoutGeneralV2InstantParams = CheckoutGeneralV2InstantParams(gatewayCode = gatewayCode)
         val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(metaDataResponse,productDetailData,packageV3)),productDetailData.checkoutDataType)
         checkoutGeneralV2InstantParams.carts.businessType = productDetailData.checkoutBusinessType
         checkoutGeneralV2InstantParams.carts.cartInfo.add(0, cartInfo)

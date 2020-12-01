@@ -415,7 +415,7 @@ class EventCheckoutFragment : BaseDaggerFragment(), OnAdditionalListener {
                                         getCheckoutParam(metadata, productDetailData, getPackage(productDetailData, packageID)))
                             } else {
                                 eventCheckoutViewModel.checkoutEventInstant(EventQuery.mutationEventCheckoutInstant(),
-                                        getCheckoutParamInstant(metadata, productDetailData, getPackage(productDetailData, packageID)))
+                                        getCheckoutParamInstant(gatewayCode, metadata, productDetailData, getPackage(productDetailData, packageID)))
                             }
                         }
                     }
