@@ -99,4 +99,17 @@
     <string name="inbox_empty_seller_unread_title">Yay, semua diskusi sudah dibaca</string>
     <string name="inbox_empty_seller_unread_subtitle">Pastikan sudah kamu balas juga, ya!</string>
 
+    <string name="smart_reply_header">Balas otomatis pertanyaan pembeli khusus stok produk dengan fitur Smart Reply.</string>
+    <string name="smart_reply_learn">Pelajari Smart Reply</string>
+    <string name="smart_reply_performance_title">Performa Smart Reply</string>
+    <string name="smart_reply_performance_subtitle">Performa dalam 30 hari</string>
+    <string name="smart_reply_total_discussions_replied_label">Total diskusi yang dibalas Smart Reply</string>
+    <string name="smart_reply_speed_label">Kecepatan menjawab Smart Reply</string>
+    <string name="smart_reply_percentage_replied_label">Persentase dibalas Smart Reply</string>
+    <string name="smart_reply_settings_title">Pengaturan Smart Reply</string>
+    <string name="smart_reply_total_discussions_format">%d+</string>
+    <string name="smart_reply_speed_format">%ds</string>
+    <string name="smart_reply_percentage_replied_format">%d&#37;</string>
+    <string name="smart_reply_tnc">Dengan mengaktifkan Smart Reply, kamu menyetujui\nsyarat dan ketentuan Tokopedia.</string>
+
 </resources>
