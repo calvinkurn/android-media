@@ -24,7 +24,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.ClipboardHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ShareAdapter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ShareModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ShareModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
 
 /**

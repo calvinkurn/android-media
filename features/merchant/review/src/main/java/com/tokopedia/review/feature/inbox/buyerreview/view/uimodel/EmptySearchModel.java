@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel;
 
 import android.view.View;
 

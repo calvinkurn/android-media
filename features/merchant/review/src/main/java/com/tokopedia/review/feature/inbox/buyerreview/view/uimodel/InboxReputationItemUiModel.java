@@ -1,19 +1,19 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.typefactory.inbox.InboxReputationTypeFactory;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.RevieweeBadgeCustomerViewModel;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.RevieweeBadgeSellerViewModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeCustomerUiModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.RevieweeBadgeSellerUiModel;
 
 /**
  * @author by nisie on 8/15/17.
  */
 
-public class InboxReputationItemViewModel implements Visitable<InboxReputationTypeFactory> {
+public class InboxReputationItemUiModel implements Visitable<InboxReputationTypeFactory> {
     public static final int ROLE_SELLER = 2;
     public static final int ROLE_BUYER = 1;
-    private final RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel;
-    private final RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel;
+    private final RevieweeBadgeCustomerUiModel revieweeBadgeCustomerUiModel;
+    private final RevieweeBadgeSellerUiModel revieweeBadgeSellerUiModel;
     private final int shopId;
     private final int userId;
     private String revieweeName;
@@ -22,17 +22,17 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
     private String reputationDaysLeft;
     private String invoice;
     private String reputationId;
-    private ReputationDataViewModel reputationDataViewModel;
+    private ReputationDataUiModel reputationDataUiModel;
     private int role;
 
-    public InboxReputationItemViewModel(
+    public InboxReputationItemUiModel(
             String reputationId, String revieweeName, String createTime,
             String revieweePicture, String reputationDaysLeft,
             String invoice,
-            ReputationDataViewModel reputationDataViewModel,
+            ReputationDataUiModel reputationDataUiModel,
             int role,
-            RevieweeBadgeCustomerViewModel revieweeBadgeCustomerViewModel,
-            RevieweeBadgeSellerViewModel revieweeBadgeSellerViewModel,
+            RevieweeBadgeCustomerUiModel revieweeBadgeCustomerUiModel,
+            RevieweeBadgeSellerUiModel revieweeBadgeSellerUiModel,
             int shopId, int userId) {
         this.reputationId = reputationId;
         this.revieweeName = revieweeName;
@@ -40,10 +40,10 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         this.revieweePicture = revieweePicture;
         this.reputationDaysLeft = reputationDaysLeft;
         this.invoice = invoice;
-        this.reputationDataViewModel = reputationDataViewModel;
+        this.reputationDataUiModel = reputationDataUiModel;
         this.role = role;
-        this.revieweeBadgeCustomerViewModel = revieweeBadgeCustomerViewModel;
-        this.revieweeBadgeSellerViewModel = revieweeBadgeSellerViewModel;
+        this.revieweeBadgeCustomerUiModel = revieweeBadgeCustomerUiModel;
+        this.revieweeBadgeSellerUiModel = revieweeBadgeSellerUiModel;
         this.shopId = shopId;
         this.userId = userId;
     }
@@ -77,16 +77,16 @@ public class InboxReputationItemViewModel implements Visitable<InboxReputationTy
         return reputationId;
     }
 
-    public ReputationDataViewModel getReputationDataViewModel() {
-        return reputationDataViewModel;
+    public ReputationDataUiModel getReputationDataUiModel() {
+        return reputationDataUiModel;
     }
 
-    public RevieweeBadgeCustomerViewModel getRevieweeBadgeCustomerViewModel() {
-        return revieweeBadgeCustomerViewModel;
+    public RevieweeBadgeCustomerUiModel getRevieweeBadgeCustomerUiModel() {
+        return revieweeBadgeCustomerUiModel;
     }
 
-    public RevieweeBadgeSellerViewModel getRevieweeBadgeSellerViewModel() {
-        return revieweeBadgeSellerViewModel;
+    public RevieweeBadgeSellerUiModel getRevieweeBadgeSellerUiModel() {
+        return revieweeBadgeSellerUiModel;
     }
 
     public int getShopId() {

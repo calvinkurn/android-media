@@ -1,4 +1,4 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,30 +7,30 @@ import android.os.Parcelable;
  * @author by nisie on 8/30/17.
  */
 
-public class ReputationBadgeViewModel implements Parcelable {
+public class ReputationBadgeUiModel implements Parcelable {
 
     private int level;
     private int set;
 
-    public ReputationBadgeViewModel(int level, int set) {
+    public ReputationBadgeUiModel(int level, int set) {
         this.level = level;
         this.set = set;
     }
 
-    protected ReputationBadgeViewModel(Parcel in) {
+    protected ReputationBadgeUiModel(Parcel in) {
         level = in.readInt();
         set = in.readInt();
     }
 
-    public static final Creator<ReputationBadgeViewModel> CREATOR = new Creator<ReputationBadgeViewModel>() {
+    public static final Creator<ReputationBadgeUiModel> CREATOR = new Creator<ReputationBadgeUiModel>() {
         @Override
-        public ReputationBadgeViewModel createFromParcel(Parcel in) {
-            return new ReputationBadgeViewModel(in);
+        public ReputationBadgeUiModel createFromParcel(Parcel in) {
+            return new ReputationBadgeUiModel(in);
         }
 
         @Override
-        public ReputationBadgeViewModel[] newArray(int size) {
-            return new ReputationBadgeViewModel[size];
+        public ReputationBadgeUiModel[] newArray(int size) {
+            return new ReputationBadgeUiModel[size];
         }
     };
 

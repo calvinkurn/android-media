@@ -1,7 +1,7 @@
-package com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.sendreview;
+package com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.sendreview;
 
 
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ImageUpload;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ImageUpload;
 
 import java.util.ArrayList;
 import java.util.List;
