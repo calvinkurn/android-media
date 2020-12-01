@@ -176,6 +176,8 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
     private fun renderPurchaseProtection() {
         val constraintSet = ConstraintSet()
         constraintSet.clone(mainContent)
+        constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
+        constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
 
         if (product.purchaseProtectionPlanData.isProtectionAvailable) {
             tvProtectionTitle.text = product.purchaseProtectionPlanData.protectionTitle
@@ -196,14 +198,10 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             cbPurchaseProtection.isChecked = product.purchaseProtectionPlanData.isProtectionOptIn
             tvProtectionUnit.text = product.purchaseProtectionPlanData.unit
 
-            constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
-            constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
             constraintSet.connect(dividerTop.id, ConstraintSet.TOP, spacePurchaseProtection.id, ConstraintSet.BOTTOM, 0)
             constraintSet.applyTo(mainContent)
             groupPurchaseProtection.show()
         } else {
-            constraintSet.connect(dividerTop.id, ConstraintSet.START, mainContent.id, ConstraintSet.START, 0)
-            constraintSet.connect(dividerTop.id, ConstraintSet.END, mainContent.id, ConstraintSet.END, 0)
             constraintSet.connect(dividerTop.id, ConstraintSet.TOP, tfNote.id, ConstraintSet.BOTTOM, 0)
             constraintSet.applyTo(mainContent)
             groupPurchaseProtection.gone()
