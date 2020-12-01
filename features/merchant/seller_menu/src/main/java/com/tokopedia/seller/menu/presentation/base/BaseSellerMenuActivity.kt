@@ -1,6 +1,5 @@
 package com.tokopedia.seller.menu.presentation.base
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -28,6 +27,6 @@ abstract class BaseSellerMenuActivity: BaseSimpleActivity() {
     }
 
     private fun setBackgroundColor() {
-        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+        window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 }
