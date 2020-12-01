@@ -5,7 +5,6 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -89,15 +88,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupToolbar() {
         toolbar?.switchToLightToolbar()
-        toolbar?.setIcon(
-                IconBuilder()
-                        .addIcon(IconList.ID_CART) {
-                            Toast.makeText(this, "Cart clicked", Toast.LENGTH_SHORT).show()
-                        }
-                        .addIcon(IconList.ID_NAV_GLOBAL) {
-                            Toast.makeText(this, "ID_NAV_GLOBAL clicked", Toast.LENGTH_SHORT).show()
-                        }
-        )
+        updateToolbarIcon()
         val view = View.inflate(
                 this, R.layout.partial_inbox_nav_content_view, null
         ).also {
@@ -107,6 +98,16 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         }
         toolbar?.setCustomViewContentView(view)
         toolbar?.setToolbarContentType(TOOLBAR_TYPE_CUSTOM)
+    }
+
+    private fun updateToolbarIcon(hasChatSearch: Boolean = false) {
+        val icon = IconBuilder()
+        if (hasChatSearch) {
+            icon.addIcon(IconList.ID_SEARCH) { }
+        }
+        icon.addIcon(IconList.ID_CART) { }
+        icon.addIcon(IconList.ID_NAV_GLOBAL) { }
+        toolbar?.setIcon(icon)
     }
 
     private fun setupInjector() {
@@ -209,12 +210,15 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
                 when (menu.itemId) {
                     R.id.menu_inbox_notification -> {
                         onBottomNavSelected(InboxFragmentType.NOTIFICATION)
+                        updateToolbarIcon()
                     }
                     R.id.menu_inbox_chat -> {
                         onBottomNavSelected(InboxFragmentType.CHAT)
+                        updateToolbarIcon(true)
                     }
                     R.id.menu_inbox_discussion -> {
                         onBottomNavSelected(InboxFragmentType.DISCUSSION)
+                        updateToolbarIcon()
                     }
                 }
                 return@setOnNavigationItemSelectedListener true
