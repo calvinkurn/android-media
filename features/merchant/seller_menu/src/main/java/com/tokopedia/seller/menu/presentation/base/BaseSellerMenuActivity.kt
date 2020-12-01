@@ -22,12 +22,12 @@ abstract class BaseSellerMenuActivity: BaseSimpleActivity() {
             window.apply {
                 addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                statusBarColor = ContextCompat.getColor(context, com.tokopedia.design.R.color.white_95)
+                statusBarColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0_96)
             }
         }
     }
 
     private fun setBackgroundColor() {
-        window.decorView.setBackgroundColor(Color.WHITE)
+        window.decorView.setBackgroundColor(androidx.core.content.ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N0))
     }
 }
