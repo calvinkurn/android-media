@@ -86,6 +86,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun setupToolbar() {
+        toolbar?.switchToLightToolbar()
         toolbar?.setIcon(
                 IconBuilder()
                         .addIcon(IconList.ID_CART) {
@@ -100,7 +101,6 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
         ).also {
             navHeader.bindNavHeaderView(it)
             navHeader.bindValue()
-            navHeader.setBadgeCount(20)
             navHeaderContainer = it.findViewById(R.id.inbox_toolbar)
         }
         toolbar?.setCustomViewContentView(view)
@@ -191,10 +191,11 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     }
 
     private fun updateBottomNavNotificationCounter() {
-        val notificationRole = inboxCounter.getByRole(InboxConfig.role)
-        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole?.notifcenterInt)
-        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole?.chatInt)
-        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole?.talkInt)
+        val notificationRole = inboxCounter.getByRole(InboxConfig.role) ?: return
+        bottomNav?.setBadgeCount(InboxFragmentType.NOTIFICATION, notificationRole.notifcenterInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.CHAT, notificationRole.chatInt)
+        bottomNav?.setBadgeCount(InboxFragmentType.DISCUSSION, notificationRole.talkInt)
+        navHeader.setBadgeCount(notificationRole.totalInt)
     }
 
     private fun updateToolbarNotificationCounter() {
