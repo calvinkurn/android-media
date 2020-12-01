@@ -63,6 +63,13 @@ public class ConstantsKeyUnitTest {
     public static final String ADVERTISINGID = "ADVERTISINGID";
     public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
+    private static final String IS_SHOP_OWNER = "IS_SHOP_OWNER";
+    private static final String IS_SHOP_ADMIN = "IS_SHOP_ADMIN";
+    private static final String IS_LOCATION_ADMIN = "IS_LOCATION_ADMIN";
+    private static final String IS_MANAGE_PRODUCT_ADMIN = "IS_MANAGE_PRODUCT_ADMIN";
+    private static final String IS_MANAGE_STOCK_ADMIN = "IS_MANAGE_STOCK_ADMIN";
+    private static final String IS_MULTI_LOCATION_SHOP = "IS_MULTI_LOCATION_SHOP";
+
     /**
      * Twitter Prefs
      */
@@ -80,7 +87,9 @@ public class ConstantsKeyUnitTest {
             TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET, TWITTER_SHOULD_POST, GTM_LOGIN_ID,
             TEMP_USER_ID, GCM_ID, IS_AFFILIATE, IS_FIRST_TIME_USER_NEW_ONBOARDING,
             UUID_KEY, LOGIN_UUID_KEY, GCM_ID_TIMESTAMP, IS_SHOP_OFFICIAL_STORE,
-            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID
+            ANDROID_ID, KEY_ANDROID_ID, ADVERTISINGID, KEY_ADVERTISINGID, IS_SHOP_OWNER,
+            IS_SHOP_ADMIN, IS_LOCATION_ADMIN, IS_MANAGE_PRODUCT_ADMIN, IS_MANAGE_STOCK_ADMIN,
+            IS_MULTI_LOCATION_SHOP
     };
 
     @Test

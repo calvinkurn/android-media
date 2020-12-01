@@ -174,4 +174,27 @@ public interface UserSessionInterface {
 
     boolean hasShownSaldoIntroScreen();
 
+    boolean isShopOwner();
+
+    void setIsShopOwner(boolean isShopOwner);
+
+    boolean isShopAdmin();
+
+    void setIsShopAdmin(boolean isShopAdmin);
+
+    boolean isLocationAdmin();
+
+    void setIsLocationAdmin(boolean isLocationAdmin);
+
+    boolean isManageProductAdmin();
+
+    void setIsManageProductAdmin(boolean isManageProductAdmin);
+
+    boolean isManageStockAdmin();
+
+    void setIsManageStockAdmin(boolean isManageStockAdmin);
+
+    boolean isMultiLocationShop();
+
+    void setIsMultiLocationShop(boolean isMultiLocationShop);
 }
