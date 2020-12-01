@@ -618,10 +618,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 for (detailIndexed in onboarding.onboardingCoachMark.details.withIndex()) {
                     val newView: View = when (onboarding.coachmarkType) {
-                        1 -> generateNewCoachMarkAnchorType1(it, detailIndexed.index)
-                        2 -> generateNewCoachMarkAnchorType2(it, detailIndexed.index)
+                        1 -> generateNewCoachMarkAnchorForNewBuyerBeforeCreateProfile(it, detailIndexed.index)
+                        2 -> generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(it, detailIndexed.index)
                         3 -> generateNewCoachMarkAnchorForExistingUserOneProfile(it, detailIndexed.index)
-                        4 -> generateNewCoachMarkAnchorType4(it, detailIndexed.index)
+                        4 -> generateNewCoachMarkAnchorForExistingUserMultiProfile(it, detailIndexed.index)
                         else -> it.findViewById(R.id.tv_header_2)
                     }
                     coachMarkItems.add(CoachMark2Item(newView, detailIndexed.value.title, detailIndexed.value.message))
@@ -629,11 +629,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 val coachMark = CoachMark2(it.context)
                 coachMark.setStepListener(object : CoachMark2.OnStepListener {
                     override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        triggerCoachMarkAnalytics(onboarding, currentIndex, false)
+                        triggerCoachMarkAnalytics(onboarding, currentIndex)
                     }
                 })
                 coachMark.onFinishListener = {
                     when (onboarding.coachmarkType) {
+                        1 -> orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
                         2 -> orderSummaryAnalytics.eventClickDoneOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
                         3 -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
                         4 -> orderSummaryAnalytics.eventClickDoneOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
@@ -647,72 +648,42 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     scrollview.scrollTo(0, relativeLocation.last())
                     coachMark.showCoachMark(coachMarkItems, scrollview)
                     // trigger first analytics
-                    triggerCoachMarkAnalytics(onboarding, 0, true)
+                    triggerCoachMarkAnalytics(onboarding, 0)
                 }
             }
         }
     }
 
-    private fun triggerCoachMarkAnalytics(onboarding: OccMainOnboarding, currentIndex: Int, firstView: Boolean) {
+    private fun triggerCoachMarkAnalytics(onboarding: OccMainOnboarding, currentIndex: Int) {
         when (onboarding.coachmarkType) {
             1 -> when (currentIndex) {
-                0 -> {
-                    orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                }
-                1 -> {
-                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                    orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
-                }
+                0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerBeforeCreateProfile(userSession.get().userId)
+                1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerBeforeCreateProfile(userSession.get().userId)
             }
             2 -> when (currentIndex) {
-                0 -> {
-                    orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                }
-                1 -> {
-                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                    orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
-//                    orderSummaryAnalytics.eventClickBalikOnCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                }
-                2 -> {
-                    orderSummaryAnalytics.eventClickLanjutOnCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                    orderSummaryAnalytics.eventViewCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
-                }
+                0 -> orderSummaryAnalytics.eventViewCoachmark1ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                1 -> orderSummaryAnalytics.eventViewCoachmark2ForNewBuyerAfterCreateProfile(userSession.get().userId)
+                2 -> orderSummaryAnalytics.eventViewCoachmark3ForNewBuyerAfterCreateProfile(userSession.get().userId)
             }
             3 -> when (currentIndex) {
-                0 -> {
-                    if (!firstView) {
-                        orderSummaryAnalytics.eventClickBalikOnCoachmark2ForExistingUserOneProfile(userSession.get().userId)
-                    }
-                    orderSummaryAnalytics.eventViewCoachmark1ForExistingUserOneProfile(userSession.get().userId)
-                }
-                1 -> {
-                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForExistingUserOneProfile(userSession.get().userId)
-                    orderSummaryAnalytics.eventViewCoachmark2ForExistingUserOneProfile(userSession.get().userId)
-                }
+                0 -> orderSummaryAnalytics.eventViewCoachmark1ForExistingUserOneProfile(userSession.get().userId)
+                1 -> orderSummaryAnalytics.eventViewCoachmark2ForExistingUserOneProfile(userSession.get().userId)
             }
             4 -> when (currentIndex) {
-                0 -> {
-                    if (!firstView) {
-                        orderSummaryAnalytics.eventClickBalikOnCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
-                    }
-                    orderSummaryAnalytics.eventViewCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
-                }
-                1 -> {
-                    orderSummaryAnalytics.eventClickLanjutOnCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
-                    orderSummaryAnalytics.eventViewCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
-                }
+                0 -> orderSummaryAnalytics.eventViewCoachmark1ForExistingUserMultiProfile(userSession.get().userId)
+                1 -> orderSummaryAnalytics.eventViewCoachmark2ForExistingUserMultiProfile(userSession.get().userId)
             }
         }
     }
 
-    private fun generateNewCoachMarkAnchorType1(view: View, index: Int): View {
+    private fun generateNewCoachMarkAnchorForNewBuyerBeforeCreateProfile(view: View, index: Int): View {
         return when (index) {
             1 -> view.findViewById(R.id.button_atur_pilihan)
             else -> view.findViewById(R.id.tv_header_2)
         }
     }
 
-    private fun generateNewCoachMarkAnchorType2(view: View, index: Int): View {
+    private fun generateNewCoachMarkAnchorForNewBuyerAfterCreateProfile(view: View, index: Int): View {
         return when (index) {
             1 -> view.findViewById(R.id.btn_new_change_duration)
             2 -> view.findViewById(R.id.tv_new_choose_preference)
@@ -727,7 +698,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun generateNewCoachMarkAnchorType4(view: View, index: Int): View {
+    private fun generateNewCoachMarkAnchorForExistingUserMultiProfile(view: View, index: Int): View {
         return when (index) {
             0 -> view.findViewById(R.id.btn_new_change_address)
             else -> view.findViewById(R.id.tv_new_choose_preference)
