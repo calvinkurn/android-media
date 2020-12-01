@@ -2,30 +2,46 @@ package com.tokopedia.notifications.inApp.viewEngine;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
+import com.tokopedia.notifications.di.DaggerCMNotificationComponent;
+import com.tokopedia.notifications.di.module.LifecycleModule;
 import com.tokopedia.notifications.inApp.CMInAppManager;
+import com.tokopedia.notifications.utils.NotificationRemoveManager;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.inject.Inject;
+
+import dagger.Lazy;
 
 /**
  * @author lalit.singh
  */
 public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbacks {
 
-    static String TAG = CMActivityLifeCycle.class.getSimpleName();
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     private int activityCount;
 
-
     private CMInAppManager cmInAppManager;
+    private NotificationRemoveManager removeManager;
 
+    @Inject
+    private Lazy<RemoteConfig> remoteConfig;
 
-    public CMActivityLifeCycle(CMInAppManager cmInAppManager) {
+    public CMActivityLifeCycle(Context context, CMInAppManager cmInAppManager) {
+        DaggerCMNotificationComponent.builder()
+                .lifecycleModule(new LifecycleModule(context))
+                .build()
+                .inject(this);
+
         this.cmInAppManager = cmInAppManager;
     }
 
@@ -41,8 +57,30 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     public void onActivityStarted(Activity activity) {
         try {
             cmInAppManager.onActivityStartedInternal(activity);
-        } catch (Exception e) {
-        }
+            clearNotification(activity);
+        } catch (Exception e) { }
+    }
+
+    @Override
+    public void onActivityResumed(Activity activity) { }
+
+    @Override
+    public void onActivityPaused(Activity activity) { }
+
+    @Override
+    public void onActivityStopped(Activity activity) {
+        try {
+            cmInAppManager.onActivityStopInternal(activity);
+            removeManager.cancel();
+        } catch (Exception e) { }
+    }
+
+    @Override
+    public void onActivitySaveInstanceState(Activity activity, Bundle outState) { }
+
+    @Override
+    public void onActivityDestroyed(Activity activity) {
+        activityCount--;
     }
 
     private void trackIrisEventForAppOpen(Activity activity) {
@@ -52,32 +90,10 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
         instance.saveEvent(map);
     }
 
-    @Override
-    public void onActivityResumed(Activity activity) {
-
-    }
-
-    @Override
-    public void onActivityPaused(Activity activity) {
-    }
-
-    @Override
-    public void onActivityStopped(Activity activity) {
-        try {
-            cmInAppManager.onActivityStopInternal(activity);
-        } catch (Exception e) {
+    private void clearNotification(Activity activity) {
+        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
+            removeManager.clearNotification(activity.getApplicationContext());
         }
     }
-
-    @Override
-    public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-    }
-
-
-    @Override
-    public void onActivityDestroyed(Activity activity) {
-        activityCount--;
-    }
-
 
 }

@@ -2,6 +2,7 @@ package com.tokopedia.notifications.inApp;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -77,7 +78,7 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         this.cmInAppListener = this;
         cmRemoteConfigUtils = new CMRemoteConfigUtils(application);
         RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
-        initInAppManager();
+        initInAppManager(application.getApplicationContext());
     }
 
     public static CmInAppListener getCmInAppListener() {
@@ -86,8 +87,9 @@ public class CMInAppManager implements CmInAppListener, DataProvider {
         return inAppManager.cmInAppListener;
     }
 
-    private void initInAppManager() {
-        application.registerActivityLifecycleCallbacks(new CMActivityLifeCycle(this));
+    private void initInAppManager(@NonNull Context context) {
+        CMActivityLifeCycle lifeCycle = new CMActivityLifeCycle(context, this);
+        application.registerActivityLifecycleCallbacks(lifeCycle);
     }
 
     private void updateCurrentActivity(Activity activity) {
