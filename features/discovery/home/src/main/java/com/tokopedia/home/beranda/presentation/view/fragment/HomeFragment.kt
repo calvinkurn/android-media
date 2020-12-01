@@ -615,15 +615,23 @@ open class HomeFragment : BaseDaggerFragment(),
             RouteManager.route(context, navigationBundle, ApplinkConst.HOME_NAVIGATION, null)
             coachMark.dismissCoachMark()
         }
-
         //error comes from unify library, hence for quick fix we just catch the error since its not blocking any feature
         //will be removed along the coachmark removal in the future
         try {
             bottomSheet.dismiss()
-            if (coachMarkItem.isNotEmpty()) coachMark.showCoachMark(step = coachMarkItem, index = 0)
+            if (coachMarkItem.isNotEmpty() && isValidToShowCoachMark()) {
+                coachMark.showCoachMark(step = coachMarkItem, index = 0)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun isValidToShowCoachMark(): Boolean {
+        activity?.let {
+            return !it.isFinishing
+        }
+        return false
     }
 
     private val afterInflationCallable: Callable<Any?>

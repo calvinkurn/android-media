@@ -59,9 +59,11 @@ class SessionActivityLifecycleCallbacks : Application.ActivityLifecycleCallbacks
 
     private fun addJourney(activity: Activity) {
         var bundle = Bundle()
-        activity.intent.extras?.let {
-            bundle = it
-        }
+        try {
+            activity.intent.extras?.let {
+                bundle = it
+            }
+        } catch (e: Exception) { }
         UserJourney.addJourneyActivity(activity.javaClass.simpleName, bundle)
     }
 
