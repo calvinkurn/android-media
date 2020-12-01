@@ -22,7 +22,7 @@ import com.tokopedia.common.travel.presentation.adapter.TravelCrossSellAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity
 import com.tokopedia.flight.cancellationV2.presentation.activity.FlightCancellationPassengerActivity
-import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.cancellationV2.presentation.fragment.FlightCancellationPassengerFragment
 import com.tokopedia.flight.orderdetail.di.FlightOrderDetailComponent
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailBrowserActivity
 import com.tokopedia.flight.orderdetail.presentation.activity.FlightOrderDetailWebCheckInActivity
@@ -43,7 +43,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_flight_order_detail.*
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -135,7 +134,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     navigateToWebview(E_TICKET_TITLE, it.data)
                 }
                 is Fail -> {
-                    showSnackbar(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), E_TICKET_TITLE))
+                    showSnackbarError(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), E_TICKET_TITLE.toLowerCase()))
                 }
             }
         })
@@ -146,7 +145,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                     navigateToWebview(INVOICE_TITLE, it.data)
                 }
                 is Fail -> {
-                    showSnackbar(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), INVOICE_TITLE))
+                    showSnackbarError(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), INVOICE_TITLE.toLowerCase()))
                 }
             }
         })
@@ -173,6 +172,13 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         intent.putExtra(EXTRA_IS_AFTER_CANCELLATION, true)
                         it.setResult(Activity.RESULT_OK, intent)
                         it.finish()
+                    }
+                } else if (resultCode == Activity.RESULT_CANCELED) {
+                    data?.let {
+                        if (it.hasExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR) &&
+                                it.getBooleanExtra(FlightCancellationPassengerFragment.EXTRA_IS_CANCEL_ERROR, false)) {
+                            showSnackbarError(String.format(getString(R.string.flight_order_detail_failed_to_fetch_data), CANCELLATION_TITLE.toLowerCase()))
+                        }
                     }
                 }
             }
@@ -297,24 +303,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
 
         /* Render Web Check In View */
-        val today = FlightDateUtil.removeTime(FlightDateUtil.getCurrentDate())
         val isWebCheckInButtonVisible: Pair<Boolean, String> = flightOrderDetailViewModel.isWebCheckInAvailable(data)
-        val isCancellationButtonVisible: Boolean =
-                when {
-                    data.journeys.size > 1 -> {
-                        val returnDate: Date = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
-                                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.journeys[1].departureTime))
-                        !today.after(returnDate)
-                    }
-                    data.journeys.isNotEmpty() -> {
-                        val departureDate = FlightDateUtil.removeTime(FlightDateUtil.stringToDate(
-                                FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, data.journeys[0].departureTime))
-                        !today.after(departureDate)
-                    }
-                    else -> {
-                        false
-                    }
-                }
         flightOrderDetailCheckIn.listener = object : FlightOrderDetailButtonsView.Listener {
             override fun onTopButtonClicked() {
                 flightOrderDetailViewModel.trackClickWebCheckIn()
@@ -344,7 +333,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
                         MethodChecker.getDrawable(requireContext(), R.drawable.ic_flight_order_detail_cancellation),
                         getString(R.string.flight_label_cancel_ticket),
                         getString(R.string.flight_order_detail_cancel_description),
-                        isCancellationButtonVisible,
+                        true,
                         true
                 )
         )
@@ -395,6 +384,10 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
 
     private fun showSnackbar(message: String) {
         Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
+    }
+
+    private fun showSnackbarError(message: String) {
+        Toaster.build(requireView(), message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
     }
 
     private fun navigateToCancellationDetailPage() {
@@ -451,6 +444,7 @@ class FlightOrderDetailFragment : BaseDaggerFragment(),
     companion object {
         private const val E_TICKET_TITLE = "E-Ticket"
         private const val INVOICE_TITLE = "Invoice"
+        private const val CANCELLATION_TITLE = "Pembatalan"
 
         private const val EXTRA_INVOICE_ID = "EXTRA_INVOICE_ID"
         private const val EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION"
