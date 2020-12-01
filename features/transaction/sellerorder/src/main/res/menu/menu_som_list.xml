@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/som_list_action_waiting_payment_order_shimmer"
+        android:icon="@drawable/ic_som_list_menu_waiting_payment_shimmer"
+        android:title="@string/title_som_waiting_payment"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/som_list_action_waiting_payment_order"
+        android:icon="@drawable/ic_som_list_waiting_payment_button_icon"
+        android:title="@string/title_som_waiting_payment"
+        android:visible="false"
+        app:showAsAction="always" />
+</menu>

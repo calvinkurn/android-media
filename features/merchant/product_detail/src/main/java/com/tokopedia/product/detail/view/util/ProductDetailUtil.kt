@@ -2,10 +2,15 @@ package com.tokopedia.product.detail.view.util
 
 import android.content.Context
 import android.graphics.Typeface
-import android.text.*
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
 import android.view.View
+import androidx.annotation.DimenRes
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -14,8 +19,9 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.data.model.description.DescriptionData
+import com.tokopedia.product.info.model.description.DescriptionData
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -43,11 +49,10 @@ object ProductDetailUtil {
 
     fun reviewDescFormatter(context: Context, review: String): Pair<CharSequence?, Boolean> {
         val formattedText = HtmlLinkHelper(context, review).spannedString ?: ""
-        return if(formattedText.length > MAX_CHAR) {
+        return if (formattedText.length > MAX_CHAR) {
             val subDescription = formattedText.substring(0, MAX_CHAR)
             Pair(HtmlLinkHelper(context, subDescription.replace("(\r\n|\n)".toRegex(), "<br />") + "... " + context.getString(R.string.review_expand)).spannedString, ALLOW_CLICK)
-        }
-        else {
+        } else {
             Pair(formattedText, !ALLOW_CLICK)
         }
     }
@@ -93,7 +98,7 @@ fun String.linkTextWithGiven(context: Context, vararg textToBold: Pair<String, (
                     override fun updateDrawState(ds: TextPaint) {
                         super.updateDrawState(ds)
                         ds.isUnderlineText = false
-                        ds.color = MethodChecker.getColor(context, R.color.green_500)
+                        ds.color = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
                     }
                 }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
@@ -249,8 +254,8 @@ fun <T : Any> Result<T>.doSuccessOrFail(success: (Success<T>) -> Unit, fail: (Fa
     }
 }
 
-inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit){
-    val data : T? = this.getData<T>(T::class.java)
+inline fun <reified T> GraphqlResponse.doActionIfNotNull(listener: (T) -> Unit) {
+    val data: T? = this.getData<T>(T::class.java)
     data?.let {
         listener.invoke(it)
     }
@@ -264,4 +269,37 @@ fun String.goToWebView(context: Context) {
 
 fun <T : Any> T.asSuccess(): Success<T> = Success(this)
 fun Throwable.asFail(): Fail = Fail(this)
+
+fun View?.showToasterSuccess(message: String,
+                             @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8) {
+    this?.let {
+        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
+        Toaster.toasterCustomBottomHeight = toasterOffset
+        Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL).show()
+    }
+}
+
+fun View?.showToasterError(message: String,
+                           @DimenRes heightOffset: Int = com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8,
+                           ctaMaxWidth: Int? = null,
+                           ctaText: String = "",
+                           ctaListener: (() -> Unit?)? = null) {
+    this?.let {
+        val toasterOffset = resources.getDimensionPixelOffset(heightOffset)
+        ctaMaxWidth?.let {
+            Toaster.toasterCustomCtaWidth = ctaMaxWidth
+        }
+
+        Toaster.toasterCustomBottomHeight = toasterOffset
+        if (ctaText.isNotEmpty()) {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, ctaText, clickListener = View.OnClickListener {
+                ctaListener?.invoke()
+            }).show()
+        } else {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, clickListener = View.OnClickListener {
+                ctaListener?.invoke()
+            }).show()
+        }
+    }
+}
 

@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -83,7 +82,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
-        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
+        swipeRefreshLayout.setColorSchemeResources(com.tokopedia.unifyprinciples.R.color.Unify_G400);
 
         adapter = new NotificationAdapter(getActivity());
         recyclerView.setAdapter(adapter);
@@ -268,7 +267,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private boolean shouldAddUserInfo() {
         return getActivity()!= null
-                && getActivity().getApplicationContext() instanceof GlobalNavRouter
                 && remoteConfig.getBoolean(IS_ENABLE_NOTIF_CENTER, Boolean.TRUE);
     }
 }

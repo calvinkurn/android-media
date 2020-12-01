@@ -65,7 +65,7 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
 
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.grey_500));
+        toolbar.setSubtitleTextColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200));
         String title = getString(com.tokopedia.flight.R.string.activity_label_flight_cancellation);
         String subtitle = String.format(
                 getString(com.tokopedia.flight.R.string.flight_cancellation_subtitle_order_id),

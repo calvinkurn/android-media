@@ -2,31 +2,29 @@ package com.tokopedia.review.feature.inbox.buyerreview.view.customview;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.review.R;
 import com.tokopedia.review.common.util.ClipboardHandler;
 import com.tokopedia.review.feature.inbox.buyerreview.view.adapter.ShareAdapter;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.inboxdetail.ShareModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.inboxdetail.ShareModel;
 import com.tokopedia.review.feature.inbox.buyerreview.view.widgets.ShareItem;
 
 /**
@@ -84,21 +82,6 @@ public class ShareReviewDialog {
             @Override
             public void onClick(View view) {
                 dismissDialog();
-            }
-        });
-    }
-
-    public void setView() {
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                BottomSheetDialog dialog = (BottomSheetDialog) dialogInterface;
-                FrameLayout frameLayout = (FrameLayout)
-                        dialog.findViewById(R.id.design_bottom_sheet);
-                if (frameLayout != null) {
-                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(frameLayout);
-                    behavior.setHideable(false);
-                }
             }
         });
     }

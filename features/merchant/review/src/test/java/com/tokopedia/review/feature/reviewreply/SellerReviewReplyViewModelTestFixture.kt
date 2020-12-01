@@ -2,7 +2,7 @@ package com.tokopedia.review.feature.reviewreply
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
-import com.tokopedia.review.coroutine.TestCoroutineDispatchers
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.review.feature.reviewreply.domain.GetReviewTemplateListUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertSellerResponseUseCase
 import com.tokopedia.review.feature.reviewreply.domain.InsertTemplateReviewReplyUseCase
@@ -37,7 +37,7 @@ abstract class SellerReviewReplyViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = SellerReviewReplyViewModel(TestCoroutineDispatchers,
+        viewModel = SellerReviewReplyViewModel(CoroutineTestDispatchersProvider,
                 getReviewTemplateListUseCase, insertSellerResponseUseCase,
                 updateSellerResponseUseCase, insertTemplateReviewReplyUseCase)
     }

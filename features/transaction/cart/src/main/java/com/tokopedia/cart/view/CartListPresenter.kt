@@ -37,8 +37,8 @@ import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
+import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
+import com.tokopedia.seamless_login_common.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -78,6 +78,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
                                             private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                             private val setCartlistCheckboxStateUseCase: SetCartlistCheckboxStateUseCase,
+                                            private val followShopUseCase: FollowShopUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
@@ -1403,6 +1404,14 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         compositeSubscription.add(
                 setCartlistCheckboxStateUseCase.createObservable(requestParams)
                         .subscribe(SetCartlistCheckboxStateSubscriber())
+        )
+    }
+
+    override fun followShop(shopId: String) {
+        view?.showProgressLoading()
+        val requestParams = followShopUseCase.buildRequestParams(shopId)
+        compositeSubscription.add(followShopUseCase.createObservable(requestParams)
+                .subscribe(FollowShopSubscriber(view, this))
         )
     }
 }

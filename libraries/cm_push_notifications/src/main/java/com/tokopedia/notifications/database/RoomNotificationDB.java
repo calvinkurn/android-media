@@ -29,7 +29,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
         CMInApp.class,
         ElapsedTime.class,
         BaseNotificationModel.class
-}, version = 3)
+}, version = 4)
 
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
@@ -65,6 +65,13 @@ public abstract class RoomNotificationDB extends RoomDatabase {
         }
     };
 
+    private static Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE `inapp_data` ADD COLUMN `customValues` TEXT");
+        }
+    };
+
     public static RoomNotificationDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomNotificationDB.class) {
@@ -73,7 +80,8 @@ public abstract class RoomNotificationDB extends RoomDatabase {
                             RoomNotificationDB.class, "cm_push_notification")
                             .addMigrations(
                                     MIGRATION_1_2,
-                                    MIGRATION_2_3
+                                    MIGRATION_2_3,
+                                    MIGRATION_3_4
                             ).build();
                 }
             }

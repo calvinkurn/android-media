@@ -16,10 +16,16 @@ import static com.tokopedia.navigation.GlobalNavConstant.Analytics.BOTTOM;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOMEPAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_HOME_PAGE;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.CLICK_NAVIGATION_DRAWER;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_ACTION;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_BUSINESSUNIT;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_BUSINESSUNIT_VALUE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CATEGORY;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CURRENTSITE;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_CURRENTSITE_VALUE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_LABEL;
+import static com.tokopedia.navigation.GlobalNavConstant.Analytics.EVENT_USERID;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.HOME_PAGE;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.INBOX;
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.NAV;
@@ -48,6 +54,18 @@ public class GlobalNavAnalytics {
                 String.format("%s %s %s", CLICK, name.toLowerCase(), NAV),
                 ""
         ));
+    }
+
+    public void eventBottomNavigationDrawer(String pageName, String buttonName, String userId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, CLICK_NAVIGATION_DRAWER);
+        map.put(EVENT_CATEGORY,String.format("%s %s - %s",BOTTOM, NAV, pageName));
+        map.put(EVENT_ACTION, String.format("%s %s %s", CLICK, buttonName.toLowerCase(), NAV));
+        map.put(EVENT_LABEL, "");
+        map.put(EVENT_CURRENTSITE, EVENT_CURRENTSITE_VALUE);
+        map.put(EVENT_BUSINESSUNIT, EVENT_BUSINESSUNIT_VALUE);
+        map.put(EVENT_USERID, userId);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(map);
     }
 
     public void eventNotificationPage(String section, String item) {

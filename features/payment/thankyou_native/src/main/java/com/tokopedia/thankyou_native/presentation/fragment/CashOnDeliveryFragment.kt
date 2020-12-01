@@ -12,8 +12,9 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
 import com.tokopedia.thankyou_native.helper.getMaskedNumberSubStringPayment
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
+import com.tokopedia.thankyou_native.presentation.views.GyroView
 import kotlinx.android.synthetic.main.thank_fragment_success_payment.*
-import java.util.zip.ZipInputStream
 
 class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
@@ -30,8 +31,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
     private fun showCharacterAnimation() {
         context?.let {
-            val lottieFileZipStream = ZipInputStream(it.assets.open(CHARACTER_LOADER_JSON_ZIP_FILE))
-            val lottieTask = LottieCompositionFactory.fromZipStream(lottieFileZipStream, null)
+            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
             lottieTask?.addListener { result: LottieComposition? ->
                 result?.let {
                     lottieAnimationView?.setComposition(result)
@@ -43,6 +43,7 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
 
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
+    override fun getFeatureListingContainer(): GyroView? = featureListingContainer
 
 
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {

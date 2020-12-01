@@ -21,7 +21,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -88,6 +87,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -216,7 +216,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        trackingQueue = new TrackingQueue(getAppContext());
+        trackingQueue = new TrackingQueue(getActivity());
         setRetainInstance(isRetainInstance());
         if (getArguments() != null) {
             setupArguments(getArguments());
@@ -386,7 +386,8 @@ public class OrderListFragment extends BaseDaggerFragment implements
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SUBMIT_SURVEY_REQUEST) {
-                presenter.insertSurveyRequest(data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3), data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
+                presenter.insertSurveyRequest(getContext(), data.getIntExtra(SaveDateBottomSheetActivity.SURVEY_RATING, 3),
+                        data.getStringExtra(SaveDateBottomSheetActivity.SURVEY_COMMENT));
             }
         } else if (requestCode == REQUEST_CANCEL_ORDER) {
             String reason = "";
@@ -394,11 +395,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
             if (resultCode == REJECT_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, selectedOrderId, reasonCode, actionButtonUri);
+                presenter.updateOrderCancelReason(getContext(), reason, selectedOrderId, reasonCode, actionButtonUri);
             } else if (resultCode == CANCEL_BUYER_REQUEST) {
                 reason = data.getStringExtra(OrderListContants.REASON);
                 reasonCode = data.getIntExtra(OrderListContants.REASON_CODE, 1);
-                presenter.updateOrderCancelReason(reason, selectedOrderId, reasonCode, actionButtonUri);
+                presenter.updateOrderCancelReason(getContext(), reason, selectedOrderId, reasonCode, actionButtonUri);
             }
         }
     }
@@ -431,7 +432,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (isRecommendation) {
-                    presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), false);
+                    presenter.processGetRecommendationData(getContext(), endlessRecyclerViewScrollListener.getCurrentPage(), false);
                 } else {
                     page_num++;
                     if (!isLoading) {
@@ -515,21 +516,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
             }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
                 orderListAdapter.setEmptyMarketplaceFilter();
-                presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
+                presenter.processGetRecommendationData(getContext(), endlessRecyclerViewScrollListener.getCurrentPage(), true);
             } else {
                 orderListAdapter.setEmptyOrderList();
             }
             filterDate.setVisibility(View.GONE);
             surveyBtn.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public Context getAppContext() {
-        if (getActivity() != null)
-            return getActivity().getApplicationContext();
-        else
-            return null;
     }
 
     @Override
@@ -636,17 +629,23 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void showSuccessMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(com.tokopedia.design.R.string.close), v->{}).show();
+        }
     }
 
     @Override
     public void showFailureMessage(String message) {
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{});
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, "", v->{}).show();
+        }
     }
 
     @Override
     public void showSuccessMessageWithAction(String message) {
-        Toaster.INSTANCE.showNormalWithAction(mainContent, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+        if (getView() != null) {
+            Toaster.build(getView(), message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART)).show();
+        }
     }
 
     @Override
@@ -946,13 +945,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         switch (actionButton.label().toLowerCase()) {
             case ACTION_BUY_AGAIN:
                 if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))
-                    presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                    presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 else
                     handleDefaultCase(actionButton);
                 break;
             case ACTION_SUBMIT_CANCELLATION:
             case ACTION_ASK_SELLER:
-                presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
+                presenter.setOrderDetails(getContext(), selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 break;
             case ACTION_TRACK_IT:
                 trackOrder();
@@ -994,7 +993,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
             btnOk.setText(getString(R.string.popup_selesai_ok_btn));
             btnOk.setOnClickListener(view1 -> {
                 dialogUnify.dismiss();
-                presenter.finishOrder(selectedOrderId, actionButtonUri);
+                presenter.finishOrderGql(selectedOrderId, presenter.getStatus().status());
             });
 
             TextView btnCancel = childView.findViewById(R.id.btn_cancel_dialog);
@@ -1030,12 +1029,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
         intent.putExtra("OrderId", selectedOrderId);
         intent.putExtra("action_button_url", actionButtonUri);
         if (status.status().equals(STATUS_CODE_220) || status.status().equals(STATUS_CODE_400)) {
-            if (presenter.shouldShowTimeForCancellation()) {
-                Toaster.INSTANCE.showErrorWithAction(mainContent,
+            if (presenter.shouldShowTimeForCancellation() && getView() != null) {
+                Toaster.build(getView(),
                         presenter.getCancelTime(),
-                        Snackbar.LENGTH_LONG,
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
                         getResources().getString(com.tokopedia.abstraction.R.string.title_ok), v -> {
-                        });
+                        }).show();
             } else
                 startActivityForResult(RequestCancelActivity.getInstance(getContext(), selectedOrderId, actionButtonUri, 1), REQUEST_CANCEL_ORDER);
         } else if (status.status().equals(STATUS_CODE_11)) {

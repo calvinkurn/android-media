@@ -65,9 +65,16 @@ class TableViewHolder(
                     shcTableView.addOnSlideImpressionListener { position, isEmpty ->
                         listener.sendTableImpressionEvent(element, position, isEmpty)
                     }
+                    shcTableView?.addOnHtmlClickListener { url, isEmpty ->
+                        listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
+                    }
                 }
             } else {
-                setOnTableEmpty(element)
+                if (element.isShowEmpty) {
+                    setOnTableEmpty(element)
+                } else {
+                    listener.removeWidget(adapterPosition, element)
+                }
             }
         }
 
@@ -97,7 +104,7 @@ class TableViewHolder(
     }
 
     private fun setupCta(element: TableWidgetUiModel) {
-        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank()
+        val isCtaVisible = element.appLink.isNotBlank() && element.ctaText.isNotBlank() && !element.data?.dataSet.isNullOrEmpty()
         val ctaVisibility = if (isCtaVisible) View.VISIBLE else View.GONE
         with(itemView) {
             btnTableCta.visibility = ctaVisibility
@@ -135,5 +142,7 @@ class TableViewHolder(
     interface Listener : BaseViewHolderListener {
 
         fun sendTableImpressionEvent(model: TableWidgetUiModel, slideNumber: Int, isSlideEmpty: Boolean) {}
+        fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean)
+
     }
 }

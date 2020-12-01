@@ -73,6 +73,9 @@ data class ThanksPageData(
         val isMonthlyNewUser: Boolean,
         @SerializedName("custom_data")
         val thanksCustomization: ThanksCustomization?,
+        @SerializedName("config_flag")
+        val configFlag: String?
+        val thanksCustomization: ThanksCustomization?,
         //created and used locally
         var paymentMethodCount: Int
 ) : Parcelable
@@ -147,7 +150,7 @@ data class ShopOrder(
         @SerializedName("logistic_type")
         val logisticType: String,
         @SerializedName("store_name")
-        val storeName: String,
+        val storeName: String?,
         @SerializedName("item_list")
         val purchaseItemList: ArrayList<PurchaseItem>,
         @SerializedName("shipping_amount")
@@ -169,7 +172,11 @@ data class ShopOrder(
         @SerializedName("coupon")
         val coupon: String,
         @SerializedName("revenue")
-        val revenue: Float
+        val revenue: Float,
+        @SerializedName("logistic_duration")
+        val logisticDuration: String?,
+        @SerializedName("logistic_eta")
+        val logisticETA: String?
 
 
 ) : Parcelable
@@ -365,3 +372,8 @@ data class ThanksCustomization(
         val customWtvText: String?,
         @SerializedName("custom_title_home_button")
         val customHomeButtonTitle: String?) : Parcelable
+
+data class ConfigFlag(
+        @SerializedName("enable_thanks_widget")
+        val isThanksWidgetEnabled : Boolean
+)
