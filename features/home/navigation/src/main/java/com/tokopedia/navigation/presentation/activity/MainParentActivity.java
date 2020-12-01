@@ -1,7 +1,6 @@
 package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
-import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -26,13 +25,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import androidx.annotation.RestrictTo;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.airbnb.lottie.LottieDrawable;
 import com.google.android.material.snackbar.Snackbar;
@@ -107,6 +99,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import androidx.annotation.RestrictTo;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import dagger.Lazy;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_SOURCE;
@@ -586,7 +583,6 @@ public class MainParentActivity extends BaseActivity implements
         // check if the download is finished or is in progress
         checkForInAppUpdateInProgressOrCompleted();
         presenter.get().onResume();
-        clearNotification();
 
         if (userSession.get().isLoggedIn() && isUserFirstTimeLogin) {
             reloadPage();
@@ -612,13 +608,6 @@ public class MainParentActivity extends BaseActivity implements
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
 
         if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
-    }
-
-    private void clearNotification() {
-        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
-            ((NotificationManager) getSystemService(NOTIFICATION_SERVICE)).cancelAll();
-            NotificationManagerCompat.from(this).cancelAll();
-        }
     }
 
     @NotNull
