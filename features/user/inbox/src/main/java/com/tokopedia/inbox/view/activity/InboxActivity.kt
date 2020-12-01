@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -32,6 +33,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar.Companion.Content
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -51,6 +53,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private var navigator: InboxNavigator? = null
     private var bottomNav: InboxBottomNavigationView? = null
     private var navHeaderContainer: ConstraintLayout? = null
+    private var container: CoordinatorLayout? = null
     private var fragmentContainer: FrameLayout? = null
     private var toolbar: NavToolbar? = null
     private var inboxBadgeCounter: InboxCounter = InboxCounter()
@@ -113,6 +116,7 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
 
     private fun setupView() {
         bottomNav = findViewById(R.id.inbox_bottom_nav)
+        container = findViewById(R.id.coor_container)
         fragmentContainer = findViewById(R.id.fragment_contaier)
         toolbar = findViewById(R.id.inbox_nav_toolbar)
     }
@@ -132,7 +136,8 @@ class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFragmentC
     private fun showNotificationRoleChanged(@RoleType role: Int) {
         val name = userSession.getRoleName(role)
         val message = getString(R.string.title_change_role, name)
-        fragmentContainer?.let {
+        container?.let {
+            Toaster.toasterCustomBottomHeight = 50.toPx()
             Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                     .show()
         }
