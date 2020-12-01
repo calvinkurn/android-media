@@ -94,7 +94,7 @@ class SomListViewModel @Inject constructor(dispatcher: SomDispatcherProvider,
     }
 
     fun loadUserRoles(userId: Int) {
-        if (getUserRolesJob == null || getUserRolesJob?.isCompleted != false) {
+        if (getUserRolesJob?.isCompleted != false) {
             getUserRolesJob = launchCatchError(block = {
                 getUserRoleUseCase.setUserId(userId)
                 _userRoleResult.postValue(getUserRoleUseCase.execute())

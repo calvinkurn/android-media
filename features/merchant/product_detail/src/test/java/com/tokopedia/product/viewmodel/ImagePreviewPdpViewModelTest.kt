@@ -1,7 +1,7 @@
 package com.tokopedia.product.viewmodel
 
 import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpViewModel
-import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProviderImpl
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.product.util.BaseProductViewModelTest
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.listener.WishListActionListener
@@ -27,7 +27,7 @@ class ImagePreviewPdpViewModelTest : BaseProductViewModelTest() {
     lateinit var removeWishListUseCase: RemoveWishListUseCase
 
     private val viewModel by lazy {
-        ImagePreviewPdpViewModel(userSessionInterface, addWishListUseCase, removeWishListUseCase, DynamicProductDetailDispatcherProviderImpl())
+        ImagePreviewPdpViewModel(userSessionInterface, addWishListUseCase, removeWishListUseCase, CoroutineTestDispatchersProvider)
     }
 
     @Test

@@ -76,6 +76,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     @Inject
     lateinit var smartBillsAnalytics: SmartBillsAnalytics
 
+    private var source: String = ""
+
     private var autoTick = false
     private var totalPrice = 0
     private var maximumPrice = 0
@@ -97,6 +99,10 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
             viewModel = viewModelProvider.get(SmartBillsViewModel::class.java)
             sharedPrefs = it.getSharedPreferences(SMART_BILLS_PREF, Context.MODE_PRIVATE)
         }
+
+        arguments?.let {
+            source = it.getString(EXTRA_SOURCE_TYPE, "")
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -108,7 +114,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     val ongoingMonth = it.data.firstOrNull { monthItem -> monthItem.isOngoing }
                     if (ongoingMonth != null) {
                         viewModel.getStatementBills(
-                                viewModel.createStatementBillsParams(ongoingMonth.month, ongoingMonth.year),
+                                viewModel.createStatementBillsParams(
+                                        ongoingMonth.month,
+                                        ongoingMonth.year,
+                                        RechargeBills.Source.getSourceByString(source).ordinal
+                                ),
                                 swipeToRefresh?.isRefreshing ?: false
                         )
                     } else {
@@ -257,15 +267,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
                     }
                 })
 
-                // Reset toggle all items checkbox
-                cb_smart_bills_select_all.isChecked = false
                 // Setup toggle all items listener
                 cb_smart_bills_select_all.setOnClickListener {
-                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+                    toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
                 view_smart_bills_select_all_checkbox_container.setOnClickListener {
                     cb_smart_bills_select_all.toggle()
-                    toggleAllItems(cb_smart_bills_select_all.isChecked)
+                    toggleAllItems(cb_smart_bills_select_all.isChecked, true)
                 }
 
                 rv_smart_bills_items.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -294,6 +302,11 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         super.onDestroyView()
     }
 
+    override fun onSwipeRefresh() {
+        toggleAllItems(false)
+        super.onSwipeRefresh()
+    }
+
     override fun getScreenName(): String {
         return getString(R.string.app_name)
     }
@@ -303,11 +316,12 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     override fun loadData(page: Int) {
-        // Reset view states
+        // Reset to initial state
         tv_smart_bills_title.show()
         view_smart_bills_select_all_checkbox_container.hide()
         view_smart_bills_shimmering.show()
         smart_bills_checkout_view.setVisibilityLayout(true)
+        toggleAllItems(false)
 
         viewModel.getStatementMonths(
                 viewModel.createStatementMonthsParams(1),
@@ -369,8 +383,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         cb_smart_bills_select_all.isChecked = adapter.totalChecked == adapter.dataSize
     }
 
-    private fun toggleAllItems(value: Boolean) {
-        smartBillsAnalytics.clickAllBills(value)
+    private fun toggleAllItems(value: Boolean, triggerTracking: Boolean = false) {
+        if (triggerTracking) smartBillsAnalytics.clickAllBills(value)
         adapter.toggleAllItems(value)
 
         totalPrice = if (value) maximumPrice else 0
@@ -474,6 +488,8 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
     }
 
     companion object {
+        const val EXTRA_SOURCE_TYPE = "source"
+
         const val RECHARGE_SMART_BILLS_PAGE_PERFORMANCE = "dg_smart_bills_pdp"
 
         const val SMART_BILLS_PREF = "SMART_BILLS"
@@ -484,5 +500,13 @@ class SmartBillsFragment : BaseListFragment<RechargeBills, SmartBillsAdapterFact
         const val REQUEST_CODE_SMART_BILLS_ONBOARDING = 1700
 
         const val LANGGANAN_URL = "https://www.tokopedia.com/langganan"
+
+        fun newInstance(sourceType: String = ""): SmartBillsFragment {
+            val fragment = SmartBillsFragment()
+            val bundle = Bundle()
+            bundle.putString(EXTRA_SOURCE_TYPE, sourceType)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 }

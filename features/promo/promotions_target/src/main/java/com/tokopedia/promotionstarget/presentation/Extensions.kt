@@ -1,6 +1,8 @@
 package com.tokopedia.promotionstarget.presentation
 
 import android.graphics.Bitmap
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.util.DisplayMetrics
@@ -90,3 +92,14 @@ fun CoroutineScope.launchCatchError(context: CoroutineContext = coroutineContext
             }
         }
 
+fun AppCompatImageView.dim() {
+    val matrix = ColorMatrix()
+    matrix.setSaturation(0f)
+    colorFilter = ColorMatrixColorFilter(matrix)
+}
+
+fun AppCompatImageView.unDim() {
+    val matrix = ColorMatrix()
+    matrix.setSaturation(1f)
+    colorFilter = ColorMatrixColorFilter(matrix)
+}

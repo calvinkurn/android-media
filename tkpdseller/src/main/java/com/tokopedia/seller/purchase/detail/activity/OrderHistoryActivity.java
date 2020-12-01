@@ -1,15 +1,19 @@
 package com.tokopedia.seller.purchase.detail.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
-import com.tokopedia.seller.common.utils.TkpdProgressDialog;
-import com.tokopedia.seller.base.view.core.TActivity;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.purchase.detail.adapter.OrderHistoryAdapter;
 import com.tokopedia.seller.purchase.detail.customview.OrderHistoryStepperLayout;
@@ -24,7 +28,7 @@ import javax.inject.Inject;
  * Created by kris on 11/7/17. Tokopedia
  */
 
-public class OrderHistoryActivity extends TActivity implements OrderHistoryView {
+public class OrderHistoryActivity extends BaseSimpleActivity implements OrderHistoryView {
 
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
 
@@ -32,7 +36,7 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
 
     private View mainViewContainer;
 
-    private TkpdProgressDialog mainProgressDialog;
+    private ProgressDialog mainProgressDialog;
 
     @Inject
     OrderHistoryPresenterImpl presenter;
@@ -49,18 +53,33 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inflateView(R.layout.order_history_layout);
-        mainProgressDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
+        mainProgressDialog = new ProgressDialog(this);
         mainViewContainer = findViewById(R.id.main_container);
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchHistoryData(this, getExtraOrderId(), getExtraUserMode());
     }
 
+    @Nullable
+    @Override
+    protected Fragment getNewFragment() {
+        return null;
+    }
+
+    @Override
+    protected void inflateFragment() {
+        //no op
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.order_history_layout;
+    }
+
     private void initInjector() {
         OrderHistoryComponent component = DaggerOrderHistoryComponent
                 .builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(((BaseMainApplication) this.getApplication()).getBaseAppComponent())
                 .build();
         component.inject(this);
     }
@@ -100,7 +119,7 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
 
     @Override
     public void showMainViewLoadingPage() {
-        mainProgressDialog.showDialog();
+        mainProgressDialog.show();
         mainViewContainer.setVisibility(View.GONE);
     }
 
@@ -114,11 +133,6 @@ public class OrderHistoryActivity extends TActivity implements OrderHistoryView 
     protected void onDestroy() {
         super.onDestroy();
         presenter.onDestroy();
-    }
-
-    @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
     }
 
     private String getExtraOrderId() {

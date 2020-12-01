@@ -126,7 +126,8 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
             return super.shouldInterceptRequest(view, url)
         }
 
-        private fun generateMetadata(uri: Uri): String {
+        private fun generateMetadata(uri: Uri): Pair<String, String> {
+            var gatewayCode = ""
             val map: HashMap<String, Any> = HashMap()
             for (key in uri.queryParameterNames) {
                 val value = uri.getQueryParameter(key) ?: ""
@@ -145,19 +146,24 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
                     QUERY_PARAM_SUCCESS -> {
                         map[key] = value.toBoolean()
                     }
+                    QUERY_PARAM_GATEWAY_CODE -> {
+                        gatewayCode = value
+                        map[key] = value
+                    }
                     else -> {
                         map[key] = value
                     }
                 }
             }
-            return Gson().toJson(map)
+            return gatewayCode to Gson().toJson(map)
         }
     }
 
-    private fun goToNextStep(metadata: String) {
+    private fun goToNextStep(data: Pair<String, String>) {
         activity?.let {
             it.setResult(RESULT_OK, Intent().apply {
-                putExtra(EXTRA_RESULT_METADATA, metadata)
+                putExtra(EXTRA_RESULT_GATEWAY_CODE, data.first)
+                putExtra(EXTRA_RESULT_METADATA, data.second)
             })
             it.finish()
         }
@@ -167,7 +173,9 @@ class CreditCardPickerFragment : BaseDaggerFragment() {
         private const val QUERY_PARAM_EXPRESS_CHECKOUT_PARAM = "express_checkout_param"
         private const val QUERY_PARAM_USER_ID = "user_id"
         private const val QUERY_PARAM_SUCCESS = "success"
+        private const val QUERY_PARAM_GATEWAY_CODE = "gateway_code"
 
+        const val EXTRA_RESULT_GATEWAY_CODE = "RESULT_GATEWAY_CODE"
         const val EXTRA_RESULT_METADATA = "RESULT_METADATA"
 
         const val EXTRA_ADDITIONAL_DATA = "additional_data"

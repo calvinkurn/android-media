@@ -62,7 +62,7 @@ class MainNavTypeFactoryImpl(private val mainNavListener: MainNavListener,
             AccountHeaderViewHolder.LAYOUT -> AccountHeaderViewHolder(view, mainNavListener, remoteConfig, userSession)
             SeparatorViewHolder.LAYOUT -> SeparatorViewHolder(view, mainNavListener)
             TransactionListViewHolder.LAYOUT -> TransactionListViewHolder(view, mainNavListener)
-            HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view)
+            HomeNavTickerViewHolder.LAYOUT -> HomeNavTickerViewHolder(view, mainNavListener)
             InitialShimmeringDataViewHolder.LAYOUT -> InitialShimmeringDataViewHolder(view)
             else -> throw TypeNotSupportedException.create("Layout not supported")
         } as AbstractViewHolder<Visitable<*>>
