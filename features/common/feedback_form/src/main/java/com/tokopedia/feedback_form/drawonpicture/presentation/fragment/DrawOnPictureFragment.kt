@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.drawonpicture.presentation.fragment
+package com.tokopedia.feedback_form.drawonpicture.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -19,14 +19,14 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.drawonpicture.di.DrawOnPictureComponent
-import com.tokopedia.developer_options.drawonpicture.presentation.Utils
-import com.tokopedia.developer_options.drawonpicture.presentation.activity.DrawOnPictureActivity.Companion.EXTRA_IMAGE_URI
-import com.tokopedia.developer_options.drawonpicture.presentation.adapter.BrushColorAdapter
-import com.tokopedia.developer_options.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
-import com.tokopedia.developer_options.drawonpicture.presentation.viewmodel.DrawOnPictureViewModel
-import com.tokopedia.developer_options.drawonpicture.widgets.DrawOnPictureView
+import com.tokopedia.feedback_form.drawonpicture.di.DrawOnPictureComponent
+import com.tokopedia.feedback_form.drawonpicture.widgets.DrawOnPictureView
+import com.tokopedia.feedback_form.R
+import com.tokopedia.feedback_form.drawonpicture.presentation.Utils
+import com.tokopedia.feedback_form.drawonpicture.presentation.activity.DrawOnPictureActivity.Companion.EXTRA_IMAGE_URI
+import com.tokopedia.feedback_form.drawonpicture.presentation.adapter.BrushColorAdapter
+import com.tokopedia.feedback_form.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
+import com.tokopedia.feedback_form.drawonpicture.presentation.viewmodel.DrawOnPictureViewModel
 import com.tokopedia.imagepreview.ImagePreviewUtils
 import kotlinx.android.synthetic.main.fragment_draw_on_picture.*
 import java.io.File

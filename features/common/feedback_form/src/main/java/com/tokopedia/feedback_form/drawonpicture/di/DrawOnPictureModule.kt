@@ -1,7 +1,7 @@
-package com.tokopedia.developer_options.drawonpicture.di
+package com.tokopedia.feedback_form.drawonpicture.di
 
-import com.tokopedia.developer_options.drawonpicture.DispatcherProvider
-import com.tokopedia.developer_options.drawonpicture.ProdDispatcherProvider
+import com.tokopedia.feedback_form.drawonpicture.ProdDispatcherProvider
+import com.tokopedia.feedback_form.drawonpicture.DispatcherProvider
 import dagger.Module
 import dagger.Provides
 

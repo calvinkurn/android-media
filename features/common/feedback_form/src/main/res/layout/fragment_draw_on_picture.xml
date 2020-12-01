@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.tokopedia.developer_options.drawonpicture.widgets.DrawOnPictureView
+    <com.tokopedia.feedback_form.drawonpicture.widgets.DrawOnPictureView
         android:id="@+id/dopFeedbackForm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

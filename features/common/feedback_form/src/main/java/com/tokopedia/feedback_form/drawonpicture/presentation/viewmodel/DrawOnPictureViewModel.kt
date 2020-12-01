@@ -1,9 +1,9 @@
-package com.tokopedia.developer_options.drawonpicture.presentation.viewmodel
+package com.tokopedia.feedback_form.drawonpicture.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.developer_options.drawonpicture.DispatcherProvider
+import com.tokopedia.feedback_form.drawonpicture.DispatcherProvider
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject

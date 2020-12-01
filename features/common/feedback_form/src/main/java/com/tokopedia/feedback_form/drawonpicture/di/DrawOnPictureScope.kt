@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.drawonpicture.di
+package com.tokopedia.feedback_form.drawonpicture.di
 
 import javax.inject.Scope
 

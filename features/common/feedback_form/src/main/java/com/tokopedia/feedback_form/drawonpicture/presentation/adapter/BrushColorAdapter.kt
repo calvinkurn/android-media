@@ -1,9 +1,9 @@
-package com.tokopedia.developer_options.drawonpicture.presentation.adapter
+package com.tokopedia.feedback_form.drawonpicture.presentation.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.developer_options.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
+import com.tokopedia.feedback_form.drawonpicture.presentation.adapter.viewholder.BrushColorViewHolder
 
 /**
  * @author by furqan on 01/10/2020

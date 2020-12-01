@@ -1,9 +1,9 @@
-package com.tokopedia.developer_options.drawonpicture.presentation.adapter.viewholder
+package com.tokopedia.feedback_form.drawonpicture.presentation.adapter.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.drawonpicture.presentation.Utils
+import com.tokopedia.feedback_form.R
+import com.tokopedia.feedback_form.drawonpicture.presentation.Utils
 import kotlinx.android.synthetic.main.item_brush_color.view.*
 
 /**

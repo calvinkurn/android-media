@@ -1,4 +1,4 @@
-package com.tokopedia.developer_options.drawonpicture.presentation.activity
+package com.tokopedia.feedback_form.drawonpicture.presentation.activity
 
 import android.content.Context
 import android.content.Intent
@@ -8,10 +8,9 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.drawonpicture.di.DaggerDrawOnPictureComponent
-import com.tokopedia.developer_options.drawonpicture.di.DrawOnPictureComponent
-import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment
+import com.tokopedia.feedback_form.drawonpicture.di.DrawOnPictureComponent
+import com.tokopedia.feedback_form.R
+import com.tokopedia.feedback_form.drawonpicture.presentation.fragment.DrawOnPictureFragment
 import kotlinx.android.synthetic.main.activity_draw_on_picture.*
 
 class DrawOnPictureActivity : BaseSimpleActivity(), HasComponent<DrawOnPictureComponent> {

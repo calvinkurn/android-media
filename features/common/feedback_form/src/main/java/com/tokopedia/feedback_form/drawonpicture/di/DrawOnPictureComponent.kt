@@ -1,7 +1,7 @@
-package com.tokopedia.developer_options.drawonpicture.di
+package com.tokopedia.feedback_form.drawonpicture.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.developer_options.drawonpicture.presentation.fragment.DrawOnPictureFragment
+import com.tokopedia.feedback_form.drawonpicture.presentation.fragment.DrawOnPictureFragment
 import dagger.Component
 
 /**
