@@ -18,7 +18,7 @@ buildscript {
 
 dependencies {
     implementation project(rootProject.ext.features.sellerActiveCommon)
-    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.attachcommon)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.analytics)
@@ -64,6 +64,7 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation project(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {

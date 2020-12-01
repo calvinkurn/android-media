@@ -9,13 +9,13 @@ import android.text.style.ImageSpan
 import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.utils.*
+import com.tokopedia.productcard.utils.shouldShowWithAction
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.getTypeface
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil
@@ -34,8 +34,8 @@ internal fun View.renderProductCardContent(productCardModel: ProductCardModel) {
     renderRating(productCardModel)
     renderTextReview(productCardModel)
     renderTextCredibility(productCardModel)
-    renderShopRating(productCardModel)
     renderSalesAndRating(productCardModel)
+    renderShopRating(productCardModel)
     renderFreeOngkir(productCardModel)
     renderTextShipping(productCardModel)
 }
@@ -75,10 +75,29 @@ private fun View.renderDiscount(productCardModel: ProductCardModel) {
 }
 
 private fun View.renderLabelPrice(productCardModel: ProductCardModel) {
+    moveLabelPriceConstraint(productCardModel)
+
     if (productCardModel.isShowDiscountOrSlashPrice())
         labelPrice?.initLabelGroup(null)
     else
         labelPrice?.initLabelGroup(productCardModel.getLabelPrice())
+}
+
+private fun View.moveLabelPriceConstraint(productCardModel: ProductCardModel) {
+    val shouldMoveConstraint = productCardModel.discountPercentage.isNotEmpty() && productCardModel.slashedPrice.isEmpty()
+
+    if (!shouldMoveConstraint) return
+
+    val view = findViewById<ConstraintLayout?>(R.id.productCardContentLayout)
+
+    view?.let {
+        val constraintSet = ConstraintSet().apply { clone(it) }
+
+        constraintSet.clear(R.id.labelPrice, ConstraintSet.TOP)
+        constraintSet.connect(R.id.labelPrice, ConstraintSet.TOP, R.id.labelDiscount, ConstraintSet.BOTTOM)
+
+        constraintSet.applyTo(it)
+    }
 }
 
 private fun View.renderTextPrice(productCardModel: ProductCardModel) {
@@ -109,29 +128,15 @@ private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
 private fun View.renderRating(productCardModel: ProductCardModel) {
     when {
         !productCardModel.willShowRatingAndReviewCount() -> hideRating()
-        productCardModel.ratingString.isNotEmpty() -> renderRatingFloat(productCardModel)
         productCardModel.ratingCount > 0 -> renderRatingStars(productCardModel)
     }
 }
 
 private fun View.hideRating() {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-    linearLayoutImageRating?.gone()
-}
-
-private fun View.renderRatingFloat(productCardModel: ProductCardModel) {
-    imageRatingString?.visible()
-    textViewRatingString?.visible()
-    textViewRatingString?.text = productCardModel.ratingString
-
     linearLayoutImageRating?.gone()
 }
 
 private fun View.renderRatingStars(productCardModel: ProductCardModel) {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-
     linearLayoutImageRating?.visible()
     setImageRating(productCardModel.ratingCount)
 }
@@ -163,6 +168,31 @@ private fun View.renderTextCredibility(productCardModel: ProductCardModel) {
         textViewIntegrity?.initLabelGroup(productCardModel.getLabelIntegrity())
 }
 
+private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
+    renderSalesRatingFloat(productCardModel)
+    renderTextIntegrityWithSalesRatingFloat(productCardModel)
+}
+
+private fun View.renderSalesRatingFloat(productCardModel: ProductCardModel) {
+    val willShowSalesRatingFloat = productCardModel.willShowRating()
+
+    imageSalesRatingFloat?.showWithCondition(willShowSalesRatingFloat)
+
+    salesRatingFloat?.shouldShowWithAction(willShowSalesRatingFloat) {
+        it.text = productCardModel.countSoldRating
+    }
+}
+
+private fun View.renderTextIntegrityWithSalesRatingFloat(productCardModel: ProductCardModel) {
+    val willShowSalesAndRating = productCardModel.willShowSalesAndRating()
+
+    salesRatingFloatLine?.showWithCondition(willShowSalesAndRating)
+
+    textViewSales?.shouldShowWithAction(willShowSalesAndRating) {
+        it.initLabelGroup(productCardModel.getLabelIntegrity())
+    }
+}
+
 private fun View.renderShopRating(productCardModel: ProductCardModel) {
     if (productCardModel.isShowShopRating()) {
         imageShopRating?.visible()
@@ -174,22 +204,6 @@ private fun View.renderShopRating(productCardModel: ProductCardModel) {
     else {
         imageShopRating?.gone()
         textViewShopRating?.gone()
-    }
-}
-
-private fun View.renderSalesAndRating(productCardModel: ProductCardModel) {
-    textViewSales?.shouldShowWithAction(productCardModel.willShowSalesAndRating()) {
-        textViewSales?.initLabelGroup(productCardModel.getLabelIntegrity())
-    }
-
-    salesRatingFloat.shouldShowWithAction(productCardModel.willShowRating()) {
-        val ssb = SpannableStringBuilder(" ${productCardModel.countSoldRating}${if (productCardModel.willShowSalesAndRating()) " | " else ""}")
-        val drawableStar = ContextCompat.getDrawable(context, R.drawable.ic_rating_apps_active)
-        drawableStar?.let {
-            drawableStar.setBounds(0, 0, 25, 25)
-            ssb.setSpan(ImageSpan(drawableStar, ImageSpan.ALIGN_BASELINE), 0, 1, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-        }
-        salesRatingFloat?.setText(ssb, TextView.BufferType.SPANNABLE)
     }
 }
 

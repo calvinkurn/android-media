@@ -258,7 +258,6 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         response.data.forEach { result ->
             adapter.items.add(NegKeywordItemViewModel(result))
         }
-        recyclerviewScrollListener.updateStateAfterGetData()
         adapter.notifyDataSetChanged()
         (activity as TopAdsGroupDetailViewActivity).setNegKeywordCount(adapter.itemCount)
     }

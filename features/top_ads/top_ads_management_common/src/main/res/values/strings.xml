@@ -101,6 +101,7 @@
     <string name="pencarian_bulan">Pencarian / bulan</string>
     <string name="topads_common_keyword_list_step">Pilih Kata Kunci</string>
     <string name="topads_common_selected_list">Kata Kunci Pilihan</string>
+    <string name="topads_common_selected_list_count">Kata Kunci Pilihan(%d)</string>
     <string name="topads_common_recommended_list">Rekomendasi</string>
     <string name="topads_common_text_ok">Oke</string>
     <string name="topads_common_create_tool_tip">Info tips kata kunci</string>
@@ -115,6 +116,12 @@
     <string name="topads_common_iklan_otomatis">Iklan Otomatis</string>
     <string name="filter">Filter</string>
     <string name="topads_edit_urutkan">Urutkan</string>
+    <string name="topads_common_max_bid">Biaya maximum Rp%s</string>
+    <string name="topads_common_min_bid">Biaya minimum Rp%s</string>
+    <string name="topads_common_recom_bid">Rekomendasi Rp%s</string>
+    <string name="topads_common_headline_klik">/1000 kali tampil</string>
+
+
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

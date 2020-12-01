@@ -120,6 +120,7 @@ query ThanksPageData($paymentID : Int!, $merchant: String!){
        custom_wtv_text
        custom_title_home_button
     }
+    config_flag
   }
 }
 

@@ -5,11 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/tp_margin_large" />
+    <include layout="@layout/tp_shimmer_coupon_detail" />
 
     <include layout="@layout/tp_content_coupon_catalog" />
 

@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.review.R;
-import com.tokopedia.review.feature.inbox.buyerreview.view.viewmodel.EmptySearchModel;
+import com.tokopedia.review.feature.inbox.buyerreview.view.uimodel.EmptySearchModel;
 
 /**
  * @author by nisie on 9/13/17.
