@@ -14,5 +14,7 @@ data class PurchaseProtectionPlanData (
     var protectionLinkText: String = "",
     var protectionLinkUrl: String = "",
     var isProtectionOptIn: Boolean = false,
-    var isProtectionCheckboxDisabled: Boolean = false
+    var isProtectionCheckboxDisabled: Boolean = false,
+    var unit: String = "",
+    var stateChecked: Boolean = false
 ) : Parcelable

@@ -175,6 +175,7 @@ class GetOccCartMapper @Inject constructor() {
 //                protectionLinkUrl = purchaseProtectionPlanDataResponse.protectionLinkUrl,
 //                isProtectionOptIn = purchaseProtectionPlanDataResponse.protectionOptIn,
 //                isProtectionCheckboxDisabled = purchaseProtectionPlanDataResponse.protectionCheckboxDisabled
+//                unit = purchaseProtectionPlanDataResponse.unit
 
                 // Dummy
                 isProtectionAvailable = true,
@@ -186,8 +187,8 @@ class GetOccCartMapper @Inject constructor() {
                 protectionLinkText = "Pelajari",
                 protectionLinkUrl = "https://www.tokopedia.com/asuransi/proteksi/gadget/",
                 isProtectionOptIn = true,
-                isProtectionCheckboxDisabled = false
-
+                isProtectionCheckboxDisabled = false,
+                unit = "per barang"
         )
     }
 
