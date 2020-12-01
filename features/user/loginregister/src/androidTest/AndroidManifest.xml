@@ -18,5 +18,9 @@
             android:name="com.tokopedia.loginregister.login.stub.activity.LoginEmailPhoneActivityStub"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".registerinitial.stub.RegisterInitialActivityStub"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
     </application>
 </manifest>
