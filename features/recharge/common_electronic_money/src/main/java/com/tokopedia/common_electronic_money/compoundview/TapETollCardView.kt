@@ -4,11 +4,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.appcompat.widget.AppCompatButton
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.common_electronic_money.R
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifyprinciples.Typography
 import org.jetbrains.annotations.NotNull
 
 /**
@@ -18,10 +18,10 @@ class TapETollCardView @JvmOverloads constructor(@NotNull context: Context, attr
                                                  defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
-    private val textTitle: TextView
-    private val textLabel: TextView
+    private val textTitle: Typography
+    private val textLabel: Typography
     private val lottieAnimationView: LottieAnimationView
-    private val buttonTryAgain: AppCompatButton
+    private val buttonTryAgain: UnifyButton
     private val imageviewError: ImageView
     private var issuerId: Int = 0
 
