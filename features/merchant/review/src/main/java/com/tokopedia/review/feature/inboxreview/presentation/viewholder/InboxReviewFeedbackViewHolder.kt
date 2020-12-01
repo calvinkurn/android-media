@@ -1,6 +1,5 @@
 package com.tokopedia.review.feature.inboxreview.presentation.viewholder
 
-import android.graphics.Color
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,9 +38,9 @@ class InboxReviewFeedbackViewHolder(view: View,
                 feedbackInboxReviewListener.onBackgroundMarginIsReplied(element.replyText.isBlank())
             }
             if(element.replyText.isNotBlank()) {
-                containerInboxReview?.setBackgroundColor(androidx.core.content.ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
+                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
             } else {
-                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
+                containerInboxReview?.setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G100))
             }
             tvProductTitle.text = element.productName
             ivRatingFeedback.setImageResource(getReviewStar(element.rating.orZero()))
