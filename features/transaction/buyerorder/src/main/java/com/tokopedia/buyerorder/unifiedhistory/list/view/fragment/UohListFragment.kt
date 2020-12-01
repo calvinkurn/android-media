@@ -38,6 +38,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_MODALTOKO
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_PESAWAT
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_SEMUA_TRANSAKSI
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_TRAVEL_ENTERTAINMENT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_DELIVERED
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_SENT
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder.PARAM_UOH_WAITING_CONFIRMATION
 import com.tokopedia.applink.internal.ApplinkConstInternalOrder.SOURCE_FILTER
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
@@ -53,6 +56,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.APP_LINK_TY
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CTA_ATC
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.CUSTOMER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DALAM_PROSES
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.DIKIRIM
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.EE_QUANTITY
@@ -73,6 +77,7 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_RECHARG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRACK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.GQL_TRAIN_EMAIL
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.LS_LACAK_MWEB
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.MENUNGGU_KONFIRMASI
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.NOTES
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.PRODUCT_NAME
@@ -83,6 +88,10 @@ import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.QUERY_PARAM
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.REPLACE_ORDER_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.SHOP_ID
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.START_DATE
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_DIKIRIM
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_MENUNGGU_KONFIRMASI
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.STATUS_TIBA_DI_TUJUAN
+import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TIBA_DI_TUJUAN
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TRANSAKSI_BERLANGSUNG
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.TYPE_ACTION_BUTTON_LINK
 import com.tokopedia.buyerorder.unifiedhistory.common.util.UohConsts.URL_RESO
@@ -257,6 +266,21 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         status = DALAM_PROSES
                         statusLabel = TRANSAKSI_BERLANGSUNG
                         paramUohOrder.verticalCategory = PARAM_MARKETPLACE
+                    }
+                    PARAM_UOH_WAITING_CONFIRMATION -> {
+                        status = STATUS_MENUNGGU_KONFIRMASI
+                        statusLabel = MENUNGGU_KONFIRMASI
+                        paramUohOrder.verticalCategory = ""
+                    }
+                    PARAM_UOH_SENT -> {
+                        status = STATUS_DIKIRIM
+                        statusLabel = DIKIRIM
+                        paramUohOrder.verticalCategory = ""
+                    }
+                    PARAM_UOH_DELIVERED -> {
+                        status = STATUS_TIBA_DI_TUJUAN
+                        statusLabel = TIBA_DI_TUJUAN
+                        paramUohOrder.verticalCategory = ""
                     }
                     PARAM_DIGITAL -> {
                         status = ""
@@ -682,7 +706,6 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
         // category
         val typeCategory = if (filterStatus.equals(PARAM_MARKETPLACE, true) ||
-                filterStatus.equals(PARAM_MARKETPLACE_DALAM_PROSES, true) ||
                 filterStatus.equals(PARAM_DIGITAL, true) ||
                 filterStatus.equals(PARAM_EVENTS, true) ||
                 filterStatus.equals(PARAM_DEALS, true) ||
@@ -786,7 +809,7 @@ class UohListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             arrayListStatusFilterBundle.add(UohFilterBundle(key = v2Filter.value, value = v2Filter.label, type = type))
         }
         tempFilterType = UohConsts.TYPE_FILTER_STATUS
-        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = UohConsts.ALL_STATUS_TRANSACTION
+        if (tempFilterStatusLabel.isEmpty()) tempFilterStatusLabel = ALL_STATUS_TRANSACTION
         if (tempFilterStatusKey.isEmpty()) tempFilterStatusKey = ""
 
         uohBottomSheetOptionAdapter.filterBundleList = arrayListStatusFilterBundle
