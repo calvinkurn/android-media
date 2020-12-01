@@ -15,6 +15,8 @@ object OSMixLeftTracking: BaseTrackerConst() {
     private val IMPRESSION_BANNER_MIX_LEFT = "impression banner dynamic channel left carousel"
     private val CLICK_BANNER_MIX_LEFT = "click banner dynamic channel left carousel"
     private val VALUE_DYNAMIC_MIX_LEFT_CAROUSEL = "dynamic channel left carousel"
+    private val SKEL_APPLINK = "{&data}"
+    private val SKEL_APPLINK_DATA = "&data"
 
     fun eventImpressionMixLeftImageBanner(channel: ChannelModel, categoryName: String, bannerPosition: Int) =
             BaseTrackerBuilder()
@@ -59,10 +61,11 @@ object OSMixLeftTracking: BaseTrackerConst() {
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): Promotion{
         return Promotion(
                 id = channelId,
-                name = arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName).joinToString(" - "),
+                name = arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName, SKEL_APPLINK.replace(SKEL_APPLINK_DATA, creativeUrl)).joinToString(" - "),
                 position = "$bannerPosition",
                 creative = creative,
                 creativeUrl = creativeUrl
         )
+
     }
 }

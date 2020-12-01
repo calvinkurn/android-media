@@ -93,6 +93,8 @@ class OfficialStoreTracking(context: Context) {
 
     private val EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID = "recommendation page with product id"
     private val SLASH_OFFICIAL_STORE = "/official-store"
+    private val SKEL_APPLINK = "{&data}"
+    private val SKEL_APPLINK_DATA = "&data"
 
     fun sendScreen(categoryName: String) {
         val screenName = "/official-store/$categoryName"
@@ -918,7 +920,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT, CLICK_OS_MICROSITE,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id
+                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name
         ))
     }
 
@@ -933,7 +935,7 @@ class OfficialStoreTracking(context: Context) {
                 EVENT, CLICK_OS_MICROSITE,
                 EVENT_CATEGORY, "$OS_MICROSITE$categoryName",
                 EVENT_ACTION, eventActionValue,
-                EVENT_LABEL, channel.id
+                EVENT_LABEL, channel.id + " - " + channel.channelHeader.name
         ))
     }
 
@@ -969,7 +971,7 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(CAMPAIGN_CODE, "${channel.campaignCode.orEmpty()}")
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
                 channelId = channel.id,
-                categoryName = categoryName,
+                categoryName = categoryName.toLowerCase(),
                 headerName = channel.header?.name.orEmpty(),
                 bannerPosition = bannerPosition,
                 creative = channel.name,
@@ -988,7 +990,7 @@ class OfficialStoreTracking(context: Context) {
         eventDataLayer.putString(EVENT_LABEL, channel.id)
         eventDataLayer.putParcelableArrayList("promotions", createMixLeftEcommerceDataLayer(
                 channelId = channel.id,
-                categoryName = categoryName,
+                categoryName = categoryName.toLowerCase(),
                 headerName = channel.header?.name.orEmpty(),
                 bannerPosition = bannerPosition,
                 creative = channel.name,
@@ -1001,7 +1003,7 @@ class OfficialStoreTracking(context: Context) {
     private fun createMixLeftEcommerceDataLayer(channelId: String, categoryName: String, headerName: String, bannerPosition: Int, creative: String, creativeUrl: String): ArrayList<Bundle> {
         val promotion = Bundle()
         promotion.putString("item_id", channelId)
-        promotion.putString("item_name", arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName).joinToString(" - "))
+        promotion.putString("item_name", arrayOf("$SLASH_OFFICIAL_STORE/$categoryName", VALUE_DYNAMIC_MIX_LEFT_CAROUSEL, headerName, SKEL_APPLINK.replace(SKEL_APPLINK_DATA, creativeUrl)).joinToString(" - "))
         promotion.putString("creative_slot", "$bannerPosition")
         promotion.putString("creative_name", creative)
         promotion.putString("creative_url", creativeUrl)
