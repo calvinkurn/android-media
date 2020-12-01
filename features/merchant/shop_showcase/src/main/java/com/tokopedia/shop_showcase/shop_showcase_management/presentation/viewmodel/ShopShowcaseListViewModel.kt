@@ -7,7 +7,7 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopShowcaseListSellerResponse
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
-import com.tokopedia.shop_showcase.common.ShopShowcaseDispatchProvider
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.shop_showcase.shop_showcase_management.data.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -23,8 +23,8 @@ class ShopShowcaseListViewModel @Inject constructor(
         private val deleteShopShowcaseUseCase: DeleteShopShowcaseUseCase,
         private val reorderShopShowcaseUseCase: ReorderShopShowcaseListUseCase,
         private val getShopShowcaseTotalProductUseCase: GetShopShowcaseTotalProductUseCase,
-        private val dispatchers: ShopShowcaseDispatchProvider
-): BaseViewModel(dispatchers.ui()) {
+        private val dispatchers: CoroutineDispatchers
+): BaseViewModel(dispatchers.main) {
 
     private val _getListBuyerShopShowcaseResponse = MutableLiveData<Result<List<ShopEtalaseModel>>>()
     val getListBuyerShopShowcaseResponse: LiveData<Result<List<ShopEtalaseModel>>>
@@ -49,7 +49,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun getShopShowcaseListAsBuyer(shopId: String, isOwner: Boolean, hideShowCaseGroup: Boolean) {
         launchCatchError(block = {
-            val showcaseList = withContext(dispatchers.io()) {
+            val showcaseList = withContext(dispatchers.io) {
                 clearGetShowcaseCache()
                 val requestParam = if (isOwner) {
                     GetShopEtalaseByShopUseCase.createRequestParams(
@@ -79,7 +79,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun getShopShowcaseListAsSeller() {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 getShopEtalaseUseCase.params = GetShopEtalaseUseCase.createRequestParams(
                         // set withDefault to true for managing etalase purpose
                         withDefault = true
@@ -96,7 +96,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun removeSingleShopShowcase(showcaseId: String) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 deleteShopShowcaseUseCase.params = DeleteShopShowcaseUseCase.createRequestParam(showcaseId)
                 val removeSingleShowcaseData = deleteShopShowcaseUseCase.executeOnBackground()
                 removeSingleShowcaseData.let {
@@ -110,7 +110,7 @@ class ShopShowcaseListViewModel @Inject constructor(
 
     fun reorderShopShowcaseList(ids: List<String>) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 reorderShopShowcaseUseCase.params = ReorderShopShowcaseListUseCase.createRequestParam(ids)
                 val reorderShowcaseData = reorderShopShowcaseUseCase.executeOnBackground()
                 reorderShowcaseData.let {
@@ -125,7 +125,7 @@ class ShopShowcaseListViewModel @Inject constructor(
     fun getTotalProduct(shopId: String, page: Int, perPage: Int,
             sortId: Int, etalase: String, search: String) {
         launchCatchError(block = {
-            withContext(dispatchers.io()) {
+            withContext(dispatchers.io) {
                 var paramInput = mapOf(
                         "page" to page,
                         "fkeyword" to search,

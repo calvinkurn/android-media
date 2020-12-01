@@ -190,6 +190,7 @@ ext {
             topAdsEdit                      : ":features:top_ads:top_ads_edit",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
             topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
+            topAdsHeadline                  : ":features:top_ads:top_ads_headline",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -242,6 +243,7 @@ ext {
             tkpdsession                     : ":tkpdsession",
             promotionsTarget                : ":features:promo:promotions_target",
             recharge_slice                  : ":features:recharge:recharge_slice",
-            logintestapp                    : ":testapp-features:user:logintestapp"
+            logintestapp                    : ":testapp-features:user:logintestapp",
+            customer_mid_app                : ":customer_mid_app"
     ]
 }

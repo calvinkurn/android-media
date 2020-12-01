@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.design.component.Dialog;
+import com.tokopedia.dialog.DialogUnify;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationTermsAndConditionsActivity;
@@ -41,10 +40,13 @@ import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationWrapperModel;
 import com.tokopedia.flight.cancellationV2.presentation.adapter.FlightCancellationReviewEstimationNotesAdapter;
 import com.tokopedia.flight.orderlist.util.FlightErrorUtil;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
 
 /**
  * @author by furqan on 29/03/18.
@@ -63,7 +65,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     private LinearLayout containerAdditionalData;
     private LinearLayout containerAdditionalReason;
     private LinearLayout containerAdditionalDocuments;
-    private AppCompatButton btnSubmit;
+    private UnifyButton btnSubmit;
     private AppCompatTextView txtReason;
     private AppCompatTextView txtTotalRefund;
     private RecyclerView rvAttachments;
@@ -172,16 +174,14 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
 
     @Override
     public void showSuccessDialog(int resId) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        final DialogUnify dialog = new DialogUnify(getActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
         dialog.setTitle(getString(com.tokopedia.flight.R.string.flight_cancellation_review_dialog_success_title));
-        dialog.setDesc(Html.fromHtml(getString(resId)));
-        dialog.setBtnOk("OK");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                closeReviewCancellationPage();
-            }
+        dialog.setDescription(Html.fromHtml(getString(resId)));
+        dialog.setPrimaryCTAText("OK");
+        dialog.setPrimaryCTAClickListener(() -> {
+            dialog.dismiss();
+            closeReviewCancellationPage();
+            return Unit.INSTANCE;
         });
         dialog.show();
     }
@@ -327,7 +327,7 @@ public class FlightCancellationReviewFragment extends BaseListFragment<FlightCan
     }
 
     private SpannableString setDescriptionText() {
-        final int color = getContext().getResources().getColor(com.tokopedia.design.R.color.green_500);
+        final int color = getContext().getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500);
         int startIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).indexOf("Pelajari");
         int stopIndex = getString(com.tokopedia.flight.R.string.flight_cancellation_refund_description).length();
         SpannableString description = new SpannableString(getContext().getString(
