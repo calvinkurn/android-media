@@ -20,7 +20,7 @@
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
+        android:background="@color/Unify_N0"
         android:visibility="gone">
 
         <ProgressBar
@@ -37,6 +37,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        app:backgroundTint="@color/tkpd_main_green"
+        app:backgroundTint="@color/Unify_G400"
         app:srcCompat="@drawable/ic_feed_post_plus" />
 </RelativeLayout>

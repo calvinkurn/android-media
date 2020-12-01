@@ -3,6 +3,8 @@ package com.tokopedia.sellerhome.common
 import android.content.Intent
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.productmanage.DeepLinkMapperProductManage
+import com.tokopedia.applink.sellerhome.AppLinkMapperSellerHome
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * Created By @ilhamsuaib on 2020-03-05
@@ -37,6 +39,11 @@ object DeepLinkHandler {
             }
             data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLED) -> {
                 callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ORDER_CANCELLED))
+            }
+            data.startsWith(ApplinkConstInternalSellerapp.SELLER_HOME_SOM_CANCELLATION_REQUEST) -> {
+                val uri = intent.data
+                val filterOrderType = uri?.getQueryParameter(AppLinkMapperSellerHome.FILTER_ORDER_TYPE).toIntOrZero()
+                callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_ALL_ORDER, orderType = filterOrderType))
             }
 
             //Product Manage

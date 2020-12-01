@@ -1,7 +1,8 @@
 package com.tokopedia.seller.purchase.detail.interactor;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.seller.purchase.detail.model.history.viewmodel.OrderHistoryData;
+
+import java.util.HashMap;
 
 import rx.Subscriber;
 
@@ -12,7 +13,7 @@ import rx.Subscriber;
 public interface OrderHistoryInteractor {
 
     void requestOrderHistoryData(Subscriber<OrderHistoryData> subscriber,
-                                 TKPDMapParam<String, Object> params);
+                                 HashMap<String, Object> params);
 
     void onViewDestroyed();
 }

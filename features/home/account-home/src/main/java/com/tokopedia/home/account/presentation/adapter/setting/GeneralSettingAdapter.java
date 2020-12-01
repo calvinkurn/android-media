@@ -152,9 +152,9 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             int boxColor = -1;
 
             if (title.equals(notificationTitle)) {
-                boxColor = com.tokopedia.unifyprinciples.R.color.Red_R400;
+                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R400;
             } else if (title.equals(preferenceTitle)) {
-                boxColor = com.tokopedia.unifyprinciples.R.color.Red_R500;
+                boxColor = com.tokopedia.unifyprinciples.R.color.Unify_R500;
             }
 
             if (boxColor > -1 && !hasBeenOneMonth(title)) {
@@ -167,7 +167,7 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         itemView.getContext(),
                         4,
                         boxColor,
-                        R.color.white
+                        com.tokopedia.unifyprinciples.R.color.Unify_N0
                 );
 
                 spannable.setSpan(

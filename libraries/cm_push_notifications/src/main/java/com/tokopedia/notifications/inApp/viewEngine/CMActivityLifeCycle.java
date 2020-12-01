@@ -12,43 +12,57 @@ import com.tokopedia.notifications.utils.NotificationRemoveManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.notifications.inApp.CmActivityLifecycleHandler;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import timber.log.Timber;
 
 /**
  * @author lalit.singh
  */
 public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbacks {
 
+    static String TAG = CMActivityLifeCycle.class.getSimpleName();
     public static final String IRIS_ANALYTICS_APP_SITE_OPEN = "appSiteOpen";
     private static final String IRIS_ANALYTICS_EVENT_KEY = "event";
     private int activityCount;
+    private CmActivityLifecycleHandler lifecycleHandler;
 
-    private CMInAppManager cmInAppManager;
     private NotificationRemoveManager removeManager;
 
     private RemoteConfig remoteConfig;
 
-    public CMActivityLifeCycle(Context context, CMInAppManager cmInAppManager) {
+    public CMActivityLifeCycle(
+            Context context,
+            CmActivityLifecycleHandler lifecycleHandler
+    ) {
         remoteConfig = new FirebaseRemoteConfigImpl(context);
-        this.cmInAppManager = cmInAppManager;
+        this.lifecycleHandler = lifecycleHandler;
     }
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        if (activity!= null && activityCount == 0) {
+        if (activity != null && activityCount == 0) {
             trackIrisEventForAppOpen(activity);
         }
         activityCount++;
+        try {
+            lifecycleHandler.onActivityCreatedInternalForPush(activity);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
         try {
-            cmInAppManager.onActivityStartedInternal(activity);
+            lifecycleHandler.onActivityStartedInternal(activity);
             clearNotification(activity);
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     @Override
@@ -60,9 +74,11 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     @Override
     public void onActivityStopped(Activity activity) {
         try {
-            cmInAppManager.onActivityStopInternal(activity);
+            lifecycleHandler.onActivityStopInternal(activity);
             removeManager.cancel();
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     @Override
@@ -71,6 +87,11 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     @Override
     public void onActivityDestroyed(Activity activity) {
         activityCount--;
+        try {
+            lifecycleHandler.onActivityDestroyedInternal(activity);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     private void trackIrisEventForAppOpen(Activity activity) {

@@ -36,7 +36,7 @@ public class FlightAirportViewHolder extends AbstractViewHolder<FlightAirportMod
         airportTextView = itemView.findViewById(com.tokopedia.flight.R.id.airport);
         this.filterTextListener = filterTextListener;
         boldColor = new ForegroundColorSpan(ContextCompat.getColor(itemView.getContext(),
-                com.tokopedia.unifyprinciples.R.color.Neutral_N700_96));
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_96));
 
     }
 
