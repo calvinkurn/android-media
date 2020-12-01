@@ -7,19 +7,14 @@ import android.os.Bundle;
 
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.notifications.di.DaggerCMNotificationComponent;
-import com.tokopedia.notifications.di.module.LifecycleModule;
 import com.tokopedia.notifications.inApp.CMInAppManager;
 import com.tokopedia.notifications.utils.NotificationRemoveManager;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.inject.Inject;
-
-import dagger.Lazy;
 
 /**
  * @author lalit.singh
@@ -33,15 +28,10 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     private CMInAppManager cmInAppManager;
     private NotificationRemoveManager removeManager;
 
-    @Inject
-    private Lazy<RemoteConfig> remoteConfig;
+    private RemoteConfig remoteConfig;
 
     public CMActivityLifeCycle(Context context, CMInAppManager cmInAppManager) {
-        DaggerCMNotificationComponent.builder()
-                .lifecycleModule(new LifecycleModule(context))
-                .build()
-                .inject(this);
-
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
         this.cmInAppManager = cmInAppManager;
     }
 
@@ -91,7 +81,7 @@ public class CMActivityLifeCycle implements Application.ActivityLifecycleCallbac
     }
 
     private void clearNotification(Activity activity) {
-        if (remoteConfig.get().getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.NOTIFICATION_TRAY_CLEAR)) {
             removeManager.clearNotification(activity.getApplicationContext());
         }
     }
