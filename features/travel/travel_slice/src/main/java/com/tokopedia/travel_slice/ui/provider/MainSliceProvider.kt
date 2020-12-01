@@ -64,7 +64,6 @@ class MainSliceProvider : SliceProvider() {
     }
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-
         if (!isAlreadyInit) {
             contextNonNull = context ?: return null
             init()
@@ -75,12 +74,12 @@ class MainSliceProvider : SliceProvider() {
             return it
         }
 
-        val type = sliceUri.getQueryParameter(ARG_TYPE)?.toLowerCase() ?: TYPE_HOTEL
+        val type = sliceUri.getQueryParameter(ARG_TYPE) ?: TYPE_HOTEL
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) return null
         return when (sliceUri.lastPathSegment) {
             BOOK_HOTEL -> createGetBookHotelSlice(sliceUri)
-            MY_BOOKING -> if (type == TYPE_FLIGHT) createGetFlightOrderSlice(sliceUri) else createGetHotelOrderSlice(sliceUri)
+            MY_BOOKING -> if (type.toLowerCase() == TYPE_FLIGHT) createGetFlightOrderSlice(sliceUri) else createGetHotelOrderSlice(sliceUri)
             else -> null
         }
     }
