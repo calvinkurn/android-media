@@ -15,6 +15,8 @@ import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TA
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringConstants.TALK_REPLY_TRACE
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringListener
 import com.tokopedia.talk.common.constants.TalkConstants
+import com.tokopedia.talk.common.constants.TalkConstants.PARAM_SHOP_ID
+import com.tokopedia.talk.common.constants.TalkConstants.QUESTION_ID
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.feature.reply.presentation.fragment.TalkReplyFragment
@@ -29,14 +31,11 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
     private var talkReplyFragment: TalkReplyFragment? = null
 
     companion object {
-        private const val QUESTION_ID_EXTRA = "questionId"
-        private const val SHOP_ID_EXTRA = "shopId"
-
         @JvmStatic
         fun createIntent(context: Context, questionId: String, shopId: String) =
                 Intent(context, TalkReplyActivity::class.java).apply {
-                    putExtra(QUESTION_ID_EXTRA, questionId)
-                    putExtra(SHOP_ID_EXTRA, shopId)
+                    putExtra(QUESTION_ID, questionId)
+                    putExtra(PARAM_SHOP_ID, shopId)
                 }
     }
 
@@ -64,8 +63,8 @@ class TalkReplyActivity : BaseSimpleActivity(), HasComponent<TalkComponent>, Tal
 
     private fun getDataFromIntent() {
         intent?.run {
-            shopId = getStringExtra(SHOP_ID_EXTRA).orEmpty()
-            questionId = getStringExtra(QUESTION_ID_EXTRA).orEmpty()
+            shopId = getStringExtra(PARAM_SHOP_ID).orEmpty()
+            questionId = getStringExtra(QUESTION_ID).orEmpty()
         }
     }
 
