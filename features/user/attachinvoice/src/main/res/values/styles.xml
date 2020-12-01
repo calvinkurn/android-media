@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AttachInvoice" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="titleTextAppearance">@style/TitleTextAppearance.AttachInvoice</item>
+    </style>
+
+    <style name="TitleTextAppearance.AttachInvoice">
+        <item name="android:textColor">@color/Unify_N700_96</item>
+    </style>
+</resources>
