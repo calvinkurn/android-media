@@ -54,7 +54,6 @@ class OrderAppWidget : AppWidgetProvider() {
     }
 
     override fun onAppWidgetOptionsChanged(context: Context, appWidgetManager: AppWidgetManager?, appWidgetId: Int, newOptions: Bundle?) {
-        println("AppWidget : on resize -> onAppWidgetOptionsChanged")
         initUserSession(context)
         userSession?.let {
             if (!it.isLoggedIn) {

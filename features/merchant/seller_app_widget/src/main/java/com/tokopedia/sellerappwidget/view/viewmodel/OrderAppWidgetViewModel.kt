@@ -8,7 +8,6 @@ import com.tokopedia.sellerappwidget.view.viewmodel.view.OrderAppWidgetView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import dagger.Lazy
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -28,7 +27,6 @@ class OrderAppWidgetViewModel @Inject constructor(
             val result = Success(withContext(dispatcherProvider.io) {
                 getOrderUseCase.get().executeOnBackground()
             })
-            delay(2000L)
             view?.onSuccessGetOrderList(result)
         }, onError = {
             view?.onFailedGetOrderList(Fail(it))
