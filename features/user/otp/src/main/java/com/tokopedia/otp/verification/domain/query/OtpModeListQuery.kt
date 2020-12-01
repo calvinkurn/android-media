@@ -19,6 +19,8 @@ object OtpModeListQuery {
                 errorMessage
                 otpDigit
                 linkType
+                enableTicker
+                tickerTrouble
                 modeLists {
                     modeCode
                     modeText

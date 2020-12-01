@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.otp.R
 import com.tokopedia.otp.common.abstraction.BaseOtpViewBinding
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
@@ -25,6 +26,7 @@ class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding()
     var methodList: RecyclerView? = null
     var phoneInactive: Typography? = null
     var loader: LoaderUnify? = null
+    var ticker: Ticker? = null
 
     override fun inflate(layoutInflater: LayoutInflater, container: ViewGroup?): View =
             layoutInflater.inflate(layoutResId, container, false).apply {
@@ -34,5 +36,6 @@ class VerificationMethodViewBinding @Inject constructor() : BaseOtpViewBinding()
                 methodList = findViewById(R.id.method_list)
                 phoneInactive = findViewById(R.id.phone_inactive)
                 loader = findViewById(R.id.loader)
+                ticker = findViewById(R.id.tickerVerificationMethod)
             }
 }

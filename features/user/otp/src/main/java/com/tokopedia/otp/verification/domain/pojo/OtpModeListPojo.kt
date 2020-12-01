@@ -23,6 +23,12 @@ data class OtpModeListData(
         @SerializedName("message")
         @Expose
         var message: String = "",
+        @SerializedName("enableTicker")
+        @Expose
+        var enableTicker: Boolean = false,
+        @SerializedName("tickerTrouble")
+        @Expose
+        var tickerTrouble: String = "",
         @SerializedName("errorMessage")
         @Expose
         var errorMessage: String = "",
