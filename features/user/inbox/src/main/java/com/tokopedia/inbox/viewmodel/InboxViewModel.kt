@@ -3,7 +3,7 @@ package com.tokopedia.inbox.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.inbox.common.InboxCoroutineContextProvider
+import com.tokopedia.inbox.common.InboxCoroutineDispatcher
 import com.tokopedia.inbox.common.config.InboxConfig
 import com.tokopedia.inbox.domain.data.notification.InboxCounter
 import com.tokopedia.inbox.domain.usecase.InboxNotificationUseCase
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class InboxViewModel @Inject constructor(
         private val notificationUseCase: InboxNotificationUseCase,
-        private val dispatchers: InboxCoroutineContextProvider
+        dispatchers: InboxCoroutineDispatcher
 ) : BaseViewModel(dispatchers.IO) {
 
     private val _notifications = MutableLiveData<Result<InboxCounter>>()
