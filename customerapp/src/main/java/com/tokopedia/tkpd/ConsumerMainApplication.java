@@ -66,6 +66,12 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
         AuthUtil.KEY.ZEUS_WHITELIST = ConsumerAppNetworkKeys.ZEUS_WHITELIST;
     }
 
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        grantSlicePermissions();
+    }
+
     /**
      * A native method that is implemented by the 'native-lib' native library,
      * which is packaged with this application.
@@ -173,5 +179,40 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             }
         }
         return md5StrBuff.toString();
+    }
+
+
+    /**
+     * Grant slice permissions to the assistance in order to display slices without user input.
+     *
+     * Note: this is needed when using AndroidX SliceProvider.
+     */
+
+    private void grantSlicePermissions() {
+        Context context = getApplicationContext();
+
+        Uri sliceProviderUri =
+                new Uri.Builder()
+                        .scheme(ContentResolver.SCHEME_CONTENT)
+                        .authority("com.tokopedia.tkpd.recharge_slice")
+                        .build();
+
+        String assistantPackage = getAssistantPackage(context);
+        if (assistantPackage == null) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri);
+        }
+    }
+
+    private String getAssistantPackage(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        List<ResolveInfo> resolveInfoList = packageManager.queryIntentServices(
+                new Intent(VoiceInteractionService.SERVICE_INTERFACE), 0);
+        if (resolveInfoList.isEmpty()) {
+            return null;
+        }
+        return resolveInfoList.get(0).serviceInfo.packageName;
     }
 }
