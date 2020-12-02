@@ -14,6 +14,7 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
+import com.tokopedia.utils.permission.SlicePermission;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -22,13 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-
-import android.content.pm.ResolveInfo;
-import android.content.ContentResolver;
-import java.util.List;
-
-import androidx.slice.SliceManager;
-import android.service.voice.VoiceInteractionService;
 
 import timber.log.Timber;
 
@@ -79,7 +73,7 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
     @Override
     public void onCreate() {
         super.onCreate();
-        grantSlicePermissions();
+        SlicePermission.initPermission(this);
     }
 
     /**
@@ -189,40 +183,5 @@ public class ConsumerMainApplication extends com.tokopedia.tkpd.app.ConsumerMain
             }
         }
         return md5StrBuff.toString();
-    }
-
-
-    /**
-     * Grant slice permissions to the assistance in order to display slices without user input.
-     *
-     * Note: this is needed when using AndroidX SliceProvider.
-     */
-
-    private void grantSlicePermissions() {
-        Context context = getApplicationContext();
-
-        Uri sliceProviderUri =
-                new Uri.Builder()
-                        .scheme(ContentResolver.SCHEME_CONTENT)
-                        .authority("com.tokopedia.tkpd.recharge_slice")
-                        .build();
-
-        String assistantPackage = getAssistantPackage(context);
-        if (assistantPackage == null) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            SliceManager.getInstance(context).grantSlicePermission(assistantPackage, sliceProviderUri);
-        }
-    }
-
-    private String getAssistantPackage(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        List<ResolveInfo> resolveInfoList = packageManager.queryIntentServices(
-                new Intent(VoiceInteractionService.SERVICE_INTERFACE), 0);
-        if (resolveInfoList.isEmpty()) {
-            return null;
-        }
-        return resolveInfoList.get(0).serviceInfo.packageName;
     }
 }
