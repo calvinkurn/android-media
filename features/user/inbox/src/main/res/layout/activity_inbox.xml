@@ -40,7 +40,7 @@
         <com.tokopedia.inbox.view.custom.InboxBottomNavigationView
             android:id="@+id/inbox_bottom_nav"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_topchat_50"
+            android:layout_height="@dimen/dp_inbox_50"
             app:itemTextColor="@color/inbox_title_color_state"
             app:labelVisibilityMode="labeled"
             app:layout_constraintBottom_toBottomOf="parent"
